@@ -1,0 +1,28 @@
+name: exp-003-center-of-mass-shift
+description: Escenario con desplazamiento del centro de masas de la carga.
+controller:
+  type: adaptive
+  parameters:
+    adaptation_gain: 0.25
+simulation:
+  duration: 20.0
+  time_step: 0.1
+  agv_count: 3
+  dimensions: 2
+  random_seed: 2026
+load:
+  nominal_mass: 25.0
+  nominal_inertia: 3.0
+  mass_uncertainty_ratio: 0.1
+  center_of_mass_shift: [0.15, -0.05]
+graph:
+  adjacency:
+    - [0.0, 1.0, 1.0]
+    - [1.0, 0.0, 1.0]
+    - [1.0, 1.0, 0.0]
+metrics:
+  - tracking_error
+  - formation_error
+  - control_effort
+  - robustness
+notes: Diseñado para analizar sensibilidad a asimetrías de carga.

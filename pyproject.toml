@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "viu-mrob-tfm"
+version = "0.1.0"
+description = "Distributed adaptive control for cooperative multi-AGV load transport."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+  { name = "Jorge Luis Mayorga Taborda" }
+]
+dependencies = [
+  "matplotlib>=3.8,<4.0",
+  "numpy>=1.26,<3.0",
+  "PyYAML>=6.0,<7.0",
+  "pytest>=8.0,<9.0",
+  "scipy>=1.11,<2.0",
+]
+
+[project.urls]
+Repository = "https://github.com/example/VIU-MROB-TFM-2026"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

@@ -1,0 +1,12 @@
+\section{Metodología}
+
+La metodología se organizará en cuatro bloques iterativos:
+
+\begin{enumerate}
+  \item \textbf{Modelado del sistema.} Definición de estados, parámetros nominales de la carga, restricciones básicas de movimiento y estructura del grafo de comunicación.
+  \item \textbf{Diseño de control.} Implementación de una línea base nominal basada en consenso y de una variante adaptativa o robusta para incertidumbre inercial, siguiendo principios de control distribuido y referencias afines en coordinación multiagente \citep{bullo2009distributed,quijano2017population}.
+  \item \textbf{Campaña experimental.} Construcción de escenarios reproducibles con configuraciones de carga, perturbaciones y conectividad diferenciadas.
+  \item \textbf{Evaluación cuantitativa.} Cálculo de métricas, análisis comparativo y elaboración de figuras y tablas para sustentar conclusiones.
+\end{enumerate}
+
+Desde el punto de vista de ingeniería, se adoptará una arquitectura limpia con separación entre modelos de dominio, controladores, simulación, métricas, experimentos, visualización y documentación. Esta organización facilitará trazabilidad, repetibilidad y extensión futura del código.

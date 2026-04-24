@@ -1,0 +1,115 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{viu-mrob-tfm}[2026/04/24 VIU MROB TFM proposal style]
+
+\RequirePackage[a4paper,margin=2.5cm]{geometry}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[spanish,es-tabla]{babel}
+\RequirePackage[scaled=0.97]{helvet}
+\RequirePackage{microtype}
+\RequirePackage{graphicx}
+\RequirePackage{xcolor}
+\RequirePackage{fancyhdr}
+\RequirePackage{titlesec}
+\RequirePackage{enumitem}
+\RequirePackage{booktabs}
+\RequirePackage{array}
+\RequirePackage{longtable}
+\RequirePackage{setspace}
+\RequirePackage{hyperref}
+\RequirePackage[numbers,sort&compress]{natbib}
+
+\renewcommand{\familydefault}{\sfdefault}
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.65em}
+\setlength{\headheight}{14pt}
+
+\definecolor{VIUOrange}{HTML}{E76F00}
+\definecolor{VIUDark}{HTML}{333333}
+\definecolor{VIULight}{HTML}{F7F7F7}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=VIUOrange,
+  citecolor=VIUOrange,
+  urlcolor=VIUOrange,
+  pdftitle={Propuesta de Trabajo Fin de Máster},
+  pdfauthor={Jorge Luis Mayorga Taborda}
+}
+
+\newcommand{\viuthesistitle}{}
+\newcommand{\viustudentname}{}
+\newcommand{\viuinstitutionname}{}
+\newcommand{\viumastername}{}
+\newcommand{\viudocumenttypename}{}
+\newcommand{\viututorname}{}
+\newcommand{\viuproposaldate}{\today}
+\newcommand{\viuversionlabel}{}
+
+\newcommand{\thesistitle}[1]{\renewcommand{\viuthesistitle}{#1}}
+\newcommand{\studentname}[1]{\renewcommand{\viustudentname}{#1}}
+\newcommand{\institutionname}[1]{\renewcommand{\viuinstitutionname}{#1}}
+\newcommand{\mastername}[1]{\renewcommand{\viumastername}{#1}}
+\newcommand{\documenttypename}[1]{\renewcommand{\viudocumenttypename}{#1}}
+\newcommand{\tutorname}[1]{\renewcommand{\viututorname}{#1}}
+\newcommand{\proposaldate}[1]{\renewcommand{\viuproposaldate}{#1}}
+\newcommand{\versionlabel}[1]{\renewcommand{\viuversionlabel}{#1}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{VIUOrange}{\small\textbf{Propuesta TFM}}}
+\fancyhead[R]{\small\viustudentname}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\titleformat{\section}
+  {\Large\bfseries\color{VIUDark}}
+  {\textcolor{VIUOrange}{\thesection}}
+  {0.75em}
+  {}
+
+\titleformat{\subsection}
+  {\large\bfseries\color{VIUDark}}
+  {\textcolor{VIUOrange}{\thesubsection}}
+  {0.6em}
+  {}
+
+\titlespacing*{\section}{0pt}{1.1em}{0.4em}
+\titlespacing*{\subsection}{0pt}{0.9em}{0.3em}
+
+\setlist[itemize]{leftmargin=1.5em}
+\setlist[enumerate]{leftmargin=1.8em}
+
+\newcommand{\makeviucover}{
+  \begin{titlepage}
+    \thispagestyle{empty}
+    {\color{VIUOrange}\rule{\textwidth}{1.3pt}}
+
+    \vspace*{1.2cm}
+    {\Large\bfseries\color{VIUOrange}\viuinstitutionname\par}
+    \vspace{0.4cm}
+    {\large\color{VIUDark}\viumastername\par}
+
+    \vfill
+
+    {\small\textbf{\viudocumenttypename}\par}
+    \vspace{0.8cm}
+    {\huge\bfseries\color{VIUDark}\viuthesistitle\par}
+    \vspace{0.8cm}
+    {\large\color{VIUOrange}\viuversionlabel\par}
+
+    \vfill
+
+    \renewcommand{\arraystretch}{1.35}
+    \begin{tabular}{>{\bfseries}p{4cm}p{10cm}}
+      Estudiante & \viustudentname \\
+      Tutor/a & \viututorname \\
+      Fecha & \viuproposaldate \\
+    \end{tabular}
+
+    \vfill
+    {\color{VIUOrange}\rule{\textwidth}{1.3pt}}
+  \end{titlepage}
+}

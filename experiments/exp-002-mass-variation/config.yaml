@@ -1,0 +1,28 @@
+name: exp-002-mass-variation
+description: Sensibilidad del sistema ante variación de masa nominal e incertidumbre inercial.
+controller:
+  type: adaptive
+  parameters:
+    adaptation_gain: 0.3
+simulation:
+  duration: 20.0
+  time_step: 0.1
+  agv_count: 3
+  dimensions: 2
+  random_seed: 2026
+load:
+  nominal_mass: 30.0
+  nominal_inertia: 4.0
+  mass_uncertainty_ratio: 0.2
+  center_of_mass_shift: [0.0, 0.0]
+graph:
+  adjacency:
+    - [0.0, 1.0, 1.0]
+    - [1.0, 0.0, 1.0]
+    - [1.0, 1.0, 0.0]
+metrics:
+  - tracking_error
+  - formation_error
+  - control_effort
+  - robustness
+notes: Placeholder para estudios de sensibilidad a masa efectiva.

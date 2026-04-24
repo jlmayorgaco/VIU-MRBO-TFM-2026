@@ -1,0 +1,29 @@
+name: exp-001-baseline-nominal
+description: Línea base nominal con tres AGVs y carga sin incertidumbre adicional.
+controller:
+  type: nominal
+  parameters:
+    consensus_gain: 1.0
+    tracking_gain: 0.5
+simulation:
+  duration: 20.0
+  time_step: 0.1
+  agv_count: 3
+  dimensions: 2
+  random_seed: 2026
+load:
+  nominal_mass: 25.0
+  nominal_inertia: 3.0
+  mass_uncertainty_ratio: 0.0
+  center_of_mass_shift: [0.0, 0.0]
+graph:
+  adjacency:
+    - [0.0, 1.0, 1.0]
+    - [1.0, 0.0, 1.0]
+    - [1.0, 1.0, 0.0]
+metrics:
+  - tracking_error
+  - formation_error
+  - control_effort
+  - convergence_time
+notes: Escenario inicial para verificar importaciones, configuración y pipeline.

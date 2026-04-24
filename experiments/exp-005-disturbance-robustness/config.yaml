@@ -1,0 +1,29 @@
+name: exp-005-disturbance-robustness
+description: Robustez preliminar frente a perturbaciones externas.
+controller:
+  type: adaptive
+  parameters:
+    adaptation_gain: 0.35
+simulation:
+  duration: 25.0
+  time_step: 0.1
+  agv_count: 4
+  dimensions: 2
+  random_seed: 2026
+load:
+  nominal_mass: 28.0
+  nominal_inertia: 4.2
+  mass_uncertainty_ratio: 0.15
+  center_of_mass_shift: [0.05, 0.05]
+graph:
+  adjacency:
+    - [0.0, 1.0, 1.0, 0.0]
+    - [1.0, 0.0, 1.0, 1.0]
+    - [1.0, 1.0, 0.0, 1.0]
+    - [0.0, 1.0, 1.0, 0.0]
+metrics:
+  - tracking_error
+  - formation_error
+  - control_effort
+  - robustness
+notes: Escenario placeholder para perturbaciones exógenas aún no modeladas.
