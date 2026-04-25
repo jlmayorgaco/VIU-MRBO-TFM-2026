@@ -1,5 +1,15 @@
 \section{Resultados esperados}
 
-Se espera obtener un entorno de simulación organizado y reproducible que permita comparar, bajo un conjunto acotado de escenarios, el desempeño de un controlador nominal frente a otro adaptativo o robusto. El resultado principal esperado no es demostrar superioridad universal, sino identificar condiciones en las que la incorporación de adaptación frente a incertidumbre inercial aporta mejoras consistentes en seguimiento y robustez.
+Se espera obtener, en primer lugar, un marco de simulación reproducible capaz de ejecutar escenarios comparables de transporte cooperativo multi-AGV bajo comunicación local. Ese resultado incluye código organizado, configuraciones de experimento trazables, métricas definidas de forma explícita y un conjunto mínimo de figuras y tablas útiles para la memoria del TFM.
 
-Asimismo, se espera generar evidencia gráfica y tabular suficiente para discutir compromisos entre precisión, esfuerzo de control y sensibilidad a degradación de la comunicación. Como producto académico complementario, el repositorio deberá dejar una base clara para ampliar el estudio en futuras iteraciones.
+En segundo lugar, se espera producir una comparación técnicamente clara entre la línea base nominal y la variante adaptativa o robusta. El resultado valioso no consiste necesariamente en demostrar superioridad absoluta de la segunda, sino en identificar con precisión en qué escenarios mejora el desempeño, cuándo esa mejora es marginal y qué coste adicional introduce en esfuerzo de control o complejidad de ajuste.
+
+En tercer lugar, se espera cerrar una conclusión académicamente defendible sobre la viabilidad del enfoque propuesto dentro del alcance adoptado. Incluso un resultado negativo o mixto sería útil si permite sostener, con evidencia cuantitativa, que ciertas formas de incertidumbre afectan más que otras o que la ganancia en robustez no compensa determinados costes.
+
+Como productos concretos del TFM, se prevén:
+\begin{itemize}
+  \item una propuesta de modelado 2D adecuada al problema;
+  \item un controlador nominal y una extensión adaptativa o robusta implementados en simulación;
+  \item una campaña experimental documentada;
+  \item una memoria con discusión crítica de hallazgos, límites y líneas futuras.
+\end{itemize}

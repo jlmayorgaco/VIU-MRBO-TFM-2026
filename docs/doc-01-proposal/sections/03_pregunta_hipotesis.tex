@@ -1,7 +1,12 @@
 \section{Pregunta de investigación e hipótesis}
 
-\textbf{Pregunta de investigación.} ¿En qué medida un controlador distribuido adaptativo basado en consenso mejora el desempeño del transporte cooperativo multi-AGV frente a un controlador nominal cuando existe incertidumbre inercial en la carga y la comunicación entre agentes es local?
+\textbf{Pregunta de investigación.} ¿Puede una estrategia distribuida basada en consenso con un mecanismo adaptativo o robusto ofrecer un desempeño más consistente que una estrategia nominal en el transporte cooperativo multi-AGV cuando la carga presenta incertidumbre inercial y la comunicación entre agentes es únicamente local?
 
-\textbf{Hipótesis principal.} Bajo un modelo de simulación bidimensional y grafos de comunicación localmente conexos, una estrategia distribuida con componente adaptativa o robusta reducirá el error de seguimiento y mejorará la resiliencia ante variaciones inerciales de la carga respecto a una estrategia nominal basada únicamente en consenso, manteniendo un esfuerzo de control razonable.
+\textbf{Hipótesis de trabajo.}
+\begin{enumerate}
+  \item En escenarios con incertidumbre inercial de la carga, el controlador adaptativo o robusto mostrará menor error de seguimiento y menor error de formación que la línea base nominal en la mayor parte de los casos evaluados.
+  \item La mejora anterior no será gratuita: se espera un posible incremento moderado del esfuerzo de control, pero sin pérdida global de estabilidad ni deterioro severo del tiempo de convergencia.
+  \item La ventaja de la estrategia adaptativa o robusta será más visible cuando existan variaciones de masa, desplazamientos del centro de masas o perturbaciones externas acotadas, siempre que el grafo de comunicación conserve conectividad suficiente.
+\end{enumerate}
 
-\textbf{Hipótesis secundaria.} La mejora esperada será más visible en escenarios con variaciones de masa, desplazamiento del centro de masas o degradación moderada de la comunicación, siempre que el sistema conserve conectividad suficiente para el intercambio local de información.
+\textbf{Criterio de contraste.} Las hipótesis se contrastarán mediante campañas de simulación reproducibles comparando ambas estrategias bajo el mismo conjunto de escenarios, condiciones iniciales y métricas de evaluación.

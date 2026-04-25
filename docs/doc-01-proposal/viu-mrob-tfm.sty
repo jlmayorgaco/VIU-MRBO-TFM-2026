@@ -1,43 +1,66 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{viu-mrob-tfm}[2026/04/24 VIU MROB TFM proposal style]
 
-\RequirePackage[a4paper,margin=2.5cm]{geometry}
+% ----------- Base packages -----------
+\RequirePackage[spanish,es-noshorthands,shorthands=off]{babel}
 \RequirePackage[T1]{fontenc}
 \RequirePackage[utf8]{inputenc}
-\RequirePackage[spanish,es-tabla]{babel}
-\RequirePackage[scaled=0.97]{helvet}
+\RequirePackage{lmodern}
 \RequirePackage{microtype}
+\RequirePackage{setspace}
+\RequirePackage[a4paper,margin=2.3cm]{geometry}
+\RequirePackage[table,dvipsnames]{xcolor}
 \RequirePackage{graphicx}
-\RequirePackage{xcolor}
+\RequirePackage{hyperref}
 \RequirePackage{fancyhdr}
 \RequirePackage{titlesec}
-\RequirePackage{enumitem}
-\RequirePackage{booktabs}
 \RequirePackage{array}
+\RequirePackage{booktabs}
 \RequirePackage{longtable}
-\RequirePackage{setspace}
-\RequirePackage{hyperref}
+\RequirePackage{enumitem}
+\RequirePackage{tikz}
+\RequirePackage{lastpage}
+\RequirePackage{etoolbox}
 \RequirePackage[numbers,sort&compress]{natbib}
+\RequirePackage{tocloft}
 
-\renewcommand{\familydefault}{\sfdefault}
+% ----------- TikZ libraries -----------
+\usetikzlibrary{calc}
+
+% ----------- Typography -----------
 \onehalfspacing
+\renewcommand{\familydefault}{\sfdefault}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.65em}
-\setlength{\headheight}{14pt}
+\setlength{\headheight}{24pt}
 
-\definecolor{VIUOrange}{HTML}{E76F00}
-\definecolor{VIUDark}{HTML}{333333}
-\definecolor{VIULight}{HTML}{F7F7F7}
+% ----------- Colors -----------
+\definecolor{UniPrimary}{HTML}{E8552D}
+\definecolor{UniPrimaryDeep}{HTML}{C44624}
+\definecolor{UniDark}{HTML}{1A1A1A}
+\definecolor{UniLight}{HTML}{F5F5F7}
+\definecolor{UniMuted}{HTML}{6B7280}
 
+% ----------- Links and TOC -----------
 \hypersetup{
   colorlinks=true,
-  linkcolor=VIUOrange,
-  citecolor=VIUOrange,
-  urlcolor=VIUOrange,
-  pdftitle={Propuesta de Trabajo Fin de Máster},
+  linkcolor=UniPrimary,
+  urlcolor=UniPrimary,
+  citecolor=UniPrimary,
+  filecolor=UniPrimary,
+  linktocpage=true,
+  pdftitle={Propuesta de Trabajo Fin de Master},
   pdfauthor={Jorge Luis Mayorga Taborda}
 }
 
+\renewcommand{\cftdotsep}{1.5}
+\setlength{\cftbeforesecskip}{2pt}
+\renewcommand{\cftsecfont}{\color{UniDark}}
+\renewcommand{\cftsecpagefont}{\color{UniPrimary}\bfseries}
+\renewcommand{\cfttoctitlefont}{\bfseries\Huge\color{UniDark}}
+\renewcommand{\cftaftertoctitle}{\par\vspace{0.4em}\color{UniPrimary!55}\hrule}
+
+% ----------- Metadata -----------
 \newcommand{\viuthesistitle}{}
 \newcommand{\viustudentname}{}
 \newcommand{\viuinstitutionname}{}
@@ -46,6 +69,9 @@
 \newcommand{\viututorname}{}
 \newcommand{\viuproposaldate}{\today}
 \newcommand{\viuversionlabel}{}
+\newcommand{\viucoverlogopath}{images/logo-viu-w}
+\newcommand{\viucoveroverlayleftpath}{images/bg2-viu-transparent}
+\newcommand{\viucoveroverlayrightpath}{images/bg3-viu-transparent}
 
 \newcommand{\thesistitle}[1]{\renewcommand{\viuthesistitle}{#1}}
 \newcommand{\studentname}[1]{\renewcommand{\viustudentname}{#1}}
@@ -55,61 +81,117 @@
 \newcommand{\tutorname}[1]{\renewcommand{\viututorname}{#1}}
 \newcommand{\proposaldate}[1]{\renewcommand{\viuproposaldate}{#1}}
 \newcommand{\versionlabel}[1]{\renewcommand{\viuversionlabel}{#1}}
+\newcommand{\coverlogopath}[1]{\renewcommand{\viucoverlogopath}{#1}}
+\newcommand{\coveroverlayleftpath}[1]{\renewcommand{\viucoveroverlayleftpath}{#1}}
+\newcommand{\coveroverlayrightpath}[1]{\renewcommand{\viucoveroverlayrightpath}{#1}}
 
+% ----------- Header / Footer -----------
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\textcolor{VIUOrange}{\small\textbf{Propuesta TFM}}}
-\fancyhead[R]{\small\viustudentname}
-\fancyfoot[C]{\small\thepage}
-\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead[L]{\textbf{MROB--VIU} • \nouppercase{\leftmark}}
+\fancyhead[R]{\textit{\viudocumenttypename}}
+\fancyfoot[C]{\small\color{UniPrimary}\textbf{Página \thepage{} de \pageref{LastPage}}}
+\renewcommand{\headrulewidth}{0.35pt}
+\renewcommand{\headrule}{%
+  \hbox to\headwidth{%
+    \color{UniPrimary!55}\leaders\hrule height \headrulewidth\hfill
+  }%
+}
 \renewcommand{\footrulewidth}{0pt}
 
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \fancyhead[L]{\textbf{MROB--VIU} • \nouppercase{\leftmark}}
+  \fancyhead[R]{\textit{\viudocumenttypename}}
+  \fancyfoot[C]{\small\color{UniPrimary}\textbf{Página \thepage{} de \pageref{LastPage}}}
+  \renewcommand{\headrulewidth}{0.35pt}
+  \renewcommand{\headrule}{%
+    \hbox to\headwidth{%
+      \color{UniPrimary!55}\leaders\hrule height \headrulewidth\hfill
+    }%
+  }
+}
+
+% ----------- Section formatting -----------
 \titleformat{\section}
-  {\Large\bfseries\color{VIUDark}}
-  {\textcolor{VIUOrange}{\thesection}}
-  {0.75em}
-  {}
+  {\bfseries\color{UniDark}\fontsize{16}{18}\selectfont}
+  {\color{UniPrimaryDeep}\thesection}
+  {0.7em}{}
 
 \titleformat{\subsection}
-  {\large\bfseries\color{VIUDark}}
-  {\textcolor{VIUOrange}{\thesubsection}}
-  {0.6em}
-  {}
+  {\bfseries\color{UniDark}\fontsize{13}{16}\selectfont}
+  {\color{UniPrimaryDeep}\thesubsection}
+  {0.6em}{}
 
-\titlespacing*{\section}{0pt}{1.1em}{0.4em}
-\titlespacing*{\subsection}{0pt}{0.9em}{0.3em}
+\titlespacing*{\section}{0pt}{0.9em}{0.5em}
+\titlespacing*{\subsection}{0pt}{0.7em}{0.35em}
+\renewcommand{\sectionmark}[1]{\markboth{#1}{}}
 
-\setlist[itemize]{leftmargin=1.5em}
-\setlist[enumerate]{leftmargin=1.8em}
+\setlist[itemize]{left=1.2em}
+\setlist[enumerate]{left=1.6em}
 
-\newcommand{\makeviucover}{
-  \begin{titlepage}
+% ----------- Cover page -----------
+\newcommand{\makeviucover}{%
+\newgeometry{left=1.8cm,right=1.8cm,top=1.8cm,bottom=2.2cm}
+\hypersetup{pageanchor=false}
+\begin{titlepage}
     \thispagestyle{empty}
-    {\color{VIUOrange}\rule{\textwidth}{1.3pt}}
+    \pagecolor{UniPrimaryDeep}
+    \color{white}
 
-    \vspace*{1.2cm}
-    {\Large\bfseries\color{VIUOrange}\viuinstitutionname\par}
-    \vspace{0.4cm}
-    {\large\color{VIUDark}\viumastername\par}
+    \begin{tikzpicture}[remember picture,overlay]
+        \IfFileExists{\viucoveroverlayleftpath.png}{%
+            \node[anchor=south west,opacity=0.25] at ($(current page.south west)+(-0.2cm,-0.4cm)$)
+            {\includegraphics[height=18.5cm]{\viucoveroverlayleftpath}};
+        }{}%
+        \IfFileExists{\viucoveroverlayrightpath.png}{%
+            \node[anchor=north east,opacity=0.25] at ($(current page.north east)+(0.4cm,0.3cm)$)
+            {\includegraphics[height=18.5cm]{\viucoveroverlayrightpath}};
+        }{}%
+    \end{tikzpicture}
+
+    \raggedright
+
+    \IfFileExists{\viucoverlogopath.pdf}{%
+        \includegraphics[height=1.7cm]{\viucoverlogopath}\par
+    }{%
+        \IfFileExists{\viucoverlogopath.png}{%
+            \includegraphics[height=1.7cm]{\viucoverlogopath}\par
+        }{}%
+    }
+
+    \vspace*{2.1cm}
+
+    {\bfseries\fontsize{14}{16}\selectfont \viumastername\par}
+    \vspace{3pt}
+    {\fontsize{20}{23}\selectfont \viuinstitutionname\par}
+
+    \vspace*{2.6cm}
+
+    {\bfseries\fontsize{30}{36}\selectfont \viudocumenttypename\par}
+    \vspace{6pt}
+    {\color{UniLight}\bfseries\fontsize{16}{20}\selectfont \viuthesistitle\par}
+    \vspace{8pt}
+    {\fontsize{13}{15}\selectfont \viuversionlabel\par}
 
     \vfill
 
-    {\small\textbf{\viudocumenttypename}\par}
-    \vspace{0.8cm}
-    {\huge\bfseries\color{VIUDark}\viuthesistitle\par}
-    \vspace{0.8cm}
-    {\large\color{VIUOrange}\viuversionlabel\par}
+    {\color{UniLight}\rule{\textwidth}{0.9pt}\par}
+    \vspace{1.0cm}
 
-    \vfill
-
-    \renewcommand{\arraystretch}{1.35}
-    \begin{tabular}{>{\bfseries}p{4cm}p{10cm}}
-      Estudiante & \viustudentname \\
-      Tutor/a & \viututorname \\
-      Fecha & \viuproposaldate \\
-    \end{tabular}
-
-    \vfill
-    {\color{VIUOrange}\rule{\textwidth}{1.3pt}}
-  \end{titlepage}
+    \begin{minipage}[t]{0.70\textwidth}
+        \raggedright
+        {\fontsize{11}{14}\selectfont
+        \textbf{Estudiante}\quad \viustudentname\par
+        \vspace{4pt}
+        \textbf{Tutor/a}\quad \viututorname\par
+        \vspace{4pt}
+        \textbf{Fecha}\quad \viuproposaldate\par}
+    \end{minipage}
+\end{titlepage}
+\restoregeometry
+\pagecolor{white}
+\color{UniDark}
+\setcounter{page}{1}
+\hypersetup{pageanchor=true}
 }

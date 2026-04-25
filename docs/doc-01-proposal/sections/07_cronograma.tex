@@ -1,18 +1,22 @@
 \section{Cronograma preliminar}
 
+El cronograma se ha diseñado para un horizonte de doce semanas de trabajo efectivo. La propuesta asume una estrategia incremental con hitos de control frecuentes para evitar acumulación de riesgo técnico al final del periodo.
+
 \begin{center}
-\begin{tabular}{p{8cm}p{5cm}}
+\small
+\begin{tabular}{p{2.2cm}p{7.0cm}p{4.0cm}}
 \toprule
-\textbf{Actividad} & \textbf{Horizonte estimado} \\
+\textbf{Semanas} & \textbf{Actividad principal} & \textbf{Entregable esperado} \\
 \midrule
-Revisión bibliográfica focalizada y cierre del modelo base & Meses 1--2 \\
-Definición del controlador nominal y entorno mínimo de simulación & Meses 2--3 \\
-Diseño preliminar del enfoque adaptativo o robusto & Meses 3--4 \\
-Ejecución de experimentos y ajuste de métricas & Meses 4--5 \\
-Análisis de resultados y redacción de informes intermedios & Meses 5--6 \\
-Consolidación de memoria final y revisión académica & Meses 6--7 \\
+1--2 & Revisión bibliográfica focalizada, cierre de supuestos y formalización del problema & Marco conceptual y modelo base validados \\
+3--4 & Implementación del esqueleto de simulación, grafos, métricas y escenarios iniciales & Entorno reproducible mínimo operativo \\
+5--6 & Desarrollo y prueba de la línea base nominal basada en consenso & Controlador nominal integrado y verificado \\
+7--8 & Diseño e integración de la extensión adaptativa o robusta & Variante avanzada funcional y comparable \\
+9--10 & Ejecución de la campaña experimental y depuración de resultados & Resultados brutos, figuras preliminares y tablas \\
+11 & Análisis comparativo, discusión crítica y revisión de hipótesis & Conclusiones técnicas provisionales \\
+12 & Redacción final, revisión académica y ajuste de memoria & Memoria final revisada \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-El cronograma es orientativo y podrá ajustarse en función del grado de madurez del modelo de simulación y de la complejidad real del ajuste del controlador adaptativo.
+Como puntos de control, se prevén tres hitos internos: cierre del modelo y del simulador base al final de la semana 4, comparación inicial entre controladores al final de la semana 8 y cierre del análisis experimental en la semana 11. Si alguna fase se retrasa, la prioridad será preservar la comparación entre línea base nominal y variante adaptativa o robusta, reduciendo complejidad secundaria antes que comprometer la pregunta central del TFM.

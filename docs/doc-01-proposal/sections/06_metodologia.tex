@@ -1,12 +1,40 @@
 \section{Metodología}
 
-La metodología se organizará en cuatro bloques iterativos:
+La metodología seguirá una secuencia incremental, con validaciones parciales al cierre de cada fase. El principio rector será mantener separación clara entre modelado, control, simulación, métricas y análisis, de modo que cada decisión técnica pueda justificarse y reproducirse.
 
-\begin{enumerate}
-  \item \textbf{Modelado del sistema.} Definición de estados, parámetros nominales de la carga, restricciones básicas de movimiento y estructura del grafo de comunicación.
-  \item \textbf{Diseño de control.} Implementación de una línea base nominal basada en consenso y de una variante adaptativa o robusta para incertidumbre inercial, siguiendo principios de control distribuido y referencias afines en coordinación multiagente \citep{bullo2009distributed,quijano2017population}.
-  \item \textbf{Campaña experimental.} Construcción de escenarios reproducibles con configuraciones de carga, perturbaciones y conectividad diferenciadas.
-  \item \textbf{Evaluación cuantitativa.} Cálculo de métricas, análisis comparativo y elaboración de figuras y tablas para sustentar conclusiones.
-\end{enumerate}
+\subsection{Fase 1. Formalización del problema}
 
-Desde el punto de vista de ingeniería, se adoptará una arquitectura limpia con separación entre modelos de dominio, controladores, simulación, métricas, experimentos, visualización y documentación. Esta organización facilitará trazabilidad, repetibilidad y extensión futura del código.
+Se definirá un modelo base del sistema robot--carga en el plano, con estados mínimos necesarios para representar posición, velocidad y configuración cooperativa. También se fijarán el tipo de grafo de comunicación, las hipótesis sobre conectividad y la forma de introducir incertidumbre inercial en la carga. Esta fase cerrará además la definición de los escenarios iniciales y de las variables observables del sistema.
+
+\subsection{Fase 2. Línea base nominal}
+
+Sobre el modelo anterior se implementará un controlador distribuido nominal basado en consenso. Su función será servir como referencia común para toda la evaluación posterior. En esta etapa no se perseguirá máxima sofisticación, sino una línea base coherente, interpretable y compatible con el horizonte temporal del TFM \citep{bullo2009distributed,olfati2004consensus,ren2008distributed}.
+
+\subsection{Fase 3. Extensión adaptativa o robusta}
+
+Una vez establecida la línea base, se incorporará una extensión que permita compensar parcialmente la incertidumbre inercial de la carga. El diseño se mantendrá deliberadamente sobrio: la meta es mejorar la respuesta bajo incertidumbre sin convertir el TFM en un problema de identificación completa o en una síntesis de control excesivamente amplia. La revisión bibliográfica orientará esta fase hacia soluciones de control distribuido y transporte cooperativo cercanas al alcance del trabajo \citep{quijano2017population,verginis2018communication,rosenfelder2024force}.
+
+\subsection{Fase 4. Diseño experimental}
+
+La campaña experimental se estructurará en cinco escenarios: caso base nominal, variación de masa, desplazamiento del centro de masas, degradación de comunicación y robustez ante perturbaciones. Todos los experimentos compartirán configuraciones reproducibles, semillas controladas y una misma estructura de salida para facilitar comparación entre métodos.
+
+\subsection{Fase 5. Evaluación y análisis}
+
+La comparación entre controladores se apoyará en métricas cuantitativas definidas antes de ejecutar la campaña experimental. El análisis no se limitará a identificar qué controlador obtiene menor error, sino también en qué condiciones lo hace y con qué coste en esfuerzo de control o tiempo de convergencia.
+
+\begin{center}
+\small
+\begin{tabular}{p{4.1cm}p{8.6cm}}
+\toprule
+\textbf{Métrica} & \textbf{Uso en la evaluación} \\
+\midrule
+Error de seguimiento & Distancia media y máxima entre la trayectoria deseada y la trayectoria observada de la carga o del sistema cooperativo. \\
+Error de formación & Desviación respecto a las separaciones y posiciones relativas deseadas entre AGVs durante el transporte. \\
+Esfuerzo de control & Magnitud acumulada de las acciones de control aplicadas por los agentes. \\
+Tiempo de convergencia & Tiempo necesario para entrar y permanecer dentro de una banda de error prefijada. \\
+Robustez & Degradación relativa del desempeño al introducir incertidumbre paramétrica o perturbaciones. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Desde el punto de vista de ingeniería, el repositorio seguirá una arquitectura limpia con separación entre modelos de dominio, controladores, simulación, métricas, experimentos, visualización y documentación. Esa organización facilita trazabilidad, repetibilidad y extensión futura del trabajo \citep{an2023cooperative,ebel2024cooperative}.

@@ -1,12 +1,14 @@
 \section{Objetivos}
 
-\textbf{Objetivo general.} Diseñar y evaluar en simulación un marco de control distribuido para transporte cooperativo multi-AGV con incertidumbre inercial de la carga.
+\textbf{Objetivo general.} Diseñar y evaluar en simulación un esquema de control distribuido para transporte cooperativo multi-AGV con incertidumbre inercial en la carga, comparando una línea base nominal y una variante adaptativa o robusta dentro de un alcance viable para un TFM de tres meses.
 
 \textbf{Objetivos específicos.}
 \begin{enumerate}
-  \item Definir un modelo base bidimensional del sistema cooperativo con entre dos y cuatro AGVs, carga compartida y grafos de comunicación locales.
-  \item Formular un controlador nominal distribuido basado en consenso como referencia comparativa.
-  \item Proponer una extensión adaptativa o robusta frente a incertidumbre inercial de la carga sin exigir identificación exacta de todos los parámetros físicos.
-  \item Establecer una batería de escenarios de simulación reproducibles para variación de masa, desplazamiento del centro de masas, degradación de comunicación y perturbaciones externas.
-  \item Comparar cuantitativamente ambas estrategias mediante métricas de error de trayectoria, error de formación, esfuerzo de control, convergencia y robustez.
+  \item Definir un modelo bidimensional del sistema robot--carga con entre dos y cuatro AGVs, estados relevantes, supuestos dinámicos mínimos y grafos de comunicación local.
+  \item Implementar un controlador nominal distribuido basado en consenso que sirva como referencia técnica y experimental.
+  \item Diseñar una extensión adaptativa o robusta frente a incertidumbre inercial sin exigir identificación completa de todos los parámetros físicos de la carga.
+  \item Construir un pipeline reproducible de simulación, configuración de experimentos, cálculo de métricas y generación de resultados.
+  \item Diseñar una campaña experimental con escenarios base, variación de masa, desplazamiento del centro de masas, degradación de comunicación y perturbaciones externas.
+  \item Analizar comparativamente el desempeño de ambas estrategias mediante métricas de seguimiento, formación, esfuerzo de control, convergencia y robustez.
+  \item Documentar las decisiones de modelado, las limitaciones observadas y las conclusiones extraídas con un nivel de detalle adecuado para revisión académica.
 \end{enumerate}

@@ -1,5 +1,21 @@
 \section{Alcance y limitaciones}
 
-El alcance del TFM se restringe a simulación numérica en dos dimensiones. Se contemplan entre dos y cuatro AGVs, intercambio local de información y validación comparativa entre un controlador nominal y otro con mecanismo adaptativo o robusto. El objetivo es obtener evidencia cuantitativa suficiente para valorar tendencias de desempeño, no desarrollar un producto listo para despliegue.
+\subsection{Alcance}
 
-Quedan fuera del alcance la validación sobre hardware real, la integración obligatoria con ROS2, la identificación exhaustiva de todos los parámetros físicos y la validación industrial. CoppeliaSim podrá considerarse únicamente como apoyo opcional de visualización, siempre subordinado al núcleo de simulación reproducible en Python. Estas decisiones buscan mantener un alcance realista y alineado con el tiempo disponible y con las recomendaciones recientes sobre transporte cooperativo multi-robot \citep{an2023cooperative}.
+El trabajo se limitará a un escenario de transporte cooperativo en dos dimensiones con una carga rígida y entre dos y cuatro AGVs. La validación se realizará mediante simulación numérica reproducible en Python, con posibilidad de incorporar una visualización sencilla si aporta claridad, pero sin que esa visualización sustituya al análisis cuantitativo. El estudio se concentrará en:
+
+\begin{itemize}
+  \item grafos de comunicación local y su degradación controlada;
+  \item una ley nominal distribuida basada en consenso;
+  \item una extensión adaptativa o robusta frente a incertidumbre inercial;
+  \item comparación cuantitativa mediante métricas definidas ex ante;
+  \item documentación de experimentos de forma trazable y repetible.
+\end{itemize}
+
+El criterio de éxito del TFM no será construir el controlador ``definitivo'', sino demostrar una metodología clara para analizar cuándo una estrategia adaptativa o robusta mejora a una nominal bajo un conjunto razonable de escenarios.
+
+\subsection{Limitaciones}
+
+Quedan fuera del alcance la experimentación con hardware real, la integración obligatoria con ROS2, la validación industrial, la planificación avanzada en entornos complejos y la identificación exhaustiva de todos los parámetros físicos de la carga. Tampoco se abordará una teoría completa de estabilidad para modelos altamente generales ni el uso obligatorio de simuladores 3D externos. CoppeliaSim podrá emplearse, si conviene, solo como apoyo visual.
+
+Estas limitaciones responden a un criterio de viabilidad. En un TFM de doce semanas, resulta preferible cerrar un problema bien acotado y producir resultados comparativos sólidos antes que dispersar el trabajo en subsistemas que no puedan madurarse con suficiente rigor \citep{an2023cooperative,ebel2024cooperative}.
