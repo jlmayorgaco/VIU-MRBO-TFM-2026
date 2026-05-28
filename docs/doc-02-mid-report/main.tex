@@ -1,9 +1,1783 @@
-\documentclass[11pt,a4paper]{article}
-\usepackage[spanish]{babel}
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{viu-mrob-midreport}
+\usepackage[authoryear,round,sort]{natbib}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usetikzlibrary{shapes.geometric,positioning,patterns}
+\usetikzlibrary{arrows.meta}
+
+%--- Metadata
+\setviutitle{Control distribuido basado en consenso y din\'amicas poblacionales
+  para la formaci\'on adaptativa de coaliciones en transporte cooperativo multi-AGV}
+\setviustudent{Jorge Luis Mayorga Taborda}
+\setviututor{Jos\'e Ignacio I\~n\'iguez Amigot}
+\setviuedition{2025--26}
+\setviudate{mayo de 2026}
+
+%--- Comandos matemáticos
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\simplex}{\Delta}
+\newcommand{\pos}[1]{\left[#1\right]_{+}}
+\newcommand{\norm}[1]{\left\|#1\right\|}
+\newcommand{\xhat}{\hat{x}}
+\DeclareMathOperator*{\argmax}{arg\,max}
 
 \begin{document}
-\section*{Informe intermedio}
-Documento en preparación. Esta carpeta queda reservada para consolidar avances metodológicos, resultados parciales y decisiones de diseño del TFM.
+
+%--- Portada
+\hypersetup{pageanchor=false}
+\makeviucover
+\hypersetup{pageanchor=true}
+
+%--- Materia preliminar
+\pagenumbering{roman}
+\thispagestyle{frontmatter}
+
+\begin{viuabstract}
+El transporte cooperativo de cargas en almacenes automatizados requiere coordinar
+flotas de AGV de modo que cada tarea cuente con el n\'umero m\'inimo de robots
+exigido para su manipulaci\'on segura. Los enfoques distribuidos existentes no
+garantizan estos requisitos de cardinalidad, y los m\'etodos evolutivos asumen
+grupos de tama\~no fijo o estimaciones globales del payoff incompatibles con
+topolog\'ias de comunicaci\'on irregulares.
+
+Este TFM propone una ley de control distribuida basada en las din\'amicas de Smith
+para la formaci\'on adaptativa de coaliciones en flotas multi-AGV. La contribuci\'on
+combina tres elementos no identificados de forma conjunta en la revisi\'on
+bibliogr\'afica hasta mayo de 2026: (i)~las din\'amicas de Smith como ley de
+asignaci\'on directa, (ii)~un payoff multiplicativo con componente sigmoide
+mon\'otonamente decreciente en la ocupaci\'on estimada de cada tarea
+---preservando la estructura de juego de congesti\'on---, y (iii)~una tasa de
+revisi\'on espacialmente modulada que reduce reasignaciones innecesarias.
+
+El m\'etodo acopla tres din\'amicas en un \'unico bucle de control ($T_s = 0{,}1$\,s):
+estimaci\'on de estado por consenso distribuido, din\'amicas de Smith proyectadas
+sobre el s\'implex, y campo de gradiente reactivo para navegaci\'on cooperativa.
+La Proposici\'on~6.1 establece estabilidad asint\'otica local del equilibrio Nash
+objetivo bajo $\beta \in (\beta_{\min},\,\beta_{\max})$, donde
+$\beta_{\min} = \ln\!\bigl(\tfrac{N+1}{N-1}\bigr)$ y
+$\beta_{\max} = \tfrac{8}{T_s\mu_0 r N}$
+(hip\'otesis simplificada: $\Psi \equiv 1$, comunicaci\'on global).
+Este trabajo aborda la \textbf{capa de asignaci\'on y formaci\'on de coaliciones};
+la coordinaci\'on de fuerzas de contacto para empujar o agarrar la carga
+(capa de manipulaci\'on cooperativa) es una capa complementaria fuera del alcance.
+La validaci\'on cuantitativa en Python contempla seis escenarios con cinco
+tratamientos comparativos; la validaci\'on cualitativa se realizar\'a en
+CoppeliaSim con robots Pioneer~3-DX.
+
+\keywords{din\'amicas de Smith, juegos de congesti\'on, formaci\'on de coaliciones,
+  transporte cooperativo multi-AGV, control distribuido.}
+
+\medskip
+\noindent\textbf{Keywords:} Smith dynamics, congestion games, coalition formation,
+  cooperative multi-AGV transport, distributed control.
+\end{viuabstract}
+
+\clearpage
+\thispagestyle{frontmatter}
+\tableofcontents
+
+\clearpage
+\thispagestyle{frontmatter}
+\listoffigures
+
+\clearpage
+\thispagestyle{frontmatter}
+\listoftables
+
+\clearpage
+\thispagestyle{frontmatter}
+\section*{Nomenclatura}
+\addcontentsline{toc}{section}{Nomenclatura}
+\label{sec:nomenclatura}
+
+\begin{tabularx}{\textwidth}{>{\ttfamily}p{0.14\textwidth}p{0.30\textwidth}X}
+\toprule
+\normalfont S\'imbolo & Significado & Unidad / dominio \\
+\midrule
+\multicolumn{3}{l}{\textbf{\'Indices y conjuntos}} \\
+$i$   & \'Indice de robot & $\{1,\ldots,N\}$ \\
+$k$   & \'Indice de tarea & $\{0,1,\ldots,K\}$ ($k=0$: inactividad) \\
+$t$   & Paso temporal & $\mathbb{N}$ \\
+$\mathcal{S}$ & Conjunto de estrategias & $\{0,1,\ldots,K\}$ \\
+$\mathcal{N}_i(t)$ & Vecinos de robot $i$ en el grafo de comunicaci\'on & --- \\
+$\mathcal{C}_k(t)$ & Coalici\'on asignada a la tarea $k$ & --- \\
+\midrule
+\multicolumn{3}{l}{\textbf{Variables de estado}} \\
+$\mathbf{q}_i$ & Pose del robot $i$: $(x,y,\theta)^{\top}$ & m, m, rad \\
+$\mathbf{q}_i^{xy}$ & Proyecci\'on plana de $\mathbf{q}_i$: $(x,y)^{\top}$ & m \\
+$p_{ik}$ & Probabilidad mixta de robot $i$ sobre tarea $k$ & $[0,1]$, $\sum_k p_{ik}=1$ \\
+$\hat{x}_{ik}$ & Estimaci\'on local de la fracci\'on de robots en $k$ & $[0,1]$ \\
+$s_i$ & Estrategia pura actual del robot $i$ & $\mathcal{S}$ \\
+\midrule
+\multicolumn{3}{l}{\textbf{Par\'ametros del sistema}} \\
+$N$ & N\'umero de robots & $\mathbb{N}$ \\
+$K$ & N\'umero de tareas & $\mathbb{N}$ \\
+$n_k$ & Cardinalidad m\'inima de la tarea $k$ & $\mathbb{N}$ \\
+$T_s$ & Per\'iodo de muestreo & s \\
+$\beta$ & Pendiente de la sigmoide de payoff & adim. \\
+$\lambda$ & Escala espacial del descuento por distancia & m \\
+$r_k$ & Recompensa base de la tarea $k$ & adim. \\
+$\mu_0$ & Tasa de revisi\'on base & adim. \\
+$\sigma_{\text{rev}}$ & Ancho espacial de la tasa de revisi\'on & m \\
+$\varepsilon$ & Ganancia de consenso & adim., $(0, 1/d_{\max})$ \\
+$\varepsilon_r$ & Regularizaci\'on de repulsi\'on APF & m \\
+$\delta_0$ & Umbral de normalizaci\'on de $\Delta J$ & $10^{-3}$ \\
+$R$ & Radio de comunicaci\'on & m \\
+\midrule
+\multicolumn{3}{l}{\textbf{Funciones y matrices}} \\
+$\Phi(z,n)$ & Sigmoide de cardinalidad: $1/(1+e^{\beta(z-n)})$ & $(0,1)$ \\
+$\Psi(d)$ & Descuento espacial: $e^{-d^2/(2\lambda^2)}$ & $(0,1]$ \\
+$f_{ik}$ & Payoff del robot $i$ sobre la tarea $k$ & adim. \\
+$F_i$ & Campo de potencial artificial del robot $i$ & adim. \\
+$V(\mathbf{x})$ & Funci\'on potencial del juego: $\sum_k\int_0^{Nx_k}\Phi(z,n)\mathrm{d}z$ & adim. \\
+$W(\mathbf{x})$ & Funci\'on de Lyapunov local en la demostraci\'on: $V(\mathbf{x}^*)-V(\mathbf{x})$ & adim. \\
+$L_G$ & Laplaciano del grafo de comunicaci\'on $G$ & --- \\
+$\lambda_2$ & Valor propio de Fiedler de $L_G$ (conectividad algebraica) & adim. \\
+\midrule
+\multicolumn{3}{l}{\textbf{Par\'ametros del campo de potencial y geometr\'ia}} \\
+$\alpha$ & Ganancia de atracci\'on del APF & adim. \\
+$\eta$ & Ganancia de repulsi\'on del APF & adim. \\
+$K_\theta$ & Ganancia del control de orientaci\'on & rad$^{-1}$s$^{-1}$ \\
+$d^*$ & Distancia de formaci\'on entre robots de la coalici\'on & m \\
+$r_{\text{robot}}$ & Radio f\'isico del robot & m \\
+$r_{\text{load}}$ & Radio f\'isico de la carga & m \\
+$r_{\text{form}}$ & Radio de activaci\'on de la geometr\'ia de formaci\'on & m \\
+$r_{\text{det}}$ & Radio de detecci\'on de tarea completada & m \\
+\midrule
+\multicolumn{3}{l}{\textbf{M\'etricas}} \\
+$\Theta$ & Throughput: tareas completadas/min & min$^{-1}$ \\
+$\bar{T}$ & Tiempo medio de completaci\'on de tarea & s \\
+$T_{\text{coal}}$ & Tiempo de formaci\'on de coalici\'on & s \\
+$\Delta J$ & Brecha de descentralizaci\'on: $(\Theta_{\text{cent}}-\Theta_{\text{dist}})/\max(\Theta_{\text{cent}},\delta_0)$ & adim. \\
+$F$ & Tasa de factibilidad de coalici\'on & $[0,1]$ \\
+$D_{\text{tot}}$ & Distancia total recorrida por la flota & m \\
+$D(R)$ & Ratio de degradaci\'on: $\Theta(R)/\Theta(\infty)$ & adim. \\
+$\Delta_{\text{chg}}$ & Cambios de asignaci\'on por robot por paso & adim. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\pagenumbering{arabic}
+
+%% ====================================================================
+\section{Introducci\'on}
+\label{sec:intro}
+%% ====================================================================
+
+Cons\'idere un almac\'en automatizado con quince AGV y cinco tipos de carga activos simult\'aneamente
+(la Figura~\ref{fig:problema} ilustra un subcaso con $N{=}6$ y $K{=}3$).
+Tres cajas ligeras puede moverlas un solo robot cada una. Una paleta industrial
+requiere dos. Una estructura de acero requiere cuatro. Conforme las cargas aparecen
+y se completan, la flota debe reasignarse continuamente, formando coaliciones de
+tama\~no exactamente adecuado para cada tarea. El problema no es de planificaci\'on
+de rutas ni de seguimiento de formaci\'on fija: es de asignaci\'on distribuida con
+restricciones de cardinalidad m\'inima que deben cumplirse en tiempo real, sin
+coordinador central y con comunicaci\'on limitada al entorno inmediato de cada robot.
+
+Este problema es cualitativamente distinto del transporte cooperativo cl\'asico
+donde varios robots empujan juntos una sola carga \citep{ebel2024cooperative,
+rosenfelder2024force}. En ese caso, la composici\'on del grupo est\'a fijada de
+antemano; la dificultad es el control del conjunto. Aqu\'i, la composici\'on del
+grupo es la variable de dise\~no: la flota debe decidir por s\'i misma cu\'antos
+robots manda a cada tarea, y esa decisi\'on debe ser correcta. Los m\'etodos de
+asignaci\'on distribuida por subasta \citep{choi2009consensus} o por formaci\'on
+de coaliciones \citep{dutta2021hedonic, shan2024distributed} abordan la
+coordinaci\'on, pero no ofrecen una ley de control continua que garantice
+convergencia a coaliciones de tama\~no m\'inimo en t\'erminos de estabilidad
+formal. El aprendizaje por refuerzo \citep{bezerra2025learning} produce pol\'iticas
+efectivas pero dependientes de la distribuci\'on de entrenamiento y sin garant\'ias
+de robustez ante configuraciones de tarea no vistas.
+
+\subsection{Din\'amicas poblacionales como ley de control distribuida}
+
+Una l\'inea de investigaci\'on alternativa, desarrollada principalmente por el grupo
+de Quijano en Colombia, propone emplear din\'amicas evolutivas de juegos poblacionales
+directamente como leyes de control distribuido \citep{quijano2017population}.
+La idea central es interpretar la proporci\'on de robots asignados a cada tarea
+como el perfil de estrategias de una poblaci\'on, y utilizar una din\'amica
+de revisi\'on para actualizar ese perfil en funci\'on de las diferencias de payoff.
+Esta interpretaci\'on produce leyes de control completamente distribuidas
+(cada agente s\'olo necesita informaci\'on local) que garantizan convergencia al
+equilibrio Nash bajo condiciones de juego potencial y evitan el uso de un
+coordinador central.
+
+Los trabajos de \citet{barreiro2017distributed} y \citet{martinez2020formation}
+muestran que las din\'amicas distributivas del replicador pueden usarse para
+coordinar formaciones de robots m\'oviles con comunicaci\'on limitada en grafo.
+El trabajo experimental de \citet{barreiro2021uav} extiende esto a formaciones
+de UAVs con datos reales. M\'as recientemente, \citet{dinh2026bsplines} propone
+mecanismos basados en B-splines para dise\~nar funciones de payoff que satisfagan
+restricciones de formaci\'on espec\'ificas. Sin embargo, todos estos trabajos
+asumen que el tama\~no del grupo que realiza cada tarea es fijo y conocido de
+antemano. Ninguno aborda el caso en que la tarea misma impone un requisito m\'inimo
+de cardinalidad que debe satisfacerse din\'amicamente.
+
+\subsection{Por qu\'e din\'amicas de Smith y no replicador}
+\label{subsec:porquesmith}
+
+El marco com\'un de ambas din\'amicas es el siguiente: el estado de la poblaci\'on
+es el vector de fracciones $\mathbf{x} = (x_k)$, donde $x_k$ es la proporci\'on
+de robots asignados a la tarea $k$. Cada robot estima $x_k$ de forma distribuida
+mediante consenso promedio, obteniendo $\hat{x}_{ik}$. Hasta aqu\'i, Smith y DRD
+son id\'enticos: ambos requieren esta \emph{primera capa de consenso}.
+
+La diferencia aparece en lo que cada din\'amica necesita adicionalmente.
+Las din\'amicas del replicador (DRD) comparan el payoff de cada estrategia con la
+\emph{media poblacional} $\bar{f}(\mathbf{x}) = \sum_k x_k f_k(\mathbf{x})$:
+esta cantidad es global porque depende de la distribuci\'on completa $\mathbf{x}$,
+no solo del estado local de un agente. Estimarla distribuida\-mente exige una
+\emph{segunda capa de consenso} sobre los payoffs individuales $f_k(\hat{x}_i)$.
+Cuando esta segunda capa opera sobre un grafo irregular que cambia con el movimiento
+de los robots, el operador de consenso act\'ua como un filtro pasa-bajos espectral
+\citep{sandryhaila2013dsp}: aten\'ua las componentes de alta frecuencia del vector
+de payoffs sobre la estructura del Laplaciano de $G(t)$, introduciendo un sesgo
+dependiente de la topolog\'ia $\delta(G, \beta)$ que desplaza el equilibrio efectivo
+respecto al equilibrio Nash verdadero.
+
+Las din\'amicas de Smith evitan esta segunda capa porque la actualizaci\'on se basa
+en comparaciones bilaterales $\pos{f_{ik} - f_{ij}}$ calculadas localmente con los
+payoffs propios: ning\'un agente necesita estimar la media poblacional global. La
+condici\'on de punto fijo $\pos{f_{ik} - f_{ij}} = 0$ se satisface exactamente con
+informaci\'on local derivada de $\hat{x}_{ik}$. Adem\'as, las estrategias extintas
+($p_{ik} = 0$) pueden recuperarse, ya que la tasa de migraci\'on es independiente
+de la masa actual en cada estrategia. La l\'inea base T3 (tratamiento de replicador
+distribuido) cuantifica emp\'iricamente el efecto de este sesgo bajo las mismas
+topolog\'ias de comunicaci\'on que el m\'etodo propuesto.
+
+\subsection{La contribuci\'on de este TFM}
+
+La propuesta de este TFM integra los siguientes elementos, cuya combinaci\'on no
+ha sido identificada en la literatura revisada hasta mayo de 2026:
+
+\begin{enumerate}
+  \item \textbf{Din\'amicas de Smith como ley de control directa} para asignaci\'on
+    variable de robots a tareas. A diferencia de \citet{zhang2024coalition}, que
+    usa juegos de formaci\'on de coaliciones con negociaci\'on centralizada por rondas,
+    y de \citet{bezerra2025learning}, que requiere entrenamiento previo sobre distribuciones
+    de tareas, el m\'etodo propuesto es completamente distribuido, no requiere entrenamiento
+    y ofrece garant\'ias formales de convergencia.
+
+  \item \textbf{Funci\'on de payoff multiplicativa con cota inferior de cardinalidad},
+    donde el componente sigmoide es mon\'otonamente \emph{decreciente} en el n\'umero
+    estimado de robots por tarea. Esto contrasta con las restricciones de capacidad
+    de \citet{martinezpiazuelo2022automatica}, que son cotas superiores (techos):
+    este trabajo usa cotas inferiores (suelos), lo que es matem\'aticamente distinto
+    y no est\'a cubierto por sus resultados.
+
+  \item \textbf{Tasa de revisi\'on espacialmente modulada}: los robots comprometidos
+    con su tarea actual (cerca de su destino) tienen probabilidad baja de reconsiderar
+    su asignaci\'on; los robots lejanos tienen probabilidad alta. Este mecanismo
+    mitiga las oscilaciones cerca de los umbrales de cardinalidad.
+\end{enumerate}
+
+La validaci\'on se realiza mediante simulaci\'on cuantitativa en Python con seis
+escenarios y cinco tratamientos comparativos (heur\'istica voraz local, consenso puro, replicador
+distribuido, \'optimo centralizado y m\'etodo propuesto), m\'as una validaci\'on
+cualitativa en CoppeliaSim.
+
+\subsection{Estructura del documento}
+
+La secci\'on~\ref{sec:planteamiento} describe el problema de asignaci\'on distribuida
+con restricciones de cardinalidad y la brecha que lo motiva. La
+secci\'on~\ref{sec:pregunta} formula la pregunta de investigaci\'on y las hip\'otesis.
+Los objetivos se especifican en la secci\'on~\ref{sec:objetivos}, y el alcance y
+limitaciones en la secci\'on~\ref{sec:alcance}. La secci\'on~\ref{sec:metodologia}
+---el n\'ucleo de esta entrega--- desarrolla las tres din\'amicas acopladas, la
+funci\'on de payoff, el an\'alisis de convergencia y el dise\~no experimental completo.
+Las secciones \ref{sec:marco}--\ref{sec:conclusiones} est\'an reservadas para el
+marco te\'orico, resultados y conclusiones de la entrega final.
+
+\subsection{Estado actual del TFM}
+\label{subsec:estado}
+
+A la fecha de esta entrega (mayo de 2026) se han completado las siguientes etapas:
+
+\begin{itemize}
+  \item \textbf{Revisi\'on bibliogr\'afica} (21 referencias en 6 \'areas tem\'aticas:
+    din\'amicas poblacionales, consenso distribuido, formaci\'on de coaliciones,
+    transporte cooperativo, juegos potenciales y procesado de se\~nales en grafos).
+  \item \textbf{Formulaci\'on matem\'atica completa}: modelo de robots, tareas y
+    grafo de comunicaci\'on; funci\'on de payoff multiplicativa con sigmoide
+    decreciente; tres din\'amicas acopladas (consenso, Smith en tiempo discreto,
+    gradiente reactivo); an\'alisis formal de convergencia para el caso sim\'etrico
+    (Proposici\'on~\ref{prop:convergencia} con demostraci\'on y c\'alculo de Hessiana).
+  \item \textbf{Dise\~no experimental}: seis escenarios, cinco tratamientos
+    comparativos (incluido el replicador distribuido como l\'inea base clave),
+    nueve m\'etricas definidas y criterios de aceptaci\'on conjuntivos.
+  \item \textbf{Pseudoc\'odigo formal} del bucle de control distribuido
+    (Algoritmo~\ref{alg:loop}).
+\end{itemize}
+
+En curso: implementaci\'on del paquete Python \texttt{viu\_mrob\_tfm/} con los cuatro
+m\'odulos (din\'amicas, l\'ineas base, motor de simulaci\'on, m\'etricas). El plan de
+trabajo completo se detalla en la Secci\'on~\ref{sec:cronograma}.
+
+%% ====================================================================
+\section{Planteamiento del problema y justificaci\'on}
+\label{sec:planteamiento}
+%% ====================================================================
+
+\subsection{Descripci\'on formal del problema}
+
+El Anexo~I de este TFM mencionaba ``cargas heterog\'eneas'' (objetos que difieren
+en peso, fragilidad y tama\~no). El presente trabajo formaliza esa heterogeneidad
+como un requisito m\'inimo de cardinalidad $n_k$: el n\'umero de manipuladores
+que una carga determinada exige para ser transportada con seguridad. Esta es una
+abstracci\'on deliberada de la f\'isica de contacto: atributos como la masa o la
+fragilidad se traducen en un valor escalar $n_k$ que el sistema de asignaci\'on
+consume; derivar $n_k$ a partir de un modelo de contacto expl\'icito (cierre de
+fuerza, estabilidad del agarre) es una capa complementaria documentada en
+\citet{ebel2024cooperative} y \citet{rosenfelder2024force} que queda fuera del
+alcance de este TFM (v\'ease \S\,\ref{subsec:alcance}).
+
+Con esta abstracci\'on, el sistema queda definido como sigue. Se considera
+una flota de $N$ AGV que operan en un entorno 2D. El conjunto de robots
+se indexa $i \in \{1, \ldots, N\}$ y el conjunto de tareas activas en un instante
+dado se indexa $k \in \{1, \ldots, K\}$. Cada tarea $k$ est\'a ubicada en una
+posici\'on conocida $\mathbf{l}_k \in \RR^2$ y exige que al menos $n_k \in \NN$
+robots lleguen a ella para que la carga pueda ser manipulada. La tarea $k=0$ representa
+el estado de inactividad: un robot \emph{idle} no contribuye a ninguna tarea.
+
+Cada robot mantiene un vector de estrategias $\mathbf{p}_i(t) \in \simplex^K$,
+donde $\simplex^K = \{p \in \RR^{K+1} : \sum_{k=0}^K p_k = 1,\, p_k \geq 0\}$
+es el s\'implex de probabilidad. El componente $p_{ik}(t)$ representa la propensi\'on
+del robot $i$ a seleccionar la tarea $k$. La estrategia efectiva del robot es
+$s_i(t) = \argmax_k p_{ik}(t)$. El objetivo del sistema es que, para cada tarea $k$,
+la coalici\'on $\mathcal{C}_k(t) = \{i : s_i(t) = k, \norm{\mathbf{q}_i - \mathbf{l}_k}
+< r_{\text{det}}\}$ satisfaga $|\mathcal{C}_k(t)| \geq n_k$ en tiempo finito, y
+que esta condici\'on se mantenga robustamente frente a cambios en el conjunto de
+tareas activas.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm,
+  agv/.style={circle, draw=VIUOrange, fill=VIUOrange!20,
+    minimum size=0.62cm, font=\scriptsize\bfseries, inner sep=0pt},
+  pickup/.style={rectangle, draw=VIUDark, fill=VIUDark!8,
+    minimum width=0.88cm, minimum height=0.88cm, font=\tiny, align=center, inner sep=2pt},
+  comm/.style={draw=VIUGray!70, thin, dashed},
+  motion/.style={-{Stealth[length=4pt]}, draw=VIUOrange!75, thick, shorten >=3pt, shorten <=3pt}
+]
+%-- Planta de bodega
+\draw[VIUDark!40, thick, rounded corners=5pt] (0,0) rectangle (11.5,7.8);
+\node[font=\tiny, VIUGray, anchor=north west] at (0.15,7.65)
+  {Almac\'en automatizado ($20\,\mathrm{m}\times 14\,\mathrm{m}$)};
+
+%-- Tareas: posiciones de recogida l_k
+\node[pickup] (L1) at (2.0,6.5) {$k{=}1$\\$n_1{=}1$};
+\node[pickup] (L2) at (5.5,3.2) {$k{=}2$\\$n_2{=}3$};
+\node[pickup] (L3) at (9.5,6.0) {$k{=}3$\\$n_3{=}2$};
+\node[font=\tiny, VIUDark, above=1pt of L1] {$\mathbf{l}_1$};
+\node[font=\tiny, VIUDark, above=1pt of L2] {$\mathbf{l}_2$};
+\node[font=\tiny, VIUDark, above=1pt of L3] {$\mathbf{l}_3$};
+
+%-- Destinos d_k (dibujados como rombos manuales)
+\def\rdia{0.30}
+\foreach \cx/\cy/\lbl in {1.5/1.0/$\mathbf{d}_1$, 8.5/0.8/$\mathbf{d}_2$, 10.8/3.8/$\mathbf{d}_3$}{%
+  \draw[VIUDeep, thick]
+    (\cx,\cy+\rdia) -- (\cx+\rdia,\cy) -- (\cx,\cy-\rdia) -- (\cx-\rdia,\cy) -- cycle;
+  \node[font=\tiny, VIUDeep] at (\cx,\cy) {\lbl};
+}
+
+%-- Robots
+\node[agv] (R1) at (2.0,5.0)  {1};
+\node[agv] (R2) at (4.4,2.7)  {2};
+\node[agv] (R3) at (6.5,2.7)  {3};
+\node[agv] (R4) at (5.6,4.2)  {4};
+\node[agv] (R5) at (8.5,5.0)  {5};
+\node[agv] (R6) at (9.8,4.8)  {6};
+
+%-- Coalicion C_2 = {2,3,4}: recuadro resaltado
+\draw[VIUOrange, thick, dashed, rounded corners=6pt, fill=VIUOrange!5]
+  (3.7,2.0) rectangle (7.2,5.0);
+\node[font=\tiny, VIUOrange, anchor=south west] at (3.7,5.0)
+  {$\mathcal{C}_2$: $|\mathcal{C}_2|=3\geq n_2$ $\checkmark$};
+
+%-- Flechas de transporte: coalicion 2 se mueve hacia d_2
+\draw[{Stealth[length=4pt]}-{Stealth[length=4pt]}, VIUOrange!60, thick, dashed]
+  ($(L2.south)+(0,-0.1)$) -- (8.5,0.8)
+  node[midway, below, font=\tiny, VIUGray] {transporte $\rightarrow \mathbf{d}_2$};
+
+%-- Links de comunicacion dentro de la coalicion
+\draw[comm] (R2) -- (R3);
+\draw[comm] (R2) -- (R4);
+\draw[comm] (R3) -- (R4);
+
+%-- Robots 5 y 6: convergiendo hacia L3
+\draw[comm] (R5) -- (R6);
+\draw[motion] (R5) -- ($(L3.south west)+(0.05,0.05)$);
+\draw[motion] (R6) -- ($(L3.east)+(-0.05,0)$);
+
+%-- Robot 1: solo, hacia L1
+\draw[motion] (R1) -- ($(L1.south)+(0,0.05)$);
+
+%-- Circulo de rango R (ejemplo alrededor de R5)
+\draw[VIUGray, dotted, thin] (R5) circle (1.4cm);
+\node[font=\tiny, VIUGray, anchor=north] at ($(R5)+(0,-1.4)$) {rango $R$};
+
+%-- Leyenda
+\begin{scope}[shift={(0.1,0.05)}]
+  \node[agv, minimum size=0.42cm] at (0.38,0.38) {};
+  \node[font=\tiny, anchor=west] at (0.65,0.38) {AGV $i$};
+  \node[pickup, minimum width=0.42cm, minimum height=0.42cm] at (2.5,0.38) {};
+  \node[font=\tiny, anchor=west] at (2.8,0.38) {Recogida $\mathbf{l}_k$};
+  \draw[VIUDeep, thick]
+    (5.2,0.62) -- (5.45,0.38) -- (5.2,0.14) -- (4.95,0.38) -- cycle;
+  \node[font=\tiny, anchor=west] at (5.55,0.38) {Entrega $\mathbf{d}_k$};
+  \draw[comm] (7.3,0.38) -- (8.0,0.38);
+  \node[font=\tiny, anchor=west] at (8.05,0.38) {Enlace com.};
+\end{scope}
+\end{tikzpicture}
+\caption{Escenario del problema de asignaci\'on distribuida con coaliciones. Seis AGV
+($N=6$) en un almac\'en automatizado con tres tareas activas ($K=3$). La coalici\'on $\mathcal{C}_2$
+(robots~2, 3, 4) ya satisface $|\mathcal{C}_2|=3=n_2$ y transita hacia el destino
+$\mathbf{d}_2$. Los robots~5 y~6 convergen hacia la tarea~3 ($n_3=2$). El robot~1 atiende
+solo la tarea~1 ($n_1=1$). El c\'irculo punteado indica el rango de comunicaci\'on~$R$.}
+\label{fig:problema}
+\end{figure}
+
+Este problema tiene dos dificultades que lo distinguen de la asignaci\'on est\'atica
+de tareas. Primera, la restricci\'on $|\mathcal{C}_k| \geq n_k$ es una \emph{cota
+inferior} din\'amica: si tres robots abandonan una tarea que requiere cuatro, el
+sistema debe reclutar uno nuevo sin coordinaci\'on central. Segunda, cuando las tareas
+aparecen, desaparecen o cambian su prioridad durante la operaci\'on, las coaliciones
+deben reconstituirse sin reinicializar el sistema completo.
+
+\subsection{L\'imites de las soluciones existentes}
+
+Los m\'etodos de asignaci\'on descentralizada basados en subastas
+\citep{choi2009consensus} y en formaci\'on de coaliciones hedo\-nistas
+\citep{dutta2021hedonic, zhang2024coalition} coordinan la asignaci\'on mediante
+negociaci\'on iterativa entre agentes, pero producen asignaciones discretas que
+no se actualizan de forma continua ante cambios en el entorno. Los m\'etodos de
+aprendizaje por refuerzo \citep{bezerra2025learning} generan pol\'iticas efectivas
+en distribuci\'on, pero requieren entrenamiento previo sobre escenarios representativos
+y carecen de garant\'ias formales de convergencia ante configuraciones de tarea
+no vistas durante el entrenamiento. Ambas familias comparten el mismo l\'imite:
+no proporcionan una ley de control diferencial que actualice \emph{continuamente}
+las estrategias de asignaci\'on en tiempo real.
+
+Los m\'etodos de din\'amicas poblacionales \citep{barreiro2021uav, dinh2026bsplines,
+hurtado2024potential} s\'i ofrecen leyes de control con garant\'ias de convergencia
+al equilibrio Nash, gracias a la estructura de juego potencial subyacente. Sin
+embargo, en todos los trabajos de esta l\'inea el tama\~no del grupo que realiza
+cada tarea es un par\'ametro del dise\~no fijado de antemano: los robots se asignan
+en fracciones fijas, no en coaliciones cuyo tama\~no emerge de la din\'amica.
+Cuando el tama\~no de la coalici\'on es la variable de estado (porque cada carga
+impone su propio requisito m\'inimo), las din\'amicas deben reclutar o liberar
+robots seg\'un las necesidades de cada carga ---y ning\'un trabajo existente
+formula este problema con ese grado de generalidad.
+
+El trabajo de \citet{martinezpiazuelo2022automatica} introduce restricciones de
+capacidad en juegos poblacionales, pero estas restricciones son \emph{cotas superiores}
+sobre cu\'antos agentes pueden elegir una estrategia: impiden que una estrategia se
+sature por encima de un umbral. El caso de este TFM requiere cotas inferiores:
+la tarea no puede ejecutarse si hay \emph{menos} de $n_k$ robots. Esta diferencia
+es matem\'aticamente sustancial y los resultados de estabilidad de ese trabajo no
+se aplican directamente.
+
+Finalmente, ning\'un enfoque existente trata expl\'icitamente el caso
+$N < \sum_k n_k$ (menos robots que los requeridos en total): en ese r\'egimen la
+flota no puede satisfacer todos los requisitos de cardinalidad simult\'aneamente y
+el sistema debe priorizar. Este caso l\'imite, relevante en escenarios con alta
+demanda transitoria, queda fuera del alcance de este TFM pero se identifica como
+l\'inea de trabajo futuro.
+
+\subsection{La brecha espec\'ifica}
+
+La combinaci\'on de tres elementos ---din\'amicas de Smith como ley de control directa,
+funci\'on de payoff con cota inferior de cardinalidad mediante sigmoide decreciente,
+y tasa de revisi\'on espacialmente modulada--- no ha sido identificada en la revisi\'on bibliogr\'afica de mayo de 2026
+(21 referencias en 6 \'areas tem\'aticas); no puede descartarse su existencia
+fuera del corpus revisado. Cada
+elemento por separado tiene antecedentes:
+las din\'amicas de Smith en sistemas de control \citep{barreiro2017distributed},
+las funciones sigmoide para incentivos de reclutamiento en antropolog\'ia
+e inteligencia de enjambre \citep{theraulaz1999stigmergy},
+y las tasas de revisi\'on moduladas por contexto en juegos evolutivos
+\citep{sandholm2010population}. La integraci\'on de los tres, con el an\'alisis
+formal que ella requiere, constituye la contribuci\'on de este trabajo.
+
+%% ====================================================================
+\section{Pregunta de investigaci\'on e hip\'otesis}
+\label{sec:pregunta}
+%% ====================================================================
+
+\textbf{Pregunta de investigaci\'on.}
+?`Pueden las din\'amicas de Smith con una funci\'on de payoff multiplicativa y cota
+inferior sigmoide de cardinalidad garantizar, de forma distribuida y sin coordinador
+central, que una flota de AGV forme coaliciones de tama\~no m\'inimo requerido para
+el transporte cooperativo de cargas, y c\'omo cambia este comportamiento al variar
+el rango de comunicaci\'on?
+
+\textbf{Hip\'otesis~1.}
+Bajo las din\'amicas de Smith con la funci\'on de payoff propuesta, el sistema
+converge a un equilibrio Nash en el que cada tarea $k$ tiene exactamente $n_k$ robots
+asignados, en el caso sim\'etrico balanceado ($N = Kn$, $n_k = n$, $\Psi \equiv 1$,
+$R = \infty$). La condici\'on suficiente de estabilidad local exige que la pendiente
+$\beta$ de la funci\'on sigmoide pertenezca al intervalo $(\beta_{\min}, \beta_{\max})$.
+
+\textbf{Hip\'otesis~2.}
+La tasa de revisi\'on espacialmente modulada $\mu_i(t)$ reduce el n\'umero de cambios
+de asignaci\'on por robot durante el estado estacionario en al menos un 40\,\%
+respecto a una tasa constante $\mu_i = \mu_0$, sin degradar el tiempo de convergencia
+de la coalici\'on por m\'as del 15\,\%. El umbral del 40\,\% deriva de que, al valor
+nominal $\sigma_{\text{rev}} = 2\,\text{m}$, un robot a distancia $d = \sigma_{\text{rev}}$
+de su objetivo tiene $\mu_i = \mu_0(1 - e^{-1/2}) \approx 0{,}39\,\mu_0$: la tasa
+se reduce un 61\,\% respecto a la tasa base. Dado que en estado estacionario la
+mayor\'ia de los robots est\'an dentro de $\sigma_{\text{rev}}$ de su destino, una
+reducci\'on agregada del 40\,\% en los cambios es una estimaci\'on conservadora.
+El umbral del 15\,\% en tiempo de convergencia es una tolerancia de dise\~no adoptada:
+refleja el compromiso entre velocidad de convergencia y estabilidad del modo de
+transporte, sin pretender ser un est\'andar universalmente reconocido.
+
+\textbf{Hip\'otesis~3.}
+El m\'etodo propuesto supera en tasa de \'exito de formaci\'on de coaliciones
+($F \geq 0{,}85$) a la heur\'istica voraz local y al consenso puro en todos los escenarios
+evaluados, y la ventaja se mantiene cuando el rango de comunicaci\'on $R$ se
+reduce hasta $R = 3\,\text{m}$, aunque la brecha disminuye con la reducci\'on
+de conectividad. El umbral $F \geq 0{,}85$ se fija porque una tasa de fallo del
+15\% en entornos de almac\'en real es recuperable mediante reintento, mientras que
+umbrales m\'as laxos no ser\'ian informativos. El valor $R = 3\,\text{m}$
+es el caso l\'imite de baja conectividad evaluado en los experimentos; se adopta
+como escenario adverso representativo para flotas AGV en entornos con interferencias,
+sin atribuirlo a un est\'andar de despliegue espec\'ifico.
+
+\textbf{Hip\'otesis~4.}
+La brecha de descentralizaci\'on $\Delta J = (\Theta_{\text{cent}} -
+\Theta_{\text{dist}}) / \max(\Theta_{\text{cent}}, \delta_0)$, con $J \triangleq
+\Theta$ y $\delta_0 = 10^{-3}$, permanece por debajo de 0{,}25 en los escenarios
+homog\'eneos y por debajo de 0{,}40 en los heterog\'eneos. Estos umbrales son
+umbrales de dise\~no propios: una brecha del 25\,\% implica que el sistema
+distribuido entrega al menos 3 tareas por cada 4 que completar\'ia un planificador
+centralizado con acceso perfecto al estado global, lo que se considera aceptable
+para un entorno de almac\'en con comunicaci\'on imperfecta.
+
+\textbf{Criterio de contraste.}
+Las hip\'otesis se contrastan mediante campa\~na de simulaci\'on con $m \geq 30$
+repeticiones por tratamiento-escenario, bajo las mismas semillas, trayectorias
+y par\'ametros iniciales para todos los m\'etodos. La Hip\'otesis~1 se verifica
+num\'ericamente en el escenario~A (configuraci\'on balanceada $N=Kn=6$, $n_k=2$)
+antes de ejecutar la campa\~na completa.
+
+%% ====================================================================
+\section{Objetivos}
+\label{sec:objetivos}
+%% ====================================================================
+
+\textbf{Objetivo general.}
+Dise\~nar y evaluar, mediante simulaci\'on cuantitativa reproducible, un esquema de
+control distribuido basado en las din\'amicas de Smith para la formaci\'on adaptativa
+de coaliciones en flotas multi-AGV que deben transportar cooperativamente cargas con
+requisitos m\'inimos de cardinalidad, comparando el desempe\~no con cuatro l\'ineas
+base (heur\'istica voraz local, consenso puro, replicador distribuido y \'optimo centralizado)
+bajo seis escenarios experimentales.
+
+\textbf{Objetivos espec\'ificos.}
+
+\begin{enumerate}
+  \item Formular el problema de formaci\'on de coaliciones multi-AGV como un juego
+    poblacional de congesti\'on con cota inferior de cardinalidad, estableciendo el
+    conjunto de estrategias, la funci\'on de payoff multiplicativa y las propiedades
+    de la estructura de juego potencial.
+
+  \item Dise\~nar la funci\'on de payoff $f_{ik}$ con componente sigmoide
+    mon\'otonamente decreciente en la cardinalidad estimada, establecer condiciones
+    suficientes para verificar que preserva la estructura de juego de congesti\'on, y
+    caracterizar el intervalo $(\beta_{\min}, \beta_{\max})$ que garantiza estabilidad
+    local del equilibrio Nash objetivo mediante un an\'alisis formal de Lyapunov.
+
+  \item Proponer la tasa de revisi\'on espacialmente modulada $\mu_i(t)$ y
+    cuantificar su efecto sobre la frecuencia de reasignaciones y el tiempo de
+    formaci\'on de coaliciones en los experimentos.
+
+  \item Implementar las tres din\'amicas acopladas ---consenso distribuido,
+    Smith en tiempo discreto y gradiente reactivo--- en un paquete Python
+    reproducible, con soporte para cinco tratamientos y seis escenarios con semillas
+    controladas y registro completo de trayectorias.
+
+  \item Validar cualitativamente el comportamiento de formaci\'on de coaliciones
+    en CoppeliaSim con robots Pioneer~3-DX en al menos uno de los escenarios de
+    coalici\'on m\'inima.
+\end{enumerate}
+
+%% ====================================================================
+\section{Alcance y limitaciones}
+\label{sec:alcance}
+%% ====================================================================
+
+\subsection{Alcance}
+\label{subsec:alcance}
+
+El trabajo se limita a un entorno 2D con robots de cinem\'atica uniciclo. La validaci\'on
+es exclusivamente por simulaci\'on: Python proporciona los resultados cuantitativos y
+CoppeliaSim proporciona la validaci\'on visual aplicada. El sistema puede manejar hasta
+$N = 15$ AGV y $K = 5$ tareas activas simult\'aneas; el l\'imite $N = 15$ responde
+a la complejidad computacional del simulador Python en tiempo real y al rango de
+flotas AGV t\'ipico en almacenes medianos, no a una restricci\'on te\'orica del m\'etodo. El rango de comunicaci\'on $R$
+se trata como par\'ametro variable entre 1\,m e infinito. Las cargas se modelan como puntos de destino con requisito m\'inimo de cardinalidad
+$n_k$. Esta es una decisi\'on de \textbf{descomposici\'on por capas}: la capa de
+asignaci\'on (este TFM) determina \emph{qu\'e} robots forman la coalici\'on y
+\emph{cu\'ando} inician el transporte; la capa de manipulaci\'on (no modelada aqu\'i)
+determina \emph{c\'omo} aplican fuerzas de contacto para mover la carga de forma
+estable. Esta segunda capa est\'a documentada en \citet{ebel2024cooperative} y
+\citet{rosenfelder2024force}, que resuelven el control de fuerzas para empuje y
+agarre no-prehensil con robots diferenciales. No se modela el contacto mec\'anico
+entre robot y carga durante el transporte; la fase de transporte propaga
+cinem\'aticamente el centroide de la coalici\'on hacia $\mathbf{d}_k$.
+
+El trabajo incluye expl\'icitamente las tres din\'amicas acopladas ejecutadas en un
+\'unico bucle de control cada $T_s = 0{,}1\,\text{s}$, la funci\'on de payoff
+multiplicativa con par\'ametros $\beta$, $\lambda$, $r_k$, y el an\'alisis formal
+de convergencia para el caso sim\'etrico con comunicaci\'on global
+(Proposici\'on~\ref{prop:convergencia}). El dise\~no experimental contempla seis
+escenarios con cinco tratamientos comparativos y al menos 30 repeticiones por
+combinaci\'on, validaci\'on cualitativa en CoppeliaSim con robots Pioneer~3-DX
+(Escenario~F), y un paquete Python documentado y reproducible con semillas
+fijadas, configuraciones YAML y registro completo de trayectorias.
+
+\subsection{Limitaciones}
+
+Quedan fuera del alcance la experimentaci\'on con hardware real, la percepci\'on
+visual, SLAM, evitaci\'on de obst\'aculos complejos y planificaci\'on global de rutas.
+El an\'alisis formal de convergencia (Proposici\'on~\ref{prop:convergencia}) se
+restringe al caso sim\'etrico con comunicaci\'on global ($R = \infty$) y tareas
+homog\'eneas; la extensi\'on al caso general con grafo irregular y tareas
+heterog\'eneas queda como trabajo doctoral futuro. Esa extensi\'on conecta con el
+formalismo de din\'amicas del replicador distribuido con procesado en grafos
+(DRD-PI), donde la convoluci\'on de payoffs sobre la estructura espectral del
+Laplaciano de $G(t)$ sigue la teor\'ia de procesado de se\~nales en grafos de
+\citet{sandryhaila2013dsp}. Tampoco se aborda la generaci\'on din\'amica de tareas
+durante la ejecuci\'on, aunque los experimentos de perturbaci\'on (Escenario~E)
+prueban la reactividad ante cambios en el conjunto de tareas.
+
+La cota inferior de cardinalidad introduce no suavidad potencial cuando $\beta$ es
+muy grande (la funci\'on sigmoide se aproxima a una funci\'on escal\'on). Esta zona
+de par\'ametros se excluye expl\'icitamente del an\'alisis: el TFM opera en
+$\beta \in (\beta_{\min}, \beta_{\max})$. Incluso dentro de ese intervalo, en
+escenarios donde el n\'umero total de robots es inferior a la demanda total
+($N < \sum_k n_k$), el sistema no puede satisfacer todos los requisitos de
+cardinalidad simult\'aneamente: las din\'amicas de Smith oscilar\'an sin alcanzar
+el equilibrio interior y el estado estacionario depender\'a de las prioridades
+relativas de las tareas. Este r\'egimen queda fuera del alcance del an\'alisis
+formal. Adem\'as, la tasa de revisi\'on modulada reduce pero no elimina las
+oscilaciones de alta frecuencia en la frontera del s\'implex (\emph{chattering})
+cuando $\beta$ est\'a cercano a $\beta_{\max}$; este comportamiento es observable
+en simulaci\'on y se reportar\'a en los resultados de la entrega final.
+
+\subsection{Plan de trabajo y cronograma}
+\label{sec:cronograma}
+
+El cronograma (Figura~\ref{fig:gantt}) abarca desde el inicio oficial del TFM
+(4 de marzo de 2026) hasta la primera convocatoria de defensa (21--25 de
+septiembre de 2026), con tres tutor\'ias colectivas s\'incronas en los hitos T0,
+T1 y T2. Las etapas completadas aparecen en naranja; las pendientes, en gris claro.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1.55cm, y=0.72cm]
+
+\tikzset{
+  done/.style    = {fill=VIUOrange!70, draw=VIUDeep,    line width=0.45pt, rounded corners=2pt},
+  current/.style = {fill=VIUOrange,    draw=VIUDeep,    line width=0.75pt, rounded corners=2pt},
+  pending/.style = {fill=VIUGray!12,   draw=VIUGray!45, line width=0.45pt, rounded corners=2pt},
+  defense/.style = {fill=VIUDeep!18,   draw=VIUDeep,    line width=0.75pt, rounded corners=2pt}
+}
+\def\BH{0.50}
+
+%-- Franjas alternadas de fondo (cada dos meses para guiar la lectura)
+\foreach \m in {0,2,4,6}{
+  \fill[VIUGray!7] (\m, 0.68) rectangle (\m+1, 7.58);
+}
+%-- Separadores de mes
+\foreach \m in {0,...,7}{
+  \draw[VIUGray!30, very thin] (\m, 0.68) -- (\m, 7.58);
+}
+%-- Línea de base horizontal
+\draw[VIUGray!35, thin] (0, 0.68) -- (7, 0.68);
+
+%-- Etiquetas de meses (encabezado superior)
+\foreach \m/\lbl in {0/Mar,1/Abr,2/May,3/Jun,4/Jul,5/Ago,6/Sep}{
+  \node[font=\footnotesize\bfseries, color=VIUGray!80!black, anchor=south]
+    at (\m+0.5, 7.60) {\lbl};
+}
+\node[font=\small\bfseries, color=VIUDark, anchor=south] at (3.5, 8.10) {2026};
+
+%-------------------------------------------------------------
+%  BARRAS DE FASES + etiquetas (derecha de la barra, izquierda del diagrama)
+%-------------------------------------------------------------
+
+% E1 — Revisión bibliográfica  [Mar 4 → May]  COMPLETADO
+\fill[done] (0.10, 7.0) rectangle (2.0, 7.0+\BH);
+\node[font=\footnotesize, color=VIUDark, anchor=east, text width=3.7cm, align=right]
+  at (-0.10, 7.25) {Revisi\'on bibliogr\'afica};
+
+% E2 — Formulación del problema  [Mar 4 → 29 may]  ENTREGADO (esta Tarea)
+\fill[current] (0.10, 6.0) rectangle (2.9, 6.0+\BH);
+\node[font=\footnotesize, color=VIUDark, anchor=east, text width=3.7cm, align=right]
+  at (-0.10, 6.25) {Formulaci\'on del problema};
+
+% E3 — Implementación Python  [Jun → mid-ago]  PENDIENTE
+\fill[pending] (2.0, 5.0) rectangle (4.5, 5.0+\BH);
+\node[font=\footnotesize, color=VIUDark, anchor=east, text width=3.7cm, align=right]
+  at (-0.10, 5.25) {Implementaci\'on Python};
+
+% E4 — Simulación experimental  [Jun → ago]  PENDIENTE
+\fill[pending] (3.1, 4.0) rectangle (5.5, 4.0+\BH);
+\node[font=\footnotesize, color=VIUDark, anchor=east, text width=3.7cm, align=right]
+  at (-0.10, 4.25) {Simulaci\'on experimental};
+
+% E5 — Validación en CoppeliaSim  [mid-ago → sep]  PENDIENTE
+\fill[pending] (4.5, 3.0) rectangle (6.0, 3.0+\BH);
+\node[font=\footnotesize, color=VIUDark, anchor=east, text width=3.7cm, align=right]
+  at (-0.10, 3.25) {Validaci\'on CoppeliaSim};
+
+% E6 — Redacción de la memoria  [jul → sep]  PENDIENTE
+\fill[pending] (4.0, 2.0) rectangle (6.7, 2.0+\BH);
+\node[font=\footnotesize, color=VIUDark, anchor=east, text width=3.7cm, align=right]
+  at (-0.10, 2.25) {Redacci\'on de la memoria};
+
+% E7 — Defensa TFM  [21–25 sep]  PENDIENTE
+\fill[defense] (6.5, 1.0) rectangle (7.0, 1.0+\BH);
+\node[font=\footnotesize, color=VIUDark, anchor=east, text width=3.7cm, align=right]
+  at (-0.10, 1.25) {Defensa TFM};
+
+%-------------------------------------------------------------
+%  TUTORÍAS COLECTIVAS  (triángulos sobre el límite superior)
+%  T0 = 4 mar (x≈0.10)   T1 = 3 jun (x≈3.08)   T2 = 15 jul (x≈4.47)
+%-------------------------------------------------------------
+\foreach \tx in {0.10, 3.08, 4.47}{
+  \fill[VIUGray!55]
+    (\tx, 7.58) -- (\tx-0.08, 7.74) -- (\tx+0.08, 7.74) -- cycle;
+}
+\node[font=\tiny\bfseries, color=VIUGray!80, anchor=south west] at (0.18,  7.74) {T0};
+\node[font=\tiny\bfseries, color=VIUGray!80, anchor=south west] at (3.16,  7.74) {T1};
+\node[font=\tiny\bfseries, color=VIUGray!80, anchor=south west] at (4.55,  7.74) {T2};
+
+%-------------------------------------------------------------
+%  HITOS
+%-------------------------------------------------------------
+
+% Tarea 1 / Informe Intermedio  (29 may → x = 2.9)
+\draw[VIUDeep, line width=1.5pt] (2.9, 0.68) -- (2.9, 7.58);
+\fill[VIUDeep] (2.9, 0.68) circle(3.2pt);
+\node[font=\tiny\bfseries, color=VIUDeep, anchor=north, align=center]
+  at (2.9, 0.62) {Tarea\,1\\29~may.};
+
+% Defensa, 1\textordfeminine{} convocatoria  (21 sep → x = 6.67)
+\draw[VIUDark!55, line width=1.0pt, dashed] (6.67, 0.68) -- (6.67, 7.58);
+\fill[VIUDark!55] (6.67, 0.68) circle(2.5pt);
+\node[font=\tiny, color=VIUDark!70, anchor=north east, align=right]
+  at (6.67, 0.62) {Defensa\\21--25~sep.};
+
+%-------------------------------------------------------------
+%  LEYENDA
+%-------------------------------------------------------------
+\fill[done]    (0.00,-0.72) rectangle (0.90,-0.35);
+\node[font=\footnotesize, color=VIUDark, anchor=west] at (1.00,-0.535) {Completado};
+\fill[current] (2.60,-0.72) rectangle (3.50,-0.35);
+\node[font=\footnotesize, color=VIUDark, anchor=west] at (3.60,-0.535) {Entregado};
+\fill[pending] (5.10,-0.72) rectangle (6.00,-0.35);
+\node[font=\footnotesize, color=VIUDark, anchor=west] at (6.10,-0.535) {Pendiente};
+
+\end{tikzpicture}
+\caption{Cronograma del TFM (marzo--septiembre 2026).
+Tutor\'ias colectivas s\'incronas: T0~inicio (4~mar.), T1~intermedia (3~jun.),
+T2~final (15~jul.).
+Fases: E1~Revisi\'on bibliogr\'afica, E2~Formulaci\'on del problema (Tarea~1),
+E3~Implementaci\'on Python, E4~Simulaci\'on experimental,
+E5~Validaci\'on CoppeliaSim, E6~Redacci\'on de la memoria,
+E7~Defensa (1.\textordfeminine\ conv., 21--25~sep.\ 2026).
+La l\'inea s\'olida marca el hito actual (29~may.\ 2026); la de trazos,
+la convocatoria de defensa.}
+\label{fig:gantt}
+\end{figure}
+
+%% ====================================================================
+\section{Metodolog\'ia}
+\label{sec:metodologia}
+%% ====================================================================
+
+La investigaci\'on adopta un dise\~no cuantitativo, experimental en simulaci\'on y
+comparativo. El prop\'osito es evaluar si las tres din\'amicas acopladas propuestas
+superan a cuatro tratamientos de referencia (T1 heur\'istica voraz local, T2 consenso puro,
+T3 replicador distribuido y T4 \'optimo centralizado) bajo condiciones controladas
+y reproducibles.
+La metodolog\'ia se organiza en catorce subsecciones que cubren el modelo del sistema,
+el m\'etodo propuesto, el an\'alisis de convergencia, el dise\~no experimental y
+los criterios de aceptaci\'on.
+
+\subsection{Modelo del sistema}
+
+\subsubsection{Robots}
+
+Cada AGV sigue cinem\'atica uniciclo en tiempo discreto con per\'iodo $T_s = 0{,}1\,\text{s}$:
+\begin{align}
+  x_i(t+1) &= x_i(t) + T_s \, v_i(t)\cos\theta_i(t), \label{eq:unicycle_x}\\
+  y_i(t+1) &= y_i(t) + T_s \, v_i(t)\sin\theta_i(t), \label{eq:unicycle_y}\\
+  \theta_i(t+1) &= \theta_i(t) + T_s \, \omega_i(t), \label{eq:unicycle_theta}
+\end{align}
+con entrada de control $(v_i, \omega_i)$ sujeta a $|v_i| \leq v_{\max}$ y
+$|\omega_i| \leq \omega_{\max}$. El estado del robot $i$ es
+$\mathbf{q}_i(t) = (x_i, y_i, \theta_i) \in \RR^3$.
+
+\subsubsection{Tareas}
+
+Cada tarea $k \in \{1, \ldots, K\}$ queda definida por su posici\'on de recogida
+$\mathbf{l}_k \in \RR^2$, su destino de entrega $\mathbf{d}_k \in \RR^2$,
+su recompensa $r_k > 0$ y su requisito m\'inimo de cardinalidad $n_k \in \NN$.
+La tarea $k = 0$ representa el estado de inactividad, con $r_0 = 0$ y $n_0 = 0$. El conjunto de estrategias disponibles para cada robot es
+$\mathcal{S} = \{0, 1, \ldots, K\}$.
+
+\subsubsection{Grafo de comunicaci\'on}
+
+El grafo de comunicaci\'on $G(t) = (\mathcal{V}, \mathcal{E}(t))$ es din\'amico:
+dos robots $i$ y $j$ son vecinos si $\norm{\mathbf{q}_i^{xy}(t) - \mathbf{q}_j^{xy}(t)}
+\leq R$, donde $\mathbf{q}_i^{xy} = (x_i, y_i)$ y $R > 0$ es el rango de
+comunicaci\'on. El conjunto de vecinos del robot $i$ en el instante $t$ es
+$\mathcal{N}_i(t) = \{j \neq i : \norm{\mathbf{q}_i^{xy}(t) - \mathbf{q}_j^{xy}(t)} \leq R\}$.
+El grado m\'aximo del grafo es $d_{\max}(t) = \max_i |\mathcal{N}_i(t)|$.
+
+\subsection{Funci\'on de payoff multiplicativa}
+
+La funci\'on de payoff del robot $i$ para la tarea $k \geq 1$ tiene la forma
+multiplicativa:
+\begin{equation}
+  f_{ik}(\hat{x}_i, \mathbf{q}_i) = r_k \cdot \Phi\!\left(N\hat{x}_{ik},\, n_k\right)
+    \cdot \Psi\!\left(\norm{\mathbf{q}_i^{xy} - \mathbf{l}_k}\right),
+  \label{eq:payoff}
+\end{equation}
+donde los dos factores que componen el payoff son:
+
+\begin{equation}
+  \Phi(z, n) = \frac{1}{1 + \exp\!\left(\beta(z - n)\right)},
+  \quad \beta > 0,
+  \label{eq:sigmoid}
+\end{equation}
+\begin{equation}
+  \Psi(d) = \exp\!\left(-\frac{d^2}{2\lambda^2}\right),
+  \quad \lambda > 0.
+  \label{eq:gaussian}
+\end{equation}
+
+El factor $\Phi(N\hat{x}_{ik}, n_k)$ es la \emph{demanda sigmoide de coalici\'on}.
+Es mon\'otonamente decreciente en $z = N\hat{x}_{ik}$ (el n\'umero estimado de
+robots en la tarea $k$): cuando la tarea tiene pocos robots respecto a $n_k$,
+$\Phi \approx 1$ y el payoff es alto (la tarea \emph{recluta} ag\-entes);
+cuando tiene suficientes, $\Phi \approx 0$ y el payoff cae (la tarea est\'a
+\emph{saturada}). Esta monotonicidad decreciente es la que preserva la estructura
+de juego de congesti\'on ponderado y distingue este dise\~no del planteamiento
+de cotas superiores de \citet{martinezpiazuelo2022automatica}.
+
+El factor $\Psi(\cdot)$ es el descuento espacial gaussiano: robots lejanos de la
+tarea perciben un payoff reducido, lo que incorpora la din\'amica espacial al
+juego de asignaci\'on. Para el estado de inactividad se asigna un payoff base
+positivo peque\~no:
+\begin{equation}
+  f_{i0} = r_0, \quad r_0 > 0 \text{ peque\~no (por defecto } r_0 = 0{,}05),
+  \label{eq:payoff_idle}
+\end{equation}
+lo que garantiza que cuando todas las tareas est\'an saturadas ($\Phi \approx 0$
+para todo $k \geq 1$), la din\'amica de Smith no se congele por ausencia de
+diferencias de payoff. El valor $r_0 = 0{,}05$ es suficientemente peque\~no para
+no distorsionar el equilibrio Nash en presencia de tareas activas con $r_k \gg r_0$:
+en el equilibrio interior $f_0 = r_0 = 0{,}05 < r/2 = 0{,}5 = f_k^*$, de modo
+que ning\'un robot tiene incentivo a elegir el estado de inactividad y $x_0^* = 0$
+es Nash.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm,y=1cm]
+
+%===== Panel (a): Phi(z,n) ============================
+\begin{scope}[xshift=0cm]
+  % Axes
+  \draw[-{Stealth[length=5pt]}, VIUDark!70] (-0.2,0) -- (6.4,0)
+    node[right, font=\small] {$z=N\hat{x}_{ik}$};
+  \draw[-{Stealth[length=5pt]}, VIUDark!70] (0,-0.2) -- (0,3.4)
+    node[above, font=\small] {$\Phi(z,n_k)$};
+
+  % Sigmoid curve: Phi=1/(1+exp(2*(z-3))), scaled by 3
+  \draw[VIUOrange, very thick, smooth]
+    plot[domain=0:6, samples=60, variable=\z] (\z, {3/(1+exp(2*(\z-3)))});
+
+  % Dashed reference lines at z=n=3
+  \draw[VIUGray, dashed, thin] (3,0) node[below, font=\tiny] {$n_k$} -- (3,1.5);
+  \draw[VIUGray, dashed, thin] (0,1.5) node[left, font=\tiny] {$\tfrac{1}{2}$} -- (3,1.5);
+  \fill[VIUGray] (3,1.5) circle(1.5pt);
+
+  % Tick at z=0: Phi=1 (approximately)
+  \draw[VIUGray, thin] (-0.05,3) -- (0.05,3);
+  \node[left, font=\tiny] at (0,3) {$1$};
+  \draw[VIUGray, thin] (-0.05,0) -- (0.05,0);
+  \node[left, font=\tiny] at (0,0) {$0$};
+
+  % Zone annotations
+  \draw[{Stealth[length=3pt]}-{Stealth[length=3pt]}, VIUDark!60, thin] (0.1,2.7) -- (2.9,2.7);
+  \node[font=\tiny, VIUDark, align=center] at (1.5,3.15)
+    {Zona de\\reclutamiento};
+
+  \draw[{Stealth[length=3pt]}-{Stealth[length=3pt]}, VIUDark!60, thin] (3.1,0.25) -- (5.9,0.25);
+  \node[font=\tiny, VIUDark, align=center] at (4.5,0.65)
+    {Zona de\\saturaci\'on};
+
+  % beta label on curve
+  \node[font=\tiny, VIUOrange, anchor=west] at (3.3,2.3) {$\beta=2$};
+
+  % Panel label
+  \node[font=\small\bfseries, VIUDark] at (3.0,-0.85)
+    {(a) Demanda sigmoide $\Phi(z,n_k)$};
+\end{scope}
+
+%===== Panel (b): Psi(d) =================================
+\begin{scope}[xshift=8.0cm]
+  % Axes
+  \draw[-{Stealth[length=5pt]}, VIUDark!70] (-0.2,0) -- (6.4,0)
+    node[right, font=\small] {$d=\|\mathbf{q}_i^{xy}-\mathbf{l}_k\|$};
+  \draw[-{Stealth[length=5pt]}, VIUDark!70] (0,-0.2) -- (0,3.4)
+    node[above, font=\small] {$\Psi(d)$};
+
+  % Gaussian: Psi=exp(-d^2/50), x-axis 0..10m plotted as 0..6
+  % scale: x_plot = d * 6/10; so d = x_plot * 10/6
+  % Psi = exp(-(x_plot*10/6)^2/50) = exp(-x_plot^2/18)
+  \draw[VIUDeep, very thick, smooth]
+    plot[domain=0:6, samples=60, variable=\d] (\d, {3*exp(-\d*\d/18)});
+
+  % Tick marks
+  \draw[VIUGray, thin] (-0.05,3) -- (0.05,3);
+  \node[left, font=\tiny] at (0,3) {$1$};
+  \draw[VIUGray, thin] (-0.05,0) -- (0.05,0);
+  \node[left, font=\tiny] at (0,0) {$0$};
+
+  % lambda marker
+  \draw[VIUGray, dashed, thin] (3,0) -- (3,{3*exp(-3*3/18)});
+  \draw[VIUGray, dashed, thin] (0,{3*exp(-9/18)}) -- (3,{3*exp(-9/18)});
+  \node[below, font=\tiny] at (3,0) {$\lambda$};
+  \node[left, font=\tiny] at (0,{3*exp(-0.5)}) {$e^{-1/2}$};
+  \fill[VIUGray] (3,{3*exp(-9/18)}) circle(1.5pt);
+
+  % Annotation
+  \node[font=\tiny, VIUDeep, anchor=west] at (3.3,2.4) {$\lambda=5\,\mathrm{m}$};
+
+  % Panel label
+  \node[font=\small\bfseries, VIUDark] at (3.0,-0.85)
+    {(b) Descuento espacial $\Psi(d)$};
+
+  % x-axis labels
+  \node[below, font=\tiny] at (0,0) {$0$};
+  \node[below, font=\tiny] at (6,0) {$10\,\mathrm{m}$};
+\end{scope}
+
+\end{tikzpicture}
+\caption{Componentes de la funci\'on de payoff \eqref{eq:payoff}. \textbf{(a)}~La
+demanda sigmoide $\Phi(z,n_k)$ es mon\'otonamente decreciente: cuando el n\'umero
+estimado $z=N\hat{x}_{ik}$ est\'a por debajo de $n_k$, el payoff es alto (zona de
+reclutamiento); cuando supera $n_k$, cae a cero (zona de saturaci\'on). \textbf{(b)}~El
+descuento gaussiano $\Psi(d)$ reduce el payoff de robots lejanos de la tarea, integrando
+la din\'amica espacial en el juego de asignaci\'on.}
+\label{fig:payoff}
+\end{figure}
+
+\subsection{Din\'amica~1: estimaci\'on por consenso distribuido}
+
+Cada robot $i$ mantiene un vector de estimaciones $\hat{\mathbf{x}}_i(t) \in \RR^{K+1}$
+cuyo componente $\hat{x}_{ik}(t)$ aproxima la fracci\'on de robots que en el instante
+$t$ adoptan la estrategia $k$. La actualizaci\'on sigue el consenso est\'andar:
+\begin{equation}
+  \hat{x}_{ik}(t+1) = \hat{x}_{ik}(t) + \varepsilon \sum_{j \in \mathcal{N}_i(t)}
+    \bigl[\hat{x}_{jk}(t) - \hat{x}_{ik}(t)\bigr],
+  \quad \forall k \in \mathcal{S},
+  \label{eq:consenso}
+\end{equation}
+con ganancia $\varepsilon \in (0, 1/d_{\max})$ para garantizar estabilidad.
+La inicializaci\'on es $\hat{x}_{ik}(0) = \mathbf{1}_{[s_i(0) = k]}$: cada robot
+comienza creyendo que todos los robots siguen su propia estrategia inicial.
+
+Cuando el grafo es estacionario y conectado, el consenso \eqref{eq:consenso}
+converge a la fracci\'on real $x_k^* = |\{i : s_i = k\}| / N$ con error
+exponencialmente decreciente en el n\'umero de iteraciones \citep{olfati2004consensus}.
+Cuando el robot $i$ cambia de estrategia, es decir, $s_i(t) \neq s_i(t-1)$, su
+estimador se reinicializa localmente:
+\begin{equation}
+  \hat{x}_{ik}(t) \leftarrow \mathbf{1}_{[s_i(t) = k]}, \quad \forall k \in \mathcal{S},
+  \label{eq:reinit}
+\end{equation}
+lo que refleja el nuevo estado del robot antes de que la informaci\'on se propague
+por el grafo. Esta reinicializaci\'on introduce un transitorio breve en el consenso
+tras cada reasignaci\'on; su efecto acumulado es cuantificado por la m\'etrica
+$\Delta_{\text{chg}}$ en los experimentos.
+
+\begin{observacion}[Problema de inicializaci\'on y alternativa uniforme]
+\label{obs:init_obs}
+Con la inicializaci\'on $\hat{x}_{ik}(0) = \mathbf{1}_{[s_i(0) = k]}$, cada robot
+cree que $N\hat{x}_{ik}(0) = N$ robots est\'an en su propia tarea, por lo que
+$\Phi(N, n) \approx 0$ para todo $k$. Esto congela las din\'amicas de Smith al
+inicio porque no hay diferencias de payoff que impulsen la revisi\'on. La
+inicializaci\'on alternativa $\hat{x}_{ik}(0) = 1/(K+1)$ para todo $k$ e $i$
+distribuye uniformemente la masa inicial y produce payoffs iniciales distintos de
+cero ($\Phi(N/(K+1), n)$ con valores en $(0,1)$), acelerando la fase transitoria.
+Ambas inicializaciones convergen al mismo equilibrio; la diferencia es la velocidad
+de convergencia. En los experimentos se comparan ambas alternativas en el
+Escenario~A para cuantificar este efecto.
+\end{observacion}
+En grafos din\'amicos con $R$ finito, el error de consenso $e_{ik}(t) = \hat{x}_{ik}(t)
+- x_k(t)$ introduce un sesgo acotado en los payoffs, cuyo efecto sobre el equilibrio
+se cuantifica en los experimentos del Escenario~D.
+
+\subsection{Din\'amica~2: Smith distribuidas en tiempo discreto}
+\label{subsec:smith}
+
+El vector de preferencias $\mathbf{p}_i(t)$ evoluciona seg\'un las din\'amicas de
+Smith en tiempo discreto:
+\begin{equation}
+  \tilde{p}_{ik}(t+1) = p_{ik}(t) + T_s \mu_i(t) \left[
+    \sum_{j \in \mathcal{S}} p_{ij}(t)\pos{f_{ik} - f_{ij}}
+    - p_{ik}(t) \sum_{j \in \mathcal{S}} \pos{f_{ij} - f_{ik}}
+  \right],
+  \label{eq:smith_update}
+\end{equation}
+\begin{equation}
+  \mathbf{p}_i(t+1) = \Pi_{\simplex}\!\left(\tilde{\mathbf{p}}_i(t+1)\right),
+  \label{eq:proyeccion}
+\end{equation}
+donde $\pos{y} = \max(y, 0)$, $\Pi_{\simplex}$ es la proyecci\'on ortogonal sobre
+el s\'implex $\simplex^K$ (calculada por el algoritmo est\'andar de clasificaci\'on
+y umbral de complejidad $O(K\log K)$), y $\mu_i(t) > 0$ es la tasa de revisi\'on del robot $i$.
+El primer t\'ermino de \eqref{eq:smith_update} representa el flujo de entrada desde
+estrategias con menor payoff; el segundo, el flujo de salida hacia estrategias con
+mayor payoff. Esta comparaci\'on bilateral elimina la necesidad de conocer la media
+global del payoff, a diferencia del replicador distribuido.
+
+\subsection{Tasa de revisi\'on espacialmente modulada}
+
+La tasa de revisi\'on de cada robot depende de su distancia a la posici\'on de la
+tarea que actualmente persigue:
+\begin{equation}
+  \mu_i(t) = \mu_0 \left(1 - \exp\!\left(-\frac{\norm{\mathbf{q}_i^{xy}(t) -
+    \mathbf{l}_{s_i(t)}}^2}{2\sigma_{\text{rev}}^2}\right)\right),
+  \label{eq:revision_rate}
+\end{equation}
+con $\mu_0 > 0$ y $\sigma_{\text{rev}} > 0$. Los robots cercanos a su destino
+tienen $\mu_i \approx 0$: est\'an comprometidos con la tarea y no reconsideran
+su asignaci\'on. Los robots lejanos tienen $\mu_i \approx \mu_0$: pueden
+reconsiderar. Para robots en estado de inactividad ($s_i = 0$), se usa $\mu_i = \mu_0$.
+
+La tasa modulada act\'ua como un t\'ermino de hist\'eresis suave que mitiga el
+\emph{chattering} cerca de los umbrales de cardinalidad $n_k$: los robots comprometidos
+con su tarea son m\'as resistentes a la reasignaci\'on que los que a\'un navegan
+hacia su destino.
+
+\subsection{Din\'amica~3: campo de gradiente reactivo}
+
+El movimiento de cada robot se calcula minimizando localmente un campo de potencial:
+\begin{equation}
+  F_i(\mathbf{q}_i) = \frac{\alpha}{2}\norm{\mathbf{q}_i^{xy} - \mathbf{l}_{s_i}}^2
+    + \eta \sum_{j \in \mathcal{N}_i}
+      \frac{1}{\norm{\mathbf{q}_i^{xy} - \mathbf{q}_j^{xy}} + \varepsilon_r}
+    + \delta \sum_{j \in \mathcal{C}_k \setminus \{i\}} \frac{(\norm{\mathbf{q}_i^{xy}
+    - \mathbf{q}_j^{xy}} - d^*)^2}{2}
+    \cdot \mathbf{1}_{[\norm{\mathbf{q}_i^{xy} - \mathbf{l}_k} < r_{\text{form}}]},
+  \label{eq:potential}
+\end{equation}
+donde el primer t\'ermino crea un pozo de potencial con m\'inimo en $\mathbf{l}_{s_i}$,
+de modo que $\mathbf{g}_i = -\nabla F_i$ apunta hacia la tarea asignada; el segundo
+repele a los robots entre s\'i para evitar colisiones; y el tercer t\'ermino mantiene
+la geometr\'ia de coalici\'on. El par\'ametro $\varepsilon_r = 0{,}01\,\text{m}$
+regulariza el t\'ermino de repulsi\'on para evitar singularidades cuando dos robots
+se encuentran muy pr\'oximos, siguiendo la formulaci\'on de
+\citet{bullo2009distributed}. Los campos de potencial artificial presentan el
+problema cl\'asico de m\'inimos locales \citep{bullo2009distributed}; en los
+experimentos se mitiga mediante una perturbaci\'on aleatoria cuando la velocidad
+del robot cae por debajo de $0{,}01\,\text{m/s}$ durante m\'as de 5 pasos
+consecutivos. El t\'ermino de repulsi\'on no garantiza formalmente la ausencia
+de colisiones: la evitaci\'on es heur\'istica y depende de los valores de $\eta$
+y $\varepsilon_r$. La distancia geom\'etrica de formaci\'on es
+$d^* = 2(r_{\text{load}} + r_{\text{robot}}) \sin(\pi / n_{s_i(t)})$,
+donde $n_{s_i(t)} \equiv n_k$ con $k = s_i(t)$ es la cardinalidad m\'inima de la
+tarea actualmente asignada al robot $i$.
+Para $n_k = 1$ la f\'ormula da $d^* = 0$ (sin geometr\'ia de formaci\'on, el robot
+se posiciona directamente sobre la carga); para $n_k = 2$, $d^* = 2(r_{\text{load}}
++ r_{\text{robot}})$ (los dos robots quedan en lados opuestos de la carga). La zona de formaci\'on se activa cuando
+$\norm{\mathbf{q}_i^{xy} - \mathbf{l}_k} < r_{\text{form}}$.
+El gradiente negativo proporciona las velocidades de referencia:
+\begin{align}
+  \mathbf{g}_i &= -\nabla_{\mathbf{q}_i^{xy}} F_i, \label{eq:gradient}\\
+  v_i &= \min\!\left(\norm{\mathbf{g}_i},\, v_{\max}\right), \label{eq:speed}\\
+  \omega_i &= K_\theta \cdot \mathrm{wrap}\!\left(\mathrm{atan2}(\mathbf{g}_i) - \theta_i\right). \label{eq:angular}
+\end{align}
+
+\subsubsection{Fase de transporte y transici\'on al destino}
+\label{subsubsec:transporte}
+
+Una vez que la coalici\'on $\mathcal{C}_k$ cumple $|\mathcal{C}_k(t)| \geq n_k$
+durante al menos $\tau_s = 3$ pasos consecutivos, el sistema activa el
+\emph{modo de transporte}: el objetivo del campo de gradiente \eqref{eq:potential}
+cambia de la posici\'on de recogida $\mathbf{l}_k$ al destino de descarga $\mathbf{d}_k$.
+Formalmente, el t\'ermino de atracci\'on de \eqref{eq:potential} emplea el objetivo efectivo:
+\begin{equation}
+  \mathbf{l}_{s_i}^{\mathrm{eff}}(t) =
+  \begin{cases}
+    \mathbf{l}_k & \text{si } |\mathcal{C}_k(t)| < n_k \;\text{(fase de reclutamiento)},\\
+    \mathbf{d}_k & \text{si } |\mathcal{C}_k(t)| \geq n_k \;\text{(fase de transporte)}.
+  \end{cases}
+  \label{eq:target_switch}
+\end{equation}
+
+Adem\'as, durante la fase de transporte el factor espacial $\Psi(\cdot)$ se fija
+en $1{,}0$ para todos los robots de $\mathcal{C}_k$. Sin esta correcci\'on, la
+distancia $\norm{\mathbf{q}_i^{xy} - \mathbf{l}_k}$ crecer\'ia a medida que la
+coalici\'on se aleja del punto de recogida hacia $\mathbf{d}_k$, reduciendo
+artificialmente el payoff de la tarea y pudiendo inducir defecciones de la
+coalici\'on durante el transporte.
+
+La transici\'on es bidireccional: si durante el modo de transporte la coalici\'on
+pierde un miembro y satisface $|\mathcal{C}_k(t)| < n_k$ durante $\tau_s$ pasos
+consecutivos ---por ejemplo por la retirada abrupta de un robot--- el modo revierte
+a reclutamiento, el objetivo efectivo regresa a $\mathbf{l}_k$ y el factor
+$\Psi(\cdot)$ vuelve a calcularse din\'amicamente. Esta hist\'eresis evita
+transiciones espurias debidas a fluctuaciones momentáneas en la coalici\'on.
+
+La tarea $k$ se considera completada cuando el centroide de $\mathcal{C}_k$ se
+encuentra dentro de $r_{\mathrm{det}}$ del destino $\mathbf{d}_k$; en ese instante
+se detiene el reloj de $\bar{T}$.
+
+\begin{observacion}[Modelo cinem\'atico de la fase de transporte]
+El modelo de transporte es puramente cinem\'atico: se propaga el movimiento
+del \emph{centroide de la coalici\'on} hacia $\mathbf{d}_k$, sin simular la
+respuesta din\'amica de la carga a las fuerzas de contacto. La geometr\'ia de
+formaci\'on $d^*$ define las \textbf{condiciones iniciales de posici\'on relativa}
+que un controlador de manipulaci\'on aguas abajo ---como el propuesto por
+\citet{ebel2024cooperative}--- consumir\'ia para calcular las fuerzas necesarias.
+En la simulaci\'on Python se registra la trayectoria de la pose de la carga como
+el centroide de $\mathcal{C}_k$ durante el modo de transporte; en la validaci\'on
+CoppeliaSim (Escenario~F) se representa como un cuboide pasivo acoplado
+cinem\'aticamente a ese centroide.
+\end{observacion}
+
+\subsection{Acoplamiento entre las tres din\'amicas}
+\label{subsec:acoplamiento}
+
+Las tres din\'amicas est\'an bidireccionalmente acopladas en un \'unico bucle de
+control ejecutado cada $T_s = 0{,}1\,\text{s}$ (Fig.~\ref{fig:loop}). Este
+acoplamiento forma un sistema retroalimentado en el que la posici\'on afecta
+al payoff, el payoff afecta a la estrategia, la estrategia afecta al movimiento,
+y el movimiento cambia la posici\'on y la topolog\'ia de comunicaci\'on.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  every node/.style={font=\small},
+  box/.style={draw, rounded corners=3pt, minimum width=3.2cm, minimum height=0.75cm,
+    align=center, fill=VIULight},
+  arr/.style={->, thick, VIUOrange},
+  note/.style={font=\footnotesize, color=VIUGray}
+]
+
+\node[box] (consenso) at (0,0)     {Din.~1: Consenso\\$\hat{x}_{ik}(t)$};
+\node[box] (payoff)   at (5,0)     {Payoff\\$f_{ik}(\hat{x}_i, \mathbf{q}_i)$};
+\node[box] (smith)    at (5,-2)    {Din.~2: Smith\\$\mathbf{p}_i(t{+}1)$};
+\node[box] (gradient) at (0,-2)    {Din.~3: Gradiente\\$v_i,\,\omega_i$};
+\node[box] (unicycle) at (0,-4)    {Modelo uniciclo\\$\mathbf{q}_i(t{+}1)$};
+\node[box] (graph)    at (5,-4)    {Grafo $G(t{+}1)$\\$\mathcal{N}_i(t{+}1)$};
+
+\draw[arr] (consenso) -- node[above, note]{$\hat{x}_{ik}$} (payoff);
+\draw[arr] (payoff)   -- node[right, note]{$f_{ik}$}       (smith);
+\draw[arr] (smith)    -- node[below, note]{$s_i(t{+}1)$}   (gradient);
+\draw[arr] (gradient) -- node[right, note]{$v_i,\omega_i$} (unicycle);
+\draw[arr] (unicycle) -- node[below, note]{$\mathbf{q}_i$} (graph);
+\draw[arr] (graph)    -- node[right, note]{$\mathcal{N}_i$} (consenso);
+
+\draw[arr, bend right=18] (unicycle.west) to
+  node[left, note]{$\mathbf{q}_i \to \Psi \to f_{ik}$}
+  (payoff.west|-0,-1) -- (payoff.west);
+
+\draw[arr, dashed] (smith.north west) to[bend left=10]
+  node[above, note, pos=0.5]{$s_i \to \mu_i$} (gradient.north east);
+
+\end{tikzpicture}
+\caption{Bucle de control de las tres din\'amicas acopladas. Cada flecha indica
+una dependencia funcional dentro del mismo paso temporal $T_s = 0{,}1\,\text{s}$.}
+\label{fig:loop}
+\end{figure}
+
+\begin{table}[htbp]
+\centering
+\caption{Acoplamiento bidireccional entre las tres din\'amicas.}
+\label{tab:acoplamiento}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{0.27\textwidth}Y}
+\toprule
+Interacci\'on & Descripci\'on \\
+\midrule
+$\mathbf{p}_i(t) \to f_{ik} \to s_i(t)$ &
+  La estrategia determina el destino $\mathbf{l}_{s_i}$ y modifica el campo de
+  potencial $F_i$. \\
+$\mathbf{q}_i^{xy}(t) \to \Psi \to f_{ik}$ &
+  La posici\'on determina el descuento espacial del payoff de cada tarea. \\
+$\mathbf{q}_i^{xy}(t) \to G(t) \to \hat{x}_{ik}$ &
+  El movimiento cambia la topolog\'ia del grafo y la velocidad de consenso. \\
+$\mathbf{p}_i(t) \to \hat{x}_{ik}(0) $ &
+  El cambio de estrategia reinicializa localmente el estimador de consenso. \\
+$\mu_i(t) \gets \mathbf{q}_i, \mathbf{l}_{s_i}$ &
+  La tasa de revisi\'on depende de la distancia al destino actual. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Pseudoc\'odigo del bucle de control}
+\label{subsec:pseudocodigo}
+
+El Algoritmo~\ref{alg:loop} formaliza el bucle de control ejecutado por cada robot
+$i$ en cada paso temporal. Los pasos de los tres bloques din\'amicos se ejecutan
+secuencialmente dentro del mismo instante $t$; las comunicaciones con los vecinos
+$\mathcal{N}_i(t)$ se realizan al inicio del paso y se consideran at\'omicas.
+
+\begin{algorithm}[htbp]
+\caption{Bucle de control distribuido, robot $i$, instante $t$}
+\label{alg:loop}
+\begin{algorithmic}[1]
+\Require $\mathbf{q}_i(t)$, $\mathbf{p}_i(t)$, $\hat{\mathbf{x}}_i(t)$,
+         $s_i(t)$, $\{\mathbf{l}_k, \mathbf{d}_k, r_k, n_k\}$,
+         $\mathcal{C}_k(t)$, modo$_k(t)$
+\Ensure $\mathbf{q}_i(t{+}1)$, $\mathbf{p}_i(t{+}1)$, $\hat{\mathbf{x}}_i(t{+}1)$
+
+\State \textbf{Bloque~1: Din\'amica de consenso} \eqref{eq:consenso}
+\If{$s_i(t) \neq s_i(t{-}1)$} \Comment{Reinicializaci\'on \eqref{eq:reinit}}
+  \State $\hat{x}_{ik}(t) \gets \mathbf{1}_{[s_i(t)=k]}$ para todo $k$
+\EndIf
+\For{cada $k \in \mathcal{S}$}
+  \State $\hat{x}_{ik}(t{+}1) \gets \hat{x}_{ik}(t)
+    + \varepsilon\!\sum_{j\in\mathcal{N}_i(t)}\!\bigl[\hat{x}_{jk}(t) - \hat{x}_{ik}(t)\bigr]$
+\EndFor
+
+\State \textbf{Bloque~2: C\'alculo de payoffs} \eqref{eq:payoff}
+\For{cada $k \geq 1$}
+  \If{modo$_k(t) = $ transporte}
+    \State $\mathbf{l}^{\mathrm{eff}}_k \gets \mathbf{d}_k$;\enspace
+           $\Psi_k \gets 1{,}0$
+  \Else
+    \State $\mathbf{l}^{\mathrm{eff}}_k \gets \mathbf{l}_k$;\enspace
+           $\Psi_k \gets \exp\!\bigl(-\norm{\mathbf{q}_i^{xy}{-}\mathbf{l}_k}^2/(2\lambda^2)\bigr)$
+  \EndIf
+  \State $f_{ik} \gets r_k \cdot \Phi\!\left(N\hat{x}_{ik}(t),\,n_k\right)\cdot\Psi_k$
+\EndFor
+\State $f_{i0} \gets r_0$
+
+\State \textbf{Bloque~3: Din\'amica de Smith} \eqref{eq:smith_update}--\eqref{eq:proyeccion}
+\State $\mu_i \gets \mu_0\!\left(1 - \exp\!\bigl(-\norm{\mathbf{q}_i^{xy}{-}\mathbf{l}^{\mathrm{eff}}_{s_i}}^2\!/(2\sigma_{\mathrm{rev}}^2)\bigr)\right)$
+\For{cada $k \in \mathcal{S}$}
+  \State $\tilde{p}_{ik} \gets p_{ik} + T_s\mu_i\!\left[
+    \sum_{j}p_{ij}\pos{f_{ik}{-}f_{ij}}
+    - p_{ik}\!\sum_{j}\pos{f_{ij}{-}f_{ik}}\right]$
+\EndFor
+\State $\mathbf{p}_i(t{+}1) \gets \Pi_{\simplex}(\tilde{\mathbf{p}}_i)$;\enspace
+       $s_i(t{+}1) \gets \argmax_k\, p_{ik}(t{+}1)$ \Comment{empate: mantener $s_i(t)$}
+
+\State \textbf{Bloque~4: Gradiente reactivo y cinemática} \eqref{eq:potential}--\eqref{eq:angular}
+\State $\mathbf{g}_i \gets -\nabla_{\mathbf{q}_i^{xy}} F_i(\mathbf{q}_i;\,\mathbf{l}^{\mathrm{eff}}_{s_i})$
+\State $v_i \gets \min(\norm{\mathbf{g}_i},v_{\max})$;\enspace
+       $\omega_i \gets K_\theta\cdot\mathrm{wrap}(\mathrm{atan2}(\mathbf{g}_i) - \theta_i)$
+\State $\mathbf{q}_i(t{+}1) \gets $ unicycle\_step$(\mathbf{q}_i(t), v_i, \omega_i)$
+
+\State \textbf{Actualizaci\'on del grafo y modo de tarea}
+\State $\mathcal{N}_i(t{+}1) \gets \{j\neq i : \norm{\mathbf{q}_i^{xy}(t{+}1){-}\mathbf{q}_j^{xy}(t{+}1)}\leq R\}$
+\For{cada tarea $k$ con $i \in \mathcal{C}_k$}
+  \If{$|\mathcal{C}_k|\geq n_k$ durante $\tau_s$ pasos consecutivos}
+    \State modo$_k(t{+}1) \gets $ transporte \Comment{ec.~\eqref{eq:target_switch}}
+  \ElsIf{modo$_k(t) = $ transporte \textbf{y} $|\mathcal{C}_k| < n_k$ durante $\tau_s$ pasos}
+    \State modo$_k(t{+}1) \gets $ reclutamiento \Comment{transici\'on inversa}
+  \EndIf
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\begin{observacion}[Transitorio por cambios simult\'aneos de estrategia]
+Cuando varios robots cambian de estrategia en el mismo instante $t$ ---por ejemplo
+en la inicializaci\'on o tras una perturbaci\'on--- cada uno reinicializa su
+estimador $\hat{x}_{ik}$ (l\'inea~3 del Algoritmo~\ref{alg:loop}). El transitorio
+del consenso dura aproximadamente $O(1/L_G)$ pasos, donde $L_G$ es la conectividad
+algebraica del grafo $G(t)$. Durante este per\'iodo, los payoffs calculados son
+imprecisos y la din\'amica de Smith puede generar reasignaciones espurias.
+El efecto acumulado de estos transitorios queda capturado por la m\'etrica
+$\Delta_{\mathrm{chg}}$ en el Escenario~A.
+\end{observacion}
+
+\subsection{An\'alisis de convergencia}
+
+Se presenta un an\'alisis formal para el caso simplificado con comunicaci\'on global
+y tareas homog\'eneas. El an\'alisis del caso general (grafo irregular, tareas
+heterog\'eneas, cardinalidades distintas) queda como extensi\'on doctoral.
+
+\begin{proposicion}[Convergencia simplificada]
+\label{prop:convergencia}
+Cons\'idere $N$ robots con rango de comunicaci\'on $R = \infty$ (sin error de
+consenso), $K$ tareas hom\'ogeneas con $n_k = n$ para todo $k$ y $r_k = r$ para
+todo $k$, y $N = Kn$ (balance exacto). Bajo las din\'amicas de Smith
+\eqref{eq:smith_update} con payoff $f_{ik}(x) = r \cdot \Phi(N\hat{x}_{ik},\, n)$
+---es decir, con el factor espacial $\Psi \equiv 1$ (sin descuento por distancia) y
+comunicaci\'on global perfecta ($R = \infty$, $\hat{x}_{ik} = x_k$)---,
+donde $\Phi$ es estrictamente decreciente en $z = N\hat{x}_{ik}$, el \'unico
+equilibrio Nash interior es:
+\[
+  x_k^* = \frac{n}{N} \quad \forall k \in \{1, \ldots, K\},
+  \quad x_0^* = 0.
+\]
+Este equilibrio es localmente asint\'oticamente estable bajo la condici\'on
+\textup{(C1)}: $\beta \in (\beta_{\min}, \beta_{\max})$, donde los l\'imites
+est\'an dados expl\'icitamente por:
+\begin{align}
+  \beta_{\min} &= \ln\!\left(\frac{N+1}{N-1}\right),
+    \label{eq:betamin}\\
+  \beta_{\max} &= \frac{8}{T_s \cdot \mu_0 \cdot r \cdot N}.
+    \label{eq:betamax}
+\end{align}
+$\beta_{\min} \approx 2/N$ para $N$ grande (primer orden de Taylor).
+$\beta_{\min}$ es una \emph{condici\'on de separaci\'on de payoff}: garantiza que la diferencia $\Phi(n{-}1,n) - \Phi(n{+}1,n) > 1/N$ sea suficiente para distinguir el estado subtama\~no ($z = n{-}1$)
+del sobretama\~no ($z = n{+}1$). La derivaci\'on es directa: con
+$\Phi(z,n) = 1/(1+e^{\beta(z-n)})$ se tiene
+$\Phi(n{-}1,n) - \Phi(n{+}1,n) = (e^\beta - 1)/(e^\beta + 1)$;
+la condici\'on $(e^\beta-1)/(e^\beta+1) > 1/N$ equivale a $e^\beta > (N{+}1)/(N{-}1)$,
+es decir, $\beta > \ln\!\left((N{+}1)/(N{-}1)\right) = \beta_{\min}$.
+$\beta_{\max}$ garantiza la estabilidad local de la din\'amica en tiempo discreto:
+se obtiene de la condici\'on de que el paso de actualizaci\'on
+$T_s\mu_0 r N \beta/4 < 2$, derivada de la linealizaci\'on en $\mathbf{x}^*$.
+\end{proposicion}
+
+\begin{proof}[Demostraci\'on (esbozo)]
+El argumento se construye en cuatro pasos.
+
+\textbf{Paso~1: estructura de juego potencial.}
+La funci\'on de payoff $f_{ik}(x) = r \cdot \Phi(Nx_k, n)$ es estrictamente
+decreciente en $x_k$: cuantos m\'as robots hay en la tarea $k$, menor es el payoff.
+Esta propiedad define un juego de congesti\'on sim\'etrico. Por el resultado de
+Monderer y Shapley \citep{monderer1996potential}, todo juego de congesti\'on
+sim\'etrico es un juego potencial (v\'ease tambi\'en \citealt{sandholm2010population},
+Cap. 3) con funci\'on potencial
+\[
+  V(\mathbf{x}) = \sum_{k=1}^K \int_0^{Nx_k} \Phi(z, n)\,\mathrm{d}z.
+\]
+
+\textbf{Paso~2: Smith como ascenso en el potencial.}
+Las din\'amicas de Smith son un protocolo de revisi\'on de paridad (pairwise protocol)
+que en tiempo continuo satisface $\dot{V} \geq 0$ a lo largo de las trayectorias,
+con igualdad s\'olo en los equilibrios de Nash \citep[Prop.~5.6.1]{sandholm2010population}.
+Para la versi\'on en tiempo discreto empleada aqu\'i, \citet{martinezpiazuelo2022tcss}
+(Secci\'on~III, Teorema~3) demuestran que las din\'amicas de Smith discretas generan
+una sucesi\'on $\{V(\mathbf{x}(t))\}$ no decreciente cuando el payoff es Lipschitz
+y mon\'otona no creciente en la masa de cada estrategia, y cuando el paso
+$T_s\mu_0$ es suficientemente peque\~no. La funci\'on $\Phi(\cdot,n)$ satisface $|\Phi'(z,n)| \leq \beta/4$,
+por lo que es Lipschitz-$\tfrac{\beta}{4}$ en $z$; el payoff
+$f_{ik} = r\,\Phi(N\hat{x}_{ik},n)$ es Lipschitz-$\tfrac{rN\beta}{4}$ en $\hat{x}_{ik}$
+(el factor $N$ proviene del cambio de variable $z = N\hat{x}_{ik}$), y es
+estrictamente decreciente en la masa de la estrategia;
+la condici\'on de paso se corresponde con $\beta_{\max}$ (Paso~4). Bajo estas hipot\'esis,
+los \'unicos puntos fijos son los m\'aximos de $V$ sobre el s\'implex.
+
+\textbf{Paso~3: unicidad del m\'aximo interior.}
+La Hessiana de $V$ en el espacio ambiente es diagonal con entradas
+$\partial^2 V / \partial x_k^2|_{\mathbf{x}^*} = N^2\Phi'(n,n) = -N^2\beta/4 < 0$,
+donde se us\'o $\Phi'(z,n) = -\beta\,\Phi\,(1{-}\Phi)$ y $\Phi(n,n) = 1/2$.
+En el subespacio tangente al s\'implex ($\sum_k \mathrm{d}x_k = 0$, dimensi\'on $K{-}1$),
+la Hessiana restringida sigue siendo definida negativa pues todos sus valores propios
+son $-N^2\beta/4$; por tanto, la maximizaci\'on restringida tiene un \'unico m\'aximo
+interior $\mathbf{x}^*$, y en ese punto $Nx_k^* = n$: la restricci\'on de cardinalidad
+se satisface exactamente.
+
+\textbf{Paso~4: estabilidad local en tiempo discreto.}
+Se define $W(\mathbf{x}) = V(\mathbf{x}^*) - V(\mathbf{x}) \geq 0$ en un entorno
+de $\mathbf{x}^*$ (no negativa por ser $\mathbf{x}^*$ el m\'aximo de $V$).
+Dado que las din\'amicas de Smith ascienden sobre $V$ (Paso~2), $W$ es una
+funci\'on de Lyapunov estricta en ese entorno.
+$\beta_{\min}$ es una \emph{condici\'on de separaci\'on de payoff}: garantiza
+$\Phi(n{-}1,n)-\Phi(n{+}1,n) > 1/N$, produciendo pendiente suficiente en $\mathbf{x}^*$
+para que $W$ sea localmente estricta.
+$\beta_{\max}$ proviene de exigir radio espectral $< 1$ a la linealizaci\'on de Smith
+en $\mathbf{x}^*$: la condici\'on escalar $T_s\mu_0 r N\beta/4 < 2$ es la cota resultante.
+Combinados, $\beta \in (\beta_{\min},\beta_{\max})$ asegura que $W$ decrece estrictamente
+y $\mathbf{x}^*$ es localmente asint\'oticamente estable.
+\end{proof}
+
+\begin{observacion}
+La Proposici\'on~\ref{prop:convergencia} usa $R = \infty$ y $N = Kn$.
+Para los par\'ametros nominales ($T_s\!=\!0{,}1$, $\mu_0\!=\!0{,}5$, $r\!=\!1$,
+$N\!=\!6$, $K\!=\!3$, $n\!=\!2$), los l\'imites~\eqref{eq:betamin}--\eqref{eq:betamax}
+dan $\beta_{\min} \approx 0{,}34$ y $\beta_{\max} \approx 26{,}7$, por lo que el
+valor nominal $\beta = 2{,}0$ satisface la condici\'on~(C1) con amplio margen.
+Cuando $R$ es finito, el error de consenso $e_{ik}$ introduce una perturbaci\'on
+en los payoffs cuyo efecto sobre el equilibrio se mide experimentalmente en el
+Escenario~D mediante la curva de degradaci\'on $D(R) = \Theta(R)/\Theta(\infty)$.
+La extensi\'on a $N \neq Kn$ (n\'umero no divisible exactamente) introduce estados
+de inactividad $x_0^* > 0$ y es parte del an\'alisis general que queda como
+trabajo futuro. El dominio de atracci\'on de $\mathbf{x}^*$ no se estima en este
+esbozo; la convergencia desde inicializaciones arbitrarias sobre el s\'implex se
+verifica num\'ericamente en el Escenario~A (configuraci\'on balanceada).
+\end{observacion}
+
+\begin{observacion}[Puente entre fracciones continuas y coaliciones enteras]
+\label{obs:fracciones_enteras}
+La Proposici\'on~\ref{prop:convergencia} prueba que la \emph{fracci\'on} de robots
+converge a $x_k^* = n/N$, un punto del s\'implex continuo. El requisito de
+cardinalidad $|\mathcal{C}_k| \geq n_k$ vive en el dominio \emph{entero}: un robot
+se asigna a la tarea $k$ si $s_i = \arg\max_k p_{ik}$. La correspondencia no es
+exacta: incluso con $x_k = n/N$, los n\'umeros enteros $|\mathcal{C}_k|$ pueden
+diferir en $\pm 1$ seg\'un c\'omo se resuelvan los empates en $\arg\max$.
+En particular, cuando $N = Kn$ y el sistema alcanza el equilibrio interior, la
+distribuci\'on sim\'etrica implica exactamente $n$ robots por tarea con probabilidad
+alta pero no garantizada al~100\,\%. La tasa de factibilidad $F$ (proporci\'on de
+episodios en que $|\mathcal{C}_k| \geq n_k$ se alcanza para toda $k$ dentro del
+horizonte) es la m\'etrica emp\'irica que cierra este puente.
+\end{observacion}
+
+\begin{observacion}[Tiempo de convergencia del estimador de consenso]
+Para los par\'ametros nominales, el tiempo de convergencia del estimador de consenso
+tras la reinicializaci\'on de un agente se estima a partir de la tasa de contracci\'on
+del error m\'as lento: la actualizaci\'on $\hat{x}(t{+}1) = (I - \varepsilon L)\hat{x}(t)$
+decae como $(1 - \varepsilon\lambda_2)^t$ por componente, donde $\varepsilon = 0{,}05$
+es la ganancia de consenso y $\lambda_2$ es el valor de Fiedler del grafo. Para el
+grafo nominal (anillo hexagonal $C_6$ de seis nodos), $\lambda_2 = 2(1 - \cos(2\pi/6)) = 1$.
+El n\'umero de pasos para reducir el error inicial en un factor $1/e$ es:
+\[
+  \tau_{\mathrm{pasos}} \approx \frac{1}{\varepsilon \cdot \lambda_2}
+  = \frac{1}{0{,}05 \cdot 1} = 20\,\text{pasos},
+  \quad
+  \tau_{\mathrm{conv}} \approx \tau_{\mathrm{pasos}} \cdot T_s = 2\,\text{s}.
+\]
+Este tiempo de estabilizaci\'on (${\approx}20\,T_s$) es del mismo orden que el tiempo
+de formaci\'on de coalici\'on $T_{\mathrm{coal}}$ esperado, lo que plantea una
+tensi\'on de dise\~no: el lazo de Smith opera con estimaciones que a\'un no han
+convergido. El argumento de separaci\'on de escalas de tiempo que justifica el
+acoplamiento es el siguiente: una vez que un robot se reasigna a la tarea $k$, su
+nuevo estimador $\hat{x}_{ik}$ parte del valor indicador $\mathbf{1}_{[s_i = k]}$
+y converge a la media global exponencialmente. Durante la fase de convergencia, el
+payoff $f_{ik}$ sobrestima la ocupaci\'on de $k$ (el robot se ``cuenta a s\'i mismo
+inmediatamente''), sesgando la din\'amica de Smith hacia abandonar $k$.
+Este sesgo es \emph{estabilizador} cuando la tarea ya tiene robots suficientes
+(saturaci\'on): el robot reci\'en llegado siente resistencia a quedarse en una
+tarea ya cubierta, reduciendo el \emph{chattering}. Sin embargo, es
+\emph{potencialmente perturbador} cuando la tarea est\'a sub-dimensionada y el
+robot acaba de unirse correctamente: el sesgo lo empuja a abandonar una tarea que
+a\'un necesita m\'as robots. La diferencia con la Obs.~\ref{obs:init_obs} es el
+alcance: aqu\'i se trata del transitorio de un \'unico agente tras una reasignaci\'on
+individual; en Obs.~\ref{obs:init_obs} la inicializaci\'on indicador afecta a
+\emph{todos} los robots simult\'aneamente, congelando las din\'amicas globalmente.
+El efecto neto de este sesgo local ---estabilizador en saturaci\'on, perturbador en
+reclutamiento--- se cuantifica mediante $\Delta_{\mathrm{chg}}$ en el Escenario~A;
+la ablaci\'on $\hat{x}$ ideal vs.\ estimado permite aislar el efecto del error de
+consenso sobre el equilibrio resultante.
+\end{observacion}
+
+\subsection{Dise\~no experimental}
+\label{subsec:experimental}
+
+El dise\~no compara cinco tratamientos en seis escenarios. Todos los tratamientos
+usan los mismos valores de par\'ametros f\'isicos, las mismas condiciones iniciales
+de posici\'on (controladas por semilla) y la misma secuencia de aparici\'on de tareas.
+
+\subsubsection{Tratamientos}
+
+\begin{itemize}
+  \item \textbf{T1 -- Heur\'istica voraz local}: cada robot selecciona la tarea m\'as
+    cercana que todav\'ia necesita robots ($|\mathcal{C}_k| < n_k$). No hay consenso ni
+    din\'amicas de Smith.
+
+  \item \textbf{T2 -- Consenso puro}: se ejecuta el consenso distribuido
+    \eqref{eq:consenso}, pero la asignaci\'on usa la regla greedy sobre las
+    estimaciones $\hat{x}_{ik}$ sin las din\'amicas de Smith.
+
+  \item \textbf{T3 -- Replicador distribuido (DRD)}: din\'amica del replicador en
+    tiempo discreto \citep{quijano2017population} en la que la media del payoff
+    poblacional $\bar{f}(\mathbf{x}) = \sum_k x_k f_k(\mathbf{x})$ se estima
+    mediante una segunda capa de consenso sobre la red (v\'ease \S\,\ref{subsec:porquesmith}
+    para la argumentaci\'on completa). Esta l\'inea base permite cuantificar
+    emp\'iricamente el sesgo de estimaci\'on dependiente de topolog\'ia que
+    distingue Smith de DRD.
+
+  \item \textbf{T4 -- \'Optimo centralizado (asignaci\'on \'optima, h\'ungaro)}: con
+    acceso al estado global, se resuelve la asignaci\'on de m\'inimo coste
+    respetando la cardinalidad: cada tarea $k$ se expande en $n_k$ \emph{slots}
+    id\'enticos; se a\~naden \emph{filas ficticias} si $N < \sum_k n_k$ (robots
+    insuficientes) o \emph{columnas ficticias} si $N > \sum_k n_k$ (robots en
+    exceso, al menos uno queda inactivo); y se minimiza la distancia eucl\'idea
+    total robot--slot mediante el algoritmo h\'ungaro sobre la matriz cuadrada
+    resultante. La funci\'on objetivo ---minimizar distancia de asignaci\'on--- no
+    coincide necesariamente con maximizar $\Theta$, por lo que T4 es una cota de
+    referencia de eficiencia de asignaci\'on, no un l\'imite superior absoluto del
+    throughput.
+
+  \item \textbf{T5 -- M\'etodo propuesto}: tres din\'amicas acopladas con funci\'on
+    de payoff \eqref{eq:payoff} y tasa de revisi\'on \eqref{eq:revision_rate}.
+\end{itemize}
+
+\subsubsection{Escenarios}
+
+La Tabla~\ref{tab:escenarios} describe los seis escenarios. Todos se ejecutan con
+$m = 30$ repeticiones por tratamiento con semillas distintas pero fijadas.
+
+\begin{table}[htbp]
+\centering
+\caption{Escenarios experimentales: configuraci\'on, prop\'osito y par\'ametros clave.}
+\label{tab:escenarios}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{0.12\textwidth}p{0.24\textwidth}Y}
+\toprule
+Escenario & Configuraci\'on & Prop\'osito \\
+\midrule
+A & 6 AGV, 3 tareas; \textbf{(a)} $n_k = 2$ (caso balanceado: $N=Kn=6$);
+  \textbf{(b)} $n_k = 1$ (l\'inea base) &
+  (a)~Validaci\'on num\'erica exclusiva de H1 (Proposici\'on~\ref{prop:convergencia}):
+  satisface las hip\'otesis $\Psi\equiv 1$, $R=\infty$ y $N=Kn$.
+  (b)~L\'inea base sin requisito de coalici\'on; establece funcionamiento base. \\
+B & 6 AGV, 1 tarea ligera ($n=1$) + 1 tarea pesada ($n=3$) &
+  Prueba central de formaci\'on de coalici\'on m\'inima. Evaluar si el sistema
+  asigna 1 robot a la tarea ligera y 3 a la pesada. \\
+C & 12 AGV, 5 tareas con $n_k \in \{1,1,2,3,4\}$; la prioridad entra mediante
+  la recompensa $r_k$ (alta: 2{,}0, media: 1{,}0, baja: 0{,}5) &
+  Competencia y prioridad: las tareas con $r_k$ alto atraen agentes antes;
+  el sistema debe llenarse en orden de prioridad sin coordinaci\'on central. \\
+D & 15 AGV, 5 tareas ($n_k \in \{1,2,2,3,4\}$, $\sum n_k = 12$), $R$ barrido
+  en 10 puntos: los 8 valores finitos
+  $\{10, 7{,}2, 5{,}2, 3{,}7, 2{,}7, 2{,}0, 1{,}4, 1{,}0\}\,\text{m}$
+  m\'as los extremos $\{15\,\text{m}, \infty\}$, logar\'itmicamente espaciados
+  entre 1\,m y 15\,m &
+  Construir curva de degradaci\'on $D(R) = \Theta(R)/\Theta(\infty)$; la escala
+  logar\'itmica concentra puntos en la zona de transici\'on cr\'itica donde
+  la conectividad cambia cualitativamente. \\
+E & 10 AGV, 3 tareas ($n_k \in \{2,3,4\}$) + eliminaci\'on abrupta de 1 robot
+  a $t=20\,\text{s}$ + 2 tareas nuevas ($n_k \in \{1,2\}$) a $t=30\,\text{s}$ &
+  Prueba de reactividad ante perturbaci\'on. La eliminaci\'on es abrupta (robot
+  retirado del simulador sin aviso previo a los vecinos); los dem\'as robots
+  detectan su ausencia al dejar de recibir mensajes en el siguiente paso de
+  consenso. Se eval\'ua el tiempo de reconstituci\'on de coalici\'on. \\
+F & 4--6 Pioneer~3-DX en CoppeliaSim, Escenario B o C (con cuboide pasivo acoplado
+  cinem\'aticamente al centroide de la coalici\'on) &
+  Validaci\'on cualitativa de la \textbf{formaci\'on de coalici\'on y la navegaci\'on
+  cooperativa en formaci\'on}; no valida la manipulaci\'on por fuerzas de contacto,
+  que es una capa complementaria fuera del alcance. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Correspondencia entre hip\'otesis, escenarios y m\'etrica principal de contraste.}
+\label{tab:hipescenario}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{0.18\textwidth}p{0.25\textwidth}Y}
+\toprule
+Hip\'otesis & Escenarios de contraste & M\'etrica principal \\
+\midrule
+H1 (convergencia Nash) & A\,(config.\ balanceada, $n_k{=}2$) &
+  $T_{\mathrm{conv}} < \infty$ en ${\geq}27$ de 30 episodios,
+  con $|x_k(T_{\mathrm{conv}}) - x_k^*| < 0{,}01$ para todo $k$; $T_{\mathrm{conv}}$ es el
+  primer instante en que se satisface la condici\'on \\
+H2 (tasa modulada) & A, B (ablaci\'on $\mu_i$ constante vs.\ modulada) &
+  $\Delta_{\mathrm{chg}}$ (reducci\'on ${\geq}40\%$) \\
+H3 (factibilidad) & B, C, D ($R$ variable) &
+  $F \geq 0{,}85$; curva $D(R)$ \\
+H4 (brecha $\Delta J$) & B, C, E (perturbaci\'on) &
+  $\Delta J < 0{,}25$ / $0{,}40$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{M\'etricas}
+
+Todas las m\'etricas se definen antes de ejecutar la campa\~na experimental y se
+calculan autom\'aticamente sobre los registros de cada episodio.
+
+\begin{table}[htbp]
+\centering
+\caption{M\'etricas de evaluaci\'on: definici\'on e interpretaci\'on.}
+\label{tab:metricas}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{0.08\textwidth}p{0.24\textwidth}Y}
+\toprule
+S\'imbolo & Nombre & Definici\'on / Interpretaci\'on \\
+\midrule
+$\Theta$ & Tasa de throughput &
+  Tareas completadas por minuto promediadas sobre el episodio. \\
+$\bar{T}$ & Tiempo medio de entrega &
+  Promedio del tiempo entre aparici\'on de la carga y entrega al destino. \\
+$T_{\text{coal}}$ & Tiempo de formaci\'on de coalici\'on &
+  Tiempo entre aparici\'on de la tarea y el instante en que
+  $|\mathcal{C}_k(t)| \geq n_k$ por primera vez. \\
+$C$ & Sobrecarga de comunicaci\'on &
+  Mensajes intercambiados por robot por paso temporal. \\
+$D(R)$ & Ratio de degradaci\'on &
+  $\Theta(R)/\Theta(\infty)$; mide p\'erdida relativa de rendimiento con $R$ finito. \\
+$F$ & Tasa de factibilidad &
+  Porcentaje de tareas que alcanzan $|\mathcal{C}_k| \geq n_k$ dentro del
+  horizonte temporal $T$. \\
+$\Delta_{\text{chg}}$ & Cambios de asignaci\'on &
+  Cambios de estrategia por robot por paso temporal:
+  $\frac{1}{T}\sum_{t=1}^{T}\mathbf{1}_{[s_i(t)\neq s_i(t-1)]}$;
+  normalizaci\'on por $T$ permite comparar episodios de distinta duraci\'on. \\
+$D_{\text{tot}}$ & Distancia total recorrida &
+  $\sum_i \int_0^T \norm{v_i(t)}\,\mathrm{d}t$; proxy de consumo energ\'etico
+  de la flota. \\
+$\Delta J$ & Brecha de descentralizaci\'on &
+  $(\Theta_{\text{cent}} - \Theta_{\text{dist}}) / \max(\Theta_{\text{cent}}, \delta_0)$,
+  con $J \triangleq \Theta$ y $\delta_0 = 10^{-3}$;
+  mide cu\'anto pierde el distribuido respecto al centralizado ($\Delta J = 0$: sin p\'erdida). \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Los resultados se reportan como media $\pm$ desviaci\'on est\'andar sobre $m = 30$
+repeticiones. Las comparaciones pareadas entre tratamientos (p.ej., din\'amica de
+Smith vs.\ l\'ineas base, $\mu_i$ modulada vs.\ constante) se contrastar\'an
+mediante la prueba de Wilcoxon de rangos con signo (datos de una muestra) o la
+prueba U de Mann-Whitney (dos muestras independientes), con correcci\'on de
+Bonferroni para comparaciones m\'ultiples ($\alpha_{\text{corr}} = 0{,}05/M$ siendo
+$M$ el n\'umero de contrastes simult\'aneos). Se incluye un episodio fallido por
+escenario para documentar los l\'imites del m\'etodo. El registro completo de
+trayectorias $\mathbf{p}_i(t)$ para todo $i$ y todo $t$ se almacena para
+an\'alisis a posteriori de la din\'amica de preferencias.
+
+\subsection{Implementaci\'on en Python}
+
+La plataforma de simulaci\'on se implementa como un paquete Python estructurado
+(\texttt{viu\_mrob\_tfm/}) con separaci\'on clara entre modelos de dominio, din\'amicas,
+l\'ineas base, motor de simulaci\'on, m\'etricas, experimentos y visualizaci\'on.
+La Tabla~\ref{tab:params} recoge los par\'ametros del sistema junto con sus valores
+nominales y el rango de variaci\'on en los experimentos.
+
+\begin{table}[htbp]
+\centering
+\caption{Par\'ametros del sistema y valores nominales para los experimentos.}
+\label{tab:params}
+\begin{tabularx}{\textwidth}{>{\ttfamily}p{0.12\textwidth}p{0.28\textwidth}p{0.10\textwidth}Y}
+\toprule
+\normalfont S\'imbolo & Par\'ametro & Valor nominal & Rango / Nota \\
+\midrule
+$T_s$ & Per\'iodo de muestreo & 0{,}10 s & Fijo \\
+$\beta$ & Pendiente sigmoide & 2{,}0 & (1{,}0, 5{,}0) \\
+$\lambda$ & Escala espacial del payoff & 5{,}0 m & (2{,}0, 10{,}0) m \\
+$r_0$ & Payoff de inactividad & 0{,}05 & Fijo \\
+$\mu_0$ & Tasa de revisi\'on base & 0{,}50 & (0{,}1, 1{,}0) \\
+$\sigma_{\text{rev}}$ & Ancho espacial de revisi\'on & 2{,}0 m & (1{,}0, 5{,}0) m \\
+$\tau_s$ & Umbral de modo transporte & 3 pasos & Fijo \\
+$\varepsilon$ & Ganancia de consenso & 0{,}05 & $(0, 1/d_{\max})$ \\
+$R$ & Rango de comunicaci\'on & $\infty$ & (1{,}0 m, $\infty$) \\
+$\alpha$ & Ganancia de atracci\'on & 1{,}0 & Fijo \\
+$\eta$ & Ganancia de repulsi\'on & 0{,}5 & Fijo \\
+$\delta$ & Ganancia de formaci\'on & 0{,}8 & Fijo \\
+$r_{\mathrm{det}}$ & Radio de detecci\'on de coalici\'on & 1{,}0 m & Fijo \\
+$r_{\mathrm{form}}$ & Radio de activaci\'on de formaci\'on & 1{,}5 m & Fijo \\
+$r_{\mathrm{robot}}$ & Radio f\'isico del AGV & 0{,}25 m & Pioneer~3-DX \\
+$r_{\mathrm{load}}$ & Radio de la carga & 0{,}30 m & Valor nominal \\
+$\varepsilon_r$ & Regularizaci\'on de repulsi\'on & 0{,}01 m & Fijo \\
+$\omega_{\max}$ & Velocidad angular m\'axima & 2{,}5 rad/s & Pioneer~3-DX \\
+$v_{\max}$ & Velocidad m\'axima & 0{,}5 m/s & Valor conservador (Pioneer~3-DX: ${\sim}1{,}2\,\text{m/s}$) \\
+$K_\theta$ & Ganancia de orientaci\'on & 2{,}0 & Fijo \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Cada experimento se configura mediante un archivo YAML con todos los par\'ametros
+y semillas, de modo que los resultados son completamente reproducibles desde la
+configuraci\'on. Se registran las trayectorias $\mathbf{p}_i(t)$, $\mathbf{q}_i(t)$
+y $\hat{\mathbf{x}}_i(t)$ en cada paso temporal, y las m\'etricas se calculan en
+postprocesamiento.
+
+\subsection{Validaci\'on en CoppeliaSim}
+
+El Escenario~F replica uno de los escenarios de coalici\'on m\'inima (B o C) con
+robots Pioneer~3-DX en CoppeliaSim. El prop\'osito de esta validaci\'on no es
+obtener m\'etricas adicionales, sino confirmar que el comportamiento colectivo
+observado en Python es coherente con la f\'isica del simulador rob\'otico: los robots
+se desplazan hacia las tareas correctas, forman la geometr\'ia de coalici\'on y
+reaccionan ante una perturbaci\'on (retirada de un robot a mitad de la misi\'on).
+La escena de CoppeliaSim incluye un almac\'en simplificado con zonas de carga marcadas
+en el suelo, compatible con el tama\~no operativo de los Pioneer~3-DX.
+
+\subsection{Criterios de aceptaci\'on del m\'etodo}
+
+El m\'etodo se considerar\'a satisfactorio si:
+
+\begin{enumerate}
+  \item La tasa de factibilidad del tratamiento~T5 es $F \geq 0{,}85$ en los
+    Escenarios~B y~C.
+  \item El tiempo de formaci\'on de coalici\'on $T_{\text{coal}}$ del tratamiento~T5
+    es menor que el del tratamiento~T1 en al menos el 80\,\% de las repeticiones
+    del Escenario~B.
+  \item El n\'umero de cambios de asignaci\'on $\Delta_{\text{chg}}$ del
+    tratamiento~T5 con tasa espacial \eqref{eq:revision_rate} es inferior al del
+    mismo tratamiento con tasa constante $\mu_i = \mu_0$, validando la
+    Hip\'otesis~2.
+  \item La validaci\'on num\'erica de la Proposici\'on~\ref{prop:convergencia}
+    en el Escenario~A (configuraci\'on balanceada $n_k=2$, $N=Kn=6$) con 30 episodios
+    muestra convergencia ($T_{\mathrm{conv}} < \infty$ y
+    $|x_k(T_{\text{conv}}) - x_k^*| < 0{,}01$ para todo $k$) en al menos 27 episodios
+    (tasa de \'exito ${\geq}90\%$).
+  \item La escena de CoppeliaSim (Escenario~F) muestra visualmente la formaci\'on
+    de la coalici\'on requerida y la reacci\'on ante perturbaci\'on.
+\end{enumerate}
+
+Los criterios 1--5 son \textbf{conjuntivos}: deben cumplirse todos para declarar el
+m\'etodo satisfactorio. El criterio~5 es condici\'on necesaria pero de car\'acter
+cualitativo; los criterios~1--4 son cuantitativos y verificables estad\'isticamente.
+Si alguno de los criterios~1--4 no se cumple, el experimento se replicar\'a
+ajustando los par\'ametros nominales dentro del rango indicado en la
+Tabla~\ref{tab:params} antes de concluir el rechazo.
+
+%% ====================================================================
+\section{Marco te\'orico}
+\label{sec:marco}
+%% ====================================================================
+
+\textit{[Secci\'on reservada para la entrega final. Se desarrollar\'an los siguientes
+apartados:]}
+
+\begin{itemize}
+  \item 7.1 Juegos poblacionales y equilibrio Nash
+  \item 7.2 Din\'amicas de Smith: definici\'on, propiedades y comparaci\'on con
+    el replicador
+  \item 7.3 Juegos de congesti\'on ponderados: estructura potencial
+  \item 7.4 Consenso distribuido en grafos din\'amicos
+  \item 7.5 Transporte cooperativo multi-robot: estado del arte
+  \item 7.6 Formaci\'on de coaliciones en sistemas multi-agente
+\end{itemize}
+
+%% ====================================================================
+\section{Resultados esperados}
+\label{sec:resultados}
+%% ====================================================================
+
+\textit{[Secci\'on reservada para la entrega final. Los resultados se generar\'an
+desde la plataforma Python mediante la campa\~na experimental descrita en la
+Secci\'on~\ref{subsec:experimental}. Se incluir\'an:]}
+
+\begin{itemize}
+  \item Validaci\'on num\'erica de la Proposici\'on~\ref{prop:convergencia}
+    (convergencia al equilibrio en el Escenario~A, configuraci\'on balanceada $n_k=2$).
+  \item Tablas comparativas de todas las m\'etricas para los seis escenarios y
+    cinco tratamientos.
+  \item Curva de degradaci\'on $D(R)$ del Escenario~D.
+  \item Trayectorias de preferencias $\mathbf{p}_i(t)$ mostrando la formaci\'on
+    din\'amica de la coalici\'on.
+  \item Im\'agenes y secuencias de CoppeliaSim del Escenario~F.
+\end{itemize}
+
+%% ====================================================================
+\section{Conclusiones}
+\label{sec:conclusiones}
+%% ====================================================================
+
+\textit{[Secci\'on reservada para la entrega final. Las conclusiones discutir\'an:]}
+
+\begin{itemize}
+  \item Cumplimiento de los criterios de aceptaci\'on y contraste de hip\'otesis.
+  \item Condiciones bajo las cuales el m\'etodo propuesto mejora o no a los
+    tratamientos de referencia.
+  \item Limitaciones observadas en los experimentos: efecto del grafo irregular,
+    escenarios con $N \neq Kn$ y robustez ante perturbaciones.
+  \item L\'ineas de trabajo futuro: extensi\'on doctoral DRD-PI, tasas de revisi\'on
+    dependientes del grafo, generaci\'on de tareas en tiempo real.
+\end{itemize}
+
+%% ====================================================================
+\bibliographystyle{apalike}
+\bibliography{references}
+%% ====================================================================
+
 \end{document}
