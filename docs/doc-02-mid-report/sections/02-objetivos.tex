@@ -11,13 +11,13 @@ grado de cumplimiento se contrastará en la entrega final.
 \subsection{Objetivo general}
 
 Diseñar y evaluar, mediante simulación cuantitativa reproducible, un esquema de
-control distribuido basado en consenso dinámico de media y dinámicas poblacionales
-para la formación adaptativa de coaliciones en flotas multi-AGV que deben
-transportar cooperativamente cargas con requisitos mínimos de cardinalidad,
-caracterizado mediante una escalera comparativa de cinco tratamientos (T1--T5) que
-aísla el papel de la estimación distribuida, la dinámica poblacional y la política
-de revisión, y contrastado con una referencia centralizada replanificada bajo seis
-escenarios experimentales.
+coordinación distribuida local basado en consenso dinámico de media y dinámicas
+poblacionales para la formación adaptativa de coaliciones en flotas multi-AGV que
+transportan cooperativamente cargas heterogéneas con requisitos mínimos de
+cardinalidad, integrando estimación de ocupación, asignación a cargas, formación de
+coaliciones y navegación reactiva en un único bucle de control, caracterizado mediante
+una escalera comparativa de cinco tratamientos (T1--T5) y contrastado con una
+referencia centralizada replanificada bajo seis escenarios experimentales.
 
 \subsection{Objetivos específicos}
 
@@ -38,11 +38,12 @@ escenarios experimentales.
     formación de coaliciones en los experimentos.
 
   \item Implementar las tres dinámicas acopladas (consenso distribuido,
-    Smith en tiempo discreto y gradiente reactivo) en un paquete Python
+    Smith en tiempo discreto y gradiente reactivo con evitación de obstáculos
+    estáticos) en un paquete Python
     reproducible, con soporte para cinco tratamientos y seis escenarios con semillas
     controladas y registro completo de trayectorias.
 
-  \item Validar cualitativamente el comportamiento de formación de coaliciones
-    en CoppeliaSim con robots Pioneer~3-DX en al menos uno de los escenarios de
-    coalición mínima.
+  \item Validar cualitativamente el comportamiento de formación de coaliciones y el
+    transporte cooperativo del cluster con evitación reactiva de obstáculos en
+    CoppeliaSim con robots Pioneer~3-DX.
 \end{enumerate}
