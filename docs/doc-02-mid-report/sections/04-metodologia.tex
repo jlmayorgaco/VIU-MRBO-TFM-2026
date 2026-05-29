@@ -245,6 +245,9 @@ Smith en tiempo discreto:
 donde $\pos{y} = \max(y, 0)$, $\Pi_{\simplex}$ es la proyección ortogonal sobre
 el símplex $\simplex^K$ (calculada por el algoritmo estándar de clasificación
 y umbral de complejidad $O(K\log K)$), y $\mu_i(t) > 0$ es la tasa de revisión del robot $i$.
+La proyección $\Pi_{\simplex}$ se implementa como salvaguarda numérica frente al
+error de punto flotante; la cota de paso $\beta_{\max}$ ya garantiza la invarianza
+del símplex en la dinámica ideal.
 El primer término de \eqref{eq:smith_update} representa el flujo de entrada desde
 estrategias con menor payoff; el segundo, el flujo de salida hacia estrategias con
 mayor payoff. Esta comparación bilateral elimina la necesidad de conocer la media
