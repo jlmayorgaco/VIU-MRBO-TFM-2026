@@ -14,6 +14,7 @@
 \setviututor{José Ignacio Iñíguez Amigot}
 \setviuedition{2025--26}
 \setviudate{mayo de 2026}
+\setviuheadertitle{J.~L.~Mayorga $\cdot$ Formación distribuida de coaliciones multi-AGV}
 
 %--- Comandos matemáticos
 \newcommand{\RR}{\mathbb{R}}
@@ -38,9 +39,9 @@
 \makeviucover
 \hypersetup{pageanchor=true}
 
-%--- Numeracion arabica forzada a partir de 2 (cover ya conto como 1)
-\pagenumbering{arabic}
-\setcounter{page}{2}
+%--- Preliminares en numeración romana (resumen, índices, nomenclatura);
+%    la portada no se numera. El cuerpo pasa a arábigo desde la Introducción.
+\pagenumbering{roman}
 
 %--- Pagina en blanco (pag 2, con header pero sin contenido)
 \thispagestyle{frontmatter}
@@ -108,9 +109,10 @@ games, coalition formation, multi-AGV cooperative transport, distributed control
 \clearpage
 
 %% ====================================================================
-%% Cuerpo principal
+%% Cuerpo principal (numeración arábiga desde 1)
 %% ====================================================================
 
+\pagenumbering{arabic}
 \input{sections/01-introduccion}
 
 \input{sections/02-objetivos}
