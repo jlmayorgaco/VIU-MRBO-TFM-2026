@@ -194,14 +194,34 @@ de Sandholm (PDF del autor). Resultados (12.4):
 
 ---
 
+## Respaldo abierto del Teorema 4.1 (2026-05-29)
+**Commit:** `docs(theorem): respaldo abierto y verificable del paso de la demostracion`
+
+Tras búsqueda en acceso abierto (arXiv/repositorios/índice oficial), se reancló la
+demostración del Teorema~4.1 en fuentes **abiertas y ya presentes en `references.bib`**:
+- **Paso continuo distribuido** → `barreiro2017distributed`, **Teorema 3** (versión de
+  autor abierta en UPCommons): estabilidad asintótica del Nash en juegos potenciales vía
+  Lyapunov $E_V=V(x^*)-V(x)$, $\dot E_V=-f^\top L^{(x)}f\le 0$. Smith = protocolo pairwise
+  (su Tabla I).
+- **Paso discreto** → `martinez2020formation`, **Teorema 1** (PDF abierto actas IFAC 2020):
+  estabilidad asintótica de las dinámicas de Smith distribuidas en tiempo discreto bajo
+  condición suficiente en el paso (inversamente proporcional al grado máximo $\tilde n$).
+- `martinezpiazuelo2022tcss` (T-SMC 2022, de pago) queda como referencia del caso general.
+- **`% TODO-CITA` resuelto** (0 restantes): el localizador discreto es ahora abierto y
+  verificable (Teorema 1).
+
+Verificación bibliográfica adicional (acceso abierto):
+- Sandholm "Cap. 3" y "§5.6/§7.1" confirmados contra el índice oficial del libro.
+- Monderer–Shapley pp. 124–143 confirmadas (PDF abierto cs.tau.ac.il). **Matiz de
+  atribución pendiente para el autor:** "congestion ⟹ potential" es de Rosenthal (1973);
+  M&S prueban el converso. (No editado: Rosenthal no está en `.bib`.)
+
 ## TODOs pendientes
 
-`% TODO-CITA` en `04-metodologia.tex` (pendiente de revisión del autor):
-1. Confirmar contra el paper de Martínez-Piazuelo (TSMC 2022) el localizador exacto
-   y que el resultado de potencial no decreciente se enuncia para Smith/pairwise.
-
-Recomendado (no bloqueante): reconfirmar en IEEE Xplore la entrada corregida de
-`zhang2024coalition`.
+Recomendado (no bloqueante):
+1. Reconfirmar en IEEE Xplore la entrada corregida de `zhang2024coalition`.
+2. Decidir atribución de "juegos de congestión ⟹ potencial" (Rosenthal 1973 vs.
+   Monderer–Shapley converso) en la demostración del Teorema 4.1.
 
 Pendientes de decisión del autor (no editados):
 - **(item 22)** Escenario D: 10 puntos de $R$ × 30 rep. × 5 tratamientos ⇒ ~1500

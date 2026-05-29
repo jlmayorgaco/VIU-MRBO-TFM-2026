@@ -593,20 +593,23 @@ Cap.~3) con función potencial
 
 \textbf{Paso~2: Smith como ascenso en el potencial.}
 Las dinámicas de Smith son un protocolo de revisión de paridad (pairwise protocol)
-que en tiempo continuo satisface $\dot{V} \geq 0$ a lo largo de las trayectorias,
-con igualdad sólo en los equilibrios de Nash \citep[\S5.6 y \S7.1]{sandholm2010population}.
-% TODO-CITA: verificar contra el paper el localizador exacto (¿Sección/Teorema?) y que
-% el resultado se enuncia para dinámicas de Smith discretas específicamente.
-Para la versión en tiempo discreto empleada aquí, \citet{martinezpiazuelo2022tcss}
-demuestran que las dinámicas de población distribuidas en tiempo discreto generan
-una sucesión $\{V(\mathbf{x}(t))\}$ no decreciente cuando el payoff es Lipschitz
-y monótona no creciente en la masa de cada estrategia, y cuando el paso
-$T_s\mu_0$ es suficientemente pequeño. La función $\Phi(\cdot,n)$ satisface $|\Phi'(z,n)| \leq \beta/4$,
-por lo que es Lipschitz-$\tfrac{\beta}{4}$ en $z$; el payoff
-$f_{ik} = r\,\Phi(N\hat{x}_{ik},n)$ es Lipschitz-$\tfrac{rN\beta}{4}$ en $\hat{x}_{ik}$
-(el factor $N$ proviene del cambio de variable $z = N\hat{x}_{ik}$), y es
-estrictamente decreciente en la masa de la estrategia;
-la condición de paso se corresponde con $\beta_{\max}$ (Paso~4). Bajo estas hipótesis,
+que en tiempo continuo asciende sobre el potencial: $\dot{V} \geq 0$ a lo largo de
+las trayectorias, con igualdad sólo en los equilibrios de Nash
+(\citealt{sandholm2010population}, \S5.6 y \S7.1). Para la versión \emph{distribuida}
+empleada aquí, \citet{barreiro2017distributed} (Teorema~3) prueban la estabilidad
+asintótica del equilibrio de Nash en juegos potenciales mediante la función de
+Lyapunov $E_V(\mathbf{x}) = V(\mathbf{x}^*) - V(\mathbf{x})$, con
+$\dot{E}_V = -\mathbf{f}^{\top} L^{(\mathbf{x})}\mathbf{f} \leq 0$. La formulación en
+\emph{tiempo discreto} se sustenta en \citet{martinez2020formation} (Teorema~1), que
+establecen la estabilidad asintótica de las dinámicas de Smith distribuidas en tiempo
+discreto bajo una condición suficiente sobre el tamaño del paso de actualización,
+inversamente proporcional al número máximo de vecinos en el grafo; el caso general en
+tiempo discreto se trata en \citet{martinezpiazuelo2022tcss}. Esta cota sobre el paso
+es del mismo tipo que la que define $\beta_{\max}$ (Paso~4): la función $\Phi(\cdot,n)$
+satisface $|\Phi'(z,n)| \leq \beta/4$, por lo que es Lipschitz-$\tfrac{\beta}{4}$ en
+$z$ y el payoff $f_{ik} = r\,\Phi(N\hat{x}_{ik},n)$ es Lipschitz-$\tfrac{rN\beta}{4}$
+en $\hat{x}_{ik}$ (el factor $N$ proviene del cambio de variable $z = N\hat{x}_{ik}$),
+y es estrictamente decreciente en la masa de la estrategia. Bajo estas hipótesis,
 los únicos puntos fijos son los máximos de $V$ sobre el símplex.
 
 \textbf{Paso~3: unicidad del máximo interior.}
