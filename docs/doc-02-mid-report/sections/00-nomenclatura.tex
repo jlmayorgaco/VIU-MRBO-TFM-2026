@@ -35,7 +35,10 @@ $\mathbf{q}_i$        & Pose del robot $i$: $(x,y,\theta)^{\top}$              &
 $\mathbf{q}_i^{xy}$   & Proyección plana de la pose                            & m \\
 $p_{ik}$              & Probabilidad mixta del robot $i$ sobre la tarea $k$    & $[0,1]$ \\
 $\hat{x}_{ik}$        & Estimación local de la fracción de robots en $k$       & $[0,1]$ \\
+$\tilde{x}_k$         & Ocupación empírica pura $\tfrac{1}{N}\sum_i \mathbf{1}_{[s_i=k]}$ & $[0,1]$ \\
 $s_i$                 & Estrategia pura actual del robot $i$                   & $\mathcal{S}$ \\
+$\mathbf{h}_i$        & Punto adelantado (look-ahead) del robot $i$            & m \\
+$\mathrm{cnt}^{\pm}_k$ & Contadores de pasos consecutivos para transición de modo & pasos \\
 \bottomrule
 \end{tabularx}
 
@@ -60,6 +63,8 @@ $\ell$                   & Distancia look-ahead del punto adelantado          & 
 $\Delta T_c$             & Período de reasignación centralizada (T5)          & s \\
 $\varepsilon$            & Ganancia de consenso                               & $(0,\, 1/d_{\max})$ \\
 $\varepsilon_r$          & Regularización de repulsión APF                    & m \\
+$r_{\mathrm{det}}$       & Radio de detección de coalición                    & m \\
+$r_{\mathrm{form}}$      & Radio de activación de la geometría de formación   & m \\
 $R$                      & Rango de comunicación                              & m \\
 \bottomrule
 \end{tabularx}
@@ -94,5 +99,7 @@ $D_{\text{tot}}$          & Distancia total recorrida por la flota              
 $D(R)$                    & Ratio de degradación $\Theta(R)/\Theta(\infty)$      & adim. \\
 $\Delta J$                & Brecha de descentralización                          & adim. \\
 $\Delta_{\text{chg}}$     & Cambios de asignación por robot por paso             & adim. \\
+$E_{\text{DAC}}$          & Error medio de estimación de ocupación (DAC)         & $[0,1]$ \\
+$N_{\text{fail}}$         & Episodios fallidos por escenario                     & adim. \\
 \bottomrule
 \end{tabularx}
