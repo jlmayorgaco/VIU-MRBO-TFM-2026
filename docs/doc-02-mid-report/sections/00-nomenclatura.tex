@@ -44,7 +44,9 @@ $\mathbf{q}_i$        & Pose $(x,y,\theta)$ [m, m, rad] \\
 $\mathbf{q}_i^{xy}$   & Proyección plana de la pose [m] \\
 $p_{ik}$              & Probabilidad mixta de $i$ sobre $k$ ($[0,1]$) \\
 $\hat{x}_{ik}$        & Fracción estimada de robots en $k$ ($[0,1]$) \\
-$\tilde{x}_k$         & Ocupación empírica pura ($[0,1]$) \\
+$\tilde{x}_k$         & Ocupación empírica pura $a_k/N$ ($[0,1]$) \\
+$a_k$                 & Ocupación asignada pura $\sum_i\mathbf{1}_{[s_i=k]}$ \\
+$\mathrm{count}_k$    & Asignados y presentes en $r_{\mathrm{det}}$ ($=|\mathcal{C}_k|$) \\
 $s_i$                 & Estrategia pura actual de $i$ \\
 $\mathbf{h}_i$        & Punto adelantado (look-ahead) [m] \\
 $\mathrm{cnt}^{\pm}_k$& Contadores de pasos (transición de modo) \\
@@ -69,6 +71,11 @@ $\varepsilon_f$       & Regularización de formación [m] \\
 $r_{\mathrm{det}}$    & Radio de detección de coalición [m] \\
 $r_{\mathrm{form}}$   & Radio de activación de formación [m] \\
 $R$                   & Rango de comunicación [m] \\
+$d^*$                 & Distancia geométrica de formación [m] \\
+$\eta_o$              & Ganancia de repulsión de obstáculos \\
+$\varepsilon_o$       & Regularización de obstáculos [m] \\
+$c_i$                 & Capacidad del robot $i$ (ext.\ heterogénea) \\
+$M_k$                 & Demanda de capacidad de la carga $k$ (ext.) \\
 }
 
 \nomblock{Funciones y operadores}{%
