@@ -89,20 +89,19 @@ topologías de comunicación que el método propuesto.
 
 \subsection{La contribución de este TFM}
 
-% TODO-VOZ: revisar cadencia de enumerador (voz propia)
 Este TFM aporta cuatro contribuciones. La primera es una función de payoff con cota
 inferior sigmoidal de cardinalidad que preserva la estructura de juego de congestión
-y resulta compatible con distintas dinámicas de revisión (replicador y Smith), en
-contraste con las restricciones de capacidad de \citet{martinezpiazuelo2022automatica},
-que son cotas superiores. La segunda es la adaptación del replicador distribuido y de
-las dinámicas de Smith a esta función de payoff, comparadas bajo idénticas condiciones
-experimentales y la misma arquitectura de estimación por consenso dinámico de media.
-La tercera es una tasa de revisión espacialmente modulada que reduce reasignaciones
-espurias en estado estacionario. La cuarta es una caracterización empírica del coste
-de descentralización frente a una referencia centralizada con información global, junto
-con la degradación del desempeño al reducir el rango de comunicación. El resultado es
-una arquitectura distribuida acoplada cuya viabilidad cinemática se valida
-cualitativamente en CoppeliaSim con robots Pioneer~3-DX.
+y admite distintas dinámicas de revisión (replicador y Smith), en contraste con las
+restricciones de capacidad de \citet{martinezpiazuelo2022automatica}, que son cotas
+superiores. Sobre esa función se adaptan y comparan el replicador distribuido y las
+dinámicas de Smith bajo idénticas condiciones experimentales y la misma arquitectura
+de estimación por consenso dinámico de media. A ello se añade una tasa de revisión
+espacialmente modulada que reduce las reasignaciones espurias en estado estacionario.
+Por último, se caracteriza empíricamente el coste de descentralización frente a una
+referencia centralizada con información global, junto con la degradación del desempeño
+al reducir el rango de comunicación. El resultado es una arquitectura distribuida
+acoplada cuya viabilidad cinemática se valida cualitativamente en CoppeliaSim con
+robots Pioneer~3-DX.
 
 La validación se realiza mediante simulación cuantitativa en Python con seis
 escenarios y cinco tratamientos comparativos dispuestos como escalera incremental
@@ -199,7 +198,7 @@ Los métodos de asignación descentralizada basados en subastas
 \citep{choi2009consensus} y en formación de coaliciones hedo\-nistas
 \citep{dutta2021hedonic, zhang2024coalition} coordinan la asignación mediante
 negociación iterativa entre agentes, pero producen asignaciones discretas que
-no se actualizan de forma continua ante cambios en el entorno. Los métodos de
+no se actualizan continuamente ante cambios en el entorno. Los métodos de
 aprendizaje por refuerzo \citep{bezerra2025learning} generan políticas efectivas
 en distribución, pero requieren entrenamiento previo sobre escenarios representativos
 y carecen de garantías formales de convergencia ante configuraciones de tarea
@@ -252,7 +251,6 @@ La afirmación de este TFM es deliberadamente acotada: bajo comunicación local 
 cargas heterogéneas con requisitos mínimos de cardinalidad, ¿puede una arquitectura
 distribuida, interpretable y basada en dinámicas poblacionales formar coaliciones
 factibles con una pérdida de desempeño acotada frente a una referencia centralizada?
-% TODO-VOZ: reformular estructura no-es-X-es-Y
-El objetivo es responder esa pregunta, no establecer la superioridad del control
-distribuido sobre el centralizado en todo régimen operativo.
+El propósito es responder esa pregunta. Afirmar la superioridad del control
+distribuido sobre el centralizado en todo régimen operativo queda fuera de su alcance.
 

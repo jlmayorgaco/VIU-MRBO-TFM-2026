@@ -3,11 +3,11 @@
 \label{sec:metodologia}
 %% ====================================================================
 
-Este capítulo desarrolla la metodología del trabajo. En primer lugar se delimita el
-alcance y las limitaciones del estudio y se sitúa el plan de trabajo; a continuación
-se formaliza el modelo del sistema y se describen las tres dinámicas acopladas que
-constituyen el método. El capítulo cierra con el análisis de convergencia, el diseño
-experimental, las métricas y los criterios de aceptación.
+En este capítulo se delimita primero el alcance y las limitaciones del estudio y se
+sitúa el plan de trabajo; a continuación se formaliza el modelo del sistema y se
+describen las tres dinámicas acopladas que conforman el método. El capítulo cierra
+con el análisis de convergencia, el diseño experimental, las métricas y los criterios
+de aceptación.
 
 \subsection{Alcance y limitaciones}
 \label{sec:alcance}
@@ -884,9 +884,7 @@ que la comparación T3 frente a T4 aísla el efecto de la política de revisión
   \item \textbf{T1 -- Heurística voraz local}: cada robot selecciona la tarea más
     cercana que todavía necesita robots ($|\mathcal{C}_k| < n_k$), usando solo
     información geométrica local. No hay estimación de ocupación ni dinámica de
-    revisión. % TODO-VOZ: variar formulación repetida de propósito de tratamiento
-    Este tratamiento responde si basta con elegir la tarea cercana con
-    déficit.
+    revisión: mide si la sola cercanía geométrica resuelve la asignación.
 
   \item \textbf{T2 -- DAC con regla voraz}: se ejecuta el consenso dinámico de
     media \eqref{eq:consenso} para estimar la ocupación $\hat{x}_{ik}$, pero la
