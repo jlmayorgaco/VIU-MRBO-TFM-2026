@@ -87,6 +87,11 @@ potencial; al heredar las limitaciones clásicas de los campos de potencial arti
 navegación. Los obstáculos se modelan como elementos estáticos convexos simples; no se
 aborda planificación global de rutas ni SLAM.
 
+El núcleo formal y experimental asume flota homogénea (cardinalidad mínima). La
+heterogeneidad de capacidad entre robots se formula como extensión
+(\S\,\ref{subsec:heterogenea}) y se explora cualitativamente (Escenario~G), sin
+garantía formal.
+
 \subsubsection{Plan de trabajo y cronograma}
 \label{sec:cronograma}
 
@@ -114,9 +119,10 @@ replanificada). El método propuesto en este TFM es el tratamiento~T4; el
 contraste entre su tasa de revisión modulada y una tasa constante se trata como
 ablación interna, sin constituir un tratamiento separado. T5 funciona como
 referencia centralizada que acota empíricamente el coste de la descentralización,
-no como un óptimo absoluto. La metodología se organiza en quince subsecciones que cubren
+no como un óptimo absoluto. La metodología se organiza en dieciséis subsecciones que cubren
 el modelo del sistema, las dinámicas acopladas, el análisis de convergencia, el
-diseño experimental y los criterios de aceptación.
+diseño experimental, los criterios de aceptación y una extensión de capacidad
+heterogénea (formulación).
 
 \subsection{Modelo del sistema}
 
@@ -149,6 +155,14 @@ $\mathbf{l}_k \in \RR^2$, su destino de entrega $\mathbf{d}_k \in \RR^2$,
 su recompensa $r_k > 0$ y su requisito mínimo de cardinalidad $n_k \in \NN$.
 La tarea $k = 0$ representa el estado de inactividad, con $r_0 = 0$ y $n_0 = 0$. El conjunto de estrategias disponibles para cada robot es
 $\mathcal{S} = \{0, 1, \ldots, K\}$.
+
+La cardinalidad mínima $n_k$ es un caso particular de una restricción más general de
+capacidad acumulada: si cada robot $i$ posee una capacidad $c_i > 0$ y la carga $k$
+demanda una capacidad $M_k$, la factibilidad se expresa como
+$\sum_{i\in\mathcal{C}_k} c_i \geq M_k$. El requisito de cardinalidad se recupera con
+flota homogénea ($c_i = c$, $M_k = n_k\,c$). El núcleo formal y experimental de este
+TFM asume flota homogénea; la extensión heterogénea se formula en
+\S\,\ref{subsec:heterogenea}.
 
 \subsubsection{Grafo de comunicación}
 
@@ -920,8 +934,10 @@ que la comparación T3 frente a T4 aísla el efecto de la política de revisión
 
 \subsubsection{Escenarios}
 
-La Tabla~\ref{tab:escenarios} describe los seis escenarios. Todos se ejecutan con
-$m = 30$ repeticiones por tratamiento con semillas distintas pero fijadas.
+La Tabla~\ref{tab:escenarios} describe los seis escenarios del núcleo experimental
+(A--F) y un escenario exploratorio adicional (G, \S\,\ref{subsec:heterogenea}). Los
+seis del núcleo se ejecutan con $m = 30$ repeticiones por tratamiento con semillas
+distintas pero fijadas.
 
 \begin{table}[htbp]
 \centering
@@ -969,6 +985,13 @@ F &
   acoplada cinemáticamente al centroide. &
   Validación cualitativa de la formación de coalición y la navegación
   cooperativa. \\
+\addlinespace[2pt]
+G &
+  \emph{Exploratorio.} Flota con capacidades heterogéneas (p.\,ej.\ $c_i \in \{30,30,50\}$\,kg)
+  y cargas con demandas de capacidad mixtas (p.\,ej.\ $M_k \in \{10,100\}$\,kg). &
+  Exploración cualitativa de la extensión de capacidad heterogénea
+  (\S\,\ref{subsec:heterogenea}); de carácter exploratorio, sus resultados no forman
+  parte de los criterios de aceptación. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -1156,4 +1179,26 @@ método satisfactorio. El criterio~5 es condición necesaria pero de carácter
 cualitativo; los criterios~1--4 son cuantitativos y verificables estadísticamente.
 Si alguno de los criterios~1--4 no se cumple, el experimento se replicará
 ajustando los parámetros nominales dentro del rango indicado en la
-Tabla~\ref{tab:params} antes de concluir el rechazo.
+Tabla~\ref{tab:params} antes de concluir el rechazo. El Escenario~G es exploratorio y
+queda excluido de los criterios de aceptación conjuntivos anteriores.
+
+\subsection{Extensión a capacidad heterogénea (formulación)}
+\label{subsec:heterogenea}
+
+Se considera la generalización en que cada robot $i$ posee una capacidad $c_i > 0$ y
+cada carga $k$ exige una capacidad acumulada $M_k$. Una coalición $\mathcal{C}_k$ es
+factible si $\sum_{i\in\mathcal{C}_k} c_i \geq M_k$. El payoff de cardinalidad
+$\Phi(N\hat{x}_{ik}, n_k)$ se reemplaza por una demanda de capacidad
+$\Phi_c(\hat{c}_k, M_k)$, monótonamente decreciente en la capacidad estimada ya
+comprometida $\hat{c}_k$, estimable por consenso de forma análoga a $\hat{x}_{ik}$.
+
+Esta extensión rompe la simetría explotada en el Teorema~\ref{prop:convergencia}: con
+capacidades heterogéneas el juego deja de ser simétrico, el equilibrio Nash deja de
+ser único e interior, y el conjunto de coaliciones factibles
+$\{\mathcal{C}_k : \sum_{i\in\mathcal{C}_k} c_i \geq M_k\}$ es un problema combinatorio
+de tipo \emph{subset-sum}, NP-duro en general. Resolverlo de forma distribuida mediante
+dinámicas poblacionales (incluido el riesgo de coaliciones infactibles localmente
+estables) constituye un problema abierto. Por ello esta extensión se presenta a nivel
+de formulación; su análisis formal de convergencia y su validación exhaustiva quedan
+fuera del alcance de este TFM (véase \S\,\ref{sec:conclusiones}, trabajo futuro). El
+Escenario~G explora cualitativamente su comportamiento.
