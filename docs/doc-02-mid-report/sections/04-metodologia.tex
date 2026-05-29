@@ -263,7 +263,7 @@ El estado interno $\hat{x}_{ik}$ puede tomar valores fuera de $[0,1]$ de forma
 transitoria (efecto normal del DAC durante reasignaciones masivas) sin afectar la
 estabilidad del bucle, porque el payoff resultante se mantiene acotado en $(0, r_k]$.
 
-Conviene distinguir tres medidas de ocupación de la tarea $k$: la \emph{ocupación
+Se distinguen tres medidas de ocupación de la tarea $k$: la \emph{ocupación
 asignada pura} $a_k(t) = \sum_i \mathbf{1}_{[s_i(t)=k]}$; la \emph{ocupación física
 presente} $\mathrm{count}_k(t) = \sum_i \mathbf{1}_{[s_i(t)=k]}\,
 \mathbf{1}_{[\norm{\mathbf{q}_i^{xy}(t)-\mathbf{l}_k}<r_{\mathrm{det}}]}$, que coincide
@@ -421,8 +421,8 @@ a los términos de \eqref{eq:potential} se añade un término repulsivo de obst�
   \label{eq:obstaculo}
 \end{equation}
 calculado sobre el centro físico $\mathbf{q}_i^{xy}$, donde $\varepsilon_o$ regulariza
-el denominador. Este término es una heurística reactiva de simulación: no sustituye
-una planificación global de rutas ni certifica la ausencia de colisiones.
+el denominador. Es una heurística reactiva de simulación que no sustituye la
+planificación global de rutas ni certifica la ausencia de colisiones.
 
 El campo de gradiente se aplica sobre el punto adelantado, no sobre el centro, y se
 convierte en comandos cinemáticos invirtiendo el jacobiano del punto adelantado:
@@ -473,7 +473,7 @@ Durante la fase de transporte, el centroide de la coalición $\mathcal{C}_k$ nav
 hacia el destino $\mathbf{d}_k$ bajo el campo de potencial, con el término de
 obstáculos $F_i^{\mathrm{obs}}$ \eqref{eq:obstaculo} activo sobre cada robot; los
 miembros de la coalición mantienen la geometría de formación $d^*$ relativa al
-centroide en movimiento. De este modo el cluster puede desviar su trayectoria
+centroide en movimiento. Así, el cluster desvía su trayectoria
 colectiva ante obstáculos estáticos sin disolver la coalición. El modelo permanece
 cinemático: no se simulan fuerzas de contacto sobre la carga. La evitación a nivel de
 cluster se evalúa empíricamente en los escenarios con obstáculos y cualitativamente en
@@ -670,8 +670,8 @@ $T_s\mu_0 r N \beta/4 < 2$, derivada de la linealización en $\mathbf{x}^*$.
 coalición no migra al destino y el sistema permanece en la fase estacionaria de
 reclutamiento, donde además $\Psi \equiv 1$ (sin descuento espacial). El equilibrio
 se analiza, por tanto, únicamente en esa fase; la fase de transporte y el cierre de
-la tarea se evalúan empíricamente en los Escenarios~B, C y~E. Conviene subrayar,
-asimismo, que las cotas \eqref{eq:betamin}--\eqref{eq:betamax} son condiciones
+la tarea se evalúan empíricamente en los Escenarios~B, C y~E. Las cotas
+\eqref{eq:betamin}--\eqref{eq:betamax} son, además, condiciones
 \emph{suficientes} derivadas del análisis de Lyapunov: valores de $\beta$ fuera del
 intervalo pueden seguir siendo estables, pero el teorema no lo garantiza. El análisis
 cubre la fase de reclutamiento homogénea; la navegación del cluster con evitación de
@@ -1204,7 +1204,7 @@ ser único e interior, y el conjunto de coaliciones factibles
 $\{\mathcal{C}_k : \sum_{i\in\mathcal{C}_k} c_i \geq M_k\}$ es un problema combinatorio
 de tipo \emph{subset-sum}, NP-duro en general. Resolverlo de forma distribuida mediante
 dinámicas poblacionales (incluido el riesgo de coaliciones infactibles localmente
-estables) constituye un problema abierto. Por ello esta extensión se presenta a nivel
+estables) es un problema abierto. Por ello se presenta solo a nivel
 de formulación; su análisis formal de convergencia y su validación exhaustiva quedan
 fuera del alcance de este TFM (véase \S\,\ref{sec:conclusiones}, trabajo futuro). El
 Escenario~G explora cualitativamente su comportamiento.
