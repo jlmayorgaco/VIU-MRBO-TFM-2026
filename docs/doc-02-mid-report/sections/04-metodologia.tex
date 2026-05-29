@@ -46,6 +46,12 @@ combinación, validación cualitativa en CoppeliaSim con robots Pioneer~3-DX
 (Escenario~F), y un paquete Python documentado y reproducible con semillas
 fijadas, configuraciones YAML y registro completo de trayectorias.
 
+El transporte del cluster incorpora evitación reactiva de obstáculos estáticos a
+nivel cinemático del centroide de la coalición, manteniendo la geometría de formación
+$d^*$. Esta capa no modela la dinámica de contacto entre robots y carga ni ofrece
+garantías formales de evitación de colisiones: la navegación con obstáculos se evalúa
+exclusivamente de forma empírica.
+
 \subsubsection{Limitaciones}
 
 Quedan fuera del alcance la experimentación con hardware real, la percepción
@@ -74,6 +80,12 @@ formal. Además, la tasa de revisión modulada reduce pero no elimina las
 oscilaciones de alta frecuencia en la frontera del símplex (\emph{chattering})
 cuando $\beta$ está cercano a $\beta_{\max}$; este comportamiento es observable
 en simulación y se reportará en los resultados de la entrega final.
+
+La evitación de obstáculos se implementa mediante un término repulsivo de campo de
+potencial; al heredar las limitaciones clásicas de los campos de potencial artificial
+(mínimos locales), no se garantiza la ausencia de atascos ni la completitud de la
+navegación. Los obstáculos se modelan como elementos estáticos convexos simples; no se
+aborda planificación global de rutas ni SLAM.
 
 \subsubsection{Plan de trabajo y cronograma}
 \label{sec:cronograma}
@@ -387,6 +399,17 @@ regularización $\varepsilon_f$ en el denominador del vector unitario,
 $(\mathbf{h}_i-\mathbf{h}_j)/(\norm{\mathbf{h}_i-\mathbf{h}_j}+\varepsilon_f)$, lo que
 evita la singularidad cuando $\norm{\mathbf{h}_i-\mathbf{h}_j}\to 0$.
 
+Cuando el escenario incluye obstáculos estáticos $\mathcal{O} = \{O_1,\ldots,O_M\}$,
+a los términos de \eqref{eq:potential} se añade un término repulsivo de obstáculos
+\begin{equation}
+  F_i^{\mathrm{obs}} = \eta_o \sum_{m=1}^{M}
+    \frac{1}{\mathrm{dist}(\mathbf{q}_i^{xy}, O_m)^2 + \varepsilon_o^2},
+  \label{eq:obstaculo}
+\end{equation}
+calculado sobre el centro físico $\mathbf{q}_i^{xy}$, donde $\varepsilon_o$ regulariza
+el denominador. Este término es una heurística reactiva de simulación: no sustituye
+una planificación global de rutas ni certifica la ausencia de colisiones.
+
 El campo de gradiente se aplica sobre el punto adelantado, no sobre el centro, y se
 convierte en comandos cinemáticos invirtiendo el jacobiano del punto adelantado:
 \begin{equation}
@@ -431,6 +454,16 @@ distancia $\norm{\mathbf{q}_i^{xy} - \mathbf{l}_k}$ crecería a medida que la
 coalición se aleja del punto de recogida hacia $\mathbf{d}_k$, lo que reduciría
 artificialmente el payoff de la tarea y podría inducir defecciones de la
 coalición durante el transporte.
+
+Durante la fase de transporte, el centroide de la coalición $\mathcal{C}_k$ navega
+hacia el destino $\mathbf{d}_k$ bajo el campo de potencial, con el término de
+obstáculos $F_i^{\mathrm{obs}}$ \eqref{eq:obstaculo} activo sobre cada robot; los
+miembros de la coalición mantienen la geometría de formación $d^*$ relativa al
+centroide en movimiento. De este modo el cluster puede desviar su trayectoria
+colectiva ante obstáculos estáticos sin disolver la coalición. El modelo permanece
+cinemático: no se simulan fuerzas de contacto sobre la carga. La evitación a nivel de
+cluster se evalúa empíricamente en los escenarios con obstáculos y cualitativamente en
+CoppeliaSim (Escenario~F).
 
 La transición es bidireccional: si durante el modo de transporte la coalición
 pierde un miembro y satisface $|\mathcal{C}_k(t)| < n_k$ durante $\tau_s$ pasos
@@ -626,7 +659,11 @@ se analiza, por tanto, únicamente en esa fase; la fase de transporte y el cierr
 la tarea se evalúan empíricamente en los Escenarios~B, C y~E. Conviene subrayar,
 asimismo, que las cotas \eqref{eq:betamin}--\eqref{eq:betamax} son condiciones
 \emph{suficientes} derivadas del análisis de Lyapunov: valores de $\beta$ fuera del
-intervalo pueden seguir siendo estables, pero el teorema no lo garantiza.
+intervalo pueden seguir siendo estables, pero el teorema no lo garantiza. El análisis
+cubre la fase de reclutamiento homogénea; la navegación del cluster con evitación de
+obstáculos durante el transporte queda fuera de la garantía formal y se caracteriza
+únicamente de forma empírica, dado que los campos de potencial artificial carecen de
+garantías globales frente a mínimos locales.
 
 \begin{proof}[Demostración (esbozo)]
 El argumento se construye en cuatro pasos.
@@ -1056,6 +1093,8 @@ $r_{\mathrm{robot}}$ & Radio físico del AGV & 0{,}25 m & Pioneer~3-DX \\
 $r_{\mathrm{load}}$ & Radio de la carga & 0{,}30 m & Valor nominal \\
 $\varepsilon_r$ & Regularización de repulsión & 0{,}01 m & Fijo \\
 $\varepsilon_f$ & Regularización de formación & 0{,}01 m & Fijo \\
+$\eta_o$ & Ganancia de repulsión de obstáculos & 0{,}5 & valor nominal, ajustable \\
+$\varepsilon_o$ & Regularización de obstáculos & 0{,}05 m & valor nominal, ajustable \\
 $\omega_{\max}$ & Velocidad angular máxima & 2{,}5 rad/s & Pioneer~3-DX \\
 $v_{\max}$ & Velocidad máxima & 0{,}5 m/s & Límite conservador por seguridad en escena reducida; el Pioneer~3-DX admite ${\sim}1{,}2\,\text{m/s}$ \\
 $\ell$ & Distancia look-ahead & 0{,}15 m & Pioneer~3-DX \\
