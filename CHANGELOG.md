@@ -2,7 +2,34 @@
 
 Rama: `blindaje-intermedio-v1` (desde `blindaje-v3`).
 Documento: `docs/doc-02-mid-report/` (LaTeX, motor **XeLaTeX** por dependencia de
-`fontspec`/fuentes Arial del sistema). PDF final: **44 páginas**.
+`fontspec`/fuentes Arial del sistema). **PDF final: `TFM_InformeIntermedio_v5.pdf` (49 páginas).**
+
+---
+
+## v5 — typos, operadores, nomenclatura y supuestos (2026-05-29)
+- **C1 `fix(math)`** — operadores castellanizados (`mín`, `máx`, `arg máx`) vía
+  `\DeclareMathOperator`+`\text` en el preámbulo: arregla en bloque clip (ec. 9),
+  `β_máx`/`β_mín` (ec. 18/19), `v_i=mín(…)`, `máx(Θ,δ₀)`, `s_i=arg máx`. (No existía
+  ningún literal "mix"/"m´ín"; el problema era el render inglés de `\min`/`\max`.)
+- **C2 `feat(nomencl)`** — Nomenclatura **reactivada** en `main.tex`; añadidos
+  `h_i`, `x̃_k`, `cnt_k` (estado), `r_det`, `r_form` (parámetros), `E_DAC`, `N_fail`
+  (métricas).
+- **C3 `docs(refs)`** — eliminados los nº de teorema no verificables del Paso 2:
+  `barreiro2017distributed` sin "(Teorema 3)"; discreto → "Martínez-Piazuelo et al.
+  (2020, 2022a)" sin nº. `% TODO-CITA` para confirmar contra el PDF.
+- **C4 `docs(method)`** — supuesto geométrico de la transición de modo:
+  `R > 2(r_load+r_robot)` ⇒ subgrafo completo y evaluación sincronizada de `|C_k|`.
+- **C5 `docs(method)`** — proyección `Π_Δ` como salvaguarda numérica; `β_máx` ya
+  garantiza la invarianza del símplex en la dinámica ideal.
+- **C6 `feat(method)`** — regularización `ε_f` del término de formación (ec. 15);
+  `ε_f` añadido a Tabla 5 y Nomenclatura.
+- **C7 `build`** — compilación XeLaTeX limpia (0 refs/citas indefinidas, sin `??`);
+  PDF → `TFM_InformeIntermedio_v5.pdf` (49 pp). `..._v3_blindado.pdf` retirado (superado).
+
+**TODO-CITA abierto (1):** `04-metodologia.tex` §4.10 (Paso 2) — confirmar contra los
+PDFs el nº de teorema de Barreiro-Gómez (2017) y Martínez-Piazuelo (2020 / 2022a).
+
+---
 
 > Nota de contexto: el `CLAUDE_TASK.md` se redactó contra una versión anterior y
 > monolítica del documento (todo en una "§6"). En el estado real la metodología es
