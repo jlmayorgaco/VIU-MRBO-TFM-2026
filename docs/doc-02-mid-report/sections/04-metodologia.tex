@@ -78,13 +78,22 @@ T1 y T2. Las etapas completadas aparecen en naranja; las pendientes, en gris cla
 %% ====================================================================
 
 La investigación adopta un diseño cuantitativo, experimental en simulación y
-comparativo. El propósito es evaluar si las tres dinámicas acopladas propuestas
-superan a cuatro tratamientos de referencia (T1 heurística voraz local, T2 consenso puro,
-T3 replicador distribuido y T4 referencia centralizada de mínima distancia) bajo condiciones controladas
-y reproducibles.
-La metodología se organiza en catorce subsecciones que cubren el modelo del sistema,
-el método propuesto, el análisis de convergencia, el diseño experimental y
-los criterios de aceptación.
+comparativo. El propósito no es demostrar la superioridad de una técnica
+concreta, sino caracterizar, mediante una \textbf{escalera comparativa
+incremental} de cinco tratamientos, qué nivel de sofisticación ---estimación
+distribuida, dinámica poblacional y política de revisión--- se requiere para
+formar coaliciones de cardinalidad mínima de forma distribuida. Cada tratamiento
+añade un mecanismo sobre el anterior y se evalúa qué problema resuelve y cuál
+deja abierto: T1 (heurística voraz local), T2 (consenso dinámico de media más
+regla voraz), T3 (replicador distribuido modificado), T4 (dinámicas de Smith con
+tasa de revisión espacialmente modulada) y T5 (referencia centralizada
+replanificada). El método propuesto en este TFM es el tratamiento~T4; el
+contraste entre su tasa de revisión modulada y una tasa constante se trata como
+ablación interna, no como un tratamiento separado. T5 no es un óptimo absoluto,
+sino una referencia centralizada que acota empíricamente el coste de la
+descentralización. La metodología se organiza en catorce subsecciones que cubren
+el modelo del sistema, las dinámicas acopladas, el análisis de convergencia, el
+diseño experimental y los criterios de aceptación.
 
 \subsection{Modelo del sistema}
 
@@ -653,39 +662,65 @@ de posición (controladas por semilla) y la misma secuencia de aparición de tar
 
 \subsubsection{Tratamientos}
 
+Los tratamientos forman una escalera incremental: cada uno añade exactamente un
+mecanismo respecto al anterior, de modo que la diferencia de desempeño entre dos
+niveles consecutivos es atribuible a ese mecanismo. En particular, T3 y T4
+comparten \emph{todo} ---el mismo payoff \eqref{eq:payoff}, el mismo estimador
+DAC \eqref{eq:consenso} para $\hat{x}_{ik}$ y los mismos parámetros
+$\beta,\lambda,\mu_0$--- y difieren únicamente en la ley de revisión, de manera
+que la comparación T3 frente a T4 aísla el efecto de la política de revisión.
+
 \begin{itemize}
   \item \textbf{T1 -- Heurística voraz local}: cada robot selecciona la tarea más
-    cercana que todavía necesita robots ($|\mathcal{C}_k| < n_k$). No hay consenso ni
-    dinámicas de Smith.
+    cercana que todavía necesita robots ($|\mathcal{C}_k| < n_k$), usando solo
+    información geométrica local. No hay estimación de ocupación ni dinámica de
+    revisión. \emph{Pregunta que responde:} ¿basta con elegir la tarea cercana
+    con déficit?
 
-  \item \textbf{T2 -- Consenso puro}: se ejecuta el consenso distribuido
-    \eqref{eq:consenso}, pero la asignación usa la regla greedy sobre las
-    estimaciones $\hat{x}_{ik}$ sin las dinámicas de Smith.
+  \item \textbf{T2 -- DAC con regla voraz}: se ejecuta el consenso dinámico de
+    media \eqref{eq:consenso} para estimar la ocupación $\hat{x}_{ik}$, pero la
+    asignación aplica una regla voraz sobre esas estimaciones, sin dinámica
+    poblacional de revisión. \emph{Pregunta que responde:} ¿basta con estimar
+    bien la ocupación, sin una dinámica de decisión?
 
-  \item \textbf{T3 -- Replicador distribuido (DRD)}: dinámica del replicador en
-    tiempo discreto \citep{quijano2017population} en la que la media del payoff
-    poblacional $\bar{f}(\mathbf{x}) = \sum_k x_k f_k(\mathbf{x})$ se estima
-    mediante una segunda capa de consenso sobre la red (véase \S\,\ref{subsec:porquesmith}
-    para la argumentación completa). Esta línea base permite cuantificar
-    empíricamente el sesgo de estimación dependiente de topología que
-    distingue Smith de DRD.
+  \item \textbf{T3 -- Replicador distribuido modificado}: dinámica del replicador
+    en tiempo discreto \citep{quijano2017population} con el mismo payoff y el
+    mismo estimador DAC que T4. La actualización
+    \[
+      p_{ik}(t{+}1) = p_{ik}(t) + T_s\,\mu_i(t)\,p_{ik}(t)\bigl(f_{ik}(t) - \bar{f}_i(t)\bigr),
+    \]
+    proyectada al símplex, requiere la media de payoff de la población
+    $\bar{f}_i$, que no es una cantidad local: se estima mediante una
+    \emph{segunda capa de consenso} sobre los valores $\bar{f}_j$ de los vecinos
+    (véase \S\,\ref{subsec:porquesmith}). Esta arquitectura de doble consenso es
+    necesaria para que la comparación con T4 sea justa: calcular $\bar{f}_i$ de
+    forma puramente local eliminaría precisamente el sesgo topológico que T3 está
+    diseñado para exponer. \emph{Pregunta que responde:} ¿una dinámica poblacional
+    basada en la media de payoff resuelve el problema?
 
-  \item \textbf{T4 -- Referencia centralizada de mínima distancia}: con
-    acceso al estado global, se resuelve la asignación de mínimo coste
-    respetando la cardinalidad: cada tarea $k$ se expande en $n_k$ \emph{slots}
-    idénticos; se añaden \emph{filas ficticias} si $N < \sum_k n_k$ (robots
-    insuficientes) o \emph{columnas ficticias} si $N > \sum_k n_k$ (robots en
-    exceso, al menos uno queda inactivo); y se minimiza la distancia euclídea
-    total robot--slot mediante el algoritmo húngaro sobre la matriz cuadrada
-    resultante. La reasignación se repite periódicamente cada $\Delta T_c = 1\,\text{s}$
-    para capturar cambios de posición y de tarea activa.
-    La función objetivo ---minimizar distancia de asignación--- no
-    coincide necesariamente con maximizar $\Theta$, por lo que T4 es una cota de
-    referencia de eficiencia de asignación, no un límite superior absoluto del
-    throughput.
+  \item \textbf{T4 -- Dinámicas de Smith con revisión modulada (método propuesto)}:
+    tres dinámicas acopladas con función de payoff \eqref{eq:payoff}, dinámica de
+    Smith \eqref{eq:smith_update} ---cuya comparación bilateral evita estimar la
+    media global--- y tasa de revisión espacialmente modulada
+    \eqref{eq:revision_rate}. El contraste entre $\mu_i$ modulada y $\mu_i=\mu_0$
+    constante constituye la ablación interna del método. \emph{Pregunta que
+    responde:} ¿la comparación bilateral de Smith mejora sobre el replicador al
+    reducir $R$?
 
-  \item \textbf{T5 -- Método propuesto}: tres dinámicas acopladas con función
-    de payoff \eqref{eq:payoff} y tasa de revisión \eqref{eq:revision_rate}.
+  \item \textbf{T5 -- Referencia centralizada replanificada}: con acceso al
+    estado global, se resuelve la asignación de mínima distancia respetando la
+    cardinalidad: cada tarea $k$ se expande en $n_k$ \emph{slots} idénticos; se
+    añaden \emph{filas ficticias} si $N < \sum_k n_k$ o \emph{columnas ficticias}
+    si $N > \sum_k n_k$ (al menos un robot queda inactivo); y se minimiza la
+    distancia euclídea total robot--slot mediante el algoritmo húngaro sobre la
+    matriz cuadrada resultante. Emplea la misma cinemática uniciclo y los mismos
+    límites de velocidad ($v_{\max},\omega_{\max}$) que el resto de tratamientos.
+    La reasignación se replanifica cada $\Delta T_c = 1\,\text{s}$ y ante eventos
+    (aparición o desaparición de tareas, retirada de robots). La función objetivo
+    ---minimizar distancia de asignación--- no coincide necesariamente con
+    maximizar $\Theta$, por lo que T5 es una referencia de eficiencia de
+    asignación, no un límite superior absoluto del throughput.
+    \emph{Pregunta que responde:} ¿cuánto se pierde por descentralizar?
 \end{itemize}
 
 \subsubsection{Escenarios}
@@ -745,22 +780,21 @@ F &
 
 \begin{table}[htbp]
 \centering
-\caption[Hipótesis, escenarios y métricas]{Correspondencia entre hipótesis, escenarios y métrica principal de contraste.}
+\small
+\caption[Hipótesis, comparaciones, escenarios y métricas]{Correspondencia entre
+  hipótesis, comparación principal, escenarios de contraste y métrica principal.}
 \label{tab:hipescenario}
-\begin{tabularx}{\textwidth}{>{\bfseries}p{0.18\textwidth}p{0.25\textwidth}Y}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{0.07\textwidth}p{0.30\textwidth}p{0.10\textwidth}Y}
 \toprule
-Hipótesis & Escenarios de contraste & Métrica principal \\
+Hip. & Comparación principal & Escenarios & Métrica principal \\
 \midrule
-H1 (convergencia Nash) & A\,(config.\ balanceada, $n_k{=}2$) &
-  $T_{\mathrm{conv}} < \infty$ en ${\geq}27$ de 30 episodios,
-  con $|x_k(T_{\mathrm{conv}}) - x_k^*| < 0{,}01$ para todo $k$; $T_{\mathrm{conv}}$ es el
-  primer instante en que se satisface la condición \\
-H2 (tasa modulada) & A, B (ablación $\mu_i$ constante vs.\ modulada) &
-  $\Delta_{\mathrm{chg}}$ (reducción ${\geq}40\%$) \\
-H3 (factibilidad) & B, C, D ($R$ variable) &
-  $F \geq 0{,}85$; curva $D(R)$ \\
-H4 (brecha $\Delta J$) & B, C, E (perturbación) &
-  $\Delta J < 0{,}25$ / $0{,}40$ \\
+H1 & T2 vs.\ T3/T4 & B, C & $F$, $T_{\mathrm{coal}}$, $\Delta_{\mathrm{chg}}$ \\
+H2 & T2 vs.\ T3/T4 & B, C & $F$, $\Theta$ \\
+H3 & T3 con barrido de $R$ & D & $F$, $\Theta$, $D(R)$ \\
+H4 & T3 vs.\ T4 & C, D & $F$, $\Theta$, $\Delta_{\mathrm{chg}}$ \\
+H5 & T4($\mu$ constante) vs.\ T4($\mu$ modulada) --- ablación & A, B &
+  $\Delta_{\mathrm{chg}}$, $T_{\mathrm{coal}}$ \\
+H6 & T4 vs.\ T5 & C, D, E & $\Delta J$, $\Theta$ \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -885,15 +919,15 @@ en el suelo, compatible con el tamaño operativo de los Pioneer~3-DX.
 El método se considerará satisfactorio si:
 
 \begin{enumerate}
-  \item La tasa de factibilidad del tratamiento~T5 es $F \geq 0{,}85$ en los
-    Escenarios~B y~C.
-  \item El tiempo de formación de coalición $T_{\text{coal}}$ del tratamiento~T5
+  \item La tasa de factibilidad del tratamiento~T4 (método propuesto) es
+    $F \geq 0{,}85$ en los Escenarios~B y~C.
+  \item El tiempo de formación de coalición $T_{\text{coal}}$ del tratamiento~T4
     es menor que el del tratamiento~T1 en al menos el 80\,\% de las repeticiones
     del Escenario~B.
   \item El número de cambios de asignación $\Delta_{\text{chg}}$ del
-    tratamiento~T5 con tasa espacial \eqref{eq:revision_rate} es inferior al del
+    tratamiento~T4 con tasa espacial \eqref{eq:revision_rate} es inferior al del
     mismo tratamiento con tasa constante $\mu_i = \mu_0$, validando la
-    Hipótesis~2.
+    Hipótesis~5 (ablación de la tasa de revisión).
   \item La validación numérica de la Proposición~\ref{prop:convergencia}
     en el Escenario~A (configuración balanceada $n_k=2$, $N=Kn=6$) con 30 episodios
     muestra convergencia ($T_{\mathrm{conv}} < \infty$ y

@@ -51,10 +51,15 @@ asumen que el tamaño del grupo que realiza cada tarea es fijo y conocido de
 antemano. Ninguno aborda el caso en que la tarea misma impone un requisito mínimo
 de cardinalidad que debe satisfacerse dinámicamente.
 
-\subsection{Por qué dinámicas de Smith y no replicador}
+\subsection{El papel de la política de revisión: replicador y Smith}
 \label{subsec:porquesmith}
 
-El marco común de ambas dinámicas es el siguiente: el estado de la población
+Una de las preguntas que la escalera comparativa de este TFM formaliza es qué
+aporta la \emph{política de revisión} de una dinámica poblacional, manteniendo
+fija la arquitectura de estimación. Los tratamientos T3 (replicador distribuido)
+y T4 (dinámicas de Smith) comparten el mismo payoff y el mismo estimador por
+consenso, y difieren únicamente en esta ley; comparar ambos aísla su efecto. El
+marco común de las dos dinámicas es el siguiente: el estado de la población
 es el vector de fracciones $\mathbf{x} = (x_k)$, donde $x_k$ es la proporción
 de robots asignados a la tarea $k$. Cada robot estima $x_k$ de forma distribuida
 mediante consenso promedio, obteniendo $\hat{x}_{ik}$. Hasta aquí, Smith y DRD
@@ -110,9 +115,11 @@ ha sido identificada en la literatura revisada hasta mayo de 2026:
 \end{enumerate}
 
 La validación se realiza mediante simulación cuantitativa en Python con seis
-escenarios y cinco tratamientos comparativos (heurística voraz local, consenso puro, replicador
-distribuido, referencia centralizada de mínima distancia y método propuesto), más una validación
-cualitativa en CoppeliaSim.
+escenarios y cinco tratamientos comparativos dispuestos como escalera incremental
+(T1 heurística voraz local, T2 DAC con regla voraz, T3 replicador distribuido
+modificado, T4 dinámicas de Smith con revisión modulada ---método propuesto--- y
+T5 referencia centralizada replanificada), más una validación cualitativa en
+CoppeliaSim.
 
 \subsection{Estructura del documento}
 

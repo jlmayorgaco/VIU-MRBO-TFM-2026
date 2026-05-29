@@ -1,70 +1,100 @@
-﻿%% ====================================================================
+%% ====================================================================
 \section{Hipótesis de partida}
 \label{sec:hipotesis}
 %% ====================================================================
 
 \textbf{Pregunta de investigación.}
-?`Pueden las dinámicas de Smith con una función de payoff multiplicativa y cota
-inferior sigmoide de cardinalidad garantizar, de forma distribuida y sin coordinador
-central, que una flota de AGV forme coaliciones de tamaño mínimo requerido para
-el transporte cooperativo de cargas, y cómo cambia este comportamiento al variar
-el rango de comunicación?
+¿En qué medida un esquema de coordinación distribuida local, que combina consenso
+dinámico de ocupación, dinámicas poblacionales y navegación reactiva, permite
+formar coaliciones de cardinalidad mínima en flotas multi-AGV sin coordinador
+central, y cómo se degrada su desempeño al reducir el rango de comunicación~$R$?
+
+La pregunta se aborda mediante una escalera comparativa de cinco tratamientos
+(T1--T5, \S\,\ref{subsec:experimental}) que aísla el papel de cada mecanismo. Las
+hipótesis H1--H6 son afirmaciones científicas sin umbrales numéricos; los
+umbrales operativos que las contrastan se recogen por separado en la
+\S\,\ref{subsec:criterios}.
 
 \textbf{Hipótesis~1.}
-Bajo las dinámicas de Smith con la función de payoff propuesta, el sistema
-converge a un equilibrio Nash en el que cada tarea $k$ tiene exactamente $n_k$ robots
-asignados, en el caso simétrico balanceado ($N = Kn$, $n_k = n$, $\Psi \equiv 1$,
-$R = \infty$). La condición suficiente de estabilidad local exige que la pendiente
-$\beta$ de la función sigmoide pertenezca al intervalo $(\beta_{\min}, \beta_{\max})$.
+La estimación distribuida por sí sola (DAC más regla voraz, T2) no es suficiente
+para formar coaliciones de cardinalidad mínima robustas en escenarios
+heterogéneos: produce \emph{chattering} en la frontera $n_k$ o coaliciones
+subdimensionadas.
 
 \textbf{Hipótesis~2.}
-La tasa de revisión espacialmente modulada $\mu_i(t)$ reduce significativamente
-el número de cambios de asignación por robot durante el estado estacionario
-respecto a una tasa constante $\mu_i = \mu_0$, sin degradar de forma relevante
-el tiempo de convergencia de la coalición.
+Una dinámica poblacional (T3 o T4) mejora la robustez sobre T2, porque introduce
+una ley continua de revisión basada en diferencias de payoff que actúa como
+filtrado temporal de las decisiones.
 
 \textbf{Hipótesis~3.}
-El método propuesto supera en tasa de factibilidad de formación de coaliciones
-a la heurística voraz local y al consenso puro en todos los escenarios evaluados,
-y la ventaja se mantiene cuando el rango de comunicación $R$ se reduce,
-aunque la brecha disminuye con la conectividad.
+El replicador modificado (T3) presenta una degradación progresiva al reducir el
+rango de comunicación $R$, atribuible al sesgo de la estimación de la media de
+payoff por consenso sobre grafos irregulares.
 
 \textbf{Hipótesis~4.}
-La brecha de descentralización $\Delta J = (\Theta_{\text{cent}} -
-\Theta_{\text{dist}}) / \max(\Theta_{\text{cent}}, \delta_0)$, con $\delta_0 = 10^{-3}$,
-permanece acotada en los escenarios homogéneos y heterogéneos, con valores
-aceptables para un entorno de almacén con comunicación imperfecta.
+Las dinámicas de Smith (T4) mantienen mejor desempeño que T3 al reducir $R$,
+porque su comparación bilateral no requiere estimar la media global. La diferencia
+es especialmente visible en escenarios heterogéneos con cargas de $n_k$ alto.
 
-\subsection{Criterios cuantitativos de aceptación}
+\textbf{Hipótesis~5.}
+La tasa de revisión espacialmente modulada reduce las reasignaciones por robot en
+estado estacionario respecto a una tasa constante, sin penalizar significativamente
+el tiempo de formación de coalición.
+
+\textbf{Hipótesis~6.}
+El método propuesto (T4 con $\mu_i$ modulada) mantiene una pérdida acotada de
+throughput frente a la referencia centralizada T5, compensada por la eliminación
+del coordinador y la operación con comunicación local.
+
+\subsection{Criterios cuantitativos de contraste}
 \label{subsec:criterios}
 
-Los umbrales de aceptación que operacionalizan las hipótesis son los siguientes:
+Las hipótesis anteriores se operacionalizan mediante los siguientes umbrales. Los
+valores numéricos se fijan \emph{a priori}, antes de ejecutar la campaña, y se
+contrastan estadísticamente sobre $m \geq 30$ repeticiones por
+tratamiento-escenario, bajo las mismas semillas, trayectorias y parámetros
+iniciales para todos los métodos.
 
 \begin{description}
-  \item[H1 (convergencia Nash):] El número de episodios con convergencia
-    ($|x_k(T_{\text{conv}}) - x_k^*| < 0{,}01$ para todo $k$) es $\geq 27$ de 30
-    repeticiones en el Escenario~A balanceado ($N = Kn = 6$, $n_k = 2$).
+  \item[Validación del caso base (Prop.~\ref{prop:convergencia}):] en el
+    Escenario~A balanceado ($N = Kn = 6$, $n_k = 2$, $\Psi \equiv 1$, $R = \infty$),
+    el número de episodios con convergencia
+    ($|x_k(T_{\text{conv}}) - x_k^*| < 0{,}01$ para todo $k$) es $\geq 27$ de 30.
+    Esta validación sostiene la premisa de H2: la dinámica poblacional admite un
+    equilibrio interior con $n$ robots por tarea.
 
-  \item[H2 (revisión modulada):] $\Delta_{\text{chg}}$ del tratamiento T5 con
-    tasa espacial es al menos un 40\,\% menor que con tasa constante $\mu_i = \mu_0$,
-    sin que $T_{\text{coal}}$ aumente más de un 15\,\%. El 40\,\% se justifica
-    porque, al valor nominal $\sigma_{\text{rev}} = 2\,\text{m}$, un robot a
-    distancia $d = \sigma_{\text{rev}}$ tiene $\mu_i \approx 0{,}39\,\mu_0$; en
-    estado estacionario la mayoría de robots están dentro de esa distancia,
-    por lo que una reducción agregada del 40\,\% es conservadora.
+  \item[H1 (insuficiencia de T2):] en los Escenarios~B y~C, T2 presenta una tasa
+    de factibilidad $F < 0{,}85$ o un número de cambios $\Delta_{\text{chg}}$
+    significativamente superior al de T3/T4, evidenciando \emph{chattering} o
+    coaliciones subdimensionadas.
 
-  \item[H3 (factibilidad de coalición):] La tasa de factibilidad $F \geq 0{,}85$
-    para T5 en todos los escenarios evaluados, incluyendo $R = 3\,\text{m}$.
-    El umbral del 85\,\% refleja que una tasa de fallo del 15\,\% es recuperable
-    mediante reintento en entornos reales; umbrales más laxos no serían informativos.
+  \item[H2 (aporte de la dinámica poblacional):] en los Escenarios~B y~C, al menos
+    uno de los tratamientos poblacionales (T3 o T4) alcanza $F \geq 0{,}85$ y supera
+    a T2 en factibilidad y throughput $\Theta$.
 
-  \item[H4 (brecha de descentralización):] $\Delta J < 0{,}25$ en escenarios
-    homogéneos y $\Delta J < 0{,}40$ en heterogéneos. Una brecha del 25\,\%
-    significa que el sistema distribuido completa al menos 3 tareas de cada 4 que
-    completaría un planificador centralizado con estado global perfecto.
+  \item[H3 (degradación de T3 con $R$):] en el Escenario~D, la curva de degradación
+    $D(R) = \Theta(R)/\Theta(\infty)$ de T3 decrece de forma monótona al reducir
+    $R$, con una caída más pronunciada que la de T4.
+
+  \item[H4 (ventaja de T4 sobre T3 con $R$ bajo):] en los Escenarios~C y~D con $R$
+    reducido (p.ej.\ $R = 3\,\text{m}$), $F(\text{T4}) > F(\text{T3})$, con
+    diferencia mayor en configuraciones heterogéneas de $n_k$ alto.
+
+  \item[H5 (revisión modulada):] $\Delta_{\text{chg}}$ de T4 con tasa espacial es al
+    menos un 40\,\% menor que con tasa constante $\mu_i = \mu_0$, sin que
+    $T_{\text{coal}}$ aumente más de un 15\,\%. El 40\,\% se justifica porque, al
+    valor nominal $\sigma_{\text{rev}} = 2\,\text{m}$, un robot a distancia
+    $d = \sigma_{\text{rev}}$ tiene $\mu_i \approx 0{,}39\,\mu_0$; en estado
+    estacionario la mayoría de robots están dentro de esa distancia, por lo que una
+    reducción agregada del 40\,\% es conservadora.
+
+  \item[H6 (brecha de descentralización):] $\Delta J < 0{,}25$ en escenarios
+    homogéneos y $\Delta J < 0{,}40$ en heterogéneos. Una brecha del 25\,\% significa
+    que el sistema distribuido completa al menos 3 tareas de cada 4 que completaría
+    un planificador centralizado con estado global perfecto.
 \end{description}
 
-Las hipótesis se contrastan mediante campaña de simulación con $m \geq 30$
-repeticiones por tratamiento-escenario, bajo las mismas semillas, trayectorias
-y parámetros iniciales para todos los métodos. La Hipótesis~1 se verifica
-numéricamente en el escenario~A antes de ejecutar la campaña completa.
+Se adopta además, como criterio transversal, que una coalición se considera
+\emph{factible} cuando alcanza $|\mathcal{C}_k| \geq n_k$ dentro del horizonte; el
+umbral $F \geq 0{,}85$ refleja que una tasa de fallo del 15\,\% es recuperable
+mediante reintento en entornos reales, y umbrales más laxos no serían informativos.
