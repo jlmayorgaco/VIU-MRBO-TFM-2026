@@ -22,7 +22,14 @@
 \newcommand{\pos}[1]{\left[#1\right]_{+}}
 \newcommand{\norm}[1]{\left\|#1\right\|}
 \newcommand{\xhat}{\hat{x}}
-\DeclareMathOperator*{\argmax}{arg\,max}
+%--- Operadores castellanizados (mín, máx, arg máx). Se usa \text{} para tomar el
+%    acento de la fuente de texto (XeLaTeX/fontspec), evitando glifos ausentes en
+%    la fuente matemática.
+\let\min\relax
+\let\max\relax
+\DeclareMathOperator*{\min}{\text{m\'in}}
+\DeclareMathOperator*{\max}{\text{m\'ax}}
+\DeclareMathOperator*{\argmax}{\text{arg\,m\'ax}}
 
 \begin{document}
 
