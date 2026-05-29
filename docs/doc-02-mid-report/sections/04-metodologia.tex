@@ -909,6 +909,14 @@ $\Delta J$ & Brecha de descentralización &
   $(\Theta_{\text{cent}} - \Theta_{\text{dist}}) / \max(\Theta_{\text{cent}}, \delta_0)$,
   con $J \triangleq \Theta$ y $\delta_0 = 10^{-3}$;
   mide cuánto pierde el distribuido respecto al centralizado ($\Delta J = 0$: sin pérdida). \\
+$E_{\text{DAC}}$ & Error medio de estimación &
+  $\frac{1}{NKT}\sum_{t}\sum_{i}\sum_{k}|\hat{x}_{ik}(t) - x_k(t)|$;
+  aísla empíricamente el efecto del error de consenso del efecto de la dinámica de
+  revisión. \\
+$N_{\text{fail}}$ & Episodios fallidos &
+  Número de episodios por escenario en que alguna tarea no alcanza
+  $|\mathcal{C}_k| \geq n_k$ dentro del horizonte; se reporta como tasa de fallo
+  por tratamiento. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -985,6 +993,15 @@ se desplazan hacia las tareas correctas, forman la geometría de coalición y
 reaccionan ante una perturbación (retirada de un robot a mitad de la misión).
 La escena de CoppeliaSim incluye un almacén simplificado con zonas de carga marcadas
 en el suelo, compatible con el tamaño operativo de los Pioneer~3-DX.
+
+Conviene precisar el alcance de esta validación. La simulación en CoppeliaSim
+verifica la \textbf{viabilidad cinemática} del esquema de asignación, formación y
+navegación con robots Pioneer~3-DX (saturación de velocidades, geometría espacial).
+\textbf{No constituye validación de la manipulación cooperativa por contacto} ni de
+la distribución de fuerzas sobre la carga, que pertenece a una capa de control
+complementaria \citep{ebel2024cooperative, rosenfelder2024force} fuera del alcance
+de este TFM. La carga se representa como un cuboide pasivo acoplado cinemáticamente
+al centroide de la coalición una vez formada.
 
 \subsection{Criterios de aceptación del método}
 
