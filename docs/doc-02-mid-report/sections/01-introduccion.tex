@@ -170,7 +170,7 @@ se indexa $i \in \{1, \ldots, N\}$ y el conjunto de tareas activas en un instant
 dado se indexa $k \in \{1, \ldots, K\}$. Cada tarea $k$ está ubicada en una
 posición conocida $\mathbf{l}_k \in \RR^2$ y exige que al menos $n_k \in \NN$
 robots lleguen a ella para que la carga pueda ser manipulada. La tarea $k=0$ representa
-el estado de inactividad: un robot \emph{idle} no contribuye a ninguna tarea.
+el estado de inactividad: un robot inactivo (\textit{idle}) no contribuye a ninguna tarea.
 
 Cada robot mantiene un vector de estrategias $\mathbf{p}_i(t) \in \simplex^K$,
 donde $\simplex^K = \{p \in \RR^{K+1} : \sum_{k=0}^K p_k = 1,\, p_k \geq 0\}$
@@ -224,8 +224,9 @@ la tarea no puede ejecutarse si hay \emph{menos} de $n_k$ robots. Esta diferenci
 es matemáticamente sustancial y los resultados de estabilidad de ese trabajo no
 se aplican directamente.
 
-Finalmente, ningún enfoque existente trata explícitamente el caso
-$N < \sum_k n_k$ (menos robots que los requeridos en total): en ese régimen la
+Finalmente, en el corpus revisado no se identifica un enfoque que trate
+explícitamente el caso $N < \sum_k n_k$ (menos robots que los requeridos en total):
+en ese régimen la
 flota no puede satisfacer todos los requisitos de cardinalidad simultáneamente y
 el sistema debe priorizar. Este caso límite, relevante en escenarios con alta
 demanda transitoria, queda fuera del alcance de este TFM pero se identifica como
