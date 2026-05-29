@@ -78,20 +78,20 @@ T1 y T2. Las etapas completadas aparecen en naranja; las pendientes, en gris cla
 %% ====================================================================
 
 La investigación adopta un diseño cuantitativo, experimental en simulación y
-comparativo. El propósito no es demostrar la superioridad de una técnica
-concreta, sino caracterizar, mediante una \textbf{escalera comparativa
-incremental} de cinco tratamientos, qué nivel de sofisticación (estimación
-distribuida, dinámica poblacional y política de revisión) se requiere para
-formar coaliciones de cardinalidad mínima de forma distribuida. Cada tratamiento
+comparativo. Más que demostrar la superioridad de una técnica concreta, busca
+caracterizar, mediante una escalera comparativa incremental de cinco tratamientos,
+qué nivel de sofisticación (estimación distribuida, dinámica poblacional y política
+de revisión) se requiere para formar coaliciones de cardinalidad mínima de forma
+distribuida. Cada tratamiento
 añade un mecanismo sobre el anterior y se evalúa qué problema resuelve y cuál
 deja abierto: T1 (heurística voraz local), T2 (consenso dinámico de media más
 regla voraz), T3 (replicador distribuido modificado), T4 (dinámicas de Smith con
 tasa de revisión espacialmente modulada) y T5 (referencia centralizada
 replanificada). El método propuesto en este TFM es el tratamiento~T4; el
 contraste entre su tasa de revisión modulada y una tasa constante se trata como
-ablación interna, no como un tratamiento separado. T5 no es un óptimo absoluto,
-sino una referencia centralizada que acota empíricamente el coste de la
-descentralización. La metodología se organiza en quince subsecciones que cubren
+ablación interna, sin constituir un tratamiento separado. T5 funciona como
+referencia centralizada que acota empíricamente el coste de la descentralización,
+no como un óptimo absoluto. La metodología se organiza en quince subsecciones que cubren
 el modelo del sistema, las dinámicas acopladas, el análisis de convergencia, el
 diseño experimental y los criterios de aceptación.
 
@@ -165,9 +165,8 @@ positivo pequeño:
   f_{i0} = r_0, \quad r_0 > 0 \text{ pequeño (por defecto } r_0 = 0{,}05),
   \label{eq:payoff_idle}
 \end{equation}
-lo que garantiza que cuando todas las tareas están saturadas ($\Phi \approx 0$
-para todo $k \geq 1$), la dinámica de Smith no se congele por ausencia de
-diferencias de payoff. El valor $r_0 = 0{,}05$ es suficientemente pequeño para
+lo que evita que la dinámica de Smith se congele por ausencia de diferencias de
+payoff cuando todas las tareas están saturadas ($\Phi \approx 0$ para todo $k \geq 1$). El valor $r_0 = 0{,}05$ es suficientemente pequeño para
 no distorsionar el equilibrio Nash en presencia de tareas activas con $r_k \gg r_0$:
 en el equilibrio interior $f_0 = r_0 = 0{,}05 < r/2 = 0{,}5 = f_k^*$, de modo
 que ningún robot tiene incentivo a elegir el estado de inactividad y $x_0^* = 0$
@@ -206,10 +205,9 @@ El payoff se evalúa con el argumento clippeado al intervalo válido:
   \label{eq:payoff_clip}
 \end{equation}
 donde $\mathrm{clip}(a,0,1) = \min(1,\max(0,a))$.
-El estado interno $\hat{x}_{ik}$ puede tomar valores fuera de $[0,1]$
-transitoriamente ---efecto normal del DAC durante transitorios de reasignación
-masiva--- sin afectar la estabilidad del bucle porque el payoff resultante se
-mantiene acotado en $(0, r_k]$.
+El estado interno $\hat{x}_{ik}$ puede tomar valores fuera de $[0,1]$ de forma
+transitoria (efecto normal del DAC durante reasignaciones masivas) sin afectar la
+estabilidad del bucle, porque el payoff resultante se mantiene acotado en $(0, r_k]$.
 
 \begin{observacion}[Error de seguimiento del DAC y sensibilidad al payoff]
 \label{obs:init_obs}
@@ -265,16 +263,15 @@ $\rho_s > 0$ (valor nominal $\rho_s = 0{,}05$, Tabla~\ref{tab:params}):
   \label{eq:hysteresis}
 \end{equation}
 donde $k^* = \argmax_k p_{ik}(t+1)$. La condición exige que la estrategia dominante
-aventaje a la actual en al menos $\rho_s$ antes de ejecutar el cambio, reduciendo el
-\emph{chattering} sin alterar los puntos de equilibrio de la dinámica.
+aventaje a la actual en al menos $\rho_s$ antes de ejecutar el cambio, lo que reduce
+el \emph{chattering} sin alterar los puntos de equilibrio de la dinámica.
 
 \begin{lema}[Factibilidad de la partición pura]
 \label{lema:factibilidad}
 Bajo la regla \eqref{eq:hysteresis} con $\rho_s \geq 0$, los conjuntos $\{s_i(t)\}$
 forman en todo instante una partición pura de los $N$ robots sobre $\mathcal{S}$
 (incluyendo la tarea de inactividad $k=0$). En particular, $\sum_{k=0}^K |\mathcal{C}_k(t)| = N$
-en todo $t$, lo que garantiza que la cardinalidad total de las coaliciones es siempre
-exactamente $N$.
+en todo $t$: la cardinalidad total de las coaliciones es siempre exactamente $N$.
 \end{lema}
 \begin{proof}
 La regla \eqref{eq:hysteresis} es determinista y asigna cada robot a exactamente un
@@ -294,9 +291,8 @@ tarea que actualmente persigue:
   \label{eq:revision_rate}
 \end{equation}
 con $\mu_0 > 0$, $\mu_{\min} = 0{,}02\,\mu_0$ y $\sigma_{\text{rev}} > 0$.
-El piso $\mu_{\min}$ garantiza que robots muy próximos al destino mantengan
-una tasa mínima de revisión, evitando que el estimador de Smith quede
-congelado ante perturbaciones. Los robots lejanos tienen $\mu_i \approx \mu_0$:
+El piso $\mu_{\min}$ mantiene una tasa mínima de revisión incluso en robots muy
+próximos al destino, evitando que el lazo de Smith quede congelado ante perturbaciones. Los robots lejanos tienen $\mu_i \approx \mu_0$:
 pueden reconsiderar con tasa plena. Para robots en estado de inactividad
 ($s_i = 0$), se usa $\mu_i = \mu_0$.
 
@@ -330,7 +326,7 @@ donde el primer término crea un pozo de potencial con mínimo en el objetivo
 efectivo $\mathbf{l}_{s_i}^{\mathrm{eff}}$ (ec.~\eqref{eq:target_switch}); el
 segundo repele a los robots entre sí para evitar colisiones; y el tercero mantiene
 la geometría de coalición. El parámetro $\varepsilon_r = 0{,}01\,\text{m}$
-regulariza el denominador cuadrático evitando singularidades; la forma
+regulariza el denominador cuadrático y evita singularidades; la forma
 $\norm{\cdot}^2 + \varepsilon_r^2$ es diferenciable en todo $\mathbb{R}^2$ y
 proporciona un gradiente repulsivo acotado incluso para robots en contacto. Los
 campos de potencial artificial presentan el problema clásico de mínimos locales
@@ -362,9 +358,9 @@ convierte en comandos cinemáticos invirtiendo el jacobiano del punto adelantado
 \end{equation}
 seguida de saturación a $|v_i| \leq v_{\max}$ y $|\omega_i| \leq \omega_{\max}$. El
 jacobiano tiene determinante $\ell$, por lo que es invertible para todo $\ell > 0$.
-Esta formulación regula prácticamente el punto adelantado $\mathbf{h}_i$ a una
-vecindad del objetivo y evita aplicar directamente un gradiente cartesiano al centro
-geométrico del robot diferencial, respetando así su naturaleza no holonómica.
+En la práctica, la conversión regula el punto adelantado $\mathbf{h}_i$ a una
+vecindad del objetivo y evita aplicar un gradiente cartesiano directamente sobre el
+centro geométrico del robot diferencial, con lo que respeta su naturaleza no holonómica.
 
 \subsubsection{Fase de transporte y transición al destino}
 \label{subsubsec:transporte}
@@ -392,8 +388,8 @@ decisión de modo puede fragmentarse, régimen caracterizado en el Escenario~D.
 Además, durante la fase de transporte el factor espacial $\Psi(\cdot)$ se fija
 en $1{,}0$ para todos los robots de $\mathcal{C}_k$. Sin esta corrección, la
 distancia $\norm{\mathbf{q}_i^{xy} - \mathbf{l}_k}$ crecería a medida que la
-coalición se aleja del punto de recogida hacia $\mathbf{d}_k$, reduciendo
-artificialmente el payoff de la tarea y pudiendo inducir defecciones de la
+coalición se aleja del punto de recogida hacia $\mathbf{d}_k$, lo que reduciría
+artificialmente el payoff de la tarea y podría inducir defecciones de la
 coalición durante el transporte.
 
 La transición es bidireccional: si durante el modo de transporte la coalición
@@ -411,7 +407,7 @@ se detiene el reloj de $\bar{T}$.
 El modelo de transporte es puramente cinemático: se propaga el movimiento
 del \emph{centroide de la coalición} hacia $\mathbf{d}_k$, sin simular la
 respuesta dinámica de la carga a las fuerzas de contacto. La geometría de
-formación $d^*$ define las \textbf{condiciones iniciales de posición relativa}
+formación $d^*$ define las condiciones iniciales de posición relativa
 que un controlador de manipulación aguas abajo (como el propuesto por
 \citealt{ebel2024cooperative}) consumiría para calcular las fuerzas necesarias.
 En la simulación Python se registra la trayectoria de la pose de la carga como
@@ -550,11 +546,9 @@ tareas heterogéneas, cardinalidades distintas) queda como extensión doctoral.
 Considérese $N$ robots con rango de comunicación $R = \infty$ (sin error de
 consenso), $K$ tareas homogéneas con $n_k = n$ para todo $k$ y $r_k = r$ para
 todo $k$, $N = Kn$ (balance exacto), factor espacial $\Psi \equiv 1$ y sin
-transición de modo. Bajo las dinámicas de Smith
-\eqref{eq:smith_update} con payoff $f_{ik}(x) = r \cdot \Phi(N\hat{x}_{ik},\, n)$
----es decir, con el factor espacial $\Psi \equiv 1$ (sin descuento por distancia) y
-comunicación global perfecta ($R = \infty$, $\hat{x}_{ik} = x_k$)---,
-donde $\Phi$ es estrictamente decreciente en $z = N\hat{x}_{ik}$, el único
+transición de modo. Bajo las dinámicas de Smith \eqref{eq:smith_update} con payoff
+$f_{ik}(x) = r \cdot \Phi(Nx_k, n)$ (comunicación global perfecta, $\hat{x}_{ik} = x_k$),
+donde $\Phi$ es estrictamente decreciente en $z = Nx_k$, el único
 equilibrio Nash interior es:
 \[
   x_k^* = \frac{n}{N} \quad \forall k \in \{1, \ldots, K\},
@@ -644,7 +638,7 @@ de $\mathbf{x}^*$ (no negativa por ser $\mathbf{x}^*$ el máximo de $V$).
 Dado que las dinámicas de Smith ascienden sobre $V$ (Paso~2), $W$ es una
 función de Lyapunov estricta en ese entorno.
 $\beta_{\min}$ es una \emph{condición de separación de payoff}: garantiza
-$\Phi(n{-}1,n)-\Phi(n{+}1,n) > 1/N$, produciendo pendiente suficiente en $\mathbf{x}^*$
+$\Phi(n{-}1,n)-\Phi(n{+}1,n) > 1/N$, lo que produce pendiente suficiente en $\mathbf{x}^*$
 para que $W$ sea localmente estricta.
 $\beta_{\max}$ proviene de exigir radio espectral $< 1$ a la linealización de Smith
 en $\mathbf{x}^*$: la condición escalar $T_s\mu_0 r N\beta/4 < 2$ es la cota resultante.
@@ -675,12 +669,12 @@ $|\Phi(N\hat{x}_{ik},n_k) - \Phi(Nx_k,n_k)| \leq (\beta/4)\,N\,|e_{ik}|
 \leq (\beta N/4)\,\bar{e}$; multiplicando por $r_k\,\Psi \leq r_k$ se obtiene la cota.
 \end{proof}
 
-En consecuencia, el sistema implementado no coincide con el juego base del
-Teorema~\ref{prop:convergencia}, sino con una versión perturbada según la
-Proposición~\ref{prop:perturbacion}. Por tanto, no se afirma convergencia exacta al
-equilibrio Nash ideal, sino \emph{convergencia práctica a una vecindad del
-equilibrio}, cuyo radio se evalúa empíricamente mediante las métricas $F$, $D(R)$,
-$\Delta_{\mathrm{chg}}$ y $\Delta J$.
+En consecuencia, el sistema implementado corresponde a una versión perturbada del
+juego base del Teorema~\ref{prop:convergencia}, acotada por la
+Proposición~\ref{prop:perturbacion}. La propiedad que cabe esperar es entonces la
+\emph{convergencia práctica a una vecindad del equilibrio} (y no la convergencia
+exacta al equilibrio Nash ideal), cuyo radio se evalúa empíricamente mediante las
+métricas $F$, $D(R)$, $\Delta_{\mathrm{chg}}$ y $\Delta J$.
 
 \begin{observacion}
 El Teorema~\ref{prop:convergencia} usa $R = \infty$ y $N = Kn$.
@@ -763,7 +757,7 @@ persiste $\sim 20$ pasos adicionales hasta que la información se propaga por la
 Durante ese transitorio, el payoff $f_{ik}$ puede sobrestimar la ocupación (sesgo
 estabilizador en saturación) o subestimarla (perturbador en reclutamiento).
 El efecto neto se cuantifica mediante $\Delta_{\mathrm{chg}}$ en el Escenario~A;
-la ablación $\hat{x}$ ideal vs.\ estimado permite aislar el impacto del error
+la ablación de $\hat{x}$ ideal frente a estimado aísla el impacto del error
 de consenso sobre el equilibrio resultante.
 \end{observacion}
 
@@ -905,7 +899,7 @@ H1 & T2 vs.\ T3/T4 & B, C & $F$, $T_{\mathrm{coal}}$, $\Delta_{\mathrm{chg}}$ \\
 H2 & T2 vs.\ T3/T4 & B, C & $F$, $\Theta$ \\
 H3 & T3 con barrido de $R$ & D & $F$, $\Theta$, $D(R)$ \\
 H4 & T3 vs.\ T4 & C, D & $F$, $\Theta$, $\Delta_{\mathrm{chg}}$ \\
-H5 & T4($\mu$ constante) vs.\ T4($\mu$ modulada) --- ablación & A, B &
+H5 & T4($\mu$ constante) vs.\ T4($\mu$ modulada), ablación & A, B &
   $\Delta_{\mathrm{chg}}$, $T_{\mathrm{coal}}$ \\
 H6 & T4 vs.\ T5 & C, D, E & $\Delta J$, $\Theta$ \\
 \bottomrule
@@ -942,7 +936,7 @@ $F$ & Tasa de factibilidad &
 $\Delta_{\text{chg}}$ & Cambios de asignación &
   Cambios de estrategia por robot por paso temporal:
   $\frac{1}{T}\sum_{t=1}^{T}\mathbf{1}_{[s_i(t)\neq s_i(t-1)]}$;
-  normalización por $T$ permite comparar episodios de distinta duración. \\
+  la normalización por $T$ hace comparables episodios de distinta duración. \\
 $D_{\text{tot}}$ & Distancia total recorrida &
   $\sum_i \int_0^T \norm{v_i(t)}\,\mathrm{d}t$; proxy de consumo energético
   de la flota. \\
@@ -964,7 +958,7 @@ $N_{\text{fail}}$ & Episodios fallidos &
 
 Los resultados se reportan como media $\pm$ desviación estándar sobre $m = 30$
 repeticiones. Las comparaciones pareadas entre tratamientos (p.ej., dinámica de
-Smith vs.\ líneas base, $\mu_i$ modulada vs.\ constante) se contrastarán
+Smith frente a líneas base, $\mu_i$ modulada frente a constante) se contrastarán
 mediante la prueba de Wilcoxon de rangos con signo (datos de una muestra) o la
 prueba U de Mann-Whitney (dos muestras independientes), con corrección de
 Bonferroni para comparaciones múltiples ($\alpha_{\text{corr}} = 0{,}05/M$ siendo
@@ -1019,8 +1013,8 @@ $\ell$ & Distancia look-ahead & 0{,}15 m & Pioneer~3-DX \\
 \end{table}
 
 Cada experimento se parametriza mediante un descriptor declarativo que fija
-todos los parámetros y las semillas aleatorias, garantizando la reproducibilidad
-de los resultados. Durante la simulación se registran las trayectorias
+todos los parámetros y las semillas aleatorias, de modo que los resultados son
+reproducibles. Durante la simulación se registran las trayectorias
 $\mathbf{p}_i(t)$, $\mathbf{q}_i(t)$ y $\hat{\mathbf{x}}_i(t)$ en cada paso
 temporal; las métricas se calculan en una etapa de postprocesamiento
 posterior.
@@ -1028,22 +1022,21 @@ posterior.
 \subsection{Validación en CoppeliaSim}
 
 El Escenario~F replica uno de los escenarios de coalición mínima (B o C) con
-robots Pioneer~3-DX en CoppeliaSim. El propósito de esta validación no es
-obtener métricas adicionales, sino confirmar que el comportamiento colectivo
-observado en Python es coherente con la física del simulador robótico: los robots
-se desplazan hacia las tareas correctas, forman la geometría de coalición y
-reaccionan ante una perturbación (retirada de un robot a mitad de la misión).
-La escena de CoppeliaSim incluye un almacén simplificado con zonas de carga marcadas
-en el suelo, compatible con el tamaño operativo de los Pioneer~3-DX.
+robots Pioneer~3-DX en CoppeliaSim. Esta validación no añade métricas cuantitativas;
+confirma que el comportamiento colectivo observado en Python es coherente con la
+física del simulador robótico: los robots se desplazan hacia las tareas correctas,
+forman la geometría de coalición y reaccionan ante una perturbación (retirada de un
+robot a mitad de la misión). La escena incluye un almacén simplificado con zonas de
+carga marcadas en el suelo, compatible con el tamaño operativo de los Pioneer~3-DX.
 
-Conviene precisar el alcance de esta validación. La simulación en CoppeliaSim
-verifica la \textbf{viabilidad cinemática} del esquema de asignación, formación y
-navegación con robots Pioneer~3-DX (saturación de velocidades, geometría espacial).
-\textbf{No constituye validación de la manipulación cooperativa por contacto} ni de
-la distribución de fuerzas sobre la carga, que pertenece a una capa de control
-complementaria \citep{ebel2024cooperative, rosenfelder2024force} fuera del alcance
-de este TFM. La carga se representa como un cuboide pasivo acoplado cinemáticamente
-al centroide de la coalición una vez formada.
+El alcance de esta validación es acotado: la simulación en CoppeliaSim verifica la
+viabilidad cinemática del esquema de asignación, formación y navegación con robots
+Pioneer~3-DX (saturación de velocidades, geometría espacial). No abarca la
+manipulación cooperativa por contacto ni la distribución de fuerzas sobre la carga,
+que pertenecen a una capa de control complementaria
+\citep{ebel2024cooperative, rosenfelder2024force} fuera del alcance de este TFM. La
+carga se representa como un cuboide pasivo acoplado cinemáticamente al centroide de
+la coalición una vez formada.
 
 \subsection{Criterios de aceptación del método}
 

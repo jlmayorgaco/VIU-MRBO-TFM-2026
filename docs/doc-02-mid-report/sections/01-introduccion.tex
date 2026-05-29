@@ -8,10 +8,10 @@ Considérese un almacén automatizado con quince AGV y cinco tipos de carga acti
 Tres cajas ligeras puede moverlas un solo robot cada una. Una paleta industrial
 requiere dos. Una estructura de acero requiere cuatro. Conforme las cargas aparecen
 y se completan, la flota debe reasignarse continuamente, formando coaliciones de
-tamaño exactamente adecuado para cada tarea. El problema no es de planificación
-de rutas ni de seguimiento de formación fija: es de asignación distribuida con
-restricciones de cardinalidad mínima que deben cumplirse en tiempo real, sin
-coordinador central y con comunicación limitada al entorno inmediato de cada robot.
+tamaño exactamente adecuado para cada tarea. Se trata de un problema de asignación
+distribuida con restricciones de cardinalidad mínima que deben cumplirse en tiempo
+real, sin coordinador central y con comunicación limitada al entorno inmediato de
+cada robot; difiere así de la planificación de rutas y del seguimiento de formación fija.
 
 Este problema es cualitativamente distinto del transporte cooperativo clásico
 donde varios robots empujan juntos una sola carga \citep{ebel2024cooperative,
@@ -74,7 +74,7 @@ no solo del estado local de un agente. Estimarla distribuida\-mente exige una
 Cuando esta segunda capa opera sobre un grafo irregular que cambia con el movimiento
 de los robots, el operador de consenso actúa como un filtro pasa-bajos espectral
 \citep{sandryhaila2013dsp}: atenúa las componentes de alta frecuencia del vector
-de payoffs sobre la estructura del Laplaciano de $G(t)$, introduciendo un sesgo
+de payoffs sobre la estructura del Laplaciano de $G(t)$ e introduce un sesgo
 dependiente de la topología $\delta(G, \beta)$ que desplaza el equilibrio efectivo
 respecto al equilibrio Nash verdadero.
 
