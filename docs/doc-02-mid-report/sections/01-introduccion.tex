@@ -90,24 +90,24 @@ topologías de comunicación que el método propuesto.
 
 \subsection{La contribución de este TFM}
 
-Las contribuciones de este TFM son cuatro. Primero, una función de payoff con cota
+Este TFM aporta cuatro contribuciones. La primera es una función de payoff con cota
 inferior sigmoidal de cardinalidad que preserva la estructura de juego de congestión
-y es compatible con distintas dinámicas de revisión (replicador y Smith); esto
-contrasta con las restricciones de capacidad de \citet{martinezpiazuelo2022automatica},
-que son cotas superiores. Segundo, la adaptación del replicador distribuido y de las
-dinámicas de Smith a esta función de payoff, comparadas bajo idénticas condiciones
+y resulta compatible con distintas dinámicas de revisión (replicador y Smith), en
+contraste con las restricciones de capacidad de \citet{martinezpiazuelo2022automatica},
+que son cotas superiores. La segunda es la adaptación del replicador distribuido y de
+las dinámicas de Smith a esta función de payoff, comparadas bajo idénticas condiciones
 experimentales y la misma arquitectura de estimación por consenso dinámico de media.
-Tercero, una tasa de revisión espacialmente modulada que reduce reasignaciones
-espurias en estado estacionario. Cuarto, una caracterización empírica del coste de
-descentralización frente a una referencia centralizada con información global, así
-como de la degradación del desempeño al reducir el rango de comunicación. El
-resultado es una arquitectura distribuida acoplada cuya viabilidad cinemática se
-valida cualitativamente en CoppeliaSim con robots Pioneer~3-DX.
+La tercera es una tasa de revisión espacialmente modulada que reduce reasignaciones
+espurias en estado estacionario. La cuarta es una caracterización empírica del coste
+de descentralización frente a una referencia centralizada con información global, junto
+con la degradación del desempeño al reducir el rango de comunicación. El resultado es
+una arquitectura distribuida acoplada cuya viabilidad cinemática se valida
+cualitativamente en CoppeliaSim con robots Pioneer~3-DX.
 
 La validación se realiza mediante simulación cuantitativa en Python con seis
 escenarios y cinco tratamientos comparativos dispuestos como escalera incremental
 (T1 heurística voraz local, T2 DAC con regla voraz, T3 replicador distribuido
-modificado, T4 dinámicas de Smith con revisión modulada ---método propuesto--- y
+modificado, T4 dinámicas de Smith con revisión modulada (método propuesto) y
 T5 referencia centralizada replanificada), más una validación cualitativa en
 CoppeliaSim.
 
@@ -117,8 +117,8 @@ La sección~\ref{sec:planteamiento} describe el problema de asignación distribu
 con restricciones de cardinalidad y la brecha que lo motiva. La
 sección~\ref{sec:hipotesis} formula la pregunta de investigación y las hipótesis.
 Los objetivos se especifican en la sección~\ref{sec:objetivos}, y el alcance y
-limitaciones en la sección~\ref{sec:alcance}. La sección~\ref{sec:metodologia}
----el núcleo de esta entrega--- desarrolla las tres dinámicas acopladas, la
+limitaciones en la sección~\ref{sec:alcance}. La sección~\ref{sec:metodologia},
+núcleo de esta entrega, desarrolla las tres dinámicas acopladas, la
 función de payoff, el análisis de convergencia y el diseño experimental completo.
 Las secciones \ref{sec:marco}--\ref{sec:conclusiones} están reservadas para el
 marco teórico, resultados y conclusiones de la entrega final.
@@ -202,7 +202,7 @@ aprendizaje por refuerzo \citep{bezerra2025learning} generan políticas efectiva
 en distribución, pero requieren entrenamiento previo sobre escenarios representativos
 y carecen de garantías formales de convergencia ante configuraciones de tarea
 no vistas durante el entrenamiento. Ambas familias comparten el mismo límite:
-no proporcionan una ley de control diferencial que actualice \emph{continuamente}
+no proporcionan una ley de control diferencial que actualice de forma continua
 las estrategias de asignación en tiempo real.
 
 Los métodos de dinámicas poblacionales \citep{barreiro2021uav, dinh2026bsplines,
@@ -213,7 +213,7 @@ cada tarea es un parámetro del diseño fijado de antemano: los robots se asigna
 en fracciones fijas, no en coaliciones cuyo tamaño emerge de la dinámica.
 Cuando el tamaño de la coalición es la variable de estado (porque cada carga
 impone su propio requisito mínimo), las dinámicas deben reclutar o liberar
-robots según las necesidades de cada carga ---y ningún trabajo existente
+robots según las necesidades de cada carga, y ningún trabajo existente
 formula este problema con ese grado de generalidad.
 
 El trabajo de \citet{martinezpiazuelo2022automatica} introduce restricciones de
@@ -234,11 +234,10 @@ línea de trabajo futuro.
 
 \subsubsection{La brecha específica}
 
-La combinación de tres elementos ---dinámicas de Smith como ley de control directa,
-función de payoff con cota inferior de cardinalidad mediante sigmoide decreciente,
-y tasa de revisión espacialmente modulada--- no ha sido identificada en la revisión bibliográfica de mayo de 2026
-(21 referencias en 6 áreas temáticas); no puede descartarse su existencia
-fuera del corpus revisado. Cada
+La combinación de tres elementos (dinámicas de Smith como ley de control directa,
+función de payoff con cota inferior de cardinalidad mediante sigmoide decreciente
+y tasa de revisión espacialmente modulada) no se ha identificado en la revisión
+bibliográfica de mayo de 2026 (21 referencias en 6 áreas temáticas). Cada
 elemento por separado tiene antecedentes:
 las dinámicas de Smith en sistemas de control \citep{barreiro2017distributed},
 las funciones sigmoide para incentivos de reclutamiento en antropología
@@ -247,10 +246,10 @@ y las tasas de revisión moduladas por contexto en juegos evolutivos
 \citep{sandholm2010population}. La integración de los tres, con el análisis
 formal que ella requiere, constituye la contribución de este trabajo.
 
-Conviene acotar el alcance de la afirmación. Este TFM no plantea que el control
-distribuido sea superior al centralizado en todo régimen operativo. Plantea una
-pregunta más acotada: bajo comunicación local y cargas heterogéneas con requisitos
-mínimos de cardinalidad, ¿puede una arquitectura distribuida, interpretable y basada
-en dinámicas poblacionales formar coaliciones factibles con una pérdida de desempeño
-acotada frente a una referencia centralizada?
+La afirmación de este TFM es deliberadamente acotada: bajo comunicación local y
+cargas heterogéneas con requisitos mínimos de cardinalidad, ¿puede una arquitectura
+distribuida, interpretable y basada en dinámicas poblacionales formar coaliciones
+factibles con una pérdida de desempeño acotada frente a una referencia centralizada?
+El objetivo es responder esa pregunta, no establecer la superioridad del control
+distribuido sobre el centralizado en todo régimen operativo.
 

@@ -80,8 +80,8 @@ T1 y T2. Las etapas completadas aparecen en naranja; las pendientes, en gris cla
 La investigación adopta un diseño cuantitativo, experimental en simulación y
 comparativo. El propósito no es demostrar la superioridad de una técnica
 concreta, sino caracterizar, mediante una \textbf{escalera comparativa
-incremental} de cinco tratamientos, qué nivel de sofisticación ---estimación
-distribuida, dinámica poblacional y política de revisión--- se requiere para
+incremental} de cinco tratamientos, qué nivel de sofisticación (estimación
+distribuida, dinámica poblacional y política de revisión) se requiere para
 formar coaliciones de cardinalidad mínima de forma distribuida. Cada tratamiento
 añade un mecanismo sobre el anterior y se evalúa qué problema resuelve y cuál
 deja abierto: T1 (heurística voraz local), T2 (consenso dinámico de media más
@@ -91,7 +91,7 @@ replanificada). El método propuesto en este TFM es el tratamiento~T4; el
 contraste entre su tasa de revisión modulada y una tasa constante se trata como
 ablación interna, no como un tratamiento separado. T5 no es un óptimo absoluto,
 sino una referencia centralizada que acota empíricamente el coste de la
-descentralización. La metodología se organiza en catorce subsecciones que cubren
+descentralización. La metodología se organiza en quince subsecciones que cubren
 el modelo del sistema, las dinámicas acopladas, el análisis de convergencia, el
 diseño experimental y los criterios de aceptación.
 
@@ -215,7 +215,7 @@ mantiene acotado en $(0, r_k]$.
 \label{obs:init_obs}
 Para un grafo estacionario conectado con $N$ agentes, el DAC \eqref{eq:consenso}
 mantiene el error de seguimiento acotado por $\|\hat{x}_{ik}(t) - x_k(t)\| = O(K/N)$
-bajo cambios de estrategia \emph{individuales} y recupera la media exacta en tiempo
+bajo cambios de estrategia individuales y recupera la media exacta en tiempo
 $O(1/(\varepsilon\lambda_2))$ entre eventos \citep{kia2019tutorial}.
 La inicialización uniforme $\hat{x}_{ik}(0) = 1/(K+1)$ acelera la convergencia inicial;
 la indicador $\hat{x}_{ik}(0) = \mathbf{1}_{[s_i(0)=k]}$ es igualmente válida
@@ -251,7 +251,8 @@ mayor payoff. Esta comparación bilateral elimina la necesidad de conocer la med
 global del payoff, a diferencia del replicador distribuido.
 
 \paragraph{Regla de histéresis para la selección de estrategia.}
-La estrategia efectiva del robot se actualiza con un umbral de histéresis $\rho_s > 0$:
+La estrategia efectiva del robot se actualiza con un umbral de histéresis
+$\rho_s > 0$ (valor nominal $\rho_s = 0{,}05$, Tabla~\ref{tab:params}):
 \begin{equation}
   s_i(t+1) = \begin{cases}
     \displaystyle\argmax_{k \in \mathcal{S}}\, p_{ik}(t+1) &
@@ -311,8 +312,8 @@ avance:
   \qquad \ell > 0.
   \label{eq:lookahead}
 \end{equation}
-El movimiento se obtiene minimizando localmente un campo de potencial definido
-sobre el punto adelantado:
+El movimiento se obtiene minimizando localmente un campo de potencial artificial
+\citep{bullo2009distributed} definido sobre el punto adelantado:
 \begin{equation}
   F_i(\mathbf{h}_i) = \frac{\alpha}{2}\norm{\mathbf{h}_i - \mathbf{l}_{s_i}^{\mathrm{eff}}}^2
     + \eta \sum_{j \in \mathcal{N}_i}
@@ -384,7 +385,7 @@ coalición durante el transporte.
 
 La transición es bidireccional: si durante el modo de transporte la coalición
 pierde un miembro y satisface $|\mathcal{C}_k(t)| < n_k$ durante $\tau_s$ pasos
-consecutivos ---por ejemplo por la retirada abrupta de un robot--- el modo revierte
+consecutivos (por ejemplo, por la retirada abrupta de un robot), el modo revierte
 a reclutamiento, el objetivo efectivo regresa a $\mathbf{l}_k$ y el factor
 $\Psi(\cdot)$ vuelve a calcularse dinámicamente. Esta histéresis evita
 transiciones espurias debidas a fluctuaciones momentáneas en la coalición.
@@ -398,8 +399,8 @@ El modelo de transporte es puramente cinemático: se propaga el movimiento
 del \emph{centroide de la coalición} hacia $\mathbf{d}_k$, sin simular la
 respuesta dinámica de la carga a las fuerzas de contacto. La geometría de
 formación $d^*$ define las \textbf{condiciones iniciales de posición relativa}
-que un controlador de manipulación aguas abajo ---como el propuesto por
-\citet{ebel2024cooperative}--- consumiría para calcular las fuerzas necesarias.
+que un controlador de manipulación aguas abajo (como el propuesto por
+\citealt{ebel2024cooperative}) consumiría para calcular las fuerzas necesarias.
 En la simulación Python se registra la trayectoria de la pose de la carga como
 el centroide de $\mathcal{C}_k$ durante el modo de transporte; en la validación
 CoppeliaSim (Escenario~F) se representa como un cuboide pasivo acoplado
@@ -455,7 +456,7 @@ $\mathcal{N}_i(t)$ se realizan al inicio del paso y se consideran atómicas.
 \begin{algorithmic}[1]
 \Require $\mathbf{q}_i(t)$, $\mathbf{p}_i(t)$, $\hat{\mathbf{x}}_i(t)$,
          $s_i(t)$, $\{\mathbf{l}_k, \mathbf{d}_k, r_k, n_k\}$,
-         $\mathcal{C}_k(t)$, modo$_k(t)$
+         $\mathcal{C}_k(t)$, modo$_k(t)$, contadores $\mathrm{cnt}^{+}_k, \mathrm{cnt}^{-}_k$
 \Ensure $\mathbf{q}_i(t{+}1)$, $\mathbf{p}_i(t{+}1)$, $\hat{\mathbf{x}}_i(t{+}1)$
 
 \State \textbf{Bloque~1: Cálculo de payoffs} \eqref{eq:payoff_clip}
@@ -499,9 +500,15 @@ $\mathcal{N}_i(t)$ se realizan al inicio del paso y se consideran atómicas.
 \State \textbf{Actualización del grafo y modo de tarea}
 \State $\mathcal{N}_i(t{+}1) \gets \{j\neq i : \norm{\mathbf{q}_i^{xy}(t{+}1){-}\mathbf{q}_j^{xy}(t{+}1)}\leq R\}$
 \For{cada tarea $k$ con $i \in \mathcal{C}_k$}
-  \If{$|\mathcal{C}_k|\geq n_k$ durante $\tau_s$ pasos consecutivos}
+  \If{$|\mathcal{C}_k(t{+}1)|\geq n_k$}
+    \State $\mathrm{cnt}^{+}_k \gets \mathrm{cnt}^{+}_k + 1$;\enspace $\mathrm{cnt}^{-}_k \gets 0$
+  \Else
+    \State $\mathrm{cnt}^{-}_k \gets \mathrm{cnt}^{-}_k + 1$;\enspace $\mathrm{cnt}^{+}_k \gets 0$
+    \Comment{reinicio al caer bajo $n_k$}
+  \EndIf
+  \If{modo$_k(t) = $ reclutamiento \textbf{y} $\mathrm{cnt}^{+}_k \geq \tau_s$}
     \State modo$_k(t{+}1) \gets $ transporte \Comment{ec.~\eqref{eq:target_switch}}
-  \ElsIf{modo$_k(t) = $ transporte \textbf{y} $|\mathcal{C}_k| < n_k$ durante $\tau_s$ pasos}
+  \ElsIf{modo$_k(t) = $ transporte \textbf{y} $\mathrm{cnt}^{-}_k \geq \tau_s$}
     \State modo$_k(t{+}1) \gets $ reclutamiento \Comment{transición inversa}
   \EndIf
 \EndFor
@@ -561,6 +568,15 @@ se obtiene de la condición de que el paso de actualización
 $T_s\mu_0 r N \beta/4 < 2$, derivada de la linealización en $\mathbf{x}^*$.
 \end{teorema}
 
+\emph{Nota (alcance de las hipótesis).} Al no haber transición de modo, la
+coalición no migra al destino y el sistema permanece en la fase estacionaria de
+reclutamiento, donde además $\Psi \equiv 1$ (sin descuento espacial). El equilibrio
+se analiza, por tanto, únicamente en esa fase; la fase de transporte y el cierre de
+la tarea se evalúan empíricamente en los Escenarios~B, C y~E. Conviene subrayar,
+asimismo, que las cotas \eqref{eq:betamin}--\eqref{eq:betamax} son condiciones
+\emph{suficientes} derivadas del análisis de Lyapunov: valores de $\beta$ fuera del
+intervalo pueden seguir siendo estables, pero el teorema no lo garantiza.
+
 \begin{proof}[Demostración (esbozo)]
 El argumento se construye en cuatro pasos.
 
@@ -571,6 +587,7 @@ Esta propiedad define un juego de congestión simétrico. Por el resultado de
 Monderer y Shapley \citep{monderer1996potential}, todo juego de congestión
 simétrico es un juego potencial (véase también \citealt{sandholm2010population},
 Cap. 3) con función potencial
+% TODO: verificar el número de capítulo (Cap. 3) de Sandholm 2010 contra el libro
 \[
   V(\mathbf{x}) = \frac{r}{N}\sum_{k=1}^K \int_0^{Nx_k} \Phi(z, n)\,\mathrm{d}z.
 \]
@@ -579,6 +596,7 @@ Cap. 3) con función potencial
 Las dinámicas de Smith son un protocolo de revisión de paridad (pairwise protocol)
 que en tiempo continuo satisface $\dot{V} \geq 0$ a lo largo de las trayectorias,
 con igualdad sólo en los equilibrios de Nash \citep[Prop.~5.6.1]{sandholm2010population}.
+% TODO: verificar el número exacto (Prop. 5.6.1) de Sandholm 2010 contra el libro
 Para la versión en tiempo discreto empleada aquí, \citet{martinezpiazuelo2022tcss}
 (Sección~III, Teorema~3) demuestran que las dinámicas de Smith discretas generan
 una sucesión $\{V(\mathbf{x}(t))\}$ no decreciente cuando el payoff es Lipschitz
@@ -681,37 +699,43 @@ horizonte) es la métrica empírica que cierra este puente.
 \label{lema:entero}
 Sea $\tilde{x}_k = \tfrac{1}{N}\sum_{i=1}^N \mathbf{1}_{[s_i = k]}$ la ocupación
 empírica pura de la tarea $k$, de modo que $N\tilde{x}_k \in \mathbb{Z}_{\geq 0}$ es
-el número de robots con estrategia $s_i = k$. En régimen estacionario, una vez que
-los robots asignados alcanzan el radio de detección $r_{\mathrm{det}}$, se cumple
-$|\mathcal{C}_k| = N\tilde{x}_k$. Entonces:
+el número de robots con estrategia $s_i = k$. En general
+$|\mathcal{C}_k(t)| \leq N\tilde{x}_k(t)$, con igualdad cuando todos esos robots se
+encuentran dentro del radio de detección $r_{\mathrm{det}}$ de la tarea (coalición ya
+formada, régimen estacionario); en transitorios o durante reasignaciones la
+desigualdad puede ser estricta. Bajo dicha igualdad:
 \textup{(i)}~si $\tilde{x}_k \geq n_k/N$ para toda $k$, entonces
 $|\mathcal{C}_k| \geq n_k$ para toda $k$;
 \textup{(ii)}~en el caso balanceado $N = Kn$, si $|\tilde{x}_k - n/N| < 1/(2N)$
 para toda $k$, entonces $|\mathcal{C}_k| = n$ exactamente.
 \end{lema}
 \begin{proof}
-Como $N\tilde{x}_k$ es entero: (i) $\tilde{x}_k \geq n_k/N$ implica
-$N\tilde{x}_k \geq n_k$; (ii) $|N\tilde{x}_k - n| < 1/2$ con $N\tilde{x}_k$ y $n$
-enteros fuerza $N\tilde{x}_k = n$.
+Bajo la igualdad $|\mathcal{C}_k| = N\tilde{x}_k$ y siendo $N\tilde{x}_k$ entero:
+(i) $\tilde{x}_k \geq n_k/N$ implica $N\tilde{x}_k \geq n_k$; (ii) $|N\tilde{x}_k - n| < 1/2$
+con $N\tilde{x}_k$ y $n$ enteros fuerza $N\tilde{x}_k = n$.
 \end{proof}
 Este lema conecta el equilibrio continuo $x_k^* = n/N$ del
-Teorema~\ref{prop:convergencia} con la factibilidad entera: basta una vecindad de
-radio $1/(2N)$ alrededor de $x_k^*$ para garantizar la cardinalidad exacta.
+Teorema~\ref{prop:convergencia} con la factibilidad entera: en régimen estacionario,
+una vecindad de radio $1/(2N)$ alrededor de $x_k^*$ es suficiente para la cardinalidad
+exacta.
 
 \begin{observacion}[Tiempo de convergencia del DAC]
 Para los parámetros nominales, el tiempo de contracción del error de seguimiento
 del DAC se estima a partir del término de difusión en la red: el error
 $\hat{x}(t{+}1) - \bar{x}(t{+}1) = (I - \varepsilon L)(\hat{x}(t) - \bar{x}(t))$
 decae como $(1 - \varepsilon\lambda_2)^t$, donde $\varepsilon = 0{,}05$ y $\lambda_2$
-es el valor de Fiedler del grafo. Para el grafo nominal (anillo $C_6$),
-$\lambda_2 = 2(1 - \cos(2\pi/6)) = 1$, y el número de pasos para reducir el error
-residual en un factor $1/e$ es:
+es el valor de Fiedler del grafo de comunicación, que en el Escenario~A depende de
+las posiciones 2D y del rango $R$. Tomando un valor representativo $\lambda_2 \approx 1$
+(orden de magnitud del Fiedler en configuraciones densas en 2D), el número de pasos
+para reducir el error residual en un factor $1/e$ es:
 \[
   \tau_{\mathrm{pasos}} \approx \frac{1}{\varepsilon \cdot \lambda_2}
   = \frac{1}{0{,}05 \cdot 1} = 20\,\text{pasos},
   \quad
   \tau_{\mathrm{conv}} \approx \tau_{\mathrm{pasos}} \cdot T_s = 2\,\text{s}.
 \]
+En el caso límite de comunicación global ($R = \infty$) el grafo es completo y
+$\lambda_2 = N = 6$, lo que reduce $\tau_{\mathrm{pasos}}$ a ${\approx}\,3$ pasos.
 Este tiempo (${\approx}20\,T_s$) es del mismo orden que el tiempo de formación de
 coalición esperado, lo que plantea una tensión de diseño: el lazo de Smith
 opera con estimaciones que aún no han alcanzado la media global exacta.
@@ -737,23 +761,23 @@ de posición (controladas por semilla) y la misma secuencia de aparición de tar
 Los tratamientos forman una escalera incremental: cada uno añade exactamente un
 mecanismo respecto al anterior, de modo que la diferencia de desempeño entre dos
 niveles consecutivos es atribuible a ese mecanismo. En particular, T3 y T4
-comparten \emph{todo} ---el mismo payoff \eqref{eq:payoff}, el mismo estimador
+comparten todo lo demás (el mismo payoff \eqref{eq:payoff}, el mismo estimador
 DAC \eqref{eq:consenso} para $\hat{x}_{ik}$ y los mismos parámetros
-$\beta,\lambda,\mu_0$--- y difieren únicamente en la ley de revisión, de manera
+$\beta,\lambda,\mu_0$) y difieren únicamente en la ley de revisión, de manera
 que la comparación T3 frente a T4 aísla el efecto de la política de revisión.
 
 \begin{itemize}
   \item \textbf{T1 -- Heurística voraz local}: cada robot selecciona la tarea más
     cercana que todavía necesita robots ($|\mathcal{C}_k| < n_k$), usando solo
     información geométrica local. No hay estimación de ocupación ni dinámica de
-    revisión. \emph{Pregunta que responde:} ¿basta con elegir la tarea cercana
-    con déficit?
+    revisión. Este tratamiento responde si basta con elegir la tarea cercana con
+    déficit.
 
   \item \textbf{T2 -- DAC con regla voraz}: se ejecuta el consenso dinámico de
     media \eqref{eq:consenso} para estimar la ocupación $\hat{x}_{ik}$, pero la
     asignación aplica una regla voraz sobre esas estimaciones, sin dinámica
-    poblacional de revisión. \emph{Pregunta que responde:} ¿basta con estimar
-    bien la ocupación, sin una dinámica de decisión?
+    poblacional de revisión. Aísla si basta con estimar bien la ocupación, sin una
+    dinámica de decisión que la explote.
 
   \item \textbf{T3 -- Replicador distribuido modificado}: dinámica del replicador
     en tiempo discreto \citep{quijano2017population} con el mismo payoff y el
@@ -767,17 +791,16 @@ que la comparación T3 frente a T4 aísla el efecto de la política de revisión
     (véase \S\,\ref{subsec:porquesmith}). Esta arquitectura de doble consenso es
     necesaria para que la comparación con T4 sea justa: calcular $\bar{f}_i$ de
     forma puramente local eliminaría precisamente el sesgo topológico que T3 está
-    diseñado para exponer. \emph{Pregunta que responde:} ¿una dinámica poblacional
-    basada en la media de payoff resuelve el problema?
+    diseñado para exponer. Examina si una dinámica poblacional basada en la media de
+    payoff resuelve el problema.
 
   \item \textbf{T4 -- Dinámicas de Smith con revisión modulada (método propuesto)}:
     tres dinámicas acopladas con función de payoff \eqref{eq:payoff}, dinámica de
-    Smith \eqref{eq:smith_update} ---cuya comparación bilateral evita estimar la
-    media global--- y tasa de revisión espacialmente modulada
+    Smith \eqref{eq:smith_update}, cuya comparación bilateral evita estimar la
+    media global, y tasa de revisión espacialmente modulada
     \eqref{eq:revision_rate}. El contraste entre $\mu_i$ modulada y $\mu_i=\mu_0$
-    constante constituye la ablación interna del método. \emph{Pregunta que
-    responde:} ¿la comparación bilateral de Smith mejora sobre el replicador al
-    reducir $R$?
+    constante constituye la ablación interna del método. Evalúa si la comparación
+    bilateral de Smith mejora sobre el replicador al reducir $R$.
 
   \item \textbf{T5 -- Referencia centralizada replanificada}: con acceso al
     estado global, se resuelve la asignación de mínima distancia respetando la
@@ -788,11 +811,11 @@ que la comparación T3 frente a T4 aísla el efecto de la política de revisión
     matriz cuadrada resultante. Emplea la misma cinemática uniciclo y los mismos
     límites de velocidad ($v_{\max},\omega_{\max}$) que el resto de tratamientos.
     La reasignación se replanifica cada $\Delta T_c = 1\,\text{s}$ y ante eventos
-    (aparición o desaparición de tareas, retirada de robots). La función objetivo
-    ---minimizar distancia de asignación--- no coincide necesariamente con
-    maximizar $\Theta$, por lo que T5 es una referencia de eficiencia de
-    asignación, no un límite superior absoluto del throughput.
-    \emph{Pregunta que responde:} ¿cuánto se pierde por descentralizar?
+    (aparición o desaparición de tareas, retirada de robots). La función objetivo,
+    minimizar la distancia de asignación, no coincide necesariamente con maximizar
+    $\Theta$, por lo que T5 es una referencia de eficiencia de asignación, no un
+    límite superior absoluto del throughput. Cuantifica cuánto se pierde por
+    descentralizar.
 \end{itemize}
 
 \subsubsection{Escenarios}
@@ -970,7 +993,7 @@ $r_{\mathrm{robot}}$ & Radio físico del AGV & 0{,}25 m & Pioneer~3-DX \\
 $r_{\mathrm{load}}$ & Radio de la carga & 0{,}30 m & Valor nominal \\
 $\varepsilon_r$ & Regularización de repulsión & 0{,}01 m & Fijo \\
 $\omega_{\max}$ & Velocidad angular máxima & 2{,}5 rad/s & Pioneer~3-DX \\
-$v_{\max}$ & Velocidad máxima & 0{,}5 m/s & Valor conservador (Pioneer~3-DX: ${\sim}1{,}2\,\text{m/s}$) \\
+$v_{\max}$ & Velocidad máxima & 0{,}5 m/s & Límite conservador por seguridad en escena reducida; el Pioneer~3-DX admite ${\sim}1{,}2\,\text{m/s}$ \\
 $\ell$ & Distancia look-ahead & 0{,}15 m & Pioneer~3-DX \\
 \bottomrule
 \end{tabularx}

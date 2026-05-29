@@ -119,12 +119,67 @@ Documento: `docs/doc-02-mid-report/` (LaTeX, motor **XeLaTeX** por dependencia d
 
 ---
 
-## TODOs pendientes (`% TODO: verificar` en `references.bib`)
+---
 
+## Revisión P1/P2 (2026-05-29) — segunda pasada de blindaje
+**Commit:** `fix(review): coherencia tecnica, contadores, anti-AI-smell y formato (P1/P2)`
+
+Núcleo técnico / coherencia:
+- **(3)** Nota tras el Teorema~4.1: las hipótesis corresponden a un escenario sin
+  manipulación (sin transición de modo, $\Psi\equiv 1$); el equilibrio se analiza
+  solo en la fase de reclutamiento; el transporte se evalúa en B, C, E.
+- **(7)** Frase explícita: $\beta_{\min},\beta_{\max}$ son condiciones
+  \emph{suficientes} (Lyapunov), no necesarias.
+- **(4)** Lema~4.2 reformulado: $|\mathcal{C}_k| \leq N\tilde{x}_k$ en general, con
+  igualdad cuando todos los robots con $s_i=k$ están dentro de $r_{\det}$.
+- **(5)** Algoritmo~1: materializados los contadores $\mathrm{cnt}^{\pm}_k$ de
+  $\tau_s$ pasos consecutivos, con reinicio al cruzar $n_k$.
+- **(6)** Obs. del tiempo de DAC: sustituido el anillo $C_6$ por "Fiedler de
+  configuraciones densas en 2D" ($\lambda_2\approx 1$), con el caso $R=\infty$
+  ($\lambda_2=N$) como cota.
+- **(8)** Umbral H5 relajado 40 % → **30 %** y justificación reescrita (meta
+  conservadora, a afinar con datos).
+
+Anti-AI-smell:
+- **(9)** Reducidos los em-dashes parentéticos (resumen, §1, objetivos, tratamientos):
+  ~8 convertidos a paréntesis/comas.
+- **(10)** §1.3: "Primero/Segundo/…" → "La primera/La segunda/…".
+- **(11)** Tratamientos: 5× "Pregunta que responde:" → prosa (responde/aísla/examina/evalúa/cuantifica).
+- **(12)** Frase defensiva §1: reescrita en afirmativo (sin pivote "no X, sino Y").
+- **(13)** Podadas cursivas retóricas (`continuamente`, `individuales`).
+
+Formato:
+- **(14)** Quitado `\textbf` del resumen. **(17)** Añadidos *Keywords* en inglés.
+- **(18)** Figura 1: `|C_2|=3 ≥ n_2` → `=`. **(19)** "catorce" → "quince" subsecciones.
+- **(20)** `bullo2009distributed` citado por segunda vez (apertura de §4.7).
+- **(P2)** `ρ_s=0,05` mencionado en el texto de la regla; `v_max` conservador
+  justificado (escena reducida); §5 Marco renumerado 7.x → 5.x; eliminada la
+  segunda variante de "no puede descartarse … corpus revisado".
+
+PDF final: **46 páginas**.
+
+---
+
+## TODOs pendientes (`% TODO: verificar`)
+
+En `references.bib`:
 1. **`shan2024distributed`** — confirmar volumen/artículo (178/104722 vs. 179/104724)
    y rango de páginas contra IEEE/Elsevier.
 2. **`zhang2024coalition`** — confirmar DOI (`10.1109/IROS58592.2024.10801234`) y
    añadir rango de páginas; no verificable contra IEEE Xplore en esta sesión.
+
+En `sections/04-metodologia.tex` (revisión P1, item 21):
+3. **Sandholm 2010, "Cap. 3"** (juego potencial de congestión) — verificar el número
+   de capítulo contra el libro.
+4. **Sandholm 2010, "Prop. 5.6.1"** (Smith asciende el potencial) — verificar el
+   número exacto contra el libro.
+
+Pendientes de decisión del autor (no editados):
+- **(item 22)** Escenario D: 10 puntos de $R$ × 30 rep. × 5 tratamientos ⇒ ~1500
+  simulaciones solo en D (~4500+ en total). Confirmar viabilidad de cómputo o
+  reducir a 6 puntos.
+- **(§4.7 signo)** El signo del término atractivo $+\tfrac{\alpha}{2}\|h-\ell\|^2$ es
+  correcto ($-\nabla F$ apunta al objetivo); reverificar a ojo en el código Python.
 
 ## Referencias cruzadas añadidas / modificadas
 
