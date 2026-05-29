@@ -1070,10 +1070,11 @@ $N_{\text{fail}}$ & Episodios fallidos &
 Los resultados se reportan como media $\pm$ desviación estándar sobre $m = 30$
 repeticiones. Las comparaciones pareadas entre tratamientos (p.ej., dinámica de
 Smith frente a líneas base, $\mu_i$ modulada frente a constante) se contrastarán
-mediante la prueba de Wilcoxon de rangos con signo (datos de una muestra) o la
-prueba U de Mann-Whitney (dos muestras independientes), con corrección de
-Bonferroni para comparaciones múltiples ($\alpha_{\text{corr}} = 0{,}05/M$ siendo
-$M$ el número de contrastes simultáneos). Se incluye un episodio fallido por
+mediante pruebas no paramétricas: la prueba de Wilcoxon de rangos con signo (datos
+pareados) o la U de Mann-Whitney (dos muestras independientes). El análisis estadístico
+de la entrega final contemplará, además, corrección para comparaciones múltiples,
+intervalos de confianza por bootstrap y medidas de tamaño de efecto; el detalle se fija
+en la fase de resultados. Se incluye un episodio fallido por
 escenario para documentar los límites del método. El registro completo de
 trayectorias $\mathbf{p}_i(t)$ para todo $i$ y todo $t$ se almacena para
 análisis a posteriori de la dinámica de preferencias.
@@ -1131,6 +1132,10 @@ reproducibles. Durante la simulación se registran las trayectorias
 $\mathbf{p}_i(t)$, $\mathbf{q}_i(t)$ y $\hat{\mathbf{x}}_i(t)$ en cada paso
 temporal; las métricas se calculan en una etapa de postprocesamiento
 posterior.
+
+El código, las configuraciones YAML, las semillas y los registros de trayectorias,
+asignaciones, grafos, payoffs y métricas se organizan en un repositorio versionado;
+para una publicación posterior se prevé una versión archivada con DOI.
 
 \subsection{Validación en CoppeliaSim}
 
