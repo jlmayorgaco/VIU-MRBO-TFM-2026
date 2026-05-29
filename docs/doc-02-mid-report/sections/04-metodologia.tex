@@ -29,7 +29,7 @@ El trabajo incluye explícitamente las tres dinámicas acopladas ejecutadas en u
 único bucle de control cada $T_s = 0{,}1\,\text{s}$, la función de payoff
 multiplicativa con parámetros $\beta$, $\lambda$, $r_k$, y el análisis formal
 de convergencia para el caso simétrico con comunicación global
-(Proposición~\ref{prop:convergencia}). El diseño experimental contempla seis
+(Teorema~\ref{prop:convergencia}). El diseño experimental contempla seis
 escenarios con cinco tratamientos comparativos y al menos 30 repeticiones por
 combinación, validación cualitativa en CoppeliaSim con robots Pioneer~3-DX
 (Escenario~F), y un paquete Python documentado y reproducible con semillas
@@ -39,7 +39,7 @@ fijadas, configuraciones YAML y registro completo de trayectorias.
 
 Quedan fuera del alcance la experimentación con hardware real, la percepción
 visual, SLAM, evitación de obstáculos complejos y planificación global de rutas.
-El análisis formal de convergencia (Proposición~\ref{prop:convergencia}) se
+El análisis formal de convergencia (Teorema~\ref{prop:convergencia}) se
 restringe al caso simétrico con comunicación global ($R = \infty$) y tareas
 homogéneas; la extensión al caso general con grafo irregular y tareas
 heterogéneas queda como trabajo doctoral futuro. Esa extensión conecta con el
@@ -303,42 +303,60 @@ hacia su destino.
 
 \subsection{Dinámica~3: campo de gradiente reactivo}
 
-El movimiento de cada robot se calcula minimizando localmente un campo de potencial:
+La navegación regula prácticamente un \emph{punto adelantado} $\mathbf{h}_i$
+situado a distancia $\ell$ por delante del centro del robot en su dirección de
+avance:
 \begin{equation}
-  F_i(\mathbf{q}_i) = \frac{\alpha}{2}\norm{\mathbf{q}_i^{xy} - \mathbf{l}_{s_i}}^2
+  \mathbf{h}_i = \mathbf{q}_i^{xy} + \ell\,(\cos\theta_i,\ \sin\theta_i)^{\top},
+  \qquad \ell > 0.
+  \label{eq:lookahead}
+\end{equation}
+El movimiento se obtiene minimizando localmente un campo de potencial definido
+sobre el punto adelantado:
+\begin{equation}
+  F_i(\mathbf{h}_i) = \frac{\alpha}{2}\norm{\mathbf{h}_i - \mathbf{l}_{s_i}^{\mathrm{eff}}}^2
     + \eta \sum_{j \in \mathcal{N}_i}
-      \frac{1}{\norm{\mathbf{q}_i^{xy} - \mathbf{q}_j^{xy}}^2 + \varepsilon_r^2}
-    + \delta \sum_{j \in \mathcal{C}_k \setminus \{i\}} \frac{(\norm{\mathbf{q}_i^{xy}
-    - \mathbf{q}_j^{xy}} - d^*)^2}{2}
-    \cdot \mathbf{1}_{[\norm{\mathbf{q}_i^{xy} - \mathbf{l}_k} < r_{\text{form}}]},
+      \frac{1}{\norm{\mathbf{h}_i - \mathbf{h}_j}^2 + \varepsilon_r^2}
+    + \delta \sum_{j \in \mathcal{C}_k \setminus \{i\}} \frac{(\norm{\mathbf{h}_i
+    - \mathbf{h}_j} - d^*)^2}{2}
+    \cdot \mathbf{1}_{[\norm{\mathbf{h}_i - \mathbf{l}_k} < r_{\text{form}}]},
   \label{eq:potential}
 \end{equation}
-donde el primer término crea un pozo de potencial con mínimo en $\mathbf{l}_{s_i}$,
-de modo que $\mathbf{g}_i = -\nabla F_i$ apunta hacia la tarea asignada; el segundo
-repele a los robots entre sí para evitar colisiones; y el tercer término mantiene
-la geometría de coalición. El parámetro $\varepsilon_r = 0{,}01\,\text{m}$ regulariza el denominador
-cuadrático evitando singularidades; la forma $\|\cdot\|^2 + \varepsilon_r^2$
-es diferenciable en todo $\mathbb{R}^2$ y proporciona un gradiente repulsivo
-acotado incluso para robots en contacto. Los campos de potencial artificial presentan el
-problema clásico de mínimos locales \citep{bullo2009distributed}; en los
-experimentos se mitiga mediante una perturbación aleatoria cuando la velocidad
-del robot cae por debajo de $0{,}01\,\text{m/s}$ durante más de 5 pasos
-consecutivos. El término de repulsión no garantiza formalmente la ausencia
-de colisiones: la evitación es heurística y depende de los valores de $\eta$
-y $\varepsilon_r$. La distancia geométrica de formación es
-$d^* = 2(r_{\text{load}} + r_{\text{robot}}) \sin(\pi / n_{s_i(t)})$,
+donde el primer término crea un pozo de potencial con mínimo en el objetivo
+efectivo $\mathbf{l}_{s_i}^{\mathrm{eff}}$ (ec.~\eqref{eq:target_switch}); el
+segundo repele a los robots entre sí para evitar colisiones; y el tercero mantiene
+la geometría de coalición. El parámetro $\varepsilon_r = 0{,}01\,\text{m}$
+regulariza el denominador cuadrático evitando singularidades; la forma
+$\norm{\cdot}^2 + \varepsilon_r^2$ es diferenciable en todo $\mathbb{R}^2$ y
+proporciona un gradiente repulsivo acotado incluso para robots en contacto. Los
+campos de potencial artificial presentan el problema clásico de mínimos locales
+\citep{bullo2009distributed}; en los experimentos se mitiga mediante una
+perturbación aleatoria cuando la velocidad del robot cae por debajo de
+$0{,}01\,\text{m/s}$ durante más de 5 pasos consecutivos. El término de repulsión
+no garantiza formalmente la ausencia de colisiones: la evitación es heurística y
+depende de los valores de $\eta$ y $\varepsilon_r$. La distancia geométrica de
+formación es $d^* = 2(r_{\text{load}} + r_{\text{robot}}) \sin(\pi / n_{s_i(t)})$,
 donde $n_{s_i(t)} \equiv n_k$ con $k = s_i(t)$ es la cardinalidad mínima de la
 tarea actualmente asignada al robot $i$.
 Para $n_k = 1$ la fórmula da $d^* = 0$ (sin geometría de formación, el robot
 se posiciona directamente sobre la carga); para $n_k = 2$, $d^* = 2(r_{\text{load}}
-+ r_{\text{robot}})$ (los dos robots quedan en lados opuestos de la carga). La zona de formación se activa cuando
-$\norm{\mathbf{q}_i^{xy} - \mathbf{l}_k} < r_{\text{form}}$.
-El gradiente negativo proporciona las velocidades de referencia:
-\begin{align}
-  \mathbf{g}_i &= -\nabla_{\mathbf{q}_i^{xy}} F_i, \label{eq:gradient}\\
-  v_i &= \min\!\left(\norm{\mathbf{g}_i},\, v_{\max}\right), \label{eq:speed}\\
-  \omega_i &= K_\theta \cdot \mathrm{wrap}\!\left(\mathrm{atan2}(\mathbf{g}_i) - \theta_i\right). \label{eq:angular}
-\end{align}
++ r_{\text{robot}})$ (los dos robots quedan en lados opuestos de la carga). La zona
+de formación se activa cuando $\norm{\mathbf{h}_i - \mathbf{l}_k} < r_{\text{form}}$.
+
+El campo de gradiente se aplica sobre el punto adelantado, no sobre el centro, y se
+convierte en comandos cinemáticos invirtiendo el jacobiano del punto adelantado:
+\begin{equation}
+  \begin{bmatrix} v_i \\ \omega_i \end{bmatrix}
+    = \begin{bmatrix} \cos\theta_i & -\ell\sin\theta_i \\
+                      \sin\theta_i & \phantom{-}\ell\cos\theta_i \end{bmatrix}^{-1}
+      \mathbf{u}_h, \qquad \mathbf{u}_h = -\nabla_{\mathbf{h}_i} F_i,
+  \label{eq:lookahead_cmd}
+\end{equation}
+seguida de saturación a $|v_i| \leq v_{\max}$ y $|\omega_i| \leq \omega_{\max}$. El
+jacobiano tiene determinante $\ell$, por lo que es invertible para todo $\ell > 0$.
+Esta formulación regula prácticamente el punto adelantado $\mathbf{h}_i$ a una
+vecindad del objetivo y evita aplicar directamente un gradiente cartesiano al centro
+geométrico del robot diferencial, respetando así su naturaleza no holonómica.
 
 \subsubsection{Fase de transporte y transición al destino}
 \label{subsubsec:transporte}
@@ -471,10 +489,11 @@ $\mathcal{N}_i(t)$ se realizan al inicio del paso y se consideran atómicas.
     \Comment{$y_{ik}(t{+}1)=\mathbf{1}_{[s_i(t{+}1)=k]}$ proviene del Bloque~2}
 \EndFor
 
-\State \textbf{Bloque~4: Gradiente reactivo y cinemática} \eqref{eq:potential}--\eqref{eq:angular}
-\State $\mathbf{g}_i \gets -\nabla_{\mathbf{q}_i^{xy}} F_i(\mathbf{q}_i;\,\mathbf{l}^{\mathrm{eff}}_{s_i})$
-\State $v_i \gets \min(\norm{\mathbf{g}_i},v_{\max})$;\enspace
-       $\omega_i \gets K_\theta\cdot\mathrm{wrap}(\mathrm{atan2}(\mathbf{g}_i) - \theta_i)$
+\State \textbf{Bloque~4: Gradiente reactivo y cinemática} \eqref{eq:potential}--\eqref{eq:lookahead_cmd}
+\State $\mathbf{h}_i \gets \mathbf{q}_i^{xy} + \ell\,(\cos\theta_i,\sin\theta_i)^{\top}$;\enspace
+       $\mathbf{u}_h \gets -\nabla_{\mathbf{h}_i} F_i(\mathbf{h}_i;\,\mathbf{l}^{\mathrm{eff}}_{s_i})$
+\State $[\,v_i;\ \omega_i\,]^{\top} \gets J(\theta_i,\ell)^{-1}\,\mathbf{u}_h$, saturado a $(v_{\max},\omega_{\max})$
+       \Comment{$J(\theta_i,\ell)$: jacobiano del punto adelantado, ec.~\eqref{eq:lookahead_cmd}}
 \State $\mathbf{q}_i(t{+}1) \gets $ unicycle\_step$(\mathbf{q}_i(t), v_i, \omega_i)$
 
 \State \textbf{Actualización del grafo y modo de tarea}
@@ -501,15 +520,17 @@ $\Delta_{\mathrm{chg}}$ en el Escenario~A.
 
 \subsection{Análisis de convergencia}
 
-Se presenta un análisis formal para el caso simplificado con comunicación global
-y tareas homogéneas. El análisis del caso general (grafo irregular, tareas
-heterogéneas, cardinalidades distintas) queda como extensión doctoral.
+El análisis formal se presenta en dos pasos: un teorema de convergencia para el
+\emph{caso base ideal} y una proposición que acota la perturbación introducida por
+el consenso local con $R$ finito. El análisis del caso general (grafo irregular,
+tareas heterogéneas, cardinalidades distintas) queda como extensión doctoral.
 
-\begin{proposicion}[Convergencia simplificada]
+\begin{teorema}[Convergencia, caso base ideal]
 \label{prop:convergencia}
 Considérese $N$ robots con rango de comunicación $R = \infty$ (sin error de
 consenso), $K$ tareas homogéneas con $n_k = n$ para todo $k$ y $r_k = r$ para
-todo $k$, y $N = Kn$ (balance exacto). Bajo las dinámicas de Smith
+todo $k$, $N = Kn$ (balance exacto), factor espacial $\Psi \equiv 1$ y sin
+transición de modo. Bajo las dinámicas de Smith
 \eqref{eq:smith_update} con payoff $f_{ik}(x) = r \cdot \Phi(N\hat{x}_{ik},\, n)$
 ---es decir, con el factor espacial $\Psi \equiv 1$ (sin descuento por distancia) y
 comunicación global perfecta ($R = \infty$, $\hat{x}_{ik} = x_k$)---,
@@ -538,7 +559,7 @@ es decir, $\beta > \ln\!\left((N{+}1)/(N{-}1)\right) = \beta_{\min}$.
 $\beta_{\max}$ garantiza la estabilidad local de la dinámica en tiempo discreto:
 se obtiene de la condición de que el paso de actualización
 $T_s\mu_0 r N \beta/4 < 2$, derivada de la linealización en $\mathbf{x}^*$.
-\end{proposicion}
+\end{teorema}
 
 \begin{proof}[Demostración (esbozo)]
 El argumento se construye en cuatro pasos.
@@ -595,8 +616,38 @@ Combinados, $\beta \in (\beta_{\min},\beta_{\max})$ asegura que $W$ decrece estr
 y $\mathbf{x}^*$ es localmente asintóticamente estable.
 \end{proof}
 
+El Teorema~\ref{prop:convergencia} describe un caso idealizado. El sistema
+realmente implementado opera con $R$ finito, factor espacial $\Psi$ activo y
+transición de modo, condiciones que separan el payoff efectivo del payoff del juego
+base. La siguiente proposición acota esa separación.
+
+\begin{proposicion}[Perturbación por consenso local]
+\label{prop:perturbacion}
+Sea $e_{ik}(t) = \hat{x}_{ik}(t) - x_k(t)$ el error de estimación del DAC, y
+supóngase $|e_{ik}(t)| \leq \bar{e}$ para todo $i,k$. Entonces la perturbación del
+payoff respecto al juego base está acotada por
+\[
+  |\delta f_{ik}| = \bigl|f_{ik}(\hat{x}_{ik}) - f_{ik}(x_k)\bigr|
+    \;\leq\; \frac{r_k\,\beta\,N}{4}\,\bar{e}.
+\]
+\end{proposicion}
+\begin{proof}
+Como $f_{ik} = r_k\,\Phi(N\hat{x}_{ik},n_k)\,\Psi(d_{ik})$ con $\Psi \leq 1$ y
+$|\Phi'(z,n)| \leq \beta/4$, el teorema del valor medio aplicado a $\Phi$ con el
+cambio de variable $z = N\hat{x}_{ik}$ da
+$|\Phi(N\hat{x}_{ik},n_k) - \Phi(Nx_k,n_k)| \leq (\beta/4)\,N\,|e_{ik}|
+\leq (\beta N/4)\,\bar{e}$; multiplicando por $r_k\,\Psi \leq r_k$ se obtiene la cota.
+\end{proof}
+
+En consecuencia, el sistema implementado no coincide con el juego base del
+Teorema~\ref{prop:convergencia}, sino con una versión perturbada según la
+Proposición~\ref{prop:perturbacion}. Por tanto, no se afirma convergencia exacta al
+equilibrio Nash ideal, sino \emph{convergencia práctica a una vecindad del
+equilibrio}, cuyo radio se evalúa empíricamente mediante las métricas $F$, $D(R)$,
+$\Delta_{\mathrm{chg}}$ y $\Delta J$.
+
 \begin{observacion}
-La Proposición~\ref{prop:convergencia} usa $R = \infty$ y $N = Kn$.
+El Teorema~\ref{prop:convergencia} usa $R = \infty$ y $N = Kn$.
 Para los parámetros nominales ($T_s\!=\!0{,}1$, $\mu_0\!=\!0{,}5$, $r\!=\!1$,
 $N\!=\!6$, $K\!=\!3$, $n\!=\!2$), los límites~\eqref{eq:betamin}--\eqref{eq:betamax}
 dan $\beta_{\min} \approx 0{,}34$ y $\beta_{\max} \approx 26{,}7$, por lo que el
@@ -613,7 +664,7 @@ verifica numéricamente en el Escenario~A (configuración balanceada).
 
 \begin{observacion}[Puente entre fracciones continuas y coaliciones enteras]
 \label{obs:fracciones_enteras}
-La Proposición~\ref{prop:convergencia} prueba que la \emph{fracción} de robots
+El Teorema~\ref{prop:convergencia} prueba que la \emph{fracción} de robots
 converge a $x_k^* = n/N$, un punto del símplex continuo. El requisito de
 cardinalidad $|\mathcal{C}_k| \geq n_k$ vive en el dominio \emph{entero}: un robot
 se asigna a la tarea $k$ si $s_i = \arg\max_k p_{ik}$. La correspondencia no es
@@ -625,6 +676,27 @@ alta pero no garantizada al~100\,\%. La tasa de factibilidad $F$ (proporción de
 episodios en que $|\mathcal{C}_k| \geq n_k$ se alcanza para toda $k$ dentro del
 horizonte) es la métrica empírica que cierra este puente.
 \end{observacion}
+
+\begin{lema}[Criterio entero de factibilidad]
+\label{lema:entero}
+Sea $\tilde{x}_k = \tfrac{1}{N}\sum_{i=1}^N \mathbf{1}_{[s_i = k]}$ la ocupación
+empírica pura de la tarea $k$, de modo que $N\tilde{x}_k \in \mathbb{Z}_{\geq 0}$ es
+el número de robots con estrategia $s_i = k$. En régimen estacionario, una vez que
+los robots asignados alcanzan el radio de detección $r_{\mathrm{det}}$, se cumple
+$|\mathcal{C}_k| = N\tilde{x}_k$. Entonces:
+\textup{(i)}~si $\tilde{x}_k \geq n_k/N$ para toda $k$, entonces
+$|\mathcal{C}_k| \geq n_k$ para toda $k$;
+\textup{(ii)}~en el caso balanceado $N = Kn$, si $|\tilde{x}_k - n/N| < 1/(2N)$
+para toda $k$, entonces $|\mathcal{C}_k| = n$ exactamente.
+\end{lema}
+\begin{proof}
+Como $N\tilde{x}_k$ es entero: (i) $\tilde{x}_k \geq n_k/N$ implica
+$N\tilde{x}_k \geq n_k$; (ii) $|N\tilde{x}_k - n| < 1/2$ con $N\tilde{x}_k$ y $n$
+enteros fuerza $N\tilde{x}_k = n$.
+\end{proof}
+Este lema conecta el equilibrio continuo $x_k^* = n/N$ del
+Teorema~\ref{prop:convergencia} con la factibilidad entera: basta una vecindad de
+radio $1/(2N)$ alrededor de $x_k^*$ para garantizar la cardinalidad exacta.
 
 \begin{observacion}[Tiempo de convergencia del DAC]
 Para los parámetros nominales, el tiempo de contracción del error de seguimiento
@@ -891,7 +963,7 @@ $r_{\mathrm{load}}$ & Radio de la carga & 0{,}30 m & Valor nominal \\
 $\varepsilon_r$ & Regularización de repulsión & 0{,}01 m & Fijo \\
 $\omega_{\max}$ & Velocidad angular máxima & 2{,}5 rad/s & Pioneer~3-DX \\
 $v_{\max}$ & Velocidad máxima & 0{,}5 m/s & Valor conservador (Pioneer~3-DX: ${\sim}1{,}2\,\text{m/s}$) \\
-$K_\theta$ & Ganancia de orientación & 2{,}0 & Fijo \\
+$\ell$ & Distancia look-ahead & 0{,}15 m & Pioneer~3-DX \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -928,7 +1000,7 @@ El método se considerará satisfactorio si:
     tratamiento~T4 con tasa espacial \eqref{eq:revision_rate} es inferior al del
     mismo tratamiento con tasa constante $\mu_i = \mu_0$, validando la
     Hipótesis~5 (ablación de la tasa de revisión).
-  \item La validación numérica de la Proposición~\ref{prop:convergencia}
+  \item La validación numérica del Teorema~\ref{prop:convergencia}
     en el Escenario~A (configuración balanceada $n_k=2$, $N=Kn=6$) con 30 episodios
     muestra convergencia ($T_{\mathrm{conv}} < \infty$ y
     $|x_k(T_{\text{conv}}) - x_k^*| < 0{,}01$ para todo $k$) en al menos 27 episodios
