@@ -376,6 +376,12 @@ Formalmente, el término de atracción de \eqref{eq:potential} emplea el objetiv
   \label{eq:target_switch}
 \end{equation}
 
+La transición de modo~\eqref{eq:target_switch} asume
+$R > 2(r_{\text{load}} + r_{\text{robot}})$, condición que garantiza que los robots
+capaces de rodear una misma carga forman un subgrafo completo y evalúan
+$|\mathcal{C}_k| \geq n_k$ de forma sincronizada; por debajo de ese umbral la
+decisión de modo puede fragmentarse, régimen caracterizado en el Escenario~D.
+
 Además, durante la fase de transporte el factor espacial $\Psi(\cdot)$ se fija
 en $1{,}0$ para todos los robots de $\mathcal{C}_k$. Sin esta corrección, la
 distancia $\norm{\mathbf{q}_i^{xy} - \mathbf{l}_k}$ crecería a medida que la
