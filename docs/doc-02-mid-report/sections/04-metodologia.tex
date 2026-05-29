@@ -187,11 +187,13 @@ positivo pequeño:
   \label{eq:payoff_idle}
 \end{equation}
 lo que evita que la dinámica de Smith se congele por ausencia de diferencias de
-payoff cuando todas las tareas están saturadas ($\Phi \approx 0$ para todo $k \geq 1$). El valor $r_0 = 0{,}05$ es suficientemente pequeño para
-no distorsionar el equilibrio Nash en presencia de tareas activas con $r_k \gg r_0$:
-en el equilibrio interior $f_0 = r_0 = 0{,}05 < r/2 = 0{,}5 = f_k^*$, de modo
-que ningún robot tiene incentivo a elegir el estado de inactividad y $x_0^* = 0$
-es Nash.
+payoff cuando todas las tareas están saturadas ($\Phi \approx 0$ para todo $k \geq 1$).
+En el juego base con $\Psi \equiv 1$, tareas homogéneas y $N = \sum_k n_k$, la
+condición $r_0 < r/2$ hace que $x_0^* = 0$ sea consistente con el equilibrio. En el
+sistema espacial completo, donde $\Psi(d) < 1$, la inactividad puede ser localmente
+preferible para robots lejanos o excedentes; en ese caso la inactividad se interpreta
+como estrategia de reserva para robots no comprometidos. La caracterización del
+equilibrio fuera del caso base se evalúa empíricamente.
 
 \input{figures/fig-payoff.tex}
 
@@ -209,7 +211,12 @@ Se define la señal local $y_{ik}(t) = \mathbf{1}_{[s_i(t)=k]}$ y se emplea el
   \quad \forall k \in \mathcal{S},
   \label{eq:consenso}
 \end{equation}
-con ganancia $\varepsilon \in (0, 1/d_{\max})$. El tercer término
+con ganancia $\varepsilon \in (0, 1/\Delta_{\max})$, donde
+$\Delta_{\max} = \max_t d_{\max}(t)$; cuando $d_{\max}$ no se conoce a priori se
+adopta la cota conservadora $\Delta_{\max} = N-1$, válida para cualquier grafo sobre
+$N$ nodos. Una $\varepsilon$ conservadora ralentiza el consenso y afecta por igual a
+T2 y T3 (que dependen del DAC); este efecto se tiene en cuenta al interpretar la
+comparación con T4. El tercer término
 $\Delta y_{ik}(t) = y_{ik}(t+1) - y_{ik}(t)$ compensa instantáneamente el salto
 en la señal local cuando el robot reasigna su estrategia, sin necesidad de
 reinicializar el estado del estimador.
@@ -229,6 +236,15 @@ donde $\mathrm{clip}(a,0,1) = \min(1,\max(0,a))$.
 El estado interno $\hat{x}_{ik}$ puede tomar valores fuera de $[0,1]$ de forma
 transitoria (efecto normal del DAC durante reasignaciones masivas) sin afectar la
 estabilidad del bucle, porque el payoff resultante se mantiene acotado en $(0, r_k]$.
+
+Conviene distinguir tres medidas de ocupación de la tarea $k$: la \emph{ocupación
+asignada pura} $a_k(t) = \sum_i \mathbf{1}_{[s_i(t)=k]}$; la \emph{ocupación física
+presente} $\mathrm{count}_k(t) = \sum_i \mathbf{1}_{[s_i(t)=k]}\,
+\mathbf{1}_{[\norm{\mathbf{q}_i^{xy}(t)-\mathbf{l}_k}<r_{\mathrm{det}}]}$, que coincide
+con $|\mathcal{C}_k(t)|$; y la \emph{estimación local} $\hat{x}_{ik}(t)$ obtenida por
+DAC. La estimación $\hat{x}_{ik}$ alimenta el payoff; $a_k$ mide la asignación lógica;
+y $\mathrm{count}_k = |\mathcal{C}_k|$ activa la fase de transporte y determina la
+factibilidad física $|\mathcal{C}_k| \geq n_k$.
 
 \begin{observacion}[Error de seguimiento del DAC y sensibilidad al payoff]
 \label{obs:init_obs}
@@ -337,7 +353,7 @@ El movimiento se obtiene minimizando localmente un campo de potencial artificial
 \begin{equation}
   F_i(\mathbf{h}_i) = \frac{\alpha}{2}\norm{\mathbf{h}_i - \mathbf{l}_{s_i}^{\mathrm{eff}}}^2
     + \eta \sum_{j \in \mathcal{N}_i}
-      \frac{1}{\norm{\mathbf{h}_i - \mathbf{h}_j}^2 + \varepsilon_r^2}
+      \frac{1}{\norm{\mathbf{q}_i^{xy} - \mathbf{q}_j^{xy}}^2 + \varepsilon_r^2}
     + \delta \sum_{j \in \mathcal{C}_k \setminus \{i\}} \frac{(\norm{\mathbf{h}_i
     - \mathbf{h}_j} - d^*)^2}{2}
     \cdot \mathbf{1}_{[\norm{\mathbf{h}_i - \mathbf{l}_k} < r_{\text{form}}]},
@@ -345,8 +361,11 @@ El movimiento se obtiene minimizando localmente un campo de potencial artificial
 \end{equation}
 donde el primer término crea un pozo de potencial con mínimo en el objetivo
 efectivo $\mathbf{l}_{s_i}^{\mathrm{eff}}$ (ec.~\eqref{eq:target_switch}); el
-segundo repele a los robots entre sí para evitar colisiones; y el tercero mantiene
-la geometría de coalición. El parámetro $\varepsilon_r = 0{,}01\,\text{m}$
+segundo repele a los robots entre sí (evaluado sobre los centros físicos
+$\mathbf{q}_i^{xy}$, para reflejar la geometría real de colisión); y el tercero
+mantiene la geometría de coalición. El término atractivo y la conversión cinemática
+operan sobre el punto adelantado $\mathbf{h}_i$; la repulsión inter-robot, en cambio,
+se calcula sobre los centros físicos $\mathbf{q}_i^{xy}$. El parámetro $\varepsilon_r = 0{,}01\,\text{m}$
 regulariza el denominador cuadrático y evita singularidades; la forma
 $\norm{\cdot}^2 + \varepsilon_r^2$ es diferenciable en todo $\mathbb{R}^2$ y
 proporciona un gradiente repulsivo acotado incluso para robots en contacto. Los
@@ -584,6 +603,10 @@ están dados explícitamente por:
   \beta_{\max} &= \frac{8}{T_s \cdot \mu_0 \cdot r \cdot N}.
     \label{eq:betamax}
 \end{align}
+El umbral $\beta_{\min}$ se introduce como criterio de diseño, no como condición
+necesaria: garantiza una separación de payoff equivalente a un robot en la ocupación
+normalizada ($1/N$) y previene gradientes desvanecientes en la zona de reclutamiento
+de la sigmoide. La derivación siguiente formaliza ese criterio.
 $\beta_{\min} \approx 2/N$ para $N$ grande (primer orden de Taylor).
 $\beta_{\min}$ es una \emph{condición de separación de payoff}: garantiza que la diferencia $\Phi(n{-}1,n) - \Phi(n{+}1,n) > 1/N$ sea suficiente para distinguir el estado subtamaño ($z = n{-}1$)
 del sobretamaño ($z = n{+}1$). La derivación es directa: con
@@ -690,6 +713,12 @@ $|\Phi(N\hat{x}_{ik},n_k) - \Phi(Nx_k,n_k)| \leq (\beta/4)\,N\,|e_{ik}|
 \leq (\beta N/4)\,\bar{e}$; multiplicando por $r_k\,\Psi \leq r_k$ se obtiene la cota.
 \end{proof}
 
+Esta cota acota exclusivamente el canal de error del DAC sobre el payoff. No cubre
+formalmente el efecto del factor espacial $\Psi(d)$, el grafo de comunicación móvil
+$G(t)$, la transición híbrida reclutamiento--transporte, las saturaciones cinemáticas
+ni los mínimos locales del campo de potencial; todos estos efectos se evalúan
+empíricamente en los Escenarios~B--E.
+
 En consecuencia, el sistema implementado corresponde a una versión perturbada del
 juego base del Teorema~\ref{prop:convergencia}, acotada por la
 Proposición~\ref{prop:perturbacion}. La propiedad que cabe esperar es entonces la
@@ -732,8 +761,9 @@ horizonte) es la métrica empírica que cierra este puente.
 \label{lema:entero}
 Sea $\tilde{x}_k = \tfrac{1}{N}\sum_{i=1}^N \mathbf{1}_{[s_i = k]}$ la ocupación
 empírica pura de la tarea $k$, de modo que $N\tilde{x}_k \in \mathbb{Z}_{\geq 0}$ es
-el número de robots con estrategia $s_i = k$. En general
-$|\mathcal{C}_k(t)| \leq N\tilde{x}_k(t)$, con igualdad cuando todos esos robots se
+el número de robots con estrategia $s_i = k$ (esto es, $N\tilde{x}_k = a_k$). En
+general la ocupación física presente cumple
+$\mathrm{count}_k(t) = |\mathcal{C}_k(t)| \leq N\tilde{x}_k(t)$, con igualdad cuando todos esos robots se
 encuentran dentro del radio de detección $r_{\mathrm{det}}$ de la tarea (coalición ya
 formada, régimen estacionario); en transitorios o durante reasignaciones la
 desigualdad puede ser estricta. Bajo dicha igualdad:
