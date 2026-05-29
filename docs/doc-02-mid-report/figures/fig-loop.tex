@@ -1,0 +1,48 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  font=\small,
+  block/.style={
+    draw=VIUDark!50, very thick, rounded corners=4pt,
+    minimum width=3.8cm, minimum height=1.1cm,
+    align=center, fill=VIULight,
+    inner sep=4pt,
+  },
+  flow/.style={
+    -{Latex[length=6pt,width=5pt]}, line width=1.1pt, draw=VIUOrange,
+  },
+  label/.style={
+    font=\footnotesize, color=VIUDark, inner sep=1.5pt,
+    fill=white, rounded corners=1.5pt,
+  },
+  x=4.5cm, y=1.8cm,
+]
+
+% -------- Bloques del bucle (orden secuencial vertical) --------
+\node[block]                       (B1) at (0, 0)   {\textbf{1.\ Payoffs}\\[-1pt]\footnotesize $f_{ik}(\hat{x}_i,\mathbf{q}_i)$};
+\node[block, below=12mm of B1]     (B2)             {\textbf{2.\ Smith}\\[-1pt]\footnotesize $\mathbf{p}_i(t{+}1),\, s_i(t{+}1)$};
+\node[block, below=12mm of B2]     (B3)             {\textbf{3.\ DAC}\\[-1pt]\footnotesize $\hat{x}_{ik}(t{+}1)$};
+\node[block, below=12mm of B3]     (B4)             {\textbf{4.\ Gradiente + uniciclo}\\[-1pt]\footnotesize $\mathbf{q}_i(t{+}1)$};
+
+% -------- Flujo principal (de arriba hacia abajo) --------
+\draw[flow] (B1) -- (B2) node[midway, label] {$f_{ik}$};
+\draw[flow] (B2) -- (B3) node[midway, label] {$y_{ik}(t{+}1)$};
+\draw[flow] (B3) -- (B4) node[midway, label] {$\hat{x}_{ik}(t{+}1)$};
+
+% -------- Retorno al siguiente paso temporal --------
+\draw[flow, dashed, draw=VIUOrange!70]
+  (B4.east) -- ++(1.6,0) coordinate (R1)
+  |- ($(B1.east)+(1.6,0)$) -- (B1.east)
+  node[pos=0.25, right, label, xshift=2pt] {$\mathbf{q}_i(t{+}1)\to t{+}1$};
+
+% -------- Etiqueta del periodo de muestreo --------
+\node[font=\footnotesize\itshape, color=VIUGray, anchor=west]
+  at ($(B1.north west)+(0,0.55)$) {Paso temporal $T_s = 0{,}1$\,s};
+
+\end{tikzpicture}
+\caption[Bucle de control de las tres dinámicas acopladas]%
+{Bucle de control de las tres dinámicas acopladas. Los cuatro bloques se
+ejecutan secuencialmente dentro del mismo paso temporal $T_s = 0{,}1$\,s.
+La flecha discontinua representa la transición al instante siguiente $t{+}1$.}
+\label{fig:loop}
+\end{figure}

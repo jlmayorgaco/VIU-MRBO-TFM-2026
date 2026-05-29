@@ -1,0 +1,88 @@
+﻿\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm,
+  agv/.style={circle, draw=VIUOrange, fill=VIUOrange!20,
+    minimum size=0.62cm, font=\scriptsize\bfseries, inner sep=0pt},
+  pickup/.style={rectangle, draw=VIUDark, fill=VIUDark!8,
+    minimum width=0.88cm, minimum height=0.88cm, font=\tiny, align=center, inner sep=2pt},
+  comm/.style={draw=VIUGray!70, thin, dashed},
+  motion/.style={-{Stealth[length=4pt]}, draw=VIUOrange!75, thick, shorten >=3pt, shorten <=3pt}
+]
+%-- Planta de bodega
+\draw[VIUDark!40, thick, rounded corners=5pt] (0,0) rectangle (11.5,7.8);
+\node[font=\tiny, VIUGray, anchor=north west] at (0.15,7.65)
+  {Almacén automatizado ($20\,\mathrm{m}\times 14\,\mathrm{m}$)};
+
+%-- Tareas: posiciones de recogida l_k
+\node[pickup] (L1) at (2.0,6.5) {$k{=}1$\\$n_1{=}1$};
+\node[pickup] (L2) at (5.5,3.2) {$k{=}2$\\$n_2{=}3$};
+\node[pickup] (L3) at (9.5,6.0) {$k{=}3$\\$n_3{=}2$};
+\node[font=\tiny, VIUDark, above=1pt of L1] {$\mathbf{l}_1$};
+\node[font=\tiny, VIUDark, above=1pt of L2] {$\mathbf{l}_2$};
+\node[font=\tiny, VIUDark, above=1pt of L3] {$\mathbf{l}_3$};
+
+%-- Destinos d_k (dibujados como rombos manuales)
+\def\rdia{0.30}
+\foreach \cx/\cy/\lbl in {1.5/1.0/$\mathbf{d}_1$, 8.5/0.8/$\mathbf{d}_2$, 10.8/3.8/$\mathbf{d}_3$}{%
+  \draw[VIUDeep, thick]
+    (\cx,\cy+\rdia) -- (\cx+\rdia,\cy) -- (\cx,\cy-\rdia) -- (\cx-\rdia,\cy) -- cycle;
+  \node[font=\tiny, VIUDeep] at (\cx,\cy) {\lbl};
+}
+
+%-- Robots
+\node[agv] (R1) at (2.0,5.0)  {1};
+\node[agv] (R2) at (4.4,2.7)  {2};
+\node[agv] (R3) at (6.5,2.7)  {3};
+\node[agv] (R4) at (5.6,4.2)  {4};
+\node[agv] (R5) at (8.5,5.0)  {5};
+\node[agv] (R6) at (9.8,4.8)  {6};
+
+%-- Coalicion C_2 = {2,3,4}: recuadro resaltado
+\draw[VIUOrange, thick, dashed, rounded corners=6pt, fill=VIUOrange!5]
+  (3.7,2.0) rectangle (7.2,5.0);
+\node[font=\tiny, VIUOrange, anchor=south west] at (3.7,5.0)
+  {$\mathcal{C}_2$: $|\mathcal{C}_2|=3\geq n_2$ $\checkmark$};
+
+%-- Flechas de transporte: coalicion 2 se mueve hacia d_2
+\draw[{Stealth[length=4pt]}-{Stealth[length=4pt]}, VIUOrange!60, thick, dashed]
+  ($(L2.south)+(0,-0.1)$) -- (8.5,0.8)
+  node[midway, below, font=\tiny, VIUGray] {transporte $\rightarrow \mathbf{d}_2$};
+
+%-- Links de comunicacion dentro de la coalicion
+\draw[comm] (R2) -- (R3);
+\draw[comm] (R2) -- (R4);
+\draw[comm] (R3) -- (R4);
+
+%-- Robots 5 y 6: convergiendo hacia L3
+\draw[comm] (R5) -- (R6);
+\draw[motion] (R5) -- ($(L3.south west)+(0.05,0.05)$);
+\draw[motion] (R6) -- ($(L3.east)+(-0.05,0)$);
+
+%-- Robot 1: solo, hacia L1
+\draw[motion] (R1) -- ($(L1.south)+(0,0.05)$);
+
+%-- Circulo de rango R (ejemplo alrededor de R5)
+\draw[VIUGray, dotted, thin] (R5) circle (1.4cm);
+\node[font=\tiny, VIUGray, anchor=north] at ($(R5)+(0,-1.4)$) {rango $R$};
+
+%-- Leyenda
+\begin{scope}[shift={(0.1,0.05)}]
+  \node[agv, minimum size=0.42cm] at (0.38,0.38) {};
+  \node[font=\tiny, anchor=west] at (0.65,0.38) {AGV $i$};
+  \node[pickup, minimum width=0.42cm, minimum height=0.42cm] at (2.5,0.38) {};
+  \node[font=\tiny, anchor=west] at (2.8,0.38) {Recogida $\mathbf{l}_k$};
+  \draw[VIUDeep, thick]
+    (5.2,0.62) -- (5.45,0.38) -- (5.2,0.14) -- (4.95,0.38) -- cycle;
+  \node[font=\tiny, anchor=west] at (5.55,0.38) {Entrega $\mathbf{d}_k$};
+  \draw[comm] (7.3,0.38) -- (8.0,0.38);
+  \node[font=\tiny, anchor=west] at (8.05,0.38) {Enlace com.};
+\end{scope}
+\end{tikzpicture}
+\caption[Escenario de asignación distribuida con coaliciones]%
+{Escenario del problema de asignación distribuida con coaliciones. Seis AGV
+($N=6$) en un almacén automatizado con tres tareas activas ($K=3$). La coalición $\mathcal{C}_2$
+(robots~2, 3, 4) ya satisface $|\mathcal{C}_2|=3=n_2$ y transita hacia el destino
+$\mathbf{d}_2$. Los robots~5 y~6 convergen hacia la tarea~3 ($n_3=2$). El robot~1 atiende
+solo la tarea~1 ($n_1=1$). El círculo punteado indica el rango de comunicación~$R$.}
+\label{fig:problema}
+\end{figure}

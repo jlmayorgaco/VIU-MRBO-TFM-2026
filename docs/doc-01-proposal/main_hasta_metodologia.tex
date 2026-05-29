@@ -1,0 +1,320 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{viu-mrob-tfm}
+
+\thesistitle{Control distribuido basado en dinámicas poblacionales para la formación adaptativa de coaliciones en transporte cooperativo multi-AGV}
+\studentname{Jorge Luis Mayorga Taborda}
+\institutionname{Universidad Internacional de Valencia (VIU)}
+\mastername{Máster Universitario en Robótica y Automatización de Procesos (MROB)}
+\documenttypename{Propuesta de Trabajo Fin de Máster}
+\tutorname{José Ignacio Iñíguez Amigot}
+\proposaldate{27 de mayo de 2026}
+\versionlabel{Versión hasta metodología, orientada a continuidad doctoral y publicación}
+
+\begin{document}
+
+\hypersetup{pageanchor=false}
+\makeviucover
+\hypersetup{pageanchor=true}
+
+\pagenumbering{roman}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\section*{Resumen}
+\addcontentsline{toc}{section}{Resumen}
+
+Este Trabajo Fin de Máster propone una arquitectura de control distribuido para transporte cooperativo multi-AGV en escenarios con cargas heterogéneas. El problema se formula como la necesidad de que una flota de robots móviles forme coaliciones de tamaño adecuado para transportar cargas que pueden superar la capacidad individual de un agente, sin depender de un coordinador central con información completa.
+
+La propuesta combina dos ideas. La primera es el control cooperativo basado en consenso, usado para mantener coordinación local y movimiento hacia la carga asignada. La segunda es una dinámica poblacional distribuida de tipo Smith discreta, usada para revisar en línea la preferencia de cada AGV por las cargas disponibles a partir de un \textit{payoff} multiplicativo de demanda, prioridad y cercanía espacial.
+
+El alcance se limita a simulación bidimensional reproducible en Python. La validación principal compara el método propuesto con líneas base de consenso nominal, asignación local voraz y asignación centralizada ideal. La finalidad del TFM es cerrar una contribución viable para máster y, al mismo tiempo, dejar una línea clara hacia artículo de conferencia y posterior investigación doctoral.
+
+\textbf{Palabras clave:} dinámicas poblacionales; juegos evolutivos; control distribuido; formación de coaliciones; consenso; AGV; transporte cooperativo.
+
+\section{Introducción}
+
+La automatización logística y manufacturera depende cada vez más de flotas de vehículos guiados automáticamente y robots móviles autónomos. En muchos casos, estos sistemas trabajan bajo el supuesto de que cada robot transporta una carga individual de tamaño y masa compatibles con su capacidad nominal. Ese supuesto simplifica la asignación de tareas, pero pierde fuerza cuando aparecen cargas heterogéneas, piezas voluminosas o elementos cuya manipulación requiere soporte distribuido.
+
+El transporte cooperativo multi-robot aborda ese problema permitiendo que varios agentes actúen sobre una misma carga. La literatura reciente muestra avances en transporte cooperativo, control distribuido, esquemas basados en fuerza y control predictivo no lineal descentralizado \citep{an2023cooperative,verginis2018communication,ebel2024cooperative,rosenfelder2024force}. Estos trabajos demuestran que el problema sigue activo y que su dificultad no se reduce a mover robots, sino a coordinar decisiones, comunicación, restricciones físicas y desempeño colectivo.
+
+El estado reciente de la literatura permite ubicar la brecha con mayor precisión. Los grupos que lideran el transporte cooperativo físico, como Ebel, Rosenfelder y Eberhard en Stuttgart, resuelven el control de formación, fuerza y restricciones no holonómicas sobre el objeto transportado, pero no abordan como problema principal la selección distribuida de qué robots atienden qué carga cuando existen múltiples cargas con cardinalidad variable \citep{ebel2024cooperative,rosenfelder2024force}. Los trabajos de asignación distribuida para transporte colectivo, como \citet{shan2024distributed}, usan subastas descentralizadas para tareas dinámicas con restricciones temporales, pero no integran la decisión con una ley de control poblacional ni con una garantía formal de convergencia. Los enfoques por aprendizaje, como \citet{shibata2023event}, \citet{shibata2023learning}, \citet{paul2023efficient} y \citet{bezerra2025learning}, logran coordinación y formación de coaliciones en simulación, aunque dependen de entrenamiento previo y ofrecen menos interpretabilidad formal. Por su parte, las dinámicas poblacionales de \citet{quijano2017population}, \citet{barreiro2017distributed} y \citet{martinez2020formation} han demostrado valor en asignación de recursos y control de formación, pero no se han usado directamente para formar coaliciones de cardinalidad variable en transporte cooperativo multi-AGV.
+
+En paralelo, los juegos poblacionales y las dinámicas evolutivas han sido usados en control distribuido, optimización y formación multiagente \citep{barreiro2017distributed,barreiro2021uav,quijano2017population,sandholm2010population,martinez2020formation,martinez2022contractive}. Esa línea resulta atractiva para este TFM porque permite describir la evolución de preferencias locales sin exigir un planificador central. También ofrece una base matemática para estudiar convergencia, asignación de recursos y adaptación bajo información parcial. Para la parte de formación y navegación coordinada, el trabajo se apoya además en referencias de control de formación distribuido y robótica multiagente \citep{bullo2009distributed,ahn2020formation,hurtado2024potential}.
+
+La oportunidad de investigación está en ese cruce específico. Los métodos de asignación multi-robot suelen separar decisión y control: primero asignan robots a tareas y después ejecutan trayectorias. En cambio, este TFM propone estudiar un ciclo acoplado donde la decisión local, la formación de coaliciones y el movimiento cooperativo evolucionan juntos. La contribución no pretende resolver todos los casos de transporte cooperativo. Se concentra en una pregunta acotada: si una dinámica poblacional distribuida puede mejorar la formación de coaliciones y el reparto de esfuerzo frente a baselines simples cuando la información es local y las cargas son heterogéneas.
+
+\section{Planteamiento del problema y justificación}
+
+Se considera una flota de AGVs diferenciales que opera en un entorno plano. En el espacio de trabajo aparecen cargas con distinta masa, geometría simplificada y destino. Cada carga requiere un número mínimo de robots para ser transportada. Ese requisito se modela mediante una cardinalidad $n_k$, calculada a partir de la masa o dificultad relativa de la tarea. El problema consiste en que los AGVs formen coaliciones factibles, se desplacen hacia las cargas asignadas y contribuyan al transporte sin información global perfecta.
+
+La comunicación se representa mediante un grafo local variable. Dos robots solo intercambian información si están dentro de un radio de comunicación o si existe un enlace activo en el grafo. Por tanto, cada agente conoce una parte del estado colectivo y debe estimar de forma distribuida cuántos robots están interesados en cada carga. Esta restricción hace que una asignación centralizada óptima sea útil como referencia, pero no como solución principal.
+
+La justificación académica del trabajo es doble. Desde control distribuido, el problema conecta con consenso, grafos de comunicación y coordinación multiagente \citep{bullo2009distributed,olfati2004consensus,ren2008distributed}. Desde teoría de juegos, conecta con dinámicas poblacionales aplicadas a optimización y control \citep{barreiro2017distributed,quijano2017population}. Desde robótica cooperativa, se ubica en un campo donde los enfoques predictivos y de optimización distribuida son referencias fuertes, pero a menudo resultan costosos para una implementación inicial de TFM.
+
+El valor del TFM no depende de afirmar una primicia absoluta. La posición defendible es más precisa: hasta donde alcanza la revisión inicial, las dinámicas poblacionales han sido exploradas en control distribuido y formación, mientras que la formación de coaliciones para transporte cooperativo suele tratarse con subastas \citep{choi2009consensus,shan2024distributed}, juegos hedónicos \citep{dutta2021hedonic}, aprendizaje \citep{shibata2023event,shibata2023learning,paul2023efficient,bezerra2025learning} u optimización. Frente a \citet{shan2024distributed}, este TFM no propone un protocolo de subasta, sino una regla de revisión poblacional con \textit{payoff} de umbral, acoplada al movimiento físico y con una prueba formal mínima en el caso homogéneo. Queda espacio para evaluar una arquitectura sencilla que use dinámicas poblacionales como mecanismo de asignación adaptativa dentro de un sistema de transporte cooperativo con comunicación local.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Posicionamiento del TFM frente a líneas recientes de trabajo.}
+\begin{tabular}{p{2.7cm}p{3.0cm}p{4.0cm}p{4.4cm}}
+\toprule
+\textbf{Línea} & \textbf{Referencias clave} & \textbf{Qué resuelve} & \textbf{Límite relevante para este TFM} \\
+\midrule
+Transporte cooperativo físico & \citet{ebel2024cooperative}; \citet{rosenfelder2024force} & Organización y control del transporte no prensil con robots diferenciales, restricciones no holonómicas y experimentación real. & No aborda como problema principal la asignación distribuida de robots a múltiples cargas con cardinalidades heterogéneas. \\
+\addlinespace
+Asignación para transporte colectivo & \citet{shan2024distributed} & Asignación descentralizada por subasta para tareas dinámicas de transporte colectivo con restricciones temporales. & Se concentra en la planificación/asignación de alto nivel; no busca garantías de convergencia basadas en dinámicas poblacionales ni un control físico detallado de la carga. \\
+\addlinespace
+Coaliciones con aprendizaje & \citet{shibata2023event}; \citet{shibata2023learning}; \citet{paul2023efficient}; \citet{bezerra2025learning} & Uso de MARL, \textit{graph reinforcement learning} o MAPPO para coordinación, asignación, escalabilidad y formación dinámica de coaliciones. & Requiere entrenamiento y validación empírica; las garantías formales y la interpretabilidad de la ley distribuida son más limitadas. \\
+\addlinespace
+Dinámicas poblacionales y juegos & \citet{quijano2017population}; \citet{barreiro2017distributed}; \citet{martinez2020formation} & Marco formal para control distribuido, asignación de recursos, optimización y formación multiagente. & La aplicación directa a transporte cooperativo con cargas de distinta cardinalidad sigue abierta en la revisión inicial. \\
+\addlinespace
+Propuesta del TFM & Este trabajo & Integra decisión local, formación de coaliciones por cardinalidad y movimiento cooperativo en simulación reproducible. & Acota la contribución a simulación 2D, con prueba formal solo para un caso homogéneo simplificado. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La brecha, por tanto, no es que falten métodos de transporte cooperativo ni métodos de asignación multi-robot. La brecha es la integración de una regla decisional distribuida, interpretable y sin entrenamiento previo con un ciclo de movimiento cooperativo donde las cargas tienen requisitos mínimos de coalición. Esa es la zona específica donde se posiciona este TFM.
+
+\section{Pregunta de investigación e hipótesis}
+
+\textbf{Pregunta de investigación.} ¿Puede una dinámica poblacional distribuida con \textit{payoff} de umbral sigmoidal, acoplada con la cinemática de AGVs como ley de control reactiva, formar coaliciones de cardinalidad variable para transporte cooperativo bajo comunicación local y mantener una base formal de convergencia al menos en un caso homogéneo simplificado?
+
+\textbf{Hipótesis de trabajo.}
+\begin{enumerate}
+  \item En escenarios con cargas heterogéneas, una dinámica de Smith distribuida con \textit{payoff} multiplicativo formará coaliciones factibles con mayor frecuencia que una asignación local voraz basada solo en distancia.
+  \item El método propuesto tendrá menor rendimiento que un asignador central ideal en algunos escenarios, pero mantendrá una brecha aceptable si el grafo conserva conectividad temporal suficiente.
+  \item La degradación del radio de comunicación afectará el tiempo de formación de coalición y el \textit{throughput}, pero el uso de estimaciones locales por consenso reducirá fallos abruptos de coordinación.
+  \item El acoplamiento entre consenso local, revisión poblacional de estrategia y movimiento físico ofrecerá una base más publicable que una comparación aislada entre controladores nominales, porque permite estudiar asignación, comunicación y control dentro de una misma metodología.
+\end{enumerate}
+
+Las hipótesis se contrastarán por simulación reproducible, usando los mismos escenarios, semillas y métricas para todos los métodos comparados.
+
+\section{Objetivos}
+
+\subsection{Objetivo general}
+
+Diseñar y evaluar en simulación una arquitectura de control distribuido basada en dinámicas poblacionales y consenso para la formación adaptativa de coaliciones en transporte cooperativo multi-AGV con cargas heterogéneas y comunicación local.
+
+\subsection{Objetivos específicos}
+
+\begin{enumerate}
+  \item Formalizar un modelo bidimensional del sistema, incluyendo AGVs diferenciales, cargas heterogéneas, destinos, requisitos de cardinalidad y grafo de comunicación local.
+  \item Definir una línea base distribuida basada en consenso y una línea base local voraz para comparar el comportamiento del método propuesto.
+  \item Diseñar una función de \textit{payoff} multiplicativa que combine prioridad de carga, necesidad de coalición y accesibilidad espacial con pocos parámetros libres.
+  \item Implementar una dinámica de Smith discreta para actualizar las preferencias de cada AGV por las cargas disponibles sin usar información global completa.
+  \item Integrar la decisión poblacional con un controlador local de movimiento y formación basado en consenso o campos potenciales simples, dentro de un ciclo acoplado decisión--movimiento.
+  \item Construir un \textit{pipeline} reproducible de simulación en Python con configuraciones, semillas, métricas, tablas y figuras exportables.
+  \item Evaluar el desempeño mediante escenarios de homogeneidad, heterogeneidad, degradación de comunicación, fallos de agentes, variación de dificultad de carga y una validación secundaria en CoppeliaSim.
+  \item Preparar un borrador de artículo orientado a conferencia, por ejemplo CDC, ECC o NecSys, que contenga la formulación del juego poblacional con \textit{payoff} de umbral, la proposición de convergencia del caso homogéneo y resultados de los escenarios B y C.
+\end{enumerate}
+
+\section{Alcance y limitaciones}
+
+\subsection{Alcance}
+
+El alcance se define para una entrega de máster, no para un sistema industrial cerrado. La validación principal será numérica y reproducible. Se trabajará con un entorno bidimensional, entre 4 y 8 AGVs en los escenarios principales, con extensiones de 15--20 AGVs en el escenario D para evaluar tendencias de escalabilidad bajo degradación de comunicación. En los escenarios principales se considerarán entre 2 y 4 cargas por episodio. Las cargas se modelarán por posición, destino, dificultad relativa y cardinalidad mínima requerida.
+
+El estudio se concentrará en:
+\begin{itemize}
+  \item control local de movimiento con modelo \textit{unicycle} discretizado;
+  \item grafos de comunicación por radio o matriz de adyacencia variable;
+  \item dinámica de Smith discreta para asignación distribuida de preferencias;
+  \item control por consenso o campos potenciales para movimiento y cohesión local;
+  \item comparación contra baselines simples y contra un asignador central ideal;
+  \item análisis cuantitativo con métricas definidas antes de ejecutar la campaña experimental.
+\end{itemize}
+
+\subsection{Limitaciones}
+
+Quedan fuera del alcance la implementación en hardware real, la integración obligatoria con ROS2, la prueba formal completa de convergencia para el caso heterogéneo con grafo variable, la planificación con obstáculos complejos y la implementación completa de un controlador NMPC o DMPC. CoppeliaSim se incluirá como validación robótica secundaria sobre uno de los escenarios principales, sin desplazar la validación cuantitativa reproducible en Python.
+
+Esta delimitación protege la viabilidad del TFM. Las líneas que quedan fuera del alcance constituyen la ruta doctoral prevista: demostración formal de convergencia para el caso heterogéneo con grafo variable, usando separación de escalas temporales y perturbaciones singulares; extensión hacia control estigmérgico, donde la comunicación explícita se complemente o reemplace por marcadores ambientales; validación experimental con robots reales; y comparación formal contra enfoques NMPC distribuidos, subastas descentralizadas y MARL.
+
+\section{Metodología}
+
+La investigación será aplicada, cuantitativa y experimental por simulación. El resultado metodológico no será únicamente una demostración visual de robots en movimiento, sino un protocolo reproducible para contrastar una arquitectura distribuida frente a líneas base identificables. La metodología se organiza para responder tres preguntas: si las coaliciones requeridas se forman, si el transporte se completa con desempeño competitivo y cuánto rendimiento se pierde al abandonar la información centralizada.
+
+\subsection{Enfoque y unidad de análisis}
+
+La unidad de análisis será un episodio de transporte cooperativo en un entorno bidimensional. En cada episodio, una flota de AGVs debe atender un conjunto de cargas heterogéneas. Algunas cargas podrán ser transportadas por un solo robot, mientras que otras requerirán una coalición mínima de tamaño $n_k$. El experimento terminará cuando todas las cargas factibles sean entregadas, cuando se agote un horizonte temporal $T$, o cuando el sistema entre en una condición de bloqueo definida por ausencia de progreso durante una ventana temporal.
+
+El estudio tendrá cuatro tratamientos comparables: asignación local voraz, coordinación distribuida basada en consenso, asignación centralizada ideal y método propuesto basado en dinámicas poblacionales. La comparación se hará sobre los mismos escenarios, semillas y condiciones iniciales. Con ello se evita atribuir al método propuesto mejoras que provengan de una configuración experimental más favorable.
+
+\subsection{Modelo formal del sistema}
+
+Se considera un conjunto de robots $\mathcal{R}=\{1,\ldots,N\}$ y un conjunto de cargas $\mathcal{L}=\{1,\ldots,M\}$. El estado planar del robot $i$ en el instante discreto $t$ será $q_i(t)=[x_i(t),y_i(t),\theta_i(t)]^\top$. Para la simulación principal se usará un modelo cinemático de tipo uniciclo:
+\[
+\dot{x}_i=v_i\cos\theta_i,\qquad
+\dot{y}_i=v_i\sin\theta_i,\qquad
+\dot{\theta}_i=\omega_i ,
+\]
+donde $v_i$ y $\omega_i$ estarán acotados por límites nominales. Cada carga $k$ tendrá posición inicial $\ell_k(0)$, destino $g_k$, prioridad $\rho_k$, dificultad relativa $w_k$ y cardinalidad requerida $n_k\in\{1,\ldots,N\}$.
+
+Se denotará por $r_i(t)=[x_i(t),y_i(t)]^\top$ la posición planar del AGV $i$. Esta notación permitirá distinguir la posición física del robot de su distribución de preferencias $p_i(t)$.
+
+La comunicación se modelará mediante un grafo no dirigido variable $G(t)=(\mathcal{R},\mathcal{E}(t))$. Existirá una arista $(i,j)\in\mathcal{E}(t)$ si los robots $i$ y $j$ se encuentran dentro de un radio de comunicación $r_c$ o cumplen la condición de vecindad definida por el escenario. El conjunto de vecinos de $i$ será $\mathcal{N}_i(t)$. La metodología no asumirá que cada robot conoce el estado global; cada agente solo usará su propio estado, mediciones locales de cargas cercanas y mensajes de sus vecinos.
+
+La variable de decisión principal será una distribución de preferencias
+\[
+p_i(t)=[p_{i1}(t),\ldots,p_{iM}(t),p_{i0}(t)]^\top\in\Delta^{M},
+\]
+donde $p_{ik}$ representa la preferencia del robot $i$ por la carga $k$ y $p_{i0}$ representa la opción \textit{idle}. La asignación efectiva se obtendrá mediante una regla de decisión explícita, por ejemplo $a_i(t)=\arg\max_k p_{ik}(t)$, con umbral mínimo de confianza para evitar cambios espurios de tarea.
+
+\subsection{Condiciones de factibilidad y objetivo experimental}
+
+Una coalición para la carga $k$ será factible en el instante $t$ si el conjunto $\mathcal{C}_k(t)=\{i:a_i(t)=k\}$ cumple $|\mathcal{C}_k(t)|\geq n_k$ y mantiene conectividad local suficiente durante una ventana mínima $\tau_s$. Una carga se considerará completada si una coalición factible alcanza la carga, mantiene la coordinación durante el traslado y entrega la carga dentro de una tolerancia espacial $\varepsilon_g$ respecto al destino $g_k$.
+
+El objetivo experimental no será resolver un óptimo global exacto, sino evaluar si una ley distribuida de actualización de preferencias mejora la formación de coaliciones bajo información local. El desempeño se comparará contra un asignador centralizado usado como referencia superior. La brecha de descentralización se medirá como:
+\[
+\Delta_J=\frac{J_{\mathrm{dist}}-J_{\mathrm{cent}}}{\max(|J_{\mathrm{cent}}|,\epsilon)},
+\]
+donde $J_{\mathrm{dist}}$ es el costo del método distribuido, $J_{\mathrm{cent}}$ el costo centralizado y $\epsilon$ evita divisiones inestables cuando el costo de referencia sea cercano a cero.
+
+\subsection{Dinámicas acopladas del método propuesto}
+
+El método no se formulará como un pipeline jerárquico de tres capas independientes. Se describirá como tres dinámicas acopladas que se ejecutan en cada paso de muestreo: estimación distribuida de demanda, revisión poblacional de estrategia y movimiento físico de los AGVs. Esta distinción es importante porque el movimiento modifica distancias y conectividad; esas variables cambian el \textit{payoff}; y el nuevo \textit{payoff} altera la asignación que guía el siguiente movimiento.
+
+Cada robot calculará una estimación local $\hat{z}_{ik}(t)$ del número de agentes interesados en la carga $k$ usando su preferencia actual y los mensajes recibidos desde $\mathcal{N}_i(t)$. La calidad de esta estimación dependerá del grafo de comunicación, de modo que la pérdida de conectividad se reflejará directamente en la dinámica decisional.
+
+El \textit{payoff} principal será multiplicativo:
+\[
+f_{ik}(t)=\rho_k\,\Phi\big(\hat{z}_{ik}(t),n_k\big)\,\Psi\big(\|r_i(t)-\ell_k(t)\|\big),
+\]
+donde $\rho_k$ representa prioridad o recompensa de la carga, $\Phi$ mide demanda remanente de coalición y $\Psi$ mide accesibilidad espacial. Una elección inicial será:
+\[
+\Phi(\hat{z},n)=\frac{1}{1+\exp[\beta(\hat{z}-n)]},
+\qquad
+\Psi(d)=\exp\left(-\frac{d^2}{2\lambda_d^2}\right).
+\]
+Así, una carga cercana a su cardinalidad requerida reduce suavemente su atractivo y una carga muy lejana pierde peso aunque tenga alta prioridad. Frente a la versión aditiva, esta forma reduce los pesos arbitrarios y deja parámetros con significado físico: $\beta$ regula la dureza del umbral de coalición y $\lambda_d$ regula el alcance espacial de atracción. Si se desea que cargas con mayor cardinalidad sean intrínsecamente más atractivas, ese efecto se incorporará en $\rho_k$, no duplicando la función de demanda. La versión aditiva con varios pesos solo quedará como variante de sensibilidad si el tiempo de implementación lo permite.
+
+Para la estrategia \textit{idle} se usará un \textit{payoff} pequeño y constante $f_{i0}$, activado cuando ninguna carga observable supere un umbral mínimo de atractivo. Esto evita forzar asignaciones espurias en robots temporalmente aislados o sin información útil.
+
+La actualización de preferencias usará una dinámica de Smith discreta sobre el conjunto de estrategias $\mathcal{S}=\{0,1,\ldots,M\}$:
+\[
+\tilde{p}_{ik}(t+1)=p_{ik}(t)+T_s\mu_i(t)
+\left(
+\sum_{j\in\mathcal{S}}p_{ij}(t)[f_{ik}(t)-f_{ij}(t)]_+
+-p_{ik}(t)\sum_{j\in\mathcal{S}}[f_{ij}(t)-f_{ik}(t)]_+
+\right),
+\]
+\[
+p_i(t+1)=\Pi_\Delta\big(\tilde{p}_i(t+1)\big),
+\]
+donde $[y]_+=\max(y,0)$ y $\Pi_\Delta$ proyecta al simplex. A diferencia de la dinámica replicadora, una estrategia con preferencia momentáneamente nula puede recuperarse si su \textit{payoff} vuelve a ser competitivo. Por eso no se introduce una regularización artificial de exploración.
+
+La tasa de revisión será dependiente de la distancia a la tarea actualmente seleccionada:
+\[
+\mu_i(t)=\mu_0\left(1-\exp\left[-\frac{\|r_i(t)-\ell_{a_i(t)}(t)\|^2}{2\sigma^2}\right]\right).
+\]
+Con esta modulación, un robot que todavía está lejos de su carga puede reconsiderar su asignación con mayor facilidad, mientras que un robot próximo a la carga reduce su probabilidad de cambio. El objetivo es disminuir oscilaciones de asignación cuando una coalición ya está a punto de completarse.
+
+Si el robot está en estado \textit{idle}, la tasa de revisión se fijará en $\mu_0$ para permitir que vuelva a incorporarse rápidamente cuando aparezca una carga atractiva.
+
+El movimiento se resolverá con una ley local reactiva:
+\[
+u_i(t)=u_i^{\mathrm{att}}(t)+u_i^{\mathrm{rep}}(t)+u_i^{\mathrm{coh}}(t),
+\]
+con saturación de velocidad. El término de atracción lleva al robot hacia la carga o destino asignado, el término de repulsión reduce colisiones entre AGVs cercanos y el término de cohesión mantiene compacta la coalición que comparte una misma carga. Esta ley no será la contribución principal; su función será cerrar el ciclo entre decisión y movimiento.
+
+\subsection{Algoritmo de referencia}
+
+El procedimiento experimental del método propuesto será:
+
+\begin{enumerate}
+  \item Inicializar robots, cargas, destinos, grafo de comunicación, preferencias $p_i(0)$ y parámetros $\beta$, $\lambda_d$, $\mu_0$ y $\sigma$.
+  \item Para cada instante $t$, actualizar posiciones, vecinos $\mathcal{N}_i(t)$ y mediciones locales.
+  \item Intercambiar preferencias locales y estimar demanda $\hat{z}_{ik}(t)$ para cada carga observable o comunicada.
+  \item Calcular el \textit{payoff} multiplicativo $f_{ik}(t)$.
+  \item Calcular la tasa de revisión espacial $\mu_i(t)$.
+  \item Actualizar preferencias mediante dinámica de Smith discreta y proyectar al simplex.
+  \item Convertir preferencias en asignaciones efectivas con umbral de estabilidad.
+  \item Aplicar control reactivo de atracción, repulsión y cohesión.
+  \item Actualizar el grafo inducido por las nuevas posiciones y registrar estado, asignaciones, coaliciones, costos, eventos y fallos.
+\end{enumerate}
+
+La implementación guardará también las trayectorias de preferencias $p_i(t)$, no solo las trayectorias físicas. Esto permitirá analizar si el método falla por navegación, por mala estimación de demanda, por oscilación en la dinámica de asignación o por pérdida de conectividad.
+
+\subsection{Análisis de convergencia previsto}
+
+El TFM no prometerá una prueba completa para el caso heterogéneo con grafo variable, porque esa afirmación sería demasiado fuerte para el alcance de máster. Sí se planteará un resultado formal mínimo para un caso simplificado: comunicación completa, cargas homogéneas, posiciones fijas durante la fase de asignación, cardinalidad común $n_k=n$ y balance $N=Mn$. En ese caso, la dinámica decisional puede estudiarse como un juego poblacional con \textit{payoff} dependiente de la demanda remanente.
+
+La proposición que se buscará demostrar es que la distribución simétrica $x_k^\ast=n/N$ para cada carga es un punto estacionario de la dinámica de Smith discreta y que, bajo condiciones de paso de muestreo suficientemente pequeño y función de demanda monótona, dicho equilibrio es estable localmente. En el equilibrio simétrico, cada carga tiene $N x_k^\ast=N(n/N)=n$ robots asignados, lo que satisface exactamente la restricción de cardinalidad $|\mathcal{C}_k|\geq n_k$ para todas las cargas del caso homogéneo balanceado. Esto conecta la prueba de estabilidad con el problema de ingeniería: la dinámica poblacional con \textit{payoff} de umbral resuelve la formación de coaliciones factibles al menos en ese caso simplificado. Este resultado se apoyará en la literatura de dinámicas poblacionales, estabilidad de Smith discreta y juegos poblacionales contractivos \citep{sandholm2010population,martinez2020formation,martinez2022contractive}. El caso heterogéneo, con prioridades, distancias y comunicación local, se validará por simulación.
+
+\subsection{Líneas base}
+
+Se implementarán tres comparadores. El primero será una asignación local voraz: cada AGV selecciona la carga más cercana que parece requerir apoyo. Este método mide el valor añadido mínimo de usar una dinámica poblacional. El segundo será una coordinación distribuida basada en consenso para estimar demanda y mantener coherencia de grupo sin usar actualización evolutiva de preferencias. Este método sirve para distinguir el efecto del consenso del efecto de la dinámica poblacional. El tercero será un asignador centralizado ideal, con acceso a posiciones y requisitos de todas las cargas. No se propone como solución práctica distribuida; se usará como referencia de desempeño.
+
+\subsection{Diseño experimental}
+
+La campaña experimental se organizará en seis escenarios. Cada escenario se ejecutará para los cuatro tratamientos cuando aplique, con las mismas semillas y condiciones iniciales.
+
+\begin{center}
+\small
+\begin{tabular}{p{3.0cm}p{5.4cm}p{5.2cm}}
+\toprule
+\textbf{Escenario} & \textbf{Propósito} & \textbf{Variable principal} \\
+\midrule
+A. Homogéneo & Verificar que el método no introduce conflictos cuando todas las cargas tienen requisitos similares. & Número de AGVs y cargas. \\
+B. Coalición mínima & Evaluar la formación de una coalición para una carga que no puede ser movida por un solo robot. & Cardinalidad requerida $n_k$. \\
+C. Heterogéneo & Medir competencia entre cargas con dificultad y prioridad distintas. & Distribución de $n_k$, $w_k$ y $\rho_k$. \\
+D. Comunicación degradada & Medir degradación cuando la información local se reduce. & Radio de comunicación $r_c$ y conectividad de $G(t)$. \\
+E. Perturbación & Evaluar adaptación ante retiro de un AGV, cambio de prioridad o bloqueo parcial. & Tiempo y magnitud de la perturbación. \\
+F. CoppeliaSim & Replicar un caso B o C con 4--6 robots Pioneer o equivalentes. & Viabilidad robótica, trayectorias y eventos de coalición. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Para cada escenario numérico se realizarán repeticiones con semillas distintas. Como punto de partida se usarán al menos 30 repeticiones por tratamiento y escenario cuando el costo computacional lo permita. Si el tiempo de simulación resulta alto, se justificará un número menor y se priorizará cubrir los escenarios B, C y D, porque son los que prueban la hipótesis central del trabajo. El escenario F se tratará como validación robótica secundaria: deberá reproducir cualitativamente el comportamiento de coalición, aunque sus resultados no sustituirán el análisis estadístico de Python.
+
+\subsection{Métricas}
+
+\begin{center}
+\small
+\begin{tabular}{p{4.2cm}p{9.5cm}}
+\toprule
+\textbf{Métrica} & \textbf{Definición operativa} \\
+\midrule
+Tasa de coalición factible & Proporción de cargas para las que se alcanza $|\mathcal{C}_k|\geq n_k$ durante al menos $\tau_s$. \\
+Tasa de entrega & Proporción de cargas completadas dentro del horizonte $T$. \\
+Tiempo de formación & Tiempo hasta que la primera coalición factible queda estable. \\
+Tiempo de misión & Tiempo hasta completar todas las cargas factibles o hasta agotar el horizonte. \\
+Error de seguimiento & Distancia media y máxima entre carga transportada y trayectoria o destino esperado. \\
+Esfuerzo de control & Suma temporal de comandos normalizados de velocidad lineal y angular. \\
+Cambio de asignación & Número de cambios de tarea por robot; mide oscilación decisional. \\
+Brecha de descentralización & Diferencia relativa entre método distribuido y referencia centralizada. \\
+Costo computacional & Tiempo medio de cómputo por agente y por paso de simulación. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Las métricas se reportarán mediante media, desviación estándar y, cuando el número de repeticiones lo permita, intervalos de confianza. También se incluirán curvas temporales de preferencias y asignaciones para al menos un episodio representativo y un episodio fallido. La inclusión de fallos es deliberada: ayuda a delimitar la región donde el método es válido y evita una evaluación basada solo en casos favorables.
+
+\subsection{Criterios de aceptación}
+
+El método propuesto se considerará satisfactorio para el TFM si cumple al menos cuatro de las siguientes cinco condiciones, incluyendo la primera y la quinta. Primero, debe superar a la asignación voraz en tasa de coalición factible en los escenarios B y C. Segundo, debe mantener una brecha de descentralización acotada frente al asignador centralizado en escenarios con conectividad suficiente. Tercero, debe mostrar una degradación explicable, no caótica, cuando se reduce el radio de comunicación. Cuarto, su costo computacional por agente debe crecer de forma compatible con una implementación distribuida de pequeña o mediana escala. Quinto, debe trasladarse al menos a un escenario básico en CoppeliaSim para mostrar que el ciclo decisión--movimiento no depende solo de una abstracción numérica.
+
+El método no se considerará fallido si no supera al asignador centralizado ideal. Esa referencia se incluye precisamente como techo de rendimiento. Sí se considerará una limitación importante si el método no mejora al voraz en escenarios donde la formación de coaliciones es necesaria, o si requiere una sintonía de parámetros tan estrecha que impida reproducir los resultados.
+
+\subsection{Implementación reproducible}
+
+La implementación principal se realizará en Python. Cada experimento tendrá un archivo de configuración con número de AGVs, número de cargas, posiciones iniciales, cardinalidades, radio de comunicación, semillas, parámetros de \textit{payoff}, horizonte temporal y ganancias de control. Los resultados brutos se almacenarán separados de las tablas procesadas y de las figuras finales. La estructura del repositorio separará modelo de dominio, controladores, dinámicas poblacionales, simulación, métricas, experimentos y visualización.
+
+La validación en CoppeliaSim reutilizará los mismos parámetros de asignación siempre que sea posible. Si el simulador exige adaptar ganancias cinemáticas o límites de velocidad, esas diferencias se documentarán explícitamente para no mezclar resultados numéricos y demostración robótica.
+
+El registro mínimo por episodio incluirá: posiciones de robots, posiciones de cargas, grafo de comunicación, preferencias $p_i(t)$, asignaciones $a_i(t)$, coaliciones detectadas, eventos de entrega, comandos de control y tiempo de cómputo. Esta decisión es importante porque permitirá auditar por qué una simulación tuvo éxito o falló.
+
+\subsection{Control de validez y riesgos}
+
+La principal amenaza a la validez es que el simulador simplifique demasiado la física del transporte. Para mitigarlo, el TFM separará lo que se demuestra sobre asignación y coordinación de lo que queda reservado para trabajo futuro sobre contacto, fricción y dinámica completa de la carga. Otra amenaza es la sensibilidad a los parámetros $\beta$, $\lambda_d$, $\mu_0$ y $\sigma$; por eso se incluirán barridos sobre estos valores y no solo un ajuste manual favorable.
+
+La tercera amenaza es sobreafirmar novedad. El documento evitará declarar que el método es el primero de su tipo. La formulación defendible es que la revisión inicial no encontró una integración directa entre dinámicas poblacionales distribuidas, formación de coaliciones por cardinalidad y transporte cooperativo multi-AGV bajo comunicación local. Esa afirmación podrá fortalecerse o corregirse durante la revisión bibliográfica completa.
+
+\clearpage
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}

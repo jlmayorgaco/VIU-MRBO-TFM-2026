@@ -1,0 +1,41 @@
+%% ====================================================================
+\section{Objetivos}
+\label{sec:objetivos}
+%% ====================================================================
+
+\subsection{Objetivo general}
+
+Diseñar y evaluar, mediante simulación cuantitativa reproducible, un esquema de
+control distribuido basado en las dinámicas de Smith para la formación adaptativa
+de coaliciones en flotas multi-AGV que deben transportar cooperativamente cargas con
+requisitos mínimos de cardinalidad, comparando el desempeño con cuatro líneas
+base (heurística voraz local, consenso puro, replicador distribuido y referencia
+centralizada de mínima distancia) bajo seis escenarios experimentales.
+
+\subsection{Objetivos específicos}
+
+\begin{enumerate}
+  \item Formular el problema de formación de coaliciones multi-AGV como un juego
+    poblacional de congestión con cota inferior de cardinalidad, estableciendo el
+    conjunto de estrategias, la función de payoff multiplicativa y las propiedades
+    de la estructura de juego potencial.
+
+  \item Diseñar la función de payoff $f_{ik}$ con componente sigmoide
+    monótonamente decreciente en la cardinalidad estimada, establecer condiciones
+    suficientes para verificar que preserva la estructura de juego de congestión, y
+    caracterizar el intervalo $(\beta_{\min}, \beta_{\max})$ que garantiza estabilidad
+    local del equilibrio Nash objetivo mediante un análisis formal de Lyapunov.
+
+  \item Proponer la tasa de revisión espacialmente modulada $\mu_i(t)$ y
+    cuantificar su efecto sobre la frecuencia de reasignaciones y el tiempo de
+    formación de coaliciones en los experimentos.
+
+  \item Implementar las tres dinámicas acopladas ---consenso distribuido,
+    Smith en tiempo discreto y gradiente reactivo--- en un paquete Python
+    reproducible, con soporte para cinco tratamientos y seis escenarios con semillas
+    controladas y registro completo de trayectorias.
+
+  \item Validar cualitativamente el comportamiento de formación de coaliciones
+    en CoppeliaSim con robots Pioneer~3-DX en al menos uno de los escenarios de
+    coalición mínima.
+\end{enumerate}

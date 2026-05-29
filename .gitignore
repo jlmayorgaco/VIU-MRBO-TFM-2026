@@ -30,6 +30,8 @@ Thumbs.db
 *.fdb_latexmk
 *.fls
 *.log
+*.lof
+*.lot
 *.nav
 *.out
 *.run.xml
@@ -39,6 +41,15 @@ Thumbs.db
 
 docs/**/build/*
 !docs/**/build/.gitkeep
+
+# MS Office lock files
+~$*
+
+# Local working/preview files
+preview_*.png
+_lnk_check*.png
+_fontcheck/
+_viu_analysis/
 
 # Generated results
 results/raw/*

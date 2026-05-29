@@ -1,9 +1,10 @@
 PYTHON ?= python
 PIP ?= $(PYTHON) -m pip
 EXP ?= experiments/exp-001-baseline-nominal/config.yaml
-PROPOSAL_DIR := docs/doc-01-proposal
+PROPOSAL_DIR  := docs/doc-01-proposal
+MIDREPORT_DIR := docs/doc-02-mid-report
 
-.PHONY: install test lint clean proposal-pdf figures run-exp
+.PHONY: install test lint clean proposal-pdf proposal-methodology-pdf mid-report-pdf figures run-exp
 
 install:
 	$(PIP) install -U pip
@@ -26,6 +27,18 @@ proposal-pdf:
 	cd $(PROPOSAL_DIR) && bibtex build/main
 	cd $(PROPOSAL_DIR) && pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build main.tex
 	cd $(PROPOSAL_DIR) && pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build main.tex
+
+proposal-methodology-pdf:
+	cd $(PROPOSAL_DIR) && pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build main_hasta_metodologia.tex
+	cd $(PROPOSAL_DIR) && bibtex build/main_hasta_metodologia
+	cd $(PROPOSAL_DIR) && pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build main_hasta_metodologia.tex
+	cd $(PROPOSAL_DIR) && pdflatex -interaction=nonstopmode -halt-on-error -output-directory=build main_hasta_metodologia.tex
+
+mid-report-pdf:
+	cd $(MIDREPORT_DIR) && lualatex -interaction=nonstopmode -output-directory=build main.tex
+	cd $(MIDREPORT_DIR) && bibtex build/main
+	cd $(MIDREPORT_DIR) && lualatex -interaction=nonstopmode -output-directory=build main.tex
+	cd $(MIDREPORT_DIR) && lualatex -interaction=nonstopmode -output-directory=build main.tex
 
 figures:
 	$(PYTHON) scripts/generate_figures.py

@@ -1,0 +1,167 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{viu-mrob-memoria}[2026/05/16 VIU MROB memory template]
+
+\RequirePackage[spanish,es-noshorthands,shorthands=off]{babel}
+\RequirePackage{fontspec}
+\RequirePackage[a4paper,top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm]{geometry}
+\RequirePackage{setspace}
+\RequirePackage{microtype}
+\RequirePackage{graphicx}
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\RequirePackage{titlesec}
+\RequirePackage{tocloft}
+\RequirePackage{array}
+\RequirePackage{booktabs}
+\RequirePackage{longtable}
+\RequirePackage{tabularx}
+\RequirePackage{enumitem}
+\RequirePackage{caption}
+\RequirePackage{hyperref}
+\RequirePackage{fancyhdr}
+\RequirePackage{lastpage}
+
+\usetikzlibrary{calc}
+
+\IfFontExistsTF{Arial}{\setmainfont{Arial}}{\setmainfont{Latin Modern Roman}}
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\setlength{\headheight}{14pt}
+\addto\captionsspanish{%
+  \renewcommand{\tablename}{Tabla}%
+  \renewcommand{\listtablename}{Índice de tablas}%
+  \renewcommand{\refname}{Referencias bibliográficas}%
+}
+\setlist[itemize]{leftmargin=1.4em,itemsep=0.2em}
+\setlist[enumerate]{leftmargin=1.6em,itemsep=0.2em}
+
+\definecolor{VIUOrange}{HTML}{EF4B13}
+\definecolor{VIUDark}{HTML}{1F1F24}
+\definecolor{VIUGray}{HTML}{6B7280}
+\definecolor{VIULight}{HTML}{F3F4F6}
+
+\newcommand{\viutitle}{}
+\newcommand{\viustudent}{}
+\newcommand{\viututor}{}
+\newcommand{\viuedition}{}
+\newcommand{\viudate}{}
+\newcommand{\viumaster}{MÁSTER UNIVERSITARIO EN ROBÓTICA Y AUTOMATIZACIÓN DE PROCESOS}
+\newcommand{\viucoversource}{assets/image1.jpg}
+
+\newcommand{\setviutitle}[1]{\renewcommand{\viutitle}{#1}}
+\newcommand{\setviustudent}[1]{\renewcommand{\viustudent}{#1}}
+\newcommand{\setviututor}[1]{\renewcommand{\viututor}{#1}}
+\newcommand{\setviuedition}[1]{\renewcommand{\viuedition}{#1}}
+\newcommand{\setviudate}[1]{\renewcommand{\viudate}{#1}}
+\newcommand{\setviumaster}[1]{\renewcommand{\viumaster}{#1}}
+\newcommand{\setviucoversource}[1]{\renewcommand{\viucoversource}{#1}}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=VIUOrange,
+  urlcolor=VIUOrange,
+  citecolor=VIUOrange,
+  pdftitle={Trabajo Final de Máster},
+  pdfauthor={Jorge Luis Mayorga Taborda}
+}
+
+\titleformat{\section}
+  {\bfseries\Large\color{VIUDark}}
+  {\thesection.}
+  {0.55em}
+  {}
+\titleformat{\subsection}
+  {\bfseries\large\color{VIUDark}}
+  {\thesubsection.}
+  {0.55em}
+  {}
+\titlespacing*{\section}{0pt}{1.1em}{0.45em}
+\titlespacing*{\subsection}{0pt}{0.85em}{0.30em}
+
+\renewcommand{\cfttoctitlefont}{\bfseries\Large\color{VIUDark}}
+\renewcommand{\cftloftitlefont}{\bfseries\Large\color{VIUDark}}
+\renewcommand{\cftlottitlefont}{\bfseries\Large\color{VIUDark}}
+\renewcommand{\cftsecfont}{\color{VIUDark}}
+\renewcommand{\cftsecpagefont}{\bfseries\color{VIUOrange}}
+\renewcommand{\cftdotsep}{1.2}
+
+\captionsetup{
+  font=small,
+  labelfont=bf,
+  labelsep=period,
+  justification=centering
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textbf{MROB -- VIU}}
+\fancyhead[R]{\small Trabajo Final de Máster}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancypagestyle{frontmatter}{%
+  \fancyhf{}
+  \fancyfoot[C]{\small\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+}
+
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \fancyhead[L]{\small\textbf{MROB -- VIU}}
+  \fancyhead[R]{\small Trabajo Final de Máster}
+  \fancyfoot[C]{\small\thepage}
+  \renewcommand{\headrulewidth}{0.3pt}
+}
+
+\newcommand{\makeviuwordcover}{%
+  \begin{titlepage}
+    \thispagestyle{empty}
+    \begin{tikzpicture}[remember picture,overlay]
+      \node[anchor=south west,inner sep=0] at (current page.south west)
+        {\includegraphics[width=\paperwidth,height=\paperheight]{\viucoversource}};
+      \node[anchor=north west,align=left,text width=0.82\paperwidth] at ($(current page.north west)+(2.55cm,-2.25cm)$) {%
+        \raggedright\hyphenpenalty=10000\exhyphenpenalty=10000
+        {\bfseries\fontsize{12}{14}\selectfont \viumaster\par}
+        \vspace{1.0cm}
+        {\bfseries\fontsize{13}{16}\selectfont TÍTULO:\par}
+        {\bfseries\fontsize{13}{16}\selectfont \viutitle\par}
+        \vspace{0.45cm}
+        {\fontsize{12}{15}\selectfont Alumno/a: \viustudent\par}
+        \vspace{0.20cm}
+        {\fontsize{12}{15}\selectfont Director/a: \viututor\par}
+        \vspace{0.20cm}
+        {\fontsize{12}{15}\selectfont Edición: \viuedition\par}
+        {\fontsize{12}{15}\selectfont Fecha: \viudate\par}
+      };
+    \end{tikzpicture}
+    \vspace*{\fill}
+  \end{titlepage}
+}
+
+\newenvironment{viuabstract}{%
+  \thispagestyle{frontmatter}
+  \section*{Resumen}
+  \addcontentsline{toc}{section}{Resumen}
+}{}
+
+\newcommand{\keywords}[1]{%
+  \vspace{0.4em}
+  \noindent\textbf{Palabras clave:} #1
+}
+
+\newcommand{\frontindexes}{%
+  \clearpage
+  \thispagestyle{frontmatter}
+  \tableofcontents
+  \clearpage
+  \thispagestyle{frontmatter}
+  \listoffigures
+  \clearpage
+  \thispagestyle{frontmatter}
+  \listoftables
+  \clearpage
+}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}

@@ -1,0 +1,911 @@
+﻿%% ====================================================================
+\section{Metodología}
+\label{sec:metodologia}
+%% ====================================================================
+
+\subsection{Alcance y limitaciones}
+\label{sec:alcance}
+
+\subsubsection{Alcance}
+
+El trabajo se limita a un entorno 2D con robots de cinemática uniciclo. La validación
+es exclusivamente por simulación: Python proporciona los resultados cuantitativos y
+CoppeliaSim proporciona la validación visual aplicada. El sistema puede manejar hasta
+$N = 15$ AGV y $K = 5$ tareas activas simultáneas; el límite $N = 15$ responde
+a la complejidad computacional del simulador Python en tiempo real y al rango de
+flotas AGV típico en almacenes medianos, no a una restricción teórica del método. El rango de comunicación $R$
+se trata como parámetro variable entre 1\,m e infinito. Las cargas se modelan como puntos de destino con requisito mínimo de cardinalidad
+$n_k$. Esta es una decisión de \textbf{descomposición por capas}: la capa de
+asignación (este TFM) determina \emph{qué} robots forman la coalición y
+\emph{cuándo} inician el transporte; la capa de manipulación (no modelada aquí)
+determina \emph{cómo} aplican fuerzas de contacto para mover la carga de forma
+estable. Esta segunda capa está documentada en \citet{ebel2024cooperative} y
+\citet{rosenfelder2024force}, que resuelven el control de fuerzas para empuje y
+agarre no-prehensil con robots diferenciales. No se modela el contacto mecánico
+entre robot y carga durante el transporte; la fase de transporte propaga
+cinemáticamente el centroide de la coalición hacia $\mathbf{d}_k$.
+
+El trabajo incluye explícitamente las tres dinámicas acopladas ejecutadas en un
+único bucle de control cada $T_s = 0{,}1\,\text{s}$, la función de payoff
+multiplicativa con parámetros $\beta$, $\lambda$, $r_k$, y el análisis formal
+de convergencia para el caso simétrico con comunicación global
+(Proposición~\ref{prop:convergencia}). El diseño experimental contempla seis
+escenarios con cinco tratamientos comparativos y al menos 30 repeticiones por
+combinación, validación cualitativa en CoppeliaSim con robots Pioneer~3-DX
+(Escenario~F), y un paquete Python documentado y reproducible con semillas
+fijadas, configuraciones YAML y registro completo de trayectorias.
+
+\subsubsection{Limitaciones}
+
+Quedan fuera del alcance la experimentación con hardware real, la percepción
+visual, SLAM, evitación de obstáculos complejos y planificación global de rutas.
+El análisis formal de convergencia (Proposición~\ref{prop:convergencia}) se
+restringe al caso simétrico con comunicación global ($R = \infty$) y tareas
+homogéneas; la extensión al caso general con grafo irregular y tareas
+heterogéneas queda como trabajo doctoral futuro. Esa extensión conecta con el
+formalismo de dinámicas del replicador distribuido con procesado en grafos
+(DRD-PI), donde la convolución de payoffs sobre la estructura espectral del
+Laplaciano de $G(t)$ sigue la teoría de procesado de señales en grafos de
+\citet{sandryhaila2013dsp}. Tampoco se aborda la generación dinámica de tareas
+durante la ejecución, aunque los experimentos de perturbación (Escenario~E)
+prueban la reactividad ante cambios en el conjunto de tareas.
+
+La cota inferior de cardinalidad introduce no suavidad potencial cuando $\beta$ es
+muy grande (la función sigmoide se aproxima a una función escalón). Esta zona
+de parámetros se excluye explícitamente del análisis: el TFM opera en
+$\beta \in (\beta_{\min}, \beta_{\max})$. Incluso dentro de ese intervalo, en
+escenarios donde el número total de robots es inferior a la demanda total
+($N < \sum_k n_k$), el sistema no puede satisfacer todos los requisitos de
+cardinalidad simultáneamente: las dinámicas de Smith oscilarán sin alcanzar
+el equilibrio interior y el estado estacionario dependerá de las prioridades
+relativas de las tareas. Este régimen queda fuera del alcance del análisis
+formal. Además, la tasa de revisión modulada reduce pero no elimina las
+oscilaciones de alta frecuencia en la frontera del símplex (\emph{chattering})
+cuando $\beta$ está cercano a $\beta_{\max}$; este comportamiento es observable
+en simulación y se reportará en los resultados de la entrega final.
+
+\subsubsection{Plan de trabajo y cronograma}
+\label{sec:cronograma}
+
+El cronograma (Figura~\ref{fig:gantt}) abarca desde el inicio oficial del TFM
+(4 de marzo de 2026) hasta la primera convocatoria de defensa (21--25 de
+septiembre de 2026), con tres tutorías colectivas síncronas en los hitos T0,
+T1 y T2. Las etapas completadas aparecen en naranja; las pendientes, en gris claro.
+
+\input{figures/fig-gantt.tex}
+
+
+%% ====================================================================
+
+La investigación adopta un diseño cuantitativo, experimental en simulación y
+comparativo. El propósito es evaluar si las tres dinámicas acopladas propuestas
+superan a cuatro tratamientos de referencia (T1 heurística voraz local, T2 consenso puro,
+T3 replicador distribuido y T4 referencia centralizada de mínima distancia) bajo condiciones controladas
+y reproducibles.
+La metodología se organiza en catorce subsecciones que cubren el modelo del sistema,
+el método propuesto, el análisis de convergencia, el diseño experimental y
+los criterios de aceptación.
+
+\subsection{Modelo del sistema}
+
+\subsubsection{Robots}
+
+Cada AGV sigue cinemática uniciclo en tiempo discreto con período $T_s = 0{,}1\,\text{s}$:
+\begin{align}
+  x_i(t+1) &= x_i(t) + T_s \, v_i(t)\cos\theta_i(t), \label{eq:unicycle_x}\\
+  y_i(t+1) &= y_i(t) + T_s \, v_i(t)\sin\theta_i(t), \label{eq:unicycle_y}\\
+  \theta_i(t+1) &= \theta_i(t) + T_s \, \omega_i(t), \label{eq:unicycle_theta}
+\end{align}
+con entrada de control $(v_i, \omega_i)$ sujeta a $|v_i| \leq v_{\max}$ y
+$|\omega_i| \leq \omega_{\max}$. El estado del robot $i$ es
+$\mathbf{q}_i(t) = (x_i, y_i, \theta_i) \in \RR^3$.
+
+\subsubsection{Tareas}
+
+Cada tarea $k \in \{1, \ldots, K\}$ queda definida por su posición de recogida
+$\mathbf{l}_k \in \RR^2$, su destino de entrega $\mathbf{d}_k \in \RR^2$,
+su recompensa $r_k > 0$ y su requisito mínimo de cardinalidad $n_k \in \NN$.
+La tarea $k = 0$ representa el estado de inactividad, con $r_0 = 0$ y $n_0 = 0$. El conjunto de estrategias disponibles para cada robot es
+$\mathcal{S} = \{0, 1, \ldots, K\}$.
+
+\subsubsection{Grafo de comunicación}
+
+El grafo de comunicación $G(t) = (\mathcal{V}, \mathcal{E}(t))$ es dinámico:
+dos robots $i$ y $j$ son vecinos si $\norm{\mathbf{q}_i^{xy}(t) - \mathbf{q}_j^{xy}(t)}
+\leq R$, donde $\mathbf{q}_i^{xy} = (x_i, y_i)$ y $R > 0$ es el rango de
+comunicación. El conjunto de vecinos del robot $i$ en el instante $t$ es
+$\mathcal{N}_i(t) = \{j \neq i : \norm{\mathbf{q}_i^{xy}(t) - \mathbf{q}_j^{xy}(t)} \leq R\}$.
+El grado máximo del grafo es $d_{\max}(t) = \max_i |\mathcal{N}_i(t)|$.
+
+\subsection{Función de payoff multiplicativa}
+
+La función de payoff del robot $i$ para la tarea $k \geq 1$ tiene la forma
+multiplicativa:
+\begin{equation}
+  f_{ik}(\hat{x}_i, \mathbf{q}_i) = r_k \cdot \Phi\!\left(N\hat{x}_{ik},\, n_k\right)
+    \cdot \Psi\!\left(\norm{\mathbf{q}_i^{xy} - \mathbf{l}_k}\right),
+  \label{eq:payoff}
+\end{equation}
+donde los dos factores que componen el payoff son:
+
+\begin{equation}
+  \Phi(z, n) = \frac{1}{1 + \exp\!\left(\beta(z - n)\right)},
+  \quad \beta > 0,
+  \label{eq:sigmoid}
+\end{equation}
+\begin{equation}
+  \Psi(d) = \exp\!\left(-\frac{d^2}{2\lambda^2}\right),
+  \quad \lambda > 0.
+  \label{eq:gaussian}
+\end{equation}
+
+El factor $\Phi(N\hat{x}_{ik}, n_k)$ es la \emph{demanda sigmoide de coalición}.
+Es monótonamente decreciente en $z = N\hat{x}_{ik}$ (el número estimado de
+robots en la tarea $k$): cuando la tarea tiene pocos robots respecto a $n_k$,
+$\Phi \approx 1$ y el payoff es alto (la tarea \emph{recluta} ag\-entes);
+cuando tiene suficientes, $\Phi \approx 0$ y el payoff cae (la tarea está
+\emph{saturada}). Esta monotonicidad decreciente es la que preserva la estructura
+de juego de congestión ponderado y distingue este diseño del planteamiento
+de cotas superiores de \citet{martinezpiazuelo2022automatica}.
+
+El factor $\Psi(\cdot)$ es el descuento espacial gaussiano: robots lejanos de la
+tarea perciben un payoff reducido, lo que incorpora la dinámica espacial al
+juego de asignación. Para el estado de inactividad se asigna un payoff base
+positivo pequeño:
+\begin{equation}
+  f_{i0} = r_0, \quad r_0 > 0 \text{ pequeño (por defecto } r_0 = 0{,}05),
+  \label{eq:payoff_idle}
+\end{equation}
+lo que garantiza que cuando todas las tareas están saturadas ($\Phi \approx 0$
+para todo $k \geq 1$), la dinámica de Smith no se congele por ausencia de
+diferencias de payoff. El valor $r_0 = 0{,}05$ es suficientemente pequeño para
+no distorsionar el equilibrio Nash en presencia de tareas activas con $r_k \gg r_0$:
+en el equilibrio interior $f_0 = r_0 = 0{,}05 < r/2 = 0{,}5 = f_k^*$, de modo
+que ningún robot tiene incentivo a elegir el estado de inactividad y $x_0^* = 0$
+es Nash.
+
+\input{figures/fig-payoff.tex}
+
+\subsection{Dinámica~1: consenso dinámico de media (DAC)}
+
+Cuando la estrategia $s_i(t)$ cambia, la fracción de robots en cada tarea cambia
+también; el estimador debe seguir esa señal variable sin reinicializaciones
+abruptas que introduzcan discontinuidades en el payoff.
+Se define la señal local $y_{ik}(t) = \mathbf{1}_{[s_i(t)=k]}$ y se emplea el
+\emph{consenso dinámico de media} (DAC) \citep{kia2019tutorial}:
+\begin{equation}
+  \hat{x}_{ik}(t+1) = \hat{x}_{ik}(t)
+    + \varepsilon \!\sum_{j \in \mathcal{N}_i(t)}\!\bigl[\hat{x}_{jk}(t) - \hat{x}_{ik}(t)\bigr]
+    + \bigl(y_{ik}(t+1) - y_{ik}(t)\bigr),
+  \quad \forall k \in \mathcal{S},
+  \label{eq:consenso}
+\end{equation}
+con ganancia $\varepsilon \in (0, 1/d_{\max})$. El tercer término
+$\Delta y_{ik}(t) = y_{ik}(t+1) - y_{ik}(t)$ compensa instantáneamente el salto
+en la señal local cuando el robot reasigna su estrategia, sin necesidad de
+reinicializar el estado del estimador.
+
+El término $\Delta y_{ik}$ requiere conocer $s_i(t+1)$ antes de actualizar
+$\hat{x}_{ik}$; por ello la dinámica de Smith (Bloque~2) precede a la actualización
+del estimador (Bloque~3) en el bucle de control (véase Algoritmo~\ref{alg:loop}).
+
+El payoff se evalúa con el argumento clippeado al intervalo válido:
+\begin{equation}
+  f_{ik}(\hat{x}_i, \mathbf{q}_i)
+    = r_k \cdot \Phi\!\bigl(N\,\mathrm{clip}(\hat{x}_{ik},0,1),\,n_k\bigr)
+      \cdot \Psi\!\bigl(\norm{\mathbf{q}_i^{xy} - \mathbf{l}_k}\bigr),
+  \label{eq:payoff_clip}
+\end{equation}
+donde $\mathrm{clip}(a,0,1) = \min(1,\max(0,a))$.
+El estado interno $\hat{x}_{ik}$ puede tomar valores fuera de $[0,1]$
+transitoriamente ---efecto normal del DAC durante transitorios de reasignación
+masiva--- sin afectar la estabilidad del bucle porque el payoff resultante se
+mantiene acotado en $(0, r_k]$.
+
+\begin{observacion}[Error de seguimiento del DAC y sensibilidad al payoff]
+\label{obs:init_obs}
+Para un grafo estacionario conectado con $N$ agentes, el DAC \eqref{eq:consenso}
+mantiene el error de seguimiento acotado por $\|\hat{x}_{ik}(t) - x_k(t)\| = O(K/N)$
+bajo cambios de estrategia \emph{individuales} y recupera la media exacta en tiempo
+$O(1/(\varepsilon\lambda_2))$ entre eventos \citep{kia2019tutorial}.
+La inicialización uniforme $\hat{x}_{ik}(0) = 1/(K+1)$ acelera la convergencia inicial;
+la indicador $\hat{x}_{ik}(0) = \mathbf{1}_{[s_i(0)=k]}$ es igualmente válida
+pues el DAC absorbe el salto inicial como si fuera un evento de reasignación.
+En los experimentos se comparan ambas inicializaciones en el Escenario~A.
+\end{observacion}
+En grafos dinámicos con $R$ finito, el error de consenso $e_{ik}(t) = \hat{x}_{ik}(t)
+- x_k(t)$ introduce un sesgo acotado en los payoffs, cuyo efecto sobre el equilibrio
+se cuantifica en los experimentos del Escenario~D.
+
+\subsection{Dinámica~2: Smith distribuidas en tiempo discreto}
+\label{subsec:smith}
+
+El vector de preferencias $\mathbf{p}_i(t)$ evoluciona según las dinámicas de
+Smith en tiempo discreto:
+\begin{equation}
+  \tilde{p}_{ik}(t+1) = p_{ik}(t) + T_s \mu_i(t) \left[
+    \sum_{j \in \mathcal{S}} p_{ij}(t)\pos{f_{ik} - f_{ij}}
+    - p_{ik}(t) \sum_{j \in \mathcal{S}} \pos{f_{ij} - f_{ik}}
+  \right],
+  \label{eq:smith_update}
+\end{equation}
+\begin{equation}
+  \mathbf{p}_i(t+1) = \Pi_{\simplex}\!\left(\tilde{\mathbf{p}}_i(t+1)\right),
+  \label{eq:proyeccion}
+\end{equation}
+donde $\pos{y} = \max(y, 0)$, $\Pi_{\simplex}$ es la proyección ortogonal sobre
+el símplex $\simplex^K$ (calculada por el algoritmo estándar de clasificación
+y umbral de complejidad $O(K\log K)$), y $\mu_i(t) > 0$ es la tasa de revisión del robot $i$.
+El primer término de \eqref{eq:smith_update} representa el flujo de entrada desde
+estrategias con menor payoff; el segundo, el flujo de salida hacia estrategias con
+mayor payoff. Esta comparación bilateral elimina la necesidad de conocer la media
+global del payoff, a diferencia del replicador distribuido.
+
+\paragraph{Regla de histéresis para la selección de estrategia.}
+La estrategia efectiva del robot se actualiza con un umbral de histéresis $\rho_s > 0$:
+\begin{equation}
+  s_i(t+1) = \begin{cases}
+    \displaystyle\argmax_{k \in \mathcal{S}}\, p_{ik}(t+1) &
+      \text{si } p_{ik^*}(t+1) - p_{i s_i(t)}(t+1) > \rho_s, \\
+    s_i(t) & \text{en otro caso,}
+  \end{cases}
+  \label{eq:hysteresis}
+\end{equation}
+donde $k^* = \argmax_k p_{ik}(t+1)$. La condición exige que la estrategia dominante
+aventaje a la actual en al menos $\rho_s$ antes de ejecutar el cambio, reduciendo el
+\emph{chattering} sin alterar los puntos de equilibrio de la dinámica.
+
+\begin{lema}[Factibilidad de la partición pura]
+\label{lema:factibilidad}
+Bajo la regla \eqref{eq:hysteresis} con $\rho_s \geq 0$, los conjuntos $\{s_i(t)\}$
+forman en todo instante una partición pura de los $N$ robots sobre $\mathcal{S}$
+(incluyendo la tarea de inactividad $k=0$). En particular, $\sum_{k=0}^K |\mathcal{C}_k(t)| = N$
+en todo $t$, lo que garantiza que la cardinalidad total de las coaliciones es siempre
+exactamente $N$.
+\end{lema}
+\begin{proof}
+La regla \eqref{eq:hysteresis} es determinista y asigna cada robot a exactamente un
+$s_i(t) \in \mathcal{S}$ en cada paso, con empate resuelto manteniendo $s_i(t)$.
+La partición se preserva por inducción trivial. La igualdad de la suma se sigue
+de que los $N$ robots son disjuntos.
+\end{proof}
+
+\subsection{Tasa de revisión espacialmente modulada}
+
+La tasa de revisión de cada robot depende de su distancia a la posición de la
+tarea que actualmente persigue:
+\begin{equation}
+  \mu_i(t) = \mu_{\min} + (\mu_0 - \mu_{\min})
+    \left(1 - \exp\!\left(-\frac{\norm{\mathbf{q}_i^{xy}(t) -
+    \mathbf{l}_{s_i(t)}}^2}{2\sigma_{\text{rev}}^2}\right)\right),
+  \label{eq:revision_rate}
+\end{equation}
+con $\mu_0 > 0$, $\mu_{\min} = 0{,}02\,\mu_0$ y $\sigma_{\text{rev}} > 0$.
+El piso $\mu_{\min}$ garantiza que robots muy próximos al destino mantengan
+una tasa mínima de revisión, evitando que el estimador de Smith quede
+congelado ante perturbaciones. Los robots lejanos tienen $\mu_i \approx \mu_0$:
+pueden reconsiderar con tasa plena. Para robots en estado de inactividad
+($s_i = 0$), se usa $\mu_i = \mu_0$.
+
+La tasa modulada actúa como un término de histéresis suave que mitiga el
+\emph{chattering} cerca de los umbrales de cardinalidad $n_k$: los robots comprometidos
+con su tarea son más resistentes a la reasignación que los que aún navegan
+hacia su destino.
+
+\subsection{Dinámica~3: campo de gradiente reactivo}
+
+El movimiento de cada robot se calcula minimizando localmente un campo de potencial:
+\begin{equation}
+  F_i(\mathbf{q}_i) = \frac{\alpha}{2}\norm{\mathbf{q}_i^{xy} - \mathbf{l}_{s_i}}^2
+    + \eta \sum_{j \in \mathcal{N}_i}
+      \frac{1}{\norm{\mathbf{q}_i^{xy} - \mathbf{q}_j^{xy}}^2 + \varepsilon_r^2}
+    + \delta \sum_{j \in \mathcal{C}_k \setminus \{i\}} \frac{(\norm{\mathbf{q}_i^{xy}
+    - \mathbf{q}_j^{xy}} - d^*)^2}{2}
+    \cdot \mathbf{1}_{[\norm{\mathbf{q}_i^{xy} - \mathbf{l}_k} < r_{\text{form}}]},
+  \label{eq:potential}
+\end{equation}
+donde el primer término crea un pozo de potencial con mínimo en $\mathbf{l}_{s_i}$,
+de modo que $\mathbf{g}_i = -\nabla F_i$ apunta hacia la tarea asignada; el segundo
+repele a los robots entre sí para evitar colisiones; y el tercer término mantiene
+la geometría de coalición. El parámetro $\varepsilon_r = 0{,}01\,\text{m}$ regulariza el denominador
+cuadrático evitando singularidades; la forma $\|\cdot\|^2 + \varepsilon_r^2$
+es diferenciable en todo $\mathbb{R}^2$ y proporciona un gradiente repulsivo
+acotado incluso para robots en contacto. Los campos de potencial artificial presentan el
+problema clásico de mínimos locales \citep{bullo2009distributed}; en los
+experimentos se mitiga mediante una perturbación aleatoria cuando la velocidad
+del robot cae por debajo de $0{,}01\,\text{m/s}$ durante más de 5 pasos
+consecutivos. El término de repulsión no garantiza formalmente la ausencia
+de colisiones: la evitación es heurística y depende de los valores de $\eta$
+y $\varepsilon_r$. La distancia geométrica de formación es
+$d^* = 2(r_{\text{load}} + r_{\text{robot}}) \sin(\pi / n_{s_i(t)})$,
+donde $n_{s_i(t)} \equiv n_k$ con $k = s_i(t)$ es la cardinalidad mínima de la
+tarea actualmente asignada al robot $i$.
+Para $n_k = 1$ la fórmula da $d^* = 0$ (sin geometría de formación, el robot
+se posiciona directamente sobre la carga); para $n_k = 2$, $d^* = 2(r_{\text{load}}
++ r_{\text{robot}})$ (los dos robots quedan en lados opuestos de la carga). La zona de formación se activa cuando
+$\norm{\mathbf{q}_i^{xy} - \mathbf{l}_k} < r_{\text{form}}$.
+El gradiente negativo proporciona las velocidades de referencia:
+\begin{align}
+  \mathbf{g}_i &= -\nabla_{\mathbf{q}_i^{xy}} F_i, \label{eq:gradient}\\
+  v_i &= \min\!\left(\norm{\mathbf{g}_i},\, v_{\max}\right), \label{eq:speed}\\
+  \omega_i &= K_\theta \cdot \mathrm{wrap}\!\left(\mathrm{atan2}(\mathbf{g}_i) - \theta_i\right). \label{eq:angular}
+\end{align}
+
+\subsubsection{Fase de transporte y transición al destino}
+\label{subsubsec:transporte}
+
+Una vez que la coalición $\mathcal{C}_k$ cumple $|\mathcal{C}_k(t)| \geq n_k$
+durante al menos $\tau_s = 3$ pasos consecutivos, el sistema activa el
+\emph{modo de transporte}: el objetivo del campo de gradiente \eqref{eq:potential}
+cambia de la posición de recogida $\mathbf{l}_k$ al destino de descarga $\mathbf{d}_k$.
+Formalmente, el término de atracción de \eqref{eq:potential} emplea el objetivo efectivo:
+\begin{equation}
+  \mathbf{l}_{s_i}^{\mathrm{eff}}(t) =
+  \begin{cases}
+    \mathbf{l}_k & \text{si } |\mathcal{C}_k(t)| < n_k \;\text{(fase de reclutamiento)},\\
+    \mathbf{d}_k & \text{si } |\mathcal{C}_k(t)| \geq n_k \;\text{(fase de transporte)}.
+  \end{cases}
+  \label{eq:target_switch}
+\end{equation}
+
+Además, durante la fase de transporte el factor espacial $\Psi(\cdot)$ se fija
+en $1{,}0$ para todos los robots de $\mathcal{C}_k$. Sin esta corrección, la
+distancia $\norm{\mathbf{q}_i^{xy} - \mathbf{l}_k}$ crecería a medida que la
+coalición se aleja del punto de recogida hacia $\mathbf{d}_k$, reduciendo
+artificialmente el payoff de la tarea y pudiendo inducir defecciones de la
+coalición durante el transporte.
+
+La transición es bidireccional: si durante el modo de transporte la coalición
+pierde un miembro y satisface $|\mathcal{C}_k(t)| < n_k$ durante $\tau_s$ pasos
+consecutivos ---por ejemplo por la retirada abrupta de un robot--- el modo revierte
+a reclutamiento, el objetivo efectivo regresa a $\mathbf{l}_k$ y el factor
+$\Psi(\cdot)$ vuelve a calcularse dinámicamente. Esta histéresis evita
+transiciones espurias debidas a fluctuaciones momentáneas en la coalición.
+
+La tarea $k$ se considera completada cuando el centroide de $\mathcal{C}_k$ se
+encuentra dentro de $r_{\mathrm{det}}$ del destino $\mathbf{d}_k$; en ese instante
+se detiene el reloj de $\bar{T}$.
+
+\begin{observacion}[Modelo cinemático de la fase de transporte]
+El modelo de transporte es puramente cinemático: se propaga el movimiento
+del \emph{centroide de la coalición} hacia $\mathbf{d}_k$, sin simular la
+respuesta dinámica de la carga a las fuerzas de contacto. La geometría de
+formación $d^*$ define las \textbf{condiciones iniciales de posición relativa}
+que un controlador de manipulación aguas abajo ---como el propuesto por
+\citet{ebel2024cooperative}--- consumiría para calcular las fuerzas necesarias.
+En la simulación Python se registra la trayectoria de la pose de la carga como
+el centroide de $\mathcal{C}_k$ durante el modo de transporte; en la validación
+CoppeliaSim (Escenario~F) se representa como un cuboide pasivo acoplado
+cinemáticamente a ese centroide.
+\end{observacion}
+
+\subsection{Acoplamiento entre las tres dinámicas}
+\label{subsec:acoplamiento}
+
+Las tres dinámicas están bidireccionalmente acopladas en un único bucle de
+control ejecutado cada $T_s = 0{,}1\,\text{s}$ (Fig.~\ref{fig:loop}). Este
+acoplamiento forma un sistema retroalimentado en el que la posición afecta
+al payoff, el payoff afecta a la estrategia, la estrategia afecta al movimiento,
+y el movimiento cambia la posición y la topología de comunicación.
+
+\input{figures/fig-loop.tex}
+
+\begin{table}[htbp]
+\centering
+\caption[Acoplamiento entre dinámicas]{Acoplamiento bidireccional entre las tres dinámicas.}
+\label{tab:acoplamiento}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{0.27\textwidth}Y}
+\toprule
+Interacción & Descripción \\
+\midrule
+$\mathbf{p}_i(t) \to f_{ik} \to s_i(t)$ &
+  La estrategia determina el destino $\mathbf{l}_{s_i}$ y modifica el campo de
+  potencial $F_i$. \\
+$\mathbf{q}_i^{xy}(t) \to \Psi \to f_{ik}$ &
+  La posición determina el descuento espacial del payoff de cada tarea. \\
+$\mathbf{q}_i^{xy}(t) \to G(t) \to \hat{x}_{ik}$ &
+  El movimiento cambia la topología del grafo y la velocidad de consenso. \\
+$s_i(t{+}1) \to \Delta y_{ik} \to \hat{x}_{ik}$ &
+  El cambio de estrategia inyecta instantáneamente $\Delta y_{ik}$ en el DAC,
+  compensando el salto sin reinicializar el estimador. \\
+$\mu_i(t) \gets \mathbf{q}_i, \mathbf{l}_{s_i}$ &
+  La tasa de revisión depende de la distancia al destino actual. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Pseudocódigo del bucle de control}
+\label{subsec:pseudocodigo}
+
+El Algoritmo~\ref{alg:loop} formaliza el bucle de control ejecutado por cada robot
+$i$ en cada paso temporal. Los pasos de los tres bloques dinámicos se ejecutan
+secuencialmente dentro del mismo instante $t$; las comunicaciones con los vecinos
+$\mathcal{N}_i(t)$ se realizan al inicio del paso y se consideran atómicas.
+
+\begin{algorithm}[htbp]
+\caption{Bucle de control distribuido, robot $i$, instante $t$}
+\label{alg:loop}
+\begin{algorithmic}[1]
+\Require $\mathbf{q}_i(t)$, $\mathbf{p}_i(t)$, $\hat{\mathbf{x}}_i(t)$,
+         $s_i(t)$, $\{\mathbf{l}_k, \mathbf{d}_k, r_k, n_k\}$,
+         $\mathcal{C}_k(t)$, modo$_k(t)$
+\Ensure $\mathbf{q}_i(t{+}1)$, $\mathbf{p}_i(t{+}1)$, $\hat{\mathbf{x}}_i(t{+}1)$
+
+\State \textbf{Bloque~1: Cálculo de payoffs} \eqref{eq:payoff_clip}
+\For{cada $k \geq 1$}
+  \If{modo$_k(t) = $ transporte}
+    \State $\mathbf{l}^{\mathrm{eff}}_k \gets \mathbf{d}_k$;\enspace
+           $\Psi_k \gets 1{,}0$
+  \Else
+    \State $\mathbf{l}^{\mathrm{eff}}_k \gets \mathbf{l}_k$;\enspace
+           $\Psi_k \gets \exp\!\bigl(-\norm{\mathbf{q}_i^{xy}{-}\mathbf{l}_k}^2/(2\lambda^2)\bigr)$
+  \EndIf
+  \State $f_{ik} \gets r_k \cdot \Phi\!\left(N\,\mathrm{clip}(\hat{x}_{ik}(t),0,1),\,n_k\right)\cdot\Psi_k$
+\EndFor
+\State $f_{i0} \gets r_0$
+
+\State \textbf{Bloque~2: Dinámica de Smith} \eqref{eq:smith_update}--\eqref{eq:proyeccion}
+\State $\mu_i \gets \mu_{\min} + (\mu_0{-}\mu_{\min})\!\left(1 - \exp\!\bigl(-\norm{\mathbf{q}_i^{xy}{-}\mathbf{l}^{\mathrm{eff}}_{s_i}}^2\!/(2\sigma_{\mathrm{rev}}^2)\bigr)\right)$
+\For{cada $k \in \mathcal{S}$}
+  \State $\tilde{p}_{ik} \gets p_{ik} + T_s\mu_i\!\left[
+    \sum_{j}p_{ij}\pos{f_{ik}{-}f_{ij}}
+    - p_{ik}\!\sum_{j}\pos{f_{ij}{-}f_{ik}}\right]$
+\EndFor
+\State $\mathbf{p}_i(t{+}1) \gets \Pi_{\simplex}(\tilde{\mathbf{p}}_i)$;\enspace
+       $s_i(t{+}1) \gets \argmax_k\, p_{ik}(t{+}1)$ \Comment{empate: mantener $s_i(t)$}
+
+\State \textbf{Bloque~3: Consenso dinámico de media (DAC)} \eqref{eq:consenso}
+\For{cada $k \in \mathcal{S}$}
+  \State $\hat{x}_{ik}(t{+}1) \gets \hat{x}_{ik}(t)
+    + \varepsilon\!\sum_{j\in\mathcal{N}_i(t)}\!\bigl[\hat{x}_{jk}(t) - \hat{x}_{ik}(t)\bigr]
+    + \bigl(y_{ik}(t{+}1) - y_{ik}(t)\bigr)$
+    \Comment{$y_{ik}(t{+}1)=\mathbf{1}_{[s_i(t{+}1)=k]}$ proviene del Bloque~2}
+\EndFor
+
+\State \textbf{Bloque~4: Gradiente reactivo y cinemática} \eqref{eq:potential}--\eqref{eq:angular}
+\State $\mathbf{g}_i \gets -\nabla_{\mathbf{q}_i^{xy}} F_i(\mathbf{q}_i;\,\mathbf{l}^{\mathrm{eff}}_{s_i})$
+\State $v_i \gets \min(\norm{\mathbf{g}_i},v_{\max})$;\enspace
+       $\omega_i \gets K_\theta\cdot\mathrm{wrap}(\mathrm{atan2}(\mathbf{g}_i) - \theta_i)$
+\State $\mathbf{q}_i(t{+}1) \gets $ unicycle\_step$(\mathbf{q}_i(t), v_i, \omega_i)$
+
+\State \textbf{Actualización del grafo y modo de tarea}
+\State $\mathcal{N}_i(t{+}1) \gets \{j\neq i : \norm{\mathbf{q}_i^{xy}(t{+}1){-}\mathbf{q}_j^{xy}(t{+}1)}\leq R\}$
+\For{cada tarea $k$ con $i \in \mathcal{C}_k$}
+  \If{$|\mathcal{C}_k|\geq n_k$ durante $\tau_s$ pasos consecutivos}
+    \State modo$_k(t{+}1) \gets $ transporte \Comment{ec.~\eqref{eq:target_switch}}
+  \ElsIf{modo$_k(t) = $ transporte \textbf{y} $|\mathcal{C}_k| < n_k$ durante $\tau_s$ pasos}
+    \State modo$_k(t{+}1) \gets $ reclutamiento \Comment{transición inversa}
+  \EndIf
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\begin{observacion}[Error de seguimiento del DAC tras cambios simultáneos]
+Cuando varios robots cambian de estrategia en el mismo instante $t$, los términos
+$\Delta y_{ik}$ correspondientes inyectan el salto instantáneo en el estimador
+sin reinicializarlo. Sin embargo, si $m$ robots reasignan simultáneamente, el DAC
+acumula un error de seguimiento inicial acotado por $O(m/N)$; el transitorio decae
+como $(1-\varepsilon\lambda_2)^t$ y se extingue en $O(1/(\varepsilon\lambda_2))$ pasos.
+El efecto acumulado de estos transitorios queda capturado por la métrica
+$\Delta_{\mathrm{chg}}$ en el Escenario~A.
+\end{observacion}
+
+\subsection{Análisis de convergencia}
+
+Se presenta un análisis formal para el caso simplificado con comunicación global
+y tareas homogéneas. El análisis del caso general (grafo irregular, tareas
+heterogéneas, cardinalidades distintas) queda como extensión doctoral.
+
+\begin{proposicion}[Convergencia simplificada]
+\label{prop:convergencia}
+Consídere $N$ robots con rango de comunicación $R = \infty$ (sin error de
+consenso), $K$ tareas homógeneas con $n_k = n$ para todo $k$ y $r_k = r$ para
+todo $k$, y $N = Kn$ (balance exacto). Bajo las dinámicas de Smith
+\eqref{eq:smith_update} con payoff $f_{ik}(x) = r \cdot \Phi(N\hat{x}_{ik},\, n)$
+---es decir, con el factor espacial $\Psi \equiv 1$ (sin descuento por distancia) y
+comunicación global perfecta ($R = \infty$, $\hat{x}_{ik} = x_k$)---,
+donde $\Phi$ es estrictamente decreciente en $z = N\hat{x}_{ik}$, el único
+equilibrio Nash interior es:
+\[
+  x_k^* = \frac{n}{N} \quad \forall k \in \{1, \ldots, K\},
+  \quad x_0^* = 0.
+\]
+Este equilibrio es localmente asintóticamente estable bajo la condición
+\textup{(C1)}: $\beta \in (\beta_{\min}, \beta_{\max})$, donde los límites
+están dados explícitamente por:
+\begin{align}
+  \beta_{\min} &= \ln\!\left(\frac{N+1}{N-1}\right),
+    \label{eq:betamin}\\
+  \beta_{\max} &= \frac{8}{T_s \cdot \mu_0 \cdot r \cdot N}.
+    \label{eq:betamax}
+\end{align}
+$\beta_{\min} \approx 2/N$ para $N$ grande (primer orden de Taylor).
+$\beta_{\min}$ es una \emph{condición de separación de payoff}: garantiza que la diferencia $\Phi(n{-}1,n) - \Phi(n{+}1,n) > 1/N$ sea suficiente para distinguir el estado subtamaño ($z = n{-}1$)
+del sobretamaño ($z = n{+}1$). La derivación es directa: con
+$\Phi(z,n) = 1/(1+e^{\beta(z-n)})$ se tiene
+$\Phi(n{-}1,n) - \Phi(n{+}1,n) = (e^\beta - 1)/(e^\beta + 1)$;
+la condición $(e^\beta-1)/(e^\beta+1) > 1/N$ equivale a $e^\beta > (N{+}1)/(N{-}1)$,
+es decir, $\beta > \ln\!\left((N{+}1)/(N{-}1)\right) = \beta_{\min}$.
+$\beta_{\max}$ garantiza la estabilidad local de la dinámica en tiempo discreto:
+se obtiene de la condición de que el paso de actualización
+$T_s\mu_0 r N \beta/4 < 2$, derivada de la linealización en $\mathbf{x}^*$.
+\end{proposicion}
+
+\begin{proof}[Demostración (esbozo)]
+El argumento se construye en cuatro pasos.
+
+\textbf{Paso~1: estructura de juego potencial.}
+La función de payoff $f_{ik}(x) = r \cdot \Phi(Nx_k, n)$ es estrictamente
+decreciente en $x_k$: cuantos más robots hay en la tarea $k$, menor es el payoff.
+Esta propiedad define un juego de congestión simétrico. Por el resultado de
+Monderer y Shapley \citep{monderer1996potential}, todo juego de congestión
+simétrico es un juego potencial (véase también \citealt{sandholm2010population},
+Cap. 3) con función potencial
+\[
+  V(\mathbf{x}) = \frac{r}{N}\sum_{k=1}^K \int_0^{Nx_k} \Phi(z, n)\,\mathrm{d}z.
+\]
+
+\textbf{Paso~2: Smith como ascenso en el potencial.}
+Las dinámicas de Smith son un protocolo de revisión de paridad (pairwise protocol)
+que en tiempo continuo satisface $\dot{V} \geq 0$ a lo largo de las trayectorias,
+con igualdad sólo en los equilibrios de Nash \citep[Prop.~5.6.1]{sandholm2010population}.
+Para la versión en tiempo discreto empleada aquí, \citet{martinezpiazuelo2022tcss}
+(Sección~III, Teorema~3) demuestran que las dinámicas de Smith discretas generan
+una sucesión $\{V(\mathbf{x}(t))\}$ no decreciente cuando el payoff es Lipschitz
+y monótona no creciente en la masa de cada estrategia, y cuando el paso
+$T_s\mu_0$ es suficientemente pequeño. La función $\Phi(\cdot,n)$ satisface $|\Phi'(z,n)| \leq \beta/4$,
+por lo que es Lipschitz-$\tfrac{\beta}{4}$ en $z$; el payoff
+$f_{ik} = r\,\Phi(N\hat{x}_{ik},n)$ es Lipschitz-$\tfrac{rN\beta}{4}$ en $\hat{x}_{ik}$
+(el factor $N$ proviene del cambio de variable $z = N\hat{x}_{ik}$), y es
+estrictamente decreciente en la masa de la estrategia;
+la condición de paso se corresponde con $\beta_{\max}$ (Paso~4). Bajo estas hipotésis,
+los únicos puntos fijos son los máximos de $V$ sobre el símplex.
+
+\textbf{Paso~3: unicidad del máximo interior.}
+La Hessiana de $V$ en el espacio ambiente es diagonal con entradas
+$\partial^2 V / \partial x_k^2|_{\mathbf{x}^*} = r N\Phi'(n,n) = -rN\beta/4 < 0$,
+donde se usó $\Phi'(z,n) = -\beta\,\Phi\,(1{-}\Phi)$, $\Phi(n,n) = 1/2$, y la
+regla de la cadena $\partial (V)/\partial x_k = r\,\Phi(Nx_k,n)$.
+En el subespacio tangente al símplex ($\sum_k \mathrm{d}x_k = 0$, dimensión $K{-}1$),
+la Hessiana restringida sigue siendo definida negativa pues todos sus valores propios
+son $-rN\beta/4$; por tanto, la maximización restringida tiene un único máximo
+interior $\mathbf{x}^*$, y en ese punto $Nx_k^* = n$: la restricción de cardinalidad
+se satisface exactamente.
+
+\textbf{Paso~4: estabilidad local en tiempo discreto.}
+Se define $W(\mathbf{x}) = V(\mathbf{x}^*) - V(\mathbf{x}) \geq 0$ en un entorno
+de $\mathbf{x}^*$ (no negativa por ser $\mathbf{x}^*$ el máximo de $V$).
+Dado que las dinámicas de Smith ascienden sobre $V$ (Paso~2), $W$ es una
+función de Lyapunov estricta en ese entorno.
+$\beta_{\min}$ es una \emph{condición de separación de payoff}: garantiza
+$\Phi(n{-}1,n)-\Phi(n{+}1,n) > 1/N$, produciendo pendiente suficiente en $\mathbf{x}^*$
+para que $W$ sea localmente estricta.
+$\beta_{\max}$ proviene de exigir radio espectral $< 1$ a la linealización de Smith
+en $\mathbf{x}^*$: la condición escalar $T_s\mu_0 r N\beta/4 < 2$ es la cota resultante.
+Combinados, $\beta \in (\beta_{\min},\beta_{\max})$ asegura que $W$ decrece estrictamente
+y $\mathbf{x}^*$ es localmente asintóticamente estable.
+\end{proof}
+
+\begin{observacion}
+La Proposición~\ref{prop:convergencia} usa $R = \infty$ y $N = Kn$.
+Para los parámetros nominales ($T_s\!=\!0{,}1$, $\mu_0\!=\!0{,}5$, $r\!=\!1$,
+$N\!=\!6$, $K\!=\!3$, $n\!=\!2$), los límites~\eqref{eq:betamin}--\eqref{eq:betamax}
+dan $\beta_{\min} \approx 0{,}34$ y $\beta_{\max} \approx 26{,}7$, por lo que el
+valor nominal $\beta = 2{,}0$ satisface la condición~(C1) con amplio margen.
+Cuando $R$ es finito, el error de consenso $e_{ik}$ introduce una perturbación
+en los payoffs cuyo efecto sobre el equilibrio se mide experimentalmente en el
+Escenario~D mediante la curva de degradación $D(R) = \Theta(R)/\Theta(\infty)$.
+La extensión a $N \neq Kn$ (número no divisible exactamente) introduce estados
+de inactividad $x_0^* > 0$ y es parte del análisis general que queda como
+trabajo futuro. El dominio de atracción de $\mathbf{x}^*$ no se estima en este
+esbozo; la convergencia desde inicializaciones arbitrarias sobre el símplex se
+verifica numéricamente en el Escenario~A (configuración balanceada).
+\end{observacion}
+
+\begin{observacion}[Puente entre fracciones continuas y coaliciones enteras]
+\label{obs:fracciones_enteras}
+La Proposición~\ref{prop:convergencia} prueba que la \emph{fracción} de robots
+converge a $x_k^* = n/N$, un punto del símplex continuo. El requisito de
+cardinalidad $|\mathcal{C}_k| \geq n_k$ vive en el dominio \emph{entero}: un robot
+se asigna a la tarea $k$ si $s_i = \arg\max_k p_{ik}$. La correspondencia no es
+exacta: incluso con $x_k = n/N$, los números enteros $|\mathcal{C}_k|$ pueden
+diferir en $\pm 1$ según cómo se resuelvan los empates en $\arg\max$.
+En particular, cuando $N = Kn$ y el sistema alcanza el equilibrio interior, la
+distribución simétrica implica exactamente $n$ robots por tarea con probabilidad
+alta pero no garantizada al~100\,\%. La tasa de factibilidad $F$ (proporción de
+episodios en que $|\mathcal{C}_k| \geq n_k$ se alcanza para toda $k$ dentro del
+horizonte) es la métrica empírica que cierra este puente.
+\end{observacion}
+
+\begin{observacion}[Tiempo de convergencia del DAC]
+Para los parámetros nominales, el tiempo de contracción del error de seguimiento
+del DAC se estima a partir del término de difusión en la red: el error
+$\hat{x}(t{+}1) - \bar{x}(t{+}1) = (I - \varepsilon L)(\hat{x}(t) - \bar{x}(t))$
+decae como $(1 - \varepsilon\lambda_2)^t$, donde $\varepsilon = 0{,}05$ y $\lambda_2$
+es el valor de Fiedler del grafo. Para el grafo nominal (anillo $C_6$),
+$\lambda_2 = 2(1 - \cos(2\pi/6)) = 1$, y el número de pasos para reducir el error
+residual en un factor $1/e$ es:
+\[
+  \tau_{\mathrm{pasos}} \approx \frac{1}{\varepsilon \cdot \lambda_2}
+  = \frac{1}{0{,}05 \cdot 1} = 20\,\text{pasos},
+  \quad
+  \tau_{\mathrm{conv}} \approx \tau_{\mathrm{pasos}} \cdot T_s = 2\,\text{s}.
+\]
+Este tiempo (${\approx}20\,T_s$) es del mismo orden que el tiempo de formación de
+coalición esperado, lo que plantea una tensión de diseño: el lazo de Smith
+opera con estimaciones que aún no han alcanzado la media global exacta.
+El término $\Delta y_{ik}$ del DAC compensa el salto local instantáneamente,
+pero el error de seguimiento acotado por $O(K/N)$ (véase Obs.~\ref{obs:init_obs})
+persiste $\sim 20$ pasos adicionales hasta que la información se propaga por la red.
+Durante ese transitorio, el payoff $f_{ik}$ puede sobrestimar la ocupación (sesgo
+estabilizador en saturación) o subestimarla (perturbador en reclutamiento).
+El efecto neto se cuantifica mediante $\Delta_{\mathrm{chg}}$ en el Escenario~A;
+la ablación $\hat{x}$ ideal vs.\ estimado permite aislar el impacto del error
+de consenso sobre el equilibrio resultante.
+\end{observacion}
+
+\subsection{Diseño experimental}
+\label{subsec:experimental}
+
+El diseño compara cinco tratamientos en seis escenarios. Todos los tratamientos
+usan los mismos valores de parámetros físicos, las mismas condiciones iniciales
+de posición (controladas por semilla) y la misma secuencia de aparición de tareas.
+
+\subsubsection{Tratamientos}
+
+\begin{itemize}
+  \item \textbf{T1 -- Heurística voraz local}: cada robot selecciona la tarea más
+    cercana que todavía necesita robots ($|\mathcal{C}_k| < n_k$). No hay consenso ni
+    dinámicas de Smith.
+
+  \item \textbf{T2 -- Consenso puro}: se ejecuta el consenso distribuido
+    \eqref{eq:consenso}, pero la asignación usa la regla greedy sobre las
+    estimaciones $\hat{x}_{ik}$ sin las dinámicas de Smith.
+
+  \item \textbf{T3 -- Replicador distribuido (DRD)}: dinámica del replicador en
+    tiempo discreto \citep{quijano2017population} en la que la media del payoff
+    poblacional $\bar{f}(\mathbf{x}) = \sum_k x_k f_k(\mathbf{x})$ se estima
+    mediante una segunda capa de consenso sobre la red (véase \S\,\ref{subsec:porquesmith}
+    para la argumentación completa). Esta línea base permite cuantificar
+    empíricamente el sesgo de estimación dependiente de topología que
+    distingue Smith de DRD.
+
+  \item \textbf{T4 -- Referencia centralizada de mínima distancia}: con
+    acceso al estado global, se resuelve la asignación de mínimo coste
+    respetando la cardinalidad: cada tarea $k$ se expande en $n_k$ \emph{slots}
+    idénticos; se añaden \emph{filas ficticias} si $N < \sum_k n_k$ (robots
+    insuficientes) o \emph{columnas ficticias} si $N > \sum_k n_k$ (robots en
+    exceso, al menos uno queda inactivo); y se minimiza la distancia euclídea
+    total robot--slot mediante el algoritmo húngaro sobre la matriz cuadrada
+    resultante. La reasignación se repite periódicamente cada $\Delta T_c = 1\,\text{s}$
+    para capturar cambios de posición y de tarea activa.
+    La función objetivo ---minimizar distancia de asignación--- no
+    coincide necesariamente con maximizar $\Theta$, por lo que T4 es una cota de
+    referencia de eficiencia de asignación, no un límite superior absoluto del
+    throughput.
+
+  \item \textbf{T5 -- Método propuesto}: tres dinámicas acopladas con función
+    de payoff \eqref{eq:payoff} y tasa de revisión \eqref{eq:revision_rate}.
+\end{itemize}
+
+\subsubsection{Escenarios}
+
+La Tabla~\ref{tab:escenarios} describe los seis escenarios. Todos se ejecutan con
+$m = 30$ repeticiones por tratamiento con semillas distintas pero fijadas.
+
+\begin{table}[htbp]
+\centering
+\small
+\renewcommand{\arraystretch}{1.35}
+\caption[Escenarios experimentales]%
+{Escenarios experimentales: configuración, propósito y parámetros clave.}
+\label{tab:escenarios}
+\begin{tabularx}{\textwidth}{@{}>{\bfseries\sffamily\color{VIUOrange}}p{0.07\textwidth} p{0.30\textwidth} Y@{}}
+\toprule
+\normalfont\bfseries\color{VIUDark}Esc. &
+  \bfseries Configuración &
+  \bfseries Propósito \\
+\midrule
+A &
+  6 AGV, 3 tareas. \textbf{(a)}~$n_k = 2$ (balanceado, $N=Kn=6$);
+  \textbf{(b)}~$n_k = 1$ (línea base). &
+  (a)~Validación numérica de H1 con $\Psi\equiv 1$, $R=\infty$, $N=Kn$.
+  (b)~Línea base sin requisito de coalición. \\
+\addlinespace[2pt]
+B &
+  6 AGV; 1 tarea ligera ($n=1$) + 1 tarea pesada ($n=3$). &
+  Prueba central de coalición mínima: 1 robot a la ligera, 3 a la pesada. \\
+\addlinespace[2pt]
+C &
+  12 AGV, 5 tareas con $n_k \in \{1,1,2,3,4\}$. Recompensas
+  $r_k \in \{2{,}0,\, 1{,}0,\, 0{,}5\}$. &
+  Competencia y prioridad: tareas de $r_k$ alto atraen agentes antes,
+  sin coordinación central. \\
+\addlinespace[2pt]
+D &
+  15 AGV, 5 tareas ($n_k \in \{1,2,2,3,4\}$). $R$ barrido en 10 puntos
+  log-espaciados de 1\,m a 15\,m, más $R=\infty$. &
+  Curva de degradación $D(R) = \Theta(R)/\Theta(\infty)$, concentrada
+  en la zona de transición de conectividad. \\
+\addlinespace[2pt]
+E &
+  10 AGV, 3 tareas ($n_k \in \{2,3,4\}$). Eliminación abrupta de 1 robot
+  en $t=20\,\text{s}$ y 2 tareas nuevas ($n_k \in \{1,2\}$) en $t=30\,\text{s}$. &
+  Reactividad ante perturbación: tiempo de reconstitución de coalición tras
+  cambios abruptos en el conjunto. \\
+\addlinespace[2pt]
+F &
+  4--6 Pioneer~3-DX en CoppeliaSim. Escenario B o C con carga pasiva
+  acoplada cinemáticamente al centroide. &
+  Validación cualitativa de la formación de coalición y la navegación
+  cooperativa. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption[Hipótesis, escenarios y métricas]{Correspondencia entre hipótesis, escenarios y métrica principal de contraste.}
+\label{tab:hipescenario}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{0.18\textwidth}p{0.25\textwidth}Y}
+\toprule
+Hipótesis & Escenarios de contraste & Métrica principal \\
+\midrule
+H1 (convergencia Nash) & A\,(config.\ balanceada, $n_k{=}2$) &
+  $T_{\mathrm{conv}} < \infty$ en ${\geq}27$ de 30 episodios,
+  con $|x_k(T_{\mathrm{conv}}) - x_k^*| < 0{,}01$ para todo $k$; $T_{\mathrm{conv}}$ es el
+  primer instante en que se satisface la condición \\
+H2 (tasa modulada) & A, B (ablación $\mu_i$ constante vs.\ modulada) &
+  $\Delta_{\mathrm{chg}}$ (reducción ${\geq}40\%$) \\
+H3 (factibilidad) & B, C, D ($R$ variable) &
+  $F \geq 0{,}85$; curva $D(R)$ \\
+H4 (brecha $\Delta J$) & B, C, E (perturbación) &
+  $\Delta J < 0{,}25$ / $0{,}40$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Métricas}
+
+Todas las métricas se definen antes de ejecutar la campaña experimental y se
+calculan automáticamente sobre los registros de cada episodio.
+
+\begin{table}[htbp]
+\centering
+\caption[Métricas de evaluación]{Métricas de evaluación: definición e interpretación.}
+\label{tab:metricas}
+\begin{tabularx}{\textwidth}{>{\bfseries}p{0.08\textwidth}p{0.24\textwidth}Y}
+\toprule
+Símbolo & Nombre & Definición / Interpretación \\
+\midrule
+$\Theta$ & Tasa de throughput &
+  Tareas completadas por minuto promediadas sobre el episodio. \\
+$\bar{T}$ & Tiempo medio de entrega &
+  Promedio del tiempo entre aparición de la carga y entrega al destino. \\
+$T_{\text{coal}}$ & Tiempo de formación de coalición &
+  Tiempo entre aparición de la tarea y el instante en que
+  $|\mathcal{C}_k(t)| \geq n_k$ por primera vez. \\
+$C$ & Sobrecarga de comunicación &
+  Mensajes intercambiados por robot por paso temporal. \\
+$D(R)$ & Ratio de degradación &
+  $\Theta(R)/\Theta(\infty)$; mide pérdida relativa de rendimiento con $R$ finito. \\
+$F$ & Tasa de factibilidad &
+  Porcentaje de tareas que alcanzan $|\mathcal{C}_k| \geq n_k$ dentro del
+  horizonte temporal $T$. \\
+$\Delta_{\text{chg}}$ & Cambios de asignación &
+  Cambios de estrategia por robot por paso temporal:
+  $\frac{1}{T}\sum_{t=1}^{T}\mathbf{1}_{[s_i(t)\neq s_i(t-1)]}$;
+  normalización por $T$ permite comparar episodios de distinta duración. \\
+$D_{\text{tot}}$ & Distancia total recorrida &
+  $\sum_i \int_0^T \norm{v_i(t)}\,\mathrm{d}t$; proxy de consumo energético
+  de la flota. \\
+$\Delta J$ & Brecha de descentralización &
+  $(\Theta_{\text{cent}} - \Theta_{\text{dist}}) / \max(\Theta_{\text{cent}}, \delta_0)$,
+  con $J \triangleq \Theta$ y $\delta_0 = 10^{-3}$;
+  mide cuánto pierde el distribuido respecto al centralizado ($\Delta J = 0$: sin pérdida). \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Los resultados se reportan como media $\pm$ desviación estándar sobre $m = 30$
+repeticiones. Las comparaciones pareadas entre tratamientos (p.ej., dinámica de
+Smith vs.\ líneas base, $\mu_i$ modulada vs.\ constante) se contrastarán
+mediante la prueba de Wilcoxon de rangos con signo (datos de una muestra) o la
+prueba U de Mann-Whitney (dos muestras independientes), con corrección de
+Bonferroni para comparaciones múltiples ($\alpha_{\text{corr}} = 0{,}05/M$ siendo
+$M$ el número de contrastes simultáneos). Se incluye un episodio fallido por
+escenario para documentar los límites del método. El registro completo de
+trayectorias $\mathbf{p}_i(t)$ para todo $i$ y todo $t$ se almacena para
+análisis a posteriori de la dinámica de preferencias.
+
+\subsection{Implementación en Python}
+
+La plataforma de simulación está implementada en Python con una arquitectura
+modular que separa el modelo del dominio, las dinámicas distribuidas, los
+tratamientos de comparación, el motor de simulación y las métricas. Las
+operaciones numéricas críticas (consenso, proyección al símplex, cálculo del
+gradiente) se vectorizan con NumPy. La Tabla~\ref{tab:params} recoge los
+parámetros del sistema junto con sus valores nominales y el rango de variación
+considerado en los experimentos.
+
+\begin{table}[htbp]
+\centering
+\caption[Parámetros del sistema]{Parámetros del sistema y valores nominales para los experimentos.}
+\label{tab:params}
+\begin{tabularx}{\textwidth}{>{\ttfamily}p{0.12\textwidth}p{0.28\textwidth}p{0.10\textwidth}Y}
+\toprule
+\normalfont Símbolo & Parámetro & Valor nominal & Rango / Nota \\
+\midrule
+$T_s$ & Período de muestreo & 0{,}10 s & Fijo \\
+$\beta$ & Pendiente sigmoide & 2{,}0 & (1{,}0, 5{,}0) \\
+$\lambda$ & Escala espacial del payoff & 5{,}0 m & (2{,}0, 10{,}0) m \\
+$r_0$ & Payoff de inactividad & 0{,}05 & Fijo \\
+$\mu_0$ & Tasa de revisión base & 0{,}50 & (0{,}1, 1{,}0) \\
+$\mu_{\min}$ & Piso de revisión ($= 0{,}02\,\mu_0$) & 0{,}01 & Fijo \\
+$\sigma_{\text{rev}}$ & Ancho espacial de revisión & 2{,}0 m & (1{,}0, 5{,}0) m \\
+$\tau_s$ & Umbral de modo transporte & 3 pasos & Fijo \\
+$\rho_s$ & Umbral de histéresis para cambio de estrategia & 0{,}05 & Fijo \\
+$\varepsilon$ & Ganancia de consenso & 0{,}05 & $(0, 1/d_{\max})$ \\
+$R$ & Rango de comunicación & $\infty$ & (1{,}0 m, $\infty$) \\
+$\alpha$ & Ganancia de atracción & 1{,}0 & Fijo \\
+$\eta$ & Ganancia de repulsión & 0{,}5 & Fijo \\
+$\delta$ & Ganancia de formación & 0{,}8 & Fijo \\
+$r_{\mathrm{det}}$ & Radio de detección de coalición & 1{,}0 m & Fijo \\
+$r_{\mathrm{form}}$ & Radio de activación de formación & 1{,}5 m & Fijo \\
+$r_{\mathrm{robot}}$ & Radio físico del AGV & 0{,}25 m & Pioneer~3-DX \\
+$r_{\mathrm{load}}$ & Radio de la carga & 0{,}30 m & Valor nominal \\
+$\varepsilon_r$ & Regularización de repulsión & 0{,}01 m & Fijo \\
+$\omega_{\max}$ & Velocidad angular máxima & 2{,}5 rad/s & Pioneer~3-DX \\
+$v_{\max}$ & Velocidad máxima & 0{,}5 m/s & Valor conservador (Pioneer~3-DX: ${\sim}1{,}2\,\text{m/s}$) \\
+$K_\theta$ & Ganancia de orientación & 2{,}0 & Fijo \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Cada experimento se parametriza mediante un descriptor declarativo que fija
+todos los parámetros y las semillas aleatorias, garantizando la reproducibilidad
+de los resultados. Durante la simulación se registran las trayectorias
+$\mathbf{p}_i(t)$, $\mathbf{q}_i(t)$ y $\hat{\mathbf{x}}_i(t)$ en cada paso
+temporal; las métricas se calculan en una etapa de postprocesamiento
+posterior.
+
+\subsection{Validación en CoppeliaSim}
+
+El Escenario~F replica uno de los escenarios de coalición mínima (B o C) con
+robots Pioneer~3-DX en CoppeliaSim. El propósito de esta validación no es
+obtener métricas adicionales, sino confirmar que el comportamiento colectivo
+observado en Python es coherente con la física del simulador robótico: los robots
+se desplazan hacia las tareas correctas, forman la geometría de coalición y
+reaccionan ante una perturbación (retirada de un robot a mitad de la misión).
+La escena de CoppeliaSim incluye un almacén simplificado con zonas de carga marcadas
+en el suelo, compatible con el tamaño operativo de los Pioneer~3-DX.
+
+\subsection{Criterios de aceptación del método}
+
+El método se considerará satisfactorio si:
+
+\begin{enumerate}
+  \item La tasa de factibilidad del tratamiento~T5 es $F \geq 0{,}85$ en los
+    Escenarios~B y~C.
+  \item El tiempo de formación de coalición $T_{\text{coal}}$ del tratamiento~T5
+    es menor que el del tratamiento~T1 en al menos el 80\,\% de las repeticiones
+    del Escenario~B.
+  \item El número de cambios de asignación $\Delta_{\text{chg}}$ del
+    tratamiento~T5 con tasa espacial \eqref{eq:revision_rate} es inferior al del
+    mismo tratamiento con tasa constante $\mu_i = \mu_0$, validando la
+    Hipótesis~2.
+  \item La validación numérica de la Proposición~\ref{prop:convergencia}
+    en el Escenario~A (configuración balanceada $n_k=2$, $N=Kn=6$) con 30 episodios
+    muestra convergencia ($T_{\mathrm{conv}} < \infty$ y
+    $|x_k(T_{\text{conv}}) - x_k^*| < 0{,}01$ para todo $k$) en al menos 27 episodios
+    (tasa de éxito ${\geq}90\%$).
+  \item La escena de CoppeliaSim (Escenario~F) muestra visualmente la formación
+    de la coalición requerida y la reacción ante perturbación.
+\end{enumerate}
+
+Los criterios 1--5 son \textbf{conjuntivos}: deben cumplirse todos para declarar el
+método satisfactorio. El criterio~5 es condición necesaria pero de carácter
+cualitativo; los criterios~1--4 son cuantitativos y verificables estadísticamente.
+Si alguno de los criterios~1--4 no se cumple, el experimento se replicará
+ajustando los parámetros nominales dentro del rango indicado en la
+Tabla~\ref{tab:params} antes de concluir el rechazo.

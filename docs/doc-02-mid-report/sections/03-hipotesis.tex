@@ -1,0 +1,70 @@
+﻿%% ====================================================================
+\section{Hipótesis de partida}
+\label{sec:hipotesis}
+%% ====================================================================
+
+\textbf{Pregunta de investigación.}
+?`Pueden las dinámicas de Smith con una función de payoff multiplicativa y cota
+inferior sigmoide de cardinalidad garantizar, de forma distribuida y sin coordinador
+central, que una flota de AGV forme coaliciones de tamaño mínimo requerido para
+el transporte cooperativo de cargas, y cómo cambia este comportamiento al variar
+el rango de comunicación?
+
+\textbf{Hipótesis~1.}
+Bajo las dinámicas de Smith con la función de payoff propuesta, el sistema
+converge a un equilibrio Nash en el que cada tarea $k$ tiene exactamente $n_k$ robots
+asignados, en el caso simétrico balanceado ($N = Kn$, $n_k = n$, $\Psi \equiv 1$,
+$R = \infty$). La condición suficiente de estabilidad local exige que la pendiente
+$\beta$ de la función sigmoide pertenezca al intervalo $(\beta_{\min}, \beta_{\max})$.
+
+\textbf{Hipótesis~2.}
+La tasa de revisión espacialmente modulada $\mu_i(t)$ reduce significativamente
+el número de cambios de asignación por robot durante el estado estacionario
+respecto a una tasa constante $\mu_i = \mu_0$, sin degradar de forma relevante
+el tiempo de convergencia de la coalición.
+
+\textbf{Hipótesis~3.}
+El método propuesto supera en tasa de factibilidad de formación de coaliciones
+a la heurística voraz local y al consenso puro en todos los escenarios evaluados,
+y la ventaja se mantiene cuando el rango de comunicación $R$ se reduce,
+aunque la brecha disminuye con la conectividad.
+
+\textbf{Hipótesis~4.}
+La brecha de descentralización $\Delta J = (\Theta_{\text{cent}} -
+\Theta_{\text{dist}}) / \max(\Theta_{\text{cent}}, \delta_0)$, con $\delta_0 = 10^{-3}$,
+permanece acotada en los escenarios homogéneos y heterogéneos, con valores
+aceptables para un entorno de almacén con comunicación imperfecta.
+
+\subsection{Criterios cuantitativos de aceptación}
+\label{subsec:criterios}
+
+Los umbrales de aceptación que operacionalizan las hipótesis son los siguientes:
+
+\begin{description}
+  \item[H1 (convergencia Nash):] El número de episodios con convergencia
+    ($|x_k(T_{\text{conv}}) - x_k^*| < 0{,}01$ para todo $k$) es $\geq 27$ de 30
+    repeticiones en el Escenario~A balanceado ($N = Kn = 6$, $n_k = 2$).
+
+  \item[H2 (revisión modulada):] $\Delta_{\text{chg}}$ del tratamiento T5 con
+    tasa espacial es al menos un 40\,\% menor que con tasa constante $\mu_i = \mu_0$,
+    sin que $T_{\text{coal}}$ aumente más de un 15\,\%. El 40\,\% se justifica
+    porque, al valor nominal $\sigma_{\text{rev}} = 2\,\text{m}$, un robot a
+    distancia $d = \sigma_{\text{rev}}$ tiene $\mu_i \approx 0{,}39\,\mu_0$; en
+    estado estacionario la mayoría de robots están dentro de esa distancia,
+    por lo que una reducción agregada del 40\,\% es conservadora.
+
+  \item[H3 (factibilidad de coalición):] La tasa de factibilidad $F \geq 0{,}85$
+    para T5 en todos los escenarios evaluados, incluyendo $R = 3\,\text{m}$.
+    El umbral del 85\,\% refleja que una tasa de fallo del 15\,\% es recuperable
+    mediante reintento en entornos reales; umbrales más laxos no serían informativos.
+
+  \item[H4 (brecha de descentralización):] $\Delta J < 0{,}25$ en escenarios
+    homogéneos y $\Delta J < 0{,}40$ en heterogéneos. Una brecha del 25\,\%
+    significa que el sistema distribuido completa al menos 3 tareas de cada 4 que
+    completaría un planificador centralizado con estado global perfecto.
+\end{description}
+
+Las hipótesis se contrastan mediante campaña de simulación con $m \geq 30$
+repeticiones por tratamiento-escenario, bajo las mismas semillas, trayectorias
+y parámetros iniciales para todos los métodos. La Hipótesis~1 se verifica
+numéricamente en el escenario~A antes de ejecutar la campaña completa.
