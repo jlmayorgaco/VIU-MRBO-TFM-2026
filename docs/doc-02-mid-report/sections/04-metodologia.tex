@@ -346,6 +346,10 @@ Para $n_k = 1$ la fórmula da $d^* = 0$ (sin geometría de formación, el robot
 se posiciona directamente sobre la carga); para $n_k = 2$, $d^* = 2(r_{\text{load}}
 + r_{\text{robot}})$ (los dos robots quedan en lados opuestos de la carga). La zona
 de formación se activa cuando $\norm{\mathbf{h}_i - \mathbf{l}_k} < r_{\text{form}}$.
+Análogamente a $\varepsilon_r$, el gradiente del término de formación emplea una
+regularización $\varepsilon_f$ en el denominador del vector unitario,
+$(\mathbf{h}_i-\mathbf{h}_j)/(\norm{\mathbf{h}_i-\mathbf{h}_j}+\varepsilon_f)$, lo que
+evita la singularidad cuando $\norm{\mathbf{h}_i-\mathbf{h}_j}\to 0$.
 
 El campo de gradiente se aplica sobre el punto adelantado, no sobre el centro, y se
 convierte en comandos cinemáticos invirtiendo el jacobiano del punto adelantado:
@@ -1006,6 +1010,7 @@ $r_{\mathrm{form}}$ & Radio de activación de formación & 1{,}5 m & Fijo \\
 $r_{\mathrm{robot}}$ & Radio físico del AGV & 0{,}25 m & Pioneer~3-DX \\
 $r_{\mathrm{load}}$ & Radio de la carga & 0{,}30 m & Valor nominal \\
 $\varepsilon_r$ & Regularización de repulsión & 0{,}01 m & Fijo \\
+$\varepsilon_f$ & Regularización de formación & 0{,}01 m & Fijo \\
 $\omega_{\max}$ & Velocidad angular máxima & 2{,}5 rad/s & Pioneer~3-DX \\
 $v_{\max}$ & Velocidad máxima & 0{,}5 m/s & Límite conservador por seguridad en escena reducida; el Pioneer~3-DX admite ${\sim}1{,}2\,\text{m/s}$ \\
 $\ell$ & Distancia look-ahead & 0{,}15 m & Pioneer~3-DX \\
