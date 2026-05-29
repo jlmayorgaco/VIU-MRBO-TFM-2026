@@ -2,7 +2,47 @@
 
 Rama: `blindaje-intermedio-v1` (desde `blindaje-v3`).
 Documento: `docs/doc-02-mid-report/` (LaTeX, motor **XeLaTeX** por dependencia de
-`fontspec`/fuentes Arial del sistema). **PDF final: `TFM_InformeIntermedio_v5.pdf` (49 páginas).**
+`fontspec`/fuentes Arial del sistema). **PDF final: `TFM_InformeIntermedio_v6.pdf` (50 páginas).**
+
+---
+
+## v6 — Integración final del informe intermedio (2026-05-29)
+
+Spec `CLAUDE_TASK_v6.md`. Commits atómicos; compilación XeLaTeX limpia tras cada tarea.
+
+- **T4 / T5** — ya satisfechas en pasadas previas (typos mín/máx, `\gets`, nº de teorema
+  degradados con `% TODO-CITA`); verificadas, sin cambios.
+- **T6 `style(lenguaje)`** — "completamente distribuidas"→"sin coordinador central de
+  asignación" (§1.1); claim "mayo de 2026"→"corpus bibliográfico revisado" (abstract,
+  §1.6.3); "mayo de 2026" se mantiene solo en §1.5.
+- **T1 `fix(math)`** — (1.1) inactividad/Nash acotada al caso base Ψ≡1; (1.2) β_mín como
+  criterio de diseño; (1.3) perturbación limitada al canal DAC; (1.4) ε en (0,1/(N−1))
+  + trade-off T2/T3 vs T4; (1.5) tres ocupaciones a_k, count_k(=|C_k|), x̂_ik + Lema 4.2;
+  (1.6) repulsión inter-robot sobre centros físicos q_i.
+- **T2 `feat(method)` obstáculos** — alcance/limitaciones; término F_i^obs (ec. obstáculo)
+  sobre q_i; transporte de cluster con obstáculos manteniendo d*; supuesto geométrico
+  R>2(r_load+r_robot); delimitación teórica §4.10; Tabla 5: η_o, ε_o. Lenguaje
+  formulación/empírico.
+- **T3 `feat(method)` capacidad heterogénea** — nota §4.2.2 (Σc_i≥M_k); nueva §4.16
+  (formulación, subset-sum NP-duro, problema abierto); Escenario G exploratorio (Tabla 2,
+  excluido de criterios §4.15); §4.1.2 y §7 (bullet). Conteo 15→16 subsecciones.
+- **T0.2–0.4 `docs(title)`** — objetivo general reformulado; específicos 4 y 5 (obstáculos,
+  transporte de cluster); cierre con Anexo I (§1.6.1).
+- **T7 `docs(nomenclatura)`** — añadidos a_k, count_k, c_i, M_k, η_o, ε_o, d*; sigue en 1 página.
+- **T8 `docs(repro)`** — plan estadístico (no paramétrico, corrección múltiple, IC bootstrap,
+  tamaño de efecto; detalle diferido) + repositorio versionado/DOI.
+- **T9 `chore(voz)`** — 3 marcadores `% TODO-VOZ` (sin reescribir).
+- **T0.1 `docs(title)` (commit aislado)** — nuevo título "Coordinación distribuida… cargas
+  heterogéneas"; **pendiente de visado del tutor** (revertible).
+
+### TODO insertados (para el autor)
+- **`% TODO-CITA`** (1): `04-metodologia.tex` §4.10 (Paso 2) — confirmar nº de teorema de
+  Barreiro-Gómez (2017) y Martínez-Piazuelo (2020/2022a) contra el PDF (IEEE).
+- **`% TODO-VOZ`** (3): §1.3 cadencia de enumerador; §4.11.1 formulación repetida de
+  tratamientos; §1.6.3 estructura "no-es-X-es-Y".
+
+Verificación: 0 referencias/citas indefinidas, sin `??`, índices regenerados (5 figuras,
+5 tablas), §4 con dieciséis subsecciones.
 
 ---
 
