@@ -159,20 +159,19 @@
 %  - Heading 2: Arial 16pt, color #E65113, numerado "1.1."
 %  - Heading 3: 14pt bold (no definido en Word, lo extrapolamos coherentemente)
 %==============================================================================
-% Heading 1: "1." alineado por baseline (bottom) con "Introduccion".
-% El numero es mas pequeno (12pt) que el titulo (18pt). Sin raisebox: el
-% baseline natural de LaTeX hace que ambos se alineen abajo.
+% El numero de cada encabezado hereda el tamano del titulo (mismo \fontsize):
+% el segundo argumento ya no fuerza un tamano menor.
 \titleformat{\section}[hang]
   {\sffamily\bfseries\color{VIUOrange}\fontsize{18}{22}\selectfont}
-  {\fontsize{12}{16}\selectfont\thesection.}
+  {\thesection.}
   {0.45em}{}
 \titleformat{\subsection}[hang]
   {\sffamily\color{VIUOrange}\fontsize{16}{20}\selectfont}
-  {\fontsize{11}{14}\selectfont\thesubsection.}
+  {\thesubsection.}
   {0.40em}{}
 \titleformat{\subsubsection}[hang]
   {\sffamily\bfseries\color{VIUOrange}\fontsize{14}{18}\selectfont}
-  {\fontsize{10}{13}\selectfont\thesubsubsection.}
+  {\thesubsubsection.}
   {0.35em}{}
 \titleformat{\paragraph}[runin]
   {\sffamily\bfseries\color{VIUDark}\normalsize}
