@@ -586,8 +586,7 @@ decreciente en $x_k$: cuantos más robots hay en la tarea $k$, menor es el payof
 Esta propiedad define un juego de congestión simétrico. Por el resultado de
 Monderer y Shapley \citep{monderer1996potential}, todo juego de congestión
 simétrico es un juego potencial (véase también \citealt{sandholm2010population},
-Cap. 3) con función potencial
-% TODO: verificar el número de capítulo (Cap. 3) de Sandholm 2010 contra el libro
+Cap.~3) con función potencial
 \[
   V(\mathbf{x}) = \frac{r}{N}\sum_{k=1}^K \int_0^{Nx_k} \Phi(z, n)\,\mathrm{d}z.
 \]
@@ -595,10 +594,11 @@ Cap. 3) con función potencial
 \textbf{Paso~2: Smith como ascenso en el potencial.}
 Las dinámicas de Smith son un protocolo de revisión de paridad (pairwise protocol)
 que en tiempo continuo satisface $\dot{V} \geq 0$ a lo largo de las trayectorias,
-con igualdad sólo en los equilibrios de Nash \citep[Prop.~5.6.1]{sandholm2010population}.
-% TODO: verificar el número exacto (Prop. 5.6.1) de Sandholm 2010 contra el libro
+con igualdad sólo en los equilibrios de Nash \citep[\S5.6 y \S7.1]{sandholm2010population}.
+% TODO-CITA: verificar contra el paper el localizador exacto (¿Sección/Teorema?) y que
+% el resultado se enuncia para dinámicas de Smith discretas específicamente.
 Para la versión en tiempo discreto empleada aquí, \citet{martinezpiazuelo2022tcss}
-(Sección~III, Teorema~3) demuestran que las dinámicas de Smith discretas generan
+demuestran que las dinámicas de población distribuidas en tiempo discreto generan
 una sucesión $\{V(\mathbf{x}(t))\}$ no decreciente cuando el payoff es Lipschitz
 y monótona no creciente en la masa de cada estrategia, y cuando el paso
 $T_s\mu_0$ es suficientemente pequeño. La función $\Phi(\cdot,n)$ satisface $|\Phi'(z,n)| \leq \beta/4$,

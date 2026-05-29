@@ -160,19 +160,48 @@ PDF final: **46 páginas**.
 
 ---
 
-## TODOs pendientes (`% TODO: verificar`)
+## TAREA 12 — Verificación bibliográfica (2026-05-29, PRIORIDAD ALTA)
+**Commit:** `fix(refs): verificación de granularidad y DOIs de citas`
 
-En `references.bib`:
-1. **`shan2024distributed`** — confirmar volumen/artículo (178/104722 vs. 179/104724)
-   y rango de páginas contra IEEE/Elsevier.
-2. **`zhang2024coalition`** — confirmar DOI (`10.1109/IROS58592.2024.10801234`) y
-   añadir rango de páginas; no verificable contra IEEE Xplore en esta sesión.
+Verificado contra Crossref (API de DOI), IEEE Xplore y el índice oficial del libro
+de Sandholm (PDF del autor). Resultados (12.4):
 
-En `sections/04-metodologia.tex` (revisión P1, item 21):
-3. **Sandholm 2010, "Cap. 3"** (juego potencial de congestión) — verificar el número
-   de capítulo contra el libro.
-4. **Sandholm 2010, "Prop. 5.6.1"** (Smith asciende el potencial) — verificar el
-   número exacto contra el libro.
+**(a) Citas confirmadas (sin cambios):**
+- `shan2024distributed` — Crossref confirma vol.~**178**, art.~**104722**, DOI
+  `10.1016/j.robot.2024.104722`. El "179/104724" era OTRO paper (Wang et~al.,
+  "Long-term navigation"). Eliminado el TODO.
+- `martinezpiazuelo2022tcss` (datos de entrada) — Crossref confirma vol.~52(11),
+  pp.~7112–7122, DOI `10.1109/TSMC.2022.3151042`, autores correctos.
+- Sandholm 2010 **"Cap.~3"** — el índice oficial confirma que el Cap.~3 es
+  "Potential Games, Stable Games, and Supermodular Games" (incluye juegos de
+  congestión, §3.1.3/§3.1.7). Mantenido.
+
+**(b) Citas CORREGIDAS a valores verificados:**
+- `zhang2024coalition` — la entrada tenía **autores erróneos** (Xinyu Zhang, Yue
+  Liang…) y **DOI inexistente** (`…10801234`, 404 en Crossref). Corregido a los
+  valores reales (Crossref + IEEE Xplore doc 10801429): autores **Liwang Zhang,
+  Dong Liang, Minglong Li, Wenjing Yang, Shaowu Yang**; pp.~**3439–3446**; DOI
+  `10.1109/IROS58592.2024.10801429`. *Recomendado: reconfirmar en IEEE Xplore.*
+
+**(c) Citas DEGRADADAS a granularidad verificable + `% TODO-CITA`:**
+- Sandholm 2010 **"Prop.~5.6.1"** → **"§5.6 y §7.1"** (el índice confirma §5.6
+  "Pairwise Comparison Dynamics" y §7.1 "Potential Functions as Lyapunov
+  Functions"; el número de proposición exacto no es verificable desde el índice).
+- `martinezpiazuelo2022tcss` **"Sección~III, Teorema~3"** → cita genérica; además
+  la prosa se ajustó a "dinámicas de población distribuidas en tiempo discreto"
+  (clase que el paper sí trata). `% TODO-CITA` pide al autor confirmar el
+  localizador exacto y que el resultado cubra el caso Smith/pairwise.
+
+---
+
+## TODOs pendientes
+
+`% TODO-CITA` en `04-metodologia.tex` (pendiente de revisión del autor):
+1. Confirmar contra el paper de Martínez-Piazuelo (TSMC 2022) el localizador exacto
+   y que el resultado de potencial no decreciente se enuncia para Smith/pairwise.
+
+Recomendado (no bloqueante): reconfirmar en IEEE Xplore la entrada corregida de
+`zhang2024coalition`.
 
 Pendientes de decisión del autor (no editados):
 - **(item 22)** Escenario D: 10 puntos de $R$ × 30 rep. × 5 tratamientos ⇒ ~1500
