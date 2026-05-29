@@ -596,15 +596,17 @@ Las dinámicas de Smith son un protocolo de revisión de paridad (pairwise proto
 que en tiempo continuo asciende sobre el potencial: $\dot{V} \geq 0$ a lo largo de
 las trayectorias, con igualdad sólo en los equilibrios de Nash
 (\citealt{sandholm2010population}, \S5.6 y \S7.1). Para la versión \emph{distribuida}
-empleada aquí, \citet{barreiro2017distributed} (Teorema~3) prueban la estabilidad
+empleada aquí, \citet{barreiro2017distributed} prueban la estabilidad
 asintótica del equilibrio de Nash en juegos potenciales mediante la función de
 Lyapunov $E_V(\mathbf{x}) = V(\mathbf{x}^*) - V(\mathbf{x})$, con
 $\dot{E}_V = -\mathbf{f}^{\top} L^{(\mathbf{x})}\mathbf{f} \leq 0$. La formulación en
-\emph{tiempo discreto} se sustenta en \citet{martinez2020formation} (Teorema~1), que
-establecen la estabilidad asintótica de las dinámicas de Smith distribuidas en tiempo
-discreto bajo una condición suficiente sobre el tamaño del paso de actualización,
-inversamente proporcional al número máximo de vecinos en el grafo; el caso general en
-tiempo discreto se trata en \citet{martinezpiazuelo2022tcss}. Esta cota sobre el paso
+\emph{tiempo discreto} se sustenta en \citet{martinez2020formation,
+martinezpiazuelo2022tcss}, que establecen la estabilidad asintótica de las dinámicas
+de Smith distribuidas en tiempo discreto bajo una condición suficiente sobre el tamaño
+del paso de actualización, inversamente proporcional al número máximo de vecinos en el
+grafo.
+% TODO-CITA: confirmar nº de teorema vs PDF (Barreiro-Gómez 2017; Martínez-Piazuelo 2020 / 2022a)
+Esta cota sobre el paso
 es del mismo tipo que la que define $\beta_{\max}$ (Paso~4): la función $\Phi(\cdot,n)$
 satisface $|\Phi'(z,n)| \leq \beta/4$, por lo que es Lipschitz-$\tfrac{\beta}{4}$ en
 $z$ y el payoff $f_{ik} = r\,\Phi(N\hat{x}_{ik},n)$ es Lipschitz-$\tfrac{rN\beta}{4}$
