@@ -79,7 +79,7 @@ relativas de las tareas. Este régimen queda fuera del alcance del análisis
 formal. Además, la tasa de revisión modulada reduce pero no elimina las
 oscilaciones de alta frecuencia en la frontera del símplex (\emph{chattering})
 cuando $\beta$ está cercano a $\beta_{\max}$; este comportamiento es observable
-en simulación y se reportará en los resultados de la entrega final.
+en simulación y se presentará en los resultados de la entrega final.
 
 La evitación de obstáculos se implementa mediante un término repulsivo de campo de
 potencial; al heredar las limitaciones clásicas de los campos de potencial artificial
@@ -87,7 +87,7 @@ potencial; al heredar las limitaciones clásicas de los campos de potencial arti
 navegación. Los obstáculos se modelan como elementos estáticos convexos simples; no se
 aborda planificación global de rutas ni SLAM.
 
-El núcleo formal y experimental asume flota homogénea (cardinalidad mínima). La
+El núcleo formal y experimental supone flota homogénea (cardinalidad mínima). La
 heterogeneidad de capacidad entre robots se formula como extensión
 (\S\,\ref{subsec:heterogenea}) y se explora cualitativamente (Escenario~G), sin
 garantía formal.
@@ -161,7 +161,7 @@ capacidad acumulada: si cada robot $i$ posee una capacidad $c_i > 0$ y la carga 
 demanda una capacidad $M_k$, la factibilidad se expresa como
 $\sum_{i\in\mathcal{C}_k} c_i \geq M_k$. El requisito de cardinalidad se recupera con
 flota homogénea ($c_i = c$, $M_k = n_k\,c$). El núcleo formal y experimental de este
-TFM asume flota homogénea; la extensión heterogénea se formula en
+TFM supone flota homogénea; la extensión heterogénea se formula en
 \S\,\ref{subsec:heterogenea}.
 
 \subsubsection{Grafo de comunicación}
@@ -215,7 +215,7 @@ positivo pequeño:
 lo que evita que la dinámica de Smith se congele por ausencia de diferencias de
 payoff cuando todas las tareas están saturadas ($\Phi \approx 0$ para todo $k \geq 1$).
 En el juego base con $\Psi \equiv 1$, tareas homogéneas y $N = \sum_k n_k$, la
-condición $r_0 < r/2$ hace que $x_0^* = 0$ sea consistente con el equilibrio. En el
+condición $r_0 < r/2$ hace que $x_0^* = 0$ sea compatible con el equilibrio. En el
 sistema espacial completo, donde $\Psi(d) < 1$, la inactividad puede ser localmente
 preferible para robots lejanos o excedentes; en ese caso la inactividad se interpreta
 como estrategia de reserva para robots no comprometidos. La caracterización del
@@ -456,7 +456,7 @@ Formalmente, el término de atracción de \eqref{eq:potential} emplea el objetiv
   \label{eq:target_switch}
 \end{equation}
 
-La transición de modo~\eqref{eq:target_switch} asume
+La transición de modo~\eqref{eq:target_switch} supone
 $R > 2(r_{\text{load}} + r_{\text{robot}})$, condición que garantiza que los robots
 capaces de rodear una misma carga forman un subgrafo completo y evalúan
 $|\mathcal{C}_k| \geq n_k$ de forma sincronizada; por debajo de ese umbral la
@@ -1060,13 +1060,13 @@ $E_{\text{DAC}}$ & Error medio de estimación &
   revisión. \\
 $N_{\text{fail}}$ & Episodios fallidos &
   Número de episodios por escenario en que alguna tarea no alcanza
-  $|\mathcal{C}_k| \geq n_k$ dentro del horizonte; se reporta como tasa de fallo
+  $|\mathcal{C}_k| \geq n_k$ dentro del horizonte; se expresa como tasa de fallo
   por tratamiento. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Los resultados se reportan como media $\pm$ desviación estándar sobre $m = 30$
+Los resultados se presentan como media $\pm$ desviación estándar sobre $m = 30$
 repeticiones. Las comparaciones pareadas entre tratamientos (p.ej., dinámica de
 Smith frente a líneas base, $\mu_i$ modulada frente a constante) se contrastarán
 mediante pruebas no paramétricas: la prueba de Wilcoxon de rangos con signo (datos

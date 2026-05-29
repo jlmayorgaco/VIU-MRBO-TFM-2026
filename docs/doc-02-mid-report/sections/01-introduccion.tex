@@ -22,8 +22,7 @@ robots manda a cada tarea, y esa decisión debe ser correcta. Los métodos de
 asignación distribuida por subasta \citep{choi2009consensus} o por formación
 de coaliciones \citep{dutta2021hedonic, shan2024distributed} abordan la
 coordinación, pero no ofrecen una ley de control continua que garantice
-convergencia a coaliciones de tamaño mínimo en términos de estabilidad
-formal. El aprendizaje por refuerzo \citep{bezerra2025learning} produce políticas
+formalmente la convergencia a coaliciones de tamaño mínimo. El aprendizaje por refuerzo \citep{bezerra2025learning} produce políticas
 efectivas pero dependientes de la distribución de entrenamiento y sin garantías
 de robustez ante configuraciones de tarea no vistas.
 
@@ -46,7 +45,7 @@ El trabajo experimental de \citet{barreiro2021uav} extiende esto a formaciones
 de UAVs con datos reales. Más recientemente, \citet{dinh2026bsplines} propone
 mecanismos basados en B-splines para diseñar funciones de payoff que satisfagan
 restricciones de formación específicas. Sin embargo, todos estos trabajos
-asumen que el tamaño del grupo que realiza cada tarea es fijo y conocido de
+suponen que el tamaño del grupo que realiza cada tarea es fijo y conocido de
 antemano. Ninguno aborda el caso en que la tarea misma impone un requisito mínimo
 de cardinalidad que debe satisfacerse dinámicamente.
 
@@ -61,10 +60,10 @@ consenso, y difieren únicamente en esta ley; comparar ambos aísla su efecto. E
 marco común de las dos dinámicas es el siguiente: el estado de la población
 es el vector de fracciones $\mathbf{x} = (x_k)$, donde $x_k$ es la proporción
 de robots asignados a la tarea $k$. Cada robot estima $x_k$ de forma distribuida
-mediante consenso promedio, obteniendo $\hat{x}_{ik}$. Hasta aquí, Smith y DRD
+mediante consenso promedio y obtiene así $\hat{x}_{ik}$. Hasta aquí, Smith y DRD
 son idénticos: ambos requieren esta \emph{primera capa de consenso}.
 
-La diferencia aparece en lo que cada dinámica necesita adicionalmente.
+La diferencia aparece en lo que cada dinámica requiere más allá de esa primera capa.
 Las dinámicas del replicador (DRD) comparan el payoff de cada estrategia con la
 \emph{media poblacional} $\bar{f}(\mathbf{x}) = \sum_k x_k f_k(\mathbf{x})$:
 esta cantidad es global porque depende de la distribución completa $\mathbf{x}$,
