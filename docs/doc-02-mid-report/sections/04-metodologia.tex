@@ -124,7 +124,11 @@ Cada AGV sigue cinemática uniciclo en tiempo discreto con período $T_s = 0{,}1
 \end{align}
 con entrada de control $(v_i, \omega_i)$ sujeta a $|v_i| \leq v_{\max}$ y
 $|\omega_i| \leq \omega_{\max}$. El estado del robot $i$ es
-$\mathbf{q}_i(t) = (x_i, y_i, \theta_i) \in \RR^3$.
+$\mathbf{q}_i(t) = (x_i, y_i, \theta_i) \in \RR^3$. La Figura~\ref{fig:robot}
+ilustra este modelo de tracción diferencial, sus entradas $v_i$ y $\omega_i$ y el
+punto adelantado $\mathbf{h}_i$ empleado por la navegación reactiva.
+
+\input{figures/fig-robot.tex}
 
 \subsubsection{Tareas}
 
