@@ -195,8 +195,8 @@ preserva solo de forma aproximada, lo que se caracteriza empíricamente. Esta co
 inferior por saturación distingue el diseño del planteamiento de cotas superiores de
 \citet{martinezpiazuelo2022automatica}.
 
-El factor $\Psi(\cdot)$ es el descuento espacial gaussiano: robots lejanos de la
-tarea perciben un payoff reducido, lo que incorpora la dinámica espacial al
+Espacialmente, el factor $\Psi(\cdot)$ descuenta el payoff de forma gaussiana: los
+robots lejanos de la tarea lo perciben reducido, y la dinámica espacial entra así en el
 juego de asignación. Para el estado de inactividad se asigna un payoff base
 positivo pequeño:
 \begin{equation}
@@ -238,11 +238,11 @@ $\Delta y_{ik}(t) = y_{ik}(t+1) - y_{ik}(t)$ compensa instantáneamente el salto
 en la señal local cuando el robot reasigna su estrategia, sin necesidad de
 reinicializar el estado del estimador.
 
-El término $\Delta y_{ik}$ requiere conocer $s_i(t+1)$ antes de actualizar
-$\hat{x}_{ik}$; por ello la dinámica de Smith (Bloque~2) precede a la actualización
+Como $\Delta y_{ik}$ requiere conocer $s_i(t+1)$ antes de actualizar
+$\hat{x}_{ik}$, la dinámica de Smith (Bloque~2) precede a la actualización
 del estimador (Bloque~3) en el bucle de control (véase Algoritmo~\ref{alg:loop}).
 
-El payoff se evalúa con el argumento clippeado al intervalo válido:
+Para evaluar el payoff, el argumento se recorta al intervalo válido:
 \begin{equation}
   f_{ik}(\hat{x}_i, \mathbf{q}_i)
     = r_k \cdot \Phi\!\bigl(N\,\mathrm{clip}(\hat{x}_{ik},0,1),\,n_k\bigr)
@@ -250,9 +250,9 @@ El payoff se evalúa con el argumento clippeado al intervalo válido:
   \label{eq:payoff_clip}
 \end{equation}
 donde $\mathrm{clip}(a,0,1) = \min(1,\max(0,a))$.
-El estado interno $\hat{x}_{ik}$ puede tomar valores fuera de $[0,1]$ de forma
-transitoria (efecto normal del DAC durante reasignaciones masivas) sin afectar la
-estabilidad del bucle, porque el payoff resultante se mantiene acotado en $(0, r_k]$.
+Durante reasignaciones masivas, $\hat{x}_{ik}$ puede salir de $[0,1]$ de modo
+transitorio —un efecto normal del DAC— sin comprometer la estabilidad del bucle: el
+payoff resultante se mantiene acotado en $(0, r_k]$.
 
 Se distinguen tres medidas de ocupación de la tarea $k$: la \emph{ocupación
 asignada pura} $a_k(t) = \sum_i \mathbf{1}_{[s_i(t)=k]}$; la \emph{ocupación física
@@ -359,15 +359,15 @@ hacia su destino.
 
 \subsection{Dinámica~3: campo de gradiente reactivo}
 
-La navegación regula prácticamente un \emph{punto adelantado} $\mathbf{h}_i$
-situado a distancia $\ell$ por delante del centro del robot en su dirección de
+En lugar del centro del robot, la navegación regula un \emph{punto adelantado}
+$\mathbf{h}_i$ situado a distancia $\ell$ por delante, en la dirección de
 avance:
 \begin{equation}
   \mathbf{h}_i = \mathbf{q}_i^{xy} + \ell\,(\cos\theta_i,\ \sin\theta_i)^{\top},
   \qquad \ell > 0.
   \label{eq:lookahead}
 \end{equation}
-El movimiento se obtiene minimizando localmente un campo de potencial artificial
+Para obtener el movimiento se minimiza localmente un campo de potencial artificial
 \citep{bullo2009distributed} definido sobre el punto adelantado:
 \begin{equation}
   F_i(\mathbf{h}_i) = \frac{\alpha}{2}\norm{\mathbf{h}_i - \mathbf{l}_{s_i}^{\mathrm{eff}}}^2
@@ -455,8 +455,8 @@ capaces de rodear una misma carga forman un subgrafo completo y evalúan
 $|\mathcal{C}_k| \geq n_k$ de forma sincronizada; por debajo de ese umbral la
 decisión de modo puede fragmentarse, régimen caracterizado en el Escenario~D.
 
-Además, durante la fase de transporte el factor espacial $\Psi(\cdot)$ se fija
-en $1{,}0$ para todos los robots de $\mathcal{C}_k$. Sin esta corrección, la
+El factor espacial $\Psi(\cdot)$ se fija en $1{,}0$ para todos los robots de
+$\mathcal{C}_k$ mientras dura el transporte. Sin esta corrección, la
 distancia $\norm{\mathbf{q}_i^{xy} - \mathbf{l}_k}$ crecería a medida que la
 coalición se aleja del punto de recogida hacia $\mathbf{d}_k$, lo que reduciría
 artificialmente el payoff de la tarea y podría inducir defecciones de la
@@ -479,9 +479,9 @@ a reclutamiento, el objetivo efectivo regresa a $\mathbf{l}_k$ y el factor
 $\Psi(\cdot)$ vuelve a calcularse dinámicamente. Esta histéresis evita
 transiciones espurias debidas a fluctuaciones momentáneas en la coalición.
 
-La tarea $k$ se considera completada cuando el centroide de $\mathcal{C}_k$ se
-encuentra dentro de $r_{\mathrm{det}}$ del destino $\mathbf{d}_k$; en ese instante
-se detiene el reloj de $\bar{T}$.
+Cuando el centroide de $\mathcal{C}_k$ entra en $r_{\mathrm{det}}$ del destino
+$\mathbf{d}_k$, la tarea $k$ se da por completada; en ese instante se detiene el reloj
+de $\bar{T}$.
 
 \begin{observacion}[Modelo cinemático de la fase de transporte]
 El modelo de transporte es puramente cinemático: se propaga el movimiento
