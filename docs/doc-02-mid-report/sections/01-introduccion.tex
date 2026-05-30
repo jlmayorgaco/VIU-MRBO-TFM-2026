@@ -88,27 +88,29 @@ topologías de comunicación que el método propuesto.
 
 \subsection{La contribución de este TFM}
 
-Este TFM aporta cuatro contribuciones. La primera es una función de payoff con cota
-inferior sigmoidal de cardinalidad que preserva, en el caso base ($\Psi\equiv1$), la
-estructura de juego de congestión y admite distintas dinámicas de revisión
-(replicador y Smith), en contraste con las
-restricciones de capacidad de \citet{martinezpiazuelo2022automatica}, que son cotas
-superiores. Sobre esa función se adaptan y comparan el replicador distribuido y las
-dinámicas de Smith bajo idénticas condiciones experimentales y la misma arquitectura
-de estimación por consenso dinámico de media. A ello se añade una tasa de revisión
-espacialmente modulada que reduce las reasignaciones espurias en estado estacionario.
-Por último, se caracteriza empíricamente el coste de descentralización frente a una
-referencia centralizada con información global, junto con la degradación del desempeño
-al reducir el rango de comunicación. El resultado es una arquitectura distribuida
-acoplada cuya viabilidad cinemática se valida cualitativamente en CoppeliaSim con
-robots Pioneer~3-DX.
+Las contribuciones de este TFM se organizan en cuatro niveles. Primero, se formula
+una función de payoff con componente sigmoide decreciente para representar requisitos
+mínimos de cardinalidad (cotas inferiores, en contraste con las cotas superiores de
+\citet{martinezpiazuelo2022automatica}). En el caso base con $\Psi\equiv1$, esta
+función mantiene una estructura de juego de congestión ponderado; con $\Psi(d)$ activo,
+el sistema implementado se interpreta como una perturbación espacial que acopla
+asignación y movimiento. Segundo, se adaptan y comparan el replicador distribuido y
+las dinámicas de Smith bajo la misma arquitectura de estimación por consenso dinámico
+de media, lo que permite aislar el efecto de la política de revisión. Tercero, se
+incorpora una tasa de revisión espacialmente modulada para reducir reasignaciones
+espurias durante la aproximación a las cargas y en régimen estacionario. Cuarto, se
+caracteriza empíricamente el coste de descentralización frente a una referencia
+centralizada replanificada, así como la degradación del desempeño al reducir el rango
+de comunicación. En conjunto, estas contribuciones definen una arquitectura donde la
+estimación de ocupación, la revisión estratégica y la navegación reactiva se actualizan
+dentro de un mismo bucle temporal, sin coordinador central de asignación.
 
 La validación se realiza mediante simulación cuantitativa en Python con seis
 escenarios y cinco tratamientos comparativos dispuestos como escalera incremental
 (T1 heurística voraz local, T2 DAC con regla voraz, T3 replicador distribuido
 modificado, T4 dinámicas de Smith con revisión modulada (método propuesto) y
-T5 referencia centralizada replanificada), más una validación cualitativa en
-CoppeliaSim.
+T5 referencia centralizada replanificada), más una validación cualitativa y
+cinemática en CoppeliaSim.
 
 \subsection{Estructura del documento}
 

@@ -9,8 +9,8 @@
 \usetikzlibrary{arrows.meta}
 
 %--- Metadata
-\setviutitle{Coordinación distribuida para la formación de coaliciones multi-AGV
-  en el transporte cooperativo de cargas heterogéneas}
+\setviutitle{Coordinación distribuida local de múltiples AGV para el transporte
+  cooperativo de cargas heterogéneas en entornos industriales}
 \setviustudent{Jorge Luis Mayorga Taborda}
 \setviututor{José Ignacio Iñíguez Amigot}
 \setviuedition{2025--26}
@@ -51,6 +51,8 @@
 
 %--- Resumen (pag 3)
 \begin{viuabstract}
+Este TFM aborda la formación adaptativa de coaliciones multi-AGV mediante consenso
+dinámico de media y dinámicas poblacionales.
 El transporte cooperativo de cargas en almacenes automatizados requiere coordinar
 flotas de AGV de modo que cada tarea cuente con el número mínimo de robots
 exigido para su manipulación segura. En el corpus revisado, los enfoques
@@ -67,10 +69,11 @@ distribuido y las dinámicas de Smith. El método propuesto (tratamiento~T4) com
 tres elementos cuya integración conjunta no se ha identificado en el corpus
 bibliográfico revisado: (i)~las dinámicas de Smith como ley de asignación
 distribuida, (ii)~un payoff multiplicativo con componente sigmoide monótonamente
-decreciente en la ocupación estimada de cada tarea, que preserva, en el caso base
-($\Psi \equiv 1$), la estructura de juego de congestión, y (iii)~una tasa de
-revisión espacialmente modulada que
-reduce reasignaciones innecesarias.
+decreciente en la ocupación estimada de cada tarea, que en el caso base
+($\Psi \equiv 1$) induce una estructura de juego de congestión, y (iii)~una tasa de
+revisión espacialmente modulada que reduce reasignaciones innecesarias. El factor
+espacial $\Psi(d)$ actúa como una perturbación de esa estructura, evaluada
+empíricamente.
 
 El método acopla tres dinámicas en un único bucle de control ($T_s = 0{,}1$\,s):
 estimación de estado por consenso distribuido, dinámicas de Smith proyectadas

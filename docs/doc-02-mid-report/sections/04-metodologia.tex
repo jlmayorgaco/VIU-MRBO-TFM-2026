@@ -200,9 +200,13 @@ Es monótonamente decreciente en $z = N\hat{x}_{ik}$ (el número estimado de
 robots en la tarea $k$): cuando la tarea tiene pocos robots respecto a $n_k$,
 $\Phi \approx 1$ y el payoff es alto (la tarea \emph{recluta} ag\-entes);
 cuando tiene suficientes, $\Phi \approx 0$ y el payoff cae (la tarea está
-\emph{saturada}). Esta monotonicidad decreciente es la que preserva la estructura
-de juego de congestión ponderado y distingue este diseño del planteamiento
-de cotas superiores de \citet{martinezpiazuelo2022automatica}.
+\emph{saturada}). Esta monotonicidad decreciente induce una estructura de juego de
+congestión ponderado en el caso base $\Psi\equiv1$, sobre la que se sustenta el
+análisis del Teorema~\ref{prop:convergencia}; con descuento espacial $\Psi(d)<1$ el
+payoff deja de depender únicamente de la ocupación y la estructura de congestión se
+preserva solo de forma aproximada, lo que se caracteriza empíricamente. Esta cota
+inferior por saturación distingue el diseño del planteamiento de cotas superiores de
+\citet{martinezpiazuelo2022automatica}.
 
 El factor $\Psi(\cdot)$ es el descuento espacial gaussiano: robots lejanos de la
 tarea perciben un payoff reducido, lo que incorpora la dinámica espacial al
@@ -276,8 +280,10 @@ factibilidad física $|\mathcal{C}_k| \geq n_k$.
 \label{obs:init_obs}
 Para un grafo estacionario conectado con $N$ agentes, el DAC \eqref{eq:consenso}
 mantiene el error de seguimiento acotado por $\|\hat{x}_{ik}(t) - x_k(t)\| = O(K/N)$
-bajo cambios de estrategia individuales y recupera la media exacta en tiempo
-$O(1/(\varepsilon\lambda_2))$ entre eventos \citep{kia2019tutorial}.
+bajo cambios de estrategia individuales (un cambio individual desplaza las $K$
+componentes del vector de estimación, de ahí la cota $O(K/N)$; $m$ reasignaciones
+simultáneas escalan como $O(m/N)$, véase Obs.~\ref{obs:dac_simultaneo}) y recupera la
+media exacta en tiempo $O(1/(\varepsilon\lambda_2))$ entre eventos \citep{kia2019tutorial}.
 La inicialización uniforme $\hat{x}_{ik}(0) = 1/(K+1)$ acelera la convergencia inicial;
 la indicador $\hat{x}_{ik}(0) = \mathbf{1}_{[s_i(0)=k]}$ es igualmente válida
 pues el DAC absorbe el salto inicial como si fuera un evento de reasignación.
@@ -621,6 +627,7 @@ $\mathcal{N}_i(t)$ se realizan al inicio del paso y se consideran atómicas.
 \end{algorithm}
 
 \begin{observacion}[Error de seguimiento del DAC tras cambios simultáneos]
+\label{obs:dac_simultaneo}
 Cuando varios robots cambian de estrategia en el mismo instante $t$, los términos
 $\Delta y_{ik}$ correspondientes inyectan el salto instantáneo en el estimador
 sin reinicializarlo. Sin embargo, si $m$ robots reasignan simultáneamente, el DAC
@@ -920,9 +927,12 @@ que la comparación T3 frente a T4 aísla el efecto de la política de revisión
     tres dinámicas acopladas con función de payoff \eqref{eq:payoff}, dinámica de
     Smith \eqref{eq:smith_update}, cuya comparación bilateral evita estimar la
     media global, y tasa de revisión espacialmente modulada
-    \eqref{eq:revision_rate}. El contraste entre $\mu_i$ modulada y $\mu_i=\mu_0$
-    constante constituye la ablación interna del método. Evalúa si la comparación
-    bilateral de Smith mejora sobre el replicador al reducir $R$.
+    \eqref{eq:revision_rate}. Dentro de T4 se contempla una ablación interna para
+    aislar el efecto del acoplamiento espacial y de la tasa de revisión:
+    \textbf{T4a} ($\Psi\equiv1$, $\mu_i=\mu_0$), \textbf{T4b} ($\Psi(d)$,
+    $\mu_i=\mu_0$) y \textbf{T4c} ($\Psi(d)$, $\mu_i(t)$), correspondiente al método
+    completo. Evalúa si la comparación bilateral de Smith mejora sobre el replicador
+    al reducir $R$.
 
   \item \textbf{T5 -- Referencia centralizada replanificada}: con acceso al
     estado global, se resuelve la asignación de mínima distancia respetando la
@@ -1079,11 +1089,14 @@ Los resultados se presentan como media $\pm$ desviación estándar sobre $m = 30
 repeticiones. Las comparaciones pareadas entre tratamientos (p.ej., dinámica de
 Smith frente a líneas base, $\mu_i$ modulada frente a constante) se contrastarán
 mediante pruebas no paramétricas: la prueba de Wilcoxon de rangos con signo (datos
-pareados) o la U de Mann-Whitney (dos muestras independientes). El análisis estadístico
-de la entrega final contemplará, además, corrección para comparaciones múltiples,
-intervalos de confianza por bootstrap y medidas de tamaño de efecto; el detalle se fija
-en la fase de resultados. Se incluye un episodio fallido por
-escenario para documentar los límites del método. El registro completo de
+pareados) o la U de Mann-Whitney (dos muestras independientes). Además de los valores
+$p$, se proporcionarán intervalos de confianza al 95\,\% mediante \emph{bootstrap} y
+tamaños de efecto: para métricas continuas, la $\delta$ de Cliff o la correlación
+biserial de rangos; para métricas binarias de éxito/fallo, intervalos binomiales y,
+cuando las semillas sean pareadas, la prueba de McNemar o el \emph{bootstrap} pareado
+de la diferencia de proporciones. La corrección por comparaciones múltiples se
+realizará mediante el procedimiento de Holm--Bonferroni. Se incluye un episodio
+fallido por escenario para documentar los límites del método. El registro completo de
 trayectorias $\mathbf{p}_i(t)$ para todo $i$ y todo $t$ se almacena para
 análisis a posteriori de la dinámica de preferencias.
 
@@ -1096,6 +1109,10 @@ operaciones numéricas críticas (consenso, proyección al símplex, cálculo de
 gradiente) se vectorizan con NumPy. La Tabla~\ref{tab:params} recoge los
 parámetros del sistema junto con sus valores nominales y el rango de variación
 considerado en los experimentos.
+El código, los archivos de configuración, las semillas aleatorias, las trayectorias,
+las asignaciones, los grafos de comunicación, los payoffs y las métricas agregadas se
+organizarán en un repositorio versionado. Para una eventual publicación, se generará
+una versión archivada con DOI.
 
 \begin{table}[htbp]
 \centering
