@@ -2,102 +2,86 @@
 \addcontentsline{toc}{section}{Nomenclatura}
 \label{sec:nomenclatura}
 
-{\small Símbolos agrupados en cinco bloques (índices, variables de estado,
-parámetros, funciones y métricas). Entre paréntesis o corchetes se indica el
-dominio o la unidad cuando procede.}
+Los símbolos se agrupan en cinco bloques (índices y conjuntos, variables de estado,
+parámetros del sistema, funciones y operadores, y métricas de evaluación). Entre
+paréntesis o corchetes se indica el dominio o la unidad cuando procede.
 
 \begingroup
-\scriptsize
-\setlength{\parskip}{0pt}
+\linespread{1.2}\selectfont
 \setlength{\tabcolsep}{3pt}
-\setlength{\extrarowheight}{0pt}
-\setlength{\aboverulesep}{1pt}
-\setlength{\belowrulesep}{1pt}
-\renewcommand{\arraystretch}{1.0}
-\setlength{\columnsep}{1.2em}
+\renewcommand{\arraystretch}{1.15}
+\setlength{\LTpre}{6pt}
+\setlength{\LTpost}{6pt}
 
-% Cada bloque: etiqueta naranja + tabla de 2 columnas (simbolo | descripcion),
-% envuelto en minipage para que no se parta entre columnas.
-\newcommand{\nomblock}[2]{%
-  \noindent\begin{minipage}{\linewidth}
-  {\bfseries\color{VIUOrange}#1}\par\nobreak\smallskip
-  \begin{tabularx}{\linewidth}{@{}l@{\hskip 6pt}X@{}}
-  \toprule
-  #2
-  \bottomrule
-  \end{tabularx}
-  \end{minipage}\par\medskip}
+% Cabecera de bloque: etiqueta naranja que ocupa el ancho de la tabla.
+\newcommand{\nomhead}[1]{\addlinespace[2pt]%
+  \multicolumn{2}{@{}l}{\bfseries\color{VIUOrange}#1}\\*[1pt]}
 
-\begin{multicols}{2}
-
-\nomblock{Índices y conjuntos}{%
-$i$               & Índice de robot ($\{1,\ldots,N\}$) \\
-$k$               & Índice de tarea; $k{=}0$ inactividad ($\{0,\ldots,K\}$) \\
-$t$               & Paso temporal discreto ($\mathbb{N}$) \\
-$\mathcal{S}$     & Conjunto de estrategias ($\{0,\ldots,K\}$) \\
-$\mathcal{N}_i(t)$& Vecinos de $i$ en el grafo de comunicación \\
-$\mathcal{C}_k(t)$& Coalición asignada a la tarea $k$ \\
-}
-
-\nomblock{Variables de estado}{%
-$\mathbf{q}_i$        & Pose $(x,y,\theta)$ [m, m, rad] \\
-$\mathbf{q}_i^{xy}$   & Proyección plana de la pose [m] \\
-$p_{ik}$              & Probabilidad mixta de $i$ sobre $k$ ($[0,1]$) \\
-$\hat{x}_{ik}$        & Fracción estimada de robots en $k$ ($[0,1]$) \\
-$\tilde{x}_k$         & Ocupación empírica pura $a_k/N$ ($[0,1]$) \\
-$a_k$                 & Ocupación asignada pura $\sum_i\mathbf{1}_{[s_i=k]}$ \\
-$\mathrm{count}_k$    & Asignados y presentes en $r_{\mathrm{det}}$ ($=|\mathcal{C}_k|$) \\
-$s_i$                 & Estrategia pura actual de $i$ \\
-$\mathbf{h}_i$        & Punto adelantado (look-ahead) [m] \\
-$\mathrm{cnt}^{\pm}_k$& Contadores de pasos (transición de modo) \\
-}
-
-\nomblock{Parámetros del sistema}{%
-$N,K$                 & Número de robots y de tareas \\
-$n_k$                 & Cardinalidad mínima de la tarea $k$ \\
-$T_s$                 & Período de muestreo [s] \\
-$\beta$               & Pendiente de la sigmoide de payoff \\
-$\lambda$             & Escala espacial del payoff [m] \\
-$r_k$                 & Recompensa base de la tarea $k$ \\
-$\mu_0,\mu_{\min}$    & Tasa de revisión base y piso \\
-$\sigma_{\mathrm{rev}}$ & Ancho de la tasa de revisión [m] \\
-$\tau_s$              & Pasos para activar el transporte \\
-$\rho_s$              & Umbral de histéresis \\
-$\ell$                & Distancia look-ahead [m] \\
-$\Delta T_c$          & Período de replanificación T5 [s] \\
-$\varepsilon$         & Ganancia de consenso \\
-$\varepsilon_r$       & Regularización de repulsión [m] \\
-$\varepsilon_f$       & Regularización de formación [m] \\
-$r_{\mathrm{det}}$    & Radio de detección de coalición [m] \\
-$r_{\mathrm{form}}$   & Radio de activación de formación [m] \\
-$R$                   & Rango de comunicación [m] \\
-$d^*$                 & Distancia geométrica de formación [m] \\
-$\eta_o$              & Ganancia de repulsión de obstáculos \\
-$\varepsilon_o$       & Regularización de obstáculos [m] \\
-$c_i$                 & Capacidad del robot $i$ (ext.\ heterogénea) \\
-$M_k$                 & Demanda de capacidad de la carga $k$ (ext.) \\
-}
-
-\nomblock{Funciones y operadores}{%
+\begin{longtable}{@{}l@{\hskip 2em}>{\raggedright\arraybackslash}p{0.72\linewidth}@{}}
+\toprule
+\nomhead{Índices y conjuntos}
+$i$                & Índice de robot ($\{1,\ldots,N\}$) \\
+$k$                & Índice de tarea; $k{=}0$ representa la inactividad ($\{0,\ldots,K\}$) \\
+$t$                & Paso temporal discreto ($\mathbb{N}$) \\
+$\mathcal{S}$      & Conjunto de estrategias ($\{0,\ldots,K\}$) \\
+$\mathcal{N}_i(t)$ & Vecinos de $i$ en el grafo de comunicación \\
+$\mathcal{C}_k(t)$ & Coalición asignada a la tarea $k$ \\
+\midrule
+\nomhead{Variables de estado}
+$\mathbf{q}_i$         & Pose del robot $i$: $(x,y,\theta)$ [m, m, rad] \\
+$\mathbf{q}_i^{xy}$    & Proyección plana de la pose [m] \\
+$p_{ik}$               & Probabilidad mixta del robot $i$ sobre la tarea $k$ ($[0,1]$) \\
+$\hat{x}_{ik}$         & Fracción estimada de robots en la tarea $k$ ($[0,1]$) \\
+$\tilde{x}_k$          & Ocupación empírica pura, $a_k/N$ ($[0,1]$) \\
+$a_k$                  & Ocupación asignada pura, $\sum_i\mathbf{1}_{[s_i=k]}$ \\
+$\mathrm{count}_k$     & Robots asignados y presentes en $r_{\mathrm{det}}$ ($=|\mathcal{C}_k|$) \\
+$s_i$                  & Estrategia pura actual del robot $i$ \\
+$\mathbf{h}_i$         & Punto adelantado (\emph{look-ahead}) de navegación [m] \\
+$\mathrm{cnt}^{\pm}_k$ & Contadores de pasos para la transición de modo \\
+\midrule
+\nomhead{Parámetros del sistema}
+$N,K$                   & Número de robots y de tareas \\
+$n_k$                   & Cardinalidad mínima exigida por la tarea $k$ \\
+$T_s$                   & Período de muestreo del bucle de control [s] \\
+$\beta$                 & Pendiente de la sigmoide de payoff \\
+$\lambda$               & Escala espacial del payoff [m] \\
+$r_k$                   & Recompensa base de la tarea $k$ \\
+$\mu_0,\mu_{\min}$      & Tasa de revisión base y piso de la tasa \\
+$\sigma_{\mathrm{rev}}$ & Ancho espacial de la tasa de revisión [m] \\
+$\tau_s$                & Pasos necesarios para activar el transporte \\
+$\rho_s$                & Umbral de histéresis de la transición de modo \\
+$\ell$                  & Distancia de \emph{look-ahead} [m] \\
+$\Delta T_c$            & Período de replanificación del tratamiento T5 [s] \\
+$\varepsilon$           & Ganancia de consenso \\
+$\varepsilon_r$         & Regularización del término de repulsión [m] \\
+$\varepsilon_f$         & Regularización del término de formación [m] \\
+$r_{\mathrm{det}}$      & Radio de detección de coalición [m] \\
+$r_{\mathrm{form}}$     & Radio de activación de la formación [m] \\
+$R$                     & Rango de comunicación [m] \\
+$d^*$                   & Distancia geométrica de formación [m] \\
+$\eta_o$                & Ganancia de repulsión de obstáculos \\
+$\varepsilon_o$         & Regularización del término de obstáculos [m] \\
+$c_i$                   & Capacidad del robot $i$ (extensión heterogénea) \\
+$M_k$                   & Demanda de capacidad de la carga $k$ (extensión heterogénea) \\
+\midrule
+\nomhead{Funciones y operadores}
 $\Phi(z,n)$       & Sigmoide de cardinalidad \\
 $\Psi(d)$         & Descuento espacial gaussiano \\
-$f_{ik}$          & Payoff de $i$ sobre la tarea $k$ \\
-$F_i$             & Campo de potencial artificial \\
+$f_{ik}$          & Payoff del robot $i$ sobre la tarea $k$ \\
+$F_i$             & Campo de potencial artificial sobre el robot $i$ \\
 $V(\mathbf{x})$   & Función potencial del juego \\
-$L_G,\lambda_2$   & Laplaciano de $G$ y valor de Fiedler \\
-}
-
-\nomblock{Métricas de evaluación}{%
-$\Theta$                  & Throughput [min$^{-1}$] \\
-$\bar{T},T_{\mathrm{coal}}$ & Tiempo de tarea y de coalición [s] \\
-$F$                       & Tasa de factibilidad ($[0,1]$) \\
-$D_{\mathrm{tot}}$        & Distancia total recorrida [m] \\
-$D(R)$                    & Ratio de degradación $\Theta(R)/\Theta(\infty)$ \\
-$\Delta J$                & Brecha de descentralización \\
-$\Delta_{\mathrm{chg}}$   & Cambios de asignación por paso \\
-$E_{\mathrm{DAC}}$        & Error medio de estimación de ocupación \\
-$N_{\mathrm{fail}}$       & Episodios fallidos por escenario \\
-}
-
-\end{multicols}
+$L_G,\lambda_2$   & Laplaciano del grafo $G$ y su valor de Fiedler \\
+\midrule
+\nomhead{Métricas de evaluación}
+$\Theta$                    & \emph{Throughput} de tareas completadas [min$^{-1}$] \\
+$\bar{T},T_{\mathrm{coal}}$ & Tiempo medio de tarea y de formación de coalición [s] \\
+$F$                         & Tasa de factibilidad ($[0,1]$) \\
+$D_{\mathrm{tot}}$          & Distancia total recorrida por la flota [m] \\
+$D(R)$                      & Ratio de degradación, $\Theta(R)/\Theta(\infty)$ \\
+$\Delta J$                  & Brecha de descentralización frente a T5 \\
+$\Delta_{\mathrm{chg}}$     & Cambios de asignación por paso \\
+$E_{\mathrm{DAC}}$          & Error medio de estimación de ocupación \\
+$N_{\mathrm{fail}}$         & Episodios fallidos por escenario \\
+\bottomrule
+\end{longtable}
 \endgroup
