@@ -1,5 +1,6 @@
 ﻿\begin{figure}[htbp]
 \centering
+\resizebox{\linewidth}{!}{%
 \begin{tikzpicture}[x=1cm,y=1cm]
 
 %===== Panel (a): Phi(z,n) ============================
@@ -46,7 +47,7 @@
 \begin{scope}[xshift=8.0cm]
   % Axes
   \draw[-{Stealth[length=5pt]}, VIUDark!70] (-0.2,0) -- (6.4,0)
-    node[right, font=\small] {$d=\|\mathbf{q}_i^{xy}-\mathbf{l}_k\|$};
+    node[right, font=\small] {$d$\,[m]};
   \draw[-{Stealth[length=5pt]}, VIUDark!70] (0,-0.2) -- (0,3.4)
     node[above, font=\small] {$\Psi(d)$};
 
@@ -81,7 +82,8 @@
   \node[below, font=\tiny] at (6,0) {$10\,\mathrm{m}$};
 \end{scope}
 
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \caption[Componentes de la función de payoff]%
 {Componentes de la función de payoff \eqref{eq:payoff}. \textbf{(a)}~La
 demanda sigmoide $\Phi(z,n_k)$ es monótonamente decreciente: cuando el número

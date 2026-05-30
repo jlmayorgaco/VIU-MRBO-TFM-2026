@@ -153,7 +153,8 @@ punto adelantado $\mathbf{h}_i$ empleado por la navegación reactiva.
 Cada tarea $k \in \{1, \ldots, K\}$ queda definida por su posición de recogida
 $\mathbf{l}_k \in \RR^2$, su destino de entrega $\mathbf{d}_k \in \RR^2$,
 su recompensa $r_k > 0$ y su requisito mínimo de cardinalidad $n_k \in \NN$.
-La tarea $k = 0$ representa el estado de inactividad, con $r_0 = 0$ y $n_0 = 0$. El conjunto de estrategias disponibles para cada robot es
+La tarea $k = 0$ representa el estado de inactividad, con recompensa base pequeña
+$r_0 > 0$ (ec.~\eqref{eq:payoff_idle}) y $n_0 = 0$. El conjunto de estrategias disponibles para cada robot es
 $\mathcal{S} = \{0, 1, \ldots, K\}$.
 
 La cardinalidad mínima $n_k$ es un caso particular de una restricción más general de
@@ -1028,7 +1029,7 @@ G &
 \caption[Hipótesis, comparaciones, escenarios y métricas]{Correspondencia entre
   hipótesis, comparación principal, escenarios de contraste y métrica principal.}
 \label{tab:hipescenario}
-\begin{tabularx}{\textwidth}{>{\bfseries}p{0.07\textwidth}p{0.30\textwidth}p{0.10\textwidth}Y}
+\begin{tabularx}{\textwidth}{@{}>{\bfseries}p{0.07\textwidth}p{0.30\textwidth}p{0.10\textwidth}Y@{}}
 \toprule
 Hip. & Comparación principal & Escenarios & Métrica principal \\
 \midrule
@@ -1036,7 +1037,7 @@ H1 & T2 vs.\ T3/T4 & B, C & $F$, $T_{\mathrm{coal}}$, $\Delta_{\mathrm{chg}}$ \\
 H2 & T2 vs.\ T3/T4 & B, C & $F$, $\Theta$ \\
 H3 & T3 con barrido de $R$ & D & $F$, $\Theta$, $D(R)$ \\
 H4 & T3 vs.\ T4 & C, D & $F$, $\Theta$, $\Delta_{\mathrm{chg}}$ \\
-H5 & T4($\mu$ constante) vs.\ T4($\mu$ modulada), ablación & A, B &
+H5 & T4 ($\mu$ const.\ vs.\ modulada), ablación & A, B &
   $\Delta_{\mathrm{chg}}$, $T_{\mathrm{coal}}$ \\
 H6 & T4 vs.\ T5 & C, D, E & $\Delta J$, $\Theta$ \\
 \bottomrule
@@ -1052,7 +1053,7 @@ calculan automáticamente sobre los registros de cada episodio.
 \centering
 \caption[Métricas de evaluación]{Métricas de evaluación: definición e interpretación.}
 \label{tab:metricas}
-\begin{tabularx}{\textwidth}{>{\bfseries}p{0.08\textwidth}p{0.24\textwidth}Y}
+\begin{tabularx}{\textwidth}{@{}>{\bfseries}p{0.08\textwidth}p{0.24\textwidth}Y@{}}
 \toprule
 Símbolo & Nombre & Definición / Interpretación \\
 \midrule
@@ -1082,7 +1083,7 @@ $\Delta J$ & Brecha de descentralización &
   con $J \triangleq \Theta$ y $\delta_0 = 10^{-3}$;
   mide cuánto pierde el distribuido respecto al centralizado ($\Delta J = 0$: sin pérdida). \\
 $E_{\text{DAC}}$ & Error medio de estimación &
-  $\frac{1}{NKT}\sum_{t}\sum_{i}\sum_{k}|\hat{x}_{ik}(t) - x_k(t)|$;
+  $\frac{1}{NKT}\sum_{t,i,k}|\hat{x}_{ik}(t) - x_k(t)|$;
   aísla empíricamente el efecto del error de consenso del efecto de la dinámica de
   revisión. \\
 $N_{\text{fail}}$ & Episodios fallidos &
