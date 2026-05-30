@@ -25,7 +25,7 @@ $k$                & Índice de tarea; $k{=}0$ representa la inactividad ($\{0,\
 $t$                & Paso temporal discreto ($\mathbb{N}$) \\
 $\mathcal{S}$      & Conjunto de estrategias ($\{0,\ldots,K\}$) \\
 $\mathcal{N}_i(t)$ & Vecinos de $i$ en el grafo de comunicación \\
-$\mathcal{C}_k(t)$ & Coalición asignada a la tarea $k$ \\
+$\mathcal{C}_k(t)$ & Coalición formada: asignados a $k$ y presentes en $r_{\mathrm{det}}$ \\
 \midrule
 \nomhead{Variables de estado}
 $\mathbf{q}_i$         & Pose del robot $i$: $(x,y,\theta)$ [m, m, rad] \\
@@ -34,7 +34,7 @@ $p_{ik}$               & Probabilidad mixta del robot $i$ sobre la tarea $k$ ($[
 $\hat{x}_{ik}$         & Fracción estimada de robots en la tarea $k$ ($[0,1]$) \\
 $\tilde{x}_k$          & Ocupación empírica pura, $a_k/N$ ($[0,1]$) \\
 $a_k$                  & Ocupación asignada pura, $\sum_i\mathbf{1}_{[s_i=k]}$ \\
-$\mathrm{count}_k$     & Robots asignados y presentes en $r_{\mathrm{det}}$ ($=|\mathcal{C}_k|$) \\
+$\mathrm{count}_k$     & Tamaño de la coalición, $|\mathcal{C}_k|$; cumple $\mathrm{count}_k \le a_k$ \\
 $s_i$                  & Estrategia pura actual del robot $i$ \\
 $\mathbf{h}_i$         & Punto adelantado (\emph{look-ahead}) de navegación [m] \\
 $\mathrm{cnt}^{\pm}_k$ & Contadores de pasos para la transición de modo \\

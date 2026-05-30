@@ -602,10 +602,14 @@ $\mathcal{N}_i(t)$ se realizan al inicio del paso y se consideran atómicas.
 \EndFor
 
 \State \textbf{Bloque~4: Gradiente reactivo y cinemática} \eqref{eq:potential}--\eqref{eq:lookahead_cmd}
-\State $\mathbf{h}_i \gets \mathbf{q}_i^{xy} + \ell\,(\cos\theta_i,\sin\theta_i)^{\top}$;\enspace
-       $\mathbf{u}_h \gets -\nabla_{\mathbf{h}_i} F_i(\mathbf{h}_i;\,\mathbf{l}^{\mathrm{eff}}_{s_i})$
-\State $[\,v_i;\ \omega_i\,]^{\top} \gets J(\theta_i,\ell)^{-1}\,\mathbf{u}_h$, saturado a $(v_{\max},\omega_{\max})$
-       \Comment{$J(\theta_i,\ell)$: jacobiano del punto adelantado, ec.~\eqref{eq:lookahead_cmd}}
+\If{$s_i(t{+}1) = 0$} \Comment{robot inactivo: sin objetivo, permanece en reposo}
+  \State $v_i \gets 0$;\enspace $\omega_i \gets 0$
+\Else
+  \State $\mathbf{h}_i \gets \mathbf{q}_i^{xy} + \ell\,(\cos\theta_i,\sin\theta_i)^{\top}$;\enspace
+         $\mathbf{u}_h \gets -\nabla_{\mathbf{h}_i} F_i(\mathbf{h}_i;\,\mathbf{l}^{\mathrm{eff}}_{s_i})$
+  \State $[\,v_i;\ \omega_i\,]^{\top} \gets J(\theta_i,\ell)^{-1}\,\mathbf{u}_h$, saturado a $(v_{\max},\omega_{\max})$
+         \Comment{$J(\theta_i,\ell)$: jacobiano del punto adelantado, ec.~\eqref{eq:lookahead_cmd}}
+\EndIf
 \State $\mathbf{q}_i(t{+}1) \gets $ unicycle\_step$(\mathbf{q}_i(t), v_i, \omega_i)$
 
 \State \textbf{Actualización del grafo y modo de tarea}
@@ -694,7 +698,7 @@ la tarea se evalúan empíricamente en los Escenarios~B, C y~E. Las cotas
 \eqref{eq:betamin}--\eqref{eq:betamax} son, además, condiciones
 \emph{suficientes} derivadas del análisis de Lyapunov: valores de $\beta$ fuera del
 intervalo pueden seguir siendo estables, pero el teorema no lo garantiza. El análisis
-cubre la fase de reclutamiento homogénea; la navegación del cluster con evitación de
+cubre la fase de reclutamiento homogénea; la navegación de la coalición con evitación de
 obstáculos durante el transporte queda fuera de la garantía formal y se caracteriza
 únicamente de forma empírica, dado que los campos de potencial artificial carecen de
 garantías globales frente a mínimos locales.
@@ -716,7 +720,7 @@ Cap.~3) con función potencial
 \textbf{Paso~2: Smith como ascenso en el potencial.}
 Las dinámicas de Smith son un protocolo de revisión de paridad (pairwise protocol)
 que en tiempo continuo asciende sobre el potencial: $\dot{V} \geq 0$ a lo largo de
-las trayectorias, con igualdad sólo en los equilibrios de Nash
+las trayectorias, con igualdad solo en los equilibrios de Nash
 (\citealt{sandholm2010population}, \S5.6 y \S7.1). Para la versión \emph{distribuida}
 empleada aquí, \citet{barreiro2017distributed} prueban la estabilidad
 asintótica del equilibrio de Nash en juegos potenciales mediante la función de

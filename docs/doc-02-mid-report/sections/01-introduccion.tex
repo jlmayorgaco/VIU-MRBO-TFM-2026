@@ -5,7 +5,7 @@
 
 Considérese un almacén automatizado con quince AGV y cinco tipos de carga activos simultáneamente
 (la Figura~\ref{fig:problema} ilustra un subcaso con $N{=}6$ y $K{=}3$).
-Tres cajas ligeras puede moverlas un solo robot cada una. Una paleta industrial
+Un solo robot puede mover cada una de tres cajas ligeras. Una paleta industrial
 requiere dos. Una estructura de acero requiere cuatro. Conforme las cargas aparecen
 y se completan, la flota debe reasignarse continuamente, formando coaliciones que
 satisfagan la cardinalidad mínima de cada tarea. Se trata de un problema de asignación
@@ -17,12 +17,15 @@ Este problema es cualitativamente distinto del transporte cooperativo clásico
 donde varios robots empujan juntos una sola carga \citep{ebel2024cooperative,
 rosenfelder2024force}. En ese caso, la composición del grupo está fijada de
 antemano; la dificultad es el control del conjunto. Aquí, la composición del
-grupo es la variable de diseño: la flota debe decidir por sí misma cuántos
-robots manda a cada tarea, y esa decisión debe ser correcta. Los métodos de
+grupo es la variable de diseño: la flota debe resolver localmente cuántos
+robots asigna a cada tarea, y esa decisión debe producir coaliciones factibles
+dentro del horizonte de operación. Los métodos de
 asignación distribuida por subasta \citep{choi2009consensus} o por formación
 de coaliciones \citep{dutta2021hedonic, shan2024distributed} abordan la
-coordinación, pero no ofrecen una ley de control continua que garantice
-formalmente la convergencia a coaliciones de tamaño mínimo. El aprendizaje por refuerzo \citep{bezerra2025learning} produce políticas
+coordinación desde una perspectiva discreta o negociada; en el corpus revisado,
+estos enfoques no se formulan como una dinámica poblacional continua acoplada a
+navegación reactiva para inducir coaliciones de cardinalidad mínima. El aprendizaje
+por refuerzo \citep{bezerra2025learning} produce políticas
 efectivas pero dependientes de la distribución de entrenamiento y sin garantías
 de robustez ante configuraciones de tarea no vistas.
 
@@ -35,19 +38,20 @@ La idea central es interpretar la proporción de robots asignados a cada tarea
 como el perfil de estrategias de una población, y utilizar una dinámica
 de revisión para actualizar ese perfil en función de las diferencias de payoff.
 Esta interpretación produce leyes de control sin coordinador central de asignación
-(cada agente sólo necesita información local) que convergen al
+(cada agente solo necesita información local) que convergen al
 equilibrio Nash bajo condiciones de juego potencial.
 
 Los trabajos de \citet{barreiro2017distributed} y \citet{martinez2020formation}
 muestran que las dinámicas distributivas del replicador pueden usarse para
 coordinar formaciones de robots móviles con comunicación limitada en grafo.
 El trabajo experimental de \citet{barreiro2021uav} extiende esto a formaciones
-de UAVs con datos reales. Más recientemente, \citet{dinh2026bsplines} propone
+de UAVs con datos reales. Más recientemente, \citet{dinh2026bsplines} proponen
 mecanismos basados en B-splines para diseñar funciones de payoff que satisfagan
 restricciones de formación específicas. Sin embargo, en los trabajos revisados
 dentro de esta línea suele suponerse que el tamaño del grupo que realiza cada
-tarea es fijo y conocido de antemano. Ninguno aborda el caso en que la tarea misma impone un requisito mínimo
-de cardinalidad que debe satisfacerse dinámicamente.
+tarea es fijo y conocido de antemano. Tampoco se identificó, en esa línea, un
+tratamiento explícito del caso en que la tarea impone un requisito mínimo
+de cardinalidad que deba satisfacerse dinámicamente.
 
 \subsection{El papel de la política de revisión: replicador y Smith}
 \label{subsec:porquesmith}

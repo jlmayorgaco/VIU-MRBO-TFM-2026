@@ -24,14 +24,9 @@
 \newcommand{\pos}[1]{\left[#1\right]_{+}}
 \newcommand{\norm}[1]{\left\|#1\right\|}
 \newcommand{\xhat}{\hat{x}}
-%--- Operadores castellanizados (mín, máx, arg máx). Se usa \text{} para tomar el
-%    acento de la fuente de texto (XeLaTeX/fontspec), evitando glifos ausentes en
-%    la fuente matemática.
-\let\min\relax
-\let\max\relax
-\DeclareMathOperator*{\min}{\text{m\'in}}
-\DeclareMathOperator*{\max}{\text{m\'ax}}
-\DeclareMathOperator*{\argmax}{\text{arg\,m\'ax}}
+%--- Operadores. Se usan \min y \max estándar (sin acentos en subíndices) para
+%    evitar artefactos de renderizado; en notación matemática min/max son estándar.
+\DeclareMathOperator*{\argmax}{arg\,max}
 
 \begin{document}
 
@@ -51,55 +46,37 @@
 
 %--- Resumen (pag 3)
 \begin{viuabstract}
-Este TFM aborda la formación adaptativa de coaliciones multi-AGV mediante consenso
-dinámico de media y dinámicas poblacionales.
-El transporte cooperativo de cargas en almacenes automatizados requiere coordinar
-flotas de AGV de modo que cada tarea cuente con el número mínimo de robots
-exigido para su manipulación segura. En el corpus revisado, los enfoques
-distribuidos más próximos no formulan simultáneamente esta restricción de
-cardinalidad mínima y una ley de revisión continua, y los métodos evolutivos
-suelen suponer grupos de tamaño fijo o estimaciones globales del payoff poco
-compatibles con topologías de comunicación irregulares.
+El transporte cooperativo de cargas heterogéneas en almacenes automatizados
+requiere coordinar flotas de AGV capaces de asignarse a tareas que demandan
+distintos números mínimos de robots. Este trabajo estudia si un esquema de
+coordinación distribuida local, basado en consenso dinámico de media y dinámicas
+poblacionales, permite integrar en un mismo bucle temporal la estimación de
+ocupación, la asignación a cargas, la formación de coaliciones y la navegación
+reactiva, sin coordinador central de asignación.
 
-Este TFM caracteriza, mediante una escalera comparativa incremental de cinco
-tratamientos, qué nivel de coordinación se requiere para resolver el problema de
-forma distribuida: desde una heurística voraz local hasta una referencia
-centralizada replanificada, pasando por la estimación por consenso, el replicador
-distribuido y las dinámicas de Smith. El método propuesto (tratamiento~T4) combina
-tres elementos cuya integración conjunta no se ha identificado en el corpus
-bibliográfico revisado: (i)~las dinámicas de Smith como ley de asignación
-distribuida, (ii)~un payoff multiplicativo con componente sigmoide monótonamente
-decreciente en la ocupación estimada de cada tarea, que en el caso base
-($\Psi \equiv 1$) induce una estructura de juego de congestión, y (iii)~una tasa de
-revisión espacialmente modulada que reduce reasignaciones innecesarias. El factor
-espacial $\Psi(d)$ actúa como una perturbación de esa estructura, evaluada
-empíricamente.
+La metodología sigue una lógica comparativa e incremental. Se evalúan cinco
+tratamientos: una heurística voraz local, un esquema con consenso dinámico y regla
+voraz, un replicador distribuido, dinámicas de Smith con revisión modulada y una
+referencia centralizada replanificada. El método propuesto combina las dinámicas de
+Smith, un payoff sigmoide decreciente asociado a la cardinalidad mínima y una tasa
+de revisión espacialmente modulada. En el caso base con $\Psi \equiv 1$, el payoff
+induce una estructura de juego de congestión y se establece la estabilidad local del
+equilibrio objetivo; con $\Psi(d)$ activo, el sistema se interpreta como una
+perturbación espacial evaluada empíricamente.
 
-El método acopla tres dinámicas en un único bucle de control ($T_s = 0{,}1$\,s):
-estimación de estado por consenso distribuido, dinámicas de Smith proyectadas
-sobre el símplex, y campo de gradiente reactivo para navegación cooperativa con
-evitación reactiva de obstáculos estáticos.
-Para el caso base (factor espacial constante y comunicación global), el
-Teorema~\ref{prop:convergencia} establece la estabilidad asintótica local del
-equilibrio Nash objetivo dentro de un intervalo acotado de la pendiente del
-payoff; el sistema implementado, con comunicación local, transición
-reclutamiento--transporte y obstáculos, se trata como una versión perturbada del
-juego base y se evalúa empíricamente.
-Este trabajo aborda la capa de asignación y formación de coaliciones;
-la coordinación de fuerzas de contacto para empujar o agarrar la carga
-(capa de manipulación cooperativa) es una capa complementaria fuera del alcance.
-La validación cuantitativa en Python contempla seis escenarios con cinco
-tratamientos comparativos y al menos treinta repeticiones por combinación; la
-validación cualitativa se realizará en CoppeliaSim con robots Pioneer~3-DX.
-Se formula además una extensión a cargas de capacidad heterogénea, explorada a
-nivel de formulación y en un escenario adicional.
+La validación cuantitativa se realizará en Python mediante seis escenarios y al
+menos treinta repeticiones por combinación; la validación cualitativa y cinemática,
+en CoppeliaSim con robots Pioneer~3-DX. El trabajo se limita a la capa de asignación,
+formación de coaliciones y navegación; la manipulación cooperativa por contacto queda
+fuera del alcance.
 
-\keywords{dinámicas de Smith, juegos de congestión, formación de coaliciones,
-  transporte cooperativo multi-AGV, control distribuido.}
+\keywords{coordinación distribuida, formación de coaliciones, consenso dinámico,
+  dinámicas poblacionales, transporte cooperativo multi-AGV.}
 
 \vspace{0.4em}
-\noindent{\bfseries\color{VIUOrange}Keywords:}\enspace Smith dynamics, congestion
-games, coalition formation, multi-AGV cooperative transport, distributed control.\par
+\noindent{\bfseries\color{VIUOrange}Keywords:}\enspace distributed coordination,
+coalition formation, dynamic average consensus, population dynamics, cooperative
+multi-AGV transport.\par
 \end{viuabstract}
 
 %--- Indices y nomenclatura (siguen numeracion arabica)
