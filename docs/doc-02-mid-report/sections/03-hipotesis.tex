@@ -4,11 +4,12 @@
 %% ====================================================================
 
 \textbf{Pregunta de investigación.}
-¿En qué medida un esquema de coordinación distribuida que opera solo con
-comunicación local, acoplando estimación por consenso, revisión poblacional de
-estrategias y navegación reactiva, logra formar coaliciones de cardinalidad mínima
-en flotas multi-AGV sin coordinador central, y cómo se degrada su desempeño al
-reducir el rango de comunicación~$R$?
+¿En qué medida una ley de coordinación distribuida acoplada, que opera con
+comunicación local y percepción limitada, puede formar coaliciones factibles de
+transporte en flotas multi-AGV sin coordinador central, integrando en el mismo bucle
+estimación por consenso, revisión poblacional de estrategias, navegación reactiva y
+control cinemático diferencial? En el núcleo experimental, la factibilidad se evalúa
+como cardinalidad mínima; en la formulación general, como capacidad acumulada.
 
 La pregunta se aborda mediante una escalera comparativa de cinco tratamientos
 (T1--T5, \S\,\ref{subsec:experimental}) que aísla el papel de cada mecanismo. Las
@@ -18,8 +19,8 @@ umbrales operativos que las contrastan se recogen por separado en la
 
 \textbf{Hipótesis~1.}
 La estimación distribuida por sí sola (DAC más regla voraz, T2) no es suficiente
-para formar coaliciones de cardinalidad mínima robustas en escenarios
-heterogéneos: produce \emph{chattering} en la frontera $n_k$ o coaliciones
+para formar coaliciones robustas en escenarios con demandas distintas: produce
+\emph{chattering} cerca de la frontera de factibilidad o coaliciones
 subdimensionadas.
 
 \textbf{Hipótesis~2.}
@@ -35,7 +36,8 @@ payoff por consenso sobre grafos irregulares.
 \textbf{Hipótesis~4.}
 Las dinámicas de Smith (T4) mantienen mejor desempeño que T3 al reducir $R$,
 porque su comparación bilateral no requiere estimar la media global. La diferencia
-es especialmente visible en escenarios heterogéneos con cargas de $n_k$ alto.
+es especialmente visible en escenarios con tareas de mayor demanda, ya sea medida como
+cardinalidad $n_k$ o, en la extensión, como capacidad $M_k$.
 
 \textbf{Hipótesis~5.}
 La tasa de revisión espacialmente modulada reduce las reasignaciones por robot en
@@ -45,7 +47,8 @@ el tiempo de formación de coalición.
 \textbf{Hipótesis~6.}
 El método propuesto (T4 con $\mu_i$ modulada) mantiene una pérdida acotada de
 throughput frente a la referencia centralizada T5, compensada por la eliminación
-del coordinador y la operación con comunicación local.
+del coordinador, la operación con comunicación local y la posibilidad de extender la
+misma ley a coaliciones por capacidad.
 
 \subsection{Criterios cuantitativos de contraste}
 \label{subsec:criterios}
@@ -87,8 +90,9 @@ iniciales para todos los métodos.
     operativa conservadora: al valor nominal $\sigma_{\text{rev}} = 2\,\text{m}$, un
     robot a distancia $d = \sigma_{\text{rev}}$ tiene $\mu_i \approx 0{,}39\,\mu_0$,
     de modo que la reducción agregada depende de la fracción de robots próximos a su
-    destino en estado estacionario; dicha fracción se medirá empíricamente y el
-    umbral se afinará a la luz de los datos.
+    destino en estado estacionario. El umbral se fija antes de la campaña final; si no
+    se cumple, se reportará como fallo de la hipótesis y no se reajustará con los datos
+    de evaluación.
 
   \item[H6 (brecha de descentralización):] $\Delta J < 0{,}25$ en escenarios
     homogéneos y $\Delta J < 0{,}40$ en heterogéneos. Una brecha del 25\,\% significa
@@ -96,7 +100,10 @@ iniciales para todos los métodos.
     un planificador centralizado con estado global perfecto.
 \end{description}
 
-Se adopta además, como criterio transversal, que una coalición se considera
-\emph{factible} cuando alcanza $|\mathcal{C}_k| \geq n_k$ dentro del horizonte; el
-umbral $F \geq 0{,}85$ refleja que una tasa de fallo del 15\,\% es recuperable
-mediante reintento en entornos reales, y umbrales más laxos no serían informativos.
+Se adopta además, como criterio transversal del caso base, que una coalición se
+considera \emph{factible} cuando alcanza $|\mathcal{C}_k| \geq n_k$ dentro del
+horizonte. En el Escenario~G, la misma métrica se reporta como factibilidad de
+capacidad, $\sum_{i\in\mathcal{C}_k}c_i \geq M_k$, sin entrar en los criterios
+conjuntivos de aceptación. El umbral $F \geq 0{,}85$ refleja que una tasa de fallo del
+15\,\% es recuperable mediante reintento en entornos reales, y umbrales más laxos no
+serían informativos.

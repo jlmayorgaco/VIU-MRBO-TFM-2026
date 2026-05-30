@@ -9,29 +9,32 @@ contrastará en la entrega final.
 
 \subsection{Objetivo general}
 
-Diseñar y evaluar un esquema de coordinación distribuida local para la formación
-adaptativa de coaliciones en flotas multi-AGV que transportan cargas con requisitos
-mínimos de cardinalidad. El esquema se basa en consenso dinámico de media y dinámicas
-poblacionales, e integra en un único bucle de control la estimación de ocupación, la
-asignación a cargas, la formación de coaliciones y la navegación reactiva. Su evaluación,
-mediante simulación cuantitativa reproducible, se organiza como una escalera comparativa
-de cinco tratamientos (T1--T5) contrastada con una referencia centralizada replanificada
-sobre seis escenarios experimentales.
+Diseñar y evaluar una ley de coordinación distribuida acoplada para flotas multi-AGV
+que deben transportar cargas heterogéneas mediante coaliciones. La formulación general
+se expresa como una restricción de capacidad acumulada
+$\sum_{i\in\mathcal{C}_k} c_i \geq M_k$; el núcleo formal y experimental del TFM evalúa
+su caso base homogéneo, equivalente a requisitos mínimos de cardinalidad
+$|\mathcal{C}_k|\geq n_k$. Todo ocurre dentro de un mismo bucle: cada AGV estima la
+ocupación o la capacidad ya comprometida, revisa sus preferencias, navega de forma
+reactiva y traduce esa decisión en comandos $(v_i,\omega_i)$ de un robot diferencial,
+sin delegar ninguna de esas capas en un coordinador externo. La evaluación se organiza
+como una escalera comparativa de cinco tratamientos (T1--T5) frente a una referencia
+centralizada replanificada.
 
 \subsection{Objetivos específicos}
 
 \begin{enumerate}
   \item Formalizar el problema de formación de coaliciones multi-AGV como un
-    sistema de asignación distribuida con requisitos mínimos de cardinalidad,
-    estrategia de inactividad, comunicación local y navegación cinemática en un
-    entorno 2D.
+    sistema distribuido de capacidad acumulada, con robots de capacidad $c_i$,
+    cargas de demanda $M_k$, estrategia de inactividad, comunicación local,
+    percepción limitada y navegación cinemática en un entorno 2D.
 
   \item Diseñar una función de payoff con componente sigmoide decreciente de
-    cardinalidad y descuento espacial, distinguiendo entre el juego base con
-    $\Psi\equiv1$ (donde se analiza la estructura de juego potencial y se caracteriza
-    el intervalo $(\beta_{\min}, \beta_{\max})$ de estabilidad local del equilibrio
-    mediante un análisis de Lyapunov) y el sistema implementado con $\Psi(d)$,
-    tratado como una perturbación espacial validada por simulación.
+    demanda insatisfecha y descuento espacial. En el caso base homogéneo, esa demanda
+    se expresa como cardinalidad; en la extensión heterogénea, como déficit de
+    capacidad. Se distingue el juego base con $\Psi\equiv1$, donde se analiza la
+    estructura de juego potencial, del sistema implementado con $\Psi(d)$, tratado como
+    una perturbación espacial validada por simulación.
 
   \item Proponer la tasa de revisión espacialmente modulada $\mu_i(t)$ y
     cuantificar su efecto sobre la frecuencia de reasignaciones y el tiempo de
@@ -39,11 +42,15 @@ sobre seis escenarios experimentales.
 
   \item Implementar las tres dinámicas acopladas (consenso distribuido,
     Smith en tiempo discreto y gradiente reactivo con evitación de obstáculos
-    estáticos) en un paquete Python
-    reproducible, con soporte para cinco tratamientos y seis escenarios con semillas
-    controladas y registro completo de trayectorias.
+    estáticos) en un paquete Python reproducible, incluyendo la conversión de
+    $(v_i,\omega_i)$ a velocidades de rueda y el registro de trayectorias, preferencias,
+    payoffs, grafos y métricas.
 
   \item Validar cualitativamente el comportamiento de formación de coaliciones y el
     transporte cooperativo de la coalición con evitación reactiva de obstáculos en
     CoppeliaSim con robots Pioneer~3-DX.
+
+  \item Formular y explorar un escenario heterogéneo de capacidad, con robots de
+    distintas capacidades de carga y tareas con demandas mixtas, como puente explícito
+    entre el TFM y una línea doctoral sobre flotas flexibles de almacén.
 \end{enumerate}

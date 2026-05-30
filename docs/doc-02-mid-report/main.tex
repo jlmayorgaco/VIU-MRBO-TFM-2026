@@ -9,13 +9,13 @@
 \usetikzlibrary{arrows.meta}
 
 %--- Metadata
-\setviutitle{Coordinación distribuida local de múltiples AGV para el transporte
+\setviutitle{Coordinación distribuida acoplada de múltiples AGV para el transporte
   \mbox{cooperativo} de cargas heterogéneas}
 \setviustudent{Jorge Luis Mayorga Taborda}
 \setviututor{José Ignacio Iñíguez Amigot}
 \setviuedition{2025--26}
 \setviudate{mayo de 2026}
-\setviuheadertitle{J.~L.~Mayorga $\cdot$ Coordinación distribuida de coaliciones multi-AGV}
+\setviuheadertitle{J.~L.~Mayorga $\cdot$ Coordinación distribuida acoplada multi-AGV}
 
 %--- Comandos matemáticos
 \newcommand{\RR}{\mathbb{R}}
@@ -46,28 +46,31 @@
 
 %--- Resumen (pag 3)
 \begin{viuabstract}
-El transporte cooperativo de cargas heterogéneas en almacenes automatizados plantea
-decisiones acopladas: qué robots atienden cada carga, cuántos colaboran y cómo se
-desplazan hacia recogida y entrega. Ninguna la decide un coordinador central. La
-pregunta de este informe es si una flota de AGV puede resolverlas con solo comunicación
-local, estimando la ocupación de las tareas, asignándose a ellas y formando coaliciones
-de cardinalidad mínima en un mismo bucle distribuido.
+El transporte cooperativo de cargas heterogéneas en almacenes automatizados plantea una
+decisión que no puede separarse limpiamente del movimiento: qué robots atienden cada
+carga, por qué ruta se aproximan, cuándo forman la coalición y cómo se alinean para
+iniciar el traslado. La formulación general considera robots con capacidades distintas
+$c_i$ y cargas con demanda $M_k$; una coalición es válida si su capacidad acumulada
+satisface $\sum_{i\in\mathcal{C}_k}c_i\geq M_k$. El caso de cardinalidad mínima
+$|\mathcal{C}_k|\geq n_k$ se conserva como caso base homogéneo, útil para obtener una
+garantía formal acotada y una campaña experimental reproducible.
 
-La validación se construye por niveles. Una primera línea base usa consenso dinámico de
-media (DAC) con una regla voraz: sirve para ver si estimar bien la ocupación basta para
-formar coaliciones. Sobre ella se contrastan dos dinámicas poblacionales, el replicador
-y Smith, bajo idéntica estimación. La propuesta adopta Smith como política de revisión,
-una sigmoide decreciente para el requisito mínimo de cardinalidad y una tasa de revisión
-espacialmente modulada que frena las reasignaciones tardías.
+La propuesta no usa un asignador central seguido de un planificador y un controlador
+independientes. Cada AGV ejecuta el mismo bucle local: estima por consenso el estado de
+las tareas, revisa sus preferencias mediante dinámicas de Smith y transforma el campo
+reactivo resultante en comandos de velocidad lineal y angular $(v_i,\omega_i)$, y por
+tanto en velocidades de rueda. El comportamiento buscado es análogo al de un enjambre:
+ningún robot conoce el plan global, pero la interacción local debe producir asignación,
+enrutamiento reactivo, formación y transporte cinemático.
 
 El análisis formal cubre solo el caso homogéneo y balanceado con $\Psi \equiv 1$. Ahí el
 payoff induce una estructura de juego de congestión y se prueba la estabilidad local del
-equilibrio objetivo. Al añadir el descuento espacial $\Psi(d)$, la comunicación local y
-la navegación reactiva, esa garantía deja de aplicar directamente; el sistema pasa a
-tratarse como una versión perturbada y se mide en simulación. La campaña cuantitativa se
-ejecutará en Python con seis escenarios y al menos treinta repeticiones por combinación.
-CoppeliaSim queda para comprobar la plausibilidad cinemática con robots Pioneer~3-DX. La
-manipulación cooperativa por contacto queda fuera del alcance.
+equilibrio objetivo. Al añadir descuento espacial, comunicación local, percepción de
+obstáculos y navegación reactiva, esa garantía deja de aplicar directamente; el sistema
+se trata como una versión perturbada y se mide por simulación. La localización, el mapa
+del almacén y las coordenadas de recogida/entrega se asumen disponibles; SLAM, fusión de
+sensores y control de contacto quedan fuera del alcance. Python aporta la validación
+cuantitativa y CoppeliaSim la comprobación cinemática con robots Pioneer~3-DX.
 
 \keywords{coordinación distribuida, formación de coaliciones, consenso dinámico,
   dinámicas poblacionales, transporte cooperativo multi-AGV.}

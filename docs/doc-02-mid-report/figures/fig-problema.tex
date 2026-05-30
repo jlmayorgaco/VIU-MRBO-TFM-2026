@@ -73,7 +73,7 @@
 
 % Restricción que define el problema
 \node[phase, draw=VIUDark!55, fill=VIUDark!4, text=VIUDark] at (6.45,7.2)
-  {cada tarea exige $|\mathcal{C}_k|\ge n_k$ \;(cardinalidad mínima)};
+  {base: $|\mathcal{C}_k|\ge n_k$;\quad general: $\sum c_i\ge M_k$};
 
 %====================== Disco de rango R (al fondo) ==============
 \fill[VIULinkBlue!7] (9.25,6.0) circle (1.5cm);
@@ -165,15 +165,13 @@
 \end{tikzpicture}
 \caption[Escenario de asignación distribuida con coaliciones]%
 {\textbf{Instancia del problema de asignación distribuida con formación de coaliciones.}
-Una flota de $N=6$ AGV atiende $K=3$ tareas heterogéneas; cada tarea~$k$ impone un
-requisito mínimo de cardinalidad $n_k$ (mayor para cargas más pesadas o voluminosas) y
-solo se completa cuando reúne una coalición factible $|\mathcal{C}_k|\ge n_k$. No hay
-coordinador central: cada robot decide a qué tarea sumarse usando únicamente
-comunicación con los vecinos que caen dentro de su rango $R$ (disco azul). La figura
-captura las dos fases del ciclo de vida de una tarea. La tarea~3 está en
-\emph{reclutamiento}: solo un robot ha llegado ($|\mathcal{C}_3|=1<n_3=2$) y el sistema
-debe atraer a uno más. La tarea~2 ya formó su coalición ($|\mathcal{C}_2|=3=n_2$) y está
-en \emph{transporte} hacia el destino $\mathbf{d}_2$, manteniendo la geometría de
-formación $d^*$. La tarea~1, con $n_1=1$, la resuelve un único robot.}
+Una flota de $N=6$ AGV atiende $K=3$ tareas heterogéneas. En el caso base homogéneo,
+cada tarea~$k$ impone un requisito mínimo de cardinalidad $n_k$ y solo se completa cuando
+reúne una coalición factible $|\mathcal{C}_k|\ge n_k$; en la formulación general, la
+condición equivalente es $\sum_{i\in\mathcal{C}_k}c_i\ge M_k$. No hay coordinador
+central: cada robot decide a qué tarea sumarse usando comunicación con vecinos dentro de
+su rango $R$ y percepción local de tareas y obstáculos. La tarea~3 está en
+\emph{reclutamiento}; la tarea~2 ya formó su coalición y está en \emph{transporte}
+hacia $\mathbf{d}_2$, manteniendo la geometría de formación $d^*$.}
 \label{fig:problema}
 \end{figure}

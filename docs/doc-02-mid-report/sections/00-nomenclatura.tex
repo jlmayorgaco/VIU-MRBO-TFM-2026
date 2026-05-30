@@ -25,6 +25,8 @@ $k$                & Índice de tarea; $k{=}0$ representa la inactividad ($\{0,\
 $t$                & Paso temporal discreto ($\mathbb{N}$) \\
 $\mathcal{S}$      & Conjunto de estrategias ($\{0,\ldots,K\}$) \\
 $\mathcal{N}_i(t)$ & Vecinos de $i$ en el grafo de comunicación \\
+$\mathcal{T}_i(t)$ & Tareas visibles o conocidas localmente por el robot $i$ \\
+$\mathcal{O}_i(t)$ & Obstáculos detectados por el robot $i$ dentro de su radio de percepción \\
 $\mathcal{C}_k(t)$ & Coalición formada: asignados a $k$ y presentes en $r_{\mathrm{det}}$ \\
 \midrule
 \nomhead{Variables de estado}
@@ -32,11 +34,13 @@ $\mathbf{q}_i$         & Pose del robot $i$: $(x,y,\theta)$ [m, m, rad] \\
 $\mathbf{q}_i^{xy}$    & Proyección plana de la pose [m] \\
 $p_{ik}$               & Probabilidad mixta del robot $i$ sobre la tarea $k$ ($[0,1]$) \\
 $\hat{x}_{ik}$         & Fracción estimada de robots en la tarea $k$ ($[0,1]$) \\
+$\hat{C}_{ik}$         & Capacidad acumulada estimada por $i$ para la tarea $k$ [kg] \\
 $\tilde{x}_k$          & Ocupación empírica pura, $a_k/N$ ($[0,1]$) \\
 $a_k$                  & Ocupación asignada pura, $\sum_i\mathbf{1}_{[s_i=k]}$ \\
 $\mathrm{count}_k$     & Tamaño de la coalición, $|\mathcal{C}_k|$; cumple $\mathrm{count}_k \le a_k$ \\
 $s_i$                  & Estrategia pura actual del robot $i$ \\
 $\mathbf{h}_i$         & Punto adelantado (\emph{look-ahead}) de navegación [m] \\
+$\bar{\mathbf{h}}_k$   & Centroide de los puntos adelantados de la coalición $\mathcal{C}_k$ [m] \\
 $\mathrm{cnt}^{\pm}_k$ & Contadores de pasos para la transición de modo \\
 \midrule
 \nomhead{Parámetros del sistema}
@@ -44,6 +48,7 @@ $N,K$                   & Número de robots y de tareas \\
 $n_k$                   & Cardinalidad mínima exigida por la tarea $k$ \\
 $T_s$                   & Período de muestreo del bucle de control [s] \\
 $\beta$                 & Pendiente de la sigmoide de payoff \\
+$\beta_c$               & Pendiente de la sigmoide de capacidad heterogénea \\
 $\lambda$               & Escala espacial del payoff [m] \\
 $r_k$                   & Recompensa base de la tarea $k$ \\
 $\mu_0,\mu_{\min}$      & Tasa de revisión base y piso de la tasa \\
@@ -58,18 +63,24 @@ $\varepsilon_f$         & Regularización del término de formación [m] \\
 $r_{\mathrm{det}}$      & Radio de detección de coalición [m] \\
 $r_{\mathrm{form}}$     & Radio de activación de la formación [m] \\
 $R$                     & Rango de comunicación [m] \\
-$d^*$                   & Distancia geométrica de formación [m] \\
+$R_{\mathrm{vis}}$      & Radio de percepción local de tareas, robots y obstáculos [m] \\
+$\rho_f$                & Radio del anillo de formación, $r_{\mathrm{load}}+r_{\mathrm{robot}}$ [m] \\
+$d^*$                   & Separación adyacente emergente en la formación, $2\rho_f\sin(\pi/n_k)$ [m] \\
 $\alpha$                & Ganancia de atracción del potencial \\
 $\eta$                  & Ganancia de repulsión inter-robot \\
 $\delta$                & Ganancia de formación \\
 $v_{\max},\omega_{\max}$ & Velocidad lineal y angular máximas [m/s, rad/s] \\
+$\omega_{R,i},\omega_{L,i}$ & Velocidades de rueda derecha e izquierda del robot $i$ [rad/s] \\
+$r_w,b$                 & Radio de rueda y separación entre ruedas del robot diferencial [m] \\
 $\eta_o$                & Ganancia de repulsión de obstáculos \\
 $\varepsilon_o$         & Regularización del término de obstáculos [m] \\
 $c_i$                   & Capacidad del robot $i$ (extensión heterogénea) \\
 $M_k$                   & Demanda de capacidad de la carga $k$ (extensión heterogénea) \\
+$\gamma$                & Factor de seguridad de capacidad acumulada ($\gamma\geq1$) \\
 \midrule
 \nomhead{Funciones y operadores}
 $\Phi(z,n)$       & Sigmoide de cardinalidad \\
+$\Phi_c(C,M)$     & Sigmoide de déficit de capacidad acumulada \\
 $\Psi(d)$         & Descuento espacial gaussiano \\
 $f_{ik}$          & Payoff del robot $i$ sobre la tarea $k$ \\
 $F_i$             & Campo de potencial artificial sobre el robot $i$ \\
