@@ -7,8 +7,8 @@ Considérese un almacén automatizado con quince AGV y cinco tipos de carga acti
 (la Figura~\ref{fig:problema} ilustra un subcaso con $N{=}6$ y $K{=}3$).
 Tres cajas ligeras puede moverlas un solo robot cada una. Una paleta industrial
 requiere dos. Una estructura de acero requiere cuatro. Conforme las cargas aparecen
-y se completan, la flota debe reasignarse continuamente, formando coaliciones de
-tamaño exactamente adecuado para cada tarea. Se trata de un problema de asignación
+y se completan, la flota debe reasignarse continuamente, formando coaliciones que
+satisfagan la cardinalidad mínima de cada tarea. Se trata de un problema de asignación
 distribuida con restricciones de cardinalidad mínima que deben cumplirse en tiempo
 real, sin coordinador central y con comunicación limitada al entorno inmediato de
 cada robot; difiere así de la planificación de rutas y del seguimiento de formación fija.
@@ -44,15 +44,15 @@ coordinar formaciones de robots móviles con comunicación limitada en grafo.
 El trabajo experimental de \citet{barreiro2021uav} extiende esto a formaciones
 de UAVs con datos reales. Más recientemente, \citet{dinh2026bsplines} propone
 mecanismos basados en B-splines para diseñar funciones de payoff que satisfagan
-restricciones de formación específicas. Sin embargo, todos estos trabajos
-suponen que el tamaño del grupo que realiza cada tarea es fijo y conocido de
-antemano. Ninguno aborda el caso en que la tarea misma impone un requisito mínimo
+restricciones de formación específicas. Sin embargo, en los trabajos revisados
+dentro de esta línea suele suponerse que el tamaño del grupo que realiza cada
+tarea es fijo y conocido de antemano. Ninguno aborda el caso en que la tarea misma impone un requisito mínimo
 de cardinalidad que debe satisfacerse dinámicamente.
 
 \subsection{El papel de la política de revisión: replicador y Smith}
 \label{subsec:porquesmith}
 
-Una de las preguntas que la escalera comparativa de este TFM formaliza es qué
+Una de las preguntas que la escalera comparativa del trabajo formaliza es qué
 aporta la \emph{política de revisión} de una dinámica poblacional, manteniendo
 fija la arquitectura de estimación. Los tratamientos T3 (replicador distribuido)
 y T4 (dinámicas de Smith) comparten el mismo payoff y el mismo estimador por
@@ -89,8 +89,9 @@ topologías de comunicación que el método propuesto.
 \subsection{La contribución de este TFM}
 
 Este TFM aporta cuatro contribuciones. La primera es una función de payoff con cota
-inferior sigmoidal de cardinalidad que preserva la estructura de juego de congestión
-y admite distintas dinámicas de revisión (replicador y Smith), en contraste con las
+inferior sigmoidal de cardinalidad que preserva, en el caso base ($\Psi\equiv1$), la
+estructura de juego de congestión y admite distintas dinámicas de revisión
+(replicador y Smith), en contraste con las
 restricciones de capacidad de \citet{martinezpiazuelo2022automatica}, que son cotas
 superiores. Sobre esa función se adaptan y comparan el replicador distribuido y las
 dinámicas de Smith bajo idénticas condiciones experimentales y la misma arquitectura
@@ -213,8 +214,8 @@ cada tarea es un parámetro del diseño fijado de antemano: los robots se asigna
 en fracciones fijas, no en coaliciones cuyo tamaño emerge de la dinámica.
 Cuando el tamaño de la coalición es la variable de estado (porque cada carga
 impone su propio requisito mínimo), las dinámicas deben reclutar o liberar
-robots según las necesidades de cada carga, y ningún trabajo existente
-formula este problema con ese grado de generalidad.
+robots según las necesidades de cada carga; en el corpus revisado no se identificó
+una formulación de este problema con ese grado de generalidad.
 
 El trabajo de \citet{martinezpiazuelo2022automatica} introduce restricciones de
 capacidad en juegos poblacionales, pero estas restricciones son \emph{cotas superiores}
@@ -246,9 +247,10 @@ y las tasas de revisión moduladas por contexto en juegos evolutivos
 \citep{sandholm2010population}. La integración de los tres, con el análisis
 formal que ella requiere, constituye la contribución de este trabajo.
 
-La afirmación de este TFM es deliberadamente acotada: bajo comunicación local y
+La afirmación del trabajo es deliberadamente acotada: bajo comunicación local y
 cargas heterogéneas con requisitos mínimos de cardinalidad, ¿puede una arquitectura
-distribuida, interpretable y basada en dinámicas poblacionales formar coaliciones
+distribuida e interpretable que integre en un único bucle la estimación de ocupación,
+la revisión poblacional de estrategias y la navegación reactiva formar coaliciones
 factibles con una pérdida de desempeño acotada frente a una referencia centralizada?
 El propósito es responder esa pregunta. Afirmar la superioridad del control
 distribuido sobre el centralizado en todo régimen operativo queda fuera de su alcance.

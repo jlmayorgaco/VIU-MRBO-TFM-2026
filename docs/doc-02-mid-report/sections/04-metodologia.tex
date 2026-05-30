@@ -46,7 +46,7 @@ combinación, validación cualitativa en CoppeliaSim con robots Pioneer~3-DX
 (Escenario~F), y un paquete Python documentado y reproducible con semillas
 fijadas, configuraciones YAML y registro completo de trayectorias.
 
-El transporte del cluster incorpora evitación reactiva de obstáculos estáticos a
+El transporte de la coalición incorpora evitación reactiva de obstáculos estáticos a
 nivel cinemático del centroide de la coalición, manteniendo la geometría de formación
 $d^*$. Esta capa no modela la dinámica de contacto entre robots y carga ni ofrece
 garantías formales de evitación de colisiones: la navegación con obstáculos se evalúa
@@ -59,7 +59,7 @@ visual, SLAM, evitación de obstáculos complejos y planificación global de rut
 El análisis formal de convergencia (Teorema~\ref{prop:convergencia}) se
 restringe al caso simétrico con comunicación global ($R = \infty$) y tareas
 homogéneas; la extensión al caso general con grafo irregular y tareas
-heterogéneas queda como trabajo doctoral futuro. Esa extensión conecta con el
+heterogéneas queda como trabajo futuro. Esa extensión conecta con el
 formalismo de dinámicas del replicador distribuido con procesado en grafos
 (DRD-PI), donde la convolución de payoffs sobre la estructura espectral del
 Laplaciano de $G(t)$ sigue la teoría de procesado de señales en grafos de
@@ -67,7 +67,7 @@ Laplaciano de $G(t)$ sigue la teoría de procesado de señales en grafos de
 durante la ejecución, aunque los experimentos de perturbación (Escenario~E)
 prueban la reactividad ante cambios en el conjunto de tareas.
 
-La cota inferior de cardinalidad introduce no suavidad potencial cuando $\beta$ es
+La cota inferior de cardinalidad introduce rigidez numérica cuando $\beta$ es
 muy grande (la función sigmoide se aproxima a una función escalón). Esta zona
 de parámetros se excluye explícitamente del análisis: el TFM opera en
 $\beta \in (\beta_{\min}, \beta_{\max})$. Incluso dentro de ese intervalo, en
@@ -473,10 +473,10 @@ Durante la fase de transporte, el centroide de la coalición $\mathcal{C}_k$ nav
 hacia el destino $\mathbf{d}_k$ bajo el campo de potencial, con el término de
 obstáculos $F_i^{\mathrm{obs}}$ \eqref{eq:obstaculo} activo sobre cada robot; los
 miembros de la coalición mantienen la geometría de formación $d^*$ relativa al
-centroide en movimiento. Así, el cluster desvía su trayectoria
-colectiva ante obstáculos estáticos sin disolver la coalición. El modelo permanece
+centroide en movimiento. Así, la coalición desvía su trayectoria
+colectiva ante obstáculos estáticos sin disolverse. El modelo permanece
 cinemático: no se simulan fuerzas de contacto sobre la carga. La evitación a nivel de
-cluster se evalúa empíricamente en los escenarios con obstáculos y cualitativamente en
+coalición se evalúa empíricamente en los escenarios con obstáculos y cualitativamente en
 CoppeliaSim (Escenario~F).
 
 La transición es bidireccional: si durante el modo de transporte la coalición
@@ -569,14 +569,23 @@ $\mathcal{N}_i(t)$ se realizan al inicio del paso y se consideran atómicas.
 \State $f_{i0} \gets r_0$
 
 \State \textbf{Bloque~2: Dinámica de Smith} \eqref{eq:smith_update}--\eqref{eq:proyeccion}
-\State $\mu_i \gets \mu_{\min} + (\mu_0{-}\mu_{\min})\!\left(1 - \exp\!\bigl(-\norm{\mathbf{q}_i^{xy}{-}\mathbf{l}^{\mathrm{eff}}_{s_i}}^2\!/(2\sigma_{\mathrm{rev}}^2)\bigr)\right)$
+\If{$s_i = 0$} \Comment{robot inactivo: sin objetivo espacial, tasa base}
+  \State $\mu_i \gets \mu_0$
+\Else
+  \State $\mu_i \gets \mu_{\min} + (\mu_0{-}\mu_{\min})\!\left(1 - \exp\!\bigl(-\norm{\mathbf{q}_i^{xy}{-}\mathbf{l}^{\mathrm{eff}}_{s_i}}^2\!/(2\sigma_{\mathrm{rev}}^2)\bigr)\right)$
+\EndIf
 \For{cada $k \in \mathcal{S}$}
   \State $\tilde{p}_{ik} \gets p_{ik} + T_s\mu_i\!\left[
     \sum_{j}p_{ij}\pos{f_{ik}{-}f_{ij}}
     - p_{ik}\!\sum_{j}\pos{f_{ij}{-}f_{ik}}\right]$
 \EndFor
 \State $\mathbf{p}_i(t{+}1) \gets \Pi_{\simplex}(\tilde{\mathbf{p}}_i)$;\enspace
-       $s_i(t{+}1) \gets \argmax_k\, p_{ik}(t{+}1)$ \Comment{empate: mantener $s_i(t)$}
+       $k^* \gets \argmax_k\, p_{ik}(t{+}1)$
+\If{$p_{ik^*}(t{+}1) - p_{i,s_i(t)}(t{+}1) > \rho_s$}
+  \State $s_i(t{+}1) \gets k^*$ \Comment{regla de histéresis~\eqref{eq:hysteresis}}
+\Else
+  \State $s_i(t{+}1) \gets s_i(t)$ \Comment{persiste bajo $\rho_s$ (incluye empates)}
+\EndIf
 
 \State \textbf{Bloque~3: Consenso dinámico de media (DAC)} \eqref{eq:consenso}
 \For{cada $k \in \mathcal{S}$}

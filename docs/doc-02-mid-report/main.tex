@@ -5,7 +5,6 @@
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{multicol}
-\usepackage{longtable}
 \usetikzlibrary{shapes.geometric,positioning,patterns}
 \usetikzlibrary{arrows.meta}
 
@@ -54,10 +53,11 @@
 \begin{viuabstract}
 El transporte cooperativo de cargas en almacenes automatizados requiere coordinar
 flotas de AGV de modo que cada tarea cuente con el número mínimo de robots
-exigido para su manipulación segura. Los enfoques distribuidos existentes no
-garantizan estos requisitos de cardinalidad, y los métodos evolutivos asumen
-grupos de tamaño fijo o estimaciones globales del payoff incompatibles con
-topologías de comunicación irregulares.
+exigido para su manipulación segura. En el corpus revisado, los enfoques
+distribuidos más próximos no formulan simultáneamente esta restricción de
+cardinalidad mínima y una ley de revisión continua, y los métodos evolutivos
+suelen suponer grupos de tamaño fijo o estimaciones globales del payoff poco
+compatibles con topologías de comunicación irregulares.
 
 Este TFM caracteriza, mediante una escalera comparativa incremental de cinco
 tratamientos, qué nivel de coordinación se requiere para resolver el problema de
@@ -67,19 +67,21 @@ distribuido y las dinámicas de Smith. El método propuesto (tratamiento~T4) com
 tres elementos cuya integración conjunta no se ha identificado en el corpus
 bibliográfico revisado: (i)~las dinámicas de Smith como ley de asignación
 distribuida, (ii)~un payoff multiplicativo con componente sigmoide monótonamente
-decreciente en la ocupación estimada de cada tarea, que preserva la estructura de
-juego de congestión, y (iii)~una tasa de revisión espacialmente modulada que
+decreciente en la ocupación estimada de cada tarea, que preserva, en el caso base
+($\Psi \equiv 1$), la estructura de juego de congestión, y (iii)~una tasa de
+revisión espacialmente modulada que
 reduce reasignaciones innecesarias.
 
 El método acopla tres dinámicas en un único bucle de control ($T_s = 0{,}1$\,s):
 estimación de estado por consenso distribuido, dinámicas de Smith proyectadas
 sobre el símplex, y campo de gradiente reactivo para navegación cooperativa con
 evitación reactiva de obstáculos estáticos.
-El Teorema~\ref{prop:convergencia} establece estabilidad asintótica local
-del equilibrio Nash objetivo bajo $\beta \in (\beta_{\min},\,\beta_{\max})$, donde
-$\beta_{\min} = \ln\!\bigl(\tfrac{N+1}{N-1}\bigr)$ y
-$\beta_{\max} = \tfrac{8}{T_s\mu_0 r N}$
-(hipótesis simplificada: $\Psi \equiv 1$, comunicación global).
+Para el caso base (factor espacial constante y comunicación global), el
+Teorema~\ref{prop:convergencia} establece la estabilidad asintótica local del
+equilibrio Nash objetivo dentro de un intervalo acotado de la pendiente del
+payoff; el sistema implementado, con comunicación local, transición
+reclutamiento--transporte y obstáculos, se trata como una versión perturbada del
+juego base y se evalúa empíricamente.
 Este trabajo aborda la capa de asignación y formación de coaliciones;
 la coordinación de fuerzas de contacto para empujar o agarrar la carga
 (capa de manipulación cooperativa) es una capa complementaria fuera del alcance.
