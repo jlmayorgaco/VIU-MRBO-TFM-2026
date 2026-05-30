@@ -10,7 +10,7 @@
 
 %--- Metadata
 \setviutitle{Coordinación distribuida local de múltiples AGV para el transporte
-  cooperativo de cargas heterogéneas en entornos industriales}
+  \mbox{cooperativo} de cargas heterogéneas}
 \setviustudent{Jorge Luis Mayorga Taborda}
 \setviututor{José Ignacio Iñíguez Amigot}
 \setviuedition{2025--26}
@@ -46,29 +46,28 @@
 
 %--- Resumen (pag 3)
 \begin{viuabstract}
-El transporte cooperativo de cargas heterogéneas en almacenes automatizados
-requiere coordinar flotas de AGV capaces de asignarse a tareas que demandan
-distintos números mínimos de robots. Este trabajo estudia si un esquema de
-coordinación distribuida local, basado en consenso dinámico de media y dinámicas
-poblacionales, permite integrar en un mismo bucle temporal la estimación de
-ocupación, la asignación a cargas, la formación de coaliciones y la navegación
-reactiva, sin coordinador central de asignación.
+El transporte cooperativo de cargas heterogéneas en almacenes automatizados plantea
+decisiones acopladas: qué robots atienden cada carga, cuántos colaboran y cómo se
+desplazan hacia recogida y entrega. Ninguna la decide un coordinador central. La
+pregunta de este informe es si una flota de AGV puede resolverlas con solo comunicación
+local, estimando la ocupación de las tareas, asignándose a ellas y formando coaliciones
+de cardinalidad mínima en un mismo bucle distribuido.
 
-La metodología sigue una lógica comparativa e incremental. Se evalúan cinco
-tratamientos: una heurística voraz local, un esquema con consenso dinámico y regla
-voraz, un replicador distribuido, dinámicas de Smith con revisión modulada y una
-referencia centralizada replanificada. El método propuesto combina las dinámicas de
-Smith, un payoff sigmoide decreciente asociado a la cardinalidad mínima y una tasa
-de revisión espacialmente modulada. En el caso base con $\Psi \equiv 1$, el payoff
-induce una estructura de juego de congestión y se establece la estabilidad local del
-equilibrio objetivo; con $\Psi(d)$ activo, el sistema se interpreta como una
-perturbación espacial evaluada empíricamente.
+La validación se construye por niveles. Una primera línea base usa consenso dinámico de
+media (DAC) con una regla voraz: sirve para ver si estimar bien la ocupación basta para
+formar coaliciones. Sobre ella se contrastan dos dinámicas poblacionales, el replicador
+y Smith, bajo idéntica estimación. La propuesta adopta Smith como política de revisión,
+una sigmoide decreciente para el requisito mínimo de cardinalidad y una tasa de revisión
+espacialmente modulada que frena las reasignaciones tardías.
 
-La validación cuantitativa se realizará en Python mediante seis escenarios y al
-menos treinta repeticiones por combinación; la validación cualitativa y cinemática,
-en CoppeliaSim con robots Pioneer~3-DX. El trabajo se limita a la capa de asignación,
-formación de coaliciones y navegación; la manipulación cooperativa por contacto queda
-fuera del alcance.
+El análisis formal cubre solo el caso homogéneo y balanceado con $\Psi \equiv 1$. Ahí el
+payoff induce una estructura de juego de congestión y se prueba la estabilidad local del
+equilibrio objetivo. Al añadir el descuento espacial $\Psi(d)$, la comunicación local y
+la navegación reactiva, esa garantía deja de aplicar directamente; el sistema pasa a
+tratarse como una versión perturbada y se mide en simulación. La campaña cuantitativa se
+ejecutará en Python con seis escenarios y al menos treinta repeticiones por combinación.
+CoppeliaSim queda para comprobar la plausibilidad cinemática con robots Pioneer~3-DX. La
+manipulación cooperativa por contacto queda fuera del alcance.
 
 \keywords{coordinación distribuida, formación de coaliciones, consenso dinámico,
   dinámicas poblacionales, transporte cooperativo multi-AGV.}

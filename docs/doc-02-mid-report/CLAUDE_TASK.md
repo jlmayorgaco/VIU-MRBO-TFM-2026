@@ -1,196 +1,192 @@
-# CLAUDE_TASK_v4.md — Blindaje del Informe Intermedio TFM (entrega hasta Metodología)
+# CLAUDE_TASK.md — Cierre del Informe Intermedio TFM (entrega hasta Metodología)
 
 ## 0. Contexto y reglas
 
-Soy Jorge Luis Mayorga Taborda, Máster en Robótica y Automatización de Procesos
-(MROB), Universidad Internacional de Valencia (VIU). Tutor: José Ignacio Iñíguez
-Amigot. Preparo el INFORME INTERMEDIO del TFM (cubre hasta el final de Metodología;
-Marco teórico, Resultados y Conclusiones son stubs y SE QUEDAN como stubs). El objetivo es cumplir con el TFM con las reglas que esta en guidelines
-Mi objetivo es sacar un cum laude en esta tesis de amestria, pERO quiero que quede de tal nivel que pareza un poco entre tesis de maestria y aglo ya de nivel doctorado. 
-Mi objetivo es enviar esto a comitesd e doctorado para pedir que me acepten asi que ese debe ser lenivel qeu espero.
-Tus resultados escribelos en docs/doc-02-mid-report/CLAUDE_TASK.md
+Autor: Jorge Luis Mayorga Taborda. Máster en Robótica y Automatización de Procesos
+(MROB), Universidad Internacional de Valencia (VIU). Tutor: José Ignacio Iñíguez Amigot.
 
-### Reglas absolutas (léelas dos veces)
-1. Trabaja en docs/doc-02-mid-report`.
-2. PRIMERO explora el repo y devuélveme un PLAN (estructura de archivos, mapeo de
-   cada tarea a archivo y líneas, riesgos). NO modifiques nada hasta que confirme.
-3. Commits atómicos, en español, formato `tipo(scope): descripción`.
-4. Tras cada tarea: compila (`latexmk -pdf main.tex` o el flujo del repo) y confirma
-   que NO hay referencias/citas indefinidas ni `??`.
-5. NO añadas referencias bibliográficas nuevas. NO inventes números, autores,
-   teoremas ni resultados.
-6. NO toques el paquete Python (`viu_mrob_tfm/` o equivalente).
-7. NO infles el alcance: nada de CBF, sistemas híbridos formales, blending, hardware.
-8. NO desarrolles los stubs de Marco teórico, Resultados ni Conclusiones.
-9. Español, registro académico, coherente con el estilo existente.
-10. Cuando una tarea diga "reescribe en voz propia", NO la ejecutes: márcala con
-    `% TODO-VOZ:` y déjala para el autor. Esas son tres y están al final.
+Este es el INFORME INTERMEDIO del TFM. Cubre **hasta el final de Metodología (§4)**.
+Las secciones 5 (Marco teórico), 6 (Resultados) y 7 (Conclusiones) son **stubs
+intencionales y SE QUEDAN como stubs**. No se desarrollan.
 
----
+Las tareas anteriores (v4 y verificación bibliográfica) ya están aplicadas. Este
+prompt cierra únicamente lo que sigue abierto antes del submit.
 
-## TAREA 0 — Título y alineación con el Anexo I
-
-### 0.1 Cambiar el título (portada + cualquier \title{} + cabeceras)
-Título nuevo:
-> Coordinación distribuida para la formación de coaliciones multi-AGV en el
-> transporte cooperativo de cargas heterogéneas
-
-Subtítulo (si la plantilla lo admite; si no, omitir):
-> Un análisis comparativo de consenso, dinámicas poblacionales y políticas de revisión
-
-### 0.2 Resumen — primera oración puente
-Asegura que la primera oración del Resumen contenga el vocabulario del Anexo I
-("transporte cooperativo de cargas heterogéneas", "coordinación distribuida").
-La versión actual ya empieza bien; solo verifica que "coordinación distribuida"
-aparezca explícita en el resumen al menos una vez.
-
-### 0.3 Objetivo general — orientar al título
-En §2.1, ajusta el objetivo general para que arranque con "coordinación distribuida"
-y mantenga el resto. Texto objetivo:
-> Diseñar y evaluar, mediante simulación cuantitativa reproducible, un esquema de
-> coordinación distribuida local para flotas multi-AGV que transportan
-> cooperativamente cargas heterogéneas, formalizando la heterogeneidad como
-> requisito mínimo de cardinalidad y resolviendo la formación adaptativa de
-> coaliciones mediante consenso dinámico de media y dinámicas poblacionales,
-> caracterizado mediante una escalera comparativa de cinco tratamientos (T1–T5)
-> que aísla el papel de la estimación distribuida, la dinámica poblacional y la
-> política de revisión, y contrastado con una referencia centralizada
-> replanificada bajo seis escenarios experimentales.
-
-### 0.4 §1.6.1 — cerrar el bucle con el Anexo I
-Tras la frase existente "El Anexo I de este TFM mencionaba 'cargas heterogéneas'...",
-añade una oración:
-> El problema central y el objeto de estudio del Anexo I se mantienen; este informe
-> concreta la terminología (formación de coaliciones) y la metodología adoptada para
-> resolverlos.
-
-**Commit:** `docs(title): alineación de título y objetivos con el Anexo I`
+### Reglas absolutas
+1. Trabaja en `docs/doc-02-mid-report/`.
+2. PRIMERO explora el repo y devuélveme un PLAN (archivo · línea · diff propuesto por
+   tarea + riesgos). NO modifiques nada hasta que confirme.
+3. Motor real: **XeLaTeX** (`fontspec` + fuente del sistema). Flujo:
+   `xelatex → bibtex → xelatex ×2`. `latexmk`/`pdflatex` fallan aquí.
+4. Tras cada tarea: compila y confirma 0 referencias/citas indefinidas, sin `??`.
+5. Commits atómicos, en español, formato `tipo(scope): descripción`.
+6. NO añadas referencias bibliográficas nuevas. NO inventes números, autores,
+   teoremas, resultados ni ecuaciones.
+7. NO toques el paquete Python.
+8. NO infles el alcance. NO desarrolles los stubs (§5, §6, §7).
+9. Español de España, registro académico, coherente con el estilo existente.
+10. Para las ecuaciones y el pseudocódigo: cambios QUIRÚRGICOS. Lee el bloque actual
+    antes de editar y modifica solo lo indicado, preservando macros y formato.
 
 ---
 
-## TAREA 1 — Teorema 4.1: nota de régimen de aplicación
+## TAREA 1 — Algoritmo 1: aplicar la histéresis ρ_s en la selección de estrategia
 
-En §4.10, tras el enunciado del Teorema 4.1 (entre los límites β_mín/β_máx y el
-"Demostración (esbozo)"), inserta:
-> Las hipótesis del teorema corresponden a un régimen sin manipulación: la coalición
-> no transita al destino, de modo que el equilibrio se analiza en la fase estacionaria
-> de reclutamiento. La transición a transporte y la robustez ante perturbaciones se
-> evalúan empíricamente en los Escenarios B, C y E (§4.11.2).
+**Problema (bug de coherencia):** el Algoritmo 1 selecciona la estrategia con
+`s_i(t+1) ← arg máx_k p_ik(t+1)` directo, lo que **contradice la ec. (12)**, que
+define una regla con umbral de histéresis ρ_s (solo se cambia de estrategia si la
+dominante aventaja a la actual en más de ρ_s).
 
-**Commit:** `docs(theorem): régimen de aplicación del Teorema 4.1`
+**Acción:** localiza en `sections/04-metodologia.tex` la línea del Algoritmo 1 que
+asigna `s_i(t+1)` (la del `arg máx`, justo tras la proyección al símplex). Sustituye
+esa asignación incondicional por la **regla condicional de la ec. (12)**:
+- Calcula `k* ← arg máx_k p_ik(t+1)`.
+- Si `p_{i,k*}(t+1) − p_{i,s_i(t)}(t+1) > ρ_s`, entonces `s_i(t+1) ← k*`.
+- En otro caso, `s_i(t+1) ← s_i(t)` (mantener).
+- Empate dentro de k*: mantener `s_i(t)`.
 
----
+Preserva el estilo del entorno algorithmic del repo (`\State`, `\If`, `\Else`,
+`\EndIf` o equivalente). NO cambies la ec. (12); solo haz que el pseudocódigo la
+refleje. Añade un comentario al margen `⊳ regla de histéresis, ec. (12)`.
 
-## TAREA 2 — Lema 4.2: cota correcta
-
-En §4.10, en el enunciado del Lema 4.2, sustituye:
-> "En régimen estacionario, una vez que los robots asignados alcanzan el radio de
-> detección r_det, se cumple |C_k| = N x̃_k."
-por:
-> "En general |C_k(t)| ≤ N x̃_k(t), con igualdad cuando todos los robots con s_i = k
-> se encuentran dentro de r_det de la tarea k; el régimen estacionario posterior a
-> T_coal satisface esta condición."
-La demostración NO cambia (parte de x̃_k, no de |C_k|).
-
-**Commit:** `fix(lemma): cota |C_k| ≤ N·x̃_k con condición de igualdad`
+**Commit:** `fix(algoritmo): selección de estrategia con histéresis ρ_s (coherencia con ec. 12)`
 
 ---
 
-## TAREA 3 — Algoritmo 1: contador τ_s explícito
+## TAREA 2 — Algoritmo 1: caso s_i = 0 (inactividad) en la tasa de revisión μ_i
 
-Reemplaza las líneas de "Actualización del grafo y modo de tarea" (27–33 actuales)
-por una versión con contador. Añade `count_k` al `Require:` e inicialízalo a 0 al
-arranque (menciónalo en el texto que introduce el Algoritmo 1 en §4.9):
+**Problema:** la línea del Algoritmo 1 que calcula `μ_i` usa `l^eff_{s_i}`, pero para
+un robot inactivo (`s_i = 0`) la inactividad no tiene posición física asociada, por lo
+que `‖q_i^xy − l_0‖` queda indefinido. El texto de §4.6 ya dice que para `s_i = 0` se
+usa `μ_i = μ_0`, pero el pseudocódigo no lo refleja.
 
-<!-- ⚠ EL SPEC SE CORTA AQUÍ: falta el bloque de código del Algoritmo 1 y las
-     TAREAS 4+ (incl. las tres `% TODO-VOZ` de la Regla 10). -->
+**Acción:** en la línea de cálculo de `μ_i` del Algoritmo 1, añade el caso especial:
+- Si `s_i = 0`: `μ_i ← μ_0`.
+- En otro caso: la expresión modulada actual (ec. 13).
 
----
----
+Mantén la coherencia con el texto de §4.6. Cambio mínimo, sin tocar la ec. (13).
 
-# PLAN DE EJECUCIÓN (Claude Code) — pendiente de tu confirmación
-
-> Regla 2: no modifico la tesis hasta que confirmes. Aquí va el plan + hallazgos.
-
-## A. Estado del repositorio (ya explorado)
-- **Motor real: XeLaTeX** (`fontspec` + Arial del sistema). `latexmk`/`pdflatex`
-  FALLAN aquí (falta Perl; fontspec exige XeTeX/LuaTeX). Flujo válido desde
-  `docs/doc-02-mid-report/`: `xelatex → bibtex → xelatex ×2–3`.
-- PDF actual `TFM_InformeIntermedio_v3_blindado.pdf` (46 pp): compila limpio
-  (0 refs/citas indefinidas, sin `??`; único overfull 52 pt en bibliografía).
-- Título actual en `main.tex:11` (macro `\setviutitle`). La plantilla **no tiene
-  comando de subtítulo**; las cabeceras usan título genérico ("Trabajo Fin de
-  Máster"), así que el cambio de título afecta **solo a `\setviutitle`**.
-
-## B. Hallazgo clave: TAREAS 1, 2 y 3 YA están aplicadas
-En el commit de revisión P1/P2 (`06828ae`) ya se implementó su sustancia:
-- **T1** nota de régimen tras Teorema 4.1 (existe `Nota (alcance de las hipótesis)`).
-- **T2** Lema 4.2 ya dice `|C_k(t)| ≤ N·x̃_k(t)` con condición de igualdad.
-- **T3** Algoritmo 1 ya cuenta `τ_s` pasos consecutivos con `cnt⁺_k/cnt⁻_k` y reinicio.
-⇒ Para v4 solo resta **alinear redacción/nombres exactos** (citar §4.11.2; renombrar
-a `count_k`). Es reconciliación, no trabajo nuevo.
-
-## C. Mapeo por tarea (archivo · línea · diff)
-- **T0.1** `main.tex:11–12` → nuevo título. Subtítulo: la plantilla no lo soporta →
-  (a) omitir [defecto] o (b) añadirlo a la portada tocando `viu-mrob-midreport.sty:417`.
-- **T0.2** `main.tex` resumen: hoy dice "control distribuido"; insertar "coordinación
-  distribuida" explícita ≥1 vez (1 frase).
-- **T0.3** `sections/02-objetivos.tex:8–15` → reescribir objetivo general con tu texto.
-- **T0.4** `sections/01-introduccion.tex:156` → añadir oración de cierre del Anexo I.
-- **T1** `sections/04-metodologia.tex` (nota Teorema 4.1) → alinear a tu texto + citar
-  §4.11.2; conservar la frase "cotas suficientes, no necesarias".
-- **T2** `sections/04-metodologia.tex` (Lema 4.2) → alinear frase de igualdad a tu texto.
-- **T3** `sections/04-metodologia.tex` (Algoritmo 1 + intro §4.9) → renombrar a
-  `count_k`, añadir a `Require:`, init 0 mencionado en §4.9. **Falta tu bloque exacto.**
-
-## D. Bloqueantes antes de ejecutar
-1. **Spec truncado** a mitad de la TAREA 3. Reenvía: bloque de código del Algoritmo,
-   TAREAS 4+, y las tres `% TODO-VOZ` (Regla 10).
-2. **¿Confirmas el cambio de título?** Contradice el "título aprobado por el tutor"
-   de specs/memoria previas; idealmente visado por el tutor.
-3. **Subtítulo:** ¿omitir (a) o añadirlo a la portada modificando el `.sty` (b)?
-
-## E. TODOs heredados aún abiertos
-- `references.bib`: verificar `shan2024` (178/104722 vs 179/104724) y `zhang2024`
-  (DOI + páginas). `04-metodologia.tex`: verificar Sandholm "Cap. 3" y "Prop. 5.6.1".
-- Escenario D: ~1500 sims solo en D; confirmar viabilidad o reducir a 6 puntos de R.
-
-## F. Nota sobre el nivel "máster→doctorado / cum laude"
-Lo registro como criterio de calidad transversal para todas las ediciones (rigor en
-enunciados, honestidad de alcance, prosa sobria sin AI-smell). No requiere tareas
-extra por ahora; lo aplico al redactar.
+**Commit:** `fix(algoritmo): caso de inactividad s_i=0 en μ_i (coherencia con §4.6)`
 
 ---
+
+## TAREA 3 — Tabla 1 ausente (numeración de tablas)
+
+**Problema:** el Índice de tablas empieza en "Tabla 2"; no existe Tabla 1. O el
+contador de tablas arranca mal, o hay una tabla sin numerar/etiquetar, o la
+numeración quedó corrida tras una edición.
+
+**Acción:**
+1. Diagnostica la causa: busca todos los entornos `table`/`\caption`/`\label` de
+   tipo tabla en `sections/` y en `main.tex`. Identifica por qué la primera tabla
+   listada es la 2.
+2. NO inventes una tabla nueva. Las soluciones válidas son, en orden de preferencia:
+   (a) si hay un `\addtocounter`/`\setcounter{table}` o un `\caption` fuera de
+   entorno que descuadra el contador, corrígelo para que la primera tabla real sea
+   Tabla 1; (b) si la "Tabla 2" actual es en realidad la primera tabla del documento,
+   renumera para que sea Tabla 1 y propaga las referencias cruzadas.
+3. Recompila y verifica que el Índice de tablas es correlativo (1, 2, 3, …) y que
+   ninguna `\ref`/`\autoref` a tablas queda rota.
+
+En el PLAN, antes de tocar nada, dime cuál es la causa diagnosticada y cuál de las
+dos soluciones aplicas.
+
+**Commit:** `fix(tablas): numeración correlativa desde Tabla 1`
+
 ---
 
-# RESULTADOS — TAREA 12 (verificación bibliográfica) · 2026-05-29
+## TAREA 4 — Nomenclatura: símbolos faltantes
 
-Fuentes: Crossref (lookup directo de DOI), IEEE Xplore, e índice oficial del libro
-de Sandholm (PDF del autor). Commit: `fix(refs): verificación de granularidad y DOIs`.
+**Problema:** varios símbolos usados en ecuaciones y en la Tabla 6 no figuran en la
+sección de Nomenclatura: `α` (ganancia de atracción), `η` (ganancia de repulsión),
+`δ` (ganancia de formación), `v_máx` (velocidad lineal máxima), `ω_máx` (velocidad
+angular máxima).
 
-## (a) Confirmadas (sin cambio)
-- **`shan2024distributed`**: vol.~178, art.~104722, DOI `10.1016/j.robot.2024.104722`
-  (Crossref). El "179/104724" era OTRO paper (Wang et al.). TODO eliminado.
-- **`martinezpiazuelo2022tcss`** (datos): vol.~52(11), pp.~7112–7122, DOI
-  `10.1109/TSMC.2022.3151042` (Crossref). Correcto.
-- **Sandholm "Cap.~3"**: el índice confirma Cap.~3 = "Potential Games, Stable Games,
-  and Supermodular Games" (juegos de congestión en §3.1.3/§3.1.7). Mantenido.
+**Acción:** añádelos al bloque correspondiente de la Nomenclatura (Parámetros del
+sistema / Funciones, según encaje), con la misma descripción breve y unidades que ya
+usan en la Tabla 6. NO cambies los valores ni añadas símbolos que no aparezcan en el
+texto. Verifica de paso que no falte ningún otro símbolo de la Tabla 6.
 
-## (b) Corregidas a valores verificados
-- **`zhang2024coalition`**: tenía autores erróneos y DOI inexistente (404). Corregido
-  (Crossref + IEEE Xplore doc 10801429) a: autores **Liwang Zhang, Dong Liang,
-  Minglong Li, Wenjing Yang, Shaowu Yang**; pp.~**3439–3446**; DOI
-  `10.1109/IROS58592.2024.10801429`. → conviene que reconfirmes en IEEE Xplore.
+**Commit:** `docs(nomenclatura): añadir símbolos α, η, δ, v_máx, ω_máx`
 
-## (c) Degradadas a granularidad verificable + `% TODO-CITA`
-- **Sandholm "Prop.~5.6.1"** → **"§5.6 y §7.1"** (§5.6 Pairwise Comparison Dynamics;
-  §7.1 Potential Functions as Lyapunov Functions). El nº de proposición exacto no es
-  verificable desde el índice.
-- **`martinezpiazuelo2022tcss` "Sección III, Teorema 3"** → cita genérica; prosa
-  ajustada a "dinámicas de población distribuidas en tiempo discreto". `% TODO-CITA`
-  para que confirmes localizador exacto y cobertura del caso Smith.
+---
 
-## Pendiente para ti
-1. (`% TODO-CITA`) Confirmar contra el paper de Martínez-Piazuelo el localizador y
-   que el resultado cubre Smith/pairwise.
-2. (recomendado) Reconfirmar en IEEE Xplore la entrada corregida de `zhang2024`.
+## TAREA 5 — Matizar "preserva la estructura de juego de congestión"
+
+**Problema:** la propiedad "preserva la estructura de juego de congestión" se afirma
+sin condición en el Resumen y en §4.3, pero solo está demostrada en el caso base
+Ψ≡1 (Teorema 4.1). Con descuento espacial Ψ(d)<1 el payoff multiplicativo deja de
+depender únicamente de la ocupación, así que la estructura de congestión es
+aproximada / perturbada.
+
+**Acción A — Resumen.** Localiza la frase del Resumen sobre el payoff sigmoide que
+"preserva la estructura de juego de congestión" y sustitúyela por:
+> …un payoff multiplicativo con componente sigmoide monótonamente decreciente en la
+> ocupación estimada de cada tarea, que en el caso base (Ψ≡1) induce una estructura
+> de juego de congestión; el factor espacial Ψ(d) actúa como perturbación de esa
+> estructura, evaluada empíricamente.
+
+**Acción B — §4.3.** Localiza la frase "Esta monotonicidad decreciente es la que
+preserva la estructura de juego de congestión ponderado y distingue este diseño…" y
+sustitúyela por:
+> Esta monotonicidad decreciente induce una estructura de juego de congestión
+> ponderado en el caso base Ψ≡1, sobre la que se sustenta el análisis del
+> Teorema 4.1; con descuento espacial Ψ(d)<1 el payoff deja de depender únicamente
+> de la ocupación y la estructura de congestión se preserva solo de forma aproximada,
+> lo que se caracteriza empíricamente. Esta cota inferior por saturación distingue el
+> diseño…
+
+NO toques el Teorema 4.1 (ya opera bajo Ψ≡1, el matiz allí sería redundante).
+
+**Commit:** `docs(claim): acotar la estructura de congestión al caso base Ψ≡1`
+
+---
+
+## TAREA 6 — Quitar la fórmula de β_máx del Resumen
+
+**Problema:** el Resumen incluye literalmente `β_máx = 8/(T_s μ_0 r N)` y la fórmula
+de β_mín. Un resumen no debe llevar fórmulas largas con todos los símbolos.
+
+**Acción:** en el Resumen, sustituye la frase que enuncia los límites explícitos por:
+> El Teorema 4.1 establece estabilidad asintótica local del equilibrio Nash objetivo
+> bajo la hipótesis simplificada de comunicación global y factor espacial unitario
+> (Ψ≡1), para un intervalo acotado del parámetro de pendiente β cuyos límites se
+> derivan explícitamente en la Sección 4.10.
+
+Las ecuaciones explícitas (19)–(20) ya están en §4.10 y NO se tocan.
+
+**Commit:** `docs(resumen): mover los límites explícitos de β a §4.10`
+
+---
+
+## TAREA 7 — Verificación de consistencia O(K/N) vs O(m/N) (solo redacción)
+
+**Problema:** la cota de error de seguimiento del DAC aparece como `O(K/N)` en las
+Observaciones 4.1 y 4.6 (cambio individual) y como `O(m/N)` en la Observación 4.3
+(m robots simultáneos), sin aclarar la relación.
+
+**Acción:** en la Observación 4.1 (primera aparición), añade una frase breve que
+explique que un cambio de estrategia individual desplaza K componentes del vector de
+estimación (de ahí O(K/N)), y que m reasignaciones simultáneas escalan como O(m/N).
+NO cambies las cotas; solo añade la aclaración para que sean coherentes entre sí.
+Si el contenido ya es claro al releerlo, déjalo y anótalo en el informe de resultados.
+
+**Commit:** `docs(dac): aclarar relación entre cotas O(K/N) y O(m/N)`
+
+---
+
+## NO EJECUTAR (queda en cancha del autor)
+
+- **% TODO-CITA — Martínez-Piazuelo 2022a:** confirmar contra el paper que cubre las
+  dinámicas de Smith / pairwise específicamente y no solo la clase general. NO tocar
+  la cita; dejar el marcador.
+- **% TODO-VOZ:** las reescrituras de voz las hace el autor a mano. NO ejecutar.
+- **zhang2024:** reconfirmación en IEEE Xplore (autor lo hace).
+- **Correo al tutor por el cambio de título:** fuera de alcance del repo.
+
+---
+
+## ORDEN SUGERIDO
+
+Bloqueantes primero (1, 2, 3), luego alto valor (4, 5, 6), luego 7.
+Compila y verifica tras cada commit. Devuélveme el PLAN antes de ejecutar.

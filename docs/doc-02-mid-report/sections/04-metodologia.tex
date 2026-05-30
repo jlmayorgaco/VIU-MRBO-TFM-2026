@@ -3,31 +3,20 @@
 \label{sec:metodologia}
 %% ====================================================================
 
-En este capítulo se delimita primero el alcance y las limitaciones del estudio y se
-sitúa el plan de trabajo; a continuación se formaliza el modelo del sistema y se
-describen las tres dinámicas acopladas que conforman el método. El capítulo cierra
-con el análisis de convergencia, el diseño experimental, las métricas y los criterios
-de aceptación.
-
 \subsection{Alcance y limitaciones}
 \label{sec:alcance}
-
-Esta sección delimita qué aspectos del problema aborda el TFM y cuáles quedan fuera, y
-sitúa el trabajo realizado dentro del cronograma global. La distinción explícita entre
-alcance y limitaciones acota las afirmaciones que el trabajo puede sostener y orienta
-la interpretación de los resultados de la entrega final.
 
 \subsubsection{Alcance}
 
 El trabajo se limita a un entorno 2D con robots de cinemática uniciclo. La validación
-es exclusivamente por simulación: Python proporciona los resultados cuantitativos y
-CoppeliaSim proporciona la validación visual aplicada. El sistema puede manejar hasta
+es exclusivamente por simulación: Python aporta los resultados cuantitativos; CoppeliaSim,
+la comprobación visual aplicada. El sistema puede manejar hasta
 $N = 15$ AGV y $K = 5$ tareas activas simultáneas; el límite $N = 15$ responde
 a la complejidad computacional del simulador Python en tiempo real y al rango de
 flotas AGV típico en almacenes medianos, no a una restricción teórica del método. El rango de comunicación $R$
 se trata como parámetro variable entre 1\,m e infinito. Las cargas se modelan como puntos de destino con requisito mínimo de cardinalidad
-$n_k$. Esta es una decisión de \textbf{descomposición por capas}: la capa de
-asignación (este TFM) determina \emph{qué} robots forman la coalición y
+$n_k$. Responde a una \textbf{descomposición por capas}: la capa de
+asignación (este trabajo) determina \emph{qué} robots forman la coalición y
 \emph{cuándo} inician el transporte; la capa de manipulación (no modelada aquí)
 determina \emph{cómo} aplican fuerzas de contacto para mover la carga de forma
 estable. Esta segunda capa está documentada en \citet{ebel2024cooperative} y
@@ -119,18 +108,15 @@ replanificada). El método propuesto en este TFM es el tratamiento~T4; el
 contraste entre su tasa de revisión modulada y una tasa constante se trata como
 ablación interna, sin constituir un tratamiento separado. T5 funciona como
 referencia centralizada que acota empíricamente el coste de la descentralización,
-no como un óptimo absoluto. La metodología se organiza en dieciséis subsecciones que cubren
-el modelo del sistema, las dinámicas acopladas, el análisis de convergencia, el
-diseño experimental, los criterios de aceptación y una extensión de capacidad
-heterogénea (formulación).
+no como un óptimo absoluto.
 
 \subsection{Modelo del sistema}
 
 El modelo del sistema se compone de tres elementos: los robots, descritos por una
 cinemática de uniciclo; las tareas, caracterizadas por su posición y su requisito de
 cardinalidad mínima; y el grafo de comunicación, que determina la información local
-disponible para cada robot. Los tres se formalizan a continuación y fijan la notación
-empleada en el resto del capítulo.
+disponible para cada robot. La notación que emplea el resto del capítulo queda fijada
+en su formalización.
 
 \subsubsection{Robots}
 
@@ -224,7 +210,7 @@ condición $r_0 < r/2$ hace que $x_0^* = 0$ sea compatible con el equilibrio. En
 sistema espacial completo, donde $\Psi(d) < 1$, la inactividad puede ser localmente
 preferible para robots lejanos o excedentes; en ese caso la inactividad se interpreta
 como estrategia de reserva para robots no comprometidos. La caracterización del
-equilibrio fuera del caso base se evalúa empíricamente.
+equilibrio fuera del caso base se mide en simulación.
 
 \input{figures/fig-payoff.tex}
 
@@ -789,18 +775,17 @@ $|\Phi(N\hat{x}_{ik},n_k) - \Phi(Nx_k,n_k)| \leq (\beta/4)\,N\,|e_{ik}|
 \leq (\beta N/4)\,\bar{e}$; multiplicando por $r_k\,\Psi \leq r_k$ se obtiene la cota.
 \end{proof}
 
-Esta cota acota exclusivamente el canal de error del DAC sobre el payoff. No cubre
+La cota afecta solo al canal de error del DAC sobre el payoff. No cubre
 formalmente el efecto del factor espacial $\Psi(d)$, el grafo de comunicación móvil
 $G(t)$, la transición híbrida reclutamiento--transporte, las saturaciones cinemáticas
 ni los mínimos locales del campo de potencial; todos estos efectos se evalúan
 empíricamente en los Escenarios~B--E.
 
-En consecuencia, el sistema implementado corresponde a una versión perturbada del
-juego base del Teorema~\ref{prop:convergencia}, acotada por la
-Proposición~\ref{prop:perturbacion}. La propiedad que cabe esperar es entonces la
-\emph{convergencia práctica a una vecindad del equilibrio} (y no la convergencia
-exacta al equilibrio Nash ideal), cuyo radio se evalúa empíricamente mediante las
-métricas $F$, $D(R)$, $\Delta_{\mathrm{chg}}$ y $\Delta J$.
+El sistema implementado es, por tanto, una versión perturbada del juego base del
+Teorema~\ref{prop:convergencia}, acotada por la Proposición~\ref{prop:perturbacion}. Lo
+razonable no es la convergencia exacta al equilibrio Nash ideal, sino la
+\emph{convergencia práctica a una vecindad del equilibrio}; su radio se mide en
+simulación mediante las métricas $F$, $D(R)$, $\Delta_{\mathrm{chg}}$ y $\Delta J$.
 
 \begin{observacion}
 El Teorema~\ref{prop:convergencia} usa $R = \infty$ y $N = Kn$.
@@ -826,9 +811,9 @@ cardinalidad $|\mathcal{C}_k| \geq n_k$ vive en el dominio \emph{entero}: un rob
 se asigna a la tarea $k$ si $s_i = \arg\max_k p_{ik}$. La correspondencia no es
 exacta: incluso con $x_k = n/N$, los números enteros $|\mathcal{C}_k|$ pueden
 diferir en $\pm 1$ según cómo se resuelvan los empates en $\arg\max$.
-En particular, cuando $N = Kn$ y el sistema alcanza el equilibrio interior, la
+Cuando $N = Kn$ y el sistema alcanza el equilibrio interior, la
 distribución simétrica implica exactamente $n$ robots por tarea con probabilidad
-alta pero no garantizada al~100\,\%. La tasa de factibilidad $F$ (proporción de
+alta, aunque no garantizada al~100\,\%. La tasa de factibilidad $F$ (proporción de
 episodios en que $|\mathcal{C}_k| \geq n_k$ se alcanza para toda $k$ dentro del
 horizonte) es la métrica empírica que cierra este puente.
 \end{observacion}
@@ -899,11 +884,10 @@ de posición (controladas por semilla) y la misma secuencia de aparición de tar
 
 Los tratamientos forman una escalera incremental: cada uno añade exactamente un
 mecanismo respecto al anterior, de modo que la diferencia de desempeño entre dos
-niveles consecutivos es atribuible a ese mecanismo. En particular, T3 y T4
-comparten todo lo demás (el mismo payoff \eqref{eq:payoff}, el mismo estimador
-DAC \eqref{eq:consenso} para $\hat{x}_{ik}$ y los mismos parámetros
-$\beta,\lambda,\mu_0$) y difieren únicamente en la ley de revisión, de manera
-que la comparación T3 frente a T4 aísla el efecto de la política de revisión.
+niveles consecutivos es atribuible a ese mecanismo. T3 y T4 comparten todo lo demás
+(el mismo payoff \eqref{eq:payoff}, el mismo estimador DAC \eqref{eq:consenso} para
+$\hat{x}_{ik}$ y los mismos parámetros $\beta,\lambda,\mu_0$) y difieren únicamente en la
+ley de revisión. Su comparación aísla, así, el efecto de la política de revisión.
 
 \begin{itemize}
   \item \textbf{T1 -- Heurística voraz local}: cada robot selecciona la tarea más
@@ -1118,10 +1102,6 @@ operaciones numéricas críticas (consenso, proyección al símplex, cálculo de
 gradiente) se vectorizan con NumPy. La Tabla~\ref{tab:params} recoge los
 parámetros del sistema junto con sus valores nominales y el rango de variación
 considerado en los experimentos.
-El código, los archivos de configuración, las semillas aleatorias, las trayectorias,
-las asignaciones, los grafos de comunicación, los payoffs y las métricas agregadas se
-organizarán en un repositorio versionado. Para una eventual publicación, se generará
-una versión archivada con DOI.
 
 \begin{table}[htbp]
 \centering
@@ -1181,14 +1161,13 @@ forman la geometría de coalición y reaccionan ante una perturbación (retirada
 robot a mitad de la misión). La escena incluye un almacén simplificado con zonas de
 carga marcadas en el suelo, compatible con el tamaño operativo de los Pioneer~3-DX.
 
-El alcance de esta validación es acotado: la simulación en CoppeliaSim verifica la
-viabilidad cinemática del esquema de asignación, formación y navegación con robots
-Pioneer~3-DX (saturación de velocidades, geometría espacial). No abarca la
-manipulación cooperativa por contacto ni la distribución de fuerzas sobre la carga,
-que pertenecen a una capa de control complementaria
-\citep{ebel2024cooperative, rosenfelder2024force} fuera del alcance de este TFM. La
-carga se representa como un cuboide pasivo acoplado cinemáticamente al centroide de
-la coalición una vez formada.
+El alcance de esta validación es limitado: la simulación en CoppeliaSim verifica la
+viabilidad cinemática del esquema de asignación, formación y navegación (saturación de
+velocidades, geometría espacial). No abarca la manipulación cooperativa por contacto ni
+la distribución de fuerzas sobre la carga, que pertenecen a una capa de control
+complementaria \citep{ebel2024cooperative, rosenfelder2024force} fuera del alcance de
+este trabajo. La carga se representa como un cuboide pasivo acoplado cinemáticamente al
+centroide de la coalición una vez formada.
 
 \subsection{Criterios de aceptación del método}
 
@@ -1235,9 +1214,9 @@ Esta extensión rompe la simetría explotada en el Teorema~\ref{prop:convergenci
 capacidades heterogéneas el juego deja de ser simétrico, el equilibrio Nash deja de
 ser único e interior, y el conjunto de coaliciones factibles
 $\{\mathcal{C}_k : \sum_{i\in\mathcal{C}_k} c_i \geq M_k\}$ es un problema combinatorio
-de tipo \emph{subset-sum}, NP-duro en general. Resolverlo de forma distribuida mediante
+de tipo \emph{subset-sum}, NP-duro en general. Resolverlo de modo distribuido con
 dinámicas poblacionales (incluido el riesgo de coaliciones infactibles localmente
 estables) es un problema abierto. Por ello se presenta solo a nivel
 de formulación; su análisis formal de convergencia y su validación exhaustiva quedan
-fuera del alcance de este TFM (véase \S\,\ref{sec:conclusiones}, trabajo futuro). El
+fuera del alcance de este trabajo (véase \S\,\ref{sec:conclusiones}, trabajo futuro). El
 Escenario~G explora cualitativamente su comportamiento.
