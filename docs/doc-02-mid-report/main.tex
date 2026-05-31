@@ -46,31 +46,31 @@
 
 %--- Resumen (pag 3)
 \begin{viuabstract}
-El transporte cooperativo de cargas heterogéneas en almacenes automatizados plantea una
-decisión que no puede separarse limpiamente del movimiento: qué robots atienden cada
-carga, por qué ruta se aproximan, cuándo forman la coalición y cómo se alinean para
-iniciar el traslado. La formulación general considera robots con capacidades distintas
-$c_i$ y cargas con demanda $M_k$; una coalición es válida si su capacidad acumulada
-satisface $\sum_{i\in\mathcal{C}_k}c_i\geq M_k$. El caso de cardinalidad mínima
-$|\mathcal{C}_k|\geq n_k$ se conserva como caso base homogéneo, útil para obtener una
-garantía formal acotada y una campaña experimental reproducible.
+En un almacén automatizado no todas las cargas pesan lo mismo. Una caja ligera la mueve
+un solo robot; una pieza pesada puede necesitar varios a la vez, agrupados en una
+coalición temporal. Y la decisión de quién atiende qué va atada al movimiento: hay que
+repartir la flota mientras los robots navegan hacia las cargas y se colocan a su
+alrededor. En la formulación general cada robot $i$ aporta una capacidad $c_i$ y cada
+carga $k$ exige una demanda $M_k$; una coalición sirve cuando
+$\sum_{i\in\mathcal{C}_k}c_i\geq M_k$. El núcleo del TFM se queda en el caso homogéneo
+—la cardinalidad mínima $|\mathcal{C}_k|\geq n_k$—, que es donde se puede demostrar una
+garantía formal y montar una campaña reproducible.
 
-La propuesta no usa un asignador central seguido de un planificador y un controlador
-independientes. Cada AGV ejecuta el mismo bucle local: estima por consenso el estado de
-las tareas, revisa sus preferencias mediante dinámicas de Smith y transforma el campo
-reactivo resultante en comandos de velocidad lineal y angular $(v_i,\omega_i)$, y por
-tanto en velocidades de rueda. El comportamiento buscado es análogo al de un enjambre:
-ningún robot conoce el plan global, pero la interacción local debe producir asignación,
-enrutamiento reactivo, formación y transporte cinemático.
+No hay asignador central. Cada AGV corre el mismo bucle local con la información de sus
+vecinos: estima por consenso cuántos robots hay en cada tarea, revisa sus preferencias
+con dinámicas de Smith y convierte el campo reactivo resultante en velocidades
+$(v_i,\omega_i)$, y de ahí en velocidades de rueda. La idea recuerda a un enjambre: nadie
+ve el plan completo, pero de las decisiones locales tienen que salir la asignación, la
+navegación y la formación de la coalición.
 
-El análisis formal cubre solo el caso homogéneo y balanceado con $\Psi \equiv 1$. Ahí el
-payoff induce una estructura de juego de congestión y se prueba la estabilidad local del
-equilibrio objetivo. Al añadir descuento espacial, comunicación local, percepción de
-obstáculos y navegación reactiva, esa garantía deja de aplicar directamente; el sistema
-se trata como una versión perturbada y se mide por simulación. La localización, el mapa
-del almacén y las coordenadas de recogida/entrega se asumen disponibles; SLAM, fusión de
-sensores y control de contacto quedan fuera del alcance. Python aporta la validación
-cuantitativa y CoppeliaSim la comprobación cinemática con robots Pioneer~3-DX.
+La parte formal cubre solo el caso homogéneo y balanceado con $\Psi \equiv 1$. Ahí el
+payoff da lugar a un juego de congestión y se prueba la estabilidad local del equilibrio
+buscado. En cuanto entran el descuento espacial, la comunicación limitada y la navegación
+reactiva, esa garantía ya no aplica tal cual: el sistema pasa a tratarse como una versión
+perturbada y se mide en simulación. Se asumen conocidos la localización y el mapa del
+almacén; SLAM, fusión de sensores y control de contacto quedan fuera. La validación
+cuantitativa se hace en Python, y la comprobación cinemática en CoppeliaSim con robots
+Pioneer~3-DX.
 
 \keywords{coordinación distribuida, formación de coaliciones, consenso dinámico,
   dinámicas poblacionales, transporte cooperativo multi-AGV.}
