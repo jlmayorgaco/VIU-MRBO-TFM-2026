@@ -10,7 +10,7 @@ que deben transportar cargas heterogéneas mediante coaliciones. La formulación
 se expresa como una restricción de capacidad acumulada
 $\sum_{i\in\mathcal{C}_k} c_i \geq M_k$; el núcleo formal y experimental del TFM evalúa
 su caso base homogéneo, equivalente a requisitos mínimos de cardinalidad
-$|\mathcal{C}_k|\geq n_k$. Todo ocurre dentro de un mismo loop de control, donde cada robot estima la
+$|\mathcal{C}_k|\geq n_k$. Todo ocurre dentro de un mismo bucle de control, donde cada robot estima la
 ocupación o la capacidad ya comprometida, revisa sus preferencias, navega de forma
 reactiva y traduce esa decisión en comandos $(v_i,\omega_i)$ de un robot diferencial,
 sin delegar ninguna de esas capas en un coordinador externo. La evaluación se organiza
@@ -37,7 +37,7 @@ centralizada replanificada.
     formación de coaliciones en los experimentos.
 
   \item Implementar las tres dinámicas acopladas (consenso distribuido,
-    Protocolo Smith en tiempo discreto y gradiente reactivo con evitación de obstáculos
+    dinámicas de Smith en tiempo discreto y gradiente reactivo con evitación de obstáculos
     estáticos) en un paquete Python reproducible, incluyendo la conversión de
     $(v_i,\omega_i)$ a velocidades de rueda y el registro de trayectorias, preferencias,
     payoffs, grafos y métricas.
