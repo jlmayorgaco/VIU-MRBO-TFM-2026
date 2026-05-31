@@ -969,12 +969,12 @@ de posición (controladas por semilla) y la misma secuencia de aparición de tar
 
 \subsubsection{Tratamientos}
 
-Los tratamientos forman una escalera incremental: cada uno añade exactamente un
-mecanismo respecto al anterior, de modo que la diferencia de desempeño entre dos
-niveles consecutivos es atribuible a ese mecanismo. T3 y T4 comparten todo lo demás
-(el mismo payoff \eqref{eq:payoff}, el mismo estimador DAC \eqref{eq:consenso} para
-$\hat{x}_{ik}$ y los mismos parámetros $\beta,\lambda,\mu_0$) y difieren únicamente en la
-ley de revisión. Su comparación aísla, así, el efecto de la política de revisión.
+Los tratamientos forman una escalera incremental. Cada peldaño añade un único mecanismo
+sobre el anterior, de modo que la diferencia de desempeño entre dos niveles consecutivos
+se atribuye a ese mecanismo y no a otra cosa. El contraste más limpio es T3 contra T4:
+comparten payoff \eqref{eq:payoff}, estimador DAC \eqref{eq:consenso} para $\hat{x}_{ik}$
+y los parámetros $\beta,\lambda,\mu_0$; lo único que cambia entre ellos es la ley de
+revisión.
 
 \begin{itemize}
   \item \textbf{T1 -- Heurística voraz local}: cada robot selecciona la tarea más
