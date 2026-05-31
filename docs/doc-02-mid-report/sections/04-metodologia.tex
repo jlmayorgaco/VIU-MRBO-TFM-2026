@@ -8,12 +8,12 @@
 
 \subsubsection{Alcance}
 
-El trabajo se limita a un entorno 2D con robots de cinemática uniciclo. La validación
+El trabajo se limita a un estudio analitico en 2D con robots de cinemática uniciclo. La validación
 es exclusivamente por simulación: Python aporta los resultados cuantitativos; CoppeliaSim,
-la comprobación visual aplicada. El sistema puede manejar hasta
+la comprobación visual aplicada en un entorno 3D simulado. El sistema puede manejar hasta
 $N = 15$ AGV y $K = 5$ tareas activas simultáneas; el límite $N = 15$ responde
 a la complejidad computacional del simulador Python en tiempo real y al rango de
-flotas AGV típico en almacenes medianos, no a una restricción teórica del método.
+flotas AGV típico en almacenes medianos, no a una restricción teórica del método, sino a una conveniencia para la simulaciónen CoppeliaSim.
 El rango de comunicación $R$ se trata como parámetro variable entre 1\,m e infinito, y
 se introduce un radio de percepción $R_{\mathrm{vis}}$ para tareas, vecinos próximos y
 obstáculos.
@@ -24,10 +24,12 @@ $c_i=c$, $M_k=n_kc$, equivalente a un requisito mínimo de cardinalidad $n_k$. E
 reducción permite analizar la convergencia sin ocultar la extensión fuerte por
 capacidad. No se propone una arquitectura jerárquica de asignador, planificador y
 controlador independientes: la estimación, la revisión estratégica y la navegación se
-actualizan en el mismo bucle de control. Sí se separa el alcance físico: el TFM decide
+actualizan en el mismo bucle de control. 
+
+Sí se separa el alcance físico donde el trabajo decide
 qué robots forman la coalición, cuándo inician el transporte y qué comando cinemático
 ejecuta cada AGV; no modela las fuerzas de contacto que garantizan agarre o empuje
-estable. Esa parte pertenece al control cooperativo de manipulación documentado en
+estable (drag and pull). Esa parte pertenece al control cooperativo de manipulación documentado en
 \citet{ebel2024cooperative} y \citet{rosenfelder2024force}. Durante el transporte, la
 carga se propaga como un objeto cinemáticamente acoplado al centroide de la coalición.
 
@@ -43,8 +45,7 @@ configuración en YAML y registro completo de trayectorias.
 El transporte de la coalición incorpora evitación reactiva de obstáculos estáticos a
 nivel cinemático del centroide de la coalición, manteniendo la geometría de formación
 $d^*$. Esta capa no modela la dinámica de contacto entre robots y carga ni ofrece
-garantías formales de evitación de colisiones: la navegación con obstáculos se evalúa
-exclusivamente de forma empírica.
+garantías formales de evitación de colisiones.
 
 \subsubsection{Limitaciones}
 
@@ -105,10 +106,10 @@ T1 y T2. Las etapas completadas aparecen en naranja; las pendientes, en gris cla
 %% ====================================================================
 
 La investigación adopta un diseño cuantitativo, experimental en simulación y
-comparativo. Más que demostrar la superioridad de una técnica concreta, busca
+comparativo. Más que demostrar la superioridad/inferioridad de una técnica concreta, busca
 caracterizar, mediante una escalera comparativa incremental de cinco tratamientos,
 qué nivel de sofisticación (estimación distribuida, dinámica poblacional y política
-de revisión) se requiere para formar coaliciones factibles de forma distribuida. En el
+de revisión) se requiere para formar coaliciones factibles de forma distribuida con esta aproximación emergente de problema. En el
 núcleo experimental, la factibilidad se mide por cardinalidad mínima; en el escenario
 exploratorio, por capacidad acumulada. Cada tratamiento
 añade un mecanismo sobre el anterior y se evalúa qué problema resuelve y cuál
@@ -124,7 +125,7 @@ no como un óptimo absoluto.
 \subsection{Modelo del sistema}
 
 El modelo del sistema se compone de cuatro elementos: los robots, descritos por una
-cinemática de uniciclo; las tareas, caracterizadas por posición, destino y demanda; el
+cinemática de uniciclo clasica; las tareas, caracterizadas por posición, destino y demanda; el
 grafo de comunicación, que determina qué información intercambian los robots; y el
 modelo de percepción local, que define qué obstáculos y tareas puede usar cada agente
 para calcular su campo reactivo. La notación que emplea el resto del capítulo queda
@@ -132,7 +133,7 @@ fijada en su formalización.
 
 \subsubsection{Robots}
 
-Cada AGV sigue cinemática uniciclo en tiempo discreto con período $T_s = 0{,}1\,\text{s}$:
+Cada AMR sigue cinemática uniciclo en tiempo discreto con período $T_s = 0{,}1\,\text{s}$:
 \begin{align}
   x_i(t+1) &= x_i(t) + T_s \, v_i(t)\cos\theta_i(t), \label{eq:unicycle_x}\\
   y_i(t+1) &= y_i(t) + T_s \, v_i(t)\sin\theta_i(t), \label{eq:unicycle_y}\\
@@ -720,7 +721,7 @@ $\Delta_{\mathrm{chg}}$ en el Escenario~A.
 
 El análisis formal se presenta en dos pasos: un teorema de convergencia para el
 \emph{caso base ideal} y una proposición que acota la perturbación introducida por
-el consenso local con $R$ finito. El análisis del caso general (grafo irregular,
+el consenso local con $R$ finito. El análisis del caso general (grafo irregular, grafo no conexo,
 tareas heterogéneas, cardinalidades distintas) queda como trabajo futuro. La
 Figura~\ref{fig:teoria_implementado} resume la relación entre el caso base analizado
 formalmente y el sistema completo evaluado por simulación.
@@ -1170,28 +1171,30 @@ $N_{\text{fail}}$ & Episodios fallidos &
 \end{tabularx}
 \end{table}
 
-Los resultados se presentan como media $\pm$ desviación estándar sobre $m = 30$
-repeticiones. Las comparaciones pareadas entre tratamientos (p.ej., dinámica de
-Smith frente a líneas base, $\mu_i$ modulada frente a constante) se contrastarán
-mediante pruebas no paramétricas: la prueba de Wilcoxon de rangos con signo (datos
-pareados) o la U de Mann-Whitney (dos muestras independientes). Además de los valores
-$p$, se proporcionarán intervalos de confianza al 95\,\% mediante \emph{bootstrap} y
-tamaños de efecto: para métricas continuas, la $\delta$ de Cliff o la correlación
-biserial de rangos; para métricas binarias de éxito/fallo, intervalos binomiales y,
-cuando las semillas sean pareadas, la prueba de McNemar o el \emph{bootstrap} pareado
-de la diferencia de proporciones. La corrección por comparaciones múltiples se
-realizará mediante el procedimiento de Holm--Bonferroni. Se incluye un episodio
-fallido por escenario para documentar los límites del método. El registro completo de
-trayectorias $\mathbf{p}_i(t)$ para todo $i$ y todo $t$ se almacena para
-análisis a posteriori de la dinámica de preferencias.
+Los resultados se resumirán como media $\pm$ desviación estándar sobre $m = 30$
+repeticiones por modelo y escenario. Como las repeticiones se ejecutan con las
+mismas seeds para todos los tratamientos, la comparación principal será entre pares,
+para cada semilla se calculará la diferencia entre métodos y se reportará la media de
+esa diferencia con un intervalo de confianza del 95\,\% obtenido por
+\emph{bootstrap}. Cuando se requiera una prueba de significación, se usará la prueba
+de Wilcoxon de rangos con signo, adecuada para comparaciones pareadas para casos que no pueden asumir
+normalidad.
+
+Para las métricas binarias, como éxito o fallo de una tarea, se reportará la tasa de
+éxito con su intervalo de confianza de distribución binomial. Si algún escenario produce fallos, se
+mostrará al menos un episodio representativo para documentar el modo de fallo y no
+solo el promedio. Además, se conservarán las trayectorias completas de preferencias
+$\mathbf{p}_i(t)$, posiciones $\mathbf{q}_i(t)$ y estimaciones
+$\hat{\mathbf{x}}_i(t)$ para revisar a posteriori cómo se formó o se rompió cada
+coalición.
 
 \subsection{Implementación en Python}
 
-La plataforma de simulación es un paquete Python modular. Cinco piezas se desarrollan
+La plataforma de simulación es un paquete Python con cinco piezas se desarrollan
 y prueban por separado: el modelo del dominio, las dinámicas distribuidas, los
 tratamientos de comparación, el motor de simulación y el cálculo de métricas. Las
-operaciones que dominan el coste por paso —consenso, proyección al símplex y gradiente
-del campo— se vectorizan con NumPy. La Tabla~\ref{tab:params} reúne los parámetros del
+operaciones que dominan el coste por paso , consenso, proyección al símplex y gradiente
+del campo, se vectorizan con NumPy. La Tabla~\ref{tab:params} reúne los parámetros del
 sistema, sus valores nominales y el rango que se barre en los experimentos.
 
 \begin{table}[htbp]
@@ -1249,9 +1252,9 @@ para una publicación posterior se prevé una versión archivada con DOI.
 \subsection{Validación en CoppeliaSim}
 
 El Escenario~F replica uno de los escenarios de coalición mínima (B o C) con
-robots Pioneer~3-DX en CoppeliaSim. Esta validación no añade métricas cuantitativas;
+robots Pioneer~3-DX en CoppeliaSim. Esta validación no añade métricas cuantitativas sino
 confirma que el comportamiento colectivo observado en Python es coherente con la
-física del simulador robótico: los robots se desplazan hacia las tareas correctas,
+física del simulador robótico, donde los robots se desplazan hacia las tareas correctas,
 forman la geometría de coalición y reaccionan ante una perturbación (retirada de un
 robot a mitad de la misión). La escena incluye un almacén simplificado con zonas de
 carga marcadas en el suelo, compatible con el tamaño operativo de los Pioneer~3-DX.

@@ -7,8 +7,8 @@
 ¿Puede una ley distribuida, con solo comunicación local y percepción limitada, formar
 coaliciones de transporte factibles sin coordinador central? Lo que se pone a prueba es
 si la estimación de ocupación, la revisión de estrategias y la navegación reactiva,
-resueltas en un mismo bucle, bastan para lograrlo. En el núcleo experimental la
-factibilidad se mide como cardinalidad mínima; en la formulación general, como capacidad
+resueltas en un mismo bucle, bastan para lograrlo. En el componente experimental la
+factibilidad se mide como cardinalidad mínima pero en la formulación general, como capacidad
 acumulada.
 
 La pregunta se aborda mediante una escalera comparativa de cinco tratamientos
@@ -18,7 +18,7 @@ umbrales operativos que las contrastan se recogen por separado en la
 \S\,\ref{subsec:criterios}.
 
 \textbf{Hipótesis~1.}
-La estimación distribuida por sí sola (DAC más regla voraz, T2) no es suficiente
+La estimación distribuida por sí sola (DAC, T2) no es suficiente
 para formar coaliciones robustas en escenarios con demandas distintas: produce
 \emph{chattering} cerca de la frontera de factibilidad o coaliciones
 subdimensionadas.
@@ -34,7 +34,7 @@ rango de comunicación $R$, atribuible al sesgo de la estimación de la media de
 payoff por consenso sobre grafos irregulares.
 
 \textbf{Hipótesis~4.}
-Las dinámicas de Smith (T4) mantienen mejor desempeño que T3 al reducir $R$,
+Las dinámicas del Protocolo Smith (T4) mantienen mejor desempeño que T3 al reducir $R$,
 porque su comparación bilateral no requiere estimar la media global. La diferencia
 es especialmente visible en escenarios con tareas de mayor demanda, ya sea medida como
 cardinalidad $n_k$ o, en la extensión, como capacidad $M_k$.

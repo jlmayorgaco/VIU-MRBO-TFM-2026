@@ -3,20 +3,21 @@
 \label{sec:intro}
 %% ====================================================================
 
-En un almacén automatizado no todas las cargas justifican el mismo robot. Algunas cajas
-las puede mover un AGV pequeño; una paleta pesada puede exigir un vehículo de mayor
-capacidad o una coalición temporal de varios robots. Los sistemas tipo Kiva ya demostraron
-que cientos de vehículos pueden coordinarse en flujos mercancía-a-persona
+En almacenes automizados con robots moviles no todos los robots pueden cargar todas las piezas, herramienta y materiales, existen limitaciones de capacidad de todo tipo.
+Algunas cajas las puede mover un AGV pequeño, una paleta pesada puede exigir un vehículo de mayor
+capacidad o una coalición temporal de varios robots. En los casos como los sistemas tipo Kiva operan
+con cientos de vehículos que pueden coordinarse en flujos mercancía a persona
 \citep{wurman2008coordinating}, pero ese modelo trabaja con una unidad logística bastante
-regular: cada robot transporta el módulo para el que fue diseñado. Aquí se estudia una
-flota más flexible. Si el robot de mayor capacidad está ocupado, varios robots menores
+regular donde cada robot transporta el módulo para el que fue diseñado, es decir el robot limita la carga maxima que puede moverse. 
+Aquí se estudia una flota más flexible, donde si el robot de mayor capacidad está ocupado, varios robots menores
 deben agruparse y completar juntos la capacidad que exige la carga.
 
-En la formulación general, cada robot $i$ tiene una capacidad $c_i$ y cada carga $k$
+Cada robot $i$ tiene una capacidad $c_i$ y cada carga $k$
 demanda una capacidad $M_k$. Una carga de 50\,kg puede ser atendida por un robot de
 100\,kg, o por una coalición de robots de 20\,kg, 20\,kg y 10\,kg si el robot grande no
-está disponible. La asignación, por sí sola, no resuelve el problema. La misma ley local
-que decide la preferencia de tarea debe llevar al AGV al origen, desviarlo de obstáculos
+está disponible. Es en esta aproximación al problema que surge la posiblidad de un control distribuido que coordina los robots de la flota desde su movimiento para que las dinámicas de cooperación y navegación emergen de la reactividad local. 
+
+La misma ley local que decide la preferencia de tarea debe llevar al AGV al origen, desviarlo de obstáculos
 y colocarlo junto a los demás miembros de su coalición.
 La abstracción de cardinalidad mínima $|\mathcal{C}_k|\geq n_k$ sirve como caso base
 homogéneo, donde se puede demostrar una propiedad de convergencia y medir el método con
@@ -36,10 +37,8 @@ entrenamiento previo cuya cobertura condiciona lo que el sistema sabe hacer.
 
 \subsection{Dinámicas poblacionales como ley de control distribuida}
 
-El grupo de Quijano ha desarrollado una vía distinta: usar las dinámicas evolutivas de
-los juegos poblacionales como leyes de control distribuido
-\citep{quijano2017population}.
-La proporción de robots asignados a cada tarea se lee como el perfil de estrategias de
+Algunos autores han desarrollado una vía distinta: usar las dinámicas evolutivas de
+los juegos poblacionales como leyes de control distribuido \citep{quijano2017population}. La proporción de robots asignados a cada tarea se lee como el perfil de estrategias de
 una población, y una dinámica de revisión actualiza ese perfil según las diferencias de
 \emph{payoff} (función de utilidad que recibe cada robot por elegir una tarea). El
 coordinador central no participa en la asignación. Cada agente actúa con información
@@ -47,29 +46,26 @@ local, y el sistema converge al equilibrio Nash bajo condiciones de juego potenc
 
 Como muestran \citet{barreiro2017distributed} y \citet{martinez2020formation}, las
 dinámicas distributivas del replicador permiten coordinar formaciones de robots móviles
-con comunicación limitada en grafo; \citet{barreiro2021uav} lleva esa extensión a
+con comunicación limitada en grafo, otros autores como \citet{barreiro2021uav} lleva esa extensión a
 formaciones de UAV con datos reales, y \citet{dinh2026bsplines} diseñan funciones de
-payoff con B-splines para imponer restricciones de formación concretas. En esa línea
-suele suponerse que
-el tamaño del grupo que realiza cada tarea es fijo y conocido de antemano. El requisito
-de cardinalidad mínima dinámica no recibe tratamiento explícito.
+payoff para imponer restricciones de formación concretas. En esa línea
+suele suponerse que el tamaño del grupo que realiza cada tarea es fijo y conocido de antemano. El requisito
+de cardinalidad mínima dinámica no recibe tratamiento explícito y es donde la flexiblidad para una nave industrial se torna de importancia, poder agrandar la flota de robots con diferentes capacidades y luego poder cambiar el tipo de carga dejando que la flota se organize sola sin un orquestador central.
 
-La comparación con hormigas se usa aquí en un sentido limitado. No hay un supervisor que
-asigne una ruta completa a cada individuo; cada agente reacciona a señales locales y
-compara alternativas. En el TFM, esa señal local es un payoff calculado con distancia,
+No hay un supervisor que asigne una ruta completa a cada individuo; cada agente reacciona a señales locales y
+compara alternativas. Esa señal local es un payoff calculado con distancia,
 ocupación estimada, requisito de la tarea y vecinos disponibles
 \citep{theraulaz1999stigmergy}. La ley de control sigue siendo robótica: termina en
 comandos $(v_i,\omega_i)$ para un robot diferencial.
 
-\subsection{El papel de la política de revisión: replicador y Smith}
+\subsection{El papel de la política de revisión: Replicador y Smith}
 \label{subsec:porquesmith}
 
 Con el estimador fijado, el experimento puede medir qué cambia al usar una u otra
 \emph{política de revisión} de una dinámica poblacional. Los tratamientos T3
 (replicador distribuido) y T4 (dinámicas de Smith) comparten el mismo payoff y el mismo
 estimador por consenso, y difieren únicamente en esta ley. Esa comparación aísla su
-efecto. Ambas
-parten del mismo marco. El estado de la población es el vector de fracciones
+efecto. Ambas parten del mismo marco. El estado de la población es el vector de fracciones
 $\mathbf{x} = (x_k)$, donde $x_k$ es la proporción de robots asignados a la tarea $k$.
 Cada robot estima $x_k$ por consenso promedio distribuido y obtiene así
 $\hat{x}_{ik}$. Hasta aquí, Smith y DRD son idénticos: ambos requieren esta
@@ -103,12 +99,11 @@ topologías de comunicación que el método propuesto.
 
 El núcleo del TFM es una ley distribuida acoplada. La variable estratégica
 $\mathbf{p}_i$ marca hacia qué tarea tiende el robot, pero esa preferencia no queda fija
-en un plan discreto; modifica el campo que genera $(v_i,\omega_i)$, y el movimiento
+en un plan discreto como ya suelen trabajarse en la literature, sino que esta modifica el campo que genera $(v_i,\omega_i)$, y el movimiento
 resultante cambia después las distancias, los vecinos y el payoff del paso siguiente. En
-el caso
-base, la función de payoff usa una sigmoide decreciente que representa requisitos mínimos
+el caso base, la función de payoff usa una decreciente, posible sigmoide, que representa requisitos mínimos
 de cardinalidad mediante cotas inferiores, en contraste con las cotas superiores de
-\citet{martinezpiazuelo2022automatica}. En la extensión heterogénea, esa sigmoide se
+\citet{martinezpiazuelo2022automatica}. En la extensión heterogénea (diferentes capacidades por robot), esa sigmoide se
 reemplaza por un déficit de capacidad acumulada.
 
 Sobre ese mismo payoff se comparan el replicador distribuido y las dinámicas de
@@ -120,29 +115,14 @@ replanificada y contra barridos del rango de comunicación. El resultado que se 
 una frontera práctica: en qué condiciones una ley local, con parámetros explícitos,
 organiza coaliciones de transporte sin reentrenamiento ni subastas globales.
 
-La validación se realiza mediante simulación cuantitativa en Python con seis
+La validación se realiza mediante simulación en Python con seis
 escenarios y cinco tratamientos comparativos dispuestos como escalera incremental
 (T1 heurística voraz local, T2 DAC con regla voraz, T3 replicador distribuido
 modificado, T4 dinámicas de Smith con revisión modulada (método propuesto) y
-T5 referencia centralizada replanificada), más una validación cualitativa y
-cinemática en CoppeliaSim.
-
-\subsection{Estructura del documento}
-
-La sección~\ref{sec:planteamiento} describe el problema de asignación distribuida
-con restricciones de capacidad y su caso base por cardinalidad. La
-sección~\ref{sec:hipotesis} formula la pregunta de investigación y las hipótesis.
-Los objetivos se especifican en la sección~\ref{sec:objetivos}, y el alcance y
-limitaciones en la sección~\ref{sec:alcance}. La sección~\ref{sec:metodologia},
-núcleo de esta entrega, desarrolla las tres dinámicas acopladas, la
-función de payoff, el análisis de convergencia y el diseño experimental completo.
-Las secciones \ref{sec:marco}--\ref{sec:conclusiones} recogen el marco teórico, los
-resultados y las conclusiones.
+T5 referencia centralizada replanificada), más una validación en CoppeliaSim en un entorno 3D simulado.
 
 \subsection{Estado actual del TFM}
 \label{subsec:estado}
-
-A la fecha de esta entrega (mayo de 2026) se han completado las siguientes etapas:
 
 \begin{itemize}
   \item \textbf{Revisión bibliográfica} (22 referencias en 7 áreas temáticas:
@@ -161,7 +141,7 @@ A la fecha de esta entrega (mayo de 2026) se han completado las siguientes etapa
     (Algoritmo~\ref{alg:loop}).
 \end{itemize}
 
-En curso: implementación en Python de las tres dinámicas acopladas, los
+En curso se tiene la implementación en Python de las tres dinámicas acopladas, los
 tratamientos comparativos y la campaña experimental. El plan de trabajo
 completo se detalla en la Sección~\ref{sec:cronograma}.
 
@@ -171,14 +151,14 @@ completo se detalla en la Sección~\ref{sec:cronograma}.
 \subsubsection{Descripción formal del problema}
 
 El Anexo~I mencionaba ``cargas heterogéneas'' (objetos que difieren
-en peso, fragilidad y tamaño). En esta versión la heterogeneidad se formula primero en
+en peso, forma y tamaño). En esta versión la heterogeneidad se formula primero en
 su forma física: cada robot aporta una capacidad $c_i$ y cada carga exige una demanda
 $M_k$. La abstracción por cardinalidad aparece después, como el caso homogéneo
 $c_i=c$ y $M_k=n_kc$. Así se separan dos niveles. El problema físico es decidir
-coaliciones por capacidad acumulada; el problema que se demuestra formalmente en el TFM
+coaliciones por capacidad acumulada; el problema que se demuestra formalmente
 es su reducción homogénea por cardinalidad.
 
-Con esta abstracción, el sistema se define así. Se considera una flota de $N$ AGV que
+Con esta abstracción, el sistema se define así. Se considera una flota de $N$ robots moviles que
 operan en un entorno 2D. El conjunto de robots se indexa
 $i \in \{1, \ldots, N\}$ y el conjunto de tareas activas en un instante dado se indexa
 $k \in \{1, \ldots, K\}$. Cada tarea $k$ tiene una posición de recogida
@@ -192,19 +172,19 @@ donde $\simplex^K = \{p \in \RR^{K+1} : \sum_{k=0}^K p_k = 1,\, p_k \geq 0\}$
 es el símplex de probabilidad. El componente $p_{ik}(t)$ representa la propensión
 del robot $i$ a seleccionar la tarea $k$. La estrategia efectiva del robot es
 $s_i(t) = \argmax_k p_{ik}(t)$. En la formulación general, la coalición
-$\mathcal{C}_k(t)$ debe satisfacer
-$\sum_{i\in\mathcal{C}_k(t)} c_i \geq M_k$; en el caso base homogéneo evaluado en el
+$\mathcal{C}_k(t)$ debe satisfacer $\sum_{i\in\mathcal{C}_k(t)} c_i \geq M_k$; 
+en el caso base homogéneo evaluado en el
 núcleo del TFM, esta condición se reduce a $|\mathcal{C}_k(t)| \geq n_k$.
 
 \input{figures/fig-problema.tex}
 
-Dos dificultades distinguen este problema de la asignación estática de tareas. La
+Dos dificultades distinguen este problema de la asignación estática clasica de tareas. La
 restricción es una \emph{cota inferior} dinámica: si una carga pierde parte de su
 capacidad asignada, el sistema debe reclutar nuevos robots sin coordinación central.
 En el caso homogéneo esto se observa como $|\mathcal{C}_k| < n_k$; en el caso
 heterogéneo, como $\sum_{i\in\mathcal{C}_k} c_i < M_k$. A ello se suma que, cuando
 las tareas aparecen, desaparecen o cambian su prioridad durante la operación, las
-coaliciones deben reconstituirse sin reinicializar el sistema completo.
+coaliciones deben reconstituirse sin reinicializar el sistema completo  y siendo capaz de mantener rigidez en la forma (coaliciones) y en la navegación (evadir obstaculos).
 
 \subsubsection{Límites de las soluciones existentes}
 
@@ -233,24 +213,24 @@ esa línea de trabajo.
 El trabajo de \citet{martinezpiazuelo2022automatica} introduce restricciones de
 capacidad en juegos poblacionales, pero estas restricciones son \emph{cotas superiores}
 sobre cuántos agentes pueden elegir una estrategia: impiden que una estrategia se
-sature por encima de un umbral. El caso que aquí se aborda requiere cotas inferiores:
-la tarea no puede ejecutarse si hay \emph{menos} de $n_k$ robots. Invertir el sentido de
+sature por encima de un umbral. El caso que aquí se aborda requiere necesariamente de cotas inferiores:
+la tarea no puede ejecutarse si hay \emph{menos} de $n_k$ robots, pues podria dañar el robot o afectar la integridad de la carga. Invertir el sentido de
 la desigualdad altera la naturaleza del problema, y los resultados de estabilidad de ese
-trabajo no se trasladan directamente a este escenario.
+trabajo no se trasladan directamente a este escenario necesariamente.
 
 Tampoco se aborda de frente el caso en que la demanda total excede la oferta disponible
 ($N < \sum_k n_k$ en el caso homogéneo, o $\sum_i c_i < \sum_k M_k$ en el caso de
 capacidad). En ese régimen la flota no puede satisfacer todas las tareas
-simultáneamente y el sistema debe priorizar. Este caso límite, relevante en escenarios
+simultáneamente y el sistema debe priorizar, generando una derivación a teoria de colas que no se aborada directamente. Este caso límite, relevante en escenarios
 con alta demanda transitoria, queda fuera del alcance formal de este trabajo pero se
 identifica como línea futura.
 
-\subsubsection{Vacío específico}
+\subsubsection{Research Gap}
 
-En las referencias usadas para este informe no aparece una formulación que reúna estos
-cuatro componentes: dinámicas de Smith como ley de revisión directa, payoff de cota
-inferior, tasa de revisión modulada por distancia y conversión inmediata de la decisión
-estratégica en movimiento diferencial reactivo. Las piezas sí existen en trabajos
+En la revisión de literatura realizada para este informe no se encontro una formulación que reúna estos
+cuatro componentes: dinámicas poblacionales como ley de revisión directa, payoff de cota
+inferior limite, tasa de revisión modulada por distancia y conversión inmediata de la decisión
+estratégica en movimiento diferencial reactivo. Sin embargo, estas piezas sí existen en trabajos
 separados: Smith en control distribuido \citep{barreiro2017distributed}, sigmoides de
 reclutamiento en inteligencia de enjambre \citep{theraulaz1999stigmergy}, tasas de
 revisión moduladas por contexto \citep{sandholm2010population}, y control cooperativo de
@@ -262,6 +242,4 @@ heterogénea.
 
 Bajo comunicación local y percepción limitada, ¿puede una ley local, con parámetros
 físicos explícitos, formar coaliciones factibles con una pérdida de desempeño controlada
-frente a una referencia centralizada? El TFM responde esa pregunta en el caso homogéneo.
-La extensión por capacidad acumulada queda formulada y parcialmente explorada como
-trabajo futuro. La comparación no cubre todos los regímenes posibles de operación.
+frente a una referencia centralizada? El TFM responde esa pregunta en el caso homogéneo formalmente y explora la condición heterogénea inmediata.
