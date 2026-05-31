@@ -47,30 +47,30 @@
 %--- Resumen (pag 3)
 \begin{viuabstract}
 En un almacén automatizado no todas las cargas pesan lo mismo. Una caja ligera la mueve
-un solo robot; una pieza pesada puede necesitar varios a la vez, agrupados en una
-coalición temporal. Y la decisión de quién atiende qué va atada al movimiento: hay que
-repartir la flota mientras los robots navegan hacia las cargas y se colocan a su
+un solo robot. Una pieza pesada puede necesitar varios a la vez, agrupados en una
+coalición temporal. Y la decisión de quién atiende qué va atada al movimiento, porque
+hay que repartir la flota mientras los robots navegan hacia las cargas y se colocan a su
 alrededor. En la formulación general cada robot $i$ aporta una capacidad $c_i$ y cada
-carga $k$ exige una demanda $M_k$; una coalición sirve cuando
+carga $k$ exige una demanda $M_k$, y una coalición sirve cuando
 $\sum_{i\in\mathcal{C}_k}c_i\geq M_k$. El núcleo del TFM se queda en el caso homogéneo
 —la cardinalidad mínima $|\mathcal{C}_k|\geq n_k$—, que es donde se puede demostrar una
 garantía formal y montar una campaña reproducible.
 
 No hay asignador central. Cada AGV corre el mismo bucle local con la información de sus
-vecinos: estima por consenso cuántos robots hay en cada tarea, revisa sus preferencias
+vecinos. Estima por consenso cuántos robots hay en cada tarea, revisa sus preferencias
 con dinámicas de Smith y convierte el campo reactivo resultante en velocidades
-$(v_i,\omega_i)$, y de ahí en velocidades de rueda. La idea recuerda a un enjambre: nadie
-ve el plan completo, pero de las decisiones locales tienen que salir la asignación, la
-navegación y la formación de la coalición.
+$(v_i,\omega_i)$, y de ahí en velocidades de rueda. La idea recuerda a un enjambre.
+Ningún robot ve el plan completo, pero de las decisiones locales tienen que salir la
+asignación, la navegación y la formación de la coalición.
 
 La parte formal cubre solo el caso homogéneo y balanceado con $\Psi \equiv 1$. Ahí el
 payoff da lugar a un juego de congestión y se prueba la estabilidad local del equilibrio
 buscado. En cuanto entran el descuento espacial, la comunicación limitada y la navegación
-reactiva, esa garantía ya no aplica tal cual: el sistema pasa a tratarse como una versión
-perturbada y se mide en simulación. Se asumen conocidos la localización y el mapa del
-almacén; SLAM, fusión de sensores y control de contacto quedan fuera. La validación
-cuantitativa se hace en Python, y la comprobación cinemática en CoppeliaSim con robots
-Pioneer~3-DX.
+reactiva, esa garantía ya no aplica tal cual, y el sistema pasa a tratarse como una
+versión perturbada que se mide en simulación. Se asumen conocidos la localización y el
+mapa del almacén. SLAM, fusión de sensores y control de contacto quedan fuera. La
+validación cuantitativa se hace en Python, y la comprobación cinemática en CoppeliaSim
+con robots Pioneer~3-DX.
 
 \keywords{coordinación distribuida, formación de coaliciones, consenso dinámico,
   dinámicas poblacionales, transporte cooperativo multi-AGV.}

@@ -3,7 +3,7 @@
 \label{sec:intro}
 %% ====================================================================
 
-En almacenes automatizados con robots móviles no todos los robots pueden cargar todas las piezas, herramientas y materiales; existen limitaciones de capacidad de todo tipo.
+En almacenes automatizados con robots móviles no todos los robots pueden cargar todas las piezas, herramientas y materiales. Existen limitaciones de capacidad de todo tipo.
 Algunas cajas las puede mover un AGV pequeño, una paleta pesada puede exigir un vehículo de mayor
 capacidad o una coalición temporal de varios robots. En los casos como los sistemas tipo Kiva operan
 con cientos de vehículos que pueden coordinarse en flujos mercancía a persona
@@ -30,14 +30,14 @@ misión. La flota debe decidir localmente qué coalición basta para cada carga 
 de forma coherente con esa decisión. Los métodos de asignación distribuida por subasta
 \citep{choi2009consensus} o por formación de coaliciones
 \citep{dutta2021hedonic, shan2024distributed} coordinan la asignación de forma discreta
-o negociada; ninguno la plantea como una dinámica poblacional continua que termine
+o negociada, pero ninguno la plantea como una dinámica poblacional continua que termine
 directamente en las velocidades $(v_i,\omega_i)$ y en la navegación reactiva de cada
 robot. El aprendizaje por refuerzo \citep{bezerra2025learning} toma otro camino, a costa de un
 entrenamiento previo cuya cobertura condiciona lo que el sistema sabe hacer.
 
 \subsection{Dinámicas poblacionales como ley de control distribuida}
 
-Algunos autores han desarrollado una vía distinta: usar las dinámicas evolutivas de
+Algunos autores han desarrollado una vía distinta, que emplea las dinámicas evolutivas de
 los juegos poblacionales como leyes de control distribuido \citep{quijano2017population}. La proporción de robots asignados a cada tarea se lee como el perfil de estrategias de
 una población, y una dinámica de revisión actualiza ese perfil según las diferencias de
 \emph{payoff} (función de utilidad que recibe cada robot por elegir una tarea). El
@@ -52,10 +52,10 @@ payoff para imponer restricciones de formación concretas. En esa línea
 suele suponerse que el tamaño del grupo que realiza cada tarea es fijo y conocido de antemano. El requisito
 de cardinalidad mínima dinámica no recibe tratamiento explícito y es donde la flexibilidad para una nave industrial se torna de importancia, poder agrandar la flota de robots con diferentes capacidades y luego poder cambiar el tipo de carga dejando que la flota se organice sola sin un orquestador central.
 
-No hay un supervisor que asigne una ruta completa a cada individuo; cada agente reacciona a señales locales y
+No hay un supervisor que asigne una ruta completa a cada individuo. Cada agente reacciona a señales locales y
 compara alternativas. Esa señal local es un payoff calculado con distancia,
 ocupación estimada, requisito de la tarea y vecinos disponibles
-\citep{theraulaz1999stigmergy}. La ley de control sigue siendo robótica: termina en
+\citep{theraulaz1999stigmergy}. La ley de control sigue siendo robótica, y termina en
 comandos $(v_i,\omega_i)$ para un robot diferencial.
 
 \subsection{El papel de la política de revisión: Replicador y Smith}
@@ -68,7 +68,7 @@ estimador por consenso, y difieren únicamente en esta ley. Esa comparación aí
 efecto. Ambas parten del mismo marco. El estado de la población es el vector de fracciones
 $\mathbf{x} = (x_k)$, donde $x_k$ es la proporción de robots asignados a la tarea $k$.
 Cada robot estima $x_k$ por consenso promedio distribuido y obtiene así
-$\hat{x}_{ik}$. Hasta aquí, Smith y DRD son idénticos: ambos requieren esta
+$\hat{x}_{ik}$. Hasta aquí, Smith y DRD son idénticos. Ambos requieren esta
 \emph{primera capa de consenso}.
 
 La diferencia aparece en lo que cada dinámica requiere más allá de esa primera capa.
@@ -86,7 +86,7 @@ respecto al equilibrio Nash verdadero.
 
 A diferencia del replicador, las dinámicas de Smith evitan esta segunda capa porque la
 actualización se basa en comparaciones bilaterales $\pos{f_{ik} - f_{ij}}$ calculadas
-localmente con los payoffs propios: ningún agente necesita estimar la media poblacional
+localmente con los payoffs propios, sin que ningún agente necesite estimar la media poblacional
 global. La
 condición de punto fijo $\pos{f_{ik} - f_{ij}} = 0$ se satisface exactamente con
 información local derivada de $\hat{x}_{ik}$. Además, las estrategias extintas
@@ -107,12 +107,12 @@ de cardinalidad mediante cotas inferiores, en contraste con las cotas superiores
 reemplaza por un déficit de capacidad acumulada.
 
 Sobre ese mismo payoff se comparan el replicador distribuido y las dinámicas de
-Smith, con idéntica estimación por consenso dinámico de media; la única diferencia entre
+Smith, con idéntica estimación por consenso dinámico de media. La única diferencia entre
 ambos es la política de revisión, y es justo lo que se quiere medir. Una tasa de revisión
 espacialmente modulada reduce las reasignaciones tardías cuando un robot ya está cerca de
 su carga. El coste de eliminar el coordinador se mide contra una referencia centralizada
 replanificada y contra barridos del rango de comunicación. El resultado que se busca es
-una frontera práctica: en qué condiciones una ley local, con parámetros explícitos,
+una frontera práctica, las condiciones bajo las que una ley local, con parámetros explícitos,
 organiza coaliciones de transporte sin reentrenamiento ni subastas globales.
 
 La validación se realiza mediante simulación en Python con seis
@@ -154,10 +154,10 @@ completo se detalla en la Sección~\ref{sec:cronograma}.
 
 El Anexo~I mencionaba ``cargas heterogéneas'' (objetos que difieren
 en peso, forma y tamaño). En esta versión la heterogeneidad se formula primero en
-su forma física: cada robot aporta una capacidad $c_i$ y cada carga exige una demanda
+su forma física, donde cada robot aporta una capacidad $c_i$ y cada carga exige una demanda
 $M_k$. La abstracción por cardinalidad aparece después, como el caso homogéneo
 $c_i=c$ y $M_k=n_kc$. Así se separan dos niveles. El problema físico es decidir
-coaliciones por capacidad acumulada; el problema que se demuestra formalmente
+coaliciones por capacidad acumulada, y el problema que se demuestra formalmente
 es su reducción homogénea por cardinalidad.
 
 Con esta abstracción, el sistema se define así. Se considera una flota de $N$ robots móviles que
@@ -166,7 +166,7 @@ $i \in \{1, \ldots, N\}$ y el conjunto de tareas activas en un instante dado se 
 $k \in \{1, \ldots, K\}$. Cada tarea $k$ tiene una posición de recogida
 $\mathbf{l}_k \in \RR^2$, un destino $\mathbf{d}_k \in \RR^2$, una demanda de capacidad
 $M_k$ y, en el caso base homogéneo, un requisito equivalente $n_k \in \NN$. La tarea
-$k=0$ representa el estado de inactividad: un robot inactivo (\textit{idle}) no
+$k=0$ representa el estado de inactividad, en el que un robot (\textit{idle}) no
 contribuye a ninguna tarea.
 
 Cada robot mantiene un vector de estrategias $\mathbf{p}_i(t) \in \simplex^K$,
@@ -181,7 +181,7 @@ núcleo del TFM, esta condición se reduce a $|\mathcal{C}_k(t)| \geq n_k$.
 \input{figures/fig-problema.tex}
 
 Dos dificultades distinguen este problema de la asignación estática clásica de tareas. La
-restricción es una \emph{cota inferior} dinámica: si una carga pierde parte de su
+restricción es una \emph{cota inferior} dinámica. Si una carga pierde parte de su
 capacidad asignada, el sistema debe reclutar nuevos robots sin coordinación central.
 En el caso homogéneo esto se observa como $|\mathcal{C}_k| < n_k$; en el caso
 heterogéneo, como $\sum_{i\in\mathcal{C}_k} c_i < M_k$. A ello se suma que, cuando
@@ -205,7 +205,7 @@ En cambio, las dinámicas poblacionales \citep{barreiro2021uav, dinh2026bsplines
 hurtado2024potential} sí ofrecen leyes de control con garantías de convergencia
 al equilibrio Nash, gracias a la estructura de juego potencial que las sustenta. Aun así,
 en todos los trabajos de esta línea el tamaño del grupo que realiza
-cada tarea es un parámetro del diseño fijado de antemano: los robots se asignan
+cada tarea es un parámetro del diseño fijado de antemano, y los robots se asignan
 en fracciones fijas, no en coaliciones cuyo tamaño emerge de la dinámica.
 Cuando el tamaño de la coalición pasa a ser la variable de estado (porque cada carga
 impone su propio requisito mínimo), las dinámicas deben reclutar o liberar
@@ -214,7 +214,7 @@ esa línea de trabajo.
 
 El trabajo de \citet{martinezpiazuelo2022automatica} introduce restricciones de
 capacidad en juegos poblacionales, pero estas restricciones son \emph{cotas superiores}
-sobre cuántos agentes pueden elegir una estrategia: impiden que una estrategia se
+sobre cuántos agentes pueden elegir una estrategia, e impiden que una estrategia se
 sature por encima de un umbral. El caso que aquí se aborda requiere cotas inferiores:
 la tarea no puede ejecutarse si hay \emph{menos} de $n_k$ robots, pues podría dañar el robot o afectar la integridad de la carga. Invertir el sentido de
 la desigualdad altera la naturaleza del problema, y los resultados de estabilidad de ese
@@ -230,10 +230,10 @@ identifica como línea futura.
 \subsubsection{Brecha de investigación}
 
 En la revisión de literatura realizada para este informe no se encontró una formulación que reúna estos
-cuatro componentes: dinámicas poblacionales como ley de revisión directa, payoff de cota
+cuatro componentes, dinámicas poblacionales como ley de revisión directa, payoff de cota
 inferior, tasa de revisión modulada por distancia y conversión inmediata de la decisión
 estratégica en movimiento diferencial reactivo. Sin embargo, estas piezas sí existen en trabajos
-separados: Smith en control distribuido \citep{barreiro2017distributed}, sigmoides de
+separados, como Smith en control distribuido \citep{barreiro2017distributed}, sigmoides de
 reclutamiento en inteligencia de enjambre \citep{theraulaz1999stigmergy}, tasas de
 revisión moduladas por contexto \citep{sandholm2010population}, y control cooperativo de
 robots diferenciales en transporte de objetos
