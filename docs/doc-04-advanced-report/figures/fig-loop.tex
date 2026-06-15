@@ -1,0 +1,58 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  font=\small,
+  block/.style={
+    draw=VIUDark!55, very thick, rounded corners=4pt,
+    minimum width=5.4cm, minimum height=1.1cm,
+    align=center, fill=VIULight, inner sep=4pt,
+  },
+  flow/.style={-{Latex[length=6pt,width=5pt]}, line width=1.1pt, draw=VIUOrange},
+  ret/.style={-{Latex[length=6pt,width=5pt]}, line width=1.0pt, draw=VIUOrange!70, dashed},
+  feed/.style={-{Latex[length=6pt,width=5pt]}, line width=1.1pt, draw=VIUDeep, dashed},
+  lab/.style={font=\footnotesize, color=VIUDark, inner sep=1.5pt, fill=white, rounded corners=1.5pt},
+  flab/.style={font=\footnotesize\itshape, color=VIUDeep, inner sep=1.5pt, fill=white, rounded corners=1.5pt},
+]
+
+% -------- Pipeline central (un paso temporal) --------
+\node[block] (B1) at (0,0)
+  {\textbf{1.\ Payoff}\\[-2pt]\footnotesize $f_{ik}=r_k\,\Phi(N\hat{x}_{ik},n_k)\,\Psi(d_{ik})$};
+\node[block, below=12mm of B1] (B2)
+  {\textbf{2.\ Dinámica de Smith}~(tasa $\mu_i$)\\[-2pt]\footnotesize $\mathbf{p}_i(t{+}1),\ s_i(t{+}1)$};
+\node[block, below=12mm of B2] (B3)
+  {\textbf{3.\ Consenso DAC}\\[-2pt]\footnotesize $\hat{x}_{ik}(t{+}1)$};
+\node[block, below=12mm of B3] (B4)
+  {\textbf{4.\ Navegación}~(gradiente + uniciclo)\\[-2pt]\footnotesize $\mathbf{q}_i(t{+}1)$};
+
+\draw[flow] (B1) -- (B2) node[midway,lab]{$f_{ik}$};
+\draw[flow] (B2) -- (B3) node[midway,lab]{$\Delta y_{ik}$};
+\draw[flow] (B3) -- (B4) node[midway,lab]{$s_i(t{+}1)$};
+
+% -------- Retorno de estimación: x̂ del DAC al payoff (izquierda) --------
+\draw[ret] (B3.west) -- ++(-1.8,0) |- (B1.west)
+  node[pos=0.25,left,lab]{$\hat{x}_{ik}(t{+}1)$};
+
+% -------- Acoplamiento espacial: q de navegación a payoff (Ψ) y Smith (μ) --------
+\coordinate (rt) at ($(B1.east)+(2.8,0)$);
+\coordinate (rb) at ($(B4.east)+(2.8,0)$);
+\draw[line width=1.1pt, draw=VIUDeep, dashed] (B4.east) -- (rb) -- (rt);
+\draw[feed] (rt) -- (B1.east) node[midway,above,flab]{$\Psi(\mathbf{q}_i)$};
+\draw[feed] ($(rt)!(B2.east)!(rb)$) -- (B2.east) node[midway,above,flab]{$\mu(\mathbf{q}_i)$};
+\node[rotate=-90, font=\footnotesize\bfseries, color=VIUDeep, anchor=south]
+  at ($(rb)!0.5!(rt)+(0.42,0)$) {acoplamiento espacial};
+
+% -------- Etiqueta del paso temporal --------
+\node[font=\footnotesize\itshape, color=VIUGray, anchor=west]
+  at ($(B1.north west)+(0,0.55)$)
+  {Paso $T_s = 0{,}1$\,s: decisión y movimiento en un único bucle};
+
+\end{tikzpicture}
+\caption[Bucle de control de las tres dinámicas acopladas]%
+{Bucle de control de las tres dinámicas acopladas. Los cuatro bloques se ejecutan
+secuencialmente dentro del mismo paso temporal $T_s = 0{,}1$\,s (flechas naranjas). La
+estimación $\hat{x}_{ik}$ realimenta el payoff (retorno discontinuo izquierdo) y la
+pose $\mathbf{q}_i$ modula el descuento espacial $\Psi$ del payoff y la tasa de
+revisión $\mu_i$ de Smith (acoplamiento espacial, derecha): la decisión de asignación
+y el movimiento quedan acoplados en un único bucle.}
+\label{fig:loop}
+\end{figure}
