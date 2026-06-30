@@ -1,0 +1,95 @@
+﻿\begin{figure}[htbp]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[x=1cm,y=1cm]
+
+%===== Panel (a): Phi(z,n) ============================
+\begin{scope}[xshift=0cm]
+  % Axes
+  \draw[-{Stealth[length=5pt]}, VIUDark!70] (-0.2,0) -- (6.4,0)
+    node[right, font=\small] {$z=N\hat{x}_{ik}$};
+  \draw[-{Stealth[length=5pt]}, VIUDark!70] (0,-0.2) -- (0,3.4)
+    node[above, font=\small] {$\Phi(z,n_k)$};
+
+  % Sigmoid curve: Phi=1/(1+exp(2*(z-3))), scaled by 3
+  \draw[VIUOrange, very thick, smooth]
+    plot[domain=0:6, samples=60, variable=\z] (\z, {3/(1+exp(2*(\z-3)))});
+
+  % Dashed reference lines at z=n=3
+  \draw[VIUGray, dashed, thin] (3,0) node[below, font=\tiny] {$n_k$} -- (3,1.5);
+  \draw[VIUGray, dashed, thin] (0,1.5) node[left, font=\tiny] {$\tfrac{1}{2}$} -- (3,1.5);
+  \fill[VIUGray] (3,1.5) circle(1.5pt);
+
+  % Tick at z=0: Phi=1 (approximately)
+  \draw[VIUGray, thin] (-0.05,3) -- (0.05,3);
+  \node[left, font=\tiny] at (0,3) {$1$};
+  \draw[VIUGray, thin] (-0.05,0) -- (0.05,0);
+  \node[left, font=\tiny] at (0,0) {$0$};
+
+  % Zone annotations
+  \draw[{Stealth[length=3pt]}-{Stealth[length=3pt]}, VIUDark!60, thin] (0.1,2.7) -- (2.9,2.7);
+  \node[font=\tiny, VIUDark, align=center] at (1.5,3.15)
+    {Zona de\\reclutamiento};
+
+  \draw[{Stealth[length=3pt]}-{Stealth[length=3pt]}, VIUDark!60, thin] (3.1,0.25) -- (5.9,0.25);
+  \node[font=\tiny, VIUDark, align=center] at (4.5,0.65)
+    {Zona de\\saturación};
+
+  % beta label on curve
+  \node[font=\tiny, VIUOrange, anchor=west] at (3.3,2.3) {$\beta=2$};
+
+  % Panel label
+  \node[font=\small\bfseries, VIUDark] at (3.0,-0.85)
+    {(a) Demanda sigmoide $\Phi(z,n_k)$};
+\end{scope}
+
+%===== Panel (b): Psi(d) =================================
+\begin{scope}[xshift=8.0cm]
+  % Axes
+  \draw[-{Stealth[length=5pt]}, VIUDark!70] (-0.2,0) -- (6.4,0)
+    node[right, font=\small] {$d$\,[m]};
+  \draw[-{Stealth[length=5pt]}, VIUDark!70] (0,-0.2) -- (0,3.4)
+    node[above, font=\small] {$\Psi(d)$};
+
+  % Gaussian: Psi=exp(-d^2/50), x-axis 0..10m plotted as 0..6
+  % scale: x_plot = d * 6/10; so d = x_plot * 10/6
+  % Psi = exp(-(x_plot*10/6)^2/50) = exp(-x_plot^2/18)
+  \draw[VIUDeep, very thick, smooth]
+    plot[domain=0:6, samples=60, variable=\d] (\d, {3*exp(-\d*\d/18)});
+
+  % Tick marks
+  \draw[VIUGray, thin] (-0.05,3) -- (0.05,3);
+  \node[left, font=\tiny] at (0,3) {$1$};
+  \draw[VIUGray, thin] (-0.05,0) -- (0.05,0);
+  \node[left, font=\tiny] at (0,0) {$0$};
+
+  % lambda marker
+  \draw[VIUGray, dashed, thin] (3,0) -- (3,{3*exp(-3*3/18)});
+  \draw[VIUGray, dashed, thin] (0,{3*exp(-9/18)}) -- (3,{3*exp(-9/18)});
+  \node[below, font=\tiny] at (3,0) {$\lambda$};
+  \node[left, font=\tiny] at (0,{3*exp(-0.5)}) {$e^{-1/2}$};
+  \fill[VIUGray] (3,{3*exp(-9/18)}) circle(1.5pt);
+
+  % Annotation
+  \node[font=\tiny, VIUDeep, anchor=west] at (3.3,2.4) {$\lambda=5\,\mathrm{m}$};
+
+  % Panel label
+  \node[font=\small\bfseries, VIUDark] at (3.0,-0.85)
+    {(b) Descuento espacial $\Psi(d)$};
+
+  % x-axis labels
+  \node[below, font=\tiny] at (0,0) {$0$};
+  \node[below, font=\tiny] at (6,0) {$10\,\mathrm{m}$};
+\end{scope}
+
+\end{tikzpicture}%
+}
+\caption[Componentes de la función de payoff]%
+{Componentes de la función de payoff \eqref{eq:payoff}. \textbf{(a)}~La
+demanda sigmoide $\Phi(z,n_k)$ es monótonamente decreciente: cuando el número
+estimado $z=N\hat{x}_{ik}$ está por debajo de $n_k$, el payoff es alto (zona de
+reclutamiento); cuando supera $n_k$, cae a cero (zona de saturación). \textbf{(b)}~El
+descuento gaussiano $\Psi(d)$ reduce el payoff de robots lejanos de la tarea, integrando
+la dinámica espacial en el juego de asignación.}
+\label{fig:payoff}
+\end{figure}

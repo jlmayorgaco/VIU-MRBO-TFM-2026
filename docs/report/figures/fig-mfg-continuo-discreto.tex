@@ -1,0 +1,36 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[
+  block/.style={draw=VIUDark,fill=VIULight,rounded corners=2pt,
+    align=center,minimum width=2.75cm,minimum height=0.95cm,font=\small},
+  blockO/.style={draw=VIUOrange!85!black,fill=VIUOrange!7,rounded corners=2pt,
+    align=center,minimum width=2.85cm,minimum height=0.95cm,font=\small},
+  arrow/.style={-{Latex[length=2mm]},thick,color=VIUOrange!90!black},
+  arrowB/.style={-{Latex[length=2mm]},thick,color=VIUDark}
+]
+\node[block] (robots) {flota discreta\\$p_i,y_i,u_i$};
+\node[block, right=0.75cm of robots] (emp) {medida empírica\\$\rho^N=\frac1N\sum_i K_h$};
+\node[blockO, right=0.75cm of emp] (mfg) {límite continuo\\HJB--FPK};
+\node[block, right=0.75cm of mfg] (fields) {campos escalares\\$\rho^\tau,T_k^\tau,\Pi_{\rm cong}$};
+\node[block, right=0.75cm of fields] (disc) {retorno discreto\\Smith + control local};
+
+\node[block, below=0.85cm of emp] (complexity) {sin bucle par-a-par\\control por gradiente};
+\node[blockO, below=0.85cm of mfg] (scale) {ganancias invariantes\\$\int_{\mathcal X}\rho=1$};
+\node[block, below=0.85cm of fields] (toll) {peaje anticipatorio\\antes del atasco};
+
+\draw[arrow] (robots)--(emp);
+\draw[arrow] (emp)--(mfg);
+\draw[arrow] (mfg)--(fields);
+\draw[arrow] (fields)--(disc);
+\draw[arrowB] (emp)--(complexity);
+\draw[arrowB] (mfg)--(scale);
+\draw[arrowB] (fields)--(toll);
+\draw[arrow, dashed] (disc.south) .. controls +(0,-1.25) and +(0,-1.25) .. (robots.south);
+\end{tikzpicture}}
+\caption{Puente discreto--continuo--discreto del límite de campo medio. La simulación con
+$N$ AGVs se interpreta como una discretización por partículas de una densidad continua;
+la ley continua produce campos escalares que se vuelven a evaluar localmente en cada
+robot.}
+\label{fig:mfg-continuo-discreto}
+\end{figure}

@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "viu-mrob-tfm"
-version = "0.1.0"
-description = "Distributed adaptive control for cooperative multi-AGV load transport."
+version = "0.2.0"
+description = "Smith-QR distributed coordination for heterogeneous multi-AGV cooperative transport."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
@@ -32,3 +32,4 @@ where = ["src"]
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
+addopts = "-p no:cacheprovider"

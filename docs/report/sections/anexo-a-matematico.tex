@@ -1,0 +1,122 @@
+\section{Desarrollo matematico extendido}
+
+El aporte teorico que se conserva en anexo es la unificacion de tres lecturas: juego,
+mercado y mecanica. El mismo deficit $\delta_k = D_k-S_k$ alimenta payoffs, precios y
+requerimientos de wrench. En el modelo reducido, la afirmacion que guia el diseno se
+puede formular como una proposicion de alcance limitado.
+
+\paragraph{Proposicion de trabajo.}
+
+\begin{quote}
+Si el grafo de comunicacion es conexo a trozos, los payoffs derivan de un potencial
+regular, la dinamica Smith es mas rapida que la cinematica de transporte, la formacion
+rigida preserva contactos utiles y el campo de navegacion mantiene seguridad, entonces
+el sistema acoplado converge practicamente a un conjunto donde las cargas factibles
+reciben coaliciones con deficit acotado y residual wrench bajo umbral.
+\end{quote}
+
+\paragraph{Hipotesis tecnicas.}
+La afirmacion requiere: (i) payoffs localmente Lipschitz, (ii) conectividad suficiente
+para que el consenso de ocupacion no acumule sesgo, (iii) separacion de escalas entre
+asignacion y movimiento, (iv) saturaciones acotadas, y (v) ausencia de bloqueos
+geometricos persistentes. Sin estas condiciones, la proposicion se interpreta como
+criterio de diseno, no como teorema cerrado.
+
+\paragraph{Esquema de demostracion.}
+La prueba completa queda fuera del cuerpo por alcance. El esquema es:
+\begin{enumerate}[leftmargin=2em]
+  \item Smith aumenta el potencial hasta un conjunto de Nash del juego poblacional.
+  \item El clearing entero perturba la solucion continua con error acotado.
+  \item El consenso dinamico mantiene $\xhat$ cerca de la ocupacion real si el grafo no
+  pierde conectividad durante demasiado tiempo.
+  \item La formacion rigida asigna a cada robot un slot fijo $(r_j,n_j)$ en el marco de
+  la carga, por lo que el objetivo local cambia suavemente con la pose del objeto.
+  \item El juego vectorial de wrench resuelve una proyeccion acotada sobre
+  $\{G_C\lambda: 0\le\lambda\le\bar f\}$ y rechaza coaliciones que no puedan producir
+  fuerza y torque.
+  \item El campo de navegacion estabiliza la llegada local salvo obstaculos o saturacion.
+\end{enumerate}
+
+Esta no es una teoria completamente nueva desde cero: usa dinamicas poblacionales,
+consenso, grafos, potenciales, formaciones rigidas y wrench closure. La novedad
+defendible esta en ensamblar esas piezas para cargas heterogeneas con una senal
+fisico-economica comun y validacion computacional trazable.
+
+\paragraph{Limites de validez.}
+La formulacion no demuestra estabilidad global ante colisiones, comunicacion
+permanentemente desconectada, contacto fisico real con friccion no modelada ni ejecucion
+industrial. Esas extensiones exigen CBF-QP, contacto dinamico o validacion hardware.
+
+\subsection*{Demostraciones minimas por modulo}
+
+\paragraph{M1.1: regla de water-filling.}
+En el caso homogeneo, supongase que cada carga activa tiene utilidad marginal decreciente
+$p_k(n_k)=v_k-\alpha n_k$ y que los robots pueden redistribuirse entre cargas. En
+equilibrio interior de Smith no puede existir un par $(k,\ell)$ con
+$p_k(n_k)>p_\ell(n_\ell)$ y robots asignados a $\ell$, porque la dinamica traslada masa
+decisional hacia $k$:
+\[
+  \dot y_{i k} \supset y_{i\ell}[p_k-p_\ell]_+ > 0 .
+\]
+Por tanto, todas las cargas usadas igualan payoff marginal:
+\[
+  p_k(n_k)=\lambda,\qquad
+  n_k=\frac{v_k-\lambda}{\alpha},
+\]
+con $\lambda$ escogido para satisfacer $\sum_k n_k=N$. Esta es la lectura tipo
+\emph{water-filling} que valida H1.
+
+\paragraph{M1.4: contraejemplo de cardinalidad.}
+Sea una carga que requiere torque planar $w^{\rm dem}=[0,0,\tau]^\top$. Dos robots
+colocados en la misma cara con normales paralelas pueden cumplir cardinalidad
+$|C|=2$, pero su matriz de contactos
+\[
+  G_C=\begin{bmatrix}
+  n_{1x} & n_{2x}\\
+  n_{1y} & n_{2y}\\
+  r_{1x}n_{1y}-r_{1y}n_{1x} &
+  r_{2x}n_{2y}-r_{2y}n_{2x}
+  \end{bmatrix}
+\]
+puede tener rango insuficiente o torque casi nulo. Entonces
+\[
+  \min_{0\le \lambda\le \bar f}\norm{G_C\lambda-w^{\rm dem}}_2>\epsilon ,
+\]
+aunque $|C|$ alcance el minimo. Este es el gate G3: quorum numerico no implica capacidad
+wrench.
+
+\paragraph{M3: rol fisico como decision adicional.}
+Si $h$ indexa slots de contacto, la asignacion completa es
+\[
+  \max_{z_{ikh}}\sum_{i,k,h} U_{ikh}z_{ikh},
+  \qquad
+  \sum_{k,h}z_{ikh}\le 1,\qquad
+  \sum_i z_{ikh}\le 1 .
+\]
+El termino $U_{ikh}$ debe mezclar valor de carga, coste de llegada, compatibilidad del
+robot con el slot, bateria y reduccion esperada del residual wrench. La version actual
+aproxima esta decision en dos pasos: primero elige $k$ con Smith-QR y luego deriva $h$
+por ranking de coalicion. Esta aproximacion es ejecutable, pero no equivale a resolver
+el problema $z_{ikh}$ completo.
+
+\paragraph{M4--M5: energia y bateria en el potencial.}
+El campo unico puede leerse como descenso de una energia compuesta:
+\[
+  \Phi_i =
+  \Phi_i^{\rm tarea}+\Phi_i^{\rm formacion}+\Phi_i^{\rm obstaculo}
+  +\Phi_i^{\rm bateria}+\Phi_i^{\rm congestion}.
+\]
+Si $b_i$ es la bateria normalizada y $\rho_i(q)$ estima coste de retorno, una penalizacion
+minima es
+\[
+  \Phi_i^{\rm bateria} =
+  \kappa_b \left[\rho_i(q_i)-b_i+b_{\min}\right]_+^2 .
+\]
+Asi, el robot deja de ser atractivo para cargas lejanas antes de quedar sin retorno. M5
+completo agregaria estaciones $s\in\mathcal S$, colas $Q_s$ y una estrategia adicional de
+carga:
+\[
+  p_{i,s}^{\rm charge}= -\alpha d(q_i,s)-\gamma Q_s+\eta(1-b_i).
+\]
+Esta memoria usa la primera parte como restriccion de retornabilidad; la planificacion
+con estaciones queda como extension.

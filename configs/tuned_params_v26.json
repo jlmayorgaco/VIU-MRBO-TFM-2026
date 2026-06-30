@@ -1,0 +1,29 @@
+{
+  "classic_auction_cbba": {
+    "auction_age_bonus": 0.006,
+    "auction_stickiness": 0.28
+  },
+  "classic_centralized_mincost": {},
+  "classic_greedy_nearest": {},
+  "oracle_clairvoyant": {},
+  "proxy_pibt_priority": {},
+  "proxy_rolling_horizon": {
+    "policy_replan_period": 1.5
+  },
+  "proxy_token_passing": {},
+  "random_feasible": {},
+  "response_threshold": {
+    "response_sensitivity": 0.34,
+    "response_threshold_mean": 1.2
+  },
+  "smith_full": {
+    "clearing_mode": "tick",
+    "commit_dwell_time": 2.0,
+    "epsilon_switch": 0.1,
+    "lateral_switch_rule": "potential",
+    "price_feedback_signal": "effective_committed",
+    "price_gain": 0.1,
+    "reserve_robot_slack": 0,
+    "switch_margin": 0.1
+  }
+}

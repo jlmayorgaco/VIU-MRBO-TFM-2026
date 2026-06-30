@@ -1,0 +1,59 @@
+﻿\section{Resultados y validacion}
+
+La suite de validacion conserva la evidencia compacta del borrador avanzado. El resumen
+actual de \texttt{results/validation\_suite\_v1/summary.json} indica que todas las puertas
+requeridas del protocolo V1 pasan en el snapshot guardado:
+\[
+  \text{gates superados} = 39/39.
+\]
+
+\begin{tabularx}{\textwidth}{@{}p{0.18\textwidth}X X@{}}
+\toprule
+Bloque & Resultado & Lectura \\
+\midrule
+H1--H3 & Water-filling, clearing entero y precio temporal pasan sus gates. &
+La parte economica es coherente: precio no se vende como mejora estatica universal. \\
+H4--H6 & Smith-QR mejora captura frente a Smith bajo R3, pero no domina todas las metricas. &
+Resultado fuerte y honesto: mejora bajo fallo estructural, con limites. \\
+H7 & CoppeliaSim exporta escenas y artefactos visuales. &
+Plausibilidad robotica, no validacion de hardware. \\
+H8--H9 & MARL aprende frente a proxies, sin dominar globalmente a Smith-QR. &
+Baseline aprendido util; la contribucion sigue siendo interpretable. \\
+H10--H12 & Densidad predictiva, motor integrado y cobertura Coppelia pasan sus gates. &
+Evidencia complementaria: no convierte el fallback visual en validacion fisica. \\
+G3--G7 & La cardinalidad puede fallar aunque el numero de robots sea suficiente. &
+Justifica capacidad efectiva, torque, bateria y congestion como terminos de payoff. \\
+\bottomrule
+\end{tabularx}
+
+El resultado principal no es que un metodo gane siempre. El resultado defendible es que
+Smith-QR identifica un regimen donde Smith falla por informacion local y lo mejora con
+memoria, clearing y quorum fisico; ademas, la extension wrench muestra un fallo
+matematicamente claro de la cardinalidad escalar.
+
+\subsection*{Lectura de resultados por fase}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}p{0.12\textwidth}p{0.30\textwidth}Y@{}}
+\toprule
+Modulo & Resultado que se conserva en el cuerpo & Decision cientifica \\
+\midrule
+M0 & Los baselines clasicos y Smith puro caen en regimenes locales severos. & Se justifica superar dispatching/FSM y Smith sin memoria. \\
+M1--M1.1 & Smith reproduce water-filling y el clearing entero evita coaliciones fluidas inutiles. & La capa economica es coherente en el caso homogeneo. \\
+M1.3 & Los escenarios con cargas heterogeneas muestran sensibilidad a escasez, deadlines y demanda. & La demanda $D_k$ debe entrar en el payoff; no basta una cola FIFO. \\
+M1.4 & El gate wrench muestra que cardinalidad suficiente puede ser fisicamente falsa. & La capacidad efectiva es una contribucion central. \\
+M2 & Las cargas se transportan solo cuando hay quorum fisico y contacto suficiente. & La asignacion queda acoplada a ejecucion. \\
+M3 & Los roles se representan como slots de contacto, pero no se optimizan aun como estrategia. & Se declara parcial para no sobredimensionar el aporte. \\
+M4 & H10--H12 prueban congestion predictiva, integracion y recuperacion operacional. & Campo unico operativo; demostracion global queda en anexo/futuro. \\
+M5 & Bateria aparece como restriccion economica y de seguridad energetica. & Extension defendible, no sistema completo de carga. \\
+\bottomrule
+\end{tabularx}
+\caption{Lectura de los resultados principales segun la escalera modular.}
+\label{tab:resultados-por-modulo}
+\end{table}
+
+Las tablas generadas de la suite se incorporan como anexo de resultados. Su lectura debe
+ser estricta: una puerta aprobada valida el protocolo y el alcance declarado, no una
+garantia universal de rendimiento industrial.

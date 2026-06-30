@@ -1,0 +1,149 @@
+{
+  "campaign": "H10_predictive_density",
+  "hypothesis": "Predictive density tolls reduce congestion without material reward degradation.",
+  "seeds": [
+    5026,
+    5027,
+    5028,
+    5029,
+    5030,
+    5031,
+    5032,
+    5033,
+    5034,
+    5035,
+    5036,
+    5037,
+    5038,
+    5039,
+    5040,
+    5041,
+    5042,
+    5043,
+    5044,
+    5045,
+    5046,
+    5047,
+    5048,
+    5049,
+    5050,
+    5051,
+    5052,
+    5053,
+    5054,
+    5055
+  ],
+  "policies": [
+    "greedy",
+    "smith_qr_base",
+    "smith_qr_reactive",
+    "smith_qr_predictive"
+  ],
+  "rho_max": 1.0,
+  "lookahead_tau": 5.5,
+  "policy_summary": {
+    "greedy": {
+      "reward_capture_ratio": 1.0,
+      "mean_delivery_time": 67.39752604166667,
+      "max_rho_tau": 20.239406464712445,
+      "jam_steps": 275.3,
+      "deadlocks": 16.6,
+      "route_split_ratio": 0.0,
+      "wasted_distance": 84.23950186874339,
+      "runtime_per_robot_ms": 0.0008536968986542585
+    },
+    "smith_qr_base": {
+      "reward_capture_ratio": 1.0,
+      "mean_delivery_time": 67.39752604166667,
+      "max_rho_tau": 20.239406464712445,
+      "jam_steps": 275.3,
+      "deadlocks": 16.6,
+      "route_split_ratio": 0.0,
+      "wasted_distance": 84.23950186874339,
+      "runtime_per_robot_ms": 0.06939770846656756
+    },
+    "smith_qr_reactive": {
+      "reward_capture_ratio": 1.0,
+      "mean_delivery_time": 44.292317708333336,
+      "max_rho_tau": 5.968979264201893,
+      "jam_steps": 166.03333333333333,
+      "deadlocks": 0.0,
+      "route_split_ratio": 0.740625,
+      "wasted_distance": 237.39656248990792,
+      "runtime_per_robot_ms": 0.07683651098583748
+    },
+    "smith_qr_predictive": {
+      "reward_capture_ratio": 1.0,
+      "mean_delivery_time": 38.51380208333333,
+      "max_rho_tau": 2.8757037851522598,
+      "jam_steps": 113.6,
+      "deadlocks": 0.0,
+      "route_split_ratio": 0.7765625,
+      "wasted_distance": 233.91726202635985,
+      "runtime_per_robot_ms": 0.08533593803197921
+    }
+  },
+  "paired_tests": [
+    {
+      "hypothesis": "smith_qr_predictive_vs_smith_qr_base_jam_steps",
+      "candidate": "smith_qr_predictive",
+      "baseline": "smith_qr_base",
+      "metric": "jam_steps",
+      "n": 30,
+      "mean_delta": -161.7,
+      "ci95_low": -164.994684901125,
+      "ci95_high": -158.40531509887498,
+      "alternative": "less",
+      "passed": true
+    },
+    {
+      "hypothesis": "smith_qr_predictive_vs_smith_qr_base_max_rho_tau",
+      "candidate": "smith_qr_predictive",
+      "baseline": "smith_qr_base",
+      "metric": "max_rho_tau",
+      "n": 30,
+      "mean_delta": -17.363702679560188,
+      "ci95_low": -17.516584245279784,
+      "ci95_high": -17.21082111384059,
+      "alternative": "less",
+      "passed": true
+    },
+    {
+      "hypothesis": "smith_qr_predictive_vs_smith_qr_base_reward_capture_ratio",
+      "candidate": "smith_qr_predictive",
+      "baseline": "smith_qr_base",
+      "metric": "reward_capture_ratio",
+      "n": 30,
+      "mean_delta": 0.0,
+      "ci95_low": 0.0,
+      "ci95_high": 0.0,
+      "alternative": "noninferior",
+      "passed": true
+    },
+    {
+      "hypothesis": "smith_qr_predictive_vs_smith_qr_reactive_jam_steps",
+      "candidate": "smith_qr_predictive",
+      "baseline": "smith_qr_reactive",
+      "metric": "jam_steps",
+      "n": 30,
+      "mean_delta": -52.43333333333333,
+      "ci95_low": -55.771335589943426,
+      "ci95_high": -49.095331076723234,
+      "alternative": "less",
+      "passed": true
+    },
+    {
+      "hypothesis": "smith_qr_predictive_vs_greedy_jam_steps",
+      "candidate": "smith_qr_predictive",
+      "baseline": "greedy",
+      "metric": "jam_steps",
+      "n": 30,
+      "mean_delta": -161.7,
+      "ci95_low": -164.994684901125,
+      "ci95_high": -158.40531509887498,
+      "alternative": "less",
+      "passed": true
+    }
+  ],
+  "h10_pass": true
+}

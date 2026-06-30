@@ -1,0 +1,56 @@
+﻿\section{Hipotesis}
+
+Las hipotesis se formulan como afirmaciones falsables. Cada una debe conectarse con una
+metrica, un escenario y una salida reproducible del repositorio.
+
+\begin{tabularx}{\textwidth}{@{}p{0.13\textwidth}X X@{}}
+\toprule
+ID & Hipotesis & Criterio de lectura \\
+\midrule
+H1 & Smith reproduce \emph{water-filling} en el caso homogeneo. & Pendiente cercana a 1 y $R^2$ alto entre staffing teorico y observado. \\
+H2 & El clearing entero reduce coaliciones parciales inutiles. & Menor distancia desperdiciada o menor deficit entero frente a asignacion fluida. \\
+H3 & El precio solo es defendible como senal temporal bajo deficit y \emph{deadline}. & H3-A debe mostrar que no hay mejora estatica universal; H3-B debe mostrar ganancia temporal. \\
+H4 & Smith original falla bajo comunicacion local severa. & Caida operativa bajo radio R3 o perdida equivalente. \\
+H5 & Smith-QR rescata parcialmente el fallo de Smith. & Delta pareado positivo en captura de recompensa bajo R3. \\
+H6 & La dominancia de Smith-QR no es universal. & Solo se declara superioridad en metricas con IC95 favorable. \\
+H7 & CoppeliaSim aporta cobertura visual reproducible. & Escenas, camaras y artefactos exportados, sin declarar hardware. \\
+H8 & MARL-CTDE lineal es baseline aprendido, no sustituto teorico. & Puede mejorar un proxy, pero no se exige que domine a Smith-QR. \\
+H9 & El actor neuronal CTDE aporta un comparador aprendido adicional. & Debe mejorar al proxy o al CTDE lineal en algun regimen, sin reclamar dominancia global. \\
+H10 & El peaje de densidad predictiva reduce congestion sin perder productividad. & Menor densidad futura o pasos congestionados con captura no inferior. \\
+H11 & El motor integrado de capacidad, energia y bateria mejora el transporte critico. & Menor residual wrench y limites de torque, energia y bateria respetados. \\
+H12 & La campana Coppelia cubre escenarios de integracion auditables. & Exporta escenas, camaras, datos y videos; si es fallback, se declara como tal. \\
+\bottomrule
+\end{tabularx}
+
+Ademas de las hipotesis base, la memoria conserva gates teoricos extendidos
+G3--G7. Estos no sustituyen la evidencia experimental: delimitan por que la cardinalidad
+no implica capacidad wrench, como la geometria entra en el torque, y bajo que lectura
+la congestion predictiva y la bateria se incorporan al payoff.
+
+\subsection*{Trazabilidad por modulo}
+
+Las hipotesis se leen sobre la escalera M0--M5 de la
+Seccion~\ref{sec:escalera-modular}. La Tabla~\ref{tab:hipotesis-modulos} evita mezclar
+evidencia de distinta madurez: algunas fases estan cerradas por simulacion principal,
+otras por gate matematico y otras quedan como extension declarada.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}p{0.12\textwidth}p{0.24\textwidth}Y Y@{}}
+\toprule
+Modulo & Hipotesis/gates & Evidencia en esta memoria & Estado \\
+\midrule
+M0 & H4, H6 & Fallo de Smith bajo R3 y limites de dominancia frente a baselines. & Baseline comparativo. \\
+M1--M1.1 & H1, H2 & Water-filling y clearing entero. & Implementado y validado. \\
+M1.3 & H3, escenarios de carga & Cargas ligeras/pesadas, escasez y deadlines. & Implementado y validado. \\
+M1.4 & G3--G7, H11 & Capacidad efectiva, residual wrench, energia, bateria y congestion. & Gate fuerte; benchmark principal parcial. \\
+M2 & H11, H12 & Transporte rigido, slots, contacto y escenas de integracion. & Implementado en simulacion. \\
+M3 & G3, H11 & Roles de contacto derivados por formacion y matriz wrench. & Parcial: falta decision explicita $z_{ikh}$. \\
+M4 & H10--H12 & Campo unico, densidad predictiva, fallos y reclutamiento. & Operativo, no teorema global cerrado. \\
+M5 & G7, H11 & Bateria como restriccion economica y de retornabilidad. & Extension parcial; sin estaciones completas. \\
+\bottomrule
+\end{tabularx}
+\caption{Mapa de hipotesis contra la escalera modular.}
+\label{tab:hipotesis-modulos}
+\end{table}

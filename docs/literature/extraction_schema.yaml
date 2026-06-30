@@ -1,0 +1,129 @@
+version: 0.1
+unit_of_analysis: paper
+
+identity:
+  - arxiv_id
+  - doi
+  - title
+  - authors
+  - year
+  - venue_or_journal
+  - publication_type
+  - url
+  - pdf_path
+
+screening:
+  - screening_stage
+  - decision
+  - reason_code
+  - reviewer
+  - notes
+
+classification:
+  problem_type:
+    values:
+      - cooperative_transport
+      - cooperative_manipulation
+      - task_allocation
+      - coalition_formation
+      - formation_control
+      - consensus
+      - MAPF
+      - coverage_exploration
+      - warehouse_AGV
+      - distributed_optimization
+      - networked_control
+      - safety_critical_control
+      - other
+  theory_family:
+    values:
+      - graph_theory
+      - game_theory
+      - distributed_control
+      - distributed_optimization
+      - MPC
+      - CBF
+      - rigidity_geometry
+      - topology
+      - MARL
+      - market_auction
+      - formal_methods
+      - other
+  architecture:
+    values:
+      - centralized
+      - decentralized
+      - distributed
+      - hybrid
+      - unclear
+  robot_domain:
+    values:
+      - mobile_robot
+      - AGV_AMR
+      - manipulator
+      - aerial_robot
+      - heterogeneous_team
+      - generic_agent
+      - other
+
+method_extraction:
+  - core_contribution
+  - assumptions
+  - algorithm_or_model
+  - communication_model
+  - coordination_mechanism
+  - allocation_or_coalition_mechanism
+  - control_or_planning_layer
+  - formation_or_geometry_layer
+  - robustness_mechanism
+  - computational_complexity
+
+validation:
+  validation_type:
+    values:
+      - theorem
+      - simulation
+      - benchmark
+      - real_robot
+      - field_trial
+      - survey
+      - tutorial
+      - none
+  metrics:
+    - throughput
+    - completion_time
+    - tracking_error
+    - communication_cost
+    - energy
+    - robustness
+    - scalability
+    - collision_safety
+    - load_stability
+    - regret_or_payoff
+  baselines
+  datasets_or_scenarios
+  code_available
+  data_available
+
+quality_assessment:
+  scores:
+    relevance: 0-3
+    mathematical_clarity: 0-3
+    validation_strength: 0-3
+    baseline_quality: 0-3
+    reproducibility: 0-3
+    scalability_evidence: 0-3
+    real_world_evidence: 0-3
+  overall:
+    values:
+      - high
+      - medium
+      - low
+      - exclude
+
+synthesis_fields:
+  - key_findings
+  - limitations_reported_by_authors
+  - limitations_identified_by_review
+  - relevance_to_smith_qr_tfm
+  - candidate_citation_context
