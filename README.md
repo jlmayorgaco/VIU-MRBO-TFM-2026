@@ -12,7 +12,7 @@ Smith, cierre entero de quorum, formacion rigida de carga y capacidad efectiva e
 ## Estado V6
 
 - Rama de organizacion: `v6-organization`.
-- Reporte canonico: `docs/report/main.tex`.
+- Reporte final canonico: `docs/doc-05-final-report/main.tex`.
 - Codigo principal: `src/viu_mrob_tfm`.
 - Suite compacta de validacion: `results/validation_suite_v1` (`39/39` gates en el snapshot actual).
 - Artefactos pesados y borradores previos: `C:\tmp\VIU-MRBO-TFM-2026-v6-organization-20260620`.
@@ -24,7 +24,9 @@ Smith, cierre entero de quorum, formacion rigida de carga y capacidad efectiva e
 .
 |-- configs/              # parametros canonicos conservados
 |-- coppeliasim/          # escenas de smoke/plausibilidad
-|-- docs/report/          # unica memoria LaTeX canonica
+|-- docs/doc-04-advanced-report/ # informe avanzado VIU
+|-- docs/doc-05-final-report/    # memoria final LaTeX canonica
+|-- docs/doc-06-explanatory-report/ # version explicativa extendida
 |-- experiments/          # configuraciones reproducibles
 |-- results/              # snapshots compactos de evidencia
 |-- scripts/              # CLI de ejecucion y validacion

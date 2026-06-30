@@ -5,12 +5,12 @@
 \scriptsize
 \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.08\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.20\textwidth}>{\raggedright\arraybackslash}X@{}}
 \toprule
-Prot. & $H_0$ & $H_1$ & Contraste & DecisiÃ³n y alcance \\
+Prot. & $H_0$ & $H_1$ & Contraste & Decisión y alcance \\
 \midrule
-H1 & Smith no reproduce water-filling en el caso homogÃ©neo. & Smith converge al reparto water-filling en equilibrio homogÃ©neo. & Equivalencia determinista de pendiente y R2.; n=5 puntos de control; p=n/a; IC95=n/a & $H_0$ refutada por prueba matemÃ¡tica y gate exacto. VÃ¡lida bajo simetrÃ­a, comunicaciÃ³n global y payoff homogÃ©neo. \\
-H2 & La asignaciÃ³n fluida no genera conflicto entero relevante. & Existen coaliciones fluidas parciales que exigen clearing entero. & Binomial unilateral sobre conflicto fluido-entero.; n=252; p=\textless{}0.001; IC95=n/a & $H_0$ rechazada; el clearing entero queda justificado. Mide necesidad de clearing, no superioridad universal en navegaciÃ³n. \\
-H3-A & El precio estÃ¡tico mejora o no empeora a Smith. & Existe rÃ©gimen estÃ¡tico donde el precio empeora a Smith. & Contraejemplo con IC95 unilateral negativo.; n=20; p=0.013; IC95=[-0.0774, -0.0051] & $H_0$ de mejora universal rechazada. Resultado negativo: no invalida el precio temporal. \\
-H3-B & El precio temporal no mejora captura bajo deadlines. & El precio temporal mejora captura bajo dÃ©ficit y deadlines. & Delta pareado con IC95 positivo.; n=20; p=\textless{}0.001; IC95=[0.0029, 0.0121] & $H_0$ rechazada en el rÃ©gimen temporal controlado. VÃ¡lida para urgencia, no para equilibrio estÃ¡tico. \\
+H1 & Smith no reproduce water-filling en el caso homogéneo. & Smith converge al reparto water-filling en equilibrio homogéneo. & Equivalencia determinista de pendiente y R2.; n=5 puntos de control; p=n/a; IC95=n/a & $H_0$ refutada por prueba matemática y gate exacto. Válida bajo simetría, comunicación global y payoff homogéneo. \\
+H2 & La asignación fluida no genera conflicto entero relevante. & Existen coaliciones fluidas parciales que exigen clearing entero. & Binomial unilateral sobre conflicto fluido-entero.; n=252; p=\textless{}0.001; IC95=n/a & $H_0$ rechazada; el clearing entero queda justificado. Mide necesidad de clearing, no superioridad universal en navegación. \\
+H3-A & El precio estático mejora o no empeora a Smith. & Existe régimen estático donde el precio empeora a Smith. & Contraejemplo con IC95 unilateral negativo.; n=20; p=0.013; IC95=[-0.0774, -0.0051] & $H_0$ de mejora universal rechazada. Resultado negativo: no invalida el precio temporal. \\
+H3-B & El precio temporal no mejora captura bajo deadlines. & El precio temporal mejora captura bajo déficit y deadlines. & Delta pareado con IC95 positivo.; n=20; p=\textless{}0.001; IC95=[0.0029, 0.0121] & $H_0$ rechazada en el régimen temporal controlado. Válida para urgencia, no para equilibrio estático. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -22,11 +22,11 @@ H3-B & El precio temporal no mejora captura bajo deadlines. & El precio temporal
 \scriptsize
 \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.08\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.20\textwidth}>{\raggedright\arraybackslash}X@{}}
 \toprule
-Prot. & $H_0$ & $H_1$ & Contraste & DecisiÃ³n y alcance \\
+Prot. & $H_0$ & $H_1$ & Contraste & Decisión y alcance \\
 \midrule
-H4 & Smith original mantiene captura operativa en R3. & Smith original cae por debajo del umbral operativo en R3. & t unilateral contra captura mÃ­nima 0.20.; n=20; p=\textless{}0.001; IC95=[0.0650, 0.1427] & $H_0$ rechazada; R3 es rÃ©gimen de fallo de Smith. Fallo operativo bajo comunicaciÃ³n degradada, no bajo conectividad global. \\
-H5 & Smith-QR no mejora captura frente a Smith en R3. & Smith-QR mejora captura frente a Smith en R3. & t pareado unilateral sobre 20 semillas.; n=20; p=\textless{}0.001; IC95=[0.1434, 0.2276] & $H_0$ rechazada; mejora estadÃ­sticamente declarable. DeclaraciÃ³n limitada a captura de recompensa en R3. \\
-H6 & Smith-QR domina tambiÃ©n en distancia desperdiciada frente a greedy. & La dominancia de Smith-QR no se extiende a todas las mÃ©tricas. & t pareado unilateral sobre distancia desperdiciada.; n=20; p=0.600; IC95=[-24.2001, 31.4817] & $H_0$ no rechazada; se reporta lÃ­mite operativo. Smith-QR es superior en captura, no dominante universal. \\
+H4 & Smith original mantiene captura operativa en R3. & Smith original cae por debajo del umbral operativo en R3. & t unilateral contra captura mínima 0.20.; n=20; p=\textless{}0.001; IC95=[0.0650, 0.1427] & $H_0$ rechazada; R3 es régimen de fallo de Smith. Fallo operativo bajo comunicación degradada, no bajo conectividad global. \\
+H5 & Smith-QR no mejora captura frente a Smith en R3. & Smith-QR mejora captura frente a Smith en R3. & t pareado unilateral sobre 20 semillas.; n=20; p=\textless{}0.001; IC95=[0.1434, 0.2276] & $H_0$ rechazada; mejora estadísticamente declarable. Declaración limitada a captura de recompensa en R3. \\
+H6 & Smith-QR domina también en distancia desperdiciada frente a greedy. & La dominancia de Smith-QR no se extiende a todas las métricas. & t pareado unilateral sobre distancia desperdiciada.; n=20; p=0.600; IC95=[-24.2001, 31.4817] & $H_0$ no rechazada; se reporta límite operativo. Smith-QR es superior en captura, no dominante universal. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -38,9 +38,9 @@ H6 & Smith-QR domina tambiÃ©n en distancia desperdiciada frente a greedy. & La
 \scriptsize
 \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.08\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.20\textwidth}>{\raggedright\arraybackslash}X@{}}
 \toprule
-Prot. & $H_0$ & $H_1$ & Contraste & DecisiÃ³n y alcance \\
+Prot. & $H_0$ & $H_1$ & Contraste & Decisión y alcance \\
 \midrule
-H7 & Las escenas robÃ³ticas incumplen despejes mÃ­nimos o no exportan datos. & Las escenas robÃ³ticas son plausibles y exportan mÃ©tricas auditables. & Acceptance sampling muestral; sin inferencia poblacional.; n=6; p=n/a; IC95=n/a & $H_0$ muestral refutada; evidencia robÃ³tica observacional aceptada. No sustituye hardware ni benchmark estadÃ­stico principal. \\
+H7 & Las escenas robóticas incumplen despejes mínimos o no exportan datos. & Las escenas robóticas son plausibles y exportan métricas auditables. & Acceptance sampling muestral; sin inferencia poblacional.; n=6; p=n/a; IC95=n/a & $H_0$ muestral refutada; evidencia robótica observacional aceptada. No sustituye hardware ni benchmark estadístico principal. \\
 H8 & MARL-CTDE no mejora a una politica proxy ni aporta comparador aprendido. & MARL-CTDE aprende una politica compartida y mejora al proxy en al menos un regimen, sin dominar a Smith-QR. & t pareado unilateral por regimen y contraste global frente a Smith-QR.; n=8 escasez; 24 global; p=\textless{}0.001 / 1.000; IC95=[0.1638, 0.2015]; [-0.2448, -0.0834] & $H_0$ rechazada solo contra el proxy en escasez; no se declara superioridad global. Baseline aprendido real para contraste, no contribucion teorica principal. \\
 H9 & El actor neuronal CTDE no aporta evidencia adicional frente al proxy o al CTDE lineal. & El actor neuronal CTDE aprende una politica compartida, mejora al proxy en escasez y reduce coste frente al CTDE lineal sin dominar a Smith-QR. & Contraste pareado por regimen y contraste global frente a Smith-QR.; n=8 escasez proxy; 8 escasez coste; 24 global; p=\textless{}0.001 / 0.035 / 1.000; IC95=[0.1484, 0.1978]; [-14.3657, -0.6450]; [-0.2347, -0.1280] & $H_0$ rechazada solo como baseline neuronal adicional; no se declara superioridad global. Aporta comparacion aprendida real; la contribucion principal sigue siendo Smith-QR y el motor matematico. \\
 \bottomrule
@@ -54,7 +54,7 @@ H9 & El actor neuronal CTDE no aporta evidencia adicional frente al proxy o al C
 \scriptsize
 \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.08\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.20\textwidth}>{\raggedright\arraybackslash}X@{}}
 \toprule
-Prot. & $H_0$ & $H_1$ & Contraste & DecisiÃ³n y alcance \\
+Prot. & $H_0$ & $H_1$ & Contraste & Decisión y alcance \\
 \midrule
 H10 & El peaje de densidad predictiva no reduce congestion frente a Smith-QR. & El peaje de densidad predictiva reduce congestion sin degradar productividad. & Contraste pareado sobre 30 semillas sinteticas.; n=30; p=IC95; IC95=ver gates H10-DENS & $H_0$ rechazada en la campana sintetica de almacen. Valida congestion predictiva en un cuello de botella controlado; no sustituye hardware. \\
 H11 & La capacidad wrench no mejora el transporte frente a cardinalidad. & La capacidad wrench reduce residual y mantiene limites de torque, energia y bateria. & Contraste pareado y cotas IC95 sobre 30 semillas.; n=30; p=IC95; IC95=ver gates H11-INT & $H_0$ rechazada para el tramo critico simulado. Campana dinamica sintetica; debe ampliarse con ejecucion Coppelia o hardware. \\
@@ -70,13 +70,13 @@ H12 & La validacion Coppelia no cubre los escenarios necesarios. & La validacion
 \scriptsize
 \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.08\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.20\textwidth}>{\raggedright\arraybackslash}X@{}}
 \toprule
-Prot. & $H_0$ & $H_1$ & Contraste & DecisiÃ³n y alcance \\
+Prot. & $H_0$ & $H_1$ & Contraste & Decisión y alcance \\
 \midrule
 G3 & Cardinalidad suficiente implica capacidad wrench. & La capacidad efectiva requiere rango y residual wrench. & No aplica; gate algebraico.; n=2 configuraciones; p=n/a; IC95=n/a & $H_0$ refutada por contraejemplo constructivo. Necesario para cargas que requieren torque planar. \\
-G4 & Mercado, campo y Hamiltoniano no comparten el mismo dÃ©ficit. & Las tres capas consumen un dÃ©ficit comÃºn verificable. & No aplica; identidad algebraica.; n=gate algebraico; p=n/a; IC95=n/a & $H_0$ refutada hasta precisiÃ³n numÃ©rica. Depende de las hipÃ³tesis del contrato de integraciÃ³n. \\
-G5 & La extensiÃ³n dinÃ¡mica viola los lÃ­mites de energÃ­a/torque. & La extensiÃ³n dinÃ¡mica mantiene energÃ­a y torque acotados. & No aplica; gate de estabilidad acotada.; n=gate algebraico; p=n/a; IC95=n/a & $H_0$ refutada en el caso controlado. Falta validar con campaÃ±as dinÃ¡micas de contacto realista. \\
-G6 & El peaje predictivo no cambia rutas congestionadas. & El peaje predictivo anticipa congestiÃ³n y desvÃ­a flujo. & No aplica; gate determinista de ruta.; n=1 escenario controlado; p=n/a; IC95=n/a & $H_0$ refutada en el caso controlado. HipÃ³tesis extendida; requiere campaÃ±a de congestiÃ³n para generalizar. \\
-G7 & La baterÃ­a no altera la asignaciÃ³n econÃ³mica. & La baterÃ­a actÃºa como restricciÃ³n econÃ³mica de retornabilidad. & No aplica; gate determinista de payoff.; n=1 escenario controlado; p=n/a; IC95=n/a & $H_0$ refutada en el caso controlado. Debe ampliarse con descarga temporal y rutas a cargador. \\
+G4 & Mercado, campo y Hamiltoniano no comparten el mismo déficit. & Las tres capas consumen un déficit común verificable. & No aplica; identidad algebraica.; n=gate algebraico; p=n/a; IC95=n/a & $H_0$ refutada hasta precisión numérica. Depende de las hipótesis del contrato de integración. \\
+G5 & La extensión dinámica viola los límites de energía/torque. & La extensión dinámica mantiene energía y torque acotados. & No aplica; gate de estabilidad acotada.; n=gate algebraico; p=n/a; IC95=n/a & $H_0$ refutada en el caso controlado. Falta validar con campañas dinámicas de contacto realista. \\
+G6 & El peaje predictivo no cambia rutas congestionadas. & El peaje predictivo anticipa congestión y desvía flujo. & No aplica; gate determinista de ruta.; n=1 escenario controlado; p=n/a; IC95=n/a & $H_0$ refutada en el caso controlado. Hipótesis extendida; requiere campaña de congestión para generalizar. \\
+G7 & La batería no altera la asignación económica. & La batería actúa como restricción económica de retornabilidad. & No aplica; gate determinista de payoff.; n=1 escenario controlado; p=n/a; IC95=n/a & $H_0$ refutada en el caso controlado. Debe ampliarse con descarga temporal y rutas a cargador. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -120,7 +120,7 @@ H9-MARL & El actor neuronal CTDE aprende desde retornos episodicos: ganancia de 
 \toprule
 Protocolo & Criterio validado & Observado & Umbral & Estado \\
 \midrule
-G3-W & Cardinalidad no implica capacidad wrench: residual de coalicion apiÃ±ada & 1.1990 & \textgreater{}= 0.2500 & Pasa \\
+G3-W & Cardinalidad no implica capacidad wrench: residual de coalicion apiñada & 1.1990 & \textgreater{}= 0.2500 & Pasa \\
 G3-W & Distribucion de contacto restaura factibilidad: residual de coalicion distribuida & 2.54e-16 & \textless{}= 1.00e-08 & Pasa \\
 G4-INT & Mercado, campo y Hamiltoniano consumen el mismo deficit: error maximo de balance de potencia & 2.22e-16 & \textless{}= 1.00e-09 & Pasa \\
 G4-INT & La firma del contorno conecta geometria con torque: torque maximo en cuadrado supereliptico & 0.5240 & \textgreater{}= 0.2500 & Pasa \\
@@ -161,12 +161,12 @@ H12-COP & La campana Coppelia cubre escenarios de validacion: numero de escenas 
 
 \begin{table}[H]
 \centering
-\caption{ComparaciÃ³n principal bajo comunicaciÃ³n R3. Las mÃ©tricas distinguen productividad de coste operativo.}
+\caption{Comparación principal bajo comunicación R3. Las métricas distinguen productividad de coste operativo.}
 \label{tab:validation-suite-r3}
 \small
 \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}Xrrrr@{}}
 \toprule
-MÃ©todo & Captura media & IC95 captura & Entregas medias & Distancia desperdiciada \\
+Método & Captura media & IC95 captura & Entregas medias & Distancia desperdiciada \\
 \midrule
 Centralizado limitado & 0.061 & [0.025, 0.097] & 1.85 & 2.86 \\
 Smith & 0.104 & [0.065, 0.143] & 3.25 & 16.86 \\
@@ -216,7 +216,7 @@ Escasez prioritaria & adversarial & 0.538 & 0.519 & 0.365 & 0.769 & mejora al pr
 \small
 \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}Xrrr>{\raggedright\arraybackslash}X@{}}
 \toprule
-ComparaciÃ³n & Delta medio & IC95 bajo & IC95 alto & Lectura \\
+Comparación & Delta medio & IC95 bajo & IC95 alto & Lectura \\
 \midrule
 Smith-QR vs. Smith & 0.1855 & 0.1434 & 0.2276 & mejora declarable \\
 Smith-QR vs. Greedy local & 0.0466 & 0.0047 & 0.0886 & mejora declarable \\

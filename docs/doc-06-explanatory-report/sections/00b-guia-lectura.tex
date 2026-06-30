@@ -1,0 +1,132 @@
+%% ====================================================================
+\section*{Estructura conceptual del TFM}
+\addcontentsline{toc}{section}{Estructura conceptual del TFM}
+\label{sec:estructura-conceptual}
+%% ====================================================================
+
+Este TFM estudia un problema de coordinación distribuida en almacenes industriales:
+varios AGVs deben decidir, sin un asignador central permanente, qué cargas atender, con
+qué coalición, por qué ruta y bajo qué restricciones físicas. La dificultad no está solo
+en escoger una tarea. Una carga pesada o voluminosa puede requerir un quorum mínimo de
+robots, una distribución espacial compatible con el contacto, suficiente batería para
+volver a una zona segura, límites de torque en rueda, evitación de obstáculos y
+capacidad de mantener la formación durante el transporte.
+
+\subsection*{Problema de coordinación}
+\addcontentsline{toc}{subsection}{Problema de coordinación}
+
+El sistema se compone de $N$ robots móviles y $K$ tareas activas. Cada tarea $k$ tiene
+una posición, una prioridad, una demanda de servicio y una carga física asociada. En el
+modelo homogéneo, la demanda se resume en un número mínimo $n_k$ de robots. En el modelo
+físico, la demanda se escribe como una capacidad requerida $D_k$ y la coalición aporta
+una capacidad efectiva $S_k$ que depende de la masa, la geometría, la fricción, el
+contacto, la energía disponible y la orientación de la carga. La condición de servicio
+deja de ser únicamente $|\mathcal C_k|\ge n_k$ y pasa a ser
+\[
+  S_k(\mathcal C_k,t)\ge D_k(t).
+\]
+Esta desigualdad es el núcleo del problema: una coalición no es válida porque tenga
+muchos robots, sino porque cierra las restricciones físicas necesarias para mover la
+carga con seguridad.
+
+\subsection*{Teoría de juegos}
+\addcontentsline{toc}{subsection}{Teoría de juegos}
+
+La teoría de juegos ofrece el lenguaje para describir decisiones acopladas entre
+agentes. Cada robot es un jugador, cada tarea es una estrategia y el valor de elegir una
+tarea se mide con un \emph{payoff}. A diferencia de una asignación centralizada, aquí el
+payoff de un robot no depende solo de la tarea, sino también de cuántos robots ya la
+atienden, de la distancia, de la conectividad local, de la batería y de la contribución
+mecánica que ese robot puede aportar.
+
+El punto importante es que el juego no se usa como metáfora económica, sino como una
+estructura de control. Si el payoff de una tarea aumenta cuando falta capacidad y
+disminuye cuando la tarea queda cubierta, entonces la flota recibe una señal distribuida
+de reclutamiento. Los robots cercanos a una carga deficitaria tienden a migrar hacia
+ella; los robots que ya no aportan valor marginal tienden a liberar capacidad para otras
+tareas. En el caso integrable, estos payoffs derivan de un potencial global, lo que
+permite demostrar propiedades de estabilidad y convergencia.
+
+\subsection*{Dinámicas poblacionales}
+\addcontentsline{toc}{subsection}{Dinámicas poblacionales}
+
+Las dinámicas poblacionales convierten el juego en una ecuación de movimiento sobre el
+símplex de decisiones. Cada robot mantiene un vector
+\[
+  y_i=(y_{i0},y_{i1},\ldots,y_{iK})\in\Delta^{K+1},
+\]
+donde $y_{ik}$ representa su preferencia por la tarea $k$ y $y_{i0}$ representa
+inactividad o reserva. La dinámica de Smith transfiere masa decisional desde estrategias
+con menor payoff hacia estrategias con mayor payoff mediante comparaciones por pares:
+\[
+  \dot y_{ik}
+  =
+  \sum_{\ell=0}^{K} y_{i\ell}[F_{ik}-F_{i\ell}]_+
+  -
+  y_{ik}\sum_{\ell=0}^{K}[F_{i\ell}-F_{ik}]_+.
+\]
+Esta ecuación preserva el símplex, evita probabilidades negativas y permite que cada
+robot revise su decisión con información local. En la implementación, la preferencia
+continua se proyecta a una decisión ejecutable mediante compromiso, histéresis, guardias
+de quorum y \emph{clearing} entero.
+
+\subsection*{MARL como referencia algorítmica}
+\addcontentsline{toc}{subsection}{MARL como referencia algorítmica}
+
+El aprendizaje por refuerzo multiagente (MARL) plantea el mismo problema desde otra
+perspectiva. En lugar de diseñar explícitamente el payoff y demostrar la dinámica, cada
+robot aprende una política $\pi_i(a_i\mid o_i)$ que asigna acciones a observaciones para
+maximizar una recompensa acumulada. MARL es atractivo porque puede capturar patrones
+difíciles de modelar a mano, pero también introduce dependencia del entrenamiento,
+dificultad de generalización y menor interpretabilidad formal.
+
+Por ese motivo, MARL se usa en este TFM como referencia comparativa y como inspiración
+para métricas, no como sustituto del modelo analítico. La propuesta Smith-QR conserva
+ecuaciones trazables: si un robot cambia de tarea, se puede explicar por déficit de
+capacidad, precio temporal, distancia, conectividad, batería o restricción de seguridad.
+Esta trazabilidad es clave en robótica industrial, donde no basta con que una política
+funcione en promedio; también debe explicar por qué una coalición se forma y bajo qué
+condiciones deja de ser segura.
+
+\subsection*{Aporte integrado}
+\addcontentsline{toc}{subsection}{Aporte integrado}
+
+La contribución del TFM es unificar seis capas que suelen estudiarse por separado:
+\[
+  \begin{aligned}
+  \text{juego}
+  &\rightarrow
+  \text{dinámica poblacional}
+  \rightarrow
+  \text{capacidad mecánica}\\
+  &\rightarrow
+  \text{control vectorial ejecutable}
+  \rightarrow
+  \text{escalabilidad}
+  \rightarrow
+  \text{validación multi-métrica}.
+  \end{aligned}
+\]
+La unión entre capas se realiza mediante una cadena de residuos: déficit de capacidad,
+déficit de wrench, balance port-Hamiltoniano, margen de batería y congestión prevista.
+Así, una capa no queda justificada por su elegancia aislada, sino por la señal que entrega
+a la siguiente y por el gate que puede falsarla.
+La primera capa decide qué tareas son atractivas. La segunda transforma payoffs en
+revisión distribuida. La tercera reemplaza el conteo simple de robots por capacidad
+efectiva, torques, contacto, formación y batería. La cuarta baja esas variables a un
+bucle finito con contornos circulares/superelípticos, firma fuerza--torque, wrench,
+fases, rigidez, CBF y uniciclo. La quinta separa
+dos lecturas: aproximación determinista de Smith para conectar la ODE con flotas finitas,
+y MFG como arquitectura futura para campos de densidad y peajes de congestión. La sexta
+evalúa no solo entregas y distancia, sino también energía, vida útil de batería,
+saturación de actuadores, seguridad, congestión y robustez ante fallos.
+
+Con esta organización, Smith-QR se interpreta como el núcleo ejecutable de un framework
+más amplio: una arquitectura de coordinación distribuida donde la teoría de juegos
+define incentivos, las dinámicas poblacionales producen adaptación continua, la mecánica
+garantiza que las coaliciones sean físicamente útiles, el control vectorial traduce esas
+coaliciones a comandos ejecutables y la aproximación determinista explica cuándo la ODE
+representa a la flota finita. Las ideas MFG quedan como ruta de escalado por campos
+escalares, sin convertirlas en garantía experimental central del TFM. Los gates G3 y G4
+validan las conexiones mínimas del motor avanzado: capacidad wrench frente a cardinalidad,
+firma fuerza--torque, peajes predictivos, batería y balance energético.

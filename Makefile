@@ -1,7 +1,7 @@
-﻿PYTHON ?= python
+PYTHON ?= python
 PIP ?= $(PYTHON) -m pip
 EXP ?= experiments/exp-001-baseline-nominal/config.yaml
-REPORT_DIR := docs/report
+REPORT_DIR := docs/doc-05-final-report
 export PYTHONPATH := src
 
 .PHONY: install test lint report-pdf validate-suite smoke-exp clean-generated clean
@@ -32,7 +32,7 @@ smoke-exp:
 
 clean-generated:
 	$(PYTHON) -c "from pathlib import Path; import shutil; [shutil.rmtree(path, ignore_errors=True) for path in Path('.').rglob('__pycache__')]"
-	$(PYTHON) -c "from pathlib import Path; import shutil; [shutil.rmtree(path, ignore_errors=True) for path in [Path('docs/report/build'), Path('results/raw/_pytest_runner_smoke')] if path.exists()]"
+	$(PYTHON) -c "from pathlib import Path; import shutil; [shutil.rmtree(path, ignore_errors=True) for path in [Path('docs/doc-05-final-report/build'), Path('results/raw/_pytest_runner_smoke')] if path.exists()]"
 
 clean: clean-generated
 

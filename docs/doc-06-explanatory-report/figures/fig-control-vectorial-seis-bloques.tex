@@ -1,0 +1,47 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  font=\small,
+  block/.style={
+    draw=VIUOrange,
+    very thick,
+    rounded corners=2pt,
+    align=center,
+    minimum width=0.24\linewidth,
+    minimum height=12mm,
+    fill=VIUOrange!6
+  },
+  gate/.style={
+    draw=black!55,
+    thick,
+    rounded corners=2pt,
+    align=center,
+    minimum width=0.24\linewidth,
+    minimum height=10mm,
+    fill=black!3
+  },
+  arrow/.style={-{Latex[length=2.4mm]}, thick, black!70},
+  node distance=7mm and 5mm
+]
+\node[block] (geo) {1. Geometría\\superelipse};
+\node[block, right=of geo] (wrench) {2. Torsor\\y error físico};
+\node[block, right=of wrench] (phase) {3. Fase\\Smith--Kuramoto};
+\node[block, below=of phase] (rigid) {4. Rigidez\\local};
+\node[block, left=of rigid] (cbf) {5. Filtro\\CBF--QP};
+\node[block, left=of cbf] (uni) {6. Uniciclo\\y ruedas};
+
+\draw[arrow] (geo) -- (wrench);
+\draw[arrow] (wrench) -- (phase);
+\draw[arrow] (phase) -- (rigid);
+\draw[arrow] (rigid) -- (cbf);
+\draw[arrow] (cbf) -- (uni);
+
+\node[gate, below=9mm of cbf] (verif) {Gates: normal finita, residual de wrench,\\
+QP factible, saturación de uniciclo y eventos sin Zeno};
+\draw[arrow, dashed] (cbf.south) -- (verif.north);
+\end{tikzpicture}
+\caption{Bucle finito de control vectorial para bajar el marco integrado a una
+implementación tipo CoppeliaSim. Cada bloque produce una señal medible y un gate de
+verificación local.}
+\label{fig:control-vectorial-seis-bloques}
+\end{figure}
