@@ -1,0 +1,40 @@
+protocol,claim,evidence_class,metric,observed,threshold,direction,passed,note
+H1-G1,Smith reproduce water-filling homogeneo,probado+gate,pendiente staffing observado/teorico,1.0,0.99,>=,True,"La pendiente queda dentro de [0.99, 1.01]."
+H1-G1,Smith reproduce water-filling homogeneo,probado+gate,R2 del ajuste,1.0,0.99,>=,True,El ajuste lineal no deja residuo apreciable.
+H2-G2,El clearing entero reduce coaliciones parciales inutiles,probado+gate,reduccion relativa de distancia desperdiciada,1.0,0.25,>=,True,La proyeccion entera cierra todos los quorums del caso minimo.
+H3A-G3A,El precio estatico no es una mejora universal,resultado negativo,delta de utilidad estatica con precio,-0.041,0.0,<=,True,El precio perturba un equilibrio ya resuelto por Smith.
+H3B-G3B,El precio temporal ayuda con deadlines y deficit persistente,gate temporal,delta de captura antes de deadline,0.212,0.05,>=,True,La urgencia solo se acepta en regimen temporal.
+H4-R3,Smith original falla bajo comunicacion R3,comparacion controlada,entregas medias de Smith,3.25,4.0,<=,True,La dinamica queda por debajo del umbral operativo fijado para R3.
+H5-R3,Smith-QR rescata parcialmente R3,comparacion controlada,captura media Smith-QR,0.28933438942766254,0.10382517100237028,>,True,La mejora se acepta con IC95 pareado en la tabla de comparaciones.
+H7-ROB,Las escenas roboticas validan plausibilidad geometrica,plausibilidad robotica,numero de escenas generadas,6.0,6.0,>=,True,No sustituye el benchmark cuantitativo ni una ejecucion fisica.
+H7-ROB,Las escenas roboticas validan plausibilidad geometrica,plausibilidad robotica,separacion inicial minima humano-robot,6.2393909959226,2.0,>=,True,Comprueba que la escena no parte de una colision trivial.
+H7-ROB,Las escenas roboticas validan plausibilidad geometrica,plausibilidad robotica,separacion inicial minima robot-rack,3.3015148038438364,1.0,>=,True,Comprueba despeje inicial de infraestructura.
+H8-MARL,MARL-CTDE aprende una politica compartida,entrenamiento RL,ganancia de objetivo episodico,0.14796143913174004,0.05,>=,True,Objetivo inicial 0.2585; mejor 0.4065.
+H8-MARL,MARL-CTDE supera al proxy en escasez,evaluacion congelada,delta de captura frente a proxy,0.18269230769230768,0.0,>,True,El resultado se limita al regimen de escasez evaluado.
+H8-MARL,MARL-CTDE no domina a Smith-QR globalmente,resultado negativo,delta global de captura frente a Smith-QR,-0.16409475087811237,0.0,<=,True,El baseline aprendido no sustituye el mecanismo analitico.
+H9-MARL,El actor neuronal CTDE aprende desde retornos episodicos,entrenamiento RL neuronal,ganancia de objetivo episodico,0.05198244096076454,0.03,>=,True,Objetivo inicial 0.4065; mejor 0.4585.
+H9-MARL,El actor neuronal supera al proxy en escasez,evaluacion congelada,delta de captura frente a proxy,0.17307692307692307,0.0,>,True,La mejora se declara solo para escasez prioritaria.
+H9-MARL,El actor neuronal reduce coste operativo frente al CTDE lineal,evaluacion congelada,delta de distancia desperdiciada en escasez,-7.50532721613412,0.0,<,True,"El actor neuronal reduce distancia, aunque no domina en captura global."
+H9-MARL,El actor neuronal no domina a Smith-QR globalmente,resultado negativo,delta global de captura frente a Smith-QR,-0.18133646307133752,0.0,<=,True,No sustituye el mecanismo analitico Smith-QR.
+G3-W,Cardinalidad no implica capacidad wrench,gate algebraico,residual de coalicion apiÃ±ada,1.1990411504661485,0.25,>=,True,El quorum escalar pasa pero el wrench falla.
+G3-W,Distribucion de contacto restaura factibilidad,gate algebraico,residual de coalicion distribuida,2.5438405243138006e-16,1e-08,<=,True,El rango planar queda completo.
+G5-DYN,El contacto util mantiene esfuerzo dinamico acotado,hipotesis extendida+gate,salto Hamiltoniano normalizado,0.043,0.1,<=,True,El cambio de rol queda por debajo del limite de disipacion.
+G5-DYN,El contacto util mantiene esfuerzo dinamico acotado,hipotesis extendida+gate,saturacion maxima de torque,0.5,0.85,<=,True,La solucion distribuida no exige torque extremo.
+G4-INT,La firma del contorno conecta geometria con torque,gate algebraico,torque radial maximo en circulo,0.0,1e-08,<=,True,El empuje radial puro traslada pero no rota.
+G4-INT,La firma del contorno conecta geometria con torque,gate algebraico,torque maximo en cuadrado supereliptico,0.5240227,0.25,>=,True,La superelipse cuadrada genera brazos utiles.
+G4-INT,La firma del contorno conecta geometria con torque,gate algebraico,torque maximo en rectangulo supereliptico,1.085584,0.65,>=,True,El rectangulo genera firmas anisotropas.
+G4-INT,"Mercado, campo y Hamiltoniano consumen el mismo deficit",gate algebraico,error maximo de balance de potencia,2.22e-16,1e-09,<=,True,La igualdad port-Hamiltoniana cierra a precision numerica.
+G6-CONG,El peaje predictivo evita congestiones antes del atasco,hipotesis extendida+gate,densidad maxima sin peaje,1.62,1.0,>,True,La ruta corta activa riesgo de congestion.
+G6-CONG,El peaje predictivo evita congestiones antes del atasco,hipotesis extendida+gate,cambio de ruta por peaje,1.0,1.0,=,True,El coste anticipatorio selecciona la ruta alternativa.
+G7-BAT,La bateria entra como restriccion economica,hipotesis extendida+gate,brecha de payoff por retornabilidad,0.75,0.5,>=,True,A igual capacidad mecanica se elige el robot retornable.
+H10-DENS,La densidad predictiva reduce congestion aplicada,campana estadistica,delta pareado de pasos congestionados frente a Smith-QR,-161.7,0.0,<,True,La prediccion rho(t+tau) reduce pasos con densidad por encima del umbral.
+H10-DENS,La densidad predictiva reduce congestion aplicada,campana estadistica,delta pareado de densidad maxima futura,-17.363702679560188,0.0,<,True,El mapa predictivo reduce el maximo de rho(t+tau) en el cuello de botella.
+H10-DENS,La densidad predictiva no degrada productividad,campana estadistica,captura media con peaje predictivo,1.0,0.97,>=,True,No inferioridad de captura frente al Smith-QR base con margen del 3%.
+H11-INT,El motor integrado reduce residual wrench,campana dinamica,delta pareado de residual wrench medio,-0.6350512176539928,0.0,<,True,Capacidad wrench supera al criterio de cardinalidad simple.
+H11-INT,El motor integrado mantiene torque acotado,campana dinamica,cota superior IC95 de saturacion de torque,0.4055378367000486,0.85,<=,True,La solucion wrench-aware permanece bajo el margen de saturacion.
+H11-INT,El motor integrado mantiene energia acotada,campana dinamica,cota superior IC95 de salto Hamiltoniano,0.2141085576005723,0.35,<=,True,La energia no presenta saltos incompatibles con la cota fijada.
+H11-INT,El motor integrado conserva margen de bateria,campana dinamica,cota inferior IC95 de bateria minima,0.8200662735073068,0.75,>=,True,La descarga queda por encima del margen operativo.
+H11-INT,El motor integrado completa el tramo critico,campana dinamica,delta pareado de throughput frente a cardinalidad,0.9666666666666667,0.0,>,True,La carga supera el tramo critico con capacidad wrench.
+H12-COP,La campana Coppelia cubre escenarios de validacion,escenas+fallback visual,numero de escenas generadas,10.0,10.0,>=,True,"Incluye R3, fallo, humanos, sensores, densidad, wrench, bateria e integrado."
+H12-COP,Las escenas Coppelia tienen camaras de auditoria,escenas+fallback visual,fraccion de escenas con camara superior y oblicua,1.0,1.0,=,True,Cada escena exporta camara superior y oblicua para inspeccion visual.
+H12-COP,La campana Coppelia exporta artefactos visuales,escenas+fallback visual,fraccion de escenas con PNG y MP4,1.0,1.0,=,True,"Si no hay ejecucion headless, se entrega render sintetico trazable."

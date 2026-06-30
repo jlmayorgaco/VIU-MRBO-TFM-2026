@@ -1,0 +1,105 @@
+\section{Escalera modular de la contribucion}
+\label{sec:escalera-modular}
+
+La memoria se organiza como una escalera tecnica. Cada modulo agrega una restriccion que
+los niveles anteriores no pueden resolver sin perder interpretabilidad, ejecutabilidad o
+trazabilidad fisica. Esta organizacion evita presentar Smith-QR como una caja unica:
+primero se muestran los metodos clasicos y sus fallos, despues la asignacion de
+coaliciones, luego los casos homogeneos y heterogeneos, y finalmente el transporte
+rigido, los roles fisicos, el campo unico y la bateria.
+
+\subsection{Regla de organizacion: cuerpo de 80 paginas y anexos}
+
+El cuerpo principal debe defender la linea argumental en un maximo aproximado de 80
+paginas. Las pruebas largas, matrices completas, listados de configuracion, artefactos
+de CoppeliaSim y tablas generadas quedan en anexos. La regla editorial es simple: si una
+ecuacion, figura o tabla cambia la decision cientifica, entra en el cuerpo; si solo
+permite auditar o reproducir la decision, va al anexo.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}p{0.24\textwidth}p{0.18\textwidth}Y@{}}
+\toprule
+Bloque del cuerpo & Presupuesto & Contenido que debe quedar dentro \\
+\midrule
+Problema, objetivos y escalera & 8--10 paginas & Pregunta de investigacion, alcance, M0--M5 y criterio de avance. \\
+Estado del arte & 12--15 paginas & MRTA, coaliciones, control distribuido, game theory, formaciones, transporte cooperativo y soluciones comerciales. \\
+Modelo y teoria principal & 18--22 paginas & Variables, payoffs, Smith, quorum entero, capacidad efectiva, roles y campo unico. \\
+Implementacion y simulaciones & 10--12 paginas & Arquitectura del repositorio, escenarios, baselines, metricas y protocolo experimental. \\
+Resultados y discusion & 18--20 paginas & H1--H12, plots principales, lectura por modulo y limites. \\
+Conclusiones & 4--6 paginas & Aporte, limites, extensiones M3/M5 y ruta doctoral. \\
+\bottomrule
+\end{tabularx}
+\caption{Presupuesto editorial para una memoria extensa: cuerpo principal compacto y anexos auditables.}
+\label{tab:presupuesto-80-paginas}
+\end{table}
+
+\subsection{Fases M0--M5}
+
+La Tabla~\ref{tab:escalera-m0-m5} resume la progresion. En cada fila hay cuatro
+elementos obligatorios: pregunta, ecuacion minima, simulacion/plot y lectura de fallo o
+mejora. Asi, una fase no se acepta solo por implementarse; se acepta cuando tiene una
+afirmacion falsable y una salida reproducible.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}p{0.10\textwidth}p{0.24\textwidth}Y Y@{}}
+\toprule
+Modulo & Pregunta cientifica & Ecuacion minima & Evidencia esperada \\
+\midrule
+M0 & Metodos clasicos: FSM, greedy, centralizado, dispatching. & $a_i(t)=\mu_i(x(t))$ o
+$\min \sum_{i,k} c_{ik}y_{ik}$. & Baseline; mostrar por que falla con cargas multi-robot,
+R3, fallos o fisica de contacto. \\
+M1 & Solo coaliciones: decidir que robots atienden que carga. &
+$y_{ik}\in\{0,1\}$, $C_k=\{i:y_{ik}=1\}$. & Quorum cerrado, distancia desperdiciada,
+captura y comparacion contra greedy/centralizado. \\
+M1.1 & Cargas y robots homogeneos. &
+$\sum_i y_{ik}\ge n_k$. & Water-filling y staffing minimo por carga. \\
+M1.2 & Cargas homogeneas, robots heterogeneos. &
+$\sum_i c_i y_{ik}\ge D$. & Capacidad acumulada; robots distintos no valen lo mismo. \\
+M1.3 & Cargas heterogeneas, robots homogeneos. &
+$\sum_i y_{ik}\ge n_k$, con $n_k$ variable. & Cargas ligeras/pesadas, escasez,
+prioridad y deadlines. \\
+M1.4 & Cargas y robots heterogeneos. &
+$S_k=\sum_i c_{ik}(t)y_{ik}$, $S_k\ge D_k$. & Capacidad efectiva: distancia,
+bateria, conectividad y utilidad fisica reducen aporte real. \\
+M2 & Transporte rigido despues de asignar. &
+$q_i^{\rm ref}=q_k^L+R(\theta_k)r_h$. & Seguimiento de slots, ruptura de quorum y
+reclutamiento al perder contacto. \\
+M3 & Asignacion carga--rol. &
+$z_{ikh}\in\{0,1\}$, $\sum_{k,h}z_{ikh}\le 1$. & El robot no solo elige carga: elige
+contacto, lado, esquina o rol mecanico. \\
+M4 & Campo distribuido unificado. &
+$u_i=-\nabla\Phi_i^{\rm task}-\nabla\Phi_i^{\rm form}-\nabla\Phi_i^{\rm obs}
+-\nabla\Phi_i^{\rm bat}+u_i^{\rm wrench}$. & Reclutamiento, transporte, obstaculos,
+fallos y liberacion sin FSM dominante. \\
+M5 & Bateria y estaciones. &
+$p_{ik}=v_k-\alpha d_{ik}-\beta e_i-\gamma Q_b$. & Retornabilidad, carga, colas y
+disponibilidad como parte del payoff. \\
+\bottomrule
+\end{tabularx}
+\caption{Escalera modular propuesta para explicar la contribucion de forma gradual.}
+\label{tab:escalera-m0-m5}
+\end{table}
+
+\subsection{Criterio de cierre de cada modulo}
+
+Cada modulo se cierra con el mismo contrato metodologico:
+\begin{enumerate}[leftmargin=2em]
+  \item \textbf{Modelo}: definir variables, restricciones y payoff del modulo.
+  \item \textbf{Fallo del modulo anterior}: construir un caso donde el nivel previo no
+  basta, por ejemplo cardinalidad suficiente pero residual wrench alto.
+  \item \textbf{Algoritmo}: explicar que cambia en Smith-QR, en el clearing o en el campo.
+  \item \textbf{Simulacion}: ejecutar semillas comparables, con baselines y metricas
+  alineadas con la hipotesis.
+  \item \textbf{Plot o tabla}: mostrar una salida principal en el cuerpo y enviar la
+  matriz completa al anexo.
+\end{enumerate}
+
+La entrega actual implementa de forma fuerte M1, M1.1, M1.3, M2 y una version operativa
+de M4; aporta gates matematicos para M1.4; deja M3 como transicion parcial, porque los
+roles se derivan por slot despues de asignar; y conserva M5 como extension con bateria
+incluida en payoff, pero sin estaciones de carga completas. Esta lectura es mas
+defendible que afirmar una cobertura total uniforme.

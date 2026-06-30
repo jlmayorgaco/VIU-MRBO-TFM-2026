@@ -1,0 +1,72 @@
+name: exp-010-scenario-a-smoke
+description: Scenario A smoke run; 6 AGV, 3 balanced tasks with n_k=2.
+controller:
+  type: t4_smith
+  parameters:
+    beta: 2.0
+    spatial_scale: 5.0
+    idle_reward: 0.05
+    revision_rate: 0.8
+    min_revision_rate: 0.02
+    revision_sigma: 2.0
+    hysteresis: 0.03
+    consensus_gain: 0.05
+    attraction_gain: 1.1
+    robot_repulsion_gain: 0.06
+    obstacle_repulsion_gain: 0.35
+    formation_radius: 0.65
+    max_speed: 0.65
+    max_angular_speed: 2.5
+simulation:
+  duration: 30.0
+  time_step: 0.1
+  agv_count: 6
+  dimensions: 2
+  random_seed: 2026
+  communication_range:
+  visibility_range: 8.0
+  transport_threshold_steps: 3
+  detection_radius: 0.75
+  initial_positions:
+    - [-2.0, -2.5]
+    - [-2.0, -1.5]
+    - [-2.0, -0.5]
+    - [-2.0, 0.5]
+    - [-2.0, 1.5]
+    - [-2.0, 2.5]
+load:
+  nominal_mass: 25.0
+  nominal_inertia: 3.0
+  mass_uncertainty_ratio: 0.0
+  center_of_mass_shift: [0.0, 0.0]
+graph:
+  adjacency:
+    - [0.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+    - [1.0, 0.0, 1.0, 1.0, 1.0, 1.0]
+    - [1.0, 1.0, 0.0, 1.0, 1.0, 1.0]
+    - [1.0, 1.0, 1.0, 0.0, 1.0, 1.0]
+    - [1.0, 1.0, 1.0, 1.0, 0.0, 1.0]
+    - [1.0, 1.0, 1.0, 1.0, 1.0, 0.0]
+tasks:
+  - identifier: load-a
+    pickup: [1.5, -2.0]
+    destination: [5.0, -2.0]
+    min_coalition_size: 2
+    reward: 1.0
+  - identifier: load-b
+    pickup: [1.5, 0.0]
+    destination: [5.0, 0.0]
+    min_coalition_size: 2
+    reward: 1.0
+  - identifier: load-c
+    pickup: [1.5, 2.0]
+    destination: [5.0, 2.0]
+    min_coalition_size: 2
+    reward: 1.0
+metrics:
+  - completion_rate
+  - throughput_tasks_per_min
+  - feasibility_rate
+  - assignment_change_rate
+  - total_distance_m
+notes: First quantitative smoke for balanced water-filling and closed-loop transport.

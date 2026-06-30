@@ -1,0 +1,33 @@
+﻿\section{Conclusiones}
+
+La V7 modular deja una tesis tecnica clara. El TFM propone Smith-QR como nucleo de
+coordinacion distribuida para coaliciones multi-AGV, interpreta la asignacion como un
+mercado local de capacidad y extiende el quorum hacia utilidad fisica en espacio
+\emph{wrench}. Esta combinacion permite explicar con una misma senal de deficit la
+asignacion, el precio, la formacion, la liberacion de robots y la necesidad de contactos
+geometricamente utiles.
+
+Las conclusiones principales son:
+\begin{itemize}[leftmargin=2em]
+  \item La escalera M0--M5 permite defender el trabajo de forma gradual: los metodos
+  clasicos fallan bajo coaliciones y comunicacion local, la asignacion necesita quorum
+  entero, y la cardinalidad debe extenderse hacia capacidad fisica.
+  \item Smith es una base teorica adecuada para la asignacion poblacional, pero falla en
+  regimenes locales severos si no se refuerza con memoria y clearing.
+  \item Smith-QR mejora el regimen R3 en captura de recompensa, aunque no debe venderse
+  como dominante universal.
+  \item MARL aporta comparadores aprendidos valiosos, pero no sustituye la explicabilidad
+  ni las garantias estructurales del modelo.
+  \item La capacidad vectorial tipo wrench es el componente mas importante para que el
+  problema de cargas heterogeneas sea realmente distinto del reparto 1-a-1.
+  \item La organizacion final del repositorio es parte del aporte: permite reproducir,
+  auditar y extender el trabajo.
+\end{itemize}
+
+El trabajo futuro natural queda tambien organizado por modulos. M1.2 debe recibir una
+campana dedicada de robots heterogeneos con cargas homogeneas. M3 debe promover los
+slots de contacto a una variable estrategica explicita $z_{ikh}$. M4 debe cerrarse con
+CBF-QP o una prueba mas fuerte de seguridad y convergencia practica. M5 debe incorporar
+estaciones de carga, colas y replanificacion energetica. ROS 2, CoppeliaSim headless real
+y hardware quedan como extensiones de validacion, no como resultados ya demostrados en
+esta entrega.

@@ -1,56 +1,80 @@
 # VIU-MROB-TFM-2026
 
-Repositorio base del Trabajo Fin de Máster del **Máster Universitario en Robótica y Automatización de Procesos (MROB)** de la **Universidad Internacional de Valencia (VIU)**. El proyecto estudia transporte cooperativo plano de cargas con **2 a 4 AGVs**, grafos de comunicación locales, un controlador distribuido nominal basado en consenso y una variante adaptativa/robusta para incertidumbre inercial de la carga, con validación centrada en simulación numérica reproducible.
+Repositorio organizado de la version V6 del TFM de Jorge Luis Mayorga Taborda para el
+Master Universitario en Robotica y Automatizacion de Procesos (VIU).
 
-**Tema del TFM:** *Control distribuido adaptativo basado en consenso para transporte cooperativo multi-AGV bajo incertidumbre inercial de la carga.*
+El eje tecnico actual es **Smith-QR para coordinacion distribuida de coaliciones
+multi-AGV con cargas heterogeneas**. La memoria final se concentra en una idea: los robots
+siguen una arquitectura distribuida basada en deficit fisico-economico, dinamicas de
+Smith, cierre entero de quorum, formacion rigida de carga y capacidad efectiva en espacio
+`wrench`.
 
-**Estado del repositorio:** `initial scaffolding`
+## Estado V6
 
-**Stack previsto:** Python 3.11+, NumPy, SciPy, Matplotlib, pytest y LaTeX.
+- Rama de organizacion: `v6-organization`.
+- Reporte canonico: `docs/report/main.tex`.
+- Codigo principal: `src/viu_mrob_tfm`.
+- Suite compacta de validacion: `results/validation_suite_v1` (`39/39` gates en el snapshot actual).
+- Artefactos pesados y borradores previos: `C:\tmp\VIU-MRBO-TFM-2026-v6-organization-20260620`.
+- Manifiesto de cuarentena: `cleanup_manifest.csv` y `cleanup_manifest.json`.
 
-## Estructura principal
+## Estructura
 
 ```text
 .
-├── docs/               # Propuesta, informes intermedios y memoria final
-├── src/                # Paquete Python principal
-├── experiments/        # Configuraciones reproducibles de experimentos
-├── results/            # Resultados brutos, procesados y figuras
-├── tests/              # Smoke tests y pruebas unitarias iniciales
-├── scripts/            # Utilidades de ejecución y limpieza
-└── assets/             # Recursos institucionales y diagramas
+|-- configs/              # parametros canonicos conservados
+|-- coppeliasim/          # escenas de smoke/plausibilidad
+|-- docs/report/          # unica memoria LaTeX canonica
+|-- experiments/          # configuraciones reproducibles
+|-- results/              # snapshots compactos de evidencia
+|-- scripts/              # CLI de ejecucion y validacion
+|-- src/viu_mrob_tfm/     # paquete Python
+`-- tests/                # pruebas de dominio, simulacion y OOP V6
 ```
 
-## Instalación
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -e .
-```
-
-En Windows PowerShell:
+## Instalacion
 
 ```powershell
 python -m venv .venv
 .venv\Scripts\Activate.ps1
-pip install -e .
+python -m pip install -e .
 ```
 
-## Ejecución de pruebas
+## Comandos principales
 
-```bash
-pytest
+```powershell
+python -m pytest -q
+$env:PYTHONPATH='src'; python -m viu_mrob_tfm.validation.suite
+make report-pdf
 ```
 
-## Compilación de la propuesta
+Atajos equivalentes:
 
-```bash
-make proposal-pdf
+```powershell
+make test
+make validate-suite
+make smoke-exp
 ```
 
-El PDF se genera desde [`docs/doc-01-proposal/main.tex`](/C:/Users/walla/Documents/Github/VIU-MRBO-TFM-2026/docs/doc-01-proposal/main.tex) y se deposita en `docs/doc-01-proposal/build/`.
+## Arquitectura OOP nueva
 
-## Nota
+La version V6 agrega contratos explicitos sin romper los imports historicos:
 
-Este repositorio tiene fines académicos y se encuentra en desarrollo activo. La estructura actual prioriza separación clara entre dominio, control, simulación, métricas, experimentos, visualización y documentación, sin implementar todavía el controlador completo del TFM.
+- `domain.robot`: `RobotSpec`, `RobotRuntimeState`, bateria y capacidad.
+- `domain.load`: `LoadSpec`, `WrenchDemand`, masa y geometria rectangular de carga.
+- `domain.world`: `WorldState`, `WarehouseMap`, `Obstacle`.
+- `scenarios`: escenarios reproducibles.
+- `allocation`: `BaseAllocator`, `SmithQRAllocator`.
+- `control`: `SingleFieldController`, `RigidFormation`, `VectorialWrenchGame`.
+- `simulation`: `SimulationEngine`, `PolicyStack`, `SimulationResult`.
+- `simulations`: benchmark historico de almacen usado por validacion y comparativas.
+- `validation`: `HypothesisSuite`.
+
+La configuracion de experimentos queda separada de los metodos: `experiments/*/config.yaml`
+para escenarios reproducibles, `configs/` para parametros transversales, y
+`scripts/campaigns/` o `scripts/coppelia/` para campanas que generan multiples artefactos.
+
+## Restaurar artefactos movidos
+
+Nada fue borrado directamente. Para restaurar un archivo, buscarlo en
+`cleanup_manifest.csv` y copiar `destination_path` de vuelta a `original_path`.

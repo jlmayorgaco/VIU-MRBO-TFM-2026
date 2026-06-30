@@ -1,0 +1,493 @@
+scenario: sensor_degraded_smith_qr
+seed: 2031
+warehouse:
+  width_m: 36.0
+  depth_m: 24.0
+  floor_thickness_m: 0.08
+  style: industrial fulfillment center without proprietary branding
+  safety_markings: true
+controller:
+  policy: smith_qr_full
+  playback_csv: ''
+  closed_loop_topic: python_policy_cmd_vel
+communication:
+  radius_m: 4.0
+  packet_loss: 0.0
+  show_links: true
+robots:
+- name: Pioneer_01
+  model: Pioneer 3-DX
+  position:
+  - -15.0
+  - -10.8
+  - 0.18
+  heading_rad: 0.0
+  sensors:
+  - front_proximity
+  - lidar_2d
+  - load_detector
+  - local_comm
+- name: Pioneer_02
+  model: Pioneer 3-DX
+  position:
+  - -12.9
+  - -10.8
+  - 0.18
+  heading_rad: 0.0
+  sensors:
+  - front_proximity
+  - lidar_2d
+  - load_detector
+  - local_comm
+- name: Pioneer_03
+  model: Pioneer 3-DX
+  position:
+  - -10.8
+  - -10.8
+  - 0.18
+  heading_rad: 0.0
+  sensors:
+  - front_proximity
+  - lidar_2d
+  - load_detector
+  - local_comm
+- name: Pioneer_04
+  model: Pioneer 3-DX
+  position:
+  - -8.7
+  - -10.8
+  - 0.18
+  heading_rad: 0.0
+  sensors:
+  - front_proximity
+  - lidar_2d
+  - load_detector
+  - local_comm
+- name: Pioneer_05
+  model: Pioneer 3-DX
+  position:
+  - -6.6
+  - -10.8
+  - 0.18
+  heading_rad: 0.0
+  sensors:
+  - front_proximity
+  - lidar_2d
+  - load_detector
+  - local_comm
+- name: Pioneer_06
+  model: Pioneer 3-DX
+  position:
+  - -4.5
+  - -10.8
+  - 0.18
+  heading_rad: 0.0
+  sensors:
+  - front_proximity
+  - lidar_2d
+  - load_detector
+  - local_comm
+- name: Pioneer_07
+  model: Pioneer 3-DX
+  position:
+  - -2.4
+  - -10.8
+  - 0.18
+  heading_rad: 0.0
+  sensors:
+  - front_proximity
+  - lidar_2d
+  - load_detector
+  - local_comm
+- name: Pioneer_08
+  model: Pioneer 3-DX
+  position:
+  - -0.3
+  - -10.8
+  - 0.18
+  heading_rad: 0.0
+  sensors:
+  - front_proximity
+  - lidar_2d
+  - load_detector
+  - local_comm
+- name: Pioneer_09
+  model: Pioneer 3-DX
+  position:
+  - 1.8
+  - -10.8
+  - 0.18
+  heading_rad: 0.0
+  sensors:
+  - front_proximity
+  - lidar_2d
+  - load_detector
+  - local_comm
+- name: Pioneer_10
+  model: Pioneer 3-DX
+  position:
+  - 3.9
+  - -10.8
+  - 0.18
+  heading_rad: 0.0
+  sensors:
+  - front_proximity
+  - lidar_2d
+  - load_detector
+  - local_comm
+- name: Pioneer_11
+  model: Pioneer 3-DX
+  position:
+  - 6.0
+  - -10.8
+  - 0.18
+  heading_rad: 0.0
+  sensors:
+  - front_proximity
+  - lidar_2d
+  - load_detector
+  - local_comm
+- name: Pioneer_12
+  model: Pioneer 3-DX
+  position:
+  - 8.1
+  - -10.8
+  - 0.18
+  heading_rad: 0.0
+  sensors:
+  - front_proximity
+  - lidar_2d
+  - load_detector
+  - local_comm
+- name: Pioneer_13
+  model: Pioneer 3-DX
+  position:
+  - 10.2
+  - -10.8
+  - 0.18
+  heading_rad: 0.0
+  sensors:
+  - front_proximity
+  - lidar_2d
+  - load_detector
+  - local_comm
+- name: Pioneer_14
+  model: Pioneer 3-DX
+  position:
+  - 12.3
+  - -10.8
+  - 0.18
+  heading_rad: 0.0
+  sensors:
+  - front_proximity
+  - lidar_2d
+  - load_detector
+  - local_comm
+- name: Pioneer_15
+  model: Pioneer 3-DX
+  position:
+  - 14.4
+  - -10.8
+  - 0.18
+  heading_rad: 0.0
+  sensors:
+  - front_proximity
+  - lidar_2d
+  - load_detector
+  - local_comm
+racks:
+- name: Rack_01
+  position:
+  - -13.0
+  - -7.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 0
+- name: Rack_02
+  position:
+  - -7.8
+  - -7.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 0
+- name: Rack_03
+  position:
+  - -2.6
+  - -7.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 0
+- name: Rack_04
+  position:
+  - 2.6
+  - -7.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 0
+- name: Rack_05
+  position:
+  - 7.8
+  - -7.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 0
+- name: Rack_06
+  position:
+  - 13.0
+  - -7.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 0
+- name: Rack_07
+  position:
+  - -13.0
+  - -1.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 1
+- name: Rack_08
+  position:
+  - -7.8
+  - -1.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 1
+- name: Rack_09
+  position:
+  - -2.6
+  - -1.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 1
+- name: Rack_10
+  position:
+  - 2.6
+  - -1.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 1
+- name: Rack_11
+  position:
+  - 7.8
+  - -1.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 1
+- name: Rack_12
+  position:
+  - 13.0
+  - -1.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 1
+- name: Rack_13
+  position:
+  - -13.0
+  - 4.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 2
+- name: Rack_14
+  position:
+  - -7.8
+  - 4.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 2
+- name: Rack_15
+  position:
+  - -2.6
+  - 4.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 2
+- name: Rack_16
+  position:
+  - 2.6
+  - 4.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 2
+- name: Rack_17
+  position:
+  - 7.8
+  - 4.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 2
+- name: Rack_18
+  position:
+  - 13.0
+  - 4.5
+  - 1.5
+  size:
+  - 3.8
+  - 0.9
+  - 3.0
+  aisle: 2
+loads:
+- name: Load_heavy_01
+  position:
+  - -15.5
+  - -5.0
+  - 0.35
+  size:
+  - 1.0
+  - 0.8
+  - 0.5
+  weight: 10
+- name: Load_medium_01
+  position:
+  - 15.0
+  - -4.0
+  - 0.35
+  size:
+  - 0.8
+  - 0.7
+  - 0.45
+  weight: 6
+- name: Load_light_01
+  position:
+  - -14.0
+  - 8.0
+  - 0.25
+  size:
+  - 0.55
+  - 0.45
+  - 0.35
+  weight: 2
+humans:
+- name: Operator_01
+  position:
+  - -17.3
+  - -5.0
+  - 0.9
+  route:
+  - - -17.3
+    - -5.0
+    - 0.9
+  - - 16.5
+    - -4.0
+    - 0.9
+  speed_mps: 0.75
+- name: Operator_02
+  position:
+  - -17.3
+  - -0.8
+  - 0.9
+  route:
+  - - -17.3
+    - -0.7999999999999998
+    - 0.9
+  - - 16.5
+    - 0.20000000000000018
+    - 0.9
+  speed_mps: 0.75
+- name: Operator_03
+  position:
+  - -17.3
+  - 3.4
+  - 0.9
+  route:
+  - - -17.3
+    - 3.4000000000000004
+    - 0.9
+  - - 16.5
+    - 4.4
+    - 0.9
+  speed_mps: 0.75
+- name: Operator_04
+  position:
+  - -17.3
+  - -5.0
+  - 0.9
+  route:
+  - - -17.3
+    - -5.0
+    - 0.9
+  - - 16.5
+    - -4.0
+    - 0.9
+  speed_mps: 0.75
+sensors:
+  lidar_range_m: 4.1850000000000005
+  proximity_range_m: 1.505
+  load_detection_range_m: 1.0919999999999999
+  blind_zones:
+  - name: BlindZone_RackA
+    center:
+    - -9.0
+    - 0.0
+    - 0.05
+    size:
+    - 4.0
+    - 2.0
+    - 0.05
+  - name: BlindZone_RackB
+    center:
+    - 9.0
+    - 4.0
+    - 0.05
+    size:
+    - 5.0
+    - 2.5
+    - 0.05
+events:
+  robot_failure:
+    enabled: false
+    robot: Pioneer_03
+    time_s: 90.0
+  forklift_crossing:
+    enabled: true
+    time_s: 120.0

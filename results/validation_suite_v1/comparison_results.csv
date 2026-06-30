@@ -1,0 +1,9 @@
+protocol,candidate,baseline,metric,delta_mean,ci95_low,ci95_high,passed,note
+H5-H6-R3,smith_qr_full,smith,captura de recompensa,0.18550921842529225,0.1434005986116933,0.2276178382388912,True,Dominancia declarada solo para esta metrica si IC95 queda sobre cero.
+H6-R3,smith_qr_full,smith,distancia desperdiciada,24.21615646882934,-1.5942583738642213,50.0265713115229,False,"Si el IC95 cruza cero, la mejora no se declara."
+H5-H6-R3,smith_qr_full,greedy,captura de recompensa,0.046638291423998876,0.00469022003131097,0.08858636281668678,True,Dominancia declarada solo para esta metrica si IC95 queda sobre cero.
+H6-R3,smith_qr_full,greedy,distancia desperdiciada,3.640809878040347,-24.200101723159726,31.48172147924042,False,"Si el IC95 cruza cero, la mejora no se declara."
+H5-H6-R3,smith_qr_full,centralized_limited_comm,captura de recompensa,0.22820098228556654,0.1891173099763016,0.2672846545948315,True,Dominancia declarada solo para esta metrica si IC95 queda sobre cero.
+H6-R3,smith_qr_full,centralized_limited_comm,distancia desperdiciada,38.21829384185294,16.55244482249067,59.88414286121521,False,"Si el IC95 cruza cero, la mejora no se declara."
+H5-H6-R3,smith_qr_full,marl_proxy,captura de recompensa,0.05273225562123276,0.01315864274006285,0.09230586850240266,True,Dominancia declarada solo para esta metrica si IC95 queda sobre cero.
+H6-R3,smith_qr_full,marl_proxy,distancia desperdiciada,-0.5095110536668599,-36.40705283594636,35.388030728612634,False,"Si el IC95 cruza cero, la mejora no se declara."
