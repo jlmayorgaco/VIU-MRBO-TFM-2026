@@ -1,0 +1,82 @@
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  font=\small\sffamily,
+  layer/.style={
+    draw=VIUDark!80,
+    fill=VIULight,
+    rounded corners=3pt,
+    align=center,
+    text width=3.15cm,
+    minimum height=1.05cm,
+    inner sep=5pt
+  },
+  market/.style={
+    draw=VIUGray!70,
+    fill=VIUWhite,
+    rounded corners=3pt,
+    align=center,
+    text width=3.35cm,
+    minimum height=1.05cm,
+    inner sep=5pt
+  },
+  gap/.style={
+    draw=VIUOrange,
+    fill=VIUOrange!10,
+    rounded corners=4pt,
+    align=center,
+    text width=4.25cm,
+    minimum height=1.28cm,
+    inner sep=7pt,
+    font=\small\sffamily\bfseries
+  },
+  claim/.style={
+    draw=VIUDark,
+    fill=VIUDark!5,
+    rounded corners=4pt,
+    align=center,
+    text width=4.2cm,
+    minimum height=1.28cm,
+    inner sep=7pt
+  },
+  arrow/.style={-{Latex[length=2.2mm]},thick,color=VIUDark!85},
+  oarrow/.style={-{Latex[length=2.2mm]},thick,color=VIUOrange!95!black},
+  faint/.style={-{Latex[length=2mm]},thick,color=VIUGray!70}
+]
+\node[market] (m1) at (0,3.0) {Mercado AMR\\fleet manager, WMS, tráfico};
+\node[market] (m2) at (3.9,3.0) {Material handling\\picking, pallets, tugging};
+\node[market] (m3) at (7.8,3.0) {Carga compatible\\un robot o plataforma dedicada};
+
+\node[layer] (a1) at (0,1.05) {MRTA y mercados\\subastas, CBBA, coaliciones};
+\node[layer] (a2) at (3.9,1.05) {Grafos y consenso\\vecinos, DAC, conectividad};
+\node[layer] (a3) at (7.8,1.05) {Control físico\\formación, MPC, CBF, wrench};
+
+\node[layer] (l1) at (0,-0.9) {MARL/GNN\\políticas, message passing};
+\node[layer] (l2) at (3.9,-0.9) {Geometría\\rigidez, contactos, slots};
+\node[layer] (l3) at (7.8,-0.9) {Robustez\\batería, fallos, comunicación};
+
+\node[gap] (gap) at (11.85,1.05) {Brecha focal\\asignación distribuida + quorum entero + factibilidad física};
+\node[claim] (smith) at (11.85,-0.9) {Smith-QR\\payoff de déficit, cierre QR, capacidad efectiva y guardias de ejecución};
+
+\draw[faint] (m1) -- (m2);
+\draw[faint] (m2) -- (m3);
+\draw[arrow] (a1) -- (a2);
+\draw[arrow] (a2) -- (a3);
+\draw[arrow] (l1) -- (l2);
+\draw[arrow] (l2) -- (l3);
+
+\draw[oarrow] (m3.east) -- (gap.west);
+\draw[oarrow] (a3.east) -- (gap.west);
+\draw[oarrow] (l3.east) -- (gap.west);
+\draw[oarrow] (gap.south) -- (smith.north);
+
+\node[draw=VIUGray!60,fill=VIUWhite,rounded corners=3pt,align=center,
+  text width=8.35cm,inner sep=5pt,font=\scriptsize\sffamily] (note) at (3.9,-2.45)
+  {Lectura: el mercado ha madurado en orquestación de flotas y transporte unitario; la academia cubre asignación, control, aprendizaje y física. El hueco defendible está en cerrar esas capas en una ley distribuida auditable para una misma carga compartida.};
+\draw[faint] (l2.south) -- (note.north);
+\end{tikzpicture}%
+}
+\caption[Taxonomía del estado del arte para transporte cooperativo multi-robot]{Taxonomía del estado del arte para transporte cooperativo multi-robot de cargas. La contribución se ubica en el puente entre asignación distribuida y factibilidad física de una carga compartida.}
+\label{fig:sota-transporte-cooperativo}
+\end{figure}

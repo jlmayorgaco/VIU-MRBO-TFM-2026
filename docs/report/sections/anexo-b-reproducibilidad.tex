@@ -1,0 +1,30 @@
+﻿\section{Reproducibilidad}
+
+La version organizada se reproduce desde la raiz del repositorio.
+
+\begin{verbatim}
+python -m pip install -e .
+python -m pytest -q
+python -m viu_mrob_tfm.validation.suite
+make report-pdf
+\end{verbatim}
+
+Las configuraciones de experimento quedan versionadas fuera de los metodos de control.
+Los smoke tests y escenarios docentes viven en \texttt{experiments/}; los parametros
+transversales, como MARL o ajustes de politicas, viven en \texttt{configs/}; y las
+campanas H10--H12 guardan sus artefactos bajo \texttt{results/campaigns/}. El reporte
+consume tablas generadas por \texttt{validation.suite}, por lo que cualquier cambio de
+datos debe regenerar primero la suite y despues el PDF.
+
+Los artefactos pesados y borradores sustituidos no se eliminan. Fueron movidos a:
+
+\begin{verbatim}
+C:\tmp\VIU-MRBO-TFM-2026-v6-organization-20260620
+\end{verbatim}
+
+El archivo \texttt{cleanup\_manifest.csv} documenta ruta original, destino, categoria,
+motivo, estado Git y hash SHA-256 cuando aplica. Para restaurar un elemento, copiar su
+\texttt{destination\_path} de vuelta a \texttt{original\_path}.
+
+La rama de organizacion se llama \texttt{v6-organization}. El paquete Python conserva el
+nombre \texttt{viu\_mrob\_tfm} para mantener compatibilidad con tests e imports previos.

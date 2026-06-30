@@ -40,6 +40,8 @@ from viu_mrob_tfm.simulations import (  # noqa: E402
     POLICY_RANDOM_FEASIBLE,
     POLICY_RESPONSE_THRESHOLD,
     POLICY_MARL_PROXY,
+    POLICY_MARL_CTDE,
+    POLICY_MARL_NEURAL_CTDE,
     POLICY_SMITH_FULL,
     POLICY_SMITH_NO_INTEGER,
     POLICY_SMITH_NO_PRICES,
@@ -78,6 +80,8 @@ METHODS = [
     (POLICY_RESPONSE_THRESHOLD, "Response threshold", "classic"),
     (POLICY_RANDOM_FEASIBLE, "Random feasible", "floor"),
     (POLICY_MARL_PROXY, "MARL proxy shared policy", "marl_proxy"),
+    (POLICY_MARL_CTDE, "MARL CTDE learned policy", "marl"),
+    (POLICY_MARL_NEURAL_CTDE, "Neural MARL CTDE actor", "marl"),
 ]
 
 LOCAL_METHODS = [method for method, _label, _family in METHODS if INFO_REQUIREMENT[method] == "local"]

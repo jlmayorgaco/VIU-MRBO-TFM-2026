@@ -1,0 +1,71 @@
+{
+  "grid": {
+    "smith_full": [
+      {
+        "epsilon_switch": 0.02,
+        "nominal_flow_capture_mean": 0.5068013851582879,
+        "nominal_flow_lateral_per_delivery_mean": 4.025555555555556,
+        "scarcity_extreme_capture_mean": 0.36489351194181907,
+        "scarcity_extreme_lateral_per_delivery_mean": 10.392714646464647,
+        "score": 49.06285696208537
+      },
+      {
+        "epsilon_switch": 0.05,
+        "nominal_flow_capture_mean": 0.5068013851582879,
+        "nominal_flow_lateral_per_delivery_mean": 4.2592592592592595,
+        "scarcity_extreme_capture_mean": 0.36489351194181907,
+        "scarcity_extreme_lateral_per_delivery_mean": 10.396262626262626,
+        "score": 48.989323799163685
+      },
+      {
+        "epsilon_switch": 0.1,
+        "nominal_flow_capture_mean": 0.5120437598859567,
+        "nominal_flow_lateral_per_delivery_mean": 3.4641441441441443,
+        "scarcity_extreme_capture_mean": 0.36489351194181907,
+        "scarcity_extreme_lateral_per_delivery_mean": 10.383964646464646,
+        "score": 49.486584203382364
+      }
+    ]
+  },
+  "scores": {
+    "classic_auction_cbba": {
+      "best_score": NaN
+    },
+    "classic_centralized_mincost": {
+      "best_score": NaN
+    },
+    "classic_greedy_nearest": {
+      "best_score": NaN
+    },
+    "oracle_clairvoyant": {
+      "best_score": NaN
+    },
+    "proxy_pibt_priority": {
+      "best_score": NaN
+    },
+    "proxy_rolling_horizon": {
+      "best_score": NaN
+    },
+    "proxy_token_passing": {
+      "best_score": NaN
+    },
+    "random_feasible": {
+      "best_score": NaN
+    },
+    "response_threshold": {
+      "best_score": NaN
+    },
+    "smith_full": {
+      "best_score": 49.486584203382364
+    },
+    "smith_no_integer": {
+      "best_score": NaN
+    },
+    "smith_no_prices": {
+      "best_score": NaN
+    },
+    "smith_raw_occupancy": {
+      "best_score": NaN
+    }
+  }
+}

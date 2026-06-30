@@ -24,6 +24,8 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy.optimize import linear_sum_assignment
 
+from viu_mrob_tfm.marl import build_pair_features, coerce_policy_weights, score_neural_features, unpack_neural_vector
+
 
 Array = NDArray[np.float64]
 
@@ -56,6 +58,8 @@ POLICY_ORACLE_CLAIRVOYANT = "oracle_clairvoyant"
 POLICY_RESPONSE_THRESHOLD = "response_threshold"
 POLICY_RANDOM_FEASIBLE = "random_feasible"
 POLICY_MARL_PROXY = "marl_proxy_policy"
+POLICY_MARL_CTDE = "marl_ctde_policy"
+POLICY_MARL_NEURAL_CTDE = "marl_neural_ctde_policy"
 
 WAREHOUSE_ASSIGNMENT_POLICIES = (
     POLICY_SMITH_FULL,
@@ -77,6 +81,8 @@ WAREHOUSE_ASSIGNMENT_POLICIES = (
     POLICY_RESPONSE_THRESHOLD,
     POLICY_RANDOM_FEASIBLE,
     POLICY_MARL_PROXY,
+    POLICY_MARL_CTDE,
+    POLICY_MARL_NEURAL_CTDE,
 )
 
 INFO_REQUIREMENT = {
@@ -99,6 +105,8 @@ INFO_REQUIREMENT = {
     POLICY_RESPONSE_THRESHOLD: "local",
     POLICY_RANDOM_FEASIBLE: "local",
     POLICY_MARL_PROXY: "local",
+    POLICY_MARL_CTDE: "local",
+    POLICY_MARL_NEURAL_CTDE: "local",
 }
 
 
@@ -220,6 +228,10 @@ class WarehouseConfig:
     marl_proxy_quorum_weight: float = 0.55
     marl_proxy_age_weight: float = 0.018
     marl_proxy_stickiness: float = 0.35
+    marl_ctde_weights: tuple[float, ...] = ()
+    marl_ctde_idle_score: float = 0.0
+    marl_neural_params: tuple[float, ...] = ()
+    marl_neural_hidden_dim: int = 8
     clearing_mode: str = "event"
     clearing_deficit_grace: float = 0.5
     clearing_period: float = 1.0
@@ -1874,6 +1886,10 @@ def _policy_assignments(
         return _assign_random_feasible(assignments, positions, loads, now, cfg, known_loads)
     if cfg.assignment_policy == POLICY_MARL_PROXY:
         return _assign_marl_proxy(assignments, positions, loads, now, cfg, known_loads)
+    if cfg.assignment_policy == POLICY_MARL_CTDE:
+        return _assign_marl_ctde(assignments, positions, loads, now, cfg, known_loads)
+    if cfg.assignment_policy == POLICY_MARL_NEURAL_CTDE:
+        return _assign_marl_neural_ctde(assignments, positions, loads, now, cfg, known_loads)
     return assignments.copy()
 
 
@@ -2192,6 +2208,112 @@ def _assign_marl_proxy(
                 if best is None or score > best[0]:
                     best = (score, robot_idx, load_idx)
         if best is None or best[0] <= 0.0:
+            break
+        _score, robot_idx, load_idx = best
+        updated[robot_idx] = load_idx + 1
+        available.remove(robot_idx)
+    return _trim_policy_overstaff(updated, positions, loads, cfg)
+
+
+def _assign_marl_ctde(
+    assignments: NDArray[np.int_],
+    positions: Array,
+    loads: list[WarehouseLoad],
+    now: float,
+    cfg: WarehouseConfig,
+    known_loads: NDArray[np.bool_] | None = None,
+) -> NDArray[np.int_]:
+    """Learned CTDE MARL policy with shared parameters and local execution."""
+
+    known_loads = _known_or_all(known_loads, positions.shape[0], len(loads))
+    weights = coerce_policy_weights(cfg.marl_ctde_weights)
+    updated = _committed_assignments(assignments, positions, loads, cfg)
+    available = set(np.flatnonzero(updated == 0).tolist())
+    while available:
+        best: tuple[float, int, int] | None = None
+        counts = _assigned_counts(updated, len(loads))
+        for robot_idx in sorted(available):
+            for load_idx in _active_load_indices(loads):
+                if not known_loads[robot_idx, load_idx]:
+                    continue
+                load = loads[load_idx]
+                target = _staffing_target(load, cfg)
+                if int(counts[load_idx]) >= target:
+                    continue
+                distance = float(np.linalg.norm(positions[robot_idx] - load.position))
+                support = float(_local_support(positions, updated, load_idx + 1, cfg.r_com)[robot_idx])
+                features = build_pair_features(
+                    reward=float(load.reward),
+                    max_price=float(load.max_price),
+                    price=float(load.price),
+                    target=target,
+                    assigned=int(counts[load_idx]),
+                    age=max(0.0, now - load.spawn_time),
+                    duration=cfg.duration,
+                    distance=distance,
+                    local_support=support,
+                    robot_count=cfg.robot_count,
+                    is_transport=load.status == LOAD_TRANSPORT,
+                    is_sticky=assignments[robot_idx] == load_idx + 1,
+                )
+                score = float(np.dot(weights, features))
+                if best is None or score > best[0]:
+                    best = (score, robot_idx, load_idx)
+        if best is None or best[0] <= cfg.marl_ctde_idle_score:
+            break
+        _score, robot_idx, load_idx = best
+        updated[robot_idx] = load_idx + 1
+        available.remove(robot_idx)
+    return _trim_policy_overstaff(updated, positions, loads, cfg)
+
+
+def _assign_marl_neural_ctde(
+    assignments: NDArray[np.int_],
+    positions: Array,
+    loads: list[WarehouseLoad],
+    now: float,
+    cfg: WarehouseConfig,
+    known_loads: NDArray[np.bool_] | None = None,
+) -> NDArray[np.int_]:
+    """Neural shared-actor CTDE policy with local execution."""
+
+    if not cfg.marl_neural_params:
+        return _assign_marl_ctde(assignments, positions, loads, now, cfg, known_loads)
+    known_loads = _known_or_all(known_loads, positions.shape[0], len(loads))
+    params = unpack_neural_vector(cfg.marl_neural_params, hidden_dim=cfg.marl_neural_hidden_dim)
+    updated = _committed_assignments(assignments, positions, loads, cfg)
+    available = set(np.flatnonzero(updated == 0).tolist())
+    while available:
+        best: tuple[float, int, int] | None = None
+        counts = _assigned_counts(updated, len(loads))
+        for robot_idx in sorted(available):
+            for load_idx in _active_load_indices(loads):
+                if not known_loads[robot_idx, load_idx]:
+                    continue
+                load = loads[load_idx]
+                target = _staffing_target(load, cfg)
+                if int(counts[load_idx]) >= target:
+                    continue
+                distance = float(np.linalg.norm(positions[robot_idx] - load.position))
+                support = float(_local_support(positions, updated, load_idx + 1, cfg.r_com)[robot_idx])
+                features = build_pair_features(
+                    reward=float(load.reward),
+                    max_price=float(load.max_price),
+                    price=float(load.price),
+                    target=target,
+                    assigned=int(counts[load_idx]),
+                    age=max(0.0, now - load.spawn_time),
+                    duration=cfg.duration,
+                    distance=distance,
+                    local_support=support,
+                    robot_count=cfg.robot_count,
+                    is_transport=load.status == LOAD_TRANSPORT,
+                    is_sticky=assignments[robot_idx] == load_idx + 1,
+                )
+                score = score_neural_features(features, params)
+                if best is None or score > best[0]:
+                    best = (score, robot_idx, load_idx)
+        if best is None or best[0] <= params.idle_score:
             break
         _score, robot_idx, load_idx = best
         updated[robot_idx] = load_idx + 1

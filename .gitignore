@@ -50,6 +50,14 @@ preview_*.png
 _lnk_check*.png
 _fontcheck/
 _viu_analysis/
+.render_tmp/
+.texcache/
+.miktex/
+.luatex-cache/
+tmp/
+output/pdf-check/
+output/pdf/doc06-review/
+_comparacion_visual/
 
 # Generated results
 results/raw/*
@@ -62,3 +70,19 @@ results/tables/*
 !results/tables/.gitkeep
 results/reports/*
 !results/reports/.gitkeep
+results/batch/*
+!results/batch/.gitkeep
+
+# Campaign artifacts: keep summaries, manifests, data and final plots; ignore
+# bulky generated frame folders unless explicitly force-added.
+results/campaigns/**/frames/*
+!results/campaigns/**/frames/.gitkeep
+
+# V6 organization quarantine / regenerated local artifacts
+.claude/
+archive/
+guidelines/
+output/
+pytest-cache-files-*/
+docs/doc-*/
+docs/thesis-final/

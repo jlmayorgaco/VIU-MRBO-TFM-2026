@@ -1,10 +1,13 @@
-# Documentación
+# Documentacion
 
-La carpeta `docs/` agrupa los hitos documentales del TFM:
+La carpeta `docs/` mantiene la fuente documental vigente del TFM.
 
-- `doc-01-proposal/`: propuesta preliminar en LaTeX con estructura modular.
-- `doc-02-mid-report/`: informe intermedio.
-- `doc-03-advance-report/`: informe de avance.
-- `thesis-final/`: memoria final del TFM.
+- `report/`: memoria canonica en LaTeX, anexos, figuras y PDF generado.
 
-Cada subcarpeta reserva `sections/`, `figures/` y `build/` para facilitar trazabilidad documental y compilación independiente.
+Los borradores historicos y artefactos sustituidos fueron movidos a la cuarentena
+externa indicada en `cleanup_manifest.csv`. Para compilar el documento vigente desde la
+raiz del repositorio:
+
+```powershell
+make report-pdf
+```

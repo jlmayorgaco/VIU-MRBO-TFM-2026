@@ -1,0 +1,158 @@
+# arXiv query set for the TFM literature-review PDF corpus.
+#
+# Each topic is intentionally broad but still anchored to robotics, multi-agent
+# systems, control, graph/network theory, game theory, geometry, or topology.
+# The CLI can override max_results with --max-results-per-topic.
+
+topics:
+  - name: multi_agent_mobile_robotics
+    max_results: 250
+    query: '(all:"multi-agent" OR all:"multi agent" OR all:"multi-robot" OR all:"multi robot" OR all:"multi-AGV" OR all:"multi AGV") AND (all:"mobile robot" OR all:"mobile robotics" OR all:robotics OR all:AGV OR cat:cs.RO)'
+
+  - name: distributed_multi_robot_control
+    max_results: 250
+    query: '(all:"distributed control" OR all:"decentralized control" OR all:consensus OR all:"cooperative control") AND (all:"multi-robot" OR all:"multi robot" OR all:"multi-agent" OR all:"multi agent" OR all:swarm) AND (cat:cs.RO OR cat:cs.SY OR cat:eess.SY OR cat:math.OC)'
+
+  - name: networked_control_systems
+    max_results: 250
+    query: '(all:"networked control" OR all:"networked systems" OR all:"cyber-physical systems" OR all:"communication constraints" OR all:"event-triggered control") AND (cat:cs.SY OR cat:eess.SY OR cat:math.OC OR cat:cs.RO)'
+
+  - name: graph_theory_consensus_networks
+    max_results: 250
+    query: '(all:"graph theory" OR all:Laplacian OR all:"algebraic connectivity" OR all:"spectral graph" OR all:"directed graph" OR all:"switching topology") AND (all:consensus OR all:"multi-agent" OR all:"multi robot" OR all:"networked system" OR all:formation)'
+
+  - name: game_theory_multi_agent_math
+    max_results: 250
+    query: '(all:"game theory" OR all:"potential game" OR all:"evolutionary game" OR all:"mean field game" OR all:"differential game" OR all:"mechanism design" OR all:auction) AND (all:"multi-agent" OR all:distributed OR all:networked OR all:robot OR cat:cs.GT OR cat:econ.TH OR cat:math.OC)'
+
+  - name: coalition_task_allocation
+    max_results: 250
+    query: '(all:coalition OR all:"coalition formation" OR all:"task allocation" OR all:"market-based" OR all:auction OR all:"contract net") AND (all:"multi-robot" OR all:"multi robot" OR all:"multi-agent" OR all:"multi agent" OR all:robotics)'
+
+  - name: rigid_formation_geometry
+    max_results: 250
+    query: '(all:"rigid formation" OR all:"formation rigidity" OR all:"bearing rigidity" OR all:"distance rigidity" OR all:"formation control") AND (all:geometry OR all:geometric OR all:graph OR all:"multi-agent" OR all:"multi robot" OR cat:cs.RO OR cat:math.OC)'
+
+  - name: cooperative_multi_robot_transportation
+    max_results: 250
+    query: '(all:"cooperative transportation" OR all:"cooperative transport" OR all:"object transport" OR all:"payload transport" OR all:"cooperative manipulation" OR all:"multi-robot manipulation") AND (all:"multi-robot" OR all:"multi robot" OR all:robot OR all:mobile OR cat:cs.RO)'
+
+  - name: multi_robot_load_transport_agv_warehouse
+    max_results: 250
+    query: '(all:"multi-robot" OR all:"multi robot" OR all:"multi-AGV" OR all:"multi AGV" OR all:"automated guided vehicle") AND (all:transport OR all:transportation OR all:warehouse OR all:logistics OR all:payload OR all:load)'
+
+  - name: topology_geometry_robotics
+    max_results: 250
+    query: '(all:topology OR all:topological OR all:"topological robotics" OR all:"configuration space" OR all:"persistent homology" OR all:geometry OR all:geometric) AND (all:robot OR all:robotics OR all:"multi-agent" OR all:"multi robot" OR all:networked)'
+
+  - name: distributed_optimization_multi_agent
+    max_results: 250
+    query: '(all:"distributed optimization" OR all:"distributed convex optimization" OR all:"distributed learning" OR all:"primal-dual" OR all:ADMM) AND (all:"multi-agent" OR all:"multi robot" OR all:networked OR all:consensus)'
+
+  - name: swarm_collective_robotics
+    max_results: 250
+    query: '(all:"swarm robotics" OR all:"collective robotics" OR all:"distributed coordination" OR all:"self-organization") AND (all:robot OR all:robotics OR all:"multi-agent" OR cat:cs.RO OR cat:cs.MA)'
+
+  - name: robotics_general_foundations
+    max_results: 250
+    query: '(cat:cs.RO OR all:robotics OR all:"mobile robot" OR all:"autonomous robot") AND (all:control OR all:planning OR all:navigation OR all:coordination OR all:optimization OR all:learning)'
+
+  - name: mobile_robot_navigation_slam
+    max_results: 250
+    query: '(all:"mobile robot" OR all:"autonomous navigation" OR all:SLAM OR all:"simultaneous localization and mapping" OR all:localization OR all:mapping) AND (cat:cs.RO OR cat:cs.CV OR cat:cs.AI)'
+
+  - name: robot_motion_planning
+    max_results: 250
+    query: '(all:"motion planning" OR all:"path planning" OR all:"trajectory planning" OR all:"sampling-based planning" OR all:RRT OR all:"model predictive path integral") AND (all:robot OR all:robotics OR all:"mobile robot" OR cat:cs.RO)'
+
+  - name: multi_robot_path_planning_mapf
+    max_results: 250
+    query: '(all:"multi-robot path planning" OR all:"multi-agent path finding" OR all:MAPF OR all:"conflict-based search" OR all:"collision avoidance") AND (all:robot OR all:"multi-agent" OR all:"multi robot" OR cat:cs.RO OR cat:cs.AI)'
+
+  - name: multi_agent_systems_theory
+    max_results: 250
+    query: '(all:"multi-agent systems" OR all:"multiagent systems" OR all:"distributed agents" OR all:"agent-based systems") AND (all:coordination OR all:consensus OR all:cooperation OR all:control OR all:optimization OR cat:cs.MA)'
+
+  - name: multi_agent_reinforcement_learning
+    max_results: 250
+    query: '(all:"multi-agent reinforcement learning" OR all:MARL OR all:"centralized training decentralized execution" OR all:CTDE OR all:"multi-agent learning") AND (all:robot OR all:robotics OR all:coordination OR all:control OR cat:cs.LG OR cat:cs.MA)'
+
+  - name: distributed_ai_coordination
+    max_results: 250
+    query: '(all:"distributed artificial intelligence" OR all:"distributed AI" OR all:"agent coordination" OR all:"cooperative agents" OR all:"decentralized decision making") AND (all:"multi-agent" OR all:robot OR all:networked OR cat:cs.MA OR cat:cs.AI)'
+
+  - name: multi_agent_planning_task_assignment
+    max_results: 250
+    query: '(all:"multi-agent planning" OR all:"task assignment" OR all:"task allocation" OR all:"vehicle routing" OR all:"pickup and delivery" OR all:"assignment problem") AND (all:robot OR all:"multi robot" OR all:"multi-agent" OR all:fleet)'
+
+  - name: warehouse_agv_fleet_management
+    max_results: 250
+    query: '(all:warehouse OR all:logistics OR all:"automated guided vehicle" OR all:AGV OR all:"autonomous mobile robot" OR all:AMR) AND (all:fleet OR all:routing OR all:scheduling OR all:dispatching OR all:coordination OR all:transport)'
+
+  - name: cooperative_manipulation_payload
+    max_results: 250
+    query: '(all:"cooperative manipulation" OR all:"collaborative manipulation" OR all:"payload manipulation" OR all:"object manipulation" OR all:"shared payload") AND (all:robot OR all:"multi-robot" OR all:"mobile manipulator" OR cat:cs.RO)'
+
+  - name: formation_control_consensus
+    max_results: 250
+    query: '(all:"formation control" OR all:"flocking" OR all:"consensus control" OR all:"containment control" OR all:"rendezvous") AND (all:"multi-agent" OR all:"multi robot" OR all:robot OR cat:cs.SY OR cat:eess.SY)'
+
+  - name: graph_neural_multi_agent_robotics
+    max_results: 250
+    query: '(all:"graph neural network" OR all:GNN OR all:"message passing neural network" OR all:"graph learning") AND (all:"multi-agent" OR all:"multi robot" OR all:robotics OR all:control OR all:planning)'
+
+  - name: network_science_complex_systems
+    max_results: 250
+    query: '(all:"network science" OR all:"complex networks" OR all:"network dynamics" OR all:"dynamic networks" OR all:"temporal networks") AND (all:control OR all:coordination OR all:"multi-agent" OR all:robot OR all:graph)'
+
+  - name: differential_games_robotics_control
+    max_results: 250
+    query: '(all:"differential game" OR all:"dynamic game" OR all:"pursuit evasion" OR all:"reach-avoid game" OR all:"Stackelberg game") AND (all:robot OR all:robotics OR all:control OR all:"multi-agent" OR cat:math.OC OR cat:cs.GT)'
+
+  - name: mean_field_games_multi_agent
+    max_results: 250
+    query: '(all:"mean field game" OR all:"mean-field game" OR all:"mean field control" OR all:"population game" OR all:"evolutionary dynamics") AND (all:"multi-agent" OR all:control OR all:networked OR all:robot OR cat:math.OC OR cat:cs.GT)'
+
+  - name: mechanism_design_auctions_markets
+    max_results: 250
+    query: '(all:"mechanism design" OR all:auction OR all:"market-based" OR all:"contract net" OR all:"matching market" OR all:"resource allocation") AND (all:"multi-agent" OR all:"multi robot" OR all:robot OR all:distributed OR cat:cs.GT)'
+
+  - name: game_theory_network_security_cps
+    max_results: 250
+    query: '(all:"game theory" OR all:"signaling game" OR all:"Stackelberg security game" OR all:"attacker-defender game") AND (all:"cyber-physical" OR all:networked OR all:control OR all:robot OR all:resilient OR cat:cs.GT)'
+
+  - name: distributed_mpc_robotics
+    max_results: 250
+    query: '(all:"distributed model predictive control" OR all:"decentralized MPC" OR all:"DMPC" OR all:"predictive control") AND (all:"multi-agent" OR all:"multi robot" OR all:robot OR all:networked OR cat:math.OC)'
+
+  - name: control_barrier_functions_multi_agent
+    max_results: 250
+    query: '(all:"control barrier function" OR all:"barrier certificate" OR all:"safety-critical control" OR all:"safe control") AND (all:"multi-agent" OR all:"multi robot" OR all:robot OR all:distributed OR cat:cs.RO OR cat:cs.SY)'
+
+  - name: resilient_fault_tolerant_multiagent
+    max_results: 250
+    query: '(all:resilient OR all:"fault tolerant" OR all:"fault-tolerant" OR all:robust OR all:"attack resilient" OR all:"Byzantine") AND (all:"multi-agent" OR all:"multi robot" OR all:networked OR all:consensus OR all:control)'
+
+  - name: communication_aware_robotics
+    max_results: 250
+    query: '(all:"communication-aware" OR all:"communication constraints" OR all:"limited communication" OR all:"intermittent communication" OR all:"event-triggered communication") AND (all:robot OR all:"multi robot" OR all:"multi-agent" OR all:networked)'
+
+  - name: coverage_exploration_search_rescue
+    max_results: 250
+    query: '(all:coverage OR all:exploration OR all:"search and rescue" OR all:"environmental monitoring" OR all:"active sensing" OR all:"persistent monitoring") AND (all:"multi robot" OR all:"multi-agent" OR all:robot OR cat:cs.RO)'
+
+  - name: temporal_logic_multi_robot
+    max_results: 250
+    query: '(all:"temporal logic" OR all:LTL OR all:STL OR all:"formal methods" OR all:"task specification") AND (all:"multi-robot" OR all:"multi robot" OR all:"multi-agent" OR all:robot OR cat:cs.RO OR cat:cs.LO)'
+
+  - name: optimal_transport_allocation_networks
+    max_results: 250
+    query: '(all:"optimal transport" OR all:"transport problem" OR all:"resource allocation" OR all:"matching" OR all:"assignment") AND (all:"multi-agent" OR all:robot OR all:network OR all:distributed OR all:coalition)'
+
+  - name: topological_data_analysis_robotics
+    max_results: 250
+    query: '(all:"topological data analysis" OR all:"persistent homology" OR all:"mapper algorithm" OR all:"simplicial complex" OR all:"cell complex") AND (all:robot OR all:robotics OR all:"multi-agent" OR all:network OR all:coverage)'
+
+  - name: hybrid_systems_cps_robotics
+    max_results: 250
+    query: '(all:"hybrid systems" OR all:"switched systems" OR all:"discrete event systems" OR all:"cyber-physical systems") AND (all:robot OR all:robotics OR all:networked OR all:control OR all:"multi-agent")'

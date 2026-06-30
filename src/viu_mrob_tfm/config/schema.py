@@ -40,6 +40,40 @@ class SimulationConfig:
     agv_count: int = 3
     dimensions: int = 2
     random_seed: int = 2026
+    initial_positions: list[list[float]] = field(default_factory=list)
+    communication_range: float | None = None
+    visibility_range: float = 8.0
+    transport_threshold_steps: int = 3
+    detection_radius: float = 0.75
+
+
+@dataclass(slots=True)
+class TaskConfig:
+    """YAML-facing transport task specification."""
+
+    identifier: str
+    pickup: list[float]
+    destination: list[float]
+    min_coalition_size: int = 1
+    reward: float = 1.0
+    demand_capacity: float | None = None
+
+
+@dataclass(slots=True)
+class ObstacleConfig:
+    """YAML-facing circular obstacle specification."""
+
+    center: list[float]
+    radius: float = 0.35
+    influence_radius: float = 1.25
+
+
+@dataclass(slots=True)
+class FailureConfig:
+    """YAML-facing abrupt robot failure event."""
+
+    time: float
+    agent_index: int
 
 
 @dataclass(slots=True)
@@ -54,6 +88,9 @@ class ExperimentConfig:
     graph: GraphConfig = field(
         default_factory=lambda: GraphConfig(adjacency=[[0.0]])
     )
+    tasks: list[TaskConfig] = field(default_factory=list)
+    obstacles: list[ObstacleConfig] = field(default_factory=list)
+    failures: list[FailureConfig] = field(default_factory=list)
     metrics: list[str] = field(default_factory=list)
     notes: str = ""
 
@@ -73,6 +110,9 @@ class ExperimentConfig:
             simulation=SimulationConfig(**data.get("simulation", {})),
             load=LoadConfig(**data.get("load", {})),
             graph=GraphConfig(**data.get("graph", {})),
+            tasks=[TaskConfig(**item) for item in data.get("tasks", [])],
+            obstacles=[ObstacleConfig(**item) for item in data.get("obstacles", [])],
+            failures=[FailureConfig(**item) for item in data.get("failures", [])],
             metrics=list(data.get("metrics", [])),
             notes=data.get("notes", ""),
         )

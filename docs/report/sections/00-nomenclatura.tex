@@ -1,0 +1,29 @@
+\section*{Nomenclatura}
+\addcontentsline{toc}{section}{Nomenclatura}
+
+\begin{tabularx}{\textwidth}{@{}lX@{}}
+\toprule
+Simbolo & Significado \\
+\midrule
+$i \in \{1,\dots,N\}$ & Indice de robot AGV. \\
+$k \in \{1,\dots,M\}$ & Indice de carga o tarea de transporte. \\
+$q_i, \theta_i$ & Posicion plana y orientacion del robot $i$. \\
+$b_i$ & Nivel de bateria normalizado del robot $i$. \\
+$c_i$ & Capacidad mecanica nominal del robot $i$. \\
+$y_{ik}$ & Preferencia continua del robot $i$ por la tarea $k$. \\
+$z_{ikh}$ & Variable binaria de asignacion del robot $i$ a la carga $k$ y rol/slot $h$. \\
+$\xhat_{ik}$ & Estimacion local de ocupacion o compromiso hacia $k$. \\
+$D_k$ & Demanda fisica agregada de la carga $k$. \\
+$S_k$ & Oferta efectiva aportada por la coalicion asignada a $k$. \\
+$c_{ik}(t)$ & Capacidad efectiva instantanea del robot $i$ para la carga $k$. \\
+$\delta_k = D_k-S_k$ & Deficit fisico-economico que alimenta precios, payoffs y control. \\
+$r_j, n_j$ & Punto relativo y direccion normal del slot $j$ de la formacion rigida. \\
+$\lambda_j$ & Esfuerzo escalar aplicado por el robot asignado al slot $j$. \\
+$G_C(q)$ & Matriz de agarre de una coalicion en espacio \emph{wrench}. \\
+$w_k^{\rm dem}$ & Wrench demandado por la carga $k$; fuerza y torque planar. \\
+$L$ & Laplaciano del grafo de comunicacion local. \\
+$\lambda_2(L)$ & Conectividad algebraica del grafo. \\
+$V(y)$ & Potencial del juego poblacional. \\
+$W(y)$ & Bienestar social o valor total de las asignaciones. \\
+\bottomrule
+\end{tabularx}
