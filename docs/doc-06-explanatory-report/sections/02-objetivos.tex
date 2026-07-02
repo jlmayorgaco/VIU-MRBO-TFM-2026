@@ -1,0 +1,59 @@
+%% ====================================================================
+\section{Objetivos}
+\label{sec:objetivos}
+%% ====================================================================
+
+\subsection{Objetivo general}
+
+Diseñar, implementar y validar una arquitectura distribuida para coordinar coaliciones
+multi-AGV en almacenes industriales, usando dinámicas de Smith como mecanismo
+poblacional base, \emph{clearing} entero para convertir asignaciones fluidas en quorums
+físicos, precios temporales para priorizar escasez dinámica y comunicación local como
+restricción operativa. La contribución central es Smith-QR, una extensión
+robusta que evita la parálisis observada cuando el radio de comunicación cae al régimen
+R3 y el supuesto de conectividad suficiente deja de sostener el equilibrio distribuido.
+
+\subsection{Objetivos específicos}
+
+\begin{enumerate}
+  \item Formalizar el transporte cooperativo como un problema de coaliciones con
+  requisito de capacidad acumulada $\sum_{i\in\mathcal{C}_k}c_i\geq M_k$ y caso base
+  homogéneo $|\mathcal{C}_k|\geq n_k$, separando con claridad lo probado, lo validado
+  por simulación y lo que queda como extensión condicionada.
+
+  \item Aislar los mecanismos teóricos mínimos: regla de \emph{water-filling} para
+  Smith en equilibrio, \emph{clearing} entero para evitar coaliciones fraccionarias y
+  precio temporal para cargas con déficit persistente bajo llegadas y \emph{deadlines}.
+
+  \item Implementar Smith-QR como extensión controlada de Smith, con memoria de
+  descriptores, compromiso en ruta, guardia de \emph{clearing}, patrullaje exploratorio
+  y proyección de quorum local bajo comunicación degradada.
+
+  \item Comparar Smith, Smith-QR, greedy, centralizado global, centralizado con
+  comunicación limitada, subasta/CBBA-lite, token passing, PIBT, response threshold,
+  random, oracle, un baseline MARL-CTDE lineal aprendido y un actor neuronal CTDE bajo escenarios de abundancia,
+  escasez, fallos, churn de tareas y barrido de comunicación.
+
+  \item Mantener MARL como baseline empírico y no como contribución teórica principal.
+  Se usa una política compartida con entrenamiento centralizado y ejecución
+  descentralizada; los pesos se aprenden con retornos episódicos multi-robot, se congelan
+  y se evalúan en semillas separadas. El proxy determinista queda como referencia de
+  ablación, no como sustituto del baseline aprendido.
+
+  \item Generar de forma automática escenas CoppeliaSim de una bodega industrial tipo
+  \emph{fulfillment center}, sin logos ni activos propietarios, con racks, estaciones,
+  cargas, humanos, sensores, comunicación local y robots Pioneer~3-DX o fallback
+  diferencial equivalente.
+
+  \item Evaluar el método con una tabla claim--evidencia, resultados negativos,
+  conclusiones reproducibles y una auditoría de trazabilidad que impida afirmar más de
+  lo que soportan los experimentos ejecutados.
+\end{enumerate}
+
+\subsection{Alcance experimental}
+
+El trabajo ya contiene gates mínimos H1--H3, validación inicial de Smith-QR en R3,
+baseline MARL-CTDE aprendido, actor neuronal CTDE congelado, escenas CoppeliaSim generadas y un marco dinámico para incorporar
+capacidad efectiva, batería, torques y campo medio. La evidencia cuantitativa se
+presenta distinguiendo entre gates analíticos, corridas controladas, métricas robóticas
+y condiciones matemáticas bajo las cuales las extensiones dinámicas son válidas.

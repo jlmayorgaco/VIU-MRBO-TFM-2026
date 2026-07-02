@@ -1,0 +1,624 @@
+%% ====================================================================
+\section{Control vectorial para cargas convexas}
+\label{sec:control-vectorial-ejecutable}
+%% ====================================================================
+
+El marco integrado necesita una bajada finita que pueda ejecutarse en un simulador físico.
+Las secciones anteriores definen incentivos, capacidad efectiva, fases de contacto,
+wrench y seguridad; este capítulo ordena esas piezas en un bucle de control local para
+cargas convexas suavizadas. La contribución no sustituye a Smith-QR ni al límite de campo
+medio: define una capa intermedia, verificable por ciclo, que convierte la decisión
+distribuida en comandos de velocidad para AGVs diferenciales.
+El claim físico que carga peso en esta memoria es deliberadamente acotado: detectar
+coaliciones que satisfacen cardinalidad pero fallan factibilidad de wrench; las fases,
+la rigidez y el CBF ordenan la ejecución y la seguridad del controlador.
+
+\input{figures/fig-control-vectorial-seis-bloques.tex}
+
+\subsection{Representación de carga mediante contornos de fase}
+\label{subsec:control-superelipse}
+
+Una carga circular, cuadrada o rectangular puede tratarse con la misma variable de fase
+si su frontera se representa como un contorno suave. El círculo es el caso regular
+directo; cuadrados y rectángulos se aproximan con una superelipse regularizada, que evita
+discontinuidades geométricas en esquinas. En coordenadas del cuerpo de la carga,
+\begin{equation}
+  \Gamma_{a,b,p}
+  =
+  \left\{
+    r=(x,y)\in\mathbb R^2:
+    \left|\frac{x}{a}\right|^p+
+    \left|\frac{y}{b}\right|^p
+    =
+    1
+  \right\},
+  \qquad
+  p>2,
+  \label{eq:ctrl_superelipse_implicita}
+\end{equation}
+donde $a$ y $b$ son los semiejes de la carga. Valores $p=4$ o $p=6$ aproximan una caja
+rectangular sin introducir una esquina ideal infinitamente abrupta.
+
+Para implementar una fase continua $\gamma_i\in[0,2\pi)$ se usa la potencia con signo
+suavizada
+\begin{equation}
+  \operatorname{sp}_{p,\epsilon}(s)
+  =
+  s(s^2+\epsilon^2)^{\frac1p-\frac12},
+  \qquad \epsilon>0,
+  \label{eq:ctrl_potencia_signada}
+\end{equation}
+y el punto de contacto nominal
+\begin{equation}
+  r_i^\Gamma(\gamma_i)
+  =
+  \begin{bmatrix}
+    a\,\operatorname{sp}_{p,\epsilon}(\cos\gamma_i)\\
+    b\,\operatorname{sp}_{p,\epsilon}(\sin\gamma_i)
+  \end{bmatrix}.
+  \label{eq:ctrl_superelipse_parametrica}
+\end{equation}
+La regularización $\epsilon$ evita pendientes numéricamente explosivas cuando la fase
+pasa por regiones cercanas a las esquinas. La normal de empuje no se estima con
+diferencias finitas; se obtiene del gradiente de la frontera implícita:
+\begin{equation}
+  n_i^\Gamma
+  =
+  \frac{\nabla F(r_i^\Gamma)}
+       {\|\nabla F(r_i^\Gamma)\|+\epsilon_n},
+  \qquad
+  F(x,y)=
+  \left|\frac{x}{a}\right|^p+
+  \left|\frac{y}{b}\right|^p-1 .
+  \label{eq:ctrl_normal_superelipse}
+\end{equation}
+El punto cartesiano deseado del robot se obtiene rotando y trasladando el contorno:
+\begin{equation}
+  p_i^\star
+  =
+  X_L
+  +
+  R(\theta_L)
+  \left(r_i^\Gamma+d_c n_i^\Gamma\right),
+  \label{eq:ctrl_punto_contacto_mundo}
+\end{equation}
+donde $X_L$ y $\theta_L$ son posición y orientación de la carga, y $d_c$ separa el centro
+del robot de la superficie para considerar radio de chasis y margen de contacto.
+
+\paragraph{Lectura de \eqref{eq:ctrl_superelipse_implicita}--\eqref{eq:ctrl_punto_contacto_mundo}.}
+La fase $\gamma_i$ no dice todavía qué tarea elige el robot; dice en qué parte del
+perímetro de una carga ya elegida debe ubicarse. La superelipse permite que un AGV
+recorra lados y esquinas con una variable continua. La normal $n_i^\Gamma$ define la
+dirección de empuje y, por tanto, conecta geometría con capacidad mecánica.
+
+\subsection{Puente MFG--wrench--formación por contornos}
+\label{subsec:control-puente-mfg-wrench}
+
+La conexión entre MFG y control de torque aparece cuando la densidad continua se proyecta
+sobre el contorno de la carga. Sea $s\in\{\circ,\square,\mathrm{rect}\}$ el tipo de
+geometría: círculo, cuadrado o rectángulo. Cada contorno se escribe como
+$r_s(\gamma)$, con normal $n_s(\gamma)$, tangente
+$t_s(\gamma)=\partial_\gamma r_s/\|\partial_\gamma r_s\|$ y brazo de palanca respecto al
+centro de masa. La firma física de un punto de contacto es
+\begin{equation}
+  \psi_s(\gamma)
+  =
+  \begin{bmatrix}
+    n_s(\gamma)\\
+    \ell_s(\gamma)
+  \end{bmatrix}
+  \in\mathbb R^3,
+  \qquad
+  \ell_s(\gamma)
+  =
+  r_s(\gamma)_x n_s(\gamma)_y
+  -
+  r_s(\gamma)_y n_s(\gamma)_x .
+  \label{eq:ctrl_firma_wrench_contorno}
+\end{equation}
+Si el robot empuja con magnitud normal $f_i$, su contribución es
+$\mathcal W_i=f_i\psi_s(\gamma_i)$. El tercer componente no es decorativo: es el brazo de
+torque que decide si la coalición puede girar la carga o solo trasladarla.
+
+La densidad MFG no asigna robots individuales; asigna masa sobre regiones del espacio.
+Para conectarla con contacto físico se define una densidad de contorno
+\begin{equation}
+  \rho_{\partial L}(\gamma,t)
+  =
+  \int_{\mathbb R^2}
+  K_\epsilon\!\left(x-X_L-R(\theta_L)r_s(\gamma)\right)
+  \rho(x,t)\,\mathrm dx ,
+  \label{eq:ctrl_densidad_mfg_contorno}
+\end{equation}
+donde $K_\epsilon$ concentra masa alrededor del punto de contacto y $\rho(x,t)$ es la
+densidad espacial de robots. El wrench macroscópico inducido por la masa continua queda
+\begin{equation}
+  \mathcal W_\rho(t)
+  =
+  \int_0^{2\pi}
+  f(\gamma,t)\,
+  \psi_s(\gamma)\,
+  \rho_{\partial L}(\gamma,t)\,
+  \mathrm d\gamma .
+  \label{eq:ctrl_wrench_mfg_contorno}
+\end{equation}
+Así, el MFG no reemplaza a los vectores de torque: los alimenta. El campo medio decide
+dónde debería estar la masa; el mapa $\psi_s(\gamma)$ traduce esa masa en fuerza y par.
+
+El coste de campo medio que guía la densidad puede incluir directamente el error de
+wrench:
+\begin{equation}
+  Q_W(\rho,q_L,t)
+  =
+  \frac{1}{2}
+  \left\|
+    \mathcal W_{\mathrm{dem}}(t)-\mathcal W_\rho(t)
+  \right\|_{R_W}^{2}
+  +
+  \lambda_{\mathrm{jam}}\Phi(\rho)
+  +
+  \lambda_{\mathrm{bat}}\bar c_B(\rho).
+  \label{eq:ctrl_coste_mfg_wrench}
+\end{equation}
+El primer término recluta masa donde falta fuerza o torque; el segundo penaliza
+congestión; el tercero incorpora batería media y retornabilidad. Al discretizar
+\eqref{eq:ctrl_wrench_mfg_contorno}, cada robot obtiene una fase objetivo
+\begin{equation}
+  \gamma_i^\star
+  \in
+  \argmax_{\gamma}
+  \left[
+    \psi_s(\gamma)^\top R_W\mathcal E_W
+    -
+    c_{\mathrm{nav}}(p_i,r_s(\gamma))
+    -
+    c_{\mathrm{bat},i}
+  \right],
+  \label{eq:ctrl_fase_objetivo_mfg_wrench}
+\end{equation}
+que después se estabiliza con Smith--Kuramoto. Esta es la bajada finita del MFG: el
+campo continuo genera una distribución deseada de contacto; los AGVs la implementan como
+fases discretas sobre el contorno.
+
+\begin{table}[H]
+\centering
+\caption{Geometría, firma de torque y formación esperada para tres tipos de carga.}
+\label{tab:geometria-wrench-formacion}
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.12\textwidth}
+>{\raggedright\arraybackslash}p{0.22\textwidth}
+>{\raggedright\arraybackslash}p{0.20\textwidth}
+>{\raggedright\arraybackslash}X@{}}
+\toprule
+Geometría & Contorno $r_s(\gamma)$ & Torque normal $\ell_s(\gamma)$ & Formación resultante \\
+\midrule
+Círculo &
+$R(\cos\gamma,\sin\gamma)$ &
+$0$ si el empuje es radial puro &
+Formación anular. Para girar la carga se necesita fricción tangencial, contacto no radial
+o pares diferenciales de rueda; solo empujar normal al centro traslada, no rota. \\
+Cuadrado &
+Superelipse con $a=b$ y $p\in[4,8]$ &
+Cuatro lóbulos simétricos, máximos cerca de esquinas suavizadas &
+Caging de cuatro caras. Kuramoto separa fases y el coste de wrench decide qué esquinas o
+lados se activan para generar par. \\
+Rectángulo &
+Superelipse con $a\neq b$ y $p\in[4,8]$ &
+Lóbulos anisótropos: los lados largos y cortos tienen brazos distintos &
+Roles asimétricos. El controlador recluta robots en caras con mayor brazo útil cuando
+falta torque y en caras frontales cuando falta fuerza de traslación. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{Lectura de \eqref{eq:ctrl_firma_wrench_contorno}--\eqref{eq:ctrl_fase_objetivo_mfg_wrench}.}
+El MFG entrega una densidad continua, pero la carga solo siente fuerza y torque. Por eso
+la variable puente es $\psi_s(\gamma)$: cada punto del contorno tiene una firma vectorial
+que dice cuánta fuerza y cuánto momento produce una unidad de empuje. En círculos, la
+firma revela una limitación física inmediata: el empuje radial puro no genera giro. En
+cuadrados y rectángulos, la firma muestra qué caras y esquinas son útiles para torque. La
+formación no se impone como dibujo; emerge al maximizar la reducción de residual wrench y
+se regulariza con separación de fases.
+
+\subsection{Torsor demandado, torsor aportado y error físico}
+\label{subsec:control-torsor}
+
+La demanda de una carga no debe resumirse en masa. En el plano, el objeto pide un torsor
+o wrench
+\(
+  \mathcal W=(F_x,F_y,\tau)^\top\in\mathbb R^3
+\),
+compuesto por fuerza y momento respecto al centro de masa. Para una velocidad
+generalizada $\xi_L=(v_{Lx},v_{Ly},\omega_L)^\top$, una demanda operativa puede escribirse
+como
+\begin{equation}
+  \mathcal W_{\mathrm{dem}}
+  =
+  M_L\dot\xi_{\mathrm{ref}}
+  +
+  D_L(\xi_{\mathrm{ref}}-\xi_L)
+  +
+  K_L e_L^q ,
+  \label{eq:ctrl_torsor_demanda}
+\end{equation}
+donde $M_L$ es la matriz inercial plana, $D_L$ una amortiguación deseada, $e_L^q$ el error
+de pose de la carga y $K_L$ una rigidez virtual opcional. Si solo se regula velocidad,
+se toma $K_L=0$.
+
+Si el robot $i$ empuja con una fuerza escalar normal $f_i\in[0,f_i^{\max}]$, su torsor
+aportado es
+\begin{equation}
+  \mathcal W_i(\gamma_i,f_i)
+  =
+  \begin{bmatrix}
+    f_i n_i\\
+    (Jr_i)^\top f_i n_i
+  \end{bmatrix},
+  \qquad
+  J=
+  \begin{bmatrix}
+    0 & -1\\
+    1 & 0
+  \end{bmatrix},
+  \label{eq:ctrl_torsor_robot}
+\end{equation}
+donde $r_i=R(\theta_L)r_i^\Gamma$ y $n_i=R(\theta_L)n_i^\Gamma$. El último componente
+representa el torque plano inducido por empujar fuera del centro de masa.
+
+La variable de reclutamiento mecánico es el residual de wrench:
+\begin{equation}
+  \mathcal E_W(t)
+  =
+  \mathcal W_{\mathrm{dem}}(t)
+  -
+  \sum_{j\in\mathcal C_k(t)}
+  \mathcal W_j(\gamma_j(t),f_j(t)).
+  \label{eq:ctrl_error_wrench}
+\end{equation}
+
+Para auditar si una coalición es físicamente suficiente no basta con sumar torsors
+nominales. Se construye la matriz de agarre planar de la coalición
+\begin{equation}
+  G_C(q)
+  =
+  \begin{bmatrix}
+    G_1(q) & \cdots & G_m(q)
+  \end{bmatrix},
+  \qquad
+  G_i(q)
+  =
+  \begin{bmatrix}
+    I_2\\
+    (Jr_i)^\top
+  \end{bmatrix}
+  \in\mathbb R^{3\times2},
+  \label{eq:ctrl_matriz_agarre}
+\end{equation}
+donde $m=|\mathcal C_k|$ y $r_i$ es el brazo desde el centro de masa de la carga al punto
+de contacto. Si $g_i\in\mathbb R^2$ es la fuerza planar admisible del robot $i$ y
+$g=(g_1^\top,\ldots,g_m^\top)^\top$, la factibilidad de capacidad efectiva se escribe
+como el programa convexo
+\begin{equation}
+  \operatorname{FEAS}_k:
+  \quad
+  \exists\,g_1,\ldots,g_m
+  \quad
+  \text{s.a.}\quad
+  G_C(q)g=\mathcal W_{\mathrm{dem}},
+  \quad
+  \norm{g_i}_2\le f_i^{\max},
+  \quad
+  g_i^\top n_i\ge0 .
+  \label{eq:ctrl_feas_wrench}
+\end{equation}
+La última desigualdad se activa cuando el contacto solo permite empujar. Si
+\eqref{eq:ctrl_feas_wrench} no es factible, el residuo mínimo de wrench queda definido por
+\begin{equation}
+  \delta_k^{G}
+  =
+  \min_{\{g_i\}}
+  \norm{G_C(q)g-\mathcal W_{\mathrm{dem}}}_{R_W}
+  \quad
+  \text{s.a.}\quad
+  \norm{g_i}_2\le f_i^{\max},
+  \quad
+  g_i^\top n_i\ge0 .
+  \label{eq:ctrl_deficit_wrench_socp}
+\end{equation}
+Así, $\delta_k^{G}=0$ significa que la coalición puede cerrar la demanda física, y
+$\delta_k^{G}>0$ mide exactamente qué fuerza o momento no puede generar.
+
+Esta señal puede estimarse con el estado de la carga, fuerzas medidas o identificación
+local de aceleración. No elimina la comunicación, pero desplaza parte de la coordinación
+hacia una señal física observable: si falta fuerza o torque, el residual crece.
+
+\paragraph{Lectura de \eqref{eq:ctrl_torsor_demanda}--\eqref{eq:ctrl_error_wrench}.}
+El error ya no pregunta cuántos robots hay, sino qué fuerza y torque faltan. Un robot
+ubicado en el lado correcto puede reducir mucho $\mathcal E_W$; otro robot igual de
+potente, pero colocado en un ángulo que genera torque parasitario, puede aportar poco o
+incluso empeorar el transporte. El caso patológico queda ahora visible: una coalición con
+$|\mathcal C_k|\ge n_k$ puede apiñarse en una misma cara de la carga, perder rango útil en
+$G_C(q)$ y fallar \eqref{eq:ctrl_feas_wrench}. Ese conteo de coaliciones aceptadas por
+cardinalidad pero rechazadas por wrench es el resultado medible de la extensión de
+capacidad efectiva.
+
+\subsection{Reclutamiento por proyección y fase Smith--Kuramoto}
+\label{subsec:control-smith-kuramoto}
+
+El payoff local se define como alineación entre el torsor que el robot puede aportar y el
+residual físico de la carga:
+\begin{equation}
+  \pi_i(\gamma_i)
+  =
+  \mathcal W_i(\gamma_i,f_i)^\top
+  R_W
+  \mathcal E_W
+  -
+  c_i^{\mathrm{bat}}
+  -
+  c_i^{\mathrm{slip}},
+  \qquad R_W\succ0 .
+  \label{eq:ctrl_payoff_torsor}
+\end{equation}
+El producto interno ponderado $R_W$ permite dar distinta importancia a fuerza
+longitudinal, fuerza lateral y torque. Durante un ciclo de control, el residual
+$\mathcal E_W$ se congela; así el robot puede calcular el gradiente
+\begin{equation}
+  g_i^\gamma
+  =
+  \frac{\partial \pi_i}{\partial \gamma_i}
+  =
+  \left(\frac{\partial\mathcal W_i}{\partial\gamma_i}\right)^\top
+  R_W\mathcal E_W .
+  \label{eq:ctrl_gradiente_payoff}
+\end{equation}
+
+La fase de contacto combina atracción Smith hacia posiciones útiles y repulsión
+Kuramoto para evitar que todos los robots ocupen el mismo lado de la carga
+\citep{kuramoto1984chemical}:
+\begin{equation}
+\begin{aligned}
+  \dot\eta_i &= -\lambda_\eta \eta_i + g_i^\gamma,\\
+  \dot\gamma_i
+  &=
+  \operatorname{sat}_{\dot\gamma_{\max}}
+  \left(
+    \alpha_\gamma \eta_i
+    -
+    \frac{K_\gamma}{|\mathcal N_i^c|}
+    \sum_{j\in\mathcal N_i^c}
+    \sin(\gamma_j-\gamma_i)
+  \right).
+\end{aligned}
+\label{eq:ctrl_smith_kuramoto_fase}
+\end{equation}
+El filtro $\eta_i$ evita que ruido de fuerza o microdeslizamientos produzcan oscilación
+rápida de la fase. La saturación de $\dot\gamma_i$ convierte la ecuación teórica en una
+instrucción cinemáticamente plausible para un uniciclo.
+
+\paragraph{Lectura de \eqref{eq:ctrl_payoff_torsor}--\eqref{eq:ctrl_smith_kuramoto_fase}.}
+Si falta torque antihorario, los robots para los que
+$\mathcal W_i^\top R_W\mathcal E_W$ aumenta se desplazan hacia fases que generan ese
+torque. Si varios robots intentan ocupar la misma zona, el término Kuramoto repulsivo
+los separa angularmente. La formación emerge de un compromiso entre utilidad mecánica y
+distribución geométrica.
+
+\subsection{Rigidez local de la coalición}
+\label{subsec:control-rigidez}
+
+El caging por fases ordena posiciones sobre el contorno, pero no garantiza por sí solo
+que la coalición se comporte como un macro-sólido al esquivar obstáculos. Para cerrar
+esa brecha, se define un grafo local de contacto
+\begin{equation}
+  \mathcal E_R(t)
+  =
+  \left\{
+    (i,j):
+    i,j\in\mathcal C_k(t),
+    \|p_i-p_j\|<R_c
+  \right\},
+  \label{eq:ctrl_grafo_rigidez}
+\end{equation}
+y una energía de distancia inspirada en control de formaciones rígidas
+\citep{bullo2009distributed}:
+\begin{equation}
+  V_{\mathrm{rig}}
+  =
+  \frac14
+  \sum_{(i,j)\in\mathcal E_R}
+  \left(
+    \|p_i-p_j\|^2-d_{ij}^{\star 2}
+  \right)^2 .
+  \label{eq:ctrl_energia_rigidez}
+\end{equation}
+El gradiente local que necesita el robot $i$ es
+\begin{equation}
+  \nabla_{p_i}V_{\mathrm{rig}}
+  =
+  \sum_{j\in\mathcal N_i^R}
+  \left(
+    \|p_i-p_j\|^2-d_{ij}^{\star 2}
+  \right)(p_i-p_j).
+  \label{eq:ctrl_gradiente_rigidez}
+\end{equation}
+
+La velocidad nominal combina seguimiento de punto de contacto, movimiento de la carga y
+rigidez local:
+\begin{equation}
+  u_{\mathrm{nom},i}
+  =
+  v_L
+  +
+  \omega_LJ(p_i^\star-X_L)
+  +
+  k_p(p_i^\star-p_i)
+  -
+  \beta_R\nabla_{p_i}V_{\mathrm{rig}} .
+  \label{eq:ctrl_velocidad_nominal}
+\end{equation}
+Esta ley no exige conocer a toda la flota. Solo necesita vecinos dentro de $R_c$, el
+estado local de la carga y la fase propia.
+
+\paragraph{Lectura de \eqref{eq:ctrl_grafo_rigidez}--\eqref{eq:ctrl_velocidad_nominal}.}
+La energía de rigidez actúa como barras virtuales. Si un robot se desplaza demasiado
+respecto a sus vecinos, el gradiente lo devuelve a una distancia compatible. Si un
+obstaculo obliga a un robot a corregir su trayectoria, la corrección se propaga a la
+coalición como deformación elástica acotada, no como ruptura de la formación.
+
+\subsection{Seguridad mediante CBF y QP local}
+\label{subsec:control-cbf}
+
+La velocidad nominal puede violar seguridad cerca de obstáculos, paredes o robots no
+cooperantes. En lugar de sumar campos repulsivos sin certificado, se filtra con
+funciones de barrera de control \citep{ames2017cbf}. Para cada restricción local
+$a\in\mathcal A_i(t)$ se define
+\begin{equation}
+  h_{ia}(p_i)
+  =
+  \|p_i-p_a\|^2-R_{ia}^{2},
+  \qquad
+  h_{ia}(p_i)\ge0 .
+  \label{eq:ctrl_barrera_obstaculo}
+\end{equation}
+El comando seguro es la solución del QP
+\begin{equation}
+\begin{aligned}
+  u_{\mathrm{safe},i}
+  =
+  \argmin_{u_i\in\mathcal U_i,\;\delta\ge0}
+  &\quad
+  \frac12\|u_i-u_{\mathrm{nom},i}\|^2
+  +
+  \frac{\rho_\delta}{2}\|\delta\|^2\\
+  \mathrm{s.a.}
+  &\quad
+  \nabla h_{ia}(p_i)^\top u_i
+  \ge
+  -\kappa_h h_{ia}(p_i)-\delta_a,
+  \qquad a\in\mathcal A_i(t).
+\end{aligned}
+\label{eq:ctrl_qp_cbf}
+\end{equation}
+Si el QP es factible con $\delta=0$, el conjunto seguro se mantiene invariante en tiempo
+continuo. Si aparece una relajación positiva, el ciclo queda marcado como evento de
+riesgo y debe registrarse como violación potencial en la evaluación.
+
+\paragraph{Lectura de \eqref{eq:ctrl_barrera_obstaculo}--\eqref{eq:ctrl_qp_cbf}.}
+El QP no planifica toda la misión. Solo corrige lo mínimo necesario para que el comando
+nominal respete seguridad local. Por eso es compatible con Smith, Kuramoto y rigidez: el
+controlador conserva la intención mecánica salvo cuando esa intención cruza una frontera
+de seguridad.
+
+\subsection{Mapeo al uniciclo y comunicación por eventos}
+\label{subsec:control-uniciclo-eventos}
+
+El QP produce una velocidad holonómica ideal para el punto adelantado del robot. Para un
+AGV diferencial con pose $(x_i,y_i,\theta_i)$ y distancia de look-ahead $\ell$, se usa
+\begin{equation}
+  \begin{bmatrix}
+    v_i\\
+    \omega_i
+  \end{bmatrix}
+  =
+  \begin{bmatrix}
+    \cos\theta_i & \sin\theta_i\\
+    -\ell^{-1}\sin\theta_i & \ell^{-1}\cos\theta_i
+  \end{bmatrix}
+  u_{\mathrm{safe},i}.
+  \label{eq:ctrl_uniciclo}
+\end{equation}
+Después se aplican saturaciones de rueda. Si la saturación modifica de forma relevante
+$u_{\mathrm{safe},i}$, la implementación debe revalidar las barreras o resolver el QP
+directamente en variables $(v_i,\omega_i)$.
+
+La comunicación se limita a vecinos en $R_c$ y se dispara por eventos, siguiendo la
+lógica de control event-triggered en sistemas embebidos \citep{tabuada2007event}. Si
+$t_i^m$ es el último instante de transmisión del robot $i$, el siguiente envío se define como
+\begin{equation}
+\begin{aligned}
+  t_i^{m+1}
+  =
+  \inf\{t>t_i^m+\tau_{\min}:\;&
+  \|p_i(t)-p_i(t_i^m)\|>\delta_p
+  \;\vee\;
+  \|\mathcal W_i(t)-\mathcal W_i(t_i^m)\|_{R_W}>\delta_W\\
+  &\vee\;
+  \min_{a\in\mathcal A_i(t)} h_{ia}(p_i(t))<\delta_h
+  \}.
+\end{aligned}
+\label{eq:ctrl_event_trigger}
+\end{equation}
+El tiempo muerto $\tau_{\min}>0$ evita disparos tipo Zeno. El criterio transmite cuando
+cambia la geometría, el aporte físico o el margen de seguridad; en avance estacionario,
+la red permanece silenciosa.
+
+\paragraph{Lectura de \eqref{eq:ctrl_uniciclo}--\eqref{eq:ctrl_event_trigger}.}
+La salida final del marco no es una asignación abstracta, sino el par $(v_i,\omega_i)$
+que el simulador o el controlador de ruedas puede ejecutar. La comunicación por eventos
+hace que el grafo local se actualice cuando algo físico cambia, no en cada milisegundo
+por rutina.
+
+\subsection{Algoritmo de ciclo y gates de verificación}
+\label{subsec:control-algoritmo-gates}
+
+El bucle completo puede implementarse como un controlador local por robot. La clave es
+que cada bloque produce una señal verificable antes de pasar al siguiente.
+
+\begin{algorithm}[htbp]
+\caption{Control vectorial local por ciclo para el robot $i$}
+\label{alg:control-vectorial}
+\begin{algorithmic}[1]
+\Require Pose $q_i$, estado local de carga $(X_L,\theta_L,\xi_L)$, vecinos en $R_c$,
+obstáculos locales, fase $\gamma_i$
+\State Calcular $r_i^\Gamma(\gamma_i)$, $n_i^\Gamma(\gamma_i)$ y $p_i^\star$ con
+\eqref{eq:ctrl_superelipse_parametrica}--\eqref{eq:ctrl_punto_contacto_mundo}
+\State Estimar $\mathcal W_{\mathrm{dem}}$, $\mathcal W_i$ y $\mathcal E_W$ con
+\eqref{eq:ctrl_torsor_demanda}--\eqref{eq:ctrl_error_wrench}
+\State Auditar capacidad efectiva resolviendo \eqref{eq:ctrl_feas_wrench}; si falla,
+registrar $\delta_k^G$ con \eqref{eq:ctrl_deficit_wrench_socp}
+\State Actualizar $\gamma_i$ mediante \eqref{eq:ctrl_smith_kuramoto_fase}
+\State Calcular $u_{\mathrm{nom},i}$ con rigidez local mediante
+\eqref{eq:ctrl_velocidad_nominal}
+\State Resolver el filtro CBF--QP \eqref{eq:ctrl_qp_cbf} y obtener
+$u_{\mathrm{safe},i}$
+\State Convertir $u_{\mathrm{safe},i}$ a $(v_i,\omega_i)$ con
+\eqref{eq:ctrl_uniciclo}; aplicar saturaciones y registrar eventos
+\State Transmitir solo si se cumple \eqref{eq:ctrl_event_trigger}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{table}[htbp]
+\centering
+\caption{Gates mínimos de verificación para el controlador vectorial finito.}
+\label{tab:gates_control_vectorial}
+\small
+\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.22\linewidth}YY@{}}
+\toprule
+\textbf{Bloque} & \textbf{Condición verificable} & \textbf{Fallo que detecta} \\
+\midrule
+Superelipse & $\|\nabla F(r_i^\Gamma)\|>\epsilon_n$ y
+$\|\partial r_i^\Gamma/\partial\gamma_i\|<M_\Gamma$ & Esquinas numéricamente
+singulares o fase mal parametrizada. \\
+Wrench/SOCP & $\operatorname{rank}(G_C)=3$, \eqref{eq:ctrl_feas_wrench} factible o
+$\delta_k^G$ reportado & Cardinalidad satisfecha pero coalición incapaz de generar
+fuerza o par útil. \\
+Smith--Kuramoto & $|\dot\gamma_i|\le\dot\gamma_{\max}$ y
+$|\eta_i|$ acotado & Chattering de fase por ruido de fuerza. \\
+Rigidez & Error medio
+$e_R=\sum_{(i,j)}|\|p_i-p_j\|-d_{ij}^\star|/|\mathcal E_R|$ acotado & Ruptura del
+macro-sólido local. \\
+CBF--QP & QP factible, $\delta=0$ en operación nominal y
+$h_{\min}\ge0$ & Obstaculos, paredes o robots externos demasiado cercanos. \\
+Uniciclo/eventos & Saturaciones dentro de margen y
+$t_i^{m+1}-t_i^m\ge\tau_{\min}$ & Comando no ejecutable o tormenta de comunicaciones. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+La lectura de la Tabla~\ref{tab:gates_control_vectorial} es deliberadamente conservadora.
+El controlador solo debe declararse validado cuando cada bloque deja una traza medible:
+normal de contacto, rango de agarre, factibilidad de wrench, fase, error de rigidez,
+margen CBF, saturación y eventos de red. Si alguna condición falla, el resultado no invalida el framework teórico;
+identifica que la implementación debe degradar a parada segura, reducir velocidad,
+aumentar comunicación local o reajustar ganancias.

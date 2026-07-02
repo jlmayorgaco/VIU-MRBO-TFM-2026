@@ -1,0 +1,53 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[
+  node distance=0.75cm,
+  block/.style={
+    draw=VIUDark,
+    fill=VIULight,
+    rounded corners=2pt,
+    minimum width=3.05cm,
+    minimum height=0.95cm,
+    align=center,
+    font=\small\sffamily
+  },
+  emphblock/.style={
+    draw=VIUOrange,
+    fill=VIUOrange!10,
+    rounded corners=2pt,
+    minimum width=3.05cm,
+    minimum height=0.95cm,
+    align=center,
+    font=\small\sffamily
+  },
+  flow/.style={-{Latex[length=2.1mm]}, thick, draw=VIUDark},
+  oflow/.style={-{Latex[length=2.1mm]}, thick, draw=VIUOrange}
+]
+\node[block] (demand) {Demanda física\\$D_k(q,\mathcal{O})$};
+\node[block, right=of demand] (supply) {Oferta efectiva\\$S_k(C,q)$};
+\node[emphblock, right=of supply] (deficit) {Déficit\\$\delta_k=D_k-S_k$};
+\node[block, below=of supply] (price) {Precio sombra\\$\pi_k=\partial J/\partial\delta_k$};
+\node[block, right=of deficit] (payoff) {Payoff\\$F_{ik}^{eff}$};
+\node[block, right=of payoff] (smith) {Smith\\$\dot y_i$};
+\node[block, below=of payoff] (mech) {Ejecución\\port-Hamiltoniana};
+\node[block, below=of demand] (capacity) {Recursos robot\\fuerza, torque, fricción, batería};
+
+\draw[flow] (demand) -- (supply);
+\draw[oflow] (supply) -- (deficit);
+\draw[oflow] (deficit) -- (payoff);
+\draw[flow] (payoff) -- (smith);
+\draw[flow] (smith) |- (mech);
+\draw[flow] (capacity) -- (supply);
+\draw[flow] (deficit) -- (price);
+\draw[flow] (price) -| (payoff);
+\draw[flow] (mech.west) -| (capacity.south);
+
+\node[font=\small\sffamily, align=center, text=VIUDark, below=0.32cm of mech] {
+La tarea no compra robots: compra capacidad mecánica efectiva hasta cerrar el déficit físico.
+};
+\end{tikzpicture}
+}
+\caption[Mercado distribuido de capacidad mecánica efectiva]{Mercado distribuido de capacidad mecánica efectiva. La cardinalidad mínima se reemplaza por un déficit físico que combina masa, torque, fricción, geometría, obstáculo, batería y saturación de actuadores.}
+\label{fig:capacidad-efectiva-mercado}
+\end{figure}

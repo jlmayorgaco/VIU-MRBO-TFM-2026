@@ -1,0 +1,38 @@
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+  node distance=0.72cm,
+  block/.style={
+    draw=VIUDark,
+    fill=VIULight,
+    rounded corners=2pt,
+    minimum width=2.42cm,
+    minimum height=1.05cm,
+    align=center,
+    font=\small\sffamily
+  },
+  flow/.style={-{Latex[length=2.2mm]}, thick, draw=VIUDark}
+]
+\node[block] (y) {Coalici\'on\\$y$};
+\node[block, right=of y] (pot) {Potencial\\$V(q,y)$};
+\node[block, right=of pot] (grad) {Gradiente\\$S(q)^\top\nabla V$};
+\node[block, right=of grad] (tau) {Pares\\$\tau_R,\tau_L$};
+\node[block, right=of tau] (wheel) {Ruedas\\$J^{eq}(y)\dot\Omega$};
+\node[block, below=0.88cm of grad] (inertia) {Inercia efectiva\\$M(y),J^{eq}(y)$};
+\node[block, below=0.88cm of wheel] (move) {Movimiento\\$\dot q=S(q)\nu$};
+
+\draw[flow] (y) -- (pot);
+\draw[flow] (pot) -- (grad);
+\draw[flow] (grad) -- (tau);
+\draw[flow] (tau) -- (wheel);
+\draw[flow] (wheel) -- (move);
+\draw[flow] (y.south) |- (inertia.west);
+\draw[flow] (inertia.east) -| (wheel.south);
+
+\node[font=\small\sffamily, text=VIUDark, below=0.28cm of inertia, align=center] {
+La econom\'ia decide la direcci\'on del esfuerzo; la mec\'anica decide la aceleraci\'on real.
+};
+\end{tikzpicture}
+\caption[Puente port-Hamiltoniano entre decisi\'on y ruedas]{Puente port-Hamiltoniano entre decisi\'on poblacional y din\'amica de ruedas. La variable de coalici\'on modifica simult\'aneamente el potencial social y la inercia equivalente que sienten los motores.}
+\label{fig:port-hamiltoniano-ruedas}
+\end{figure}

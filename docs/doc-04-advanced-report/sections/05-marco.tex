@@ -1,0 +1,920 @@
+%% ====================================================================
+\section{Marco teórico}
+\label{sec:marco}
+%% ====================================================================
+
+Este capítulo desarrolla el soporte teórico que en el informe intermedio quedaba
+solamente esbozado. La idea central es leer la coordinación distribuida como un
+problema de \emph{clearing} de capacidad efectiva. En el caso homogéneo, la unidad que
+se intercambia es un robot; en el caso heterogéneo, la unidad relevante es
+\[
+  s_{ik}=c_i\,\Psi(T_k(p_i)),
+\]
+es decir, la capacidad nominal del robot $i$ descontada por la accesibilidad real a la
+tarea $k$. Esta lectura conecta el modelo con juegos poblacionales, juegos potenciales,
+consenso dinámico y control multi-robot \citep{sandholm2010population,
+quijano2017population,barreiro2017distributed,kia2019tutorial,bullo2009distributed}.
+
+El capítulo usa una convención de estados para no mezclar resultados de distinta
+madurez:
+\begin{itemize}
+  \item \textbf{[PROBADO+GATE]}: resultado demostrado y verificado por un script o gate
+  numérico del repositorio.
+  \item \textbf{[PROBADO]}: resultado demostrado formalmente, aunque sin gate directo o
+  con verificación indirecta.
+  \item \textbf{[CONDICIONADO]}: resultado correcto bajo una hipótesis técnica que debe
+  cerrarse antes de elevarlo a teorema principal.
+  \item \textbf{[FUTURO]}: extensión de frontera, útil para la memoria final o una línea
+  doctoral, pero no para afirmar como garantía cerrada del TFM.
+\end{itemize}
+
+Dicho de forma compacta, la narrativa que debe sostener el TFM es
+\[
+  \text{cota de capacidad}
+  \rightarrow y_i\in\simplex
+  \rightarrow s_{ik}
+  \rightarrow \Zeff_k
+  \rightarrow F_{ik}
+  \rightarrow V
+  \rightarrow \text{Smith}
+  \rightarrow E
+  \rightarrow \text{validación}.
+\]
+La parte probada vive en el núcleo homogéneo y en el modelo fluido agregado; la
+implementación con DAC, uniciclo, obstáculos, modos y saturaciones se interpreta como
+una perturbación que debe cerrarse con resultados experimentales.
+
+\subsection{Mapa conceptual: consenso, juego, precio y campo}
+
+La arquitectura del método puede resumirse en cuatro verbos: estimar, valorar, decidir
+y moverse. El consenso estima ocupación o capacidad; el juego valora cada tarea; Smith
+decide cómo mover masa decisional; y el campo convierte la decisión en movimiento de
+AGV. La Figura~\ref{fig:marco_capas} muestra el bucle conceptual.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  block/.style={draw=VIUDark,fill=VIULight,rounded corners=2pt,
+    align=center,minimum width=3.1cm,minimum height=0.9cm,font=\small},
+  arrow/.style={-{Latex[length=2mm]},thick,color=VIUOrange!90!black}
+]
+\node[block] (world) {mundo local\\pose, vecinos, tareas};
+\node[block, right=0.85cm of world] (cons) {consenso\\$\hat{x}_{ik}$, $\hat{C}_{ik}$};
+\node[block, right=0.85cm of cons] (pay) {payoff\\$f_{ik}$, $F_{ik}$};
+\node[block, below=0.85cm of pay] (smith) {Smith\\$p_i$ o $y_i$};
+\node[block, below=0.85cm of cons] (field) {campo\\$\nabla E$, obstáculos};
+\node[block, below=0.85cm of world] (robot) {robot físico\\$v_i,\omega_i$};
+\draw[arrow] (world) -- (cons);
+\draw[arrow] (cons) -- (pay);
+\draw[arrow] (pay) -- (smith);
+\draw[arrow] (smith) -- (field);
+\draw[arrow] (field) -- (robot);
+\draw[arrow] (robot) -- (world);
+\draw[arrow] (smith.east) to[out=0,in=0,looseness=1.2] (pay.east);
+\end{tikzpicture}
+\caption{Lectura del lazo cerrado. El consenso estima hechos; el juego decide papeles;
+el campo mueve ruedas; y el movimiento cambia otra vez los hechos disponibles.}
+\label{fig:marco_capas}
+\end{figure}
+
+Este bucle no es una arquitectura jerárquica de asignador central, planificador global y
+controlador local. La propuesta se acerca más a la tradición de control distribuido en
+redes robóticas \citep{bullo2009distributed,ren2008distributed}: cada agente ejecuta la
+misma ley con información parcial y el comportamiento útil debe aparecer como propiedad
+colectiva.
+
+\subsection{Juegos poblacionales y simplex de decisión}
+
+En un juego poblacional, una masa de agentes se reparte entre estrategias. En este TFM,
+la estrategia $k$ representa comprometerse con la tarea $k$, y la estrategia $0$
+representa inactividad. Para cada robot $i$ se mantiene una preferencia mixta
+\[
+  y_i=(y_{i0},y_{i1},\ldots,y_{iK})\in\simplex^{K+1},
+  \qquad
+  \simplex^{K+1}=\left\{y\ge0:\sum_{k=0}^K y_k=1\right\}.
+\]
+La estrategia pura ejecutada por el robot puede obtenerse como
+$s_i=\argmax_k y_{ik}$, con histéresis para evitar chattering. La variable mixta permite
+razonar con ecuaciones diferenciales; la variable pura permite ejecutar coaliciones
+enteras.
+
+\begin{definicion}[Ocupación, ocupación efectiva y capacidad efectiva]
+En el caso homogéneo se define la ocupación fluida de la tarea $k$ como
+\[
+  z_k=\sum_{i=1}^N y_{ik}.
+\]
+Con descuento espacial se usa la ocupación efectiva
+\[
+  \zeff_k=\sum_{i=1}^N \Psi(T_k(p_i))\,y_{ik}.
+\]
+En el caso heterogéneo la magnitud de clearing es la capacidad efectiva
+\[
+  \Zeff_k=\sum_{i=1}^N c_i\Psi(T_k(p_i))\,y_{ik}.
+\]
+\end{definicion}
+
+La diferencia conceptual es importante. En el informe intermedio bastaba hablar de
+cardinalidad mínima $|\mathcal{C}_k|\ge n_k$. En el reporte avanzado, la cardinalidad
+aparece como caso particular de una condición física más general:
+\[
+  \sum_{i\in\mathcal{C}_k} c_i\ge M_k.
+\]
+
+\subsection{Payoff como presión de reclutamiento}
+
+El payoff homogéneo del informe intermedio tiene la forma
+\[
+  f_{ik}=r_k\,\Phi(N\hat{x}_{ik},n_k)\,\Psi(d_{ik}),
+  \qquad
+  f_{i0}=r_0.
+\]
+La sigmoide
+\[
+  \Phi(z,n)=\frac{1}{1+\exp(\beta(z-n))}
+\]
+es decreciente: si faltan robots, la tarea paga más; si sobran, paga menos. Esto invierte
+la lectura clásica de muchos juegos de congestión. Aquí no se penaliza únicamente la
+saturación; se recluta para cubrir una cota inferior de servicio.
+
+\begin{observacion}[Cota inferior frente a capacidad máxima]
+En muchos modelos de asignación o congestión, el problema es evitar que demasiados
+agentes usen el mismo recurso. En transporte cooperativo de cargas pesadas ocurre lo
+contrario: una tarea falla si recibe menos robots de los necesarios. Esa inversión es
+la fuente del payoff sigmoidal y de la regla de \emph{water-filling}.
+\end{observacion}
+
+En capacidad heterogénea el payoff estructuralmente integrable es
+\begin{equation}
+  F_{ik}=c_i\,r_k\,\Phi_k(\Zeff_k)\,\Psi(T_k(p_i)),
+  \qquad F_{i0}=r_0.
+  \label{eq:marco_payoff_hetero}
+\end{equation}
+La capacidad aparece dos veces: dentro de $\Zeff_k$ porque contribuye al estado de la
+tarea, y fuera porque escala la productividad marginal del robot. Si se elimina uno de
+los dos lugares, se pierde la simetría de derivadas cruzadas que permite construir un
+potencial.
+
+\subsection{Dinámicas de Smith}
+
+La dinámica de Smith transfiere masa desde estrategias con menor payoff hacia
+estrategias con mayor payoff:
+\begin{equation}
+  \dot y_{ik}
+  =
+  \sum_{\ell=0}^{K} y_{i\ell}\pos{F_{ik}-F_{i\ell}}
+  -
+  y_{ik}\sum_{\ell=0}^{K}\pos{F_{i\ell}-F_{ik}}.
+  \label{eq:marco_smith}
+\end{equation}
+Su ventaja operativa frente al replicador es que compara estrategias por pares, sin
+necesitar una media global exacta del payoff \citep{sandholm2010population,
+quijano2017population}. Eso encaja con grafos móviles: el robot ya calcula el vector de
+payoffs local, pero no tiene por qué conocer una media poblacional fiable.
+
+\begin{lema}[Invariancia del simplex]
+Si $y_i(0)\in\simplex^{K+1}$, entonces la solución de
+\eqref{eq:marco_smith} satisface $y_i(t)\in\simplex^{K+1}$ para todo $t\ge0$.
+\end{lema}
+
+\begin{proof}
+Si $y_{ik}=0$, el término de salida de la estrategia $k$ se anula y el término de
+entrada es no negativo; por tanto ninguna componente cruza a valores negativos. Además,
+al sumar \eqref{eq:marco_smith} en $k$ se obtiene
+\[
+  \sum_k\dot y_{ik}
+  =
+  \sum_{k,\ell}y_{i\ell}\pos{F_{ik}-F_{i\ell}}
+  -
+  \sum_{k,\ell}y_{ik}\pos{F_{i\ell}-F_{ik}}=0,
+\]
+porque los dos sumatorios son iguales tras intercambiar $k$ y $\ell$. La masa total se
+conserva.
+\end{proof}
+
+\subsection{Juegos potenciales y teorema homogéneo}
+
+El caso homogéneo con $\Psi\equiv1$ admite un potencial exacto. Sea
+\[
+  z_k=\sum_i y_{ik},
+  \qquad
+  G_k(z)=\int_0^z\Phi_k(s)\dd s.
+\]
+El potencial de utilidad es
+\begin{equation}
+  V(y)=r_0\sum_i y_{i0}+\sum_{k=1}^{K}r_kG_k(z_k).
+  \label{eq:marco_potencial_hom}
+\end{equation}
+Como
+\[
+  \frac{\partial V}{\partial y_{ik}}
+  =
+  r_kG_k'(z_k)
+  =
+  r_k\Phi_k(z_k),
+\]
+el juego es de potencial exacto en el sentido de \citet{monderer1996potential}.
+
+\begin{proposicion}[Smith asciende el potencial homogéneo] \textbf{[PROBADO]}
+Para el potencial \eqref{eq:marco_potencial_hom}, la dinámica de Smith satisface
+$\dot V\ge0$. La igualdad sólo puede mantenerse cuando no existe masa colocada en una
+estrategia estrictamente peor que otra disponible.
+\end{proposicion}
+
+\begin{proof}
+Usando $\partial V/\partial y_{ik}=F_{ik}$,
+\[
+  \dot V=\sum_{i,k}F_{ik}\dot y_{ik}.
+\]
+Al sustituir \eqref{eq:marco_smith} y agrupar por pares $(k,\ell)$ se obtiene una suma
+de términos no negativos proporcional a
+\[
+  \sum_{i,k,\ell}y_{i\ell}\pos{F_{ik}-F_{i\ell}}^2.
+\]
+Por tanto $V$ no decrece. Si existe masa en una estrategia $\ell$ y otra estrategia
+$k$ paga estrictamente más, el término correspondiente es positivo; en equilibrio no
+puede persistir esa desigualdad dentro del soporte.
+\end{proof}
+
+\begin{observacion}[Escala de curvatura]
+La curvatura de la sigmoide debe leerse con la variable correcta. En variables de
+ocupación $z_k$,
+\[
+  \frac{\dd^2}{\dd z_k^2}\,r_kG_k(z_k)
+  =
+  r_k\Phi_k'(z_k),
+  \qquad
+  r_k\Phi_k'(n_k)=-\frac{r_k\beta}{4}.
+\]
+Si se trabaja con fracciones $x_k=z_k/N$, aparece el factor de escala de la
+normalización escogida para el potencial. Esos factores no cambian la definitud
+negativa de la Hessiana restringida, pero sí la cota de paso discreto.
+\end{observacion}
+
+\subsection{Regla de water-filling}
+
+El equilibrio fluido se caracteriza por una igualación de payoff marginal. Para una
+tarea activa,
+\[
+  r_k\Phi_k(z_k^*)=\lambda^*.
+\]
+La inversa sólo debe evaluarse dentro de su dominio. Para evitar que la notación
+$[\cdot]_+$ oculte logaritmos fuera de rango, se define la demanda elemental como
+\begin{equation}
+  W_k(\lambda)=
+  \begin{cases}
+  0,
+  & \lambda\ge r_k\Phi_k(0),\\[4pt]
+  n_k+\dfrac{1}{\beta}\log\!\left(\dfrac{r_k}{\lambda}-1\right),
+  & 0<\lambda<r_k\Phi_k(0).
+  \end{cases}
+  \label{eq:marco_water_hom}
+\end{equation}
+Para una tarea activa, $z_k^*=W_k(\lambda^*)$.
+
+\begin{teorema}[Water-filling homogéneo] \textbf{[PROBADO+GATE]}
+En el caso homogéneo, el equilibrio fluido satisface \eqref{eq:marco_water_hom}. Si hay
+abundancia de robots, $\lambda^*=r_0$. Si hay escasez, $\lambda^*$ se determina por
+\[
+  \sum_{k=1}^{K}W_k(\lambda^*)=N.
+\]
+\end{teorema}
+
+\begin{proof}
+En un equilibrio de Nash interior, dos tareas activas no pueden ofrecer payoff marginal
+distinto, porque Smith movería masa desde la tarea peor pagada hacia la mejor pagada.
+Por tanto todas las tareas activas igualan un nivel $\lambda^*$. Si queda masa inactiva,
+el pago de inactividad fija ese nivel en $r_0$. Si no queda masa inactiva, la restricción
+de masa total fija $\lambda^*$ mediante $\sum_k z_k^*=N$.
+\end{proof}
+
+\begin{corolario}[Puente entero]
+Si
+\[
+  r_k\ge (1+e^\beta)\lambda^*,
+\]
+entonces el equilibrio fluido cumple $z_k^*\ge n_k+1$. Este margen explica por qué el
+clearing entero no es un detalle de implementación, sino el puente entre el modelo
+continuo y coaliciones físicas.
+\end{corolario}
+
+\begin{proof}
+En la rama activa de \eqref{eq:marco_water_hom}, la condición
+$z_k^*\ge n_k+1$ equivale a
+\[
+  \frac{1}{\beta}\log\left(\frac{r_k}{\lambda^*}-1\right)\ge1.
+\]
+Al exponentiar y despejar se obtiene $r_k\ge(1+e^\beta)\lambda^*$.
+\end{proof}
+
+\subsection{Subasta evolutiva de un reloj}
+
+El precio de tarea puede adaptarse con una ley de error de servicio:
+\begin{equation}
+  \dot r_k=\gamma\,[q_k-\Zeff_k(r)],
+  \qquad r_k\in[r_0,r_{\max}].
+  \label{eq:marco_subasta}
+\end{equation}
+Esta ley no añade un subastador central. Cada tarea ajusta su recompensa según el déficit
+observado o estimado. La lectura dual linealizada es que $r_k$ funciona localmente como
+multiplicador de una restricción de servicio; no hay subasta combinatoria ni asignador
+central de coaliciones.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  block/.style={draw=VIUDark,fill=VIULight,rounded corners=2pt,
+    align=center,minimum width=3.0cm,minimum height=0.85cm,font=\small},
+  arrow/.style={-{Latex[length=2mm]},thick,color=VIUOrange!90!black}
+]
+\node[block] (r) {precio\\$r_k$};
+\node[block, right=0.8cm of r] (f) {payoff\\$F_{ik}$};
+\node[block, right=0.8cm of f] (y) {Smith\\$y_i$};
+\node[block, below=0.85cm of y] (z) {capacidad\\$\Zeff_k$};
+\node[block, below=0.85cm of r] (e) {error\\$q_k-\Zeff_k$};
+\draw[arrow] (r) -- (f);
+\draw[arrow] (f) -- (y);
+\draw[arrow] (y) -- (z);
+\draw[arrow] (z) -- (e);
+\draw[arrow] (e) -- (r);
+\end{tikzpicture}
+\caption{Subasta evolutiva de un reloj. El precio no asigna robots directamente; cambia
+el gradiente que ven las dinámicas de Smith.}
+\label{fig:marco_subasta}
+\end{figure}
+
+\begin{teorema}[Precio de equilibrio] \textbf{[PROBADO+GATE]}
+Si la tarea $k$ es factible y el objetivo de ocupación es $q_k$, el precio que deja al
+robot marginal indiferente frente a inactividad es
+\[
+  r_k^\dagger=\frac{r_0}{\Phi_k(q_k)}.
+\]
+Si la tarea es infactible dentro del intervalo de precios, la proyección satura
+$r_k=r_{\max}$ y el reparto resultante se interpreta como water-filling de escasez.
+\end{teorema}
+
+\begin{proof}
+En equilibrio factible se tiene $\Zeff_k=q_k$. El robot marginal compara tarea con
+inactividad, de modo que $r_k^\dagger\Phi_k(q_k)=r_0$. Despejar da la expresión. Si no
+existe precio admisible que alcance $q_k$, la ley proyectada alcanza el borde superior
+y las ecuaciones de equilibrio vuelven al caso de escasez.
+\end{proof}
+
+\begin{proposicion}[Subasta como dual linealizado] \textbf{[PROBADO+GATE]}
+Considérese la restricción $G_k(\Zeff_k)\ge G_k(q_k)$ y el Lagrangiano
+\[
+  \mathcal{L}
+  =
+  r_0\sum_i y_{i0}
+  +
+  \sum_k\lambda_k\,[G_k(\Zeff_k)-G_k(q_k)].
+\]
+Entonces
+\[
+  \frac{\partial \mathcal{L}}{\partial y_{ik}}
+  =
+  \lambda_k\Phi_k(\Zeff_k)s_{ik}.
+\]
+Con $\lambda_k=r_k$, el payoff es el gradiente primal de la restricción de servicio.
+\end{proposicion}
+
+\begin{proof}
+La prueba es regla de la cadena:
+\[
+  \frac{\partial \mathcal{L}}{\partial y_{ik}}
+  =
+  \lambda_kG_k'(\Zeff_k)
+  \frac{\partial \Zeff_k}{\partial y_{ik}}
+  =
+  \lambda_k\Phi_k(\Zeff_k)s_{ik}.
+\]
+Además, el ascenso dual exacto
+$\dot\lambda_k=\gamma[G_k(q_k)-G_k(\Zeff_k)]$ y la ley
+\eqref{eq:marco_subasta} comparten punto fijo. Cerca de $\Zeff_k=q_k$,
+\[
+  G_k(q_k)-G_k(\Zeff_k)
+  =
+  \Phi_k(q_k)(q_k-\Zeff_k)+O((q_k-\Zeff_k)^2),
+\]
+por lo que las tasas locales sólo difieren por el factor positivo $\Phi_k(q_k)$.
+\end{proof}
+
+Por tanto, \eqref{eq:marco_subasta} no se presenta como primal--dual exacto. La
+afirmación defendible es que actúa como control integral equivalente, en primer orden,
+al ascenso dual suavizado alrededor de la restricción activa.
+
+\subsection{Energía maestra}
+
+Para cerrar juego y movimiento se introduce una energía:
+\begin{equation}
+  E(p,y)=
+  -r_0\sum_i y_{i0}
+  -\sum_{k=1}^{K}r_kG_k(\zeff_k)
+  +U_{\mathrm{rep}}(p)+U_{\mathrm{obs}}(p),
+  \label{eq:marco_energia}
+\end{equation}
+donde
+\[
+  \zeff_k=\sum_i\Psi(T_k(p_i))y_{ik}.
+\]
+El uso de ocupación efectiva no es cosmético: si se usa la ocupación cruda, las derivadas
+cruzadas con respecto a posición y preferencia dejan de coincidir y se pierde la lectura
+de potencial.
+
+La identidad de descenso corresponde al flujo continuo ideal: precios congelados, mapa
+fijo, $\Psi$ suave, punto holonómico o punto adelantado perfectamente controlado, sin
+saturaciones cinemáticas, sin ORCA externo y con contribuciones $s_{ik}$ independientes
+de $y$ al derivar. En la implementación real se usa como estructura guía, no como
+garantía global del simulador completo.
+
+\begin{teorema}[Descenso Smith--campo] \textbf{[PROBADO+GATE, flujo ideal]}
+Con precios congelados y ocupación efectiva coherente con el payoff, el sistema
+\[
+  \dot y=\mathrm{Smith}(y,F),
+  \qquad
+  \dot p=-\kappa\nabla_pE
+\]
+satisface
+\[
+  \dot E
+  =
+  -\mathcal{D}_{\mathrm{Smith}}(y,F)
+  -
+  \kappa\sum_i\norm{\nabla_{p_i}E}^2
+  \le0,
+\]
+donde $\mathcal{D}_{\mathrm{Smith}}\ge0$.
+\end{teorema}
+
+\begin{proof}
+La derivada total se separa en dos términos:
+\[
+  \dot E=\nabla_yE^\top\dot y+\nabla_pE^\top\dot p.
+\]
+Como $-E$ es el potencial que Smith asciende en $y$, el primer término es no positivo y
+se escribe como $-\mathcal{D}_{\mathrm{Smith}}$. La ley de campo da
+\[
+  \nabla_pE^\top\dot p
+  =
+  -\kappa\sum_i\norm{\nabla_{p_i}E}^2.
+\]
+La suma prueba el descenso.
+\end{proof}
+
+Con uniciclo saturado, paso discreto, transición híbrida y evitación reactiva de
+obstáculos, la monotonía exacta de \eqref{eq:marco_energia} se reemplaza por el lema de
+paso discreto bajo suavidad local y por validación empírica.
+
+\begin{corolario}[Diagrama de potencia]
+Si $\Psi(d)=\exp(-d^2/(2\lambda^2))$, las tareas tienen posiciones fijas, $\zeff_k$ se
+congela al comparar y se ignoran obstáculos o se usa una geodésica fija, la tarea
+preferida por el robot $i$ satisface
+\[
+  k^*(i)=
+  \argmin_k
+  \left[
+    \frac{d_{ik}^2}{2\lambda^2}
+    -
+    \log(r_k\Phi_k(\zeff_k))
+  \right].
+\]
+El equilibrio espacial induce una partición tipo Laguerre/potencia con pesos endógenos;
+no se afirma equivalencia con transporte óptimo completo.
+\end{corolario}
+
+\subsection{Teoría heterogénea: curva de oferta de la flota}
+
+La extensión más importante del reporte avanzado es reemplazar conteo de robots por
+capacidad efectiva. Supóngase que existen $P$ clases de robots con capacidades
+\[
+  0<c^1<\cdots<c^P,
+\]
+y $N^p$ robots de clase $p$. Sea $a_k^p$ la masa de clase $p$ asignada a la tarea $k$.
+En esta subsección $a_k^p\in\mathbb{R}_+$ es una relajación fluida; si se impone
+integralidad, el problema de clearing entero se convierte en una variante de
+\emph{knapsack}.
+La capacidad agregada es
+\[
+  Z_k=\sum_{p=1}^{P}c^p a_k^p.
+\]
+El potencial agregado es
+\begin{equation}
+  V(a)=r_0\sum_p a_0^p+\sum_{k=1}^{K}r_kG_k(Z_k).
+  \label{eq:marco_potencial_hetero}
+\end{equation}
+
+\begin{lema}[Gradiente heterogéneo]
+El potencial \eqref{eq:marco_potencial_hetero} satisface
+\[
+  \frac{\partial V}{\partial a_k^p}=c^p r_k\Phi_k(Z_k).
+\]
+\end{lema}
+
+\begin{proof}
+Por regla de la cadena,
+\[
+  \frac{\partial V}{\partial a_k^p}
+  =
+  r_kG_k'(Z_k)\frac{\partial Z_k}{\partial a_k^p}
+  =
+  r_k\Phi_k(Z_k)c^p.
+\]
+\end{proof}
+
+\begin{teorema}[Orden de despliegue por capacidad] \textbf{[PROBADO+GATE]}
+Si la inactividad paga $r_0$ por robot, en un óptimo no puede haber un robot ligero
+activo mientras un robot más pesado permanece inactivo, salvo indiferencia exacta.
+\end{teorema}
+
+\begin{proof}
+Considérese un robot ligero activo de capacidad $c^p$ y un robot pesado inactivo de
+capacidad $c^q>c^p$. Intercambiar sus roles mantiene el número de robots activos, por lo
+que el pago de inactividad cambia de forma simétrica, pero incrementa la capacidad en la
+tarea en $c^q-c^p$. Como $G_k$ es creciente y cóncava, ese incremento no reduce el
+potencial y lo mejora si la tarea conserva valor marginal. Por tanto una asignación con
+esa inversión no puede ser óptima.
+\end{proof}
+
+La flota induce una función de coste mínimo de desplegar capacidad $Q$:
+\[
+  h(Q)=
+  \min\left\{
+    \sum_p u_p:
+    0\le u_p\le N^p,\;
+    \sum_pc^pu_p\ge Q
+  \right\}.
+\]
+Esta función es convexa y lineal por tramos. Sus pendientes son
+\[
+  \frac{1}{c^P}<\frac{1}{c^{P-1}}<\cdots<\frac{1}{c^1},
+\]
+porque los robots pesados son más baratos por unidad de capacidad desplegada cuando la
+inactividad paga por robot.
+Con $\rho_p=r_0/c^p$, el orden de capacidades implica
+\[
+  \rho_P<\rho_{P-1}<\cdots<\rho_1.
+\]
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.95]
+  \draw[-{Latex[length=2mm]},thick] (0,0) -- (8.2,0) node[right] {$Q$};
+  \draw[-{Latex[length=2mm]},thick] (0,0) -- (0,5.0) node[above] {$\lambda$};
+  \draw[VIUOrange,very thick] (0.4,0.85) -- (2.1,0.85) -- (2.1,1.95) --
+    (4.3,1.95) -- (4.3,3.55) -- (7.4,3.55);
+  \draw[VIUDark,very thick,domain=0.65:7.3,samples=90]
+    plot (\x,{4.35/(1+exp(0.78*(\x-3.75)))+0.42});
+  \draw[dashed,VIUGray] (3.15,0) -- (3.15,1.95) -- (0,1.95);
+  \fill[VIUDark] (3.15,1.95) circle (2pt);
+  \node[anchor=north] at (3.15,-0.05) {$Q^*$};
+  \node[anchor=east] at (-0.05,1.95) {$\lambda^*$};
+  \node[VIUOrange,anchor=west,font=\small] at (4.65,3.85) {oferta de flota};
+  \node[VIUDark,anchor=west,font=\small] at (4.7,1.05) {demanda de tareas};
+  \draw[decorate,decoration={brace,amplitude=5pt},VIUGray]
+    (2.1,-0.28) -- (4.3,-0.28)
+    node[midway,below=6pt,font=\small] {kink posible};
+\end{tikzpicture}
+\caption{Mercado de capacidad efectiva. La oferta es una escalera inducida por la flota;
+la demanda proviene de invertir las sigmoidales de servicio.}
+\label{fig:marco_mercado}
+\end{figure}
+
+La demanda agregada de capacidad al precio sombra $\lambda$ se escribe de nuevo por
+tramos para respetar el dominio del logaritmo:
+\[
+  W_k^M(\lambda)=
+  \begin{cases}
+  0,
+  & \lambda\ge r_k\Phi_k(0),\\[4pt]
+  M_k+\dfrac{1}{\beta}\log\!\left(\dfrac{r_k}{\lambda}-1\right),
+  & 0<\lambda<r_k\Phi_k(0),
+  \end{cases}
+\]
+y
+\[
+  D(\lambda)=
+  \sum_k W_k^M(\lambda).
+\]
+
+\begin{teorema}[Water-filling con curva de oferta] \textbf{[PROBADO+GATE, modelo fluido agregado]}
+El equilibrio heterogéneo agregado queda caracterizado por
+\[
+  \lambda^*\in\partial(r_0h)(Q^*),
+  \qquad
+  Q^*=D(\lambda^*),
+  \qquad
+  Z_k^*=W_k^M(\lambda^*).
+\]
+El precio puede estar en un tramo de oferta, en un kink de población agotada o en
+escasez total.
+\end{teorema}
+
+\begin{proof}
+Por el teorema de orden de despliegue, el problema agregado puede reducirse a elegir
+cuánta capacidad total desplegar, pagando coste $r_0h(Q)$. La condición de optimalidad
+es $\lambda^*\in\partial(r_0h)(Q^*)$. Para cada tarea activa, la condición marginal
+$r_k\Phi_k(Z_k^*)=\lambda^*$ da la fórmula de $Z_k^*$ al invertir la sigmoide. La suma
+de demandas por tarea cierra $Q^*=D(\lambda^*)$.
+\end{proof}
+
+El resultado anterior es un clearing fluido de capacidad. El paso a robots enteros
+requiere redondeo, histéresis o una rutina discreta de selección; esa capa no está
+incluida en la prueba del mercado continuo.
+
+\begin{observacion}[Kink multi-tarea]
+Cuando una clase de robots se agota, $\lambda^*$ no tiene por qué coincidir con
+$r_0/c^p$ para ninguna clase. En un problema con varias tareas, el precio en el kink
+resuelve $\sum_k W_k(\lambda)=A_p$. La fórmula de una sola tarea evaluada sobre la
+capacidad total sólo es válida para $K=1$.
+\end{observacion}
+
+\subsection{Presupuesto de percepción}
+
+La robustez del sistema depende de una cadena de errores: sensor, localización, ruta,
+consenso, payoff, ocupación y redondeo entero. El resultado útil para la memoria es que
+el redondeo entero protege si el error permanece dentro de una zona muerta.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  block/.style={draw=VIUDark,fill=VIULight,rounded corners=2pt,
+    align=center,minimum width=2.35cm,minimum height=0.78cm,font=\small},
+  arrow/.style={-{Latex[length=2mm]},thick,color=VIUOrange!90!black}
+]
+\node[block] (a) {sensor\\$\sigma_m$};
+\node[block, right=0.35cm of a] (b) {pose\\$P_\infty$};
+\node[block, right=0.35cm of b] (c) {ruta\\$T,\Psi$};
+\node[block, right=0.35cm of c] (d) {DAC\\$e_Z$};
+\node[block, below=0.82cm of d] (e) {payoff\\$\bar e$};
+\node[block, left=0.35cm of e] (f) {sensibilidad\\$S_k$};
+\node[block, left=0.35cm of f] (g) {margen\\$s/2$};
+\node[block, left=0.35cm of g] (h) {coalición\\misma};
+\draw[arrow] (a)--(b);
+\draw[arrow] (b)--(c);
+\draw[arrow] (c)--(d);
+\draw[arrow] (d)--(e);
+\draw[arrow] (e)--(f);
+\draw[arrow] (f)--(g);
+\draw[arrow] (g)--(h);
+\end{tikzpicture}
+\caption{Cadena del presupuesto de percepción: un error físico sólo cambia la coalición
+si logra cruzar el margen entero de redondeo.}
+\label{fig:marco_percepcion}
+\end{figure}
+
+\begin{teorema}[Presupuesto de percepción] \textbf{[PROBADO+GATE]}
+Sea $\bar e$ una cota uniforme de error de payoff y
+\[
+  S_k=\frac{(1+e^\beta)^2}{\beta r_ke^\beta}
+\]
+la sensibilidad local de ocupación en $q=n+1$. Si
+\[
+  \max_k S_k\bar e < \frac{s}{2},
+\]
+donde $s$ es el margen entero de redondeo, entonces el clearing selecciona las mismas
+coaliciones que el sistema nominal.
+\end{teorema}
+
+\begin{proof}
+La inversa local del payoff marginal da
+\[
+  \delta z_k=
+  \frac{\delta f_k}{\beta r_k\Phi_k(1-\Phi_k)}.
+\]
+En $q=n+1$, sustituir $\Phi(q)=1/(1+e^\beta)$ produce $S_k$. Si el desplazamiento de
+ocupación es menor que la mitad del margen entero, ninguna tarea cruza el umbral de
+redondeo que define la coalición.
+\end{proof}
+
+La prueba de Lyapunov continua de Smith no se transfiere automáticamente a la versión
+Euler-proyectada. En el simulador, la proyección al simplex es una salvaguarda numérica;
+la estabilidad discreta queda condicionada a paso suficientemente pequeño y a la
+suavidad local de la energía.
+
+\subsection{Tiempo discreto e híbrido}
+
+El simulador no ejecuta un flujo continuo, sino un bucle discreto. Por tanto, el
+descenso de energía necesita una condición de paso.
+
+\begin{lema}[Paso de Euler por suavidad] \textbf{[CONDICIONADO]}
+Si $E$ es $L$-suave en la región visitada y
+\[
+  x^+=x-\eta\nabla E(x),
+\]
+entonces
+\[
+  E(x^+)\le E(x)-\eta\left(1-\frac{L\eta}{2}\right)\norm{\nabla E(x)}^2.
+\]
+Hay descenso si $0<\eta<2/L$.
+\end{lema}
+
+\begin{proof}
+Por suavidad,
+\[
+  E(x^+)\le E(x)+\nabla E(x)^\top(x^+-x)+\frac{L}{2}\norm{x^+-x}^2.
+\]
+Sustituyendo $x^+-x=-\eta\nabla E(x)$ se obtiene la desigualdad.
+\end{proof}
+
+\begin{proposicion}[Conmutación finita del clearing entero] \textbf{[CONDICIONADO]}
+Si una transición entera de coalición sólo se acepta cuando $\Delta V>\varepsilon$ y
+$V\in[V_{\min},V_{\max}]$, entonces
+\[
+  N_{\mathrm{switch}}\le\frac{V_{\max}-V_{\min}}{\varepsilon}.
+\]
+\end{proposicion}
+
+\begin{proof}
+Cada transición aceptada consume al menos $\varepsilon$ de incremento de potencial. La
+suma total de incrementos no puede exceder $V_{\max}-V_{\min}$.
+\end{proof}
+
+\subsection{Extensiones avanzadas}
+
+Las siguientes ideas son útiles como cierre del TFM y como puente doctoral, pero no deben
+presentarse con el mismo estado que los teoremas anteriores.
+
+\subsubsection{Mercado de supervivencia por batería}
+
+La recarga puede formularse como una tarea adicional:
+\[
+  F_{i,\mathrm{ch}}
+  =
+  R_{\mathrm{ch}}\,
+  \sigma(\alpha(B_{\mathrm{safe}}-B_i))\,
+  \Psi(T_{\mathrm{ch}}(p_i)).
+\]
+La afirmación correcta es una condición de dominancia, no una barrera infinita: una
+sigmoide está acotada.
+
+\begin{lema}[Dominancia de recarga] \textbf{[FUTURO]}
+Si para $B_i<B_{\mathrm{umbral}}$ se cumple
+\[
+  F_{i,\mathrm{ch}}>\max_k F_{ik}+\delta,
+  \qquad \delta>0,
+\]
+entonces Smith transfiere masa hacia recarga con tasa inferior proporcional a $\delta$
+mientras haya masa en tareas ordinarias.
+\end{lema}
+
+\begin{proof}
+Para cada tarea ordinaria $k$ con $y_{ik}>0$,
+\[
+  \pos{F_{i,\mathrm{ch}}-F_{ik}}\ge\delta.
+\]
+El término de entrada hacia recarga en Smith contiene la suma de esos gaps ponderados
+por $y_{ik}$.
+\end{proof}
+
+\subsubsection{Payoffs predictivos}
+
+Un payoff predictivo puede escribirse como
+\[
+  J_{ik}^{H}
+  =
+  \max_u
+  \int_t^{t+H}
+  \left[
+    r_k\Phi_k(\hat s_{ik}(\tau))-\ell_B(B_i(\tau),u(\tau))
+  \right]\dd\tau
+  +V_T.
+\]
+El problema es que, en general, $J^H$ rompe la simetría de derivadas cruzadas del juego
+potencial. La ruta honesta es tratarlo como perturbación:
+\[
+  |J_{ik}^{H}-F_{ik}|\le\bar\delta.
+\]
+Si el núcleo nominal tiene una cota ISS con radio $C\bar e$, el predictivo tendría radio
+$C(\bar e+\bar\delta)$.
+
+\subsubsection{Amortiguamiento anticipatorio en coordenadas agregadas}
+
+La anticipación de primer orden usa
+\[
+  F^\tau=F+\tau\dot F.
+\]
+Si $F=\nabla V$, entonces
+\[
+  F^\tau=\nabla V+\tau\nabla^2V\,\dot y.
+\]
+El punto delicado es que $\nabla^2V$ no es definida negativa de rango completo. Para
+\[
+  V(y)=\sum_k r_kG_k\left(\sum_i y_{ik}\right),
+\]
+el Hessiano tiene rango a lo sumo $K$, porque $V$ sólo depende de las ocupaciones
+agregadas. El amortiguamiento anticipatorio actúa en el subespacio $Z$, no en todas las
+redistribuciones microscópicas de $y$. El término técnico \emph{Hessian damping} se usa
+sólo en ese sentido restringido.
+
+\begin{lema}[Rango agregado del Hessiano] \textbf{[FUTURO con primer gate]}
+El Hessiano de $V(y)=\sum_k r_kG_k(\sum_i y_{ik})$ respecto a $y$ tiene rango a lo sumo
+$K$. Las direcciones que preservan todas las ocupaciones $Z_k$ pertenecen al núcleo.
+\end{lema}
+
+\begin{proof}
+Sea $A$ el operador lineal que lleva $y$ a $Z=Ay$. Entonces
+$V(y)=\bar V(Ay)$ y
+\[
+  \nabla_y^2V=A^\top\nabla_Z^2\bar V\,A.
+\]
+Por tanto $\operatorname{rank}(\nabla_y^2V)\le K$. Si $A\delta y=0$, entonces
+$\delta y$ no cambia ninguna ocupación agregada y queda en una dirección nula.
+\end{proof}
+
+\subsubsection{Eikonal predictiva y protocolo de jets}
+
+La eikonal predictiva reemplaza la distancia actual por una velocidad admisible
+deformada por densidad futura:
+\[
+  \rho(x,t)=\sum_i K_h(x-p_i(t)),
+  \qquad
+  \rho^\tau=\clip\!\left[\rho+\tau\dot\rho+\frac{\tau^2}{2}\ddot\rho\right],
+\]
+\[
+  v^\tau(x)=v_{\min}+(v_{\max}-v_{\min})e^{-\alpha\rho^\tau(x)},
+  \qquad
+  \norm{\nabla T_k^\tau(x)}=\frac{1}{v^\tau(x)}.
+\]
+La regla de comunicación compatible con el enfoque distribuido es no compartir rutas
+completas, sino un jet local:
+\[
+  \mathcal{J}_i=(p_i,u_i,y_i,\dot y_i,B_i,\dot B_i,\nabla\mathcal{U}_i,
+  \nabla^2\mathcal{U}_i).
+\]
+Con él, un vecino aproxima
+\[
+  p_i(t+\tau)\approx p_i(t)+\tau u_i(t)+\frac{\tau^2}{2}a_i(t).
+\]
+Esto conserva el principio de arquitectura: se comparte el mundo, no la voluntad; la
+intención sólo aparece como derivadas locales de corto horizonte.
+Como $T_k^\tau$ cambia con la densidad prevista y, por tanto, con el tiempo, esta
+extensión rompe la energía estática \eqref{eq:marco_energia}. Debe mantenerse como
+\textbf{[FUTURO]} y no mezclarse con la prueba de $\dot E\le0$.
+
+\subsection{Síntesis de resultados y uso en la memoria}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}p{0.20\linewidth}p{0.15\linewidth}p{0.17\linewidth}p{0.18\linewidth}p{0.13\linewidth}@{}}
+\toprule
+\textbf{Resultado} & \textbf{Ecuación clave} & \textbf{Estado} & \textbf{Gate o evidencia} & \textbf{Uso} \\
+\midrule
+Water-filling homogéneo & \eqref{eq:marco_water_hom} & PROBADO+GATE &
+\texttt{verify\_teoria} & Cuerpo \\
+Perturbación DAC & Prop.~\ref{prop:perturbacion} & PROBADO local &
+Escenario D pendiente & Cuerpo \\
+Energía maestra ideal & \eqref{eq:marco_energia} & PROBADO+GATE ideal &
+\texttt{verify\_energia} & Breve \\
+Mercado heterogéneo fluido & \eqref{eq:marco_potencial_hetero} & PROBADO+GATE fluido &
+gate de extensiones & Anexo/cuerpo \\
+ISS práctica & \eqref{eq:anexo_iss_limsup} & CONDICIONADO &
+pendiente & Anexo \\
+ORCA económico & \eqref{eq:anexo_alpha_orca} & CONDICIONADO &
+pendiente & Futuro \\
+Retornabilidad y relevo & \eqref{eq:anexo_retornabilidad} & FUTURO &
+pendiente & Futuro \\
+Anticipatorio muestreado & \eqref{eq:anexo_descenso_sampled} & FUTURO &
+pendiente & Futuro \\
+Densidad/eikonal predictiva & \eqref{eq:anexo_densidad_ddot} & FUTURO &
+pendiente & Futuro \\
+Benchmark T1--T5 & Sec.~\ref{sec:resultados} & PENDIENTE DE CIERRE &
+v2.7 y CoppeliaSim & Cuerpo final \\
+\bottomrule
+\end{longtable}
+\endgroup
+
+\begingroup
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{@{}p{0.24\linewidth}p{0.66\linewidth}@{}}
+\toprule
+\textbf{Resultado} & \textbf{Hipótesis esenciales que deben acompañarlo} \\
+\midrule
+Teorema homogéneo & $\Psi\equiv1$, comunicación global, robots homogéneos,
+sin transición de modo, balance exacto $N=Kn$ y paso pequeño si se discretiza. \\
+Energía maestra & $s_{ik}$ no depende de $y$ al derivar, mapa fijo, flujo continuo,
+sin saturación, sin ORCA externo y sin mínimos locales usados como garantía global. \\
+Mercado heterogéneo & Relajación fluida $a_k^p\in\mathbb{R}_+$, inactividad pagada por
+robot, $G_k$ creciente, capacidades ordenadas y clearing entero tratado aparte. \\
+ISS práctica & Decaimiento nominal local, error de payoff acotado y equivalencia local
+entre $W$ y la distancia al conjunto de Nash. \\
+ORCA económico & $w_i>0$, factibilidad par-a-par, semiplanos ORCA con intersección
+no vacía o relajación penalizada/parada segura. \\
+Anticipatorio & Horizonte $\tau$ pequeño, suavidad local, error de muestreo acotado y
+amortiguamiento sólo en coordenadas agregadas. \\
+Eikonal predictiva & Densidad suavizada, claridad geodésica local y separación explícita
+respecto a la prueba de energía estática. \\
+\bottomrule
+\end{longtable}
+\endgroup
+
+El Anexo~\ref{sec:anexo-teorico-extendido} recoge las ecuaciones extendidas que no
+conviene insertar completas en el cuerpo principal, pero que sí son útiles para auditoría
+formal: lift general de contribución efectiva, condición inversa de integrabilidad,
+curva de oferta por tramos, ISS explícita, ORCA económico, retornabilidad energética,
+handover dinámico, Smith anticipatorio muestreado y densidad predictiva de segundo
+orden. La recomendación de escritura para la memoria final es usar este capítulo como
+soporte teórico y no como reemplazo del benchmark. La contribución debe defenderse en
+tres capas: primero, el núcleo homogéneo probado; segundo, la validación experimental
+del bucle completo; tercero, la extensión heterogénea y predictiva como frontera
+avanzada con estado declarado.
