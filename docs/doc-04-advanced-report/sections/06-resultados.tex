@@ -1,0 +1,98 @@
+%% ====================================================================
+\section{Resultados y análisis}
+\label{sec:resultados}
+%% ====================================================================
+
+Esta sección ya no se deja como marcador vacío: recoge los artefactos ejecutables
+disponibles hasta el cierre de esta iteración. Aun así, el estado no debe confundirse
+con una campaña final de veinte semillas. Los resultados de H1--H3 proceden del
+protocolo mínimo aislado; Smith-QR, MARL-proxy y CoppeliaSim quedan cerrados como
+infraestructura reproducible con corridas \emph{smoke} documentadas.
+
+\subsection{Controles mínimos H1--H3}
+
+El protocolo mínimo se ejecutó en \path{exp_results/} y dejó los veredictos en
+\path{exp_results/conclusiones.md}. Los controles H1 y H2 reproducen el motor esperado:
+H1 obtiene pendiente $1.0000$ y $R^2=1$ en el caso de \emph{water-filling}; H2 reduce el
+desperdicio aproximadamente un $32\%$ al activar el \emph{clearing} entero. H3 se separó
+en dos partes. H3-A confirma el resultado negativo estático: el precio perturba un
+equilibrio que Smith ya resuelve por \emph{water-filling}. H3-B es el ensayo temporal con
+llegadas y \emph{deadlines}, que es el único régimen donde el precio puede tener valor
+operativo.
+
+\subsection{Smith-QR bajo comunicación degradada}
+
+Se añadió la política \texttt{smith\_qr\_full} sin modificar \texttt{smith\_full}. La
+variante completa incorpora memoria de descriptores, compromiso en ruta, guardia de
+\emph{clearing}, patrullaje exploratorio y una proyección de quorum local cuando
+$R_{\mathrm{com}}\leq 3.25$. Este último cambio es importante: en R3 se rompe el supuesto
+práctico de información distribuida suficiente, así que Smith-QR no intenta forzar el
+equilibrio fluido sino cerrar tareas localmente.
+
+\begin{table}[H]
+\centering
+\caption{Validación inicial R3, una semilla (\texttt{results/smith\_qr\_validation}).}
+\label{tab:smith-qr-r3}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Método & Captura de recompensa & Entregas & Distancia desperdiciada \\
+\midrule
+\texttt{smith\_full} & 0.0223 & 1 & 70.07 \\
+\texttt{smith\_qr\_full} & 0.2704 & 7 & 20.26 \\
+\texttt{classic\_greedy\_nearest} & 0.3722 & 9 & 12.68 \\
+\texttt{marl\_proxy\_policy} & 0.3520 & 9 & 11.17 \\
+\texttt{classic\_centralized\_limited\_comm} & 0.1072 & 3 & 0.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+El delta pareado inicial de Smith-QR frente a Smith en R3 es positivo
+($+0.2481$ en captura de recompensa, \path{paired_deltas.csv}). El resultado todavía no
+autoriza una conclusión estadística final porque $n=1$, pero sí valida que el mecanismo
+robusto cambia el signo frente al Smith original. También muestra una frontera honesta:
+en esta semilla Smith-QR queda por debajo de greedy y de MARL-proxy.
+
+\subsection{MARL-proxy}
+
+El baseline \texttt{marl\_proxy\_policy} se implementó como política compartida
+determinista con observación local: posición propia, vecinos, cargas conocidas, déficit
+de quorum, edad, precio y canal de comunicación. La configuración queda en
+\path{configs/marl/marl_proxy.yaml} y la validación inicial en
+\path{results/marl_validation/}. No se presenta como PPO/MAPPO entrenado; su función es
+dar un comparador empírico reproducible y barato antes de introducir aprendizaje
+profundo con coste computacional y varianza de entrenamiento.
+
+\subsection{Resultado negativo: logit no rescata R3}
+
+También se ejecutó \path{results/smith_logit_validation/}. El resultado es negativo:
+añadir mutación/logit a Smith no basta para resolver la parálisis de comunicación
+degradada. La mejor variante explorada no supera de forma limpia a las referencias
+locales fuertes, y el hallazgo refuerza la decisión de diseñar Smith-QR como mecanismo
+de quorum y comunicación, no como simple ruido exploratorio sobre la dinámica
+poblacional.
+
+\subsection{CoppeliaSim industrial}
+
+Se generaron seis escenas reproducibles en \path{coppeliasim/scenes/}: nominal con
+Smith-QR, R3 con Smith, R3 con Smith-QR, fallo de robot, cruce de humanos y sensores
+degradados. Cada escena tiene YAML y un script Lua que construye suelo industrial,
+racks, estaciones, cargas, operadores humanos, zonas ciegas, comunicación local y robots
+Pioneer~3-DX; si el modelo Pioneer no existe en la instalación local, el script crea una
+base diferencial equivalente nombrada como \emph{fallback}. Las métricas offline quedan
+en \path{results/coppeliasim_validation/scene_metrics.csv}. La separación inicial mínima
+humano--robot es $6.24$ m y robot--rack $3.30$ m.
+
+El estado CoppeliaSim es \texttt{generated\_not\_opened}: las escenas están listas para
+abrirse y convertirlas en capturas, MP4 y métricas robóticas, pero esta iteración no
+ejecutó CoppeliaSim.
+
+\subsection{Lectura experimental}
+
+Los resultados actuales soportan cuatro afirmaciones limitadas. Primero, el motor mínimo
+reproduce H1 y H2 y evita formular H3 como mecanismo estático. Segundo, Smith original se
+paraliza en R3 porque su equilibrio distribuido necesita conectividad suficiente para
+cerrar quorums enteros. Tercero, Smith-QR mejora esa frontera al cambiar a cierre local
+de quorum bajo comunicación degradada. Cuarto, greedy y MARL-proxy siguen siendo
+baselines fuertes en R3; por tanto, la contribución defendible no es que Smith-QR domine
+todo, sino que conserva una lectura teórica Smith y añade una transición robusta cuando
+se viola el supuesto de red.

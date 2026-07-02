@@ -1,0 +1,131 @@
+%% ====================================================================
+\section{Hipótesis de partida}
+\label{sec:hipotesis}
+%% ====================================================================
+
+\textbf{Pregunta de investigación.}
+¿Puede una arquitectura distribuida basada en dinámicas de Smith formar coaliciones
+multi-AGV factibles en un almacén con comunicación local, tareas heterogéneas y demanda
+temporal, y qué mecanismo es necesario cuando la comunicación se degrada hasta romper el
+supuesto de conectividad suficiente?
+
+La respuesta se estructura en hipótesis mecanísticas. Cada hipótesis se contrasta con
+evidencia reproducible y los resultados negativos se reportan con el mismo peso que los
+positivos.
+
+\textbf{H1: Smith reproduce water-filling en equilibrio homogéneo.}
+En el motor estático, cuando las tareas comparten estructura y no hay restricciones
+temporales, Smith asigna la población según la regla de \emph{water-filling}. El gate
+reportado pasa con pendiente $1.0000$ y $R^2=1$ en el protocolo mínimo.
+
+\textbf{H2: el clearing entero reduce desperdicio físico.}
+La asignación fluida puede repartir masa sobre tareas que no alcanzan quorum entero. El
+\emph{clearing} entero debe reducir distancia desperdiciada y coaliciones parciales. En
+el protocolo mínimo reduce el desperdicio alrededor de un $32\%$.
+
+\textbf{H3-A: el precio no es una mejora estática.}
+En equilibrio estático, añadir precio a Smith puede restar valor porque perturba un
+reparto que ya era óptimo. Este resultado negativo queda documentado y no se usa como
+fallo de la teoría.
+
+\textbf{H3-B: el precio solo tiene hipótesis válida en el régimen temporal.}
+Con llegadas, \emph{deadlines} y déficit persistente, el precio puede rescatar tareas
+antes de expirar. Esta es la formulación correcta de la hipótesis de precios y se valida
+en el motor temporal aislado.
+
+\textbf{H4: Smith original falla bajo R3.}
+Cuando $R_{\mathrm{com}}$ cae a R3, los robots pueden conocer y perseguir tareas sin
+cerrar quorums físicos suficientes. La dinámica se paraliza no porque sea distribuida,
+sino porque su equilibrio distribuido necesita conectividad local suficiente.
+
+\textbf{H5: Smith-QR rescata parcialmente el colapso de Smith en R3.}
+Smith-QR debe mejorar a Smith original bajo R3 mediante memoria de descriptores,
+compromiso en ruta, guardia de \emph{clearing} y proyección de quorum local. En la
+validación controlada de 20 semillas pasa de $0.1038$ a $0.2893$ de captura media frente
+a Smith; el delta pareado es $+0.1855$ con IC95 $[0.1434,0.2276]$.
+
+\textbf{H6: Smith-QR solo se declara dominante en métricas con IC95 positivo.}
+La campaña R3 de 20 semillas sí muestra captura superior a greedy y al proxy MARL inicial, pero no
+convierte a Smith-QR en dominante universal. La distancia desperdiciada y el coste
+operativo deben reportarse por separado; si una métrica no tiene delta pareado positivo
+con IC95 disjunto de cero, se interpreta como paridad o coste de robustez.
+
+\textbf{H7: CoppeliaSim valida plausibilidad robótica, no sustituye el benchmark.}
+Las escenas industriales con Pioneer~3-DX, humanos, sensores y racks verifican que la
+historia robótica es plausible. La decisión científica principal sigue viniendo del
+benchmark reproducible.
+
+\textbf{H8: MARL-CTDE debe tratarse como baseline aprendido, no como sustituto teórico.}
+Una política MARL con entrenamiento centralizado y ejecución descentralizada puede
+aprender pesos compartidos para puntuar pares robot--carga a partir de observaciones
+locales. La hipótesis defendible no es que MARL domine a Smith-QR, sino que el comparador
+de aprendizaje sea real: debe mostrar ganancia durante entrenamiento, evaluarse con
+pesos congelados y reportar cuándo mejora al proxy y cuándo falla frente a métodos
+analíticos.
+
+\textbf{H9: el actor neuronal CTDE aporta comparación aprendida adicional, no una
+sustitución automática.}
+Un actor neuronal compartido puede ampliar la política lineal mediante una capa no lineal
+residual entrenada con retornos episódicos de la flota. La hipótesis no exige que el
+actor neuronal venza a Smith-QR; exige que aprenda bajo el mismo protocolo, que su
+evaluación congelada mejore al proxy en algún régimen y que cualquier mejora frente al
+actor lineal se declare sólo con métricas e intervalos de confianza explícitos.
+
+\textbf{H10: la densidad predictiva reduce congestión sin degradar productividad.}
+El peaje de congestión inducido por $\rho(x,t+\tau)$ debe desviar parte del flujo antes
+de que el cuello de botella se bloquee. La hipótesis se acepta si Smith-QR con densidad
+predictiva reduce pasos congestionados y densidad futura máxima frente a Smith-QR base,
+manteniendo captura de recompensa no inferior dentro de un margen predefinido.
+
+\textbf{H11: la capacidad wrench mejora el tramo dinámico crítico.}
+Una coalición evaluada por cardinalidad puede no producir el wrench requerido. La
+hipótesis se acepta si la política con capacidad wrench reduce residual físico frente a
+cardinalidad simple y mantiene cotas de torque, salto Hamiltoniano y batería durante el
+transporte de una carga rectangular.
+
+\textbf{H12: CoppeliaSim aporta cobertura visual reproducible de los escenarios de
+validación.}
+La hipótesis no declara ejecución hardware ni sustituye la estadística principal. Pasa
+si cada escenario necesario para el TFM queda exportado como escena CoppeliaSim con
+cámaras de auditoría, datos de playback y artefactos visuales replicables, o con un
+render sintético trazable cuando no se ejecuta CoppeliaSim en modo headless.
+
+\subsection{Criterios cuantitativos de contraste}
+\label{subsec:criterios}
+
+Cada hipótesis se interpreta con una hipótesis nula conservadora $H_0$ y una
+alternativa $H_1$. Cuando existe una demostración cerrada, $H_0$ se refuta por argumento
+matemático y el gate numérico sólo audita la implementación algebraica. Cuando la
+afirmación depende de repeticiones, semillas o comparación entre tratamientos, la
+decisión se toma con contrastes unilaterales o intervalos de confianza pareados al nivel
+$\alpha=0{,}05$. La validación CoppeliaSim se reporta como evidencia robótica visual con
+datos exportados de escena; no se confunde con inferencia poblacional ni con hardware
+real.
+
+\begin{description}
+  \item[H1:] pendiente de ajuste lineal entre staffing teórico y observado en
+  $[0.99,1.01]$ y $R^2\geq0.99$.
+  \item[H2:] delta pareado de desperdicio menor que cero al activar
+  \emph{clearing} entero.
+  \item[H3-A:] se acepta como negativo si precio estático no mejora a Smith sin precio.
+  \item[H3-B:] precio temporal pasa si mejora captura antes de \emph{deadline} con
+  IC95 positivo en delta pareado.
+  \item[H5:] Smith-QR pasa si en R3 mejora a Smith original con IC95 positivo.
+  \item[H6:] dominancia frente a greedy/MARL solo se afirma si el delta pareado tiene
+  IC95 positivo; si no, se documenta como límite operativo.
+  \item[H8:] MARL-CTDE pasa como baseline aprendido si aumenta el objetivo episódico
+  durante entrenamiento y su evaluación congelada mejora al proxy en al menos un régimen
+  con IC95 positivo; cualquier no-dominancia frente a Smith-QR se reporta como límite.
+  \item[H9:] el actor neuronal CTDE pasa como baseline neuronal si aumenta el objetivo
+  episódico, mejora al proxy en escasez y reduce al menos un coste operativo frente al
+  actor lineal con IC95 favorable; si no domina a Smith-QR, se reporta como límite.
+  \item[H10:] densidad predictiva pasa si reduce pasos congestionados y densidad futura
+  máxima con IC95 favorable, sin degradar captura más de un margen de no inferioridad.
+  \item[H11:] motor integrado pasa si reduce residual wrench y mantiene torque,
+  Hamiltoniano y batería dentro de cotas operativas.
+  \item[H12:] CoppeliaSim pasa como cobertura visual si todos los escenarios exportan
+  escena, cámaras, playback, PNG y MP4 o fallback sintético declarado.
+  \item[CoppeliaSim:] una escena pasa el smoke si abre, contiene robots Pioneer o
+  fallback equivalente, sensores, humanos, racks y produce métricas de colisión,
+  distancia mínima, saturación y eventos de quorum/entrega.
+\end{description}

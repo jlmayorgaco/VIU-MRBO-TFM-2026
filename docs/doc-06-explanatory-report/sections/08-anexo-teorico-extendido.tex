@@ -1,0 +1,764 @@
+%% ====================================================================
+\section{Desarrollos teóricos integrados}
+\label{sec:desarrollos-teoricos-integrados}
+\label{sec:anexo-teorico-extendido}
+%% ====================================================================
+
+Esta sección integra las ecuaciones avanzadas que completan el marco teórico del
+Capítulo~\ref{sec:marco}. El objetivo es mostrar cómo la asignación por teoría de
+juegos, la capacidad mecánica efectiva, la seguridad, la batería, la predicción de
+densidad y el transporte cooperativo pueden escribirse en una arquitectura matemática
+común. Los resultados se presentan con su hipótesis de validez: algunos quedan
+demostrados dentro del modelo fluido, otros requieren regularidad, conectividad o
+acotación de errores para aplicarse al sistema discreto de AGVs.
+
+\subsection{Lift general por contribución efectiva}
+\label{subsec:lift-contribucion}
+
+El modelo homogéneo, la ocupación efectiva, la capacidad heterogénea y la ruta eikonal
+son casos particulares de una construcción más general: toda física relevante entra al
+juego como una contribución efectiva no negativa.
+
+\begin{definicion}[Contribución efectiva general]
+Sea $\xi_i$ el estado interno del robot $i$, $\eta_k$ el descriptor de la tarea $k$,
+$\mathcal{M}$ el mapa o modelo compartido y $t$ el tiempo. Una contribución efectiva es
+una función
+\begin{equation}
+  s_{ik}=s_{ik}(\xi_i,\eta_k,\mathcal{M},t)\ge0.
+  \label{eq:anexo_s_general}
+\end{equation}
+El agregado de servicio de la tarea $k$ es
+\begin{equation}
+  \Zeff_k=\sum_i y_{ik}s_{ik}.
+  \label{eq:anexo_Z_general}
+\end{equation}
+\end{definicion}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  block/.style={draw=VIUDark,fill=VIULight,rounded corners=2pt,
+    align=center,minimum width=3.0cm,minimum height=0.85cm,font=\small},
+  arrow/.style={-{Latex[length=2mm]},thick,color=VIUOrange!90!black}
+]
+\node[block] (physics) {física local\\$c_i,T_k,B_i,\rho(x)$};
+\node[block, right=0.8cm of physics] (s) {contribución\\$s_{ik}$};
+\node[block, right=0.8cm of s] (Z) {agregado\\$\Zeff_k=\sum_i y_{ik}s_{ik}$};
+\node[block, below=0.85cm of Z] (F) {payoff\\$F_{ik}=\rho_k\Phi_k(\Zeff_k)s_{ik}$};
+\node[block, below=0.85cm of s] (Smith) {Smith\\$\dot y_i$};
+\node[block, below=0.85cm of physics] (motion) {movimiento\\$p_i,\theta_i$};
+\draw[arrow] (physics) -- (s);
+\draw[arrow] (s) -- (Z);
+\draw[arrow] (Z) -- (F);
+\draw[arrow] (F) -- (Smith);
+\draw[arrow] (Smith) -- (motion);
+\draw[arrow] (motion) -- (physics);
+\end{tikzpicture}
+\caption{Lift por contribución efectiva. La física no entra como regla externa, sino
+como unidad de servicio $s_{ik}$ que preserva la estructura de potencial.}
+\label{fig:anexo_lift}
+\end{figure}
+
+\begin{teorema}[Lift preservador de potencial por contribución efectiva]
+\textbf{[ADOPTADO]}
+Si $s_{ik}$ no depende de $y_i$ y el payoff se define como
+\begin{equation}
+  F_{ik}=\rho_k\Phi_k(\Zeff_k)s_{ik},
+  \qquad
+  F_{i0}=\rho_0,
+  \label{eq:anexo_payoff_lift}
+\end{equation}
+entonces el potencial
+\begin{equation}
+  V(y,\xi)=
+  \rho_0\sum_i y_{i0}
+  +
+  \sum_k\rho_kG_k(\Zeff_k),
+  \qquad
+  G_k'(z)=\Phi_k(z),
+  \label{eq:anexo_potencial_lift}
+\end{equation}
+satisface
+\begin{equation}
+  \frac{\partial V}{\partial y_{ik}}=F_{ik}.
+  \label{eq:anexo_grad_lift}
+\end{equation}
+\end{teorema}
+
+\begin{proof}
+Por regla de la cadena,
+\[
+  \frac{\partial V}{\partial y_{ik}}
+  =
+  \rho_kG_k'(\Zeff_k)\frac{\partial \Zeff_k}{\partial y_{ik}}
+  =
+  \rho_k\Phi_k(\Zeff_k)s_{ik}.
+\]
+La última expresión coincide con \eqref{eq:anexo_payoff_lift}. El pago de inactividad
+se obtiene directamente de $\partial(\rho_0\sum_i y_{i0})/\partial y_{i0}=\rho_0$.
+\end{proof}
+
+El teorema se interpreta con el estado físico $\xi$ congelado al derivar respecto de
+$y$. Si $s_{ik}$ depende directamente de $y$, aparecen términos adicionales
+$\partial s_{jk}/\partial y_{ik}$ y la condición de potencial debe reanalizarse.
+
+El caso homogéneo se recupera con $s_{ik}=1$; la ocupación efectiva con
+$s_{ik}=\Psi(d_{ik})$; la capacidad heterogénea con $s_{ik}=c_i$; y el caso eikonal con
+$s_{ik}=c_i\Psi(T_k(p_i))$.
+
+\subsection{Condición inversa de integrabilidad}
+\label{subsec:integrabilidad-inversa}
+
+El lift anterior no es sólo una elección elegante. También aparece como condición
+necesaria para que el juego conserve un potencial exacto cuando el agregado y el payoff
+usan factores físicos.
+
+\begin{proposicion}[Condición inversa de integrabilidad]
+\textbf{[ADOPTADO]}
+Sea
+\begin{equation}
+  Z_k=\sum_i a_{ik}y_{ik},
+  \qquad
+  F_{ik}=\rho_k\Phi_k(Z_k)b_{ik},
+  \label{eq:anexo_integrabilidad_setup}
+\end{equation}
+con $a_{ik}>0$ y $b_{ik}>0$. Para que exista un potencial exacto separable por tarea,
+las derivadas cruzadas deben satisfacer
+\begin{equation}
+  \frac{\partial F_{ik}}{\partial y_{jk}}
+  =
+  \frac{\partial F_{jk}}{\partial y_{ik}},
+  \qquad i\ne j.
+  \label{eq:anexo_derivadas_cruzadas}
+\end{equation}
+Si $\rho_k\Phi_k'(Z_k)\ne0$, esta condición equivale a
+\begin{equation}
+  a_{jk}b_{ik}=a_{ik}b_{jk}
+  \quad\Longleftrightarrow\quad
+  b_{ik}=\alpha_k a_{ik}
+  \label{eq:anexo_condicion_integrabilidad}
+\end{equation}
+para alguna escala $\alpha_k>0$ dependiente sólo de la tarea.
+\end{proposicion}
+
+\begin{proof}
+Derivando \eqref{eq:anexo_integrabilidad_setup},
+\[
+  \frac{\partial F_{ik}}{\partial y_{jk}}
+  =
+  \rho_k\Phi_k'(Z_k)a_{jk}b_{ik},
+  \qquad
+  \frac{\partial F_{jk}}{\partial y_{ik}}
+  =
+  \rho_k\Phi_k'(Z_k)a_{ik}b_{jk}.
+\]
+Si el factor común no se anula, la igualdad de derivadas cruzadas equivale a
+$a_{jk}b_{ik}=a_{ik}b_{jk}$. Dividiendo por $a_{ik}a_{jk}$ se obtiene que
+$b_{ik}/a_{ik}=b_{jk}/a_{jk}$ para todo par $i,j$, por lo que existe una escala
+$\alpha_k$ con $b_{ik}=\alpha_ka_{ik}$.
+\end{proof}
+
+\begin{observacion}
+Esta proposición formaliza por qué la ocupación efectiva no es una corrección estética:
+el mismo factor físico que entra al agregado debe entrar al payoff marginal. Si el
+agregado usa $a_{ik}=\Psi_{ik}$ y el payoff usa $b_{ik}=1$, la simetría cruzada falla.
+La equivalencia se lee por componentes activas: si algún factor se anula, o si
+$\Phi_k'(Z_k)=0$ en una zona plana idealizada, la condición debe evaluarse sólo en las
+direcciones donde la derivada cruzada es informativa.
+\end{observacion}
+
+\subsection{Oferta heterogénea por tramos}
+\label{subsec:oferta-tramos}
+
+La función $h(Q)$ del Capítulo~\ref{sec:marco} puede escribirse de forma explícita. Sea
+\[
+  C_p=c^pN^p,
+  \qquad
+  A_p=\sum_{q=p}^{P}C_q,
+  \qquad
+  A_{P+1}=0,
+\]
+donde $A_p$ es la capacidad acumulada desde la clase $p$ hasta la clase más pesada.
+Se asume el orden $0<c^1<\cdots<c^P$ y una relajación fluida de masa
+$a_k^p\in\mathbb{R}_+$. Con robots enteros, $h(Q)$ deja de ser la curva lineal por
+tramos y se obtiene una función escalonada asociada a un problema de selección discreta.
+Como los robots pesados se despliegan primero, si $Q\in[A_{p+1},A_p]$ entonces
+\begin{equation}
+  h(Q)=
+  \sum_{q=p+1}^{P}N^q
+  +
+  \frac{Q-A_{p+1}}{c^p}.
+  \label{eq:anexo_h_por_tramos}
+\end{equation}
+La pendiente del tramo es
+\begin{equation}
+  h'(Q)=\frac{1}{c^p}.
+  \label{eq:anexo_pendiente_h}
+\end{equation}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.96]
+  \draw[-{Latex[length=2mm]},thick] (0,0) -- (8.2,0) node[right] {$Q$};
+  \draw[-{Latex[length=2mm]},thick] (0,0) -- (0,4.7) node[above] {$h(Q)$};
+  \draw[VIUOrange,very thick] (0.6,0.5) -- (2.4,1.0) -- (4.8,2.15) -- (7.4,4.0);
+  \draw[dashed,VIUGray] (2.4,0) -- (2.4,1.0);
+  \draw[dashed,VIUGray] (4.8,0) -- (4.8,2.15);
+  \node[anchor=north,font=\small] at (2.4,0) {$A_{p+1}$};
+  \node[anchor=north,font=\small] at (4.8,0) {$A_p$};
+  \node[font=\small,VIUDark] at (3.65,1.85) {pendiente $1/c^p$};
+  \draw[decorate,decoration={brace,amplitude=5pt},VIUGray]
+    (2.4,-0.35) -- (4.8,-0.35)
+    node[midway,below=6pt,font=\small] {$Q\in[A_{p+1},A_p]$};
+\end{tikzpicture}
+\caption{Forma explícita de $h(Q)$ por tramos. Cada tramo corresponde a la clase de
+capacidad marginal que todavía se está desplegando.}
+\label{fig:anexo_h_tramos}
+\end{figure}
+
+Con $\rho_p=\rho_0/c^p$, el orden de capacidades implica
+\[
+  \rho_P<\rho_{P-1}<\cdots<\rho_1.
+\]
+Para respetar el dominio del logaritmo, se define
+\[
+  W_k^M(\lambda)=
+  \begin{cases}
+  0,
+  & \lambda\ge \rho_k\Phi_k(0),\\[4pt]
+  M_k+\dfrac{1}{\beta}\log\!\left(\dfrac{\rho_k}{\lambda}-1\right),
+  & 0<\lambda<\rho_k\Phi_k(0),
+  \end{cases}
+\]
+y la demanda agregada
+\[
+  D(\lambda)=\sum_k W_k^M(\lambda),
+\]
+los tres regímenes se escriben así:
+
+\begin{description}
+  \item[Tramo.] Si
+  \begin{equation}
+    A_{p+1}<D(\rho_p)<A_p,
+    \label{eq:anexo_condicion_tramo}
+  \end{equation}
+  entonces $\lambda^\star=\rho_p$.
+
+  \item[Kink.] Si
+  \begin{equation}
+    D(\rho_p)\ge A_p\ge D(\rho_{p-1}),
+    \label{eq:anexo_condicion_kink}
+  \end{equation}
+  entonces
+  \begin{equation}
+    Q^\star=A_p,
+    \qquad
+    D(\lambda^\star)=A_p,
+    \qquad
+    \lambda^\star\in[\rho_p,\rho_{p-1}].
+    \label{eq:anexo_kink}
+  \end{equation}
+
+  \item[Escasez total.] Si
+  \begin{equation}
+    D(\rho_1)>A_1,
+    \label{eq:anexo_condicion_escasez}
+  \end{equation}
+  entonces
+  \begin{equation}
+    Q^\star=A_1,
+    \qquad
+    D(\lambda^\star)=A_1,
+    \qquad
+    \lambda^\star\ge\rho_1.
+    \label{eq:anexo_escasez}
+  \end{equation}
+\end{description}
+
+\subsection{ISS práctica del juego perturbado}
+\label{subsec:iss-practica}
+
+El sistema implementado no recibe payoffs exactos. Usa estimaciones locales, mapas
+aproximados, discretización y ruido. Es útil escribir la robustez como una cota ISS.
+
+\begin{proposicion}[ISS práctica por error de payoff]
+\textbf{[CONDICIONADO]}
+Sea
+\[
+  \widehat F(t)=F(t)+e(t),
+  \qquad
+  \norm{e(t)}_\infty\le\bar e,
+\]
+y sea $W(y)=V^\star-V(y)$ una función de error de potencial respecto al conjunto de
+Nash $\mathcal{N}$. Supóngase que el sistema nominal cumple localmente
+\begin{equation}
+  \dot W_{\mathrm{nom}}
+  \le
+  -a\,d(y,\mathcal{N})^2,
+  \qquad a>0.
+  \label{eq:anexo_iss_nominal}
+\end{equation}
+Si la perturbación entra como
+\begin{equation}
+  \dot W
+  \le
+  -a\,d(y,\mathcal{N})^2
+  +
+  b\,d(y,\mathcal{N})\bar e,
+  \label{eq:anexo_iss_perturbada}
+\end{equation}
+entonces
+\begin{equation}
+  \dot W
+  \le
+  -\frac{a}{2}d(y,\mathcal{N})^2
+  +
+  \frac{b^2}{2a}\bar e^2,
+  \label{eq:anexo_iss_young}
+\end{equation}
+y, bajo equivalencia local entre $W$ y $d(y,\mathcal{N})^2$,
+\begin{equation}
+  \limsup_{t\to\infty}d(y(t),\mathcal{N})
+  \le
+  C'\bar e.
+  \label{eq:anexo_iss_limsup}
+\end{equation}
+\end{proposicion}
+
+\begin{proof}
+Aplicando Young al término cruzado,
+\[
+  b\,d\,\bar e
+  \le
+  \frac{a}{2}d^2+\frac{b^2}{2a}\bar e^2.
+\]
+Sustituir en \eqref{eq:anexo_iss_perturbada} da
+\eqref{eq:anexo_iss_young}. La cota de limsup se obtiene con el argumento estándar de
+estabilidad práctica: fuera de una vecindad proporcional a $\bar e$, el término
+negativo domina.
+\end{proof}
+
+La cota abstracta se conecta con errores medibles mediante
+\[
+  \bar e
+  =
+  \bar e_{\mathrm{DAC}}
+  +
+  \bar e_{\Psi}
+  +
+  \bar e_{\mathrm{disc}}
+  +
+  \bar e_{\mathrm{hyb}}.
+\]
+Para el canal DAC homogéneo,
+\[
+  \bar e_{\mathrm{DAC}}
+  \le
+  r_{\max}\frac{\beta}{4}\bar\varepsilon,
+\]
+y en el lift heterogéneo, si $s_{ik}\le c_{\max}$ y el error agregado es
+$\bar\varepsilon_Z$,
+\[
+  \bar e_{\mathrm{DAC}}
+  \le
+  c_{\max}r_{\max}\frac{\beta}{4}\bar\varepsilon_Z.
+\]
+
+\subsection{ORCA económico completo}
+\label{subsec:orca-economico}
+
+La evasión local de colisiones debe respetar la criticidad de cada robot para la
+coalición. La responsabilidad económica reparte la corrección relativa de ORCA usando
+pesos derivados de pérdida de potencial.
+
+\begin{proposicion}[Responsabilidad económica par-a-par]
+\textbf{[CONDICIONADO]}
+Sea $u_{ij}$ la corrección relativa mínima para que el par $(i,j)$ sea seguro. Defínase
+\begin{equation}
+  \alpha_{ij}=\frac{w_j}{w_i+w_j},
+  \qquad
+  \alpha_{ji}=\frac{w_i}{w_i+w_j},
+  \qquad
+  \alpha_{ij}+\alpha_{ji}=1.
+  \label{eq:anexo_alpha_orca}
+\end{equation}
+Las velocidades corregidas son
+\begin{equation}
+  v_i^{\mathrm{new}}=v_i^{\mathrm{des}}+\alpha_{ij}u_{ij},
+  \qquad
+  v_j^{\mathrm{new}}=v_j^{\mathrm{des}}-\alpha_{ji}u_{ij}.
+  \label{eq:anexo_vel_orca}
+\end{equation}
+Entonces
+\begin{equation}
+  v_i^{\mathrm{new}}-v_j^{\mathrm{new}}
+  =
+  v_i^{\mathrm{des}}-v_j^{\mathrm{des}}+u_{ij},
+  \label{eq:anexo_rel_orca}
+\end{equation}
+por lo que la corrección relativa completa se conserva.
+\end{proposicion}
+
+\begin{proof}
+Restando las dos ecuaciones de \eqref{eq:anexo_vel_orca},
+\[
+  v_i^{\mathrm{new}}-v_j^{\mathrm{new}}
+  =
+  v_i^{\mathrm{des}}-v_j^{\mathrm{des}}
+  +(\alpha_{ij}+\alpha_{ji})u_{ij}.
+\]
+Usando \eqref{eq:anexo_alpha_orca}, el factor entre paréntesis es $1$.
+\end{proof}
+
+En implementación conviene recortar la responsabilidad para evitar que un robot absorba
+toda la corrección por una diferencia extrema de pesos:
+\begin{equation}
+  \widetilde\alpha_{ij}
+  =
+  \clip\!\left(
+  \frac{w_j}{w_i+w_j},
+  \alpha_{\min},
+  1-\alpha_{\min}
+  \right),
+  \qquad
+  \widetilde\alpha_{ji}=1-\widetilde\alpha_{ij}.
+  \label{eq:anexo_alpha_orca_clip}
+\end{equation}
+
+El peso recomendado no mide tentación instantánea, sino pérdida finita de potencial:
+\begin{equation}
+  w_i=
+  \varepsilon+
+  \sum_k
+  y_{ik}\rho_k
+  \left[
+    G_k(\Zeff_k)-G_k(\Zeff_k-s_{ik})
+  \right]_+.
+  \label{eq:anexo_peso_orca}
+\end{equation}
+
+\begin{observacion}[Por qué un peso escalar dentro del QP no basta]
+Si $w_i>0$, entonces
+\begin{equation}
+  \argmin_{v\in C}w_i\norm{v-v_d}^2
+  =
+  \argmin_{v\in C}\norm{v-v_d}^2.
+  \label{eq:anexo_bug_peso_qp}
+\end{equation}
+Multiplicar la función objetivo por un escalar positivo no cambia el minimizador. Por
+eso el peso debe entrar en el reparto de responsabilidad $\alpha_{ij}$, no como simple
+factor de coste en un QP individual.
+\end{observacion}
+
+\begin{observacion}[Factibilidad multiagente]
+La garantía par-a-par no implica factibilidad global si la intersección de todos los
+semiplanos ORCA del robot está vacía. En ese caso se requiere una relajación penalizada,
+prioridad de parada segura o reducción temporal de velocidad.
+\end{observacion}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  robot/.style={circle,draw=VIUDark,fill=VIULight,minimum size=0.75cm,font=\small},
+  arrow/.style={-{Latex[length=2mm]},thick},
+  lab/.style={font=\small,align=center}
+]
+\node[robot] (i) at (0,0) {$i$};
+\node[robot] (j) at (5,0) {$j$};
+\draw[arrow,VIUOrange] (i) -- ++(1.7,0.65) node[midway,above,lab] {$\alpha_{ij}u_{ij}$};
+\draw[arrow,VIUOrange] (j) -- ++(-1.2,-0.65) node[midway,below,lab] {$-\alpha_{ji}u_{ij}$};
+\draw[arrow,VIUGray,dashed] (i) -- ++(1.2,0) node[midway,below,lab] {$v_i^{des}$};
+\draw[arrow,VIUGray,dashed] (j) -- ++(-1.2,0) node[midway,above,lab] {$v_j^{des}$};
+\node[lab] at (2.5,1.35) {$w_i$ alto $\Rightarrow$ $i$ desvía menos};
+\node[lab] at (2.5,-1.25) {$\alpha_{ij}+\alpha_{ji}=1$ conserva la corrección relativa};
+\end{tikzpicture}
+\caption{ORCA económico: el reparto de la corrección depende de la pérdida de potencial
+que causaría desviar a cada robot.}
+\label{fig:anexo_orca}
+\end{figure}
+
+\subsection{Retornabilidad energética y relevo dinámico}
+\label{subsec:retornabilidad-handover}
+
+La batería por sí sola no mide seguridad. Un robot puede tener carga suficiente para
+seguir empujando pero no para regresar al cargador. La variable robusta es la
+retornabilidad:
+\begin{equation}
+  h_i(p_i,B_i)=
+  B_i-B_{\mathrm{crit}}-E_{\mathrm{return}}(p_i).
+  \label{eq:anexo_retornabilidad}
+\end{equation}
+La recarga puede entrar como una tarea de supervivencia con payoff acotado:
+\begin{equation}
+  F_{i,\mathrm{ch}}
+  =
+  \rho_{\mathrm{ch}}
+  \sigma(h_{\mathrm{safe}}-h_i)
+  \Psi(T_{\mathrm{ch}}(p_i)),
+  \label{eq:anexo_payoff_recarga_sigmoidal}
+\end{equation}
+o como una variante saturada de barrera:
+\begin{equation}
+  F_{i,\mathrm{ch}}
+  =
+  \sat\!\left(\frac{\omega}{h_i(p_i,B_i)}\right)
+  \Psi(T_{\mathrm{ch}}(p_i)).
+  \label{eq:anexo_payoff_recarga_barrera}
+\end{equation}
+
+\begin{proposicion}[Relevo dinámico inducido por déficit anticipado]
+\textbf{[HIPÓTESIS EXTENDIDA]}
+Supóngase que un robot $A$ debe salir a recarga y que
+\[
+  F_{A,\mathrm{ch}}>F_{A,k}.
+  \label{eq:anexo_A_sale}
+\]
+Entonces Smith induce localmente
+\[
+  \dot y_{A,\mathrm{ch}}>0,
+  \qquad
+  \dot y_{A,k}<0.
+  \label{eq:anexo_smith_recarga}
+\]
+Si se predice
+\begin{equation}
+  \widehat{\Zeff}_k(t+\tau)
+  =
+  \Zeff_k(t)+\tau\dot{\Zeff}_k(t)
+  \downarrow,
+  \label{eq:anexo_deficit_anticipado}
+\end{equation}
+entonces $\Phi_k(\widehat{\Zeff}_k)$ aumenta. Si existe otro robot $B$ con margen
+\begin{equation}
+  F_{B,k}^{\tau}>F_{B,\ell}^{\tau}+\eta,
+  \qquad \eta>0,
+  \label{eq:anexo_B_entra}
+\end{equation}
+entonces Smith transfiere masa de $B$ hacia la tarea $k$. La salida anticipada de $A$
+abre déficit y recluta a $B$ sin una regla explícita de relevo.
+\end{proposicion}
+
+\begin{proof}
+La primera parte sigue directamente de los términos positivos de Smith: si recarga paga
+más que la tarea $k$, hay flujo de masa desde $k$ hacia recarga. La salida reduce
+$\dot{\Zeff}_k$ por la contribución efectiva perdida, lo que aumenta la sigmoide
+decreciente de déficit. El margen \eqref{eq:anexo_B_entra} activa el mismo argumento de
+Smith para el robot $B$.
+\end{proof}
+
+El relevo no queda garantizado por la batería sola. Es un relevo inducido bajo condición
+de margen: si no existe un robot candidato que satisfaga \eqref{eq:anexo_B_entra}, la
+salida energética puede reducir el servicio sin reemplazo inmediato.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  block/.style={draw=VIUDark,fill=VIULight,rounded corners=2pt,
+    align=center,minimum width=2.75cm,minimum height=0.85cm,font=\small},
+  arrow/.style={-{Latex[length=2mm]},thick,color=VIUOrange!90!black}
+]
+\node[block] (battery) {$h_A$ bajo\\recarga domina};
+\node[block, right=0.7cm of battery] (leave) {$A$ sale\\$\dot y_{A,k}<0$};
+\node[block, right=0.7cm of leave] (def) {déficit futuro\\$\widehat{\Zeff}_k\downarrow$};
+\node[block, below=0.8cm of def] (price) {payoff sube\\$\Phi_k\uparrow$};
+\node[block, left=0.7cm of price] (enter) {$B$ entra\\$\dot y_{B,k}>0$};
+\node[block, left=0.7cm of enter] (load) {quórum\\se preserva};
+\draw[arrow] (battery)--(leave);
+\draw[arrow] (leave)--(def);
+\draw[arrow] (def)--(price);
+\draw[arrow] (price)--(enter);
+\draw[arrow] (enter)--(load);
+\end{tikzpicture}
+\caption{Relevo dinámico: la salida energética de un robot crea una señal de déficit
+que recluta reemplazo mediante el mismo payoff.}
+\label{fig:anexo_handover}
+\end{figure}
+
+\subsection{Smith anticipatorio en tiempo muestreado}
+\label{subsec:smith-sampled-data}
+
+La forma continua $F^\tau=F+\tau\dot F$ puede introducir un bucle algebraico porque
+$\dot F$ depende de $\dot y$. Una implementación muestreada evita ese bucle usando la
+derivada anterior:
+\begin{equation}
+  F_m^\tau
+  =
+  \nabla V(y_m)
+  +
+  \tau\nabla^2V(y_m)\dot y_{m-1}
+  +
+  e_m.
+  \label{eq:anexo_smith_sampled}
+\end{equation}
+El error por muestreo es
+\begin{equation}
+  e_m^\Delta
+  =
+  \tau\nabla^2V(y_m)(\dot y_{m-1}-\dot y_m).
+  \label{eq:anexo_error_sampled}
+\end{equation}
+Si
+\[
+  \norm{\dot y_m-\dot y_{m-1}}\le L_\Delta T_s,
+\]
+entonces
+\begin{equation}
+  \norm{e_m^\Delta}
+  \le
+  \tau\norm{\nabla^2V(y_m)}L_\Delta T_s.
+  \label{eq:anexo_cota_error_sampled}
+\end{equation}
+
+\begin{proposicion}[Cota candidata de Smith anticipatorio muestreado]
+\textbf{[HIPÓTESIS EXTENDIDA]}
+Bajo suavidad local y error acotado, una cota de descenso práctico para un paso $h$ toma
+la forma
+\begin{equation}
+  W_{m+1}-W_m
+  \le
+  -h c_\tau\norm{\dot y_m}^2
+  +
+  hC(\bar e^2+T_s^2+h^2).
+  \label{eq:anexo_descenso_sampled}
+\end{equation}
+En consecuencia,
+\begin{equation}
+  \limsup_{m\to\infty}d(y_m,\mathcal{N})
+  \le
+  K(\bar e+T_s+h).
+  \label{eq:anexo_limsup_sampled}
+\end{equation}
+\end{proposicion}
+
+\begin{observacion}[Condición implícita de contracción]
+Si se intenta resolver la forma implícita
+\[
+  \dot y=S\left(y,\nabla V+\tau\nabla^2V\,\dot y\right),
+\]
+con el operador
+\[
+  \mathcal{T}(v)=S\left(y,\nabla V+\tau\nabla^2V\,v\right),
+\]
+una condición tipo Banach es
+\begin{equation}
+  \tau L_S\norm{\nabla^2V}<1.
+  \label{eq:anexo_contraccion_implicita}
+\end{equation}
+Esta es la condición correcta para hablar de contracción del bucle algebraico.
+\end{observacion}
+
+El término anticipatorio debe leerse como amortiguamiento en coordenadas agregadas:
+si una dirección microscópica de $y$ preserva todos los agregados $Z_k$, la Hessiana del
+potencial no ve esa dirección y no puede amortiguarla.
+
+\subsection{Densidad predictiva completa}
+\label{subsec:densidad-predictiva-completa}
+
+La predicción de congestión se basa en una densidad suavizada:
+\begin{equation}
+  \rho(x,t)=\sum_i K_h(x-p_i(t)).
+  \label{eq:anexo_densidad}
+\end{equation}
+La primera derivada temporal es
+\begin{equation}
+  \dot\rho(x,t)
+  =
+  -\sum_i\nabla K_h(x-p_i)^\top u_i.
+  \label{eq:anexo_densidad_dot}
+\end{equation}
+La segunda derivada completa incluye el término convectivo:
+\begin{equation}
+  \ddot\rho(x,t)
+  =
+  \sum_i
+  \left[
+    u_i^\top\nabla^2K_h(x-p_i)u_i
+    -
+    \nabla K_h(x-p_i)^\top a_i
+  \right].
+  \label{eq:anexo_densidad_ddot}
+\end{equation}
+Si el campo de movimiento es $u_i=-\kappa\nabla_{p_i}U_i$, entonces una expansión útil
+para la aceleración es
+\begin{equation}
+  a_i=
+  -\kappa
+  \left[
+    \nabla_{p_i}^2U_i\,u_i
+    +
+    \frac{\partial\nabla_{p_i}U_i}{\partial y_i}\dot y_i
+    +
+    \frac{\partial\nabla_{p_i}U_i}{\partial B_i}\dot B_i
+    +\cdots
+  \right].
+  \label{eq:anexo_aceleracion_campo}
+\end{equation}
+
+La densidad futura se aproxima por
+\begin{equation}
+  \rho^\tau=
+  \clip\left[
+  \rho+\tau\dot\rho+\frac{\tau^2}{2}\ddot\rho
+  \right],
+  \label{eq:anexo_rho_tau}
+\end{equation}
+lo que deforma la velocidad admisible y la eikonal:
+\begin{equation}
+  v^\tau(x)=v_{\min}+(v_{\max}-v_{\min})e^{-\alpha\rho^\tau(x)},
+  \qquad
+  \norm{\nabla T_k^\tau(x)}=\frac{1}{v^\tau(x)}.
+  \label{eq:anexo_eikonal_predictiva}
+\end{equation}
+
+Como $T_k^\tau$ depende de una densidad futura, esta construcción no comparte el mismo
+potencial estático que la energía maestra del cuerpo principal. Debe usarse como
+extensión predictiva \textbf{[HIPÓTESIS EXTENDIDA]} o como perturbación acotada, no como parte de la
+prueba de descenso ideal.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  block/.style={draw=VIUDark,fill=VIULight,rounded corners=2pt,
+    align=center,minimum width=2.85cm,minimum height=0.85cm,font=\small},
+  arrow/.style={-{Latex[length=2mm]},thick,color=VIUOrange!90!black}
+]
+\node[block] (jets) {jets locales\\$p_i,u_i,a_i$};
+\node[block, right=0.7cm of jets] (rho) {densidad\\$\rho,\dot\rho,\ddot\rho$};
+\node[block, right=0.7cm of rho] (future) {predicción\\$\rho^\tau$};
+\node[block, below=0.85cm of future] (vel) {velocidad\\$v^\tau(x)$};
+\node[block, left=0.7cm of vel] (eik) {eikonal\\$T_k^\tau$};
+\node[block, left=0.7cm of eik] (pay) {payoff\\$\Psi(T_k^\tau)$};
+\draw[arrow] (jets)--(rho);
+\draw[arrow] (rho)--(future);
+\draw[arrow] (future)--(vel);
+\draw[arrow] (vel)--(eik);
+\draw[arrow] (eik)--(pay);
+\end{tikzpicture}
+\caption{Densidad predictiva completa: los jets locales generan una eikonal futura que
+modula la contribución efectiva antes de entrar a Smith.}
+\label{fig:anexo_densidad}
+\end{figure}
+
+\subsection{Claridad geodésica}
+\label{subsec:claridad-geodesica}
+
+La cota euclidiana para $T$ sólo es válida bajo claridad local. En general debe usarse
+distancia geodésica ponderada:
+\begin{equation}
+  |T(\hat p)-T(p)|\le d_v(\hat p,p).
+  \label{eq:anexo_cota_geodesica}
+\end{equation}
+Si además
+\begin{equation}
+  \norm{\hat p-p}<\rho_{\mathrm{clear}},
+  \label{eq:anexo_condicion_claridad}
+\end{equation}
+y el segmento local no cruza obstáculos ni cambios de homotopía, entonces
+\begin{equation}
+  |T(\hat p)-T(p)|
+  \le
+  \frac{\norm{\hat p-p}}{v_{\min}}.
+  \label{eq:anexo_cota_euclidiana_claridad}
+\end{equation}
+Esta condición es la forma correcta que debe usarse al extender el presupuesto de
+percepción a rutas eikonales.
