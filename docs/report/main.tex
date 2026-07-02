@@ -9,12 +9,12 @@
 \usepackage{algpseudocode}
 \usetikzlibrary{shapes.geometric,positioning,arrows.meta}
 
-\setviutitle{Smith-QR para coordinacion distribuida de coaliciones multi-AGV}
+\setviutitle{Coordinación distribuida acoplada de múltiples AMR para el transporte cooperativo de cargas heterogéneas}
 \setviustudent{Jorge Luis Mayorga Taborda}
 \setviututor{Jose Ignacio Iniguez Amigot}
 \setviuedition{2025--26}
 \setviudate{20 de junio de 2026}
-\setviuheadertitle{V7 modular $\cdot$ Smith-QR multi-AGV}
+\setviuheadertitle{Coordinación distribuida de AMR cooperativos para cargas heterogéneas}
 
 \newcommand{\RR}{\mathbb{R}}
 \newcommand{\simplex}{\Delta}
@@ -29,75 +29,39 @@
 
 \begin{document}
 
-\hypersetup{pageanchor=false}
-\makeviucover
-\hypersetup{pageanchor=true}
 
-\pagenumbering{roman}
+%% ---------------------------------------------------------------- %%
+%% -- Sections: Frontmatter --------------------------------------- %%
+%% ---------------------------------------------------------------- %%
+\input{sections/frontmatter/00-cover.tex}
+\input{sections/frontmatter/01-summary.tex}
+\input{sections/frontmatter/02-abstract.tex}
+\input{sections/frontmatter/03-contents.tex}
+\input{sections/frontmatter/04-nomenclature.tex}
 
-\begin{viuabstract}
-Este TFM estudia la coordinacion distribuida de robots AGV para transportar cargas
-heterogeneas en almacenes industriales. La version V7 modular organiza el material
-matematico y computacional en una escalera M0--M5: metodos clasicos y sus fallos,
-coaliciones, casos homogeneos y heterogeneos, transporte rigido, roles fisicos, campo
-unico y bateria. Dentro de esa escalera, Smith-QR es la arquitectura de asignacion y
-cierre de quorum basada en dinamicas poblacionales, deficit fisico-economico comun y
-capacidad efectiva en espacio \emph{wrench}. El objetivo no es presentar una coleccion de
-algoritmos, sino una ley distribuida que permita que los robots recluten coaliciones, se
-liberen, eviten obstaculos y respondan a bateria o conectividad como resultado de campos
-suaves y payoffs locales.
 
-La contribucion principal combina tres elementos. Primero, una lectura de mercado donde
-cada carga tiene una demanda de capacidad y cada robot aporta capacidad mecanica
-limitada. Segundo, una dinamica de Smith con memoria, clearing entero y guardias de
-quorum que transforma preferencias continuas en acciones ejecutables. Tercero, una
-extension fisica donde la cardinalidad de una coalicion no basta: la carga define una
-formacion rigida de contactos y un juego vectorial reparte esfuerzos para producir
-fuerza y torque dentro de los limites de cada robot.
-
-La validacion conserva una lectura honesta. Los resultados muestran que Smith reproduce
-la regla de \emph{water-filling} en el caso homogeneo, que el clearing entero evita
-coaliciones fluidas inutiles, que el precio temporal solo ayuda en regimenes con deficit
-y \emph{deadlines}, y que Smith-QR rescata parte del colapso de Smith bajo comunicacion
-local degradada. MARL se mantiene como baseline aprendido, no como aporte teorico
-principal. CoppeliaSim se reporta como evidencia visual y de integracion, no como prueba
-fisica de hardware.
-
-El repositorio se organiza para que la memoria, el codigo y los resultados compactos sean
-reproducibles. La logica principal vive en \texttt{src/viu\_mrob\_tfm}; los scripts son
-interfaces de ejecucion; y los artefactos pesados quedan fuera del repositorio en una
-cuarentena trazable. Esta version deja un unico reporte, una arquitectura OOP extensible
-y una ruta clara para convertir el TFM en trabajo de investigacion posterior.
-
-\keywords{AGV, coordinacion distribuida, dinamicas de Smith, teoria de juegos,
-coaliciones, capacidad efectiva, wrench, control multiagente, CoppeliaSim.}
-\end{viuabstract}
-
-\clearpage
-\tableofcontents
-
+%% ---------------------------------------------------------------- %%
+%% -- Sections: Mainmatter ---------------------------------------- %%
+%% ---------------------------------------------------------------- %%
 \clearpage
 \pagenumbering{arabic}
-
-\input{sections/00-nomenclatura}
-\input{sections/01-introduccion}
-\input{sections/02-objetivos}
-\input{sections/03-escalera-modular}
-\input{sections/03-hipotesis}
-\input{sections/04-metodologia}
-\input{sections/05-marco}
-\input{sections/06-modelo-control}
-\input{sections/07-implementacion}
-\input{sections/08-resultados}
-\input{sections/09-conclusiones}
+\input{sections/mainmatter/01-introduction.tex}
+\input{sections/mainmatter/02-objectives.tex}
+\input{sections/mainmatter/03-hypothesis.tex}
+%\input{sections/mainmatter/04-methodology.tex}
+%\input{sections/mainmatter/05-theoretical-framework.tex}
+%\input{sections/mainmatter/06-results-and-analysis.tex}
+%\input{sections/mainmatter/07-conclusions.tex}
 
 \appendix
-\input{sections/anexo-a-matematico}
-\input{sections/anexo-b-reproducibilidad}
-\input{sections/anexo-c-validacion}
+%\input{sections/anexo-a-matematico}
+%\input{sections/anexo-b-reproducibilidad}
+%\input{sections/anexo-c-validacion}
 
 \nocite{*}
 \bibliographystyle{apalike}
 \bibliography{references}
 
 \end{document}
+
+

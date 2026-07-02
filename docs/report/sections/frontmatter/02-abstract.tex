@@ -1,0 +1,37 @@
+\begin{viuabstract}
+Este TFM estudia la coordinacion distribuida de robots AGV para transportar cargas
+heterogeneas en almacenes industriales. La version V7 modular organiza el material
+matematico y computacional en una escalera M0--M5: metodos clasicos y sus fallos,
+coaliciones, casos homogeneos y heterogeneos, transporte rigido, roles fisicos, campo
+unico y bateria. Dentro de esa escalera, Smith-QR es la arquitectura de asignacion y
+cierre de quorum basada en dinamicas poblacionales, deficit fisico-economico comun y
+capacidad efectiva en espacio \emph{wrench}. El objetivo no es presentar una coleccion de
+algoritmos, sino una ley distribuida que permita que los robots recluten coaliciones, se
+liberen, eviten obstaculos y respondan a bateria o conectividad como resultado de campos
+suaves y payoffs locales.
+
+La contribucion principal combina tres elementos. Primero, una lectura de mercado donde
+cada carga tiene una demanda de capacidad y cada robot aporta capacidad mecanica
+limitada. Segundo, una dinamica de Smith con memoria, clearing entero y guardias de
+quorum que transforma preferencias continuas en acciones ejecutables. Tercero, una
+extension fisica donde la cardinalidad de una coalicion no basta: la carga define una
+formacion rigida de contactos y un juego vectorial reparte esfuerzos para producir
+fuerza y torque dentro de los limites de cada robot.
+
+La validacion conserva una lectura honesta. Los resultados muestran que Smith reproduce
+la regla de \emph{water-filling} en el caso homogeneo, que el clearing entero evita
+coaliciones fluidas inutiles, que el precio temporal solo ayuda en regimenes con deficit
+y \emph{deadlines}, y que Smith-QR rescata parte del colapso de Smith bajo comunicacion
+local degradada. MARL se mantiene como baseline aprendido, no como aporte teorico
+principal. CoppeliaSim se reporta como evidencia visual y de integracion, no como prueba
+fisica de hardware.
+
+El repositorio se organiza para que la memoria, el codigo y los resultados compactos sean
+reproducibles. La logica principal vive en \texttt{src/viu\_mrob\_tfm}; los scripts son
+interfaces de ejecucion; y los artefactos pesados quedan fuera del repositorio en una
+cuarentena trazable. Esta version deja un unico reporte, una arquitectura OOP extensible
+y una ruta clara para convertir el TFM en trabajo de investigacion posterior.
+
+\keywords{AGV, coordinacion distribuida, dinamicas de Smith, teoria de juegos,
+coaliciones, capacidad efectiva, wrench, control multiagente, CoppeliaSim.}
+\end{viuabstract}
