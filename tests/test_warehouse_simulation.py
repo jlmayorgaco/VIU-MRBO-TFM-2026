@@ -1,4 +1,4 @@
-"""Smoke tests for the realistic warehouse AGV simulation."""
+"""Smoke tests for the realistic warehouse AMR simulation."""
 
 from __future__ import annotations
 

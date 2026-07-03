@@ -4,7 +4,7 @@ Repositorio organizado de la version V6 del TFM de Jorge Luis Mayorga Taborda pa
 Master Universitario en Robotica y Automatizacion de Procesos (VIU).
 
 El eje tecnico actual es **Smith-QR para coordinacion distribuida de coaliciones
-multi-AGV con cargas heterogeneas**. La memoria final se concentra en una idea: los robots
+multi-AMR con cargas heterogeneas**. La memoria final se concentra en una idea: los robots
 siguen una arquitectura distribuida basada en deficit fisico-economico, dinamicas de
 Smith, cierre entero de quorum, formacion rigida de carga y capacidad efectiva en espacio
 `wrench`.
@@ -47,6 +47,7 @@ python -m pip install -e .
 ```powershell
 python -m pytest -q
 $env:PYTHONPATH='src'; python -m viu_mrob_tfm.validation.suite
+python scripts/run_experiment.py experiments/exp-001-baseline-nominal/config.yaml
 make report-pdf
 ```
 
@@ -56,6 +57,13 @@ Atajos equivalentes:
 make test
 make validate-suite
 make smoke-exp
+```
+
+Tras `pip install -e .`, los entry points equivalentes son:
+
+```powershell
+viu-run-experiment experiments/exp-001-baseline-nominal/config.yaml
+viu-validate-suite
 ```
 
 ## Arquitectura OOP nueva

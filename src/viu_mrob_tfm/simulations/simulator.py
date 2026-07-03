@@ -41,7 +41,7 @@ class Simulator:
         """Construct the initial system state from the scenario."""
 
         return SystemState(
-            agv_states=[agv.state for agv in self.scenario.agvs],
+            amr_states=[amr.state for amr in self.scenario.amrs],
             load_state=self.scenario.transported_load.state,
             time=0.0,
         )
@@ -56,7 +56,7 @@ class Simulator:
         if self.estimator is not None:
             self.estimator.update(state)
 
-        n_agents = len(self.scenario.agvs)
+        n_agents = len(self.scenario.amrs)
         tasks = self.scenario.tasks
         n_tasks = len(tasks)
         if n_tasks == 0:
@@ -64,8 +64,8 @@ class Simulator:
 
         params = _SimulationParams.from_controller(self.controller)
         policy = _resolve_controller_policy(self.controller)
-        positions = np.vstack([agv.state.position for agv in self.scenario.agvs]).astype(float)
-        headings = np.array([agv.state.heading for agv in self.scenario.agvs], dtype=float)
+        positions = np.vstack([amr.state.position for amr in self.scenario.amrs]).astype(float)
+        headings = np.array([amr.state.heading for amr in self.scenario.amrs], dtype=float)
         load_positions = np.vstack([task.pickup for task in tasks]).astype(float)
         destinations = np.vstack([task.destination for task in tasks]).astype(float)
         demands = np.array([task.min_coalition_size for task in tasks], dtype=int)

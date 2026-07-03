@@ -1,4 +1,4 @@
-"""Communication graph utilities for local multi-AGV coordination."""
+"""Communication graph utilities for local multi-AMR coordination."""
 
 from __future__ import annotations
 

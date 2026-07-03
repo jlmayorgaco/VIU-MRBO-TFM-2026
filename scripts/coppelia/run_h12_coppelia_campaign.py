@@ -242,7 +242,7 @@ def render_fallback(scene: dict[str, Any], playback_rows: list[dict[str, Any]], 
         draw_scene_base(ax, scene)
         xs = [float(row["x"]) for row in rows]
         ys = [float(row["y"]) for row in rows]
-        ax.scatter(xs, ys, s=26, color="#2563eb", label="AGV playback")
+        ax.scatter(xs, ys, s=26, color="#2563eb", label="AMR playback")
         if "density_bottleneck" in scene:
             b = scene["density_bottleneck"]
             circle = plt.Circle(b["center"], b["radius"], color="#dc2626", fill=False, linestyle="--", linewidth=1.5)

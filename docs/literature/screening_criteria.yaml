@@ -15,8 +15,8 @@ stages:
         description: Cooperative transport, payload/object manipulation, rigid formation, or coalition transport.
       - id: theoretical_foundation_core
         description: Graph theory, game theory, distributed optimization, networked control, topology, geometry, CBF, MPC, or consensus with direct transfer to multi-agent robotics.
-      - id: warehouse_agv_core
-        description: AGV, AMR, warehouse fleet, routing, dispatching, logistics, or pickup-delivery with autonomous mobile robots.
+      - id: warehouse_AMR_core
+        description: AMR, AMR, warehouse fleet, routing, dispatching, logistics, or pickup-delivery with autonomous mobile robots.
     exclude_if_any:
       - id: unrelated_domain
         description: No credible transfer to robotics, multi-agent control, coordination, or transport.
@@ -62,7 +62,7 @@ priority_rules:
     - formation control
     - graph consensus
     - game theory
-    - AGV warehouse
+    - AMR warehouse
   medium:
     - MAPF
     - distributed optimization

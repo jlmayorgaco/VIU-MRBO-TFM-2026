@@ -99,9 +99,9 @@ CONCEPT_PATTERNS: dict[str, tuple[str, ...]] = {
         "coverage",
         "search and rescue",
     ),
-    "warehouse_agv_logistics": (
+    "warehouse_amr_logistics": (
         "warehouse",
-        "agv",
+        "amr",
         "automated guided vehicle",
         "autonomous mobile robot",
         "logistics",

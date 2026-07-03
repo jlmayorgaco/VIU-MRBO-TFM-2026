@@ -307,7 +307,7 @@ def save_warehouse_animation(
         _draw_motion_history(axis, result, frame_idx)
         _draw_snapshot(axis, result, frame_idx)
         axis.set_title(
-            f"Warehouse AGV simulation | t={result.time[frame_idx]:.1f}s | "
+            f"Warehouse AMR simulation | t={result.time[frame_idx]:.1f}s | "
             f"delivered={int(np.sum(result.load_status[frame_idx] == LOAD_DELIVERED))}/{len(result.loads)}"
         )
         return []
@@ -320,7 +320,7 @@ def save_warehouse_animation(
         blit=False,
         repeat=False,
     )
-    writer = FFMpegWriter(fps=fps, metadata={"title": "Warehouse realistic AGV simulation"})
+    writer = FFMpegWriter(fps=fps, metadata={"title": "Warehouse realistic AMR simulation"})
     animation.save(output, writer=writer, dpi=150)
     plt.close(figure)
     return output

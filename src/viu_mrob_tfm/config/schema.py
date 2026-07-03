@@ -31,13 +31,13 @@ class GraphConfig:
     adjacency: list[list[float]]
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, init=False)
 class SimulationConfig:
     """Core simulation parameters shared across scenarios."""
 
     duration: float = 20.0
     time_step: float = 0.1
-    agv_count: int = 3
+    amr_count: int = 3
     dimensions: int = 2
     random_seed: int = 2026
     initial_positions: list[list[float]] = field(default_factory=list)
@@ -45,6 +45,43 @@ class SimulationConfig:
     visibility_range: float = 8.0
     transport_threshold_steps: int = 3
     detection_radius: float = 0.75
+
+    def __init__(
+        self,
+        duration: float = 20.0,
+        time_step: float = 0.1,
+        amr_count: int = 3,
+        dimensions: int = 2,
+        random_seed: int = 2026,
+        initial_positions: list[list[float]] | None = None,
+        communication_range: float | None = None,
+        visibility_range: float = 8.0,
+        transport_threshold_steps: int = 3,
+        detection_radius: float = 0.75,
+        agv_count: int | None = None,
+    ) -> None:
+        if agv_count is not None:
+            amr_count = agv_count
+        self.duration = duration
+        self.time_step = time_step
+        self.amr_count = amr_count
+        self.dimensions = dimensions
+        self.random_seed = random_seed
+        self.initial_positions = list(initial_positions or [])
+        self.communication_range = communication_range
+        self.visibility_range = visibility_range
+        self.transport_threshold_steps = transport_threshold_steps
+        self.detection_radius = detection_radius
+
+    @property
+    def agv_count(self) -> int:
+        """Legacy alias for configurations created before the AMR terminology pass."""
+
+        return self.amr_count
+
+    @agv_count.setter
+    def agv_count(self, value: int) -> None:
+        self.amr_count = value
 
 
 @dataclass(slots=True)
@@ -103,11 +140,18 @@ class ExperimentConfig:
     def from_dict(cls, data: dict[str, Any]) -> "ExperimentConfig":
         """Build a typed config object from a plain dictionary."""
 
+        simulation_data = dict(data.get("simulation", {}))
+        if "agv_count" in simulation_data:
+            legacy_count = simulation_data.pop("agv_count")
+            if "amr_count" in simulation_data and simulation_data["amr_count"] != legacy_count:
+                msg = "simulation.amr_count and legacy simulation.agv_count disagree."
+                raise ValueError(msg)
+            simulation_data.setdefault("amr_count", legacy_count)
         return cls(
             name=data["name"],
             description=data.get("description", ""),
             controller=ControllerConfig(**data.get("controller", {})),
-            simulation=SimulationConfig(**data.get("simulation", {})),
+            simulation=SimulationConfig(**simulation_data),
             load=LoadConfig(**data.get("load", {})),
             graph=GraphConfig(**data.get("graph", {})),
             tasks=[TaskConfig(**item) for item in data.get("tasks", [])],

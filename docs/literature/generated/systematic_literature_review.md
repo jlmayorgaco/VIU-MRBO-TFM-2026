@@ -56,7 +56,7 @@ This is a PRISMA-style accounting table for the local arXiv corpus. It is not ye
 | planning mapf navigation | 135 |
 | optimization mpc | 134 |
 | learning marl gnn | 92 |
-| warehouse agv logistics | 87 |
+| warehouse AMR logistics | 87 |
 | formation rigidity geometry | 81 |
 | task allocation coalitions | 69 |
 
@@ -139,7 +139,7 @@ This is a defensible research gap for the thesis: a complete cooperative-transpo
 | 2024 | 2404.02362 | Task-priority Intermediated Hierarchical Distributed Policies: Reinforcement Learning o... | cooperative transport, task allocation coalitions, distributed control consensus, graph network topology | simulation, real robot, survey |
 | 2026 | 2606.04248 | RSC: Decentralized Rigid Formation Flocking for Large-Scale Swarms via Hybrid Predictiv... | cooperative transport, distributed control consensus, formation rigidity geometry, graph network topology | theory, simulation, real robot, survey |
 | 2020 | 2007.09243 | Multi-robot Cooperative Object Transportation using Decentralized Deep Reinforcement Le... | cooperative transport, distributed control consensus, formation rigidity geometry, graph network topology | theory, simulation, open source, survey |
-| 2021 | 2108.06886 | Decentralized Multi-AGV Task Allocation based on Multi-Agent Reinforcement Learning wit... | cooperative transport, task allocation coalitions, distributed control consensus, graph network topology | theory, simulation, survey |
+| 2021 | 2108.06886 | Decentralized multi-AMR Task Allocation based on Multi-Agent Reinforcement Learning wit... | cooperative transport, task allocation coalitions, distributed control consensus, graph network topology | theory, simulation, survey |
 | 2024 | 2409.18031 | Reasoning Multi-Agent Behavioral Topology for Interactive Autonomous Driving | task allocation coalitions, distributed control consensus, formation rigidity geometry, graph network topology | theory, simulation, open source, survey |
 | 2025 | 2503.19135 | Cooperative Control of Multi-Quadrotors for Transporting Cable-Suspended Payloads: Obst... | cooperative transport, task allocation coalitions, distributed control consensus, graph network topology | theory, simulation, survey |
 | 2025 | 2503.20723 | Multi-Robot Coordination Under Physical Limitations | cooperative transport, distributed control consensus, formation rigidity geometry, graph network topology | theory, simulation, real robot |
@@ -155,7 +155,7 @@ The author-productivity table should not be interpreted as impact ranking, becau
 | Karl H. Johansson | 39 | 0 | distributed_control_consensus;graph_network_topology;communication_constraints;robustness_safety_resilience;optimization_mpc |
 | Hideaki Ishii | 35 | 1 | distributed_control_consensus;graph_network_topology;robustness_safety_resilience;communication_constraints;optimization_mpc |
 | George J. Pappas | 34 | 2 | robustness_safety_resilience;graph_network_topology;communication_constraints;optimization_mpc;distributed_control_consensus |
-| Sven Koenig | 31 | 1 | planning_mapf_navigation;warehouse_agv_logistics;optimization_mpc;robustness_safety_resilience;graph_network_topology |
+| Sven Koenig | 31 | 1 | planning_mapf_navigation;warehouse_amr_logistics;optimization_mpc;robustness_safety_resilience;graph_network_topology |
 | Frank Allgöwer | 30 | 0 | graph_network_topology;distributed_control_consensus;communication_constraints;robustness_safety_resilience;optimization_mpc |
 | Vijay Kumar | 30 | 1 | graph_network_topology;communication_constraints;robustness_safety_resilience;learning_marl_gnn;optimization_mpc |
 | Amanda Prorok | 29 | 0 | learning_marl_gnn;planning_mapf_navigation;communication_constraints;graph_network_topology;robustness_safety_resilience |
@@ -163,7 +163,7 @@ The author-productivity table should not be interpreted as impact ranking, becau
 | Pratap Tokekar | 28 | 1 | communication_constraints;planning_mapf_navigation;robustness_safety_resilience;graph_network_topology;learning_marl_gnn |
 | Manuel Mazo | 28 | 0 | distributed_control_consensus;communication_constraints;graph_network_topology;robustness_safety_resilience;optimization_mpc |
 | Daniel E. Quevedo | 27 | 1 | graph_network_topology;distributed_control_consensus;communication_constraints;robustness_safety_resilience;optimization_mpc |
-| Jiaoyang Li | 27 | 0 | planning_mapf_navigation;warehouse_agv_logistics;optimization_mpc;graph_network_topology;robustness_safety_resilience |
+| Jiaoyang Li | 27 | 0 | planning_mapf_navigation;warehouse_amr_logistics;optimization_mpc;graph_network_topology;robustness_safety_resilience |
 | Sandra Hirche | 26 | 1 | distributed_control_consensus;graph_network_topology;communication_constraints;robustness_safety_resilience;optimization_mpc |
 | Ramviyas Parasuraman | 26 | 3 | planning_mapf_navigation;communication_constraints;graph_network_topology;distributed_control_consensus;robustness_safety_resilience |
 

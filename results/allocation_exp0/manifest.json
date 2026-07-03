@@ -1,0 +1,141 @@
+{
+  "experiment_id": "EXP0_static_allocation",
+  "load_count": 4,
+  "loads": [
+    {
+      "demand": 1,
+      "id": "load-01",
+      "pickup": [
+        1.6135805378295824,
+        2.3313320155708848
+      ],
+      "reward": 1.22
+    },
+    {
+      "demand": 2,
+      "id": "load-02",
+      "pickup": [
+        -2.5610272662483196,
+        0.40368928341931554
+      ],
+      "reward": 1.7200000000000002
+    },
+    {
+      "demand": 3,
+      "id": "load-03",
+      "pickup": [
+        2.551782249123127,
+        -3.0289153862409504
+      ],
+      "reward": 2.22
+    },
+    {
+      "demand": 5,
+      "id": "load-04",
+      "pickup": [
+        -3.1773903974854503,
+        -1.580727777775183
+      ],
+      "reward": 3.1400000000000006
+    }
+  ],
+  "methods": [
+    {
+      "allocated_robot_ids": "amr-01 amr-02 amr-03 amr-04 amr-05 amr-06 amr-07 amr-08 amr-09 amr-10",
+      "allocated_robots": 10,
+      "captured_reward": 5.16,
+      "idle_robot_ids": "",
+      "idle_robots": 0,
+      "load_count": 4,
+      "load_counts": "1 2 3 4",
+      "load_demands": "1 2 3 5",
+      "mean_distance_m": 2.361168862151585,
+      "method_code": "A",
+      "method_id": "A_centralized_classic_mincost",
+      "method_label": "Centralized classic min-cost",
+      "runtime_ms": 0.11999998241662979,
+      "satisfied_loads": 3,
+      "total_deficit": 1,
+      "total_distance_m": 23.61168862151585,
+      "total_overassignment": 0
+    },
+    {
+      "allocated_robot_ids": "amr-01 amr-02 amr-03 amr-04 amr-05 amr-06 amr-07 amr-08 amr-09 amr-10",
+      "allocated_robots": 10,
+      "captured_reward": 5.16,
+      "idle_robot_ids": "",
+      "idle_robots": 0,
+      "load_count": 4,
+      "load_counts": "1 2 3 4",
+      "load_demands": "1 2 3 5",
+      "mean_distance_m": 2.361168862151585,
+      "method_code": "B",
+      "method_id": "B_decentralized_classic_greedy",
+      "method_label": "Decentralized classic greedy",
+      "runtime_ms": 0.14269998064264655,
+      "satisfied_loads": 3,
+      "total_deficit": 1,
+      "total_distance_m": 23.61168862151585,
+      "total_overassignment": 0
+    },
+    {
+      "allocated_robot_ids": "amr-01 amr-02 amr-03 amr-04 amr-05 amr-06 amr-07 amr-08 amr-09 amr-10",
+      "allocated_robots": 10,
+      "captured_reward": 7.080000000000001,
+      "idle_robot_ids": "",
+      "idle_robots": 0,
+      "load_count": 4,
+      "load_counts": "0 2 3 5",
+      "load_demands": "1 2 3 5",
+      "mean_distance_m": 2.521361495651738,
+      "method_code": "C",
+      "method_id": "C_centralized_sota_reward_aware",
+      "method_label": "Centralized SOTA proxy",
+      "runtime_ms": 0.06500002928078175,
+      "satisfied_loads": 3,
+      "total_deficit": 1,
+      "total_distance_m": 25.213614956517382,
+      "total_overassignment": 0
+    },
+    {
+      "allocated_robot_ids": "amr-01 amr-02 amr-03 amr-04 amr-05 amr-06 amr-07 amr-08 amr-09 amr-10",
+      "allocated_robots": 10,
+      "captured_reward": 6.580000000000001,
+      "idle_robot_ids": "",
+      "idle_robots": 0,
+      "load_count": 4,
+      "load_counts": "1 1 3 5",
+      "load_demands": "1 2 3 5",
+      "mean_distance_m": 2.4864121467689673,
+      "method_code": "D",
+      "method_id": "D_decentralized_sota_auction",
+      "method_label": "Decentralized SOTA auction",
+      "runtime_ms": 0.534699996933341,
+      "satisfied_loads": 3,
+      "total_deficit": 1,
+      "total_distance_m": 24.864121467689674,
+      "total_overassignment": 0
+    },
+    {
+      "allocated_robot_ids": "amr-01 amr-02 amr-03 amr-04 amr-05 amr-06 amr-07 amr-08 amr-09 amr-10",
+      "allocated_robots": 10,
+      "captured_reward": 5.360000000000001,
+      "idle_robot_ids": "",
+      "idle_robots": 0,
+      "load_count": 4,
+      "load_counts": "0 0 3 7",
+      "load_demands": "1 2 3 5",
+      "mean_distance_m": 2.843262064679497,
+      "method_code": "E",
+      "method_id": "E_our_basic_smith_qr",
+      "method_label": "Our basic Smith-QR",
+      "runtime_ms": 0.1691999495960772,
+      "satisfied_loads": 2,
+      "total_deficit": 3,
+      "total_distance_m": 28.43262064679497,
+      "total_overassignment": 2
+    }
+  ],
+  "robot_count": 10,
+  "seed": 20260703
+}

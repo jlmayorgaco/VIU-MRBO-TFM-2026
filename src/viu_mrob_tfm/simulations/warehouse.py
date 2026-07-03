@@ -1,4 +1,4 @@
-"""Realistic warehouse simulation for emergent AGV coalitions.
+"""Realistic warehouse simulation for emergent AMR coalitions.
 
 This module is intentionally more physical than the small verification gates:
 

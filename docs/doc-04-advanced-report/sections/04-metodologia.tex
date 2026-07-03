@@ -1,4 +1,4 @@
-﻿%% ====================================================================
+%% ====================================================================
 \section{Metodología}
 \label{sec:metodologia}
 %% ====================================================================
@@ -11,9 +11,9 @@
 El trabajo se limita a un estudio analitico en 2D con robots de cinemática uniciclo. La validación
 es exclusivamente por simulación: Python aporta los resultados cuantitativos; CoppeliaSim,
 la comprobación visual aplicada en un entorno 3D simulado. El sistema puede manejar hasta
-$N = 15$ AGV y $K = 5$ tareas activas simultáneas; el límite $N = 15$ responde
+$N = 15$ AMR y $K = 5$ tareas activas simultáneas; el límite $N = 15$ responde
 a la complejidad computacional del simulador Python en tiempo real y al rango de
-flotas AGV típico en almacenes medianos, no a una restricción teórica del método, sino a una conveniencia para la simulación en CoppeliaSim.
+flotas AMR típico en almacenes medianos, no a una restricción teórica del método, sino a una conveniencia para la simulación en CoppeliaSim.
 El rango de comunicación $R$ se trata como parámetro variable entre 1\,m e infinito, y
 se introduce un radio de percepción $R_{\mathrm{vis}}$ para tareas, vecinos próximos y
 obstáculos.
@@ -28,7 +28,7 @@ actualizan en el mismo bucle de control.
 
 Sí se separa el alcance físico donde el trabajo decide
 qué robots forman la coalición, cuándo inician el transporte y qué comando cinemático
-ejecuta cada AGV; no modela las fuerzas de contacto que garantizan agarre o empuje
+ejecuta cada AMR; no modela las fuerzas de contacto que garantizan agarre o empuje
 estable (drag and pull). Esa parte pertenece al control cooperativo de manipulación documentado en
 \citet{ebel2024cooperative} y \citet{rosenfelder2024force}. Durante el transporte, la
 carga se propaga como un objeto cinemáticamente acoplado al centroide de la coalición.
@@ -130,7 +130,7 @@ Desde el punto de vista metodológico, el trabajo no se plantea como una revisi�
 sistemática PRISMA ni como una prueba en hardware, sino como investigación aplicada con
 modelo formal, simulación reproducible y comparación controlada. La revisión de
 literatura cumple una función de posicionamiento: identifica las familias que ya cubren
-AGV/AMR en almacenes, MRTA, coaliciones, juegos poblacionales y transporte cooperativo,
+AMR en almacenes, MRTA, coaliciones, juegos poblacionales y transporte cooperativo,
 y justifica por qué la contribución se formula en la intersección de esas familias. La
 parte experimental contrasta hipótesis causales internas: qué añade el consenso, qué
 añade la dinámica poblacional, qué diferencia introduce Smith frente al replicador y qué
@@ -213,7 +213,7 @@ comandos anteriores se traducen en velocidades de rueda:
   \label{eq:wheel_speeds}
 \end{equation}
 Esta relación cierra el vínculo entre la ley distribuida y el actuador: el método no se
-queda en una asignación abstracta, sino que termina en comandos ejecutables por cada AGV.
+queda en una asignación abstracta, sino que termina en comandos ejecutables por cada AMR.
 
 \input{figures/fig-robot.tex}
 
@@ -1674,29 +1674,29 @@ distintas pero fijadas.
   \bfseries Propósito \\
 \midrule
 A &
-  6 AGV, 3 tareas. \textbf{(a)}~$n_k = 2$ (balanceado, $N=Kn=6$);
+  6 AMR, 3 tareas. \textbf{(a)}~$n_k = 2$ (balanceado, $N=Kn=6$);
   \textbf{(b)}~$n_k = 1$ (línea base). &
   (a)~Validación numérica de H1 con $\Psi\equiv 1$, $R=\infty$, $N=Kn$.
   (b)~Línea base sin requisito de coalición. \\
 \addlinespace[2pt]
 B &
-  6 AGV; 1 tarea ligera ($n=1$) + 1 tarea pesada ($n=3$). &
+  6 AMR; 1 tarea ligera ($n=1$) + 1 tarea pesada ($n=3$). &
   Prueba central de coalición mínima: 1 robot a la ligera, 3 a la pesada. \\
 \addlinespace[2pt]
 C &
-  12 AGV, 5 tareas con $n_k \in \{1,1,2,3,4\}$. Recompensas
+  12 AMR, 5 tareas con $n_k \in \{1,1,2,3,4\}$. Recompensas
   $r_k \in \{2{,}0,\, 1{,}0,\, 0{,}5\}$. &
   Competencia y prioridad: tareas de $r_k$ alto atraen agentes antes,
   sin coordinación central. \\
 \addlinespace[2pt]
 D &
-  15 AGV, 5 tareas ($n_k \in \{1,2,2,3,4\}$). $R$ barrido en 10 puntos
+  15 AMR, 5 tareas ($n_k \in \{1,2,2,3,4\}$). $R$ barrido en 10 puntos
   log-espaciados de 1\,m a 15\,m, más $R=\infty$. &
   Curva de degradación $D(R) = \Theta(R)/\Theta(\infty)$, concentrada
   en la zona de transición de conectividad. \\
 \addlinespace[2pt]
 E &
-  10 AGV, 3 tareas ($n_k \in \{2,3,4\}$). Eliminación abrupta de 1 robot
+  10 AMR, 3 tareas ($n_k \in \{2,3,4\}$). Eliminación abrupta de 1 robot
   en $t=20\,\text{s}$ y 2 tareas nuevas ($n_k \in \{1,2\}$) en $t=30\,\text{s}$. &
   Reactividad ante perturbación: tiempo de reconstitución de coalición tras
   cambios abruptos en el conjunto. \\
@@ -1822,7 +1822,7 @@ sistema, sus valores nominales y el rango que se barre en los experimentos.
 La primera versión cerrada del simulador implementa un bucle cinemático incremental con
 los elementos mínimos necesarios para validar el TFM por capas:
 \begin{enumerate}
-  \item \textbf{Escenarios declarativos}: cada escenario define AGV, tareas
+  \item \textbf{Escenarios declarativos}: cada escenario define AMR, tareas
   (\texttt{TaskSpec}), obstáculos circulares estáticos (\texttt{ObstacleSpec}) y eventos
   de retirada abrupta de robots (\texttt{FailureEvent}).
   \item \textbf{Dinámica decisional}: cada robot mantiene preferencias sobre
@@ -1845,7 +1845,7 @@ los elementos mínimos necesarios para validar el TFM por capas:
   coordinador central.
 \end{enumerate}
 
-El estado registrado por episodio incluye tiempo, trayectorias de AGV, velocidades
+El estado registrado por episodio incluye tiempo, trayectorias de AMR, velocidades
 aplicadas, preferencias $\mathbf{p}_i(t)$, estimaciones $\hat{\mathbf{x}}_i(t)$,
 asignaciones discretas, modo de cada tarea, factibilidad por paso, estado activo de
 cada robot y trayectorias de carga. La batería de pruebas inicial cubre cuatro
@@ -1886,7 +1886,7 @@ $\eta$ & Ganancia de repulsión & 0{,}5 & Fijo \\
 $\delta$ & Ganancia de formación & 0{,}8 & Fijo \\
 $r_{\mathrm{det}}$ & Radio de detección de coalición & 1{,}0 m & Fijo \\
 $r_{\mathrm{form}}$ & Radio de activación de formación & 1{,}5 m & Fijo \\
-$r_{\mathrm{robot}}$ & Radio físico del AGV & 0{,}25 m & Pioneer~3-DX \\
+$r_{\mathrm{robot}}$ & Radio físico del AMR & 0{,}25 m & Pioneer~3-DX \\
 $r_{\mathrm{load}}$ & Radio de la carga & 0{,}30 m & Valor nominal \\
 $\varepsilon_r$ & Regularización de repulsión & 0{,}01 m & Fijo \\
 $\varepsilon_f$ & Regularización de formación & 0{,}01 m & Fijo \\

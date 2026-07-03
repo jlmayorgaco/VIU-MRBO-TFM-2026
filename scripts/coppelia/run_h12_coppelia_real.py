@@ -265,7 +265,7 @@ def build_scene(sim, cfg: CampaignConfig) -> dict[str, Any]:
         y = cfg.load_start[1] + offset[1]
         robot = create_box(
             sim,
-            f"AGV_dynamic_{i:02d}",
+            f"AMR_dynamic_{i:02d}",
             list(cfg.robot_size),
             [x, y, robot_z],
             mass_kg=cfg.robot_mass_kg,
@@ -274,7 +274,7 @@ def build_scene(sim, cfg: CampaignConfig) -> dict[str, Any]:
         )
         create_box(
             sim,
-            f"AGV_top_marker_{i:02d}",
+            f"AMR_top_marker_{i:02d}",
             [0.35, 0.08, 0.04],
             [x + 0.16, y, robot_z + cfg.robot_size[2] / 2 + 0.03],
             mass_kg=0.0,
@@ -283,7 +283,7 @@ def build_scene(sim, cfg: CampaignConfig) -> dict[str, Any]:
             respondable=False,
         )
         handles["robots"].append(robot)
-        handles["robot_names"].append(f"AGV_dynamic_{i:02d}")
+        handles["robot_names"].append(f"AMR_dynamic_{i:02d}")
 
     handles["human"] = create_cylinder(
         sim,

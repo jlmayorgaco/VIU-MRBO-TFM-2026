@@ -2,7 +2,7 @@
 
 ## Alcance
 
-Esta nota focaliza la revision sistematica en el tema exacto del TFM: transporte cooperativo distribuido de cargas por multiples robots moviles, con interes especial en AGVs/AMRs, coaliciones, comunicacion limitada, formacion rigida, restricciones de payload y asignacion distribuida.
+Esta nota focaliza la revision sistematica en el tema exacto del TFM: transporte cooperativo distribuido de cargas por multiples robots moviles, con interes especial en AMRs/AMRs, coaliciones, comunicacion limitada, formacion rigida, restricciones de payload y asignacion distribuida.
 
 La busqueda se hizo sobre la base local `literature.sqlite`, filtrando registros de prioridad alta/media que contienen senales directas de `cooperative transport`, `payload`, `load transport`, `object transport`, `box transport`, `cooperative manipulation`, `multi-robot manipulation`, `carrying` o `transporting`.
 
@@ -118,7 +118,7 @@ Smith-QR puede posicionarse justo en esa interseccion.
 
 Una formulacion defendible:
 
-> Proponemos una arquitectura distribuida para transporte cooperativo multi-AGV en la que una dinamica tipo Smith captura presion de asignacion bajo escasez, mientras un cierre QR/quorum transforma preferencias distribuidas en coaliciones enteras fisicamente factibles. La factibilidad no se define solo por asignacion, sino por capacidad efectiva, geometria/formacion, comunicacion disponible y robustez ante perturbaciones.
+> Proponemos una arquitectura distribuida para transporte cooperativo multi-AMR en la que una dinamica tipo Smith captura presion de asignacion bajo escasez, mientras un cierre QR/quorum transforma preferencias distribuidas en coaliciones enteras fisicamente factibles. La factibilidad no se define solo por asignacion, sino por capacidad efectiva, geometria/formacion, comunicacion disponible y robustez ante perturbaciones.
 
 Esto conecta cuatro capas:
 
@@ -157,7 +157,7 @@ Para cada paper focal, conviene extraer:
 
 - tipo de carga: caja, objeto rigido, payload suspendido, objeto fragil, carga generica;
 - modo fisico: empuje, soporte superior, cable, manipulacion, transporte por formacion;
-- robots: AGV/AMR, UAV, manipuladores, cuadrupedos, equipos heterogeneos;
+- robots: AMR, UAV, manipuladores, cuadrupedos, equipos heterogeneos;
 - decision: task allocation, coalition formation, path planning, control, all-stack;
 - comunicacion: centralizada, local, broadcast, event-triggered, limitada, desconocida;
 - factibilidad: peso, payload, wrench, geometria, energia, tiempo, colision;

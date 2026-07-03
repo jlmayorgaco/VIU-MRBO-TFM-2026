@@ -29,14 +29,14 @@ RQ4. What evidence is reported for robustness, scalability, communication effici
 
 ## Focused TFM review question
 
-For heterogeneous multi-AGV or mobile-robot teams performing cooperative transport under communication and resource constraints, what distributed coordination mechanisms combine allocation, coalition formation, formation/control geometry, and robustness guarantees?
+For heterogeneous multi-AMR or mobile-robot teams performing cooperative transport under communication and resource constraints, what distributed coordination mechanisms combine allocation, coalition formation, formation/control geometry, and robustness guarantees?
 
 ## Eligibility criteria
 
 In-scope papers should satisfy at least one core relevance condition:
 
 - Multi-robot or multi-agent coordination with a robotics, control, planning, or networked-systems setting.
-- Cooperative transport, cooperative manipulation, formation control, task allocation, coalition formation, MAPF, coverage, exploration, or warehouse/AGV fleet coordination.
+- Cooperative transport, cooperative manipulation, formation control, task allocation, coalition formation, MAPF, coverage, exploration, or warehouse/AMR fleet coordination.
 - Mathematical foundation directly usable for the thesis: graph-theoretic consensus/connectivity, game theory, distributed optimization, distributed MPC, control barrier functions, rigid formation, topology, or networked control.
 
 Out-of-scope papers:

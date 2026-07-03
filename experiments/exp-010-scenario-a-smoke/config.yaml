@@ -1,5 +1,5 @@
 name: exp-010-scenario-a-smoke
-description: Scenario A smoke run; 6 AGV, 3 balanced tasks with n_k=2.
+description: Scenario A smoke run; 6 AMR, 3 balanced tasks with n_k=2.
 controller:
   type: t4_smith
   parameters:
@@ -20,7 +20,7 @@ controller:
 simulation:
   duration: 30.0
   time_step: 0.1
-  agv_count: 6
+  amr_count: 6
   dimensions: 2
   random_seed: 2026
   communication_range:

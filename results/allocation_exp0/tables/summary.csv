@@ -1,0 +1,6 @@
+method_code,method_label,method_id,allocated_robots,idle_robots,satisfied_loads,load_count,total_deficit,total_overassignment,captured_reward,total_distance_m,mean_distance_m,runtime_ms,load_demands,load_counts,idle_robot_ids,allocated_robot_ids
+A,Centralized classic min-cost,A_centralized_classic_mincost,10,0,3,4,1,0,5.16,23.61168862151585,2.361168862151585,0.11999998241662979,1 2 3 5,1 2 3 4,,amr-01 amr-02 amr-03 amr-04 amr-05 amr-06 amr-07 amr-08 amr-09 amr-10
+B,Decentralized classic greedy,B_decentralized_classic_greedy,10,0,3,4,1,0,5.16,23.61168862151585,2.361168862151585,0.14269998064264655,1 2 3 5,1 2 3 4,,amr-01 amr-02 amr-03 amr-04 amr-05 amr-06 amr-07 amr-08 amr-09 amr-10
+C,Centralized SOTA proxy,C_centralized_sota_reward_aware,10,0,3,4,1,0,7.080000000000001,25.213614956517382,2.521361495651738,0.06500002928078175,1 2 3 5,0 2 3 5,,amr-01 amr-02 amr-03 amr-04 amr-05 amr-06 amr-07 amr-08 amr-09 amr-10
+D,Decentralized SOTA auction,D_decentralized_sota_auction,10,0,3,4,1,0,6.580000000000001,24.864121467689674,2.4864121467689673,0.534699996933341,1 2 3 5,1 1 3 5,,amr-01 amr-02 amr-03 amr-04 amr-05 amr-06 amr-07 amr-08 amr-09 amr-10
+E,Our basic Smith-QR,E_our_basic_smith_qr,10,0,2,4,3,2,5.360000000000001,28.43262064679497,2.843262064679497,0.1691999495960772,1 2 3 5,0 0 3 7,,amr-01 amr-02 amr-03 amr-04 amr-05 amr-06 amr-07 amr-08 amr-09 amr-10

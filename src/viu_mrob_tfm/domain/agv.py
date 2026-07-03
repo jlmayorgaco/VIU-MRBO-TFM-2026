@@ -1,22 +1,9 @@
-"""AGV domain entity used by scenarios and experiments."""
+"""Legacy mobile-robot aliases kept for backward compatibility."""
 
-from __future__ import annotations
+from viu_mrob_tfm.domain.amr import AMR
+from viu_mrob_tfm.domain.state import AMRState
 
-from dataclasses import dataclass, field
+AGV = AMR
+AGVState = AMRState
 
-from viu_mrob_tfm.domain.state import AGVState
-
-
-@dataclass(slots=True)
-class AGV:
-    """Minimal AGV description for early simulation scaffolding."""
-
-    identifier: str
-    state: AGVState = field(default_factory=AGVState)
-    nominal_mass: float = 50.0
-    max_control: float = 10.0
-
-    def reset(self) -> None:
-        """Reset the AGV state to a default value."""
-
-        self.state = AGVState()
+__all__ = ["AGV", "AGVState"]

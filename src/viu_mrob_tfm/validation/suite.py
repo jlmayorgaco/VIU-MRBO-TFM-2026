@@ -1620,6 +1620,7 @@ def _write_latex_tables(
     latex_payload = "\n".join(decision_table + gate_table + comparison_table + marl_table + neural_table + delta_table)
     (output_dir / "validation_suite_tables.tex").write_text(latex_payload, encoding="utf-8")
     doc_table_path = ROOT / "docs/report/sections/generated-validation-suite-v1.tex"
+    doc_table_path.parent.mkdir(parents=True, exist_ok=True)
     doc_table_path.write_text(latex_payload, encoding="utf-8")
 
 

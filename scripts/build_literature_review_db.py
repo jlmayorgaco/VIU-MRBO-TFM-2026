@@ -70,8 +70,8 @@ KEYWORD_GROUPS: dict[str, tuple[str, ...]] = {
         "topological",
         "configuration space",
     ),
-    "warehouse_agv": (
-        "agv",
+    "warehouse_amr": (
+        "amr",
         "automated guided vehicle",
         "warehouse",
         "logistics",
@@ -94,7 +94,7 @@ HIGH_PRIORITY_TAGS = {
     "distributed_control",
     "game_theory",
     "geometry_rigidity",
-    "warehouse_agv",
+    "warehouse_amr",
 }
 
 

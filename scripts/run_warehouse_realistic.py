@@ -1,4 +1,4 @@
-"""Run the realistic warehouse AGV simulation and save reproducible outputs."""
+"""Run the realistic warehouse AMR simulation and save reproducible outputs."""
 
 from __future__ import annotations
 

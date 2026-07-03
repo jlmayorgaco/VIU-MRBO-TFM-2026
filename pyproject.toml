@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "viu-mrob-tfm"
 version = "0.2.0"
-description = "Smith-QR distributed coordination for heterogeneous multi-AGV cooperative transport."
+description = "Smith-QR distributed coordination for heterogeneous multi-AMR cooperative transport."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
@@ -22,6 +22,10 @@ dependencies = [
 
 [project.urls]
 Repository = "https://github.com/example/VIU-MROB-TFM-2026"
+
+[project.scripts]
+viu-run-experiment = "viu_mrob_tfm.cli.run_experiment:main"
+viu-validate-suite = "viu_mrob_tfm.validation.suite:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }

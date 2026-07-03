@@ -7,7 +7,7 @@
 topics:
   - name: multi_agent_mobile_robotics
     max_results: 250
-    query: '(all:"multi-agent" OR all:"multi agent" OR all:"multi-robot" OR all:"multi robot" OR all:"multi-AGV" OR all:"multi AGV") AND (all:"mobile robot" OR all:"mobile robotics" OR all:robotics OR all:AGV OR cat:cs.RO)'
+    query: '(all:"multi-agent" OR all:"multi agent" OR all:"multi-robot" OR all:"multi robot" OR all:"multi-AMR" OR all:"multi AMR") AND (all:"mobile robot" OR all:"mobile robotics" OR all:robotics OR all:AMR OR cat:cs.RO)'
 
   - name: distributed_multi_robot_control
     max_results: 250
@@ -37,9 +37,9 @@ topics:
     max_results: 250
     query: '(all:"cooperative transportation" OR all:"cooperative transport" OR all:"object transport" OR all:"payload transport" OR all:"cooperative manipulation" OR all:"multi-robot manipulation") AND (all:"multi-robot" OR all:"multi robot" OR all:robot OR all:mobile OR cat:cs.RO)'
 
-  - name: multi_robot_load_transport_agv_warehouse
+  - name: multi_robot_load_transport_amr_warehouse
     max_results: 250
-    query: '(all:"multi-robot" OR all:"multi robot" OR all:"multi-AGV" OR all:"multi AGV" OR all:"automated guided vehicle") AND (all:transport OR all:transportation OR all:warehouse OR all:logistics OR all:payload OR all:load)'
+    query: '(all:"multi-robot" OR all:"multi robot" OR all:"multi-AMR" OR all:"multi AMR" OR all:"automated guided vehicle") AND (all:transport OR all:transportation OR all:warehouse OR all:logistics OR all:payload OR all:load)'
 
   - name: topology_geometry_robotics
     max_results: 250
@@ -85,9 +85,9 @@ topics:
     max_results: 250
     query: '(all:"multi-agent planning" OR all:"task assignment" OR all:"task allocation" OR all:"vehicle routing" OR all:"pickup and delivery" OR all:"assignment problem") AND (all:robot OR all:"multi robot" OR all:"multi-agent" OR all:fleet)'
 
-  - name: warehouse_agv_fleet_management
+  - name: warehouse_amr_fleet_management
     max_results: 250
-    query: '(all:warehouse OR all:logistics OR all:"automated guided vehicle" OR all:AGV OR all:"autonomous mobile robot" OR all:AMR) AND (all:fleet OR all:routing OR all:scheduling OR all:dispatching OR all:coordination OR all:transport)'
+    query: '(all:warehouse OR all:logistics OR all:"autonomous mobile robot" OR all:AMR) AND (all:fleet OR all:routing OR all:scheduling OR all:dispatching OR all:coordination OR all:transport)'
 
   - name: cooperative_manipulation_payload
     max_results: 250

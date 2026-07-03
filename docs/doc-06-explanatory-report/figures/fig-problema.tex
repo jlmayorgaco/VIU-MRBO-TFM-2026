@@ -32,16 +32,16 @@
     \node[font=\tiny\bfseries, text=VIUDeep, fill=VIUWhite, inner sep=0.5pt] at (#1,#2) {#3};
   \end{scope}}
 
-% --- AGV en vista cenital:  \agv{x}{y}{rumbo°}{nº} -------------------
-\providecommand{\agv}[4]{%
-  \pic[rotate=#3] at (#1,#2) {agvbody};
+% --- AMR en vista cenital:  \AMR{x}{y}{rumbo°}{nº} -------------------
+\providecommand{\AMR}[4]{%
+  \pic[rotate=#3] at (#1,#2) {AMRbody};
   \node[circle, fill=VIUWhite, draw=VIUOrange, line width=0.4pt, inner sep=0pt,
         minimum size=0.24cm, font=\tiny\bfseries, text=VIUDark] at (#1,#2) {#4};}
 
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}[x=1cm, y=1cm, >=Stealth,
-  agvbody/.pic={
+  AMRbody/.pic={
     \fill[VIUDark!75] (-0.31,-0.14) rectangle (-0.21,0.14);   % rueda izq.
     \fill[VIUDark!75] ( 0.21,-0.14) rectangle ( 0.31,0.14);   % rueda der.
     \draw[draw=VIUOrange, line width=0.6pt, fill=VIUOrange!25, rounded corners=1.5pt]
@@ -102,7 +102,7 @@
 \draw[route] (4.6,5.25) -- (7.7,3.95) -- (11.0,1.7);
 
 %====================== TAREA 1: un robot (n=1) =================
-\agv{2.0}{5.15}{90}{1}
+\AMR{2.0}{5.15}{90}{1}
 \draw[move] (2.05,5.45) -- (2.05,6.05);
 \node[phase, draw=FeasGreen, text=FeasGreen, anchor=west] at (2.55,5.2) {$n_1{=}1$ \checkmark};
 
@@ -112,9 +112,9 @@
 \draw[comm] (7.05,3.40) -- (7.70,4.45);
 \draw[comm] (8.35,3.40) -- (7.70,4.45);
 % robots de la coalición (rumbo hacia d_2)
-\agv{7.05}{3.40}{-28}{2}
-\agv{8.35}{3.40}{-28}{3}
-\agv{7.70}{4.45}{-28}{4}
+\AMR{7.05}{3.40}{-28}{2}
+\AMR{8.35}{3.40}{-28}{3}
+\AMR{7.70}{4.45}{-28}{4}
 % carga transportada (grande: n_2=3) en el centro de la coalición
 \crate{7.70}{3.74}{0.25}
 % geometría de formación d*
@@ -129,8 +129,8 @@
 
 %====================== TAREA 3: RECLUTAMIENTO =================
 \draw[comm] (9.35,5.95) -- (8.05,6.35);
-\agv{9.35}{5.95}{55}{5}
-\agv{8.05}{6.35}{-8}{6}
+\AMR{9.35}{5.95}{55}{5}
+\AMR{8.05}{6.35}{-8}{6}
 \draw[move] (9.45,6.20) -- (9.65,6.45);
 \draw[move] (8.35,6.42) to[out=15,in=205] (9.45,6.78);
 \node[phase, draw=NeedRed, text=NeedRed] at (9.25,5.05)
@@ -140,8 +140,8 @@
 \begin{scope}
 \draw[VIUGray!35, rounded corners=4pt, fill=VIULight] (0,-1.9) rectangle (12.5,-0.5);
 % fila 1
-\pic at (0.55,-0.92) {agvbody};
-\node[font=\tiny, anchor=west] at (0.95,-0.92) {AGV (vista cenital)};
+\pic at (0.55,-0.92) {AMRbody};
+\node[font=\tiny, anchor=west] at (0.95,-0.92) {AMR (vista cenital)};
 \crate{3.55}{-0.92}{0.16}
 \node[font=\tiny, anchor=west] at (3.85,-0.92) {carga ($\propto n_k$)};
 \node[pickup, minimum width=0.42cm, minimum height=0.42cm] at (6.35,-0.92) {};
@@ -165,7 +165,7 @@
 \end{tikzpicture}
 \caption[Escenario de asignación distribuida con coaliciones]%
 {\textbf{Instancia del problema de asignación distribuida con formación de coaliciones.}
-Una flota de $N=6$ AGV atiende $K=3$ tareas heterogéneas. En el caso base homogéneo,
+Una flota de $N=6$ AMR atiende $K=3$ tareas heterogéneas. En el caso base homogéneo,
 cada tarea~$k$ impone un requisito mínimo de cardinalidad $n_k$ y solo se completa cuando
 reúne una coalición factible $|\mathcal{C}_k|\ge n_k$; en la formulación general, la
 condición equivalente es $\sum_{i\in\mathcal{C}_k}c_i\ge M_k$. No hay coordinador

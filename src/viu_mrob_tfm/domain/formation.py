@@ -10,7 +10,7 @@ from numpy.typing import NDArray
 
 @dataclass(slots=True)
 class FormationSpec:
-    """Desired relative offsets between AGVs and the transported load."""
+    """Desired relative offsets between AMRs and the transported load."""
 
     relative_offsets: NDArray[np.float64] = field(
         default_factory=lambda: np.zeros((0, 2), dtype=float)
