@@ -1,0 +1,33 @@
+{
+  "algorithm": "ridge least-squares imitation from centralized coalition oracle",
+  "config_path": "configs\\training\\sp1\\SP1_imitation_from_oracle.yaml",
+  "feature_names": [
+    "bias",
+    "reward",
+    "cardinality_deficit_ratio",
+    "capacity_ratio",
+    "distance_m",
+    "priority_density"
+  ],
+  "idle_score": -0.02,
+  "model_version": "sp1-imitation-linear-v1",
+  "train_seed_count": 1000,
+  "training_id": "SP1_imitation_from_oracle_v1",
+  "validation": {
+    "coalition_success_rate_mean": 0.7582499999999999,
+    "demand_satisfaction_ratio_mean": 0.9213281995781997,
+    "robots_overassigned_mean": 0.0,
+    "robots_underassigned_mean": 0.82,
+    "training_id": "SP1_imitation_from_oracle_v1",
+    "validation_runs": 200,
+    "validation_seed_count": 200
+  },
+  "weights": [
+    0.5372314805589612,
+    0.04883472820542496,
+    0.12820219947647848,
+    -0.08409063206281694,
+    -0.049205618838130745,
+    -0.05348266664985451
+  ]
+}

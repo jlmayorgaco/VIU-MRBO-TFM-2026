@@ -1,0 +1,52 @@
+{
+  "algorithm": "MAPPO with shared decentralized actor, centralized critic, behavior-cloning warm start, and quorum decoder",
+  "bc_learning_rate": 0.001,
+  "bc_pretrain_epochs": 40,
+  "checkpoint_file": "model.pt",
+  "clip_epsilon": 0.2,
+  "config_path": "configs\\training\\sp1\\SP1_mappo_recruitment.yaml",
+  "decoder_actor_weight": 0.05,
+  "decoder_capacity_weight": 0.02,
+  "decoder_demand_weight": 0.8,
+  "decoder_distance_weight": 0.02,
+  "decoder_reward_weight": 2.0,
+  "entropy_coef": 0.005,
+  "global_feature_names": [
+    "robot_count_norm",
+    "load_count_norm",
+    "demand_ratio",
+    "capacity_ratio",
+    "mean_reward_norm",
+    "payload_cv",
+    "mean_distance_norm"
+  ],
+  "hidden_dim": 32,
+  "learning_rate": 0.0005,
+  "model_version": "sp1-mappo-v4",
+  "pair_feature_names": [
+    "bias",
+    "reward_norm",
+    "load_demand_ratio",
+    "capacity_ratio",
+    "distance_norm",
+    "visible"
+  ],
+  "ppo_epochs": 4,
+  "rollout_horizon": 32,
+  "total_episodes": 512,
+  "train_seed_count": 1000,
+  "training_id": "SP1_mappo_recruitment_v1",
+  "use_quorum_decoder": true,
+  "validation": {
+    "captured_reward_mean": 6.724378973081421,
+    "coalition_success_rate_mean": 0.8339166666666665,
+    "demand_satisfaction_ratio_mean": 0.9201355588855589,
+    "robots_overassigned_mean": 0.0,
+    "robots_underassigned_mean": 0.855,
+    "training_id": "SP1_mappo_recruitment_v1",
+    "validation_runs": 200,
+    "validation_seed_count": 200
+  },
+  "validation_seed_count": 200,
+  "value_coef": 0.5
+}

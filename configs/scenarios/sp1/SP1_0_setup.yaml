@@ -1,0 +1,11 @@
+scenario_id: SP1_recruitment
+param_generator: setup
+description: "Deterministic small setup for SP1 engine, metrics, renderer, and method smoke tests."
+params:
+  n_robots: 4
+  n_loads: 1
+  demand_ratio: 0.5
+  min_cardinality_choices: [2]
+  heterogeneous_robots: false
+  communication_radius: .inf
+  position_noise_std: 0.0

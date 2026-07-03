@@ -1,0 +1,33 @@
+experiment_id: SP1_DEBUG_smoke
+mode: monte_carlo
+description: "Short SP1 smoke run for scenario generation, methods, metrics, plots, and representative video."
+output_dir: results/sp1/SP1_DEBUG_smoke
+
+scenarios:
+  - id: SP1_recruitment
+    param_generator: setup
+
+methods:
+  - id: greedy_nearest
+  - id: hungarian_expanded
+  - id: centralized_coalition_milp
+  - id: cbba
+  - id: replicator_cardinality
+  - id: smith_cardinality
+  - id: bnn_cardinality
+  - id: primal_dual_cardinality_capacity
+  - id: primal_dual_wrench_market
+  - id: imitation_oracle
+    params:
+      checkpoint: outputs/trained_models/SP1/imitation_oracle/v1/model.json
+  - id: mappo_recruitment
+    params:
+      checkpoint: outputs/trained_models/SP1/mappo_recruitment/v1/model.json
+
+seeds:
+  start: 2000
+  count: 3
+
+artifacts:
+  save_plots: true
+  save_video: true

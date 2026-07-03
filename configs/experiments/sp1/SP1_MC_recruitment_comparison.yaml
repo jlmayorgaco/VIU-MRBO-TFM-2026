@@ -1,0 +1,69 @@
+experiment_id: SP1_MC_recruitment_comparison
+mode: monte_carlo
+description: "Final SP1 Monte Carlo comparison. Uses frozen tuned params and frozen data-driven checkpoints only."
+output_dir: results/sp1/SP1_MC_recruitment_comparison
+
+scenarios:
+  - id: SP1_recruitment
+    param_generator: under_demand
+  - id: SP1_recruitment
+    param_generator: balanced_demand
+  - id: SP1_recruitment
+    param_generator: over_demand
+  - id: SP1_recruitment
+    param_generator: monte_carlo
+
+methods:
+  - id: greedy_nearest
+  - id: hungarian_expanded
+  - id: centralized_coalition_milp
+  - id: cbba
+  - id: replicator_cardinality
+    tuning_artifact: outputs/tuning/SP1/model_based/best_params.yaml
+  - id: smith_cardinality
+    tuning_artifact: outputs/tuning/SP1/model_based/best_params.yaml
+  - id: bnn_cardinality
+    tuning_artifact: outputs/tuning/SP1/model_based/best_params.yaml
+  - id: primal_dual_cardinality_capacity
+    tuning_artifact: outputs/tuning/SP1/model_based/best_params.yaml
+  - id: primal_dual_wrench_market
+    tuning_artifact: outputs/tuning/SP1/model_based/best_params.yaml
+  - id: local_primal_dual_wrench_market
+    tuning_artifact: outputs/tuning/SP1/model_based/best_params.yaml
+  - id: imitation_oracle
+    params:
+      checkpoint: outputs/trained_models/SP1/imitation_oracle/v1/model.json
+    optional: true
+  - id: mappo_recruitment
+    params:
+      checkpoint: outputs/trained_models/SP1/mappo_recruitment/v1/model.json
+    optional: true
+
+seeds:
+  start: 2000
+  count: 100
+
+metrics:
+  - coalition_success_rate
+  - served_load_rate
+  - demand_satisfaction_ratio
+  - coalition_time
+  - robots_underassigned
+  - robots_overassigned
+  - assignment_cost
+  - priority_regret
+  - optimality_gap_vs_oracle
+  - strategy_switches
+  - communication_messages
+  - runtime_ms
+
+artifacts:
+  save_snapshots: true
+  save_trajectory_plot: true
+  save_video: true
+  video:
+    save_all_runs: false
+    save_best_run: true
+    save_median_run: true
+    save_worst_run: true
+    selection_metric: demand_satisfaction_ratio
