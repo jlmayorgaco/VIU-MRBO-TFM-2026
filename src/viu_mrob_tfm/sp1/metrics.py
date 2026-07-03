@@ -1,0 +1,152 @@
+"""Metrics for SP1 recruitment and coalition experiments."""
+
+from __future__ import annotations
+
+from dataclasses import asdict, dataclass
+from typing import Any
+
+import numpy as np
+
+from viu_mrob_tfm.allocation import Assignment
+from viu_mrob_tfm.domain import WorldState
+
+
+@dataclass(frozen=True, slots=True)
+class SP1Metrics:
+    """Flat SP1 metric bundle written to CSV and reports."""
+
+    coalition_success_rate: float
+    served_load_rate: float
+    demand_satisfaction_ratio: float
+    coalition_time: float
+    robots_underassigned: int
+    robots_overassigned: int
+    assignment_cost: float
+    priority_regret: float
+    optimality_gap_vs_oracle: float
+    strategy_switches: int
+    communication_messages: int
+    runtime_ms: float
+    captured_reward: float
+    oracle_reward: float
+    assigned_robots: int
+    idle_robots: int
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+def load_diagnostics(world: WorldState, assignment: Assignment) -> list[dict[str, Any]]:
+    """Return per-load SP1 feasibility diagnostics."""
+
+    labels = np.asarray(assignment.labels, dtype=int)
+    payloads = np.asarray([robot.spec.capacity.payload_kg for robot in world.robots], dtype=float)
+    rows = []
+    for load_idx, load in enumerate(world.loads):
+        assigned = np.flatnonzero(labels == load_idx + 1)
+        assigned_capacity = float(np.sum(payloads[assigned]))
+        required_capacity = float(load.min_capacity_kg)
+        assigned_robots = int(assigned.size)
+        required_robots = int(load.min_coalition_size)
+        robot_deficit = max(required_robots - assigned_robots, 0)
+        robot_surplus = max(assigned_robots - required_robots, 0)
+        capacity_deficit = max(required_capacity - assigned_capacity, 0.0)
+        status = "OK"
+        if robot_deficit > 0 or capacity_deficit > 1e-9:
+            status = "UNDER"
+        elif robot_surplus > 0:
+            status = "OVER"
+        rows.append(
+            {
+                "load_id": load.identifier,
+                "load_index": load_idx + 1,
+                "required_robots": required_robots,
+                "assigned_robots": assigned_robots,
+                "robot_deficit": robot_deficit,
+                "robot_surplus": robot_surplus,
+                "mass_kg": float(load.mass_kg),
+                "required_capacity_kg": required_capacity,
+                "assigned_capacity_kg": assigned_capacity,
+                "capacity_deficit_kg": capacity_deficit,
+                "status": status,
+                "reward": float(load.reward),
+                "assigned_robot_ids": " ".join(world.robots[idx].identifier for idx in assigned),
+            }
+        )
+    return rows
+
+
+def evaluate_assignment(
+    world: WorldState,
+    assignment: Assignment,
+    *,
+    runtime_ms: float,
+    oracle_assignment: Assignment | None = None,
+    communication_radius: float = float("inf"),
+    centralized: bool = False,
+) -> SP1Metrics:
+    """Compute SP1 one-shot recruitment metrics."""
+
+    labels = np.asarray(assignment.labels, dtype=int)
+    diagnostics = load_diagnostics(world, assignment)
+    served = [row for row in diagnostics if row["status"] in {"OK", "OVER"}]
+    demand_total = sum(row["required_robots"] for row in diagnostics)
+    demand_met = sum(min(row["assigned_robots"], row["required_robots"]) for row in diagnostics)
+    underassigned = int(sum(row["robot_deficit"] for row in diagnostics))
+    overassigned = int(sum(row["robot_surplus"] for row in diagnostics))
+    captured_reward = float(sum(row["reward"] for row in served))
+    assignment_cost = _assignment_distance(world, assignment)
+
+    oracle_reward = captured_reward
+    oracle_cost = assignment_cost
+    if oracle_assignment is not None:
+        oracle_diagnostics = load_diagnostics(world, oracle_assignment)
+        oracle_reward = float(sum(row["reward"] for row in oracle_diagnostics if row["status"] in {"OK", "OVER"}))
+        oracle_cost = _assignment_distance(world, oracle_assignment)
+
+    score = captured_reward - 0.05 * assignment_cost
+    oracle_score = oracle_reward - 0.05 * oracle_cost
+    if abs(oracle_score) < 1e-9:
+        gap = 0.0
+    else:
+        gap = max(0.0, float((oracle_score - score) / abs(oracle_score)))
+
+    return SP1Metrics(
+        coalition_success_rate=float(len(served) / max(len(world.loads), 1)),
+        served_load_rate=float(len(served) / max(len(world.loads), 1)),
+        demand_satisfaction_ratio=float(demand_met / max(demand_total, 1)),
+        coalition_time=1.0 if underassigned == 0 else float("nan"),
+        robots_underassigned=underassigned,
+        robots_overassigned=overassigned,
+        assignment_cost=assignment_cost,
+        priority_regret=max(0.0, oracle_reward - captured_reward),
+        optimality_gap_vs_oracle=gap,
+        strategy_switches=0,
+        communication_messages=_communication_messages(world, communication_radius, centralized),
+        runtime_ms=float(runtime_ms),
+        captured_reward=captured_reward,
+        oracle_reward=oracle_reward,
+        assigned_robots=int(np.sum(labels > 0)),
+        idle_robots=int(np.sum(labels == 0)),
+    )
+
+
+def _assignment_distance(world: WorldState, assignment: Assignment) -> float:
+    labels = np.asarray(assignment.labels, dtype=int)
+    total = 0.0
+    for robot_idx, label in enumerate(labels):
+        if label <= 0:
+            continue
+        total += float(np.linalg.norm(world.robots[robot_idx].position - world.loads[int(label) - 1].pickup))
+    return total
+
+
+def _communication_messages(world: WorldState, radius: float, centralized: bool) -> int:
+    if centralized or not np.isfinite(radius):
+        return len(world.robots) * len(world.loads)
+    count = 0
+    for robot in world.robots:
+        for load in world.loads:
+            if float(np.linalg.norm(robot.position - load.pickup)) <= radius:
+                count += 1
+    return count

@@ -1,0 +1,56 @@
+experiment_id: SP1_TUNE_model_based
+mode: tune_model_based
+description: "Tune model-based SP1 recruitment methods on non-test seeds. No final Monte Carlo seeds are used."
+output_dir: results/sp1/SP1_TUNE_model_based
+
+scenarios:
+  - id: SP1_recruitment
+    param_generator: under_demand
+  - id: SP1_recruitment
+    param_generator: balanced_demand
+  - id: SP1_recruitment
+    param_generator: over_demand
+
+methods:
+  - id: replicator_cardinality
+  - id: smith_cardinality
+  - id: bnn_cardinality
+  - id: primal_dual_cardinality_capacity
+  - id: primal_dual_wrench_market
+  - id: local_primal_dual_wrench_market
+
+seeds:
+  start: 0
+  count: 30
+
+validation_seeds:
+  start: 1000
+  count: 200
+
+tuning:
+  output_artifact: outputs/tuning/SP1/model_based/best_params.yaml
+  method_param_grid:
+    replicator_cardinality:
+      distance_weight: [0.16, 0.22, 0.30]
+      deficit_weight: [0.75, 1.0, 1.25]
+    smith_cardinality:
+      distance_weight: [0.16, 0.22, 0.30]
+      deficit_weight: [1.0, 1.25, 1.5]
+      idle_score: [0.0, 0.03]
+    bnn_cardinality:
+      distance_weight: [0.16, 0.22, 0.30]
+      deficit_weight: [0.8, 1.1]
+    primal_dual_cardinality_capacity:
+      distance_weight: [0.10, 0.14, 0.18]
+      deficit_weight: [1.0, 1.35]
+      capacity_weight: [0.65, 0.90]
+    primal_dual_wrench_market:
+      distance_weight: [0.10, 0.14, 0.18]
+      deficit_weight: [1.15, 1.35]
+      capacity_weight: [0.75, 0.95]
+      wrench_weight: [0.10, 0.20]
+    local_primal_dual_wrench_market:
+      distance_weight: [0.10, 0.14, 0.18]
+      deficit_weight: [1.15, 1.35]
+      capacity_weight: [0.75, 0.95]
+      wrench_weight: [0.10, 0.20]

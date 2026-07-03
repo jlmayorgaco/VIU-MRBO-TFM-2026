@@ -1,0 +1,7 @@
+scenario_id: SP1_recruitment
+param_generator: over_demand
+description: "SP1 over-demand scenarios where rho_D > 1 and prioritization matters."
+params:
+  n_robots: [6, 8]
+  demand_ratio: [1.25, 1.5]
+  heterogeneous_robots: [false, true]

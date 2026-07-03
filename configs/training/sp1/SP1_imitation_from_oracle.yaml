@@ -1,0 +1,24 @@
+training_id: SP1_imitation_from_oracle_v1
+mode: train_imitation
+description: "Train a lightweight frozen data-driven recruitment policy by imitating the centralized coalition oracle."
+
+scenarios:
+  - id: SP1_recruitment
+    param_generator: monte_carlo
+
+train_seeds:
+  start: 0
+  count: 1000
+
+validation_seeds:
+  start: 1000
+  count: 200
+
+algorithm:
+  id: recruitment.data_driven.decentralized.imitation_oracle
+  params:
+    model_class: linear_score_policy
+    teacher: centralized_coalition_milp
+
+output:
+  checkpoint_dir: outputs/trained_models/SP1/imitation_oracle/v1
