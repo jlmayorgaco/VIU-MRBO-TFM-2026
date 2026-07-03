@@ -1,0 +1,21 @@
+method_id,load_id,load_index,mass_kg,required_capacity_kg,min_robots,assigned_robots,assigned_capacity_kg,capacity_deficit_kg,capacity_headroom_kg,robot_count_balance,status,assigned_robot_ids
+A_centralized_classic_mincost,load-01,1,20.000,20.000,1,1,25.000,0.000,5.000,0,OK,amr-03
+A_centralized_classic_mincost,load-02,2,48.000,48.000,2,2,50.000,0.000,2.000,0,OK,amr-02 amr-05
+A_centralized_classic_mincost,load-03,3,73.000,73.000,3,3,75.000,0.000,2.000,0,OK,amr-06 amr-09 amr-10
+A_centralized_classic_mincost,load-04,4,118.000,118.000,5,4,100.000,18.000,0.000,-1,UNDER,amr-01 amr-04 amr-07 amr-08
+B_decentralized_classic_greedy,load-01,1,20.000,20.000,1,1,25.000,0.000,5.000,0,OK,amr-03
+B_decentralized_classic_greedy,load-02,2,48.000,48.000,2,2,50.000,0.000,2.000,0,OK,amr-02 amr-05
+B_decentralized_classic_greedy,load-03,3,73.000,73.000,3,3,75.000,0.000,2.000,0,OK,amr-06 amr-09 amr-10
+B_decentralized_classic_greedy,load-04,4,118.000,118.000,5,4,100.000,18.000,0.000,-1,UNDER,amr-01 amr-04 amr-07 amr-08
+C_centralized_sota_reward_aware,load-01,1,20.000,20.000,1,0,0.000,20.000,0.000,-1,UNDER,
+C_centralized_sota_reward_aware,load-02,2,48.000,48.000,2,2,50.000,0.000,2.000,0,OK,amr-02 amr-05
+C_centralized_sota_reward_aware,load-03,3,73.000,73.000,3,3,75.000,0.000,2.000,0,OK,amr-06 amr-09 amr-10
+C_centralized_sota_reward_aware,load-04,4,118.000,118.000,5,5,125.000,0.000,7.000,0,OK,amr-01 amr-03 amr-04 amr-07 amr-08
+D_decentralized_sota_auction,load-01,1,20.000,20.000,1,1,25.000,0.000,5.000,0,OK,amr-03
+D_decentralized_sota_auction,load-02,2,48.000,48.000,2,1,25.000,23.000,0.000,-1,UNDER,amr-05
+D_decentralized_sota_auction,load-03,3,73.000,73.000,3,3,75.000,0.000,2.000,0,OK,amr-06 amr-09 amr-10
+D_decentralized_sota_auction,load-04,4,118.000,118.000,5,5,125.000,0.000,7.000,0,OK,amr-01 amr-02 amr-04 amr-07 amr-08
+E_our_basic_smith_qr,load-01,1,20.000,20.000,1,0,0.000,20.000,0.000,-1,UNDER,
+E_our_basic_smith_qr,load-02,2,48.000,48.000,2,0,0.000,48.000,0.000,-2,UNDER,
+E_our_basic_smith_qr,load-03,3,73.000,73.000,3,3,75.000,0.000,2.000,0,OK,amr-06 amr-09 amr-10
+E_our_basic_smith_qr,load-04,4,118.000,118.000,5,7,175.000,0.000,57.000,2,OVER,amr-01 amr-02 amr-03 amr-04 amr-05 amr-07 amr-08
