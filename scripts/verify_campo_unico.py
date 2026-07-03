@@ -1,4 +1,4 @@
-"""Numerical gate for the mode-free mixed-field AGV architecture.
+"""Numerical gate for the mode-free mixed-field AMR architecture.
 
 This gate checks the stronger architecture discussed after the mid-report:
 

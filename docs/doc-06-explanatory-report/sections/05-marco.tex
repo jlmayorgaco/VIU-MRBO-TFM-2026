@@ -46,7 +46,7 @@ una perturbación acotada del sistema ideal.
 La arquitectura del método puede resumirse en cuatro verbos: estimar, valorar, decidir
 y moverse. El consenso estima ocupación o capacidad; el juego valora cada tarea; Smith
 decide cómo mover masa decisional; y el campo convierte la decisión en movimiento de
-AGV. La Figura~\ref{fig:marco_capas} muestra el bucle conceptual.
+AMR. La Figura~\ref{fig:marco_capas} muestra el bucle conceptual.
 
 \begin{figure}[H]
 \centering
@@ -248,7 +248,7 @@ exploración o componentes aprendidos para superar cuellos de botella locales.
 
 \begin{table}[H]
 \centering
-\caption{Lectura comparativa entre Smith-QR y MARL en coordinación multi-AGV.}
+\caption{Lectura comparativa entre Smith-QR y MARL en coordinación multi-AMR.}
 \label{tab:marl_smithqr}
 \small
 \begin{tabularx}{\linewidth}{@{}p{0.24\linewidth}XX@{}}
@@ -932,7 +932,7 @@ extensión rompe la energía estática \eqref{eq:marco_energia}. Debe mantenerse
 \label{subsec:limite-campo-medio}
 
 El límite $N\to\infty$ no es una decoración teórica: convierte una interacción
-robot--robot en una interacción robot--campo. Para una flota finita, la nube de AGVs se
+robot--robot en una interacción robot--campo. Para una flota finita, la nube de AMRs se
 representa por la medida empírica suavizada
 \begin{equation}
   \rho^N(x,t)=\frac{1}{N}\sum_{i=1}^{N}K_h\!\left(x-p_i(t)\right),
@@ -1075,7 +1075,7 @@ y que los agentes ejecutan, explícita o implícitamente, el control óptimo aso
 El flujo lógico es discreto--continuo--discreto. Primero, la flota finita se transforma
 en una densidad suavizada con \eqref{eq:medida_empirica_mfg}. Segundo, se razona sobre la
 ley continua \eqref{eq:mfg_hjb_fpk}, donde la interacción es con campos escalares.
-Tercero, se vuelve a cada AGV evaluando esos campos en su posición real $p_i(t)$. El
+Tercero, se vuelve a cada AMR evaluando esos campos en su posición real $p_i(t)$. El
 resultado no exige que cada robot resuelva una PDE completa; basta con que consulte
 gradientes publicados por un nodo de borde o estimados localmente.
 
@@ -1119,7 +1119,7 @@ $1/N$, añadir robots no cambia la escala de $\rho$ ni la escala de los agregado
   \label{eq:agregado_autoescalado}
 \end{equation}
 Las ganancias actúan sobre una masa total unitaria, no sobre el conteo bruto de robots.
-Esto permite probar una ley con pocos AGVs y trasladarla a una flota mayor sin reescalar
+Esto permite probar una ley con pocos AMRs y trasladarla a una flota mayor sin reescalar
 manualmente cada peso de repulsión o radio de coalición; lo que debe validarse es el
 error de discretización, no una nueva familia de ganancias.
 
@@ -1687,7 +1687,7 @@ refinar qué se estima, qué se recluta y cuándo se acepta una coalición como 
 \subsubsection{DAC con Laplaciano variable}
 
 El consenso dinámico de media se apoya en un grafo de comunicación
-$G(t)=(\mathcal V,\mathcal E(t))$ cuyo Laplaciano $\mathcal L(t)$ cambia cuando los AGVs
+$G(t)=(\mathcal V,\mathcal E(t))$ cuyo Laplaciano $\mathcal L(t)$ cambia cuando los AMRs
 se ocultan detrás de racks, se alejan o cruzan zonas de baja cobertura. Si se denota por
 $Z_k(t)$ el agregado real de capacidad de la tarea $k$ y por $\widehat Z_{ik}(t)$ la
 estimación local del robot $i$, el error de consenso puede escribirse como
@@ -1801,7 +1801,7 @@ positiva:
 \end{equation}
 con margen $\eta_{\mathrm{piv}}\ge0$. La función $V_k$ mide valor físico de servicio:
 reducción de déficit wrench, aumento de velocidad de carga o disminución de riesgo. Si
-la carga ya se mueve al ritmo deseado, el valor marginal de otro AGV cae a cero y el
+la carga ya se mueve al ritmo deseado, el valor marginal de otro AMR cae a cero y el
 robot se retira por coste de oportunidad. Esta regla estabiliza el reclutamiento porque
 internaliza batería, desgaste y redundancia física.
 
@@ -1857,7 +1857,7 @@ Una energía libre operacional para la coalición puede escribirse como
   \sum_i\chi_B(B_i)
   +
   \sum_i\chi_{\mathrm{safe}}(q_i).
-  \label{eq:free_energy_agv}
+  \label{eq:free_energy_AMR}
 \end{equation}
 La acción física desciende esta energía:
 \begin{equation}
@@ -1901,7 +1901,7 @@ desde un supervisor:
   K_L\sin(\theta_k^\star-\theta_i)
   -
   K_O\frac{\partial U_{\mathrm{obs}}}{\partial\theta_i}.
-  \label{eq:kuramoto_agv}
+  \label{eq:kuramoto_AMR}
 \end{equation}
 El término $\theta_k^\star$ representa la fase preferida inducida por el wrench deseado
 de la carga; el último término desplaza fases que producirían colisión u obstrucción. El
@@ -1961,9 +1961,9 @@ Capacidad wrench & \eqref{eq:capacidad_wrench} &
 Hipótesis extendida & mapa contacto--wrench calibrado & Contacto \\
 Contribución marginal privada & \eqref{eq:contribucion_marginal_vcg} &
 Hipótesis extendida & certificados de batería/salud trazables & Incentivos \\
-Inferencia activa física & \eqref{eq:free_energy_agv} &
+Inferencia activa física & \eqref{eq:free_energy_AMR} &
 Hipótesis extendida & medición de velocidad real de carga & Reclutamiento \\
-Sincronización de fases & \eqref{eq:kuramoto_agv} &
+Sincronización de fases & \eqref{eq:kuramoto_AMR} &
 Hipótesis extendida & fases de contacto y obstáculos acotados & Formación \\
 Control vectorial finito & Alg.~\ref{alg:control-vectorial} &
 Hipótesis extendida & gates de Tabla~\ref{tab:gates_control_vectorial} & Implementación \\

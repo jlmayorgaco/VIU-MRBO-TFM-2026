@@ -12,7 +12,7 @@ from viu_mrob_tfm.simulation import PolicyStack, SimulationEngine
 
 
 def test_v6_domain_models_construct_world_state() -> None:
-    robot = RobotRuntimeState(spec=RobotSpec(identifier="agv-1"), position=np.array([0.0, 0.0]))
+    robot = RobotRuntimeState(spec=RobotSpec(identifier="AMR-1"), position=np.array([0.0, 0.0]))
     load = LoadSpec(identifier="load-1", pickup=np.array([1.0, 0.0]), destination=np.array([2.0, 0.0]))
     world = WorldState(robots=[robot], loads=[load])
 

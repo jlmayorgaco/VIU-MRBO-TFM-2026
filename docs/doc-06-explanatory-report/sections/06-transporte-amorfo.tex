@@ -16,7 +16,7 @@ una masa de robots rodea, empuja y estabiliza una carga física.
 \label{subsec:amorfo-fase}
 
 El primer cambio consiste en abandonar la densidad sólo espacial y pasar al espacio de
-fase. Un AGV infinitesimal se describe por
+fase. Un AMR infinitesimal se describe por
 \begin{equation}
   z=(x,v)\in\mathcal Z=\mathcal X\times\mathcal V\subset\mathbb R^2\times\mathbb R^2,
   \label{eq:amorfo_estado_fase}
@@ -53,11 +53,11 @@ La flota finita induce una medida empírica en fase:
 En el límite de muchos robots, $\rho^N\rightharpoonup\rho$ y el estado colectivo deja de
 ser una lista de agentes para convertirse en una densidad $\rho(x,v,t)$. La diferencia
 respecto a la Sec.~\ref{subsec:limite-campo-medio} es que ahora la inercia importa: una
-masa de AGVs que ya se mueve hacia una carga no puede reorientarse sin coste.
+masa de AMRs que ya se mueve hacia una carga no puede reorientarse sin coste.
 
 \paragraph{Lectura de \eqref{eq:amorfo_medida_fase}.}
 La medida empírica en fase coloca una campana espacial $K_x$ y una campana de velocidad
-$K_v$ sobre cada AGV. Dos robots en el mismo punto no son equivalentes si uno se mueve
+$K_v$ sobre cada AMR. Dos robots en el mismo punto no son equivalentes si uno se mueve
 hacia la carga y otro se aleja; por eso la densidad vive en $(x,v)$ y no sólo en $x$.
 El límite continuo resume cuánta masa hay en cada región del almacén y con qué tendencia
 de movimiento.
@@ -360,7 +360,7 @@ transformación. La política ideal se recupera como
 \end{equation}
 Esta es la pieza computacional explotable: un nodo de borde puede resolver una ecuación
 lineal de reacción--difusión sobre una grilla gruesa y publicar $\psi$ o su gradiente,
-mientras cada AGV evalúa localmente la política.
+mientras cada AMR evalúa localmente la política.
 
 \paragraph{Lectura de \eqref{eq:amorfo_hopf_cole}--\eqref{eq:amorfo_politica_hopf}.}
 La transformación Hopf--Cole cambia una función de coste $U$ por una deseabilidad
@@ -404,7 +404,7 @@ $h_a$ no decrezca demasiado rápido. Si el campo quiere atravesar un obstáculo 
 demasiado a otro robot, el QP corrige la aceleración mínima necesaria. Así se separa
 planificación colectiva y certificación local.
 
-Para aplicar el vector seguro a un AGV diferencial se usa el punto adelantado
+Para aplicar el vector seguro a un AMR diferencial se usa el punto adelantado
 \begin{equation}
   p_i=
   \begin{bmatrix}
@@ -473,7 +473,7 @@ obstáculos. El minimizador es la nueva distribución de masa. Esta lectura ayud
 explicar por qué el enfoque amorfo no necesita decidir identidades fijas: lo importante
 es transportar masa robótica hacia regiones funcionales.
 
-La discretización por partículas aproxima \eqref{eq:amorfo_jko} con AGVs reales. Si cada
+La discretización por partículas aproxima \eqref{eq:amorfo_jko} con AMRs reales. Si cada
 robot representa una partícula de masa $1/N$, una celda de responsabilidad
 $\mathcal L_i$ puede definirse por distancia ponderada al campo:
 \begin{equation}
@@ -530,7 +530,7 @@ Si existe una solución regular del sistema acoplado
 filtros \eqref{eq:amorfo_qp_cbf} permanecen factibles, entonces la asignación de robots,
 la formación alrededor de la carga, la evasión de obstáculos y la aplicación de fuerza
 pueden formularse como un único descenso de energía sobre una densidad inercial acoplada
-a un sólido rígido. La implementación con $N$ AGVs es una discretización por partículas
+a un sólido rígido. La implementación con $N$ AMRs es una discretización por partículas
 de ese flujo, no una jerarquía separada de asignación, formación y control.
 \end{teorema}
 

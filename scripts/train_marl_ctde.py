@@ -2,7 +2,7 @@
 
 The policy is intentionally lightweight and dependency-free: a shared linear
 action-value function scores each robot-load pair from local observations. The
-weights are trained by cross-entropy policy search on full multi-AGV simulation
+weights are trained by cross-entropy policy search on full multi-AMR simulation
 episodes, then frozen for evaluation in ``validate_marl_ctde.py``.
 """
 

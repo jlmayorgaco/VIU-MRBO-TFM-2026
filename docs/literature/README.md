@@ -24,7 +24,7 @@ The configured topics live in `configs/arxiv_literature_topics.yaml` and cover:
 - graph theory, consensus, and network topology
 - game theory, auctions, coalitions, and math foundations
 - rigid formation, geometry, topology, and cooperative transportation
-- AGV, warehouse, payload, swarm, and distributed optimization literature
+- AMR, warehouse, payload, swarm, and distributed optimization literature
 - general robotics, SLAM, navigation, motion planning, MAPF, MARL, GNNs,
   resilient control, safety-critical CBFs, distributed MPC, temporal logic,
   cyber-physical systems, network science, and search/exploration literature

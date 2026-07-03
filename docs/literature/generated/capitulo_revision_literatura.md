@@ -10,7 +10,7 @@ Para Smith-QR, la evidencia sugiere un posicionamiento claro: el aporte no debe 
 
 ## Metodo seguido
 
-El flujo seguido en el repositorio separa tres niveles. Primero, se construyo un corpus bibliografico local mediante consultas arXiv sobre multi-agent systems, multi-robot robotics, distributed control, networked systems, graph theory, game theory, cooperative transport, coalitions, formation control y warehouse/AGV. Segundo, se construyo una base SQLite reproducible (`literature.sqlite`) con metadatos, rutas PDF, temas, anos y prioridades. Tercero, se extrajo texto de 173 de los 174 registros de alta prioridad, usando las primeras paginas de cada PDF para inspeccion metodologica inicial.
+El flujo seguido en el repositorio separa tres niveles. Primero, se construyo un corpus bibliografico local mediante consultas arXiv sobre multi-agent systems, multi-robot robotics, distributed control, networked systems, graph theory, game theory, cooperative transport, coalitions, formation control y warehouse/AMR. Segundo, se construyo una base SQLite reproducible (`literature.sqlite`) con metadatos, rutas PDF, temas, anos y prioridades. Tercero, se extrajo texto de 173 de los 174 registros de alta prioridad, usando las primeras paginas de cada PDF para inspeccion metodologica inicial.
 
 Los registros se clasificaron con reglas transparentes, no con inclusion definitiva automatica. El archivo `screening_candidates.csv` conserva la decision como `unscreened` para que el screening final mantenga juicio revisor y razon de inclusion/exclusion. Esta decision es importante: una revision sistematica real no puede delegar inclusion final a keywords.
 
@@ -51,7 +51,7 @@ En los 174 estudios de alta prioridad, los conceptos mas frecuentes fueron:
 | Planning/MAPF/navigation | 135 |
 | Optimization/MPC | 134 |
 | Learning/MARL/GNN | 92 |
-| Warehouse/AGV/logistics | 87 |
+| Warehouse/AMR/logistics | 87 |
 | Formation/rigidity/geometry | 81 |
 | Task allocation/coalitions | 69 |
 | Game theory/markets | 51 |
@@ -65,7 +65,7 @@ La lectura de esta distribucion es importante. El transporte cooperativo aparece
 
 La familia mas amplia es la de consensus, control distribuido, optimizacion distribuida y networked systems. Estos trabajos aportan el lenguaje formal para demostrar convergencia, estabilidad, consenso, conectividad y robustez frente a fallos o retardos. Su valor para el TFM es alto como fundamento matematico, pero su transferencia no es automatica.
 
-El patron recurrente es que cada agente actualiza una variable local usando informacion de vecinos. Esto encaja con Smith-QR porque la asignacion puede verse como una dinamica poblacional o de decision local. Sin embargo, muchas formulaciones suponen grafos conectados, actualizaciones sincronas o informacion idealizada. En un warehouse con AGVs, comunicacion degradada y cargas heterogeneas, esas suposiciones deben convertirse en condiciones experimentales explicitas.
+El patron recurrente es que cada agente actualiza una variable local usando informacion de vecinos. Esto encaja con Smith-QR porque la asignacion puede verse como una dinamica poblacional o de decision local. Sin embargo, muchas formulaciones suponen grafos conectados, actualizaciones sincronas o informacion idealizada. En un warehouse con AMRs, comunicacion degradada y cargas heterogeneas, esas suposiciones deben convertirse en condiciones experimentales explicitas.
 
 Conclusion para el TFM: usar consensus/control distribuido como base, pero demostrar que el mecanismo sigue funcionando cuando la comunicacion se degrada, cuando robots fallan y cuando las coaliciones necesarias no son triviales.
 
@@ -175,7 +175,7 @@ MARL/GNN escala y adapta, pero muchas soluciones son dificiles de auditar. Para 
 
 La tesis puede posicionarse asi:
 
-> El problema de transporte cooperativo multi-AGV requiere cerrar la brecha entre asignacion distribuida y factibilidad fisica. La literatura ofrece componentes parciales: MRTA para asignacion, consensus/control distribuido para coordinacion local, graph theory para conectividad/formacion, game dynamics para decision bajo escasez, y cooperative transport para restricciones fisicas. Sin embargo, pocos enfoques integran esas capas en una arquitectura reproducible que cierre coaliciones enteras, respete capacidad efectiva de carga y evalue robustez bajo degradacion de comunicacion y perturbaciones de carga.
+> El problema de transporte cooperativo multi-AMR requiere cerrar la brecha entre asignacion distribuida y factibilidad fisica. La literatura ofrece componentes parciales: MRTA para asignacion, consensus/control distribuido para coordinacion local, graph theory para conectividad/formacion, game dynamics para decision bajo escasez, y cooperative transport para restricciones fisicas. Sin embargo, pocos enfoques integran esas capas en una arquitectura reproducible que cierre coaliciones enteras, respete capacidad efectiva de carga y evalue robustez bajo degradacion de comunicacion y perturbaciones de carga.
 
 En ese marco, Smith-QR debe presentarse como una arquitectura de integracion:
 

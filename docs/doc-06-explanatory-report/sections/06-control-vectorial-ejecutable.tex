@@ -8,7 +8,7 @@ Las secciones anteriores definen incentivos, capacidad efectiva, fases de contac
 wrench y seguridad; este capítulo ordena esas piezas en un bucle de control local para
 cargas convexas suavizadas. La contribución no sustituye a Smith-QR ni al límite de campo
 medio: define una capa intermedia, verificable por ciclo, que convierte la decisión
-distribuida en comandos de velocidad para AGVs diferenciales.
+distribuida en comandos de velocidad para AMRs diferenciales.
 El claim físico que carga peso en esta memoria es deliberadamente acotado: detectar
 coaliciones que satisfacen cardinalidad pero fallan factibilidad de wrench; las fases,
 la rigidez y el CBF ordenan la ejecución y la seguridad del controlador.
@@ -87,7 +87,7 @@ del robot de la superficie para considerar radio de chasis y margen de contacto.
 
 \paragraph{Lectura de \eqref{eq:ctrl_superelipse_implicita}--\eqref{eq:ctrl_punto_contacto_mundo}.}
 La fase $\gamma_i$ no dice todavía qué tarea elige el robot; dice en qué parte del
-perímetro de una carga ya elegida debe ubicarse. La superelipse permite que un AGV
+perímetro de una carga ya elegida debe ubicarse. La superelipse permite que un AMR
 recorra lados y esquinas con una variable continua. La normal $n_i^\Gamma$ define la
 dirección de empuje y, por tanto, conecta geometría con capacidad mecánica.
 
@@ -177,7 +177,7 @@ congestión; el tercero incorpora batería media y retornabilidad. Al discretiza
   \label{eq:ctrl_fase_objetivo_mfg_wrench}
 \end{equation}
 que después se estabiliza con Smith--Kuramoto. Esta es la bajada finita del MFG: el
-campo continuo genera una distribución deseada de contacto; los AGVs la implementan como
+campo continuo genera una distribución deseada de contacto; los AMRs la implementan como
 fases discretas sobre el contorno.
 
 \begin{table}[H]
@@ -513,7 +513,7 @@ de seguridad.
 \label{subsec:control-uniciclo-eventos}
 
 El QP produce una velocidad holonómica ideal para el punto adelantado del robot. Para un
-AGV diferencial con pose $(x_i,y_i,\theta_i)$ y distancia de look-ahead $\ell$, se usa
+AMR diferencial con pose $(x_i,y_i,\theta_i)$ y distancia de look-ahead $\ell$, se usa
 \begin{equation}
   \begin{bmatrix}
     v_i\\

@@ -1,10 +1,10 @@
-﻿%% ====================================================================
+%% ====================================================================
 \section{Introducción}
 \label{sec:intro}
 %% ====================================================================
 
 En almacenes automatizados con robots móviles no todos los robots pueden cargar todas las piezas, herramientas y materiales. Existen limitaciones de capacidad de todo tipo.
-Algunas cajas las puede mover un AGV pequeño, una paleta pesada puede exigir un vehículo de mayor
+Algunas cajas las puede mover un AMR pequeño, una paleta pesada puede exigir un vehículo de mayor
 capacidad o una coalición temporal de varios robots. En los casos como los sistemas tipo Kiva operan
 con cientos de vehículos que pueden coordinarse en flujos mercancía a persona
 \citep{wurman2008coordinating}, pero ese modelo trabaja con una unidad logística bastante
@@ -17,7 +17,7 @@ demanda una capacidad $M_k$. Una carga de 50\,kg puede ser atendida por un robot
 100\,kg, o por una coalición de robots de 20\,kg, 20\,kg y 10\,kg si el robot grande no
 está disponible. Es en esta aproximación al problema que surge la posibilidad de un control distribuido que coordina los robots de la flota desde su movimiento para que las dinámicas de cooperación y navegación emerjan de la reactividad local.
 
-La misma ley local que decide la preferencia de tarea debe llevar al AGV al origen, desviarlo de obstáculos
+La misma ley local que decide la preferencia de tarea debe llevar al AMR al origen, desviarlo de obstáculos
 y colocarlo junto a los demás miembros de su coalición.
 La abstracción de cardinalidad mínima $|\mathcal{C}_k|\geq n_k$ sirve como caso base
 homogéneo, donde se puede demostrar una propiedad de convergencia y medir el método con
@@ -232,7 +232,7 @@ identifica como línea futura.
 \label{subsec:revision_critica}
 
 La literatura revisada se agrupa mejor por mecanismo que por año. La robótica de
-almacén y los sistemas AGV/AMR explican el contexto operativo, pero su unidad típica de
+almacén y los sistemas AMR explican el contexto operativo, pero su unidad típica de
 decisión es el transporte de una unidad logística compatible con un robot o con una
 plataforma ya asignada \citep{leanh2006agv,wurman2008coordinating,azadeh2019warehouse,
 keith2024amrwarehouse}. Las taxonomías de asignación multi-robot separan con claridad
@@ -282,7 +282,7 @@ la demanda. La Tabla~\ref{tab:mapa_literatura_gap} resume esta lectura.
 \toprule
 \textbf{Línea} & \textbf{Qué aporta} & \textbf{Qué deja abierto} & \textbf{Uso en este TFM} \\
 \midrule
-AGV/AMR en almacén & Contexto operativo, despacho, rutas y flujo logístico. &
+AMR en almacén & Contexto operativo, despacho, rutas y flujo logístico. &
   Cargas con demanda flexible de coalición y control acoplado asignación--movimiento. &
   Justifica el dominio de aplicación y los supuestos de simulación. \\
 MRTA y mercados & Taxonomía, subastas, negociación y asignación distribuida. &

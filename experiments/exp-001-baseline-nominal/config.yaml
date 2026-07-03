@@ -1,5 +1,5 @@
 name: exp-001-baseline-nominal
-description: Línea base nominal con tres AGVs y carga sin incertidumbre adicional.
+description: Linea base nominal con tres AMRs y carga sin incertidumbre adicional.
 controller:
   type: nominal
   parameters:
@@ -8,7 +8,7 @@ controller:
 simulation:
   duration: 20.0
   time_step: 0.1
-  agv_count: 3
+  amr_count: 3
   dimensions: 2
   random_seed: 2026
 load:

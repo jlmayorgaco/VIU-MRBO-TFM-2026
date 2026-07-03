@@ -19,8 +19,8 @@ def _vector2(values: list[float] | NDArray[np.float64] | tuple[float, float]) ->
 
 
 @dataclass(slots=True)
-class AGVState:
-    """Kinematic state placeholder for a single AGV."""
+class AMRState:
+    """Kinematic state placeholder for a single autonomous mobile robot."""
 
     position: NDArray[np.float64] = field(
         default_factory=lambda: np.zeros(2, dtype=float)
@@ -53,16 +53,47 @@ class LoadState:
         self.velocity = _vector2(self.velocity)
 
 
-@dataclass(slots=True)
+AGVState = AMRState
+
+
+@dataclass(slots=True, init=False)
 class SystemState:
     """Joint state container passed to controllers and estimators."""
 
-    agv_states: list[AGVState]
+    amr_states: list[AMRState]
     load_state: LoadState
     time: float = 0.0
 
+    def __init__(
+        self,
+        amr_states: list[AMRState] | None = None,
+        load_state: LoadState | None = None,
+        time: float = 0.0,
+        agv_states: list[AMRState] | None = None,
+    ) -> None:
+        states = amr_states if amr_states is not None else agv_states
+        if states is None:
+            msg = "SystemState requires amr_states."
+            raise TypeError(msg)
+        if load_state is None:
+            msg = "SystemState requires load_state."
+            raise TypeError(msg)
+        self.amr_states = states
+        self.load_state = load_state
+        self.time = time
+
     @property
     def agent_count(self) -> int:
-        """Return the number of AGVs in the system."""
+        """Return the number of mobile robots in the system."""
 
-        return len(self.agv_states)
+        return len(self.amr_states)
+
+    @property
+    def agv_states(self) -> list[AMRState]:
+        """Legacy alias for older code and saved notebooks."""
+
+        return self.amr_states
+
+    @agv_states.setter
+    def agv_states(self, value: list[AMRState]) -> None:
+        self.amr_states = value

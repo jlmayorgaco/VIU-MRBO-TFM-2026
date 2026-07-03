@@ -6,7 +6,7 @@ import numpy as np
 
 from viu_mrob_tfm.config.defaults import default_experiment_config
 from viu_mrob_tfm.controllers.nominal_consensus import NominalConsensusController
-from viu_mrob_tfm.domain import AGV, AGVState, CommunicationGraph, LoadState, TransportedLoad
+from viu_mrob_tfm.domain import AMR, AMRState, CommunicationGraph, LoadState, TransportedLoad
 from viu_mrob_tfm.experiments.runner import ExperimentRunner
 from viu_mrob_tfm.simulations import (
     FailureEvent,
@@ -49,10 +49,10 @@ def test_all_treatment_policies_run_on_default_scenario() -> None:
         results = Simulator(scenario=scenario, controller=controller).run()
 
         assert results["treatment"] == treatment
-        assert results["trajectory"].shape[1] == config.simulation.agv_count
+        assert results["trajectory"].shape[1] == config.simulation.amr_count
         assert results["assignments"].shape == (
             len(results["time"]),
-            config.simulation.agv_count,
+            config.simulation.amr_count,
         )
         if treatment == "t6_single_clock":
             assert "prices" in results
@@ -95,8 +95,8 @@ def test_obstacle_reactive_layer_keeps_clearance_and_completes() -> None:
 
 def test_failure_event_triggers_recruitment_and_nearby_help() -> None:
     graph = CommunicationGraph(np.ones((4, 4), dtype=float) - np.eye(4, dtype=float))
-    agvs = [
-        AGV(f"agv-{idx + 1}", AGVState(position=np.array(position), heading=0.0))
+    amrs = [
+        AMR(f"amr-{idx + 1}", AMRState(position=np.array(position), heading=0.0))
         for idx, position in enumerate(
             [
                 [-2.0, -0.8],
@@ -125,7 +125,7 @@ def test_failure_event_triggers_recruitment_and_nearby_help() -> None:
     ]
     scenario = SimulationScenario(
         name="failure-reorganization",
-        agvs=agvs,
+        amrs=amrs,
         transported_load=load,
         graph=graph,
         duration=25.0,
@@ -161,7 +161,7 @@ controller:
 simulation:
   duration: 12.0
   time_step: 0.1
-  agv_count: 3
+  amr_count: 3
   dimensions: 2
   random_seed: 2026
   initial_positions:

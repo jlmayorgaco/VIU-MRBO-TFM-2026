@@ -8,10 +8,10 @@ import numpy as np
 from numpy.typing import NDArray
 
 from viu_mrob_tfm.config.schema import ExperimentConfig
-from viu_mrob_tfm.domain.agv import AGV
+from viu_mrob_tfm.domain.amr import AMR
 from viu_mrob_tfm.domain.graph import CommunicationGraph
 from viu_mrob_tfm.domain.load import TransportedLoad
-from viu_mrob_tfm.domain.state import AGVState, LoadState
+from viu_mrob_tfm.domain.state import AMRState, LoadState
 
 
 @dataclass(slots=True)
@@ -62,12 +62,12 @@ class FailureEvent:
     agent_index: int
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, init=False)
 class SimulationScenario:
     """Scenario definition consumed by the simulator."""
 
     name: str
-    agvs: list[AGV]
+    amrs: list[AMR]
     transported_load: TransportedLoad
     graph: CommunicationGraph
     duration: float
@@ -80,22 +80,67 @@ class SimulationScenario:
     transport_threshold_steps: int = 3
     detection_radius: float = 0.75
 
+    def __init__(
+        self,
+        name: str,
+        transported_load: TransportedLoad,
+        graph: CommunicationGraph,
+        duration: float,
+        time_step: float,
+        amrs: list[AMR] | None = None,
+        agvs: list[AMR] | None = None,
+        tasks: list[TaskSpec] | None = None,
+        obstacles: list[ObstacleSpec] | None = None,
+        failure_events: list[FailureEvent] | None = None,
+        communication_range: float | None = None,
+        visibility_range: float = 8.0,
+        transport_threshold_steps: int = 3,
+        detection_radius: float = 0.75,
+    ) -> None:
+        robots = amrs if amrs is not None else agvs
+        if robots is None:
+            msg = "SimulationScenario requires amrs."
+            raise TypeError(msg)
+        self.name = name
+        self.amrs = robots
+        self.transported_load = transported_load
+        self.graph = graph
+        self.duration = duration
+        self.time_step = time_step
+        self.tasks = list(tasks or [])
+        self.obstacles = list(obstacles or [])
+        self.failure_events = list(failure_events or [])
+        self.communication_range = communication_range
+        self.visibility_range = visibility_range
+        self.transport_threshold_steps = transport_threshold_steps
+        self.detection_radius = detection_radius
+
+    @property
+    def agvs(self) -> list[AMR]:
+        """Legacy alias for older code and notebooks."""
+
+        return self.amrs
+
+    @agvs.setter
+    def agvs(self, value: list[AMR]) -> None:
+        self.amrs = value
+
     @classmethod
     def from_config(cls, config: ExperimentConfig) -> "SimulationScenario":
         """Create a default scenario from an experiment configuration."""
 
-        agvs = []
-        for index in range(config.simulation.agv_count):
+        amrs = []
+        for index in range(config.simulation.amr_count):
             if index < len(config.simulation.initial_positions):
                 position = np.asarray(config.simulation.initial_positions[index], dtype=float)
             else:
                 position = np.array(
-                    [-2.0, 0.8 * (index - (config.simulation.agv_count - 1) / 2.0)]
+                    [-2.0, 0.8 * (index - (config.simulation.amr_count - 1) / 2.0)]
                 )
-            agvs.append(
-                AGV(
-                    identifier=f"agv-{index + 1}",
-                    state=AGVState(position=position, heading=0.0),
+            amrs.append(
+                AMR(
+                    identifier=f"amr-{index + 1}",
+                    state=AMRState(position=position, heading=0.0),
                 )
             )
         load = TransportedLoad(
@@ -124,7 +169,7 @@ class SimulationScenario:
                     identifier="load-1",
                     pickup=load.state.position.copy(),
                     destination=np.array([4.5, 0.0]),
-                    min_coalition_size=min(2, config.simulation.agv_count),
+                    min_coalition_size=min(2, config.simulation.amr_count),
                     reward=1.0,
                 )
             ]
@@ -142,7 +187,7 @@ class SimulationScenario:
         ]
         return cls(
             name=config.name,
-            agvs=agvs,
+            amrs=amrs,
             transported_load=load,
             graph=graph,
             duration=config.simulation.duration,

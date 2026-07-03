@@ -1,4 +1,4 @@
-﻿"""Warehouse scenarios for V6 OOP tests and smoke runs."""
+"""Warehouse scenarios for V6 OOP tests and smoke runs."""
 
 from __future__ import annotations
 
@@ -30,7 +30,7 @@ class WarehouseCoalitionScenario(BaseScenario):
         robots: list[RobotRuntimeState] = []
         for idx in range(self.robot_count):
             spec = RobotSpec(
-                identifier=f"agv-{idx + 1}",
+                identifier=f"amr-{idx + 1}",
                 capacity=CapacityModel(payload_kg=1.0 + 0.5 * (idx == self.robot_count - 1)),
             )
             position = np.array([-2.0, 0.8 * (idx - (self.robot_count - 1) / 2.0)], dtype=float)
