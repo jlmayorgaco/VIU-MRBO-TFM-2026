@@ -1,0 +1,55 @@
+experiment_id: SP3_DEBUG_smoke
+mode: debug
+output_dir: results/sp3/SP3_DEBUG_smoke
+
+seeds:
+  start: 4100
+  count: 2
+
+scenarios:
+  - param_generator: setup
+  - param_generator: point_load_degenerate
+  - param_generator: slot_saturation
+
+methods:
+  - id: wrench_oracle
+  - id: oracle_scalar_assignment
+  - id: capacity_greedy_slots
+  - id: cbba_slots
+  - id: smith_wrench_deficit
+  - id: smith_wrench_marginal
+  - id: smith_wrench_marginal_guarded
+  - id: support_dual_wrench_market
+  - id: support_dual_wrench_market_guarded
+  - id: smith_wrench_pairs_guarded
+
+hypotheses:
+  - id: H3_DEBUG_scalar_false_positive_positive
+    metric: false_positive_rate
+    method: oracle_scalar_assignment
+    threshold: 0.0
+    direction: greater
+  - id: H3_DEBUG_smith_wrench_lower_residual
+    metric: wrench_residual_norm
+    method_a: smith_wrench_deficit
+    method_b: capacity_greedy_slots
+    direction: less
+  - id: H3_DEBUG_support_dual_lower_residual
+    metric: wrench_residual_norm
+    method_a: support_dual_wrench_market
+    method_b: capacity_greedy_slots
+    direction: less
+  - id: H3_DEBUG_guarded_false_positive_not_worse
+    metric: false_positive_rate
+    method_a: smith_wrench_marginal_guarded
+    method_b: smith_wrench_marginal
+    direction: less
+
+artifacts:
+  save_video: true
+  video:
+    fps: 8
+    duration_s: 28
+    final_hold_s: 8
+    max_per_scenario: 3
+    selection_metric: wrench_feasible_rate

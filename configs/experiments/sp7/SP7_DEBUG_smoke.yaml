@@ -1,0 +1,17 @@
+experiment_id: SP7_DEBUG_smoke
+mode: debug
+output_dir: results/sp7/SP7_DEBUG_smoke
+seeds:
+  start: 8700
+  count: 1
+scenarios:
+  - param_generator: setup
+methods:
+  - id: classic_centralized_global_mpc
+  - id: classic_decentralized_sensor_apf
+  - id: ours_connectivity_wrench_game
+  - id: reference_full_communication
+trajectory_sample_runs: 4
+video_sample_runs: 0
+make_figures: true
+make_videos: true

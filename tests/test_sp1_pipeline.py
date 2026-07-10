@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -15,6 +16,7 @@ from viu_mrob_tfm.sp1.methods import (
     make_sp1_allocator,
 )
 from viu_mrob_tfm.sp1.metrics import evaluate_assignment
+from viu_mrob_tfm.sp1 import runner as sp1_runner
 from viu_mrob_tfm.sp1.runner import run_sp1_config
 from viu_mrob_tfm.sp1.scenario import (
     SP1RecruitmentScenario,
@@ -90,6 +92,10 @@ def test_sp1_debug_config_writes_outputs(tmp_path) -> None:
     assert manifest["experiment_id"] == "SP1_TEST_smoke"
     assert (tmp_path / "sp1" / "tables" / "runs.csv").exists()
     assert (tmp_path / "sp1" / "tables" / "summary.csv").exists()
+    assert (tmp_path / "sp1" / "tables" / "performance_ranking.csv").exists()
+    assert (tmp_path / "sp1" / "figures" / "sp1_performance_matrix_by_method.png").exists()
+    assert (tmp_path / "sp1" / "figures" / "sp1_taxonomy_scope_family_ownership.png").exists()
+    assert (tmp_path / "sp1" / "figures" / "sp1_communication_radius_degradation.png").exists()
     assert (tmp_path / "sp1" / "report.md").exists()
 
 
@@ -127,12 +133,17 @@ def test_sp1_marl_compatible_training_uses_70_30_split_and_validates_on_new_data
 
     assert manifest["train_seed_count"] == 7
     assert manifest["validation_seed_count"] == 3
-    assert model["model_version"] == "sp1-mappo-v4"
+    assert model["model_version"] == "sp1-mappo-v5"
+    assert model["rollout_action_mode"] == "sampled_policy"
+    assert model["actor_trainable_parameters"] > 0
+    assert model["training_trainable_parameters"] >= model["actor_trainable_parameters"]
     assert weights_path.exists()
     assert "policy_loss" in history
     assert "value_loss" in history
     assert validation["validation_runs"] == 3
     assert validation["demand_satisfaction_ratio_mean"] > 0.0
+    assert "optimality_gap_vs_oracle_mean" in validation
+    assert "energy_proxy_wh_mean" in validation
 
     trained = make_sp1_allocator("mappo_recruitment", {"checkpoint": model_path})
     trained_score = _mean_validation_demand_satisfaction(trained, seeds=[2000, 2001, 2002])
@@ -171,7 +182,9 @@ def test_sp1_model_based_tuning_uses_holdout_validation(tmp_path) -> None:
 
     assert manifest["seed_count"] == 7
     assert manifest["validation_seed_count"] == 3
+    assert tuned["best_params"]["replicator_cardinality"]["selection_split"] == "validation"
     assert best_params["idle_score"] == 0.0
+    assert "selection_split" in validation_scores
     assert "validation_score" in validation_scores
 
     holdout_seeds = [2000, 2001, 2002]
@@ -182,6 +195,84 @@ def test_sp1_model_based_tuning_uses_holdout_validation(tmp_path) -> None:
         holdout_seeds,
     )
     assert best_score < bad_score
+
+
+def test_sp1_monte_carlo_writes_scenario_videos_and_theory_artifacts(tmp_path, monkeypatch) -> None:
+    def fake_snapshot(_world, _assignment, path, _title):
+        path.write_text("snapshot", encoding="utf-8")
+
+    def fake_video(_world, _assignment, path, _title, **_kwargs):
+        path.write_text("video", encoding="utf-8")
+        return True
+
+    monkeypatch.setattr(sp1_runner, "save_recruitment_snapshot", fake_snapshot)
+    monkeypatch.setattr(sp1_runner, "save_recruitment_video", fake_video)
+    config = {
+        "experiment_id": "SP1_TEST_video_hypotheses",
+        "mode": "monte_carlo",
+        "output_dir": str(tmp_path / "sp1"),
+        "scenarios": [
+            {"id": "SP1_recruitment", "param_generator": "setup"},
+            {"id": "SP1_recruitment", "param_generator": "balanced_demand"},
+        ],
+        "methods": [{"id": "centralized_coalition_milp"}, {"id": "greedy_nearest"}],
+        "seeds": {"start": 2000, "count": 2},
+        "hypotheses": [
+            {
+                "id": "H_TEST_methods_differ",
+                "class": "PairedSuperiorityHypothesis",
+                "metric": "optimality_gap_vs_oracle",
+                "treatment": "centralized_coalition_milp",
+                "control": "greedy_nearest",
+                "alternative": "less",
+                "paired_by": ["scenario_generator", "scenario_variant_id", "seed"],
+            }
+        ],
+        "artifacts": {
+            "save_video": True,
+            "video": {
+                "save_per_method": True,
+                "save_median_run": True,
+                "selection_metric": "demand_satisfaction_ratio",
+                "duration_s": 2,
+                "final_hold_s": 0.5,
+            },
+        },
+    }
+    config_path = tmp_path / "config.yaml"
+    config_path.write_text(yaml.safe_dump(config), encoding="utf-8")
+
+    manifest = run_sp1_config(config_path)
+
+    assert {item["scenario_generator"] for item in manifest["scenario_videos"]} == {"balanced_demand", "setup"}
+    assert {item["method"] for item in manifest["scenario_videos"]} == {"centralized_coalition_milp", "greedy_nearest"}
+    assert all(item["method_family"] in {"classic", "model_based_oracle"} for item in manifest["scenario_videos"])
+    assert all(item["method_scope"] in {"centralized", "decentralized"} for item in manifest["scenario_videos"])
+    assert any("reference_model-based-oracle_centralized" in Path(item["video"]).stem for item in manifest["scenario_videos"])
+    assert any("baseline_classic_decentralized" in Path(item["video"]).stem for item in manifest["scenario_videos"])
+    assert all((tmp_path / "sp1" / "videos" / Path(item["video"]).name).exists() for item in manifest["scenario_videos"])
+    assert (tmp_path / "sp1" / "tables" / "theory_checks.csv").exists()
+    assert (tmp_path / "sp1" / "tables" / "hypothesis_results.csv").exists()
+    hypothesis_text = (tmp_path / "sp1" / "tables" / "hypothesis_results.csv").read_text(encoding="utf-8")
+    assert "p_value_holm" in hypothesis_text
+    assert "reject_holm" in hypothesis_text
+    assert (tmp_path / "sp1" / "figures" / "sp1_ours_vs_baselines_vs_reference.png").exists()
+    assert (tmp_path / "sp1" / "figures" / "sp1_reference_gap_proposed_methods.png").exists()
+    assert (tmp_path / "sp1" / "figures" / "sp1_best_method_by_scenario.png").exists()
+    assert (tmp_path / "sp1" / "figures" / "sp1_quality_resource_pareto.png").exists()
+    assert (tmp_path / "sp1" / "figures" / "sp1_physical_cost_tradeoff.png").exists()
+    runs_text = (tmp_path / "sp1" / "tables" / "runs.csv").read_text(encoding="utf-8")
+    assert "travel_distance_m" in runs_text
+    assert "energy_proxy_wh" in runs_text
+    assert "method_trainable_parameters" in runs_text
+    assert "method_training_type" in runs_text
+    summary_text = (tmp_path / "sp1" / "tables" / "summary.csv").read_text(encoding="utf-8")
+    assert "method_family" in summary_text
+    assert "method_scope" in summary_text
+    assert "method_ownership" in summary_text
+    assert "p_value_holm" not in summary_text.splitlines()[0]
+    audit = json.loads((tmp_path / "sp1" / "theory_audit.json").read_text(encoding="utf-8"))
+    assert audit["failed_checks"] == 0
 
 
 def _mean_validation_demand_satisfaction(allocator, seeds: list[int]) -> float:

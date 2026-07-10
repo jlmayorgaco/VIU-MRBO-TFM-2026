@@ -1,0 +1,63 @@
+experiment_id: SP2_MC_marginal_payoff_ablation
+mode: monte_carlo
+output_dir: results/sp2/SP2_MC_marginal_payoff_ablation
+
+seeds:
+  start: 3100
+  count: 40
+
+scenarios:
+  - param_generator: light_mixed
+  - param_generator: balanced_capacity
+  - param_generator: heavy_capacity
+  - param_generator: battery_constrained
+  - param_generator: monte_carlo
+
+methods:
+  - id: replicator_capacity_plain
+  - id: replicator_capacity_marginal
+  - id: smith_capacity_plain
+  - id: smith_capacity_marginal
+
+hypotheses:
+  - id: H_SP2_Marginal_smith_lower_score_gap
+    metric: optimality_gap_vs_oracle
+    method_a: smith_capacity_marginal
+    method_b: smith_capacity_plain
+    direction: less
+  - id: H_SP2_Marginal_smith_higher_success
+    metric: capacity_success_rate
+    method_a: smith_capacity_marginal
+    method_b: smith_capacity_plain
+    direction: greater
+  - id: H_SP2_Marginal_replicator_lower_score_gap
+    metric: optimality_gap_vs_oracle
+    method_a: replicator_capacity_marginal
+    method_b: replicator_capacity_plain
+    direction: less
+  - id: H_SP2_Potential_marginal_lower_incomplete_capacity_smith
+    metric: incomplete_capacity_ratio
+    method_a: smith_capacity_marginal
+    method_b: smith_capacity_plain
+    direction: less
+  - id: H_SP2_Potential_marginal_higher_alignment_smith
+    metric: served_capacity_alignment
+    method_a: smith_capacity_marginal
+    method_b: smith_capacity_plain
+    direction: greater
+  - id: H_SP2_Potential_methods_differ
+    metric: optimality_gap_vs_oracle
+    methods:
+      - replicator_capacity_plain
+      - replicator_capacity_marginal
+      - smith_capacity_plain
+      - smith_capacity_marginal
+
+artifacts:
+  save_video: true
+  video:
+    fps: 10
+    duration_s: 24
+    final_hold_s: 6
+    max_per_scenario: 6
+    selection_metric: capacity_success_rate

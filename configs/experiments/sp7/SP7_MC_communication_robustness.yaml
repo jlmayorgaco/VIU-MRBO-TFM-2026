@@ -1,0 +1,23 @@
+experiment_id: SP7_MC_communication_robustness
+mode: monte_carlo
+output_dir: results/sp7/SP7_MC_communication_robustness
+seeds:
+  start: 8800
+  count: 1
+profile_ids:
+  - nominal_full_mesh
+  - harsh_4m_35loss_400ms
+scenarios:
+  - param_generator: radius_sweep_balanced_push
+  - param_generator: multi_group_obstacle_crossing
+  - param_generator: cargo_sensor_degradation
+  - param_generator: monte_carlo
+methods:
+  - id: classic_centralized_global_mpc
+  - id: classic_decentralized_sensor_apf
+  - id: ours_connectivity_wrench_game
+  - id: reference_full_communication
+trajectory_sample_runs: 18
+video_sample_runs: 2
+make_figures: true
+make_videos: true

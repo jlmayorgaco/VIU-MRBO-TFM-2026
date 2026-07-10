@@ -1,0 +1,53 @@
+experiment_id: SP6_MC_explicit_control_law
+mode: monte_carlo
+output_dir: results/sp6/SP6_MC_explicit_control_law
+
+seeds:
+  start: 7650
+  count: 12
+
+scenarios:
+  - param_generator: robot_dropout_mid_task
+  - param_generator: battery_depletion_reallocation
+  - param_generator: blocked_corridor_recovery
+  - param_generator: multi_load_priority_shift
+  - param_generator: monte_carlo
+
+methods:
+  - classic_decentralized_greedy_recovery
+  - cbf_recovery
+  - smith_qr_recovery
+  - tensor_flow_recovery
+  - ours_guarded_wrench_market_recovery
+  - reference_resilient_oracle
+
+hypotheses:
+  - id: H6E_1_explicit_ours_reduces_lost_load_vs_classic
+    metric: lost_load_rate
+    method_a: ours_guarded_wrench_market_recovery
+    method_b: classic_decentralized_greedy_recovery
+    direction: less
+  - id: H6E_2_explicit_ours_improves_completion_vs_smith
+    metric: task_completion_rate
+    method_a: ours_guarded_wrench_market_recovery
+    method_b: smith_qr_recovery
+    direction: greater
+  - id: H6E_3_explicit_family_differs
+    metric: score_value
+    methods:
+      - classic_decentralized_greedy_recovery
+      - cbf_recovery
+      - smith_qr_recovery
+      - tensor_flow_recovery
+      - ours_guarded_wrench_market_recovery
+
+trajectory_sample_runs: 12
+
+artifacts:
+  save_video: true
+  video:
+    fps: 10
+    duration_s: 32
+    final_hold_s: 6
+    max_per_scenario: 1
+    selection_metric: score_value
