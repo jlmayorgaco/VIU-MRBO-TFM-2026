@@ -1,0 +1,11 @@
+rank,method,method_label,method_family,method_scope,method_ownership,feasible_load_count_mean,task_completion_rate_mean,recovery_success_mean,infeasible_load_count_mean,infeasible_load_detection_rate_mean,post_event_wrench_feasible_rate_mean,collision_count_mean,collision_rate_mean
+1,ours_guarded_wrench_market_recovery,Ours guarded wrench-market recovery,model_based,decentralized,proposed,2.2455,0.7116666666666667,0.5155,0.888,0.5970833333333334,0.9672755961032092,0.0,0.0
+2,primal_dual_recovery,Primal-dual recovery,model_based,decentralized,proposed,2.2475,0.7095,0.511,0.886,0.5979166666666667,0.972317576487718,0.0,0.0
+3,reference_resilient_oracle,Reference centralized resilient recovery,model_based_reference,centralized,reference,2.247,0.7089166666666666,0.508,0.8865,0.5963333333333334,0.9666544758297516,0.0,0.0
+4,smith_qr_recovery,Smith-QR recovery,model_based,decentralized,proposed,2.2505,0.70725,0.506,0.883,0.5818333333333332,0.9722162793870668,0.0,0.0
+5,tensor_flow_recovery,Tensor-flow recovery,model_based,decentralized,proposed,2.2535,0.7033333333333333,0.5,0.88,0.5840833333333334,0.9677485696134774,0.0,0.0
+6,replicator_repair_recovery,Replicator repair recovery,model_based,decentralized,proposed,2.2545,0.701375,0.4975,0.879,0.59675,0.9722606849810366,0.0,0.0
+7,cbf_recovery,CBF recovery,sota,centralized,baseline,2.263,0.6995833333333332,0.491,0.8705,0.595,0.9722197414206716,0.0,0.0
+8,cbba_recovery,CBBA recovery,sota,decentralized,baseline,2.264,0.69575,0.4885,0.8695,0.4973333333333333,0.9402520400038068,0.0,0.0
+9,classic_centralized_replan,Classic centralized replanning,classic,centralized,baseline,2.267,0.695875,0.486,0.8665,0.5023333333333334,0.9416118130426512,0.0,0.0
+10,classic_decentralized_greedy_recovery,Classic decentralized greedy recovery,classic,decentralized,baseline,2.275,0.689,0.473,0.8585,0.4805833333333333,0.9362099632116162,0.0,0.0

@@ -1,0 +1,11 @@
+rank,method,method_label,method_family,method_scope,method_ownership,feasible_load_count_mean,task_completion_rate_mean,recovery_success_mean,infeasible_load_count_mean,infeasible_load_detection_rate_mean,post_event_wrench_feasible_rate_mean,collision_count_mean,collision_rate_mean
+1,reference_resilient_oracle,Reference centralized resilient recovery,model_based_reference,centralized,reference,1.305,0.1941666666666666,0.115,1.8425,0.8720833333333334,0.9857556283364012,372.1025,0.0245782065135172
+2,ours_guarded_wrench_market_recovery,Ours guarded wrench-market recovery,model_based,decentralized,proposed,1.215,0.1804166666666666,0.0875,1.9325,0.8833333333333334,0.993100966852046,474.2325,0.0319195749615563
+3,tensor_flow_recovery,Tensor-flow recovery,model_based,decentralized,proposed,1.245,0.1591666666666666,0.0825,1.9025,0.9,0.9906161605724524,494.6075,0.0328125978353756
+4,primal_dual_recovery,Primal-dual recovery,model_based,decentralized,proposed,1.2225,0.1666666666666666,0.07,1.925,0.9033333333333334,0.9877713338678666,552.6675,0.0366796713522902
+5,smith_qr_recovery,Smith-QR recovery,model_based,decentralized,proposed,1.225,0.1554166666666666,0.0675,1.9225,0.9004166666666665,0.9805835916952802,539.3325,0.0355376848659421
+6,replicator_repair_recovery,Replicator repair recovery,model_based,decentralized,proposed,1.245,0.1491666666666666,0.0675,1.9025,0.9095833333333334,0.9742565957860414,525.105,0.0344923710832992
+7,cbf_recovery,CBF recovery,sota,centralized,baseline,1.2625,0.1454166666666666,0.065,1.885,0.89875,0.976229354003015,473.445,0.0310390084176203
+8,classic_centralized_replan,Classic centralized replanning,classic,centralized,baseline,1.1525,0.005,0.0025,1.995,0.64125,0.8027613221333364,682.6225,0.0490026142837408
+9,classic_decentralized_greedy_recovery,Classic decentralized greedy recovery,classic,decentralized,baseline,1.2725,0.00625,0.0,1.875,0.6583333333333334,0.7891157603033057,569.15,0.0417494290588712
+10,cbba_recovery,CBBA recovery,sota,decentralized,baseline,1.175,0.0025,0.0,1.9725,0.6416666666666667,0.8253068371037041,665.3125,0.0478845032960978

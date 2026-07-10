@@ -1,0 +1,110 @@
+{
+  "checks": 20280,
+  "failed_checks": 0,
+  "method_count": 13,
+  "passed": true,
+  "potential_alignment": {
+    "distance_interpretation": "deliverable_capacity_within_finite_operational_horizon",
+    "effective_capacity_pair_dependent": true,
+    "exact_potential_methods": [],
+    "marginal_methods": [
+      "centralized_capacity_milp",
+      "oracle_reference",
+      "capacity_oracle_reference"
+    ],
+    "method_alignment": {
+      "bnn_capacity": {
+        "payoff_uses_marginal_capacity": false,
+        "potential_structure": "heuristic_hybrid_not_theorem_exact",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      },
+      "capacity_oracle_reference": {
+        "payoff_uses_marginal_capacity": true,
+        "potential_structure": "centralized_reference_not_population_payoff",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      },
+      "cbba_capacity": {
+        "payoff_uses_marginal_capacity": false,
+        "potential_structure": "not_a_population_payoff_or_not_audited",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      },
+      "centralized_capacity_milp": {
+        "payoff_uses_marginal_capacity": true,
+        "potential_structure": "centralized_reference_not_population_payoff",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      },
+      "greedy_capacity_nearest": {
+        "payoff_uses_marginal_capacity": false,
+        "potential_structure": "not_a_population_payoff_or_not_audited",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      },
+      "hungarian_capacity": {
+        "payoff_uses_marginal_capacity": false,
+        "potential_structure": "not_a_population_payoff_or_not_audited",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      },
+      "imitation_capacity": {
+        "payoff_uses_marginal_capacity": false,
+        "potential_structure": "not_a_population_payoff_or_not_audited",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      },
+      "local_primal_dual_capacity": {
+        "payoff_uses_marginal_capacity": false,
+        "potential_structure": "heuristic_hybrid_not_theorem_exact",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      },
+      "neural_capacity_scorer": {
+        "payoff_uses_marginal_capacity": false,
+        "potential_structure": "not_a_population_payoff_or_not_audited",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      },
+      "oracle_reference": {
+        "payoff_uses_marginal_capacity": true,
+        "potential_structure": "centralized_reference_not_population_payoff",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      },
+      "primal_dual_capacity": {
+        "payoff_uses_marginal_capacity": false,
+        "potential_structure": "heuristic_hybrid_not_theorem_exact",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      },
+      "replicator_capacity": {
+        "payoff_uses_marginal_capacity": false,
+        "potential_structure": "heuristic_hybrid_not_theorem_exact",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      },
+      "smith_capacity": {
+        "payoff_uses_marginal_capacity": false,
+        "potential_structure": "heuristic_hybrid_not_theorem_exact",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      }
+    },
+    "payoff_uses_marginal_capacity": true,
+    "potential_structure": "mixed",
+    "static_capacity_limit": "ell_d_to_infinity_or_move_distance_to_separable_cost_gik",
+    "theorem": "Teorema 2"
+  },
+  "scenario_generators": [
+    "light_mixed",
+    "balanced_capacity",
+    "heavy_capacity",
+    "battery_constrained",
+    "monte_carlo"
+  ],
+  "seed_count": 40,
+  "seed_end": 3139,
+  "seed_start": 3100
+}

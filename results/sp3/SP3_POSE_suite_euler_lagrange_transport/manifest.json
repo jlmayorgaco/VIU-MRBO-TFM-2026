@@ -1,0 +1,170 @@
+{
+  "cases": [
+    "overactuated_push_more_robots_than_loads",
+    "balanced_push_drag_equal_robots_loads",
+    "scarce_heavy_cargo_fewer_robots_than_loads"
+  ],
+  "config_path": "configs\\experiments\\sp3\\SP3_POSE_suite_euler_lagrange_transport.yaml",
+  "experiment_id": "SP3_POSE_suite_euler_lagrange_transport",
+  "methods": [
+    "wrench_oracle",
+    "hungarian_slots",
+    "capacity_greedy_slots",
+    "cbba_slots",
+    "smith_wrench_deficit",
+    "support_dual_wrench_market"
+  ],
+  "mode": "pose_transport_suite",
+  "output_dir": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport",
+  "pose_runs": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\tables\\pose_runs.csv",
+  "report": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\report.md",
+  "runs": 18,
+  "theory_audit": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\theory_audit.json",
+  "video_count": 18,
+  "videos": [
+    {
+      "case_id": "overactuated_push_more_robots_than_loads",
+      "method": "wrench_oracle",
+      "scenario_generator": "pose_push_overactuated",
+      "seed": 5300,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-overactuated-push-more-robots-than-loads-pose-push-overactuated-wrench-oracle-seed5300.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-overactuated-push-more-robots-than-loads-pose-push-overactuated-wrench-oracle-seed5300.mp4"
+    },
+    {
+      "case_id": "overactuated_push_more_robots_than_loads",
+      "method": "hungarian_slots",
+      "scenario_generator": "pose_push_overactuated",
+      "seed": 5300,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-overactuated-push-more-robots-than-loads-pose-push-overactuated-hungarian-slots-seed5300.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-overactuated-push-more-robots-than-loads-pose-push-overactuated-hungarian-slots-seed5300.mp4"
+    },
+    {
+      "case_id": "overactuated_push_more_robots_than_loads",
+      "method": "capacity_greedy_slots",
+      "scenario_generator": "pose_push_overactuated",
+      "seed": 5300,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-overactuated-push-more-robots-than-loads-pose-push-overactuated-capacity-greedy-slots-seed5300.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-overactuated-push-more-robots-than-loads-pose-push-overactuated-capacity-greedy-slots-seed5300.mp4"
+    },
+    {
+      "case_id": "overactuated_push_more_robots_than_loads",
+      "method": "cbba_slots",
+      "scenario_generator": "pose_push_overactuated",
+      "seed": 5300,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-overactuated-push-more-robots-than-loads-pose-push-overactuated-cbba-slots-seed5300.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-overactuated-push-more-robots-than-loads-pose-push-overactuated-cbba-slots-seed5300.mp4"
+    },
+    {
+      "case_id": "overactuated_push_more_robots_than_loads",
+      "method": "smith_wrench_deficit",
+      "scenario_generator": "pose_push_overactuated",
+      "seed": 5300,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-overactuated-push-more-robots-than-loads-pose-push-overactuated-smith-wrench-deficit-seed5300.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-overactuated-push-more-robots-than-loads-pose-push-overactuated-smith-wrench-deficit-seed5300.mp4"
+    },
+    {
+      "case_id": "overactuated_push_more_robots_than_loads",
+      "method": "support_dual_wrench_market",
+      "scenario_generator": "pose_push_overactuated",
+      "seed": 5300,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-overactuated-push-more-robots-than-loads-pose-push-overactuated-support-dual-wrench-market-seed5300.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-overactuated-push-more-robots-than-loads-pose-push-overactuated-support-dual-wrench-market-seed5300.mp4"
+    },
+    {
+      "case_id": "balanced_push_drag_equal_robots_loads",
+      "method": "wrench_oracle",
+      "scenario_generator": "pose_push_drag_balanced",
+      "seed": 5301,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-balanced-push-drag-equal-robots-loads-pose-push-drag-balanced-wrench-oracle-seed5301.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-balanced-push-drag-equal-robots-loads-pose-push-drag-balanced-wrench-oracle-seed5301.mp4"
+    },
+    {
+      "case_id": "balanced_push_drag_equal_robots_loads",
+      "method": "hungarian_slots",
+      "scenario_generator": "pose_push_drag_balanced",
+      "seed": 5301,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-balanced-push-drag-equal-robots-loads-pose-push-drag-balanced-hungarian-slots-seed5301.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-balanced-push-drag-equal-robots-loads-pose-push-drag-balanced-hungarian-slots-seed5301.mp4"
+    },
+    {
+      "case_id": "balanced_push_drag_equal_robots_loads",
+      "method": "capacity_greedy_slots",
+      "scenario_generator": "pose_push_drag_balanced",
+      "seed": 5301,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-balanced-push-drag-equal-robots-loads-pose-push-drag-balanced-capacity-greedy-slots-seed5301.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-balanced-push-drag-equal-robots-loads-pose-push-drag-balanced-capacity-greedy-slots-seed5301.mp4"
+    },
+    {
+      "case_id": "balanced_push_drag_equal_robots_loads",
+      "method": "cbba_slots",
+      "scenario_generator": "pose_push_drag_balanced",
+      "seed": 5301,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-balanced-push-drag-equal-robots-loads-pose-push-drag-balanced-cbba-slots-seed5301.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-balanced-push-drag-equal-robots-loads-pose-push-drag-balanced-cbba-slots-seed5301.mp4"
+    },
+    {
+      "case_id": "balanced_push_drag_equal_robots_loads",
+      "method": "smith_wrench_deficit",
+      "scenario_generator": "pose_push_drag_balanced",
+      "seed": 5301,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-balanced-push-drag-equal-robots-loads-pose-push-drag-balanced-smith-wrench-deficit-seed5301.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-balanced-push-drag-equal-robots-loads-pose-push-drag-balanced-smith-wrench-deficit-seed5301.mp4"
+    },
+    {
+      "case_id": "balanced_push_drag_equal_robots_loads",
+      "method": "support_dual_wrench_market",
+      "scenario_generator": "pose_push_drag_balanced",
+      "seed": 5301,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-balanced-push-drag-equal-robots-loads-pose-push-drag-balanced-support-dual-wrench-market-seed5301.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-balanced-push-drag-equal-robots-loads-pose-push-drag-balanced-support-dual-wrench-market-seed5301.mp4"
+    },
+    {
+      "case_id": "scarce_heavy_cargo_fewer_robots_than_loads",
+      "method": "wrench_oracle",
+      "scenario_generator": "pose_cargo_scarce",
+      "seed": 5302,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-scarce-heavy-cargo-fewer-robots-than-loads-pose-cargo-scarce-wrench-oracle-seed5302.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-scarce-heavy-cargo-fewer-robots-than-loads-pose-cargo-scarce-wrench-oracle-seed5302.mp4"
+    },
+    {
+      "case_id": "scarce_heavy_cargo_fewer_robots_than_loads",
+      "method": "hungarian_slots",
+      "scenario_generator": "pose_cargo_scarce",
+      "seed": 5302,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-scarce-heavy-cargo-fewer-robots-than-loads-pose-cargo-scarce-hungarian-slots-seed5302.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-scarce-heavy-cargo-fewer-robots-than-loads-pose-cargo-scarce-hungarian-slots-seed5302.mp4"
+    },
+    {
+      "case_id": "scarce_heavy_cargo_fewer_robots_than_loads",
+      "method": "capacity_greedy_slots",
+      "scenario_generator": "pose_cargo_scarce",
+      "seed": 5302,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-scarce-heavy-cargo-fewer-robots-than-loads-pose-cargo-scarce-capacity-greedy-slots-seed5302.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-scarce-heavy-cargo-fewer-robots-than-loads-pose-cargo-scarce-capacity-greedy-slots-seed5302.mp4"
+    },
+    {
+      "case_id": "scarce_heavy_cargo_fewer_robots_than_loads",
+      "method": "cbba_slots",
+      "scenario_generator": "pose_cargo_scarce",
+      "seed": 5302,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-scarce-heavy-cargo-fewer-robots-than-loads-pose-cargo-scarce-cbba-slots-seed5302.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-scarce-heavy-cargo-fewer-robots-than-loads-pose-cargo-scarce-cbba-slots-seed5302.mp4"
+    },
+    {
+      "case_id": "scarce_heavy_cargo_fewer_robots_than_loads",
+      "method": "smith_wrench_deficit",
+      "scenario_generator": "pose_cargo_scarce",
+      "seed": 5302,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-scarce-heavy-cargo-fewer-robots-than-loads-pose-cargo-scarce-smith-wrench-deficit-seed5302.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-scarce-heavy-cargo-fewer-robots-than-loads-pose-cargo-scarce-smith-wrench-deficit-seed5302.mp4"
+    },
+    {
+      "case_id": "scarce_heavy_cargo_fewer_robots_than_loads",
+      "method": "support_dual_wrench_market",
+      "scenario_generator": "pose_cargo_scarce",
+      "seed": 5302,
+      "snapshot": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\figures\\sp3-pose-scarce-heavy-cargo-fewer-robots-than-loads-pose-cargo-scarce-support-dual-wrench-market-seed5302.png",
+      "video": "results\\sp3\\SP3_POSE_suite_euler_lagrange_transport\\videos\\sp3-pose-scarce-heavy-cargo-fewer-robots-than-loads-pose-cargo-scarce-support-dual-wrench-market-seed5302.mp4"
+    }
+  ]
+}

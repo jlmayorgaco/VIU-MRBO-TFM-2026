@@ -1,0 +1,9 @@
+rank,method,method_label,method_family,method_scope,method_ownership,arrival_success_rate_mean,timeout_rate_mean,collision_count_mean,collision_rate_mean,runtime_ms_mean,performance_gap_vs_reference_mean,optimality_gap_vs_reference_mean
+1,reference_time_expanded_cbf,Reference time-expanded CBF,model_based_reference,centralized,reference,0.9223611111111112,0.0776388888888889,20.21,0.0094563378400114,113.7145880027674,0.0,0.0
+2,cbf_safety_filter,CBF safety filter,sota,centralized,baseline,0.92125,0.07875,21.28,0.0099832760485037,100.83709400030784,0.0138790524754734,0.0138790524754734
+3,smith_motion_field,Smith-QR motion field,model_based,decentralized,proposed,0.8869444444444444,0.1130555555555555,22.686666666666667,0.0107196828992532,126.49048733563784,0.0272692765877866,0.0272692765877866
+4,energy_aware_smith_motion,Energy-aware Smith motion,model_based,decentralized,proposed,0.7962499999999999,0.20375,26.53,0.0126082530316303,148.59377566725016,0.0594298773585432,0.0594298773585432
+5,apf_obstacle_avoidance,APF obstacle avoidance,classic,decentralized,baseline,1.0,0.0,97.68333333333334,0.0468211808396877,58.14661933341995,0.100771099108917,0.100771099108917
+6,direct_to_target,Direct to target,classic,decentralized,baseline,1.0,0.0,105.93333333333334,0.0496898533853477,17.463790338175993,0.104831848332713,0.104831848332713
+7,velocity_obstacle_proxy,Velocity obstacle proxy,sota,decentralized,baseline,1.0,0.0,107.16333333333333,0.0513857492336964,74.42773866311957,0.1183900981040342,0.1183900981040342
+8,priority_yield,Priority yield,classic,centralized,baseline,0.9994444444444446,0.0005555555555555,119.47333333333331,0.0566106791101636,31.552281002514064,0.1362964618327682,0.1362964618327682

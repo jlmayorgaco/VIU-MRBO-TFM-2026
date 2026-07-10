@@ -1,0 +1,14 @@
+rank,method,method_label,method_family,method_scope,method_ownership,coalition_success_rate_mean,optimality_gap_vs_oracle_mean,runtime_ms_mean
+1,centralized_coalition_milp,Centralized coalition oracle,model_based_oracle,centralized,reference,0.8469126984126985,4.188699918693913e-18,2.6002797162869857
+2,oracle_reference,Oracle reference,model_based_oracle,centralized,reference,0.8469126984126985,4.188699918693913e-18,2.641748380071173
+3,mappo_recruitment,MAPPO recruitment checkpoint,data_driven,decentralized,proposed,0.8462777777777778,0.0043287265899788,13.871540951187766
+4,hungarian_expanded,Hungarian expanded,classic,centralized,baseline,0.721047619047619,0.2765213188270577,0.0652565724504668
+5,greedy_nearest,Greedy nearest,classic,decentralized,baseline,0.7223571428571429,0.3041899315350975,0.1310230932375859
+6,cbba,CBBA-like auction,sota,decentralized,baseline,0.6984761904761905,0.3381913971700229,0.4076840947493024
+7,imitation_oracle,Data-driven imitation oracle,data_driven,decentralized,baseline,0.6583095238095237,0.3774111929151252,0.6641906665615915
+8,primal_dual_cardinality_capacity,Primal-dual cardinality capacity,model_based,decentralized,proposed,0.6700396825396825,0.4735438248949306,0.6165796676318028
+9,primal_dual_wrench_market,Primal-dual wrench market,model_based,decentralized,proposed,0.6688095238095239,0.4838853222867588,0.6039827133506714
+10,local_primal_dual_wrench_market,Local primal-dual wrench market,model_based,decentralized_local,proposed,0.6552460317460317,0.4982085079717678,0.6202411891094276
+11,replicator_cardinality,Replicator cardinality,model_based,decentralized,baseline,0.5719365079365079,0.5491510432703142,0.1639506656543485
+12,bnn_cardinality,BNN cardinality,model_based,decentralized,baseline,0.5976984126984126,0.553341092865813,0.1614240015346911
+13,smith_cardinality,Smith cardinality,model_based,decentralized,proposed,0.5590158730158731,0.5921441690062245,0.1650300474526981

@@ -1,0 +1,72 @@
+{
+  "checks": 9360,
+  "failed_checks": 0,
+  "method_count": 6,
+  "passed": true,
+  "potential_alignment": {
+    "distance_interpretation": "deliverable_capacity_within_finite_operational_horizon",
+    "effective_capacity_pair_dependent": true,
+    "exact_potential_methods": [
+      "replicator_capacity_marginal",
+      "smith_capacity_marginal"
+    ],
+    "marginal_methods": [
+      "replicator_capacity_marginal",
+      "smith_capacity_marginal",
+      "oracle_reference",
+      "capacity_oracle_reference"
+    ],
+    "method_alignment": {
+      "capacity_oracle_reference": {
+        "payoff_uses_marginal_capacity": true,
+        "potential_structure": "centralized_reference_not_population_payoff",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      },
+      "oracle_reference": {
+        "payoff_uses_marginal_capacity": true,
+        "potential_structure": "centralized_reference_not_population_payoff",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      },
+      "replicator_capacity_marginal": {
+        "payoff_uses_marginal_capacity": true,
+        "potential_structure": "exact",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      },
+      "replicator_capacity_plain": {
+        "payoff_uses_marginal_capacity": false,
+        "potential_structure": "not_guaranteed_unless_eik_factorizes",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      },
+      "smith_capacity_marginal": {
+        "payoff_uses_marginal_capacity": true,
+        "potential_structure": "exact",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      },
+      "smith_capacity_plain": {
+        "payoff_uses_marginal_capacity": false,
+        "potential_structure": "not_guaranteed_unless_eik_factorizes",
+        "theorem": "Teorema 2",
+        "uses_effective_capacity_in_state": true
+      }
+    },
+    "payoff_uses_marginal_capacity": true,
+    "potential_structure": "mixed",
+    "static_capacity_limit": "ell_d_to_infinity_or_move_distance_to_separable_cost_gik",
+    "theorem": "Teorema 2"
+  },
+  "scenario_generators": [
+    "light_mixed",
+    "balanced_capacity",
+    "heavy_capacity",
+    "battery_constrained",
+    "monte_carlo"
+  ],
+  "seed_count": 40,
+  "seed_end": 3139,
+  "seed_start": 3100
+}

@@ -1,0 +1,251 @@
+{
+  "config_path": "configs\\experiments\\sp4\\SP4_MC_motion_comparison.yaml",
+  "experiment_id": "SP4_MC_motion_comparison",
+  "hypotheses": 4,
+  "methods": [
+    "direct_to_target",
+    "priority_yield",
+    "apf_obstacle_avoidance",
+    "velocity_obstacle_proxy",
+    "cbf_safety_filter",
+    "smith_motion_field",
+    "energy_aware_smith_motion",
+    "reference_time_expanded_cbf"
+  ],
+  "mode": "monte_carlo",
+  "output_dir": "results\\sp4\\SP4_MC_motion_comparison",
+  "performance_ranking": "results\\sp4\\SP4_MC_motion_comparison\\tables\\performance_ranking.csv",
+  "report": "results\\sp4\\SP4_MC_motion_comparison\\report.md",
+  "runs": 2400,
+  "scenario_generators": [
+    "open_field_arrival",
+    "crossing_traffic",
+    "narrow_passage",
+    "cluttered_warehouse",
+    "communication_limited",
+    "long_distance_energy"
+  ],
+  "scenario_videos": [
+    {
+      "method": "reference_time_expanded_cbf",
+      "scenario_generator": "cluttered_warehouse",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_cluttered-warehouse_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5100.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_cluttered-warehouse_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5100.mp4"
+    },
+    {
+      "method": "smith_motion_field",
+      "scenario_generator": "cluttered_warehouse",
+      "seed": 5114,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_cluttered-warehouse_proposed_model-based_decentralized_smith-qr-congestion-field_smith-motion-field_seed5114.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_cluttered-warehouse_proposed_model-based_decentralized_smith-qr-congestion-field_smith-motion-field_seed5114.mp4"
+    },
+    {
+      "method": "cbf_safety_filter",
+      "scenario_generator": "cluttered_warehouse",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_cluttered-warehouse_baseline_sota_centralized_cbf-velocity-projection-proxy_cbf-safety-filter_seed5100.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_cluttered-warehouse_baseline_sota_centralized_cbf-velocity-projection-proxy_cbf-safety-filter_seed5100.mp4"
+    },
+    {
+      "method": "energy_aware_smith_motion",
+      "scenario_generator": "cluttered_warehouse",
+      "seed": 5108,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_cluttered-warehouse_proposed_model-based_decentralized_smith-qr-energy-congestion-field_energy-aware-smith-motion_seed5108.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_cluttered-warehouse_proposed_model-based_decentralized_smith-qr-energy-congestion-field_energy-aware-smith-motion_seed5108.mp4"
+    },
+    {
+      "method": "reference_time_expanded_cbf",
+      "scenario_generator": "communication_limited",
+      "seed": 5130,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_communication-limited_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5130.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_communication-limited_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5130.mp4"
+    },
+    {
+      "method": "cbf_safety_filter",
+      "scenario_generator": "communication_limited",
+      "seed": 5139,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_communication-limited_baseline_sota_centralized_cbf-velocity-projection-proxy_cbf-safety-filter_seed5139.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_communication-limited_baseline_sota_centralized_cbf-velocity-projection-proxy_cbf-safety-filter_seed5139.mp4"
+    },
+    {
+      "method": "smith_motion_field",
+      "scenario_generator": "communication_limited",
+      "seed": 5120,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_communication-limited_proposed_model-based_decentralized_smith-qr-congestion-field_smith-motion-field_seed5120.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_communication-limited_proposed_model-based_decentralized_smith-qr-congestion-field_smith-motion-field_seed5120.mp4"
+    },
+    {
+      "method": "energy_aware_smith_motion",
+      "scenario_generator": "communication_limited",
+      "seed": 5128,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_communication-limited_proposed_model-based_decentralized_smith-qr-energy-congestion-field_energy-aware-smith-motion_seed5128.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_communication-limited_proposed_model-based_decentralized_smith-qr-energy-congestion-field_energy-aware-smith-motion_seed5128.mp4"
+    },
+    {
+      "method": "cbf_safety_filter",
+      "scenario_generator": "crossing_traffic",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_crossing-traffic_baseline_sota_centralized_cbf-velocity-projection-proxy_cbf-safety-filter_seed5100.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_crossing-traffic_baseline_sota_centralized_cbf-velocity-projection-proxy_cbf-safety-filter_seed5100.mp4"
+    },
+    {
+      "method": "energy_aware_smith_motion",
+      "scenario_generator": "crossing_traffic",
+      "seed": 5107,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_crossing-traffic_proposed_model-based_decentralized_smith-qr-energy-congestion-field_energy-aware-smith-motion_seed5107.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_crossing-traffic_proposed_model-based_decentralized_smith-qr-energy-congestion-field_energy-aware-smith-motion_seed5107.mp4"
+    },
+    {
+      "method": "direct_to_target",
+      "scenario_generator": "crossing_traffic",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_crossing-traffic_baseline_classic_decentralized_direct-single-integrator_direct-to-target_seed5100.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_crossing-traffic_baseline_classic_decentralized_direct-single-integrator_direct-to-target_seed5100.mp4"
+    },
+    {
+      "method": "velocity_obstacle_proxy",
+      "scenario_generator": "crossing_traffic",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_crossing-traffic_baseline_sota_decentralized_velocity-obstacle-proxy_velocity-obstacle-proxy_seed5100.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_crossing-traffic_baseline_sota_decentralized_velocity-obstacle-proxy_velocity-obstacle-proxy_seed5100.mp4"
+    },
+    {
+      "method": "direct_to_target",
+      "scenario_generator": "long_distance_energy",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_long-distance-energy_baseline_classic_decentralized_direct-single-integrator_direct-to-target_seed5100.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_long-distance-energy_baseline_classic_decentralized_direct-single-integrator_direct-to-target_seed5100.mp4"
+    },
+    {
+      "method": "reference_time_expanded_cbf",
+      "scenario_generator": "long_distance_energy",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_long-distance-energy_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5100.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_long-distance-energy_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5100.mp4"
+    },
+    {
+      "method": "apf_obstacle_avoidance",
+      "scenario_generator": "long_distance_energy",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_long-distance-energy_baseline_classic_decentralized_artificial-potential-field_apf-obstacle-avoidance_seed5100.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_long-distance-energy_baseline_classic_decentralized_artificial-potential-field_apf-obstacle-avoidance_seed5100.mp4"
+    },
+    {
+      "method": "priority_yield",
+      "scenario_generator": "long_distance_energy",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_long-distance-energy_baseline_classic_centralized_priority-release-yield_priority-yield_seed5100.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_long-distance-energy_baseline_classic_centralized_priority-release-yield_priority-yield_seed5100.mp4"
+    },
+    {
+      "method": "energy_aware_smith_motion",
+      "scenario_generator": "narrow_passage",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_narrow-passage_proposed_model-based_decentralized_smith-qr-energy-congestion-field_energy-aware-smith-motion_seed5100.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_narrow-passage_proposed_model-based_decentralized_smith-qr-energy-congestion-field_energy-aware-smith-motion_seed5100.mp4"
+    },
+    {
+      "method": "reference_time_expanded_cbf",
+      "scenario_generator": "narrow_passage",
+      "seed": 5115,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_narrow-passage_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5115.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_narrow-passage_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5115.mp4"
+    },
+    {
+      "method": "smith_motion_field",
+      "scenario_generator": "narrow_passage",
+      "seed": 5102,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_narrow-passage_proposed_model-based_decentralized_smith-qr-congestion-field_smith-motion-field_seed5102.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_narrow-passage_proposed_model-based_decentralized_smith-qr-congestion-field_smith-motion-field_seed5102.mp4"
+    },
+    {
+      "method": "cbf_safety_filter",
+      "scenario_generator": "narrow_passage",
+      "seed": 5115,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_narrow-passage_baseline_sota_centralized_cbf-velocity-projection-proxy_cbf-safety-filter_seed5115.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_narrow-passage_baseline_sota_centralized_cbf-velocity-projection-proxy_cbf-safety-filter_seed5115.mp4"
+    },
+    {
+      "method": "direct_to_target",
+      "scenario_generator": "open_field_arrival",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_open-field-arrival_baseline_classic_decentralized_direct-single-integrator_direct-to-target_seed5100.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_open-field-arrival_baseline_classic_decentralized_direct-single-integrator_direct-to-target_seed5100.mp4"
+    },
+    {
+      "method": "reference_time_expanded_cbf",
+      "scenario_generator": "open_field_arrival",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_open-field-arrival_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5100.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_open-field-arrival_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5100.mp4"
+    },
+    {
+      "method": "cbf_safety_filter",
+      "scenario_generator": "open_field_arrival",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_open-field-arrival_baseline_sota_centralized_cbf-velocity-projection-proxy_cbf-safety-filter_seed5100.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_open-field-arrival_baseline_sota_centralized_cbf-velocity-projection-proxy_cbf-safety-filter_seed5100.mp4"
+    },
+    {
+      "method": "smith_motion_field",
+      "scenario_generator": "open_field_arrival",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_MC_motion_comparison\\figures\\sp4_open-field-arrival_proposed_model-based_decentralized_smith-qr-congestion-field_smith-motion-field_seed5100.png",
+      "video": "results\\sp4\\SP4_MC_motion_comparison\\videos\\sp4_open-field-arrival_proposed_model-based_decentralized_smith-qr-congestion-field_smith-motion-field_seed5100.mp4"
+    }
+  ],
+  "seeds": [
+    5100,
+    5101,
+    5102,
+    5103,
+    5104,
+    5105,
+    5106,
+    5107,
+    5108,
+    5109,
+    5110,
+    5111,
+    5112,
+    5113,
+    5114,
+    5115,
+    5116,
+    5117,
+    5118,
+    5119,
+    5120,
+    5121,
+    5122,
+    5123,
+    5124,
+    5125,
+    5126,
+    5127,
+    5128,
+    5129,
+    5130,
+    5131,
+    5132,
+    5133,
+    5134,
+    5135,
+    5136,
+    5137,
+    5138,
+    5139,
+    5140,
+    5141,
+    5142,
+    5143,
+    5144,
+    5145,
+    5146,
+    5147,
+    5148,
+    5149
+  ],
+  "theory_audit": "results\\sp4\\SP4_MC_motion_comparison\\theory_audit.json"
+}

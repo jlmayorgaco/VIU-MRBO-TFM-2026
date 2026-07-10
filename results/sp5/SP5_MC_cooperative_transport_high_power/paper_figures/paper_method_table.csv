@@ -1,0 +1,11 @@
+rank,method,method_label,method_family,method_scope,method_ownership,pickup_success_mean,transport_success_mean,collision_count_mean,collision_rate_mean,completion_time_s_mean,runtime_ms_mean,performance_gap_vs_reference_mean,optimality_gap_vs_reference_mean
+1,reference_centralized_mpc_cbf_cargo,Reference centralized MPC-CBF cargo,model_based_reference,centralized,reference,1.0,1.0,0.0,0.0,40.3975249500998,3234.3873993012385,0.0,0.0
+2,sota_centralized_cbf_cargo,SOTA centralized CBF cargo,sota,centralized,baseline,1.0,0.9845309381237524,0.0,0.0,42.284940119760485,608.9298946602514,0.0272266185870036,0.0272266185870036
+3,sota_decentralized_vo_cargo,SOTA decentralized VO cargo,sota,decentralized,baseline,1.0,0.9770459081836328,0.0,0.0,42.38558882235529,633.8795994995966,0.0367809598255374,0.0367809598255374
+4,ours_hamiltonian_cargo,Ours Hamiltonian cargo,model_based,decentralized,proposed,1.0,0.9760479041916168,0.0,0.0,42.34090818363274,663.8886456597622,0.0311526693470591,0.0311526693470591
+5,classic_centralized_shortest_push,Classic centralized shortest push,classic,centralized,baseline,1.0,0.0349301397205588,0.0,0.0,75.491020850505,1140.821353644142,0.9695707234976187,0.9695707234976187
+6,classic_decentralized_apf_push,Classic decentralized APF push,classic,decentralized,baseline,1.0,0.0009980039920159,0.0,0.0,75.50561495308418,939.1570768454771,0.9990015150010354,0.9990015150010354
+7,ours_tensor_game_push,Ours tensor-game push,model_based,decentralized,proposed,1.0,0.0,0.0,0.0,76.09149797655644,1475.002267367384,1.0,1.0
+8,ours_primal_dual_wrench_push,Ours primal-dual wrench push,model_based,decentralized,proposed,1.0,0.0,0.0,0.0,76.59996166536013,1175.6559185114547,1.0,1.0
+9,sota_decentralized_vo_push,SOTA decentralized VO push,sota,decentralized,baseline,1.0,0.0,0.0,0.0,76.57354751773003,1171.97356507019,1.0,1.0
+10,sota_centralized_cbf_push,SOTA centralized CBF push,sota,centralized,baseline,1.0,0.0,0.0,0.0,76.54512838837084,1171.1721030922984,1.0,1.0

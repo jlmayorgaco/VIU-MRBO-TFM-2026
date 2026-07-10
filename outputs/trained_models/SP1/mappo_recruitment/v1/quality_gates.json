@@ -1,0 +1,101 @@
+{
+  "checks": [
+    {
+      "direction": "min",
+      "metric": "demand_satisfaction_ratio_mean",
+      "passed": true,
+      "split": "validation",
+      "threshold": 0.88,
+      "value": 0.9082962731712731
+    },
+    {
+      "direction": "min",
+      "metric": "coalition_success_rate_mean",
+      "passed": true,
+      "split": "validation",
+      "threshold": 0.78,
+      "value": 0.9023333333333333
+    },
+    {
+      "direction": "max",
+      "metric": "robots_overassigned_mean",
+      "passed": true,
+      "split": "validation",
+      "threshold": 0.75,
+      "value": 0.26
+    },
+    {
+      "direction": "max",
+      "metric": "optimality_gap_vs_oracle_mean",
+      "passed": true,
+      "split": "validation",
+      "threshold": 0.08,
+      "value": 0.0030659374610729406
+    },
+    {
+      "direction": "max",
+      "metric": "estimated_arrival_time_s_mean",
+      "passed": true,
+      "split": "validation",
+      "threshold": 25.0,
+      "value": 13.527634249880471
+    },
+    {
+      "direction": "max",
+      "metric": "energy_proxy_wh_mean",
+      "passed": true,
+      "split": "validation",
+      "threshold": 260.0,
+      "value": 184.25142560312932
+    },
+    {
+      "direction": "min",
+      "metric": "demand_satisfaction_ratio_mean",
+      "passed": true,
+      "split": "test",
+      "threshold": 0.88,
+      "value": 0.8901284132534133
+    },
+    {
+      "direction": "min",
+      "metric": "coalition_success_rate_mean",
+      "passed": true,
+      "split": "test",
+      "threshold": 0.78,
+      "value": 0.88375
+    },
+    {
+      "direction": "max",
+      "metric": "robots_overassigned_mean",
+      "passed": true,
+      "split": "test",
+      "threshold": 0.75,
+      "value": 0.29
+    },
+    {
+      "direction": "max",
+      "metric": "optimality_gap_vs_oracle_mean",
+      "passed": true,
+      "split": "test",
+      "threshold": 0.08,
+      "value": 0.0010331721011445627
+    },
+    {
+      "direction": "max",
+      "metric": "estimated_arrival_time_s_mean",
+      "passed": true,
+      "split": "test",
+      "threshold": 25.0,
+      "value": 13.698904426025178
+    },
+    {
+      "direction": "max",
+      "metric": "energy_proxy_wh_mean",
+      "passed": true,
+      "split": "test",
+      "threshold": 260.0,
+      "value": 175.4231031059766
+    }
+  ],
+  "passed": true
+}

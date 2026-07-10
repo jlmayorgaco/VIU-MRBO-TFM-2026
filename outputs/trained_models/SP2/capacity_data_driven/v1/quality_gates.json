@@ -1,0 +1,113 @@
+{
+  "checks": [
+    {
+      "direction": "min",
+      "method": "imitation_capacity",
+      "metric": "capacity_satisfaction_ratio_mean",
+      "passed": true,
+      "split": "validation",
+      "threshold": 0.48,
+      "value": 0.5067540834670435
+    },
+    {
+      "direction": "max",
+      "method": "imitation_capacity",
+      "metric": "optimality_gap_vs_oracle_mean",
+      "passed": true,
+      "split": "validation",
+      "threshold": 0.2,
+      "value": 0.12155245900571375
+    },
+    {
+      "direction": "max",
+      "method": "imitation_capacity",
+      "metric": "capacity_gap_vs_capacity_oracle_mean",
+      "passed": true,
+      "split": "validation",
+      "threshold": 0.3,
+      "value": 0.041876781978610486
+    },
+    {
+      "direction": "min",
+      "method": "imitation_capacity",
+      "metric": "capacity_satisfaction_ratio_mean",
+      "passed": true,
+      "split": "test",
+      "threshold": 0.48,
+      "value": 0.5106329375960298
+    },
+    {
+      "direction": "max",
+      "method": "imitation_capacity",
+      "metric": "optimality_gap_vs_oracle_mean",
+      "passed": true,
+      "split": "test",
+      "threshold": 0.2,
+      "value": 0.11518239353510051
+    },
+    {
+      "direction": "max",
+      "method": "imitation_capacity",
+      "metric": "capacity_gap_vs_capacity_oracle_mean",
+      "passed": true,
+      "split": "test",
+      "threshold": 0.3,
+      "value": 0.03869109149788263
+    },
+    {
+      "direction": "min",
+      "method": "neural_capacity_scorer",
+      "metric": "capacity_satisfaction_ratio_mean",
+      "passed": true,
+      "split": "validation",
+      "threshold": 0.47,
+      "value": 0.498628204995081
+    },
+    {
+      "direction": "max",
+      "method": "neural_capacity_scorer",
+      "metric": "optimality_gap_vs_oracle_mean",
+      "passed": true,
+      "split": "validation",
+      "threshold": 0.2,
+      "value": 0.11081394968684673
+    },
+    {
+      "direction": "max",
+      "method": "neural_capacity_scorer",
+      "metric": "capacity_gap_vs_capacity_oracle_mean",
+      "passed": true,
+      "split": "validation",
+      "threshold": 0.3,
+      "value": 0.055114791605633304
+    },
+    {
+      "direction": "min",
+      "method": "neural_capacity_scorer",
+      "metric": "capacity_satisfaction_ratio_mean",
+      "passed": true,
+      "split": "test",
+      "threshold": 0.47,
+      "value": 0.5031885878402074
+    },
+    {
+      "direction": "max",
+      "method": "neural_capacity_scorer",
+      "metric": "optimality_gap_vs_oracle_mean",
+      "passed": true,
+      "split": "test",
+      "threshold": 0.2,
+      "value": 0.10256344375013161
+    },
+    {
+      "direction": "max",
+      "method": "neural_capacity_scorer",
+      "metric": "capacity_gap_vs_capacity_oracle_mean",
+      "passed": true,
+      "split": "test",
+      "threshold": 0.3,
+      "value": 0.051223549302103696
+    }
+  ],
+  "passed": true
+}
