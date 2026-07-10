@@ -1,4 +1,5 @@
 \section{Marco teórico y estado del arte}
+\label{sec:marco}
 
 \subsection{Alcance de la revisión}
 
@@ -27,7 +28,7 @@ sí se usa como mapa reproducible para detectar tendencias, baselines y brechas.
 
 En los registros focales, el término dominante fue \emph{payload} (43 registros), seguido
 por \emph{cooperative transport} (16), \emph{object transport} (13), \emph{carrying} (13)
-y \emph{load transport} (7). La categoría más frecuente fue \texttt{cs.RO}, y la densidad
+y \emph{load transport} (7). La categoría más frecuente fue cs.RO, y la densidad
 temporal se concentró en 2021--2026. La lectura científica es clara: la literatura está
 activa, pero fragmentada. Los trabajos de asignación escalan mejor cuando abstraen la
 física; los trabajos de control físico son más realistas cuando presuponen la coalición;
@@ -73,6 +74,59 @@ mínima y cuya utilidad depende de si la coalición produce una acción física 
 
 \subsection{Fundamentos teóricos}
 
+\subsubsection{Teoría de juegos y equilibrio de Nash}
+
+La teoría de juegos aporta el lenguaje formal para describir decisiones acopladas entre
+agentes. Un juego en forma normal se representa como
+\[
+  \mathcal G=\langle \mathcal I,\{\mathcal A_i\}_{i\in\mathcal I},
+  \{J_i\}_{i\in\mathcal I}\rangle ,
+\]
+donde $\mathcal I$ es el conjunto de jugadores, $\mathcal A_i$ el conjunto de acciones
+del jugador $i$ y $J_i(a_i,a_{-i})$ su utilidad. En una flota AMR, los jugadores son
+robots, las acciones pueden ser cargas, slots de contacto o modos de asistencia, y la
+utilidad combina déficit físico, distancia, batería, riesgo, comunicación y utilidad
+marginal para la carga.
+
+\begin{definicion}[Equilibrio de Nash]
+Un perfil $a^\star=(a_1^\star,\dots,a_N^\star)$ es equilibrio de Nash si ningún jugador
+puede mejorar unilateralmente manteniendo fijas las decisiones de los demás:
+\[
+  J_i(a_i^\star,a_{-i}^\star)\geq J_i(a_i,a_{-i}^\star),
+  \qquad
+  \forall i,\ \forall a_i\in\mathcal A_i .
+\]
+\end{definicion}
+
+El resultado seminal de Nash garantiza existencia de equilibrio en juegos finitos cuando
+se admiten estrategias mixtas \citep{nash1950equilibrium,nash1951noncooperative}. Para
+este TFM, esa idea no se usa como una receta directa de asignación centralizada, sino
+como una condición de estabilidad estratégica: una coalición madura debe ser tal que un
+robot no encuentre una carga alternativa con mayor utilidad local una vez considerados
+los demás robots. Esta lectura es más fuerte que una asignación voraz y más débil que una
+garantía global de transporte físico. Una decisión puede ser estable como juego y aun
+así ser inviable si no produce el \emph{wrench} requerido o viola despejes de seguridad.
+
+\begin{definicion}[Juego potencial]
+Un juego admite potencial exacto si existe una función $\Phi$ tal que toda desviación
+unilateral satisface
+\[
+  J_i(a_i',a_{-i})-J_i(a_i,a_{-i})
+  =
+  \Phi(a_i',a_{-i})-\Phi(a_i,a_{-i}).
+\]
+En ese caso, las mejoras individuales coinciden con incrementos de una función común
+\citep{monderer1996potential}.
+\end{definicion}
+
+La utilidad de esta estructura es decisiva: permite diseñar payoffs locales que no sean
+solo preferencias aisladas, sino gradientes de una magnitud colectiva. En transporte
+cooperativo, el potencial no representa bienestar abstracto; representa reducción de
+déficit, uso eficiente de capacidad, menor recorrido, menor saturación y mayor seguridad.
+El equilibrio de Nash que interesa, por tanto, es un equilibrio filtrado por física.
+
+\input{figures/fig-equilibrio-nash-smith}
+
 \subsubsection{MRTA, subastas y coaliciones}
 
 MRTA aporta la capa discreta: decidir qué robot o equipo atiende cada tarea. Las
@@ -113,20 +167,52 @@ es una prueba de si el algoritmo depende de broadcast implícito.
 
 \subsubsection{Juegos poblacionales y dinámica de Smith}
 
-Los juegos potenciales y las dinámicas poblacionales ofrecen un puente entre decisión
-local y mejora global \citep{monderer1996potential,sandholm2010population,
-quijano2017population,barreiro2017distributed}. En una dinámica de Smith, cada robot
-traslada masa decisional desde estrategias de menor payoff hacia estrategias de mayor
-payoff:
+Los juegos poblacionales sustituyen decisiones individuales aisladas por una distribución
+agregada de masa entre estrategias \citep{sandholm2010population,quijano2017population}.
+Sea $x_k$ la fracción de robots comprometida con la carga $k$, con
+$x\in\Delta_M$. El payoff poblacional $p_k(x)$ mide la utilidad marginal de enviar más
+masa a esa carga. Una condición de Nash poblacional queda dada por
 \[
-  \dot y_{ik} =
-  \sum_{\ell} y_{i\ell}\pos{p_{ik}-p_{i\ell}}
-  - y_{ik}\sum_{\ell}\pos{p_{i\ell}-p_{ik}} .
+  x_k^\star>0 \Rightarrow p_k(x^\star)=\max_{\ell}p_\ell(x^\star),
+  \qquad
+  x_k^\star=0 \Rightarrow p_k(x^\star)\leq\max_{\ell}p_\ell(x^\star).
 \]
-Cuando los payoffs derivan de un potencial común, los equilibrios se relacionan con
-puntos de Nash y con óptimos restringidos. En el caso homogéneo, la condición de pagos
-iguales recupera una regla tipo \emph{water-filling}: las tareas usadas igualan valor
-marginal y las no usadas quedan por debajo del nivel común.
+Las estrategias usadas no tienen por qué ser todas las existentes; sí deben estar entre
+las de mayor utilidad bajo la distribución vigente.
+
+En una dinámica de Smith, la masa se desplaza desde estrategias de menor payoff hacia
+estrategias de mayor payoff:
+\[
+  \dot x_k =
+  \sum_{\ell} x_{\ell}\pos{p_k(x)-p_{\ell}(x)}
+  - x_k\sum_{\ell}\pos{p_{\ell}(x)-p_k(x)} .
+\]
+El mecanismo es local en diferencias de utilidad: si una carga mejora claramente el
+valor de otra, atrae masa; si está saturada, pierde atractivo.
+
+\begin{proposicion}[Ascenso de potencial bajo dinámica de Smith]
+Si existe un potencial diferenciable $\Phi$ tal que
+$\partial\Phi/\partial x_k=p_k(x)$, entonces la dinámica de Smith no disminuye
+$\Phi$:
+\[
+  \dot\Phi(x)=
+  \sum_{k,\ell}x_{\ell}\pos{p_k(x)-p_{\ell}(x)}^2\geq 0 .
+\]
+\end{proposicion}
+
+\begin{proof}[Demostración]
+Por regla de la cadena, $\dot\Phi=p(x)^\top\dot x$. Sustituyendo la dinámica de Smith,
+intercambiando índices en el término de salida y agrupando por pares,
+\[
+  p(x)^\top\dot x =
+  \sum_{k,\ell}x_{\ell}
+  \bigl(p_k(x)-p_{\ell}(x)\bigr)
+  \pos{p_k(x)-p_{\ell}(x)} .
+\]
+Como $a\pos{a}=\pos{a}^2$, se obtiene la expresión anterior, que es no negativa. La
+igualdad solo se alcanza cuando ninguna estrategia con masa positiva puede migrar hacia
+otra de mayor payoff. Esa es precisamente la condición de Nash poblacional.
+\end{proof}
 
 La ventaja para este TFM es interpretativa. Smith permite leer la asignación como presión
 continua bajo escasez, no como una secuencia rígida de subastas. Su debilidad, si se usa
@@ -135,6 +221,43 @@ coalición entera, roles concretos y guardias de ejecución. Por eso Smith-QR se
 como una arquitectura híbrida: Smith genera presión distribuida; QR/quorum transforma
 preferencias en coaliciones ejecutables; y la capa wrench decide si la coalición es
 físicamente válida.
+
+\subsubsection{Campos potenciales, obstáculos y barreras}
+
+Los campos potenciales ofrecen una forma compacta de convertir objetivos geométricos en
+movimiento reactivo. La formulación clásica suma un potencial atractivo hacia la meta y
+un potencial repulsivo frente a obstáculos \citep{khatib1986real}. Las funciones de
+navegación refinan esta idea para evitar mínimos espurios bajo hipótesis geométricas
+concretas \citep{rimon1992exact}. En sistemas con restricciones críticas, las funciones
+de barrera de control permiten imponer desigualdades de seguridad como condiciones
+explícitas sobre la acción \citep{ames2017cbf}.
+
+Para un robot $i$, una versión mínima del campo es
+\[
+  \Phi_i(q_i)=
+  \underbrace{\frac{1}{2}\kappa_g\norm{q_i-q_i^{\rm goal}}^2}_{\Phi_i^{\rm tarea}}
+  +
+  \underbrace{
+  \sum_{o\in\mathcal O}
+  \frac{1}{2}\kappa_o
+  \pos{\frac{1}{d_{io}(q_i)}-\frac{1}{d_0}}^2
+  }_{\Phi_i^{\rm obstaculo}},
+\]
+donde $d_{io}$ es la distancia al obstáculo $o$ y $d_0$ el radio de influencia. El
+control reactivo $u_i=-\nabla\Phi_i$ aproxima la dirección deseada, pero el TFM no lo
+acepta sin evaluación: el desplazamiento solo es válido si conserva un margen mínimo
+\[
+  h_{io}(q_i)=d_{io}(q_i)^2-d_{\min}^2\geq 0 .
+\]
+En una formulación CBF, la acción debe satisfacer
+\[
+  \dot h_{io}(q_i,u_i)+\alpha h_{io}(q_i)\geq 0,
+\]
+para una ganancia $\alpha>0$. En la memoria, esta condición se usa como
+criterio de evaluación y como extensión natural de filtrado, no como promesa de prueba
+global con contacto real.
+
+\input{figures/fig-campo-obstaculos}
 
 \subsubsection{Geometría, rigidez y capacidad wrench}
 
@@ -155,6 +278,41 @@ Esta lectura justifica la capacidad efectiva:
 El factor $\eta_{ik}$ reduce la contribución cuando el robot está lejos, mal orientado,
 saturado, con batería insuficiente, en contacto inútil o desconectado de la coalición.
 Así, la demanda de una carga no compra cardinalidad; compra capacidad mecánica efectiva.
+
+\input{sections/mainmatter/05-theoretical-framework/expanded-theory}
+
+\subsection{Validacion numerica de resultados teoricos}
+
+Las garantias formales del Capitulo~5 se acompanan de tres comprobaciones numericas
+reproducibles. V1 contrasta el reparto vGNE frente a la proporcion $\eta_i/H$; V2
+superpone la curva cerrada de Price of Anarchy con su calculo numerico; y V3 dibuja la
+frontera $c\lambda_2\mu=\vartheta^2$ de estabilidad Nash seeking. Estas figuras no
+reemplazan las demostraciones del Anexo~A: sirven como puente entre teoria, codigo y
+lectura experimental.
+
+\IfFileExists{../../results/theory_validation/v1/figures/fig_v1_share_vs_theory.png}{%
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{../../results/theory_validation/v1/figures/fig_v1_share_vs_theory.png}
+\caption{V1: validacion numerica del reparto vGNE frente a la proporcion $\eta_i/H$.}
+\label{fig:v1-share-vs-theory}
+\end{figure}}{}
+
+\IfFileExists{../../results/theory_validation/v2/figures/fig_v2_poa_curve.png}{%
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{../../results/theory_validation/v2/figures/fig_v2_poa_curve.png}
+\caption{V2: curva de Price of Anarchy cerrada y calculo numerico para $N=2,\dots,6$.}
+\label{fig:v2-poa-curve}
+\end{figure}}{}
+
+\IfFileExists{../../results/theory_validation/v3/figures/fig_v3_stability_boundary.png}{%
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{../../results/theory_validation/v3/figures/fig_v3_stability_boundary.png}
+\caption{V3: frontera de estabilidad asociada a $c\lambda_2\mu>\vartheta^2$.}
+\label{fig:v3-stability-boundary}
+\end{figure}}{}
 
 \subsection{Familias algorítmicas del estado del arte}
 
@@ -284,6 +442,8 @@ ajusta y la carga se modela con una fidelidad distinta en cada capa. Faltan arqu
 reproducibles donde una misma señal local conecte déficit de carga, reclutamiento,
 quorum, roles físicos y liberación de robots.
 
+\input{figures/fig-gap-literatura}
+
 \subsection{Posicionamiento de Smith-QR}
 
 Smith-QR se posiciona como arquitectura de integración. La dinámica de Smith aporta una
@@ -320,5 +480,5 @@ cooperativo multi-robot. Se propone una arquitectura compacta para el caso de al
 multi-AMR con cargas heterogéneas, comunicación local y necesidad de coaliciones físicas.
 El criterio de éxito no es dominar todos los métodos en todas las métricas, sino demostrar
 que Smith-QR mejora el régimen donde Smith puro falla por información local y preferencias
-fraccionarias, manteniendo trazabilidad matemática y una ruta clara hacia factibilidad de
+fraccionarias, manteniendo trazabilidad matemática y una vía clara hacia factibilidad de
 carga mediante capacidad efectiva.

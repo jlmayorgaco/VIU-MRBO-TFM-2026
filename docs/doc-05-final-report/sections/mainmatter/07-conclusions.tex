@@ -1,33 +1,21 @@
 \section{Conclusiones}
 
-La V7 modular deja una tesis tecnica clara. El TFM propone Smith-QR como nucleo de
-coordinacion distribuida para coaliciones multi-AMR, interpreta la asignacion como un
-mercado local de capacidad y extiende el quorum hacia utilidad fisica en espacio
-\emph{wrench}. Esta combinacion permite explicar con una misma senal de deficit la
-asignacion, el precio, la formacion, la liberacion de robots y la necesidad de contactos
-geometricamente utiles.
+La memoria propone y evalúa una arquitectura distribuida para coordinar coaliciones multi-AMR en transporte de cargas heterogéneas. La contribución principal no es un algoritmo aislado ni una promesa de dominancia universal, sino un marco físico-económico que conecta asignación, quórum, capacidad efectiva, formación, \emph{wrench}, comunicación y recuperación bajo un protocolo experimental común.
 
-Las conclusiones principales son:
+Las conclusiones principales son las siguientes:
 \begin{itemize}[leftmargin=2em]
-  \item La escalera M0--M5 permite defender el trabajo de forma gradual: los metodos
-  clasicos fallan bajo coaliciones y comunicacion local, la asignacion necesita quorum
-  entero, y la cardinalidad debe extenderse hacia capacidad fisica.
-  \item Smith es una base teorica adecuada para la asignacion poblacional, pero falla en
-  regimenes locales severos si no se refuerza con memoria y clearing.
-  \item Smith-QR mejora el regimen R3 en captura de recompensa, aunque no debe venderse
-  como dominante universal.
-  \item MARL aporta comparadores aprendidos valiosos, pero no sustituye la explicabilidad
-  ni las garantias estructurales del modelo.
-  \item La capacidad vectorial tipo wrench es el componente mas importante para que el
-  problema de cargas heterogeneas sea realmente distinto del reparto 1-a-1.
-  \item La organizacion final del repositorio es parte del aporte: permite reproducir,
-  auditar y extender el trabajo.
+  \item La escalera experimental muestra que el problema cambia de naturaleza al pasar de un robot por tarea a coaliciones con carga física compartida. Cardinalidad, capacidad y factibilidad \emph{wrench} no son equivalentes.
+  \item Smith ofrece una base interpretable para la asignación poblacional, pero no basta por sí solo en regímenes de comunicación local, preferencias fraccionarias o cierre entero de tareas.
+  \item Smith-QR aporta una integración defendible entre presión distribuida, memoria local, quórum entero y guardias de factibilidad, con mejoras claras en los regímenes donde Smith puro pierde información o produce coaliciones no ejecutables.
+  \item La evaluación de fuerza y torque evita falsos positivos físicos: una coalición puede satisfacer una demanda escalar y aun así no generar el \emph{wrench} requerido por la carga.
+  \item Los comparadores aprendidos enriquecen la validación, pero su lectura debe ser prudente: aportan adaptación y contraste, no una sustitución de las garantías estructurales del modelo.
+  \item Los experimentos de movimiento, transporte, recuperación, comunicación y escala confirman que la calidad de una solución multi-AMR debe medirse con varias dimensiones simultáneas: completitud, seguridad, energía, tiempo, mensajes, coste computacional y validez física.
 \end{itemize}
 
-El trabajo futuro natural queda tambien organizado por modulos. M1.2 debe recibir una
-campana dedicada de robots heterogeneos con cargas homogeneas. M3 debe promover los
-slots de contacto a una variable estrategica explicita $z_{ikh}$. M4 debe cerrarse con
-CBF-QP o una prueba mas fuerte de seguridad y convergencia practica. M5 debe incorporar
-estaciones de carga, colas y replanificacion energetica. ROS 2, CoppeliaSim headless real
-y hardware quedan como extensiones de validacion, no como resultados ya demostrados en
-esta entrega.
+\IfFileExists{../generated/regime_map.tex}{\input{../generated/regime_map.tex}}{}
+
+El trabajo queda acotado a simulación reproducible, análisis estadístico e integración visual. No se afirma transferencia directa a hardware, contacto real con fricción completa, certificación de seguridad ni despliegue industrial. Esta restricción no debilita la contribución; define con precisión qué se ha demostrado y qué necesita una etapa posterior.
+
+Las líneas futuras son claras. La asignación de slots debe promoverse a decisión estratégica explícita; el control de seguridad puede reforzarse con formulaciones CBF-QP; la batería debe ampliarse hacia estaciones de carga, colas y replanificación energética; y la validación debería avanzar hacia ROS 2, CoppeliaSim con contacto más rico y ensayos físicos controlados. En el plano teórico, la continuación natural es formalizar el límite de campo medio, acotar el error finito de flota y estudiar garantías prácticas para juegos generalizados con restricciones de fuerza, conectividad y seguridad.
+
+En síntesis, el TFM demuestra que el transporte cooperativo de cargas heterogéneas exige tratar la asignación como una decisión física. Los robots no solo eligen tareas: compran capacidad, ocupan contactos, producen fuerza y torque, consumen energía y dependen de una red local. Esa lectura permite construir una tesis cohesionada, técnicamente verificable y abierta a una línea doctoral sólida.

@@ -1,8 +1,89 @@
-\section{Matrices de validacion}
+\section{Matrices de validación}
 
-Este anexo incorpora las tablas generadas automaticamente por
-\texttt{python -m viu\_mrob\_tfm.validation.suite}. Las decisiones se leen junto con el
-alcance declarado en cada fila: prueba matematica, contraste estadistico, evidencia
-robotica observacional o artefacto visual.
+Este anexo resume la lectura de validación usada para cerrar la memoria. Las tablas separan evidencia estadística, pruebas de consistencia y alcance de la inferencia. Las cifras se reportan como escala de evaluación y no como garantía de despliegue industrial.
 
-\input{sections/generated-validation-suite-v1}
+\begin{table}[H]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}p{0.10\textwidth}p{0.26\textwidth}p{0.22\textwidth}X@{}}
+\toprule
+Estudio & Magnitud validada & Escala & Decisión de lectura \\
+\midrule
+SP1 & Reclutamiento y satisfacción de demanda. & $27\,300$ evaluaciones. & Evidencia favorable para coaliciones distribuidas; la superioridad depende de métrica y coste. \\
+SP2 & Capacidad efectiva heterogénea. & $20\,280$ comprobaciones. & La capacidad marginal mejora la lectura frente a cardinalidad plana. \\
+SP3 & Residual de fuerza y torque. & $20\,040$ corridas y $38\,076$ comprobaciones. & Se refuta la equivalencia entre cobertura escalar y factibilidad física. \\
+SP4 & Movimiento, llegada y seguridad. & $20\,070$ ejecuciones y $21\,408$ comprobaciones. & El resultado debe leerse como compromiso Pareto, no como ranking absoluto. \\
+SP5 & Transporte de carga extendida. & $20\,040$ ejecuciones/comprobaciones. & La pose final de la carga y los despejes cambian la evaluación respecto a llegada individual. \\
+SP6 & Recuperación ante eventos. & $20\,000$ ejecuciones/comprobaciones. & La robustez exige medir reparación, tiempo, carga perdida y seguridad posterior. \\
+SP7 & Comunicación y sensado degradado. & $20\,176$ evaluaciones/comprobaciones. & La conectividad temporal es más informativa que la conectividad instantánea. \\
+SP8 & Escala de flota e intractabilidad. & $20\,000$ evaluaciones hasta $50\,000$ AMR. & La escala favorece métodos reparables y distribuidos; el modelo sigue siendo mesoscópico. \\
+\bottomrule
+\end{tabularx}
+\caption{Matriz de validación por estudio experimental.}
+\label{tab:matriz-validacion-sp}
+\end{table}
+
+\subsection*{C.1 Mapa extendido de evidencia}
+
+La lectura canónica de SP1--SP8 se apoya en barridos complementarios. La tabla siguiente
+separa qué añade cada capa de evaluación para que las conclusiones no dependan de una
+sola parametrización ni de un único tipo de escenario.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}p{0.08\textwidth}p{0.28\textwidth}p{0.24\textwidth}X@{}}
+\toprule
+Estudio & Capas evaluadas & Profundidad & Función dentro de la validación \\
+\midrule
+SP1 & Reclutamiento principal, comparación con referencia central y control visual de trayectorias. & $27\,300$ evaluaciones, $65$ ordenaciones y $51$ inspecciones cinemáticas. & Fija la base de comparación: cerrar demanda con coste razonable antes de introducir capacidad física. \\
+SP2 & Capacidad efectiva y ablación de utilidad marginal. & $20\,280$ comprobaciones principales, más $6$ familias de ablación. & Aísla el efecto de ponderar aportes heterogéneos frente a contar robots como unidades equivalentes. \\
+SP3 & Barrido de \emph{wrench}, versión de alta exigencia y batería dinámica de pose. & $20\,040$ corridas, $38\,076$ comprobaciones y validación con modelo Euler--Lagrange. & Demuestra que fuerza y torque deben evaluarse como magnitudes vectoriales, no como capacidad escalar acumulada. \\
+SP4 & Ley explícita de movimiento, comparación de navegación y variante de alta potencia. & $72$ ejecuciones de ley cerrada, $300$ casos pareados y $20\,070$ ejecuciones exigentes. & Separa llegada, seguridad, energía y despeje; evita declarar superioridad por una sola métrica de movimiento. \\
+SP5 & Transporte cooperativo, variante de alta potencia y ley explícita aplicada a carga extendida. & $20\,040$ ejecuciones principales, $334$ semillas y validación específica de control. & Verifica que la pose de la carga, la formación y la envolvente geométrica cambian la lectura frente a llegada individual. \\
+SP6 & Recuperación explícita, robustez comparativa y variante de alta potencia. & $20\,000$ ejecuciones principales, $250$ semillas y $8$ familias de escenario. & Mide reparación tras fallo, batería baja, retardo, carga inviable y seguridad posterior al evento. \\
+SP7 & Comunicación degradada con exigencia estadística. & $20\,176$ evaluaciones, $97$ semillas y perfiles de radio, pérdida, retardo, jitter y sensado. & Comprueba que el transporte depende de conectividad temporal, descubrimiento local y tolerancia a pérdida de mensajes. \\
+SP8 & Escalera de flota, variante de alta potencia y escenario de almacén. & $20\,000$ evaluaciones, $20$ tamaños de flota y escala hasta $50\,000$ AMR. & Delimita cuándo una referencia central pierde practicidad y cuándo una política distribuida conserva relación útil entre calidad y recurso. \\
+\bottomrule
+\end{tabularx}
+\caption{Mapa extendido de la evidencia experimental SP1--SP8.}
+\label{tab:mapa-extendido-sp}
+\end{table}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}p{0.18\textwidth}p{0.30\textwidth}X@{}}
+\toprule
+Tipo de evidencia & Qué permite afirmar & Qué no permite afirmar \\
+\midrule
+Prueba algebraica & Coherencia interna del modelo, existencia de contraejemplos y necesidad de variables físicas. & Rendimiento estadístico bajo escenarios variados. \\
+Monte Carlo pareado & Diferencias agregadas entre métodos bajo mundos compartidos y semillas controladas. & Garantía universal fuera del dominio simulado. \\
+Inspección visual & Plausibilidad de trayectorias, formación, recuperación y movimiento de carga. & Validación física en hardware o contacto realista completo. \\
+Referencia centralizada & Cota superior o punto de comparación para medir coste de descentralización. & Solución operativa a gran escala cuando el coste se vuelve prohibitivo. \\
+Método aprendido & Comparación adaptativa frente a reglas analíticas y referencias clásicas. & Garantía estructural, interpretabilidad completa o dominancia fuera de distribución. \\
+\bottomrule
+\end{tabularx}
+\caption{Alcance de cada tipo de evidencia usado en la memoria.}
+\label{tab:alcance-evidencia}
+\end{table}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}p{0.18\textwidth}X X@{}}
+\toprule
+Riesgo de sobreafirmación & Formulación defendible & Formulación que se evita \\
+\midrule
+Capacidad \emph{wrench} & Certificado planar cuasiestático para decidir si una coalición asignada puede generar fuerza y torque. & Prueba completa de manipulación física real con fricción y contacto 3D. \\
+Escalabilidad & Comparación mesoscópica de coste, completitud y factibilidad hasta escalas de almacén. & No afirmar validación industrial directa en una instalación real. \\
+Vídeos & Evidencia cualitativa de inspección asociada a métricas. & Prueba suficiente por sí sola. \\
+Métodos aprendidos & Comparadores entrenados bajo el simulador y evaluados con separación de fases. & Estado del arte universal o solución dominante. \\
+Seguridad & Medición de colisiones, despejes y restricciones en el dominio simulado. & Certificación de seguridad funcional. \\
+\bottomrule
+\end{tabularx}
+\caption{Reglas de redacción para mantener afirmaciones defendibles.}
+\label{tab:riesgos-sobreafirmacion}
+\end{table}
+
+\IfFileExists{../generated/stats_master_table.tex}{\input{../generated/stats_master_table.tex}}{}

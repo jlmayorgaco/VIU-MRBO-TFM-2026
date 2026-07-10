@@ -1,0 +1,36 @@
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  font=\scriptsize,
+  robot/.style={circle,draw=VIUDark,fill=VIUOrange!14,thick,minimum size=8mm},
+  load/.style={draw=VIUOrange,fill=VIUOrange!12,rounded corners=2pt,
+    minimum width=17mm,minimum height=11mm},
+  obs/.style={draw=VIUDark!70,fill=VIUDark!12,rounded corners=3pt,
+    minimum width=20mm,minimum height=13mm},
+  arrow/.style={-{Latex[length=2.1mm]},thick},
+  safe/.style={draw=VIUOrange!80!black,dashed,thick},
+  note/.style={draw=VIUGray!55,fill=VIUWhite,rounded corners=3pt,
+    align=left,text width=4.9cm,inner sep=6pt,font=\scriptsize}
+]
+\node[robot] (r) at (0,0) {$i$};
+\node[load] (l) at (6.0,1.15) {carga};
+\node[obs] (o1) at (2.65,0.55) {obs.};
+\node[obs] (o2) at (4.15,-1.0) {obs.};
+\draw[safe] (o1) ellipse (1.45cm and 0.95cm);
+\draw[safe] (o2) ellipse (1.55cm and 1.0cm);
+
+\draw[arrow,VIUOrange!90!black] (r) -- node[above,font=\scriptsize] {$-\nabla\Phi^{\rm tarea}$} (l);
+\draw[arrow,VIUDark!80] (r) .. controls (1.0,-1.1) and (2.4,-1.55) .. node[below,font=\scriptsize] {campo resultante} (5.25,0.55);
+\draw[arrow,red!70!black] (1.62,0.22) -- node[above,font=\scriptsize] {$-\nabla\Phi^{\rm obstaculo}$} (0.82,-0.42);
+\draw[arrow,red!70!black] (3.45,-0.72) -- (2.75,-1.38);
+
+\node[note] (criteria) at (9.25,0.1)
+  {\textbf{Seguridad.} $h_{io}(q)=d(q_i,\mathcal O_o)^2-d_{\min}^2\ge 0$.\\[2pt]
+  Si $h_{io}$ se aproxima a cero, la barrera domina el campo de tarea.\\[2pt]
+  \textbf{Evaluación.} Colisiones, despeje mínimo, llegada, energía, tiempo y bloqueo geométrico.};
+\draw[arrow,VIUDark!70] (l.east) -- (criteria.west);
+\end{tikzpicture}
+\caption{Evaluación de obstáculos mediante campo reactivo y barrera de seguridad. La
+atracción a la carga solo es aceptable si respeta despejes mínimos durante la maniobra.}
+\label{fig:campo-obstaculos}
+\end{figure}
