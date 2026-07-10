@@ -1,0 +1,21 @@
+{
+  "checks": 70,
+  "failed_checks": 0,
+  "failed_examples": [],
+  "method_count": 10,
+  "model_scope": "planar_payload_transport_robustness_with_slots_wrench_margin_handover_battery_dropout_and_replacement_reallocation",
+  "not_claimed": "SP6 is a reduced-order cooperative payload transport robustness benchmark; it is not hardware validation, full frictional contact simulation, full stochastic POMDP optimal control, or a certified kinodynamic multi-agent planner.",
+  "passed": true,
+  "scenario_generators": [
+    "communication_radius_decay",
+    "robot_dropout_mid_task",
+    "battery_depletion_reallocation",
+    "blocked_corridor_recovery",
+    "infeasible_load_detection",
+    "delayed_information_consensus",
+    "multi_load_priority_shift"
+  ],
+  "seed_count": 1,
+  "seed_end": 7100,
+  "seed_start": 7100
+}

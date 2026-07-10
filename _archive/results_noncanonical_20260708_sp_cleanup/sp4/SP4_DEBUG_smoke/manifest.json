@@ -1,0 +1,77 @@
+{
+  "config_path": "configs\\experiments\\sp4\\SP4_DEBUG_smoke.yaml",
+  "experiment_id": "SP4_DEBUG_smoke",
+  "hypotheses": 1,
+  "methods": [
+    "direct_to_target",
+    "priority_yield",
+    "cbf_safety_filter",
+    "smith_motion_field",
+    "replicator_motion_field",
+    "logit_motion_field",
+    "bnn_motion_field",
+    "primal_dual_motion_field",
+    "pid_safety_motion",
+    "tensor_flow_motion_field",
+    "reference_time_expanded_cbf"
+  ],
+  "mode": "monte_carlo",
+  "output_dir": "results\\sp4\\SP4_DEBUG_smoke",
+  "performance_ranking": "results\\sp4\\SP4_DEBUG_smoke\\tables\\performance_ranking.csv",
+  "report": "results\\sp4\\SP4_DEBUG_smoke\\report.md",
+  "runs": 66,
+  "scenario_generators": [
+    "open_field_arrival",
+    "crossing_traffic",
+    "narrow_passage"
+  ],
+  "scenario_videos": [
+    {
+      "method": "reference_time_expanded_cbf",
+      "scenario_generator": "crossing_traffic",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_DEBUG_smoke\\figures\\sp4_crossing-traffic_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5100.png",
+      "video": "results\\sp4\\SP4_DEBUG_smoke\\videos\\sp4_crossing-traffic_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5100.mp4"
+    },
+    {
+      "method": "cbf_safety_filter",
+      "scenario_generator": "crossing_traffic",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_DEBUG_smoke\\figures\\sp4_crossing-traffic_baseline_sota_centralized_cbf-velocity-projection-proxy_cbf-safety-filter_seed5100.png",
+      "video": "results\\sp4\\SP4_DEBUG_smoke\\videos\\sp4_crossing-traffic_baseline_sota_centralized_cbf-velocity-projection-proxy_cbf-safety-filter_seed5100.mp4"
+    },
+    {
+      "method": "tensor_flow_motion_field",
+      "scenario_generator": "narrow_passage",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_DEBUG_smoke\\figures\\sp4_narrow-passage_proposed_model-based_decentralized_smooth-tensor-flow-barrier-motion_tensor-flow-motion-field_seed5100.png",
+      "video": "results\\sp4\\SP4_DEBUG_smoke\\videos\\sp4_narrow-passage_proposed_model-based_decentralized_smooth-tensor-flow-barrier-motion_tensor-flow-motion-field_seed5100.mp4"
+    },
+    {
+      "method": "primal_dual_motion_field",
+      "scenario_generator": "narrow_passage",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_DEBUG_smoke\\figures\\sp4_narrow-passage_proposed_model-based_decentralized_primal-dual-barrier-motion-field_primal-dual-motion-field_seed5100.png",
+      "video": "results\\sp4\\SP4_DEBUG_smoke\\videos\\sp4_narrow-passage_proposed_model-based_decentralized_primal-dual-barrier-motion-field_primal-dual-motion-field_seed5100.mp4"
+    },
+    {
+      "method": "direct_to_target",
+      "scenario_generator": "open_field_arrival",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_DEBUG_smoke\\figures\\sp4_open-field-arrival_baseline_classic_decentralized_direct-single-integrator_direct-to-target_seed5100.png",
+      "video": "results\\sp4\\SP4_DEBUG_smoke\\videos\\sp4_open-field-arrival_baseline_classic_decentralized_direct-single-integrator_direct-to-target_seed5100.mp4"
+    },
+    {
+      "method": "reference_time_expanded_cbf",
+      "scenario_generator": "open_field_arrival",
+      "seed": 5100,
+      "snapshot": "results\\sp4\\SP4_DEBUG_smoke\\figures\\sp4_open-field-arrival_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5100.png",
+      "video": "results\\sp4\\SP4_DEBUG_smoke\\videos\\sp4_open-field-arrival_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5100.mp4"
+    }
+  ],
+  "seeds": [
+    5100,
+    5101
+  ],
+  "theory_audit": "results\\sp4\\SP4_DEBUG_smoke\\theory_audit.json"
+}

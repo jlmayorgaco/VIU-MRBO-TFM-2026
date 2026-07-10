@@ -1,0 +1,56 @@
+{
+  "config_path": "configs\\experiments\\sp1\\SP1_DEBUG_smoke.yaml",
+  "experiment_id": "SP1_DEBUG_smoke",
+  "hypotheses": 0,
+  "methods": [
+    "greedy_nearest",
+    "hungarian_expanded",
+    "centralized_coalition_milp",
+    "cbba",
+    "replicator_cardinality",
+    "replicator_cardinality_repair",
+    "logit_cardinality_repair",
+    "smith_cardinality",
+    "bnn_cardinality",
+    "bnn_cardinality_repair",
+    "primal_dual_cardinality_capacity",
+    "primal_dual_local_repair",
+    "primal_dual_wrench_market",
+    "tensor_quorum_flow_repair",
+    "imitation_oracle",
+    "mappo_recruitment"
+  ],
+  "mode": "monte_carlo",
+  "output_dir": "results\\sp1\\SP1_DEBUG_smoke",
+  "performance_ranking": "results\\sp1\\SP1_DEBUG_smoke\\tables\\performance_ranking.csv",
+  "report": "results\\sp1\\SP1_DEBUG_smoke\\report.md",
+  "runs": 51,
+  "scenario_generators": [
+    "setup"
+  ],
+  "scenario_videos": [
+    {
+      "method": "mappo_recruitment",
+      "method_comparison_group": "proposed_data_driven_variation",
+      "method_family": "data_driven",
+      "method_ownership": "proposed",
+      "method_scope": "decentralized",
+      "method_variant": "mappo_ctde_quorum_decoder",
+      "metric": "demand_satisfaction_ratio",
+      "metric_value": 1.0,
+      "ok": true,
+      "scenario_generator": "setup",
+      "scenario_variant_id": "setup_v00",
+      "seed": 2001,
+      "selection": "median",
+      "snapshot": "results\\sp1\\SP1_DEBUG_smoke\\figures\\sp1_setup_median_proposed_data-driven_decentralized_mappo-ctde-quorum-decoder_mappo-recruitment_seed2001.png",
+      "video": "results\\sp1\\SP1_DEBUG_smoke\\videos\\sp1_setup_median_proposed_data-driven_decentralized_mappo-ctde-quorum-decoder_mappo-recruitment_seed2001.mp4"
+    }
+  ],
+  "seeds": [
+    2000,
+    2001,
+    2002
+  ],
+  "theory_audit": "results\\sp1\\SP1_DEBUG_smoke\\theory_audit.json"
+}

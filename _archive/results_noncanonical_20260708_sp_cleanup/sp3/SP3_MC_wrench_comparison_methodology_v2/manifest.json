@@ -1,0 +1,303 @@
+{
+  "config_path": "configs\\experiments\\sp3\\SP3_MC_wrench_comparison_methodology_v2.yaml",
+  "experiment_id": "SP3_MC_wrench_comparison_methodology_v2",
+  "hypotheses": 5,
+  "methods": [
+    "wrench_oracle",
+    "oracle_scalar_assignment",
+    "hungarian_slots",
+    "capacity_greedy_slots",
+    "cbba_slots",
+    "replicator_wrench_deficit",
+    "bnn_wrench_deficit",
+    "smith_wrench_deficit",
+    "smith_wrench_marginal",
+    "support_dual_wrench_market"
+  ],
+  "mode": "monte_carlo",
+  "output_dir": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2",
+  "performance_ranking": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\tables\\performance_ranking.csv",
+  "report": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\report.md",
+  "runs": 6000,
+  "scenario_generators": [
+    "point_load_degenerate",
+    "bar_torque_pure",
+    "one_sided_push",
+    "off_center_com",
+    "long_payload_slots",
+    "slot_saturation"
+  ],
+  "scenario_videos": [
+    {
+      "method": "hungarian_slots",
+      "scenario_generator": "bar_torque_pure",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_bar-torque-pure_baseline_classic_centralized_hungarian-robot-slot-cost_hungarian-slots_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_bar-torque-pure_baseline_classic_centralized_hungarian-robot-slot-cost_hungarian-slots_seed4100.mp4"
+    },
+    {
+      "method": "oracle_scalar_assignment",
+      "scenario_generator": "bar_torque_pure",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_bar-torque-pure_reference_model-based-oracle_centralized_exact-scalar-capacity-reference_oracle-scalar-assignment_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_bar-torque-pure_reference_model-based-oracle_centralized_exact-scalar-capacity-reference_oracle-scalar-assignment_seed4100.mp4"
+    },
+    {
+      "method": "smith_wrench_deficit",
+      "scenario_generator": "bar_torque_pure",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_bar-torque-pure_proposed_model-based_decentralized_smith-qr-wrench-deficit_smith-wrench-deficit_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_bar-torque-pure_proposed_model-based_decentralized_smith-qr-wrench-deficit_smith-wrench-deficit_seed4100.mp4"
+    },
+    {
+      "method": "smith_wrench_marginal",
+      "scenario_generator": "bar_torque_pure",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_bar-torque-pure_proposed_model-based_decentralized_smith-qr-delta-rho-wrench-marginal_smith-wrench-marginal_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_bar-torque-pure_proposed_model-based_decentralized_smith-qr-delta-rho-wrench-marginal_smith-wrench-marginal_seed4100.mp4"
+    },
+    {
+      "method": "hungarian_slots",
+      "scenario_generator": "long_payload_slots",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_long-payload-slots_baseline_classic_centralized_hungarian-robot-slot-cost_hungarian-slots_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_long-payload-slots_baseline_classic_centralized_hungarian-robot-slot-cost_hungarian-slots_seed4100.mp4"
+    },
+    {
+      "method": "oracle_scalar_assignment",
+      "scenario_generator": "long_payload_slots",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_long-payload-slots_reference_model-based-oracle_centralized_exact-scalar-capacity-reference_oracle-scalar-assignment_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_long-payload-slots_reference_model-based-oracle_centralized_exact-scalar-capacity-reference_oracle-scalar-assignment_seed4100.mp4"
+    },
+    {
+      "method": "wrench_oracle",
+      "scenario_generator": "long_payload_slots",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_long-payload-slots_reference_model-based-oracle_centralized_exact-role-slot-wrench_wrench-oracle_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_long-payload-slots_reference_model-based-oracle_centralized_exact-role-slot-wrench_wrench-oracle_seed4100.mp4"
+    },
+    {
+      "method": "capacity_greedy_slots",
+      "scenario_generator": "long_payload_slots",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_long-payload-slots_baseline_classic_decentralized_capacity-greedy-slots_capacity-greedy-slots_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_long-payload-slots_baseline_classic_decentralized_capacity-greedy-slots_capacity-greedy-slots_seed4100.mp4"
+    },
+    {
+      "method": "wrench_oracle",
+      "scenario_generator": "off_center_com",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_off-center-com_reference_model-based-oracle_centralized_exact-role-slot-wrench_wrench-oracle_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_off-center-com_reference_model-based-oracle_centralized_exact-role-slot-wrench_wrench-oracle_seed4100.mp4"
+    },
+    {
+      "method": "replicator_wrench_deficit",
+      "scenario_generator": "off_center_com",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_off-center-com_baseline_model-based_decentralized_replicator-wrench-deficit_replicator-wrench-deficit_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_off-center-com_baseline_model-based_decentralized_replicator-wrench-deficit_replicator-wrench-deficit_seed4100.mp4"
+    },
+    {
+      "method": "smith_wrench_deficit",
+      "scenario_generator": "off_center_com",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_off-center-com_proposed_model-based_decentralized_smith-qr-wrench-deficit_smith-wrench-deficit_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_off-center-com_proposed_model-based_decentralized_smith-qr-wrench-deficit_smith-wrench-deficit_seed4100.mp4"
+    },
+    {
+      "method": "bnn_wrench_deficit",
+      "scenario_generator": "off_center_com",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_off-center-com_baseline_model-based_decentralized_bnn-wrench-deficit_bnn-wrench-deficit_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_off-center-com_baseline_model-based_decentralized_bnn-wrench-deficit_bnn-wrench-deficit_seed4100.mp4"
+    },
+    {
+      "method": "wrench_oracle",
+      "scenario_generator": "one_sided_push",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_one-sided-push_reference_model-based-oracle_centralized_exact-role-slot-wrench_wrench-oracle_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_one-sided-push_reference_model-based-oracle_centralized_exact-role-slot-wrench_wrench-oracle_seed4100.mp4"
+    },
+    {
+      "method": "cbba_slots",
+      "scenario_generator": "one_sided_push",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_one-sided-push_baseline_sota_decentralized_cbba-slot-wrench-proxy_cbba-slots_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_one-sided-push_baseline_sota_decentralized_cbba-slot-wrench-proxy_cbba-slots_seed4100.mp4"
+    },
+    {
+      "method": "smith_wrench_marginal",
+      "scenario_generator": "one_sided_push",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_one-sided-push_proposed_model-based_decentralized_smith-qr-delta-rho-wrench-marginal_smith-wrench-marginal_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_one-sided-push_proposed_model-based_decentralized_smith-qr-delta-rho-wrench-marginal_smith-wrench-marginal_seed4100.mp4"
+    },
+    {
+      "method": "capacity_greedy_slots",
+      "scenario_generator": "one_sided_push",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_one-sided-push_baseline_classic_decentralized_capacity-greedy-slots_capacity-greedy-slots_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_one-sided-push_baseline_classic_decentralized_capacity-greedy-slots_capacity-greedy-slots_seed4100.mp4"
+    },
+    {
+      "method": "hungarian_slots",
+      "scenario_generator": "point_load_degenerate",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_point-load-degenerate_baseline_classic_centralized_hungarian-robot-slot-cost_hungarian-slots_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_point-load-degenerate_baseline_classic_centralized_hungarian-robot-slot-cost_hungarian-slots_seed4100.mp4"
+    },
+    {
+      "method": "oracle_scalar_assignment",
+      "scenario_generator": "point_load_degenerate",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_point-load-degenerate_reference_model-based-oracle_centralized_exact-scalar-capacity-reference_oracle-scalar-assignment_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_point-load-degenerate_reference_model-based-oracle_centralized_exact-scalar-capacity-reference_oracle-scalar-assignment_seed4100.mp4"
+    },
+    {
+      "method": "wrench_oracle",
+      "scenario_generator": "point_load_degenerate",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_point-load-degenerate_reference_model-based-oracle_centralized_exact-role-slot-wrench_wrench-oracle_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_point-load-degenerate_reference_model-based-oracle_centralized_exact-role-slot-wrench_wrench-oracle_seed4100.mp4"
+    },
+    {
+      "method": "cbba_slots",
+      "scenario_generator": "point_load_degenerate",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_point-load-degenerate_baseline_sota_decentralized_cbba-slot-wrench-proxy_cbba-slots_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_point-load-degenerate_baseline_sota_decentralized_cbba-slot-wrench-proxy_cbba-slots_seed4100.mp4"
+    },
+    {
+      "method": "wrench_oracle",
+      "scenario_generator": "slot_saturation",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_slot-saturation_reference_model-based-oracle_centralized_exact-role-slot-wrench_wrench-oracle_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_slot-saturation_reference_model-based-oracle_centralized_exact-role-slot-wrench_wrench-oracle_seed4100.mp4"
+    },
+    {
+      "method": "capacity_greedy_slots",
+      "scenario_generator": "slot_saturation",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_slot-saturation_baseline_classic_decentralized_capacity-greedy-slots_capacity-greedy-slots_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_slot-saturation_baseline_classic_decentralized_capacity-greedy-slots_capacity-greedy-slots_seed4100.mp4"
+    },
+    {
+      "method": "support_dual_wrench_market",
+      "scenario_generator": "slot_saturation",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_slot-saturation_proposed_model-based_decentralized_residual-support-wrench-market_support-dual-wrench-market_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_slot-saturation_proposed_model-based_decentralized_residual-support-wrench-market_support-dual-wrench-market_seed4100.mp4"
+    },
+    {
+      "method": "hungarian_slots",
+      "scenario_generator": "slot_saturation",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\figures\\sp3_slot-saturation_baseline_classic_centralized_hungarian-robot-slot-cost_hungarian-slots_seed4100.png",
+      "video": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\videos\\sp3_slot-saturation_baseline_classic_centralized_hungarian-robot-slot-cost_hungarian-slots_seed4100.mp4"
+    }
+  ],
+  "seeds": [
+    4100,
+    4101,
+    4102,
+    4103,
+    4104,
+    4105,
+    4106,
+    4107,
+    4108,
+    4109,
+    4110,
+    4111,
+    4112,
+    4113,
+    4114,
+    4115,
+    4116,
+    4117,
+    4118,
+    4119,
+    4120,
+    4121,
+    4122,
+    4123,
+    4124,
+    4125,
+    4126,
+    4127,
+    4128,
+    4129,
+    4130,
+    4131,
+    4132,
+    4133,
+    4134,
+    4135,
+    4136,
+    4137,
+    4138,
+    4139,
+    4140,
+    4141,
+    4142,
+    4143,
+    4144,
+    4145,
+    4146,
+    4147,
+    4148,
+    4149,
+    4150,
+    4151,
+    4152,
+    4153,
+    4154,
+    4155,
+    4156,
+    4157,
+    4158,
+    4159,
+    4160,
+    4161,
+    4162,
+    4163,
+    4164,
+    4165,
+    4166,
+    4167,
+    4168,
+    4169,
+    4170,
+    4171,
+    4172,
+    4173,
+    4174,
+    4175,
+    4176,
+    4177,
+    4178,
+    4179,
+    4180,
+    4181,
+    4182,
+    4183,
+    4184,
+    4185,
+    4186,
+    4187,
+    4188,
+    4189,
+    4190,
+    4191,
+    4192,
+    4193,
+    4194,
+    4195,
+    4196,
+    4197,
+    4198,
+    4199
+  ],
+  "theory_audit": "results\\sp3\\SP3_MC_wrench_comparison_methodology_v2\\theory_audit.json"
+}

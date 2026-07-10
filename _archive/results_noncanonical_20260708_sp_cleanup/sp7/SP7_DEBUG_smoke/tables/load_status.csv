@@ -1,0 +1,145 @@
+experiment_id,distribution_split,scenario_generator,scenario_variant_id,seed,method,assigned_capacity_kg,assigned_robot_ids,assigned_robots,capacity_deficit_kg,load_id,load_index,mass_kg,required_capacity_kg,required_robots,reward,robot_deficit,robot_surplus,status
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,oracle_reference,79.35910351880747,amr-04 amr-06 amr-08,3,0.0,load-01,1,70.59970633329308,70.59970633329308,3,2.05,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,oracle_reference,52.626401616068634,amr-02 amr-03,2,0.0,load-02,2,46.728005111295154,46.728005111295154,2,1.74,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,oracle_reference,81.21024014616829,amr-01 amr-05 amr-07,3,0.0,load-03,3,72.76521214160525,72.76521214160525,3,2.13,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,mappo_with_decoder,79.35910351880747,amr-04 amr-06 amr-08,3,0.0,load-01,1,70.59970633329308,70.59970633329308,3,2.05,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,mappo_with_decoder,52.626401616068634,amr-02 amr-03,2,0.0,load-02,2,46.728005111295154,46.728005111295154,2,1.74,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,mappo_with_decoder,81.21024014616829,amr-01 amr-05 amr-07,3,0.0,load-03,3,72.76521214160525,72.76521214160525,3,2.13,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,imitation_oracle,82.80254056006936,amr-02 amr-04 amr-08,3,0.0,load-01,1,70.59970633329308,70.59970633329308,3,2.05,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,imitation_oracle,26.60022339685615,amr-03,1,20.127781714439003,load-02,2,46.728005111295154,46.728005111295154,2,1.74,1,0,UNDER
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,imitation_oracle,81.21024014616829,amr-01 amr-05 amr-07,3,0.0,load-03,3,72.76521214160525,72.76521214160525,3,2.13,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,smith_cardinality,56.77636234085688,amr-04 amr-08,2,13.823343992436207,load-01,1,70.59970633329308,70.59970633329308,3,2.05,1,0,UNDER
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,smith_cardinality,52.626401616068634,amr-02 amr-03,2,0.0,load-02,2,46.728005111295154,46.728005111295154,2,1.74,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,smith_cardinality,103.79298132411888,amr-01 amr-05 amr-06 amr-07,4,0.0,load-03,3,72.76521214160525,72.76521214160525,3,2.13,0,1,OVER
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,smith_qr_local_repair,79.35910351880747,amr-04 amr-06 amr-08,3,0.0,load-01,1,70.59970633329308,70.59970633329308,3,2.05,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,smith_qr_local_repair,52.626401616068634,amr-02 amr-03,2,0.0,load-02,2,46.728005111295154,46.728005111295154,2,1.74,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,smith_qr_local_repair,81.21024014616829,amr-01 amr-05 amr-07,3,0.0,load-03,3,72.76521214160525,72.76521214160525,3,2.13,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,primal_dual_local_repair,82.80254056006936,amr-02 amr-04 amr-08,3,0.0,load-01,1,70.59970633329308,70.59970633329308,3,2.05,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,primal_dual_local_repair,55.45820528812873,amr-01 amr-06,2,0.0,load-02,2,46.728005111295154,46.728005111295154,2,1.74,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7700_v00,7700,primal_dual_local_repair,74.93499943284631,amr-03 amr-05 amr-07,3,0.0,load-03,3,72.76521214160525,72.76521214160525,3,2.13,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,oracle_reference,0.0,,0,70.94053413696032,load-01,1,70.94053413696032,70.94053413696032,3,2.05,3,0,UNDER
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,oracle_reference,97.09917843063815,amr-01 amr-02 amr-03 amr-07,4,0.0,load-02,2,73.28195263503942,73.28195263503942,3,2.09,0,1,OVER
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,oracle_reference,65.81381360185719,amr-04 amr-06 amr-08,3,0.0,load-03,3,47.40511334926395,47.40511334926395,2,1.78,0,1,OVER
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,mappo_with_decoder,91.38644549753045,amr-01 amr-03 amr-04 amr-08,4,0.0,load-01,1,70.94053413696032,70.94053413696032,3,2.05,0,1,OVER
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,mappo_with_decoder,85.50211869739276,amr-02 amr-05 amr-07,3,0.0,load-02,2,73.28195263503942,73.28195263503942,3,2.09,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,mappo_with_decoder,0.0,,0,47.40511334926395,load-03,3,47.40511334926395,47.40511334926395,2,1.78,2,0,UNDER
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,imitation_oracle,53.49002138632767,amr-02 amr-03,2,17.450512750632655,load-01,1,70.94053413696032,70.94053413696032,3,2.05,1,0,UNDER
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,imitation_oracle,43.60915704431048,amr-01 amr-07,2,29.67279559072894,load-02,2,73.28195263503942,73.28195263503942,3,2.09,1,0,UNDER
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,imitation_oracle,47.385456508567444,amr-04 amr-08,2,0.01965684069650564,load-03,3,47.40511334926395,47.40511334926395,2,1.78,0,0,UNDER
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,smith_cardinality,44.000988988963,amr-01 amr-03,2,26.939545147997322,load-01,1,70.94053413696032,70.94053413696032,3,2.05,1,0,UNDER
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,smith_cardinality,22.101702856764653,amr-07,1,51.180249778274764,load-02,2,73.28195263503942,73.28195263503942,3,2.09,2,0,UNDER
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,smith_cardinality,65.81381360185719,amr-04 amr-06 amr-08,3,0.0,load-03,3,47.40511334926395,47.40511334926395,2,1.78,0,1,OVER
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,smith_qr_local_repair,74.99747557387349,amr-01 amr-02 amr-03,3,0.0,load-01,1,70.94053413696032,70.94053413696032,3,2.05,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,smith_qr_local_repair,0.0,,0,73.28195263503942,load-02,2,73.28195263503942,73.28195263503942,3,2.09,3,0,UNDER
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,smith_qr_local_repair,65.81381360185719,amr-04 amr-06 amr-08,3,0.0,load-03,3,47.40511334926395,47.40511334926395,2,1.78,0,1,OVER
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,primal_dual_local_repair,71.91837847961742,amr-02 amr-03 amr-06,3,0.0,load-01,1,70.94053413696032,70.94053413696032,3,2.05,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,primal_dual_local_repair,76.01308630002809,amr-01 amr-05 amr-07,3,0.0,load-02,2,73.28195263503942,73.28195263503942,3,2.09,0,0,OK
+SP7_DEBUG_smoke,ID,in_distribution_sp1,in_distribution_sp1_seed7701_v00,7701,primal_dual_local_repair,0.0,,0,47.40511334926395,load-03,3,47.40511334926395,47.40511334926395,2,1.78,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,oracle_reference,26.60022339685615,amr-03,1,0.0,load-01,1,23.69183816082125,23.69183816082125,1,1.55,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,oracle_reference,72.67542490601141,amr-04 amr-06 amr-07,3,0.0,load-02,2,70.77954645462675,70.77954645462675,3,2.7,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,oracle_reference,0.0,,0,48.57062645735375,load-03,3,48.57062645735375,48.57062645735375,2,2.2,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,oracle_reference,32.87546411017813,amr-01,1,0.0,load-04,4,19.925372728610583,19.925372728610583,1,1.7000000000000002,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,oracle_reference,51.287979395335086,amr-02 amr-05,2,0.0,load-05,5,46.513608534552745,46.513608534552745,2,2.3000000000000003,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,mappo_with_decoder,26.60022339685615,amr-03,1,0.0,load-01,1,23.69183816082125,23.69183816082125,1,1.55,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,mappo_with_decoder,75.62862826535634,amr-02 amr-04 amr-06,3,0.0,load-02,2,70.77954645462675,70.77954645462675,3,2.7,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,mappo_with_decoder,0.0,,0,48.57062645735375,load-03,3,48.57062645735375,48.57062645735375,2,2.2,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,mappo_with_decoder,32.87546411017813,amr-01,1,0.0,load-04,4,19.925372728610583,19.925372728610583,1,1.7000000000000002,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,mappo_with_decoder,48.33477603599016,amr-05 amr-07,2,0.0,load-05,5,46.513608534552745,46.513608534552745,2,2.3000000000000003,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,imitation_oracle,26.60022339685615,amr-03,1,0.0,load-01,1,23.69183816082125,23.69183816082125,1,1.55,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,imitation_oracle,49.09915307908004,amr-02 amr-07,2,21.680393375546714,load-02,2,70.77954645462675,70.77954645462675,3,2.7,1,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,imitation_oracle,49.60245004614386,amr-04 amr-06,2,0.0,load-03,3,48.57062645735375,48.57062645735375,2,2.2,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,imitation_oracle,32.87546411017813,amr-01,1,0.0,load-04,4,19.925372728610583,19.925372728610583,1,1.7000000000000002,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,imitation_oracle,25.261801176122603,amr-05,1,21.251807358430142,load-05,5,46.513608534552745,46.513608534552745,2,2.3000000000000003,1,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,smith_cardinality,77.88820279219124,amr-02 amr-03 amr-05,3,0.0,load-01,1,23.69183816082125,23.69183816082125,1,1.55,0,2,OVER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,smith_cardinality,23.072974859867553,amr-07,1,47.7065715947592,load-02,2,70.77954645462675,70.77954645462675,3,2.7,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,smith_cardinality,49.60245004614386,amr-04 amr-06,2,0.0,load-03,3,48.57062645735375,48.57062645735375,2,2.2,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,smith_cardinality,32.87546411017813,amr-01,1,0.0,load-04,4,19.925372728610583,19.925372728610583,1,1.7000000000000002,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,smith_cardinality,0.0,,0,46.513608534552745,load-05,5,46.513608534552745,46.513608534552745,2,2.3000000000000003,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,smith_qr_local_repair,26.60022339685615,amr-03,1,0.0,load-01,1,23.69183816082125,23.69183816082125,1,1.55,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,smith_qr_local_repair,0.0,,0,70.77954645462675,load-02,2,70.77954645462675,70.77954645462675,3,2.7,3,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,smith_qr_local_repair,49.60245004614386,amr-04 amr-06,2,0.0,load-03,3,48.57062645735375,48.57062645735375,2,2.2,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,smith_qr_local_repair,32.87546411017813,amr-01,1,0.0,load-04,4,19.925372728610583,19.925372728610583,1,1.7000000000000002,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,smith_qr_local_repair,48.33477603599016,amr-05 amr-07,2,0.0,load-05,5,46.513608534552745,46.513608534552745,2,2.3000000000000003,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,primal_dual_local_repair,26.60022339685615,amr-03,1,0.0,load-01,1,23.69183816082125,23.69183816082125,1,1.55,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,primal_dual_local_repair,71.68189425703063,amr-02 amr-06 amr-07,3,0.0,load-02,2,70.77954645462675,70.77954645462675,3,2.7,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,primal_dual_local_repair,52.28151004431586,amr-04 amr-05,2,0.0,load-03,3,48.57062645735375,48.57062645735375,2,2.2,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,primal_dual_local_repair,32.87546411017813,amr-01,1,0.0,load-04,4,19.925372728610583,19.925372728610583,1,1.7000000000000002,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7700_v00,7700,primal_dual_local_repair,0.0,,0,46.513608534552745,load-05,5,46.513608534552745,46.513608534552745,2,2.3000000000000003,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,oracle_reference,76.99916691389944,amr-03 amr-05 amr-07,3,0.0,load-01,1,71.26399483667826,71.26399483667826,3,2.6500000000000004,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,oracle_reference,0.0,,0,46.95784377071007,load-02,2,46.95784377071007,46.95784377071007,2,2.15,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,oracle_reference,0.0,,0,22.688963327137074,load-03,3,22.688963327137074,22.688963327137074,1,1.6500000000000001,1,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,oracle_reference,25.771290414487286,amr-04,1,0.0,load-04,4,20.90208288310282,20.90208288310282,1,1.7000000000000002,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,oracle_reference,70.93229786574607,amr-01 amr-02 amr-06,3,0.0,load-05,5,46.52759538533468,46.52759538533468,2,2.3000000000000003,0,1,OVER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,mappo_with_decoder,80.66875447162207,amr-03 amr-04 amr-05,3,0.0,load-01,1,71.26399483667826,71.26399483667826,3,2.6500000000000004,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,mappo_with_decoder,0.0,,0,46.95784377071007,load-02,2,46.95784377071007,46.95784377071007,2,2.15,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,mappo_with_decoder,0.0,,0,22.688963327137074,load-03,3,22.688963327137074,22.688963327137074,1,1.6500000000000001,1,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,mappo_with_decoder,22.101702856764653,amr-07,1,0.0,load-04,4,20.90208288310282,20.90208288310282,1,1.7000000000000002,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,mappo_with_decoder,52.50394077245632,amr-01 amr-02,2,0.0,load-05,5,46.52759538533468,46.52759538533468,2,2.3000000000000003,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,imitation_oracle,44.59523765818183,amr-03 amr-07,2,26.668757178496435,load-01,1,71.26399483667826,71.26399483667826,3,2.6500000000000004,1,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,imitation_oracle,63.400415840628106,amr-02 amr-05,2,0.0,load-02,2,46.95784377071007,46.95784377071007,2,2.15,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,imitation_oracle,18.428357093289748,amr-06,1,4.2606062338473265,load-03,3,22.688963327137074,22.688963327137074,1,1.6500000000000001,0,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,imitation_oracle,0.0,,0,20.90208288310282,load-04,4,20.90208288310282,20.90208288310282,1,1.7000000000000002,1,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,imitation_oracle,47.278744602033115,amr-01 amr-04,2,0.0,load-05,5,46.52759538533468,46.52759538533468,2,2.3000000000000003,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,smith_cardinality,44.59523765818183,amr-03 amr-07,2,26.668757178496435,load-01,1,71.26399483667826,71.26399483667826,3,2.6500000000000004,1,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,smith_cardinality,89.1717062551154,amr-02 amr-04 amr-05,3,0.0,load-02,2,46.95784377071007,46.95784377071007,2,2.15,0,1,OVER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,smith_cardinality,18.428357093289748,amr-06,1,4.2606062338473265,load-03,3,22.688963327137074,22.688963327137074,1,1.6500000000000001,0,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,smith_cardinality,0.0,,0,20.90208288310282,load-04,4,20.90208288310282,20.90208288310282,1,1.7000000000000002,1,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,smith_cardinality,21.507454187545825,amr-01,1,25.020141197788853,load-05,5,46.52759538533468,46.52759538533468,2,2.3000000000000003,1,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,smith_qr_local_repair,84.53104893901741,amr-01 amr-03 amr-06 amr-07,4,0.0,load-01,1,71.26399483667826,71.26399483667826,3,2.6500000000000004,0,1,OVER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,smith_qr_local_repair,56.76777699939778,amr-02 amr-04,2,0.0,load-02,2,46.95784377071007,46.95784377071007,2,2.15,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,smith_qr_local_repair,32.403929255717614,amr-05,1,0.0,load-03,3,22.688963327137074,22.688963327137074,1,1.6500000000000001,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,smith_qr_local_repair,0.0,,0,20.90208288310282,load-04,4,20.90208288310282,20.90208288310282,1,1.7000000000000002,1,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,smith_qr_local_repair,0.0,,0,46.52759538533468,load-05,5,46.52759538533468,46.52759538533468,2,2.3000000000000003,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,primal_dual_local_repair,84.53104893901741,amr-01 amr-03 amr-06 amr-07,4,0.0,load-01,1,71.26399483667826,71.26399483667826,3,2.6500000000000004,0,1,OVER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,primal_dual_local_repair,63.400415840628106,amr-02 amr-05,2,0.0,load-02,2,46.95784377071007,46.95784377071007,2,2.15,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,primal_dual_local_repair,25.771290414487286,amr-04,1,0.0,load-03,3,22.688963327137074,22.688963327137074,1,1.6500000000000001,0,0,OK
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,primal_dual_local_repair,0.0,,0,20.90208288310282,load-04,4,20.90208288310282,20.90208288310282,1,1.7000000000000002,1,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_more_loads,ood_more_loads_seed7701_v00,7701,primal_dual_local_repair,0.0,,0,46.52759538533468,load-05,5,46.52759538533468,46.52759538533468,2,2.3000000000000003,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,oracle_reference,71.66199158185357,amr-02 amr-04 amr-06 amr-08,4,0.0,load-01,1,70.59970633329308,70.59970633329308,3,2.6500000000000004,0,1,OVER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,oracle_reference,0.0,,0,71.72800511129516,load-02,2,71.72800511129516,71.72800511129516,3,2.7,3,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,oracle_reference,73.31111520925663,amr-01 amr-03 amr-05 amr-07,4,0.0,load-03,3,72.76521214160525,72.76521214160525,3,2.7500000000000004,0,1,OVER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,oracle_reference,0.0,,0,46.50291700839525,load-04,4,46.50291700839525,46.50291700839525,2,2.25,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,mappo_with_decoder,71.66199158185357,amr-02 amr-04 amr-06 amr-08,4,0.0,load-01,1,70.59970633329308,70.59970633329308,3,2.6500000000000004,0,1,OVER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,mappo_with_decoder,0.0,,0,71.72800511129516,load-02,2,71.72800511129516,71.72800511129516,3,2.7,3,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,mappo_with_decoder,73.31111520925663,amr-01 amr-03 amr-05 amr-07,4,0.0,load-03,3,72.76521214160525,72.76521214160525,3,2.7500000000000004,0,1,OVER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,mappo_with_decoder,0.0,,0,46.50291700839525,load-04,4,46.50291700839525,46.50291700839525,2,2.25,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,imitation_oracle,20.234524361411264,amr-08,1,50.365181971881825,load-01,1,70.59970633329308,70.59970633329308,3,2.6500000000000004,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,imitation_oracle,35.78595309892667,amr-02 amr-03,2,35.94205201236849,load-02,2,71.72800511129516,71.72800511129516,3,2.7,1,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,imitation_oracle,55.222963299394436,amr-01 amr-05 amr-07,3,17.54224884221081,load-03,3,72.76521214160525,72.76521214160525,3,2.7500000000000004,0,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,imitation_oracle,33.729666031377825,amr-04 amr-06,2,12.773250977017426,load-04,4,46.50291700839525,46.50291700839525,2,2.25,0,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,smith_cardinality,20.234524361411264,amr-08,1,50.365181971881825,load-01,1,70.59970633329308,70.59970633329308,3,2.6500000000000004,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,smith_cardinality,35.78595309892667,amr-02 amr-03,2,35.94205201236849,load-02,2,71.72800511129516,71.72800511129516,3,2.7,1,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,smith_cardinality,55.222963299394436,amr-01 amr-05 amr-07,3,17.54224884221081,load-03,3,72.76521214160525,72.76521214160525,3,2.7500000000000004,0,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,smith_cardinality,33.729666031377825,amr-04 amr-06,2,12.773250977017426,load-04,4,46.50291700839525,46.50291700839525,2,2.25,0,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,smith_qr_local_repair,74.39387949070935,amr-02 amr-03 amr-04 amr-08,4,0.0,load-01,1,70.59970633329308,70.59970633329308,3,2.6500000000000004,0,1,OVER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,smith_qr_local_repair,0.0,,0,71.72800511129516,load-02,2,71.72800511129516,71.72800511129516,3,2.7,3,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,smith_qr_local_repair,0.0,,0,72.76521214160525,load-03,3,72.76521214160525,72.76521214160525,3,2.7500000000000004,3,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,smith_qr_local_repair,48.223911705479715,amr-05 amr-06 amr-07,3,0.0,load-04,4,46.50291700839525,46.50291700839525,2,2.25,0,1,OVER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,primal_dual_local_repair,74.39387949070935,amr-02 amr-03 amr-04 amr-08,4,0.0,load-01,1,70.59970633329308,70.59970633329308,3,2.6500000000000004,0,1,OVER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,primal_dual_local_repair,0.0,,0,71.72800511129516,load-02,2,71.72800511129516,71.72800511129516,3,2.7,3,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,primal_dual_local_repair,0.0,,0,72.76521214160525,load-03,3,72.76521214160525,72.76521214160525,3,2.7500000000000004,3,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7700_v00,7700,primal_dual_local_repair,48.223911705479715,amr-05 amr-06 amr-07,3,0.0,load-04,4,46.50291700839525,46.50291700839525,2,2.25,0,1,OVER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,oracle_reference,0.0,,0,97.53305164426952,load-01,1,97.53305164426952,97.53305164426952,4,3.2,4,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,oracle_reference,0.0,,0,44.6479490556736,load-02,2,44.6479490556736,44.6479490556736,2,2.15,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,oracle_reference,55.643565595064146,amr-02 amr-05 amr-06,3,0.0,load-03,3,47.40511334926395,47.40511334926395,2,2.2,0,1,OVER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,oracle_reference,62.14278293832071,amr-01 amr-03 amr-04 amr-08,4,0.0,load-04,4,47.69286233448003,47.69286233448003,2,2.25,0,2,OVER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,mappo_with_decoder,0.0,,0,97.53305164426952,load-01,1,97.53305164426952,97.53305164426952,4,3.2,4,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,mappo_with_decoder,0.0,,0,44.6479490556736,load-02,2,44.6479490556736,44.6479490556736,2,2.15,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,mappo_with_decoder,55.643565595064146,amr-02 amr-05 amr-06,3,0.0,load-03,3,47.40511334926395,47.40511334926395,2,2.2,0,1,OVER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,mappo_with_decoder,62.14278293832071,amr-01 amr-03 amr-04 amr-08,4,0.0,load-04,4,47.69286233448003,47.69286233448003,2,2.25,0,2,OVER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,imitation_oracle,62.14278293832071,amr-01 amr-03 amr-04 amr-08,4,35.39026870594881,load-01,1,97.53305164426952,97.53305164426952,4,3.2,0,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,imitation_oracle,27.560440766036997,amr-06 amr-07,2,17.087508289636602,load-02,2,44.6479490556736,44.6479490556736,2,2.15,0,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,imitation_oracle,43.112282771627115,amr-02 amr-05,2,4.292830577636835,load-03,3,47.40511334926395,47.40511334926395,2,2.2,0,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,imitation_oracle,0.0,,0,47.69286233448003,load-04,4,47.69286233448003,47.69286233448003,2,2.25,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,smith_cardinality,89.70322370435771,amr-01 amr-03 amr-04 amr-06 amr-07 amr-08,6,7.829827939911809,load-01,1,97.53305164426952,97.53305164426952,4,3.2,0,2,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,smith_cardinality,0.0,,0,44.6479490556736,load-02,2,44.6479490556736,44.6479490556736,2,2.15,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,smith_cardinality,43.112282771627115,amr-02 amr-05,2,4.292830577636835,load-03,3,47.40511334926395,47.40511334926395,2,2.2,0,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,smith_cardinality,0.0,,0,47.69286233448003,load-04,4,47.69286233448003,47.69286233448003,2,2.25,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,smith_qr_local_repair,98.24955175865982,amr-01 amr-02 amr-03 amr-04 amr-07 amr-08,6,0.0,load-01,1,97.53305164426952,97.53305164426952,4,3.2,0,2,OVER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,smith_qr_local_repair,0.0,,0,44.6479490556736,load-02,2,44.6479490556736,44.6479490556736,2,2.15,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,smith_qr_local_repair,0.0,,0,47.40511334926395,load-03,3,47.40511334926395,47.40511334926395,2,2.2,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,smith_qr_local_repair,0.0,,0,47.69286233448003,load-04,4,47.69286233448003,47.69286233448003,2,2.25,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,primal_dual_local_repair,98.24955175865982,amr-01 amr-02 amr-03 amr-04 amr-07 amr-08,6,0.0,load-01,1,97.53305164426952,97.53305164426952,4,3.2,0,2,OVER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,primal_dual_local_repair,0.0,,0,44.6479490556736,load-02,2,44.6479490556736,44.6479490556736,2,2.15,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,primal_dual_local_repair,0.0,,0,47.40511334926395,load-03,3,47.40511334926395,47.40511334926395,2,2.2,2,0,UNDER
+SP7_DEBUG_smoke,OOD,ood_capacity_shift,ood_capacity_shift_seed7701_v00,7701,primal_dual_local_repair,0.0,,0,47.69286233448003,load-04,4,47.69286233448003,47.69286233448003,2,2.25,2,0,UNDER

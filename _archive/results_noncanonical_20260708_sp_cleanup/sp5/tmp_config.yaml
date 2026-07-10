@@ -1,0 +1,17 @@
+artifacts:
+  save_video: false
+experiment_id: SP5_DEBUG_TMP
+methods:
+- id: classic_decentralized_apf_push
+- id: sota_centralized_cbf_push
+- id: ours_hamiltonian_cargo
+- id: reference_centralized_mpc_cbf_cargo
+mode: monte_carlo
+output_dir: results/sp5/SP5_DEBUG_TMP
+scenarios:
+- param_generator: formation_corridor_push
+- param_generator: cargo_overhead_delivery
+seeds:
+  count: 2
+  start: 6100
+trajectory_sample_runs: 1

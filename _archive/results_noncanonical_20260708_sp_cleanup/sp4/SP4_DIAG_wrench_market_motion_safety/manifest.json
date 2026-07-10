@@ -1,0 +1,52 @@
+{
+  "config_path": "configs\\experiments\\sp4\\SP4_DIAG_wrench_market_motion_safety.yaml",
+  "experiment_id": "SP4_DIAG_wrench_market_motion_safety",
+  "hypotheses": 3,
+  "methods": [
+    "direct_to_target",
+    "priority_yield",
+    "apf_obstacle_avoidance",
+    "velocity_obstacle_proxy",
+    "cbf_safety_filter",
+    "smith_motion_field",
+    "replicator_motion_field",
+    "logit_motion_field",
+    "bnn_motion_field",
+    "primal_dual_motion_field",
+    "pid_safety_motion",
+    "tensor_flow_motion_field",
+    "reference_time_expanded_cbf"
+  ],
+  "mode": "monte_carlo",
+  "output_dir": "results\\sp4\\SP4_DIAG_wrench_market_motion_safety",
+  "performance_ranking": "results\\sp4\\SP4_DIAG_wrench_market_motion_safety\\tables\\performance_ranking.csv",
+  "report": "results\\sp4\\SP4_DIAG_wrench_market_motion_safety\\report.md",
+  "runs": 1170,
+  "scenario_generators": [
+    "open_field_arrival",
+    "crossing_traffic",
+    "narrow_passage",
+    "cluttered_warehouse",
+    "communication_limited",
+    "long_distance_energy"
+  ],
+  "scenario_videos": [],
+  "seeds": [
+    5400,
+    5401,
+    5402,
+    5403,
+    5404,
+    5405,
+    5406,
+    5407,
+    5408,
+    5409,
+    5410,
+    5411,
+    5412,
+    5413,
+    5414
+  ],
+  "theory_audit": "results\\sp4\\SP4_DIAG_wrench_market_motion_safety\\theory_audit.json"
+}
