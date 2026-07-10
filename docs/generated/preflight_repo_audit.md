@@ -2,7 +2,7 @@
 
 - Branch: `tfm-submit-freeze`
 - Python: `3.13.9`
-- Dirty entries: `76`
+- Dirty entries: `0`
 - CoppeliaSim in PATH: `not found`
 
 ## Canonical SP Status
