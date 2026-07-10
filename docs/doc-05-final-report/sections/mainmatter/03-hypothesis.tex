@@ -1,56 +1,50 @@
-\section{Hipotesis}
+\section{Hipótesis}
 
-Las hipotesis se formulan como afirmaciones falsables. Cada una debe conectarse con una
-metrica, un escenario y una salida reproducible del repositorio.
-
-\begin{tabularx}{\textwidth}{@{}p{0.13\textwidth}X X@{}}
-\toprule
-ID & Hipotesis & Criterio de lectura \\
-\midrule
-H1 & Smith reproduce \emph{water-filling} en el caso homogeneo. & Pendiente cercana a 1 y $R^2$ alto entre staffing teorico y observado. \\
-H2 & El clearing entero reduce coaliciones parciales inutiles. & Menor distancia desperdiciada o menor deficit entero frente a asignacion fluida. \\
-H3 & El precio solo es defendible como senal temporal bajo deficit y \emph{deadline}. & H3-A debe mostrar que no hay mejora estatica universal; H3-B debe mostrar ganancia temporal. \\
-H4 & Smith original falla bajo comunicacion local severa. & Caida operativa bajo radio R3 o perdida equivalente. \\
-H5 & Smith-QR rescata parcialmente el fallo de Smith. & Delta pareado positivo en captura de recompensa bajo R3. \\
-H6 & La dominancia de Smith-QR no es universal. & Solo se declara superioridad en metricas con IC95 favorable. \\
-H7 & CoppeliaSim aporta cobertura visual reproducible. & Escenas, camaras y artefactos exportados, sin declarar hardware. \\
-H8 & MARL-CTDE lineal es baseline aprendido, no sustituto teorico. & Puede mejorar un proxy, pero no se exige que domine a Smith-QR. \\
-H9 & El actor neuronal CTDE aporta un comparador aprendido adicional. & Debe mejorar al proxy o al CTDE lineal en algun regimen, sin reclamar dominancia global. \\
-H10 & El peaje de densidad predictiva reduce congestion sin perder productividad. & Menor densidad futura o pasos congestionados con captura no inferior. \\
-H11 & El motor integrado de capacidad, energia y bateria mejora el transporte critico. & Menor residual wrench y limites de torque, energia y bateria respetados. \\
-H12 & La campana Coppelia cubre escenarios de integracion auditables. & Exporta escenas, camaras, datos y videos; si es fallback, se declara como tal. \\
-\bottomrule
-\end{tabularx}
-
-Ademas de las hipotesis base, la memoria conserva gates teoricos extendidos
-G3--G7. Estos no sustituyen la evidencia experimental: delimitan por que la cardinalidad
-no implica capacidad wrench, como la geometria entra en el torque, y bajo que lectura
-la congestion predictiva y la bateria se incorporan al payoff.
-
-\subsection*{Trazabilidad por modulo}
-
-Las hipotesis se leen sobre la escalera M0--M5 de la
-Seccion~\ref{sec:escalera-modular}. La Tabla~\ref{tab:hipotesis-modulos} evita mezclar
-evidencia de distinta madurez: algunas fases estan cerradas por simulacion principal,
-otras por gate matematico y otras quedan como extension declarada.
+Las hipótesis se formulan como afirmaciones falsables sobre la relación entre decisión distribuida, factibilidad física y coste operativo. Cada una se evalúa con mundos compartidos, métricas comparables y una lectura explícita del alcance. La tesis no exige que un único método domine todas las métricas; exige demostrar dónde aparece la mejora, dónde falla y qué parte del fenómeno queda fuera de la validación.
 
 \begin{table}[H]
 \centering
 \footnotesize
-\begin{tabularx}{\textwidth}{@{}p{0.12\textwidth}p{0.24\textwidth}Y Y@{}}
+\begin{tabularx}{\textwidth}{@{}p{0.10\textwidth}X X@{}}
 \toprule
-Modulo & Hipotesis/gates & Evidencia en esta memoria & Estado \\
+ID & Hipótesis & Criterio de lectura \\
 \midrule
-M0 & H4, H6 & Fallo de Smith bajo R3 y limites de dominancia frente a baselines. & Baseline comparativo. \\
-M1--M1.1 & H1, H2 & Water-filling y clearing entero. & Implementado y validado. \\
-M1.3 & H3, escenarios de carga & Cargas ligeras/pesadas, escasez y deadlines. & Implementado y validado. \\
-M1.4 & G3--G7, H11 & Capacidad efectiva, residual wrench, energia, bateria y congestion. & Gate fuerte; benchmark principal parcial. \\
-M2 & H11, H12 & Transporte rigido, slots, contacto y escenas de integracion. & Implementado en simulacion. \\
-M3 & G3, H11 & Roles de contacto derivados por formacion y matriz wrench. & Parcial: falta decision explicita $z_{ikh}$. \\
-M4 & H10--H12 & Campo unico, densidad predictiva, fallos y reclutamiento. & Operativo, no teorema global cerrado. \\
-M5 & G7, H11 & Bateria como restriccion economica y de retornabilidad. & Extension parcial; sin estaciones completas. \\
+H1 & El reclutamiento distribuido puede cerrar coaliciones útiles para cargas heterogéneas sin asignación central completa. & Mayor satisfacción de demanda o menor brecha frente a referencias bajo los mismos mundos. \\
+H2 & La capacidad efectiva cambia el problema respecto a la cardinalidad pura. & Una coalición con suficientes robots puede seguir siendo insuficiente si aporta poca capacidad mecánica. \\
+H3 & La factibilidad \emph{wrench} evita falsos positivos físicos. & El residual de fuerza y torque debe separar coberturas escalares aparentes de contactos físicamente útiles. \\
+H4 & La llegada segura al objetivo introduce un compromiso entre rapidez, energía y colisiones. & No se declara ganador único cuando la mejora en llegada aumenta coste o reduce margen de seguridad. \\
+H5 & El transporte cooperativo exige evaluar la carga como cuerpo extendido. & La pose final, la integridad de formación y los despejes son tan relevantes como la asignación inicial. \\
+H6 & La recuperación ante fallos requiere reparar coaliciones durante la ejecución, no solo reasignar al inicio. & La lectura combina éxito de recuperación, cargas perdidas, tiempo de reparación y seguridad posterior al evento. \\
+H7 & La comunicación local y el sensado degradado pueden romper el transporte aunque la asignación inicial sea válida. & Se distinguen conectividad directa, conectividad temporal, retransmisión y éxito de transporte. \\
+H8 & A escala de almacén, las soluciones centralizadas exactas pierden practicidad antes que las familias distribuidas o jerárquicas. & El criterio combina tiempo de ejecución, finalización, factibilidad \emph{wrench}, mensajes y coste por recurso. \\
 \bottomrule
 \end{tabularx}
-\caption{Mapa de hipotesis contra la escalera modular.}
+\caption{Hipótesis principales de la memoria y criterio de lectura.}
+\label{tab:hipotesis-principales}
+\end{table}
+
+\subsection*{Escalera modular de validación}
+\label{sec:escalera-modular}
+
+La memoria avanza por una escalera de dificultad creciente. Esta organización evita mezclar evidencias de distinta madurez: algunas conclusiones se apoyan en Monte Carlo de simulación, otras en pruebas algebraicas o en inspección visual, y otras quedan delimitadas como extensión.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}p{0.12\textwidth}p{0.28\textwidth}Y Y@{}}
+\toprule
+Módulo & Pregunta técnica & Evidencia esperada & Estado de lectura \\
+\midrule
+M0 & ¿Qué ocurre con reglas clásicas, centralizadas o puramente locales? & Línea base de coste, calidad y fallo bajo comunicación local. & Comparativo. \\
+M1 & ¿Cómo se cierran quórums enteros para cargas con demanda mínima? & Reducción de coaliciones parciales y mejora de completitud. & Implementado y evaluado. \\
+M2 & ¿Cómo cambia el problema cuando los robots tienen capacidades efectivas distintas? & Satisfacción de capacidad, coste físico y brecha frente a referencia. & Implementado y evaluado. \\
+M3 & ¿La coalición genera el \emph{wrench} que exige la carga? & Residual, falsos positivos escalares y roles de contacto. & Implementado en simulación planar. \\
+M4 & ¿Los robots llegan y mantienen seguridad durante el movimiento? & Tiempo, energía, colisiones, despeje y fallo por escenario. & Implementado y evaluado. \\
+M5 & ¿La carga se mueve como cuerpo extendido hasta una pose final? & Éxito de transporte, formación, orientación y obstáculos. & Implementado y evaluado. \\
+M6 & ¿El sistema repara fallos, batería y cargas inviables durante la misión? & Recuperación, cargas perdidas, detección y coste de reasignación. & Implementado y evaluado. \\
+M7--M8 & ¿Qué ocurre con comunicación degradada y escala de almacén? & Conectividad temporal, sensado, rendimiento y frontera de intractabilidad. & Implementado en modelo mesoscópico. \\
+\bottomrule
+\end{tabularx}
+\caption{Escalera modular usada para ordenar la validación.}
 \label{tab:hipotesis-modulos}
 \end{table}

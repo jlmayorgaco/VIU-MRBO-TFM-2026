@@ -2,36 +2,21 @@
 
 \subsection{Objetivo general}
 
-Disenar, implementar y evaluar una arquitectura distribuida para la coordinacion de
-coaliciones multi-AMR en transporte de cargas heterogeneas, usando dinamicas de Smith,
-capacidad efectiva y validacion reproducible por simulacion.
+Diseñar, implementar y evaluar una arquitectura distribuida para la coordinación de coaliciones multi-AMR en el transporte de cargas heterogéneas, integrando dinámicas poblacionales, cierre entero de quórum, capacidad efectiva en espacio \emph{wrench} y validación experimental reproducible por simulación.
 
-\subsection{Objetivos especificos}
+\subsection{Objetivos específicos}
 
 \begin{enumerate}[label=O\arabic*.,leftmargin=2.2em]
-  \item Formular el problema como un juego de congestion y capacidad donde cada robot
-  decide localmente su participacion en una tarea.
-  \item Ordenar la contribucion en una escalera modular M0--M5 que parta de metodos
-  clasicos y avance hacia coaliciones, heterogeneidad, roles fisicos, campo unico y
-  bateria.
-  \item Implementar Smith-QR como extension de Smith con memoria, estimacion local,
-  clearing entero y guardias de quorum.
-  \item Extender el criterio de quorum desde cardinalidad hacia capacidad efectiva en
-  espacio \emph{wrench}.
-  \item Comparar Smith-QR frente a Smith, greedy, centralizado limitado, CBBA/proxies y
-  baselines MARL congelados.
-  \item Organizar el repositorio para reproducir simulaciones, validaciones y reporte
-  desde una unica estructura fuente.
+  \item Formular el transporte cooperativo como un problema de asignación física, donde cada robot decide localmente su participación en una carga y la utilidad depende de déficit, coste operativo y factibilidad mecánica.
+  \item Construir una escalera de validación que avance desde reclutamiento escalar hasta capacidad heterogénea, contactos, movimiento, transporte, recuperación, comunicación y escala de flota.
+  \item Diseñar Smith-QR como extensión de la dinámica de Smith con memoria local, estimación de ocupación, cierre entero de coaliciones y guardias de ejecución.
+  \item Extender el criterio de quórum desde cardinalidad hacia capacidad efectiva, incorporando fuerza, torque, orientación, batería, distancia y conectividad.
+  \item Comparar la arquitectura propuesta frente a referencias centralizadas, heurísticas clásicas, subastas distribuidas, variantes basadas en modelo y comparadores aprendidos.
+  \item Garantizar trazabilidad experimental mediante semillas disjuntas, mundos compartidos, métricas homogéneas, contrastes pareados y límites de validez explícitos.
 \end{enumerate}
 
 \subsection{Alcance}
 
-El alcance defendible es simulacion reproducible en Python y evidencia visual en
-CoppeliaSim. No se declara validacion fisica en hardware, certificacion de seguridad,
-percepcion real ni despliegue industrial. MARL se usa como baseline aprendido y no como
-contribucion teorica principal. La memoria distingue tres estados de madurez: modulos
-implementados y validados en campanas principales, modulos demostrados por gates
-matematicos o sinteticos, y modulos conservados como extension futura. En particular, M3
-se reporta como asignacion de roles derivada por formacion, no como optimizacion completa
-$y_{ikh}$; M5 se reporta como bateria en payoff, no como sistema completo de estaciones
-de carga.
+El alcance defendible de la memoria es simulación reproducible con integración visual y análisis cuantitativo. No se declara validación física en hardware, certificación de seguridad, percepción real ni despliegue industrial. Los métodos aprendidos se usan como comparadores y no como sustituto de la contribución analítica principal. La memoria distingue tres niveles de madurez: resultados implementados y evaluados en campañas principales, pruebas de consistencia matemática o sintética, y extensiones que quedan como trabajo futuro.
+
+En particular, la asignación explícita de roles de contacto se aproxima mediante formación derivada dentro de cada coalición, no como una optimización completa de todos los pares robot--carga--slot. La batería se incorpora como restricción económica y de retornabilidad, sin modelar todavía una red completa de estaciones, colas y recarga física.

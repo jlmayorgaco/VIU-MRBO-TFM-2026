@@ -7,14 +7,14 @@
 \usepackage{enumitem}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-\usetikzlibrary{shapes.geometric,positioning,arrows.meta}
+\usetikzlibrary{shapes.geometric,positioning,arrows.meta,calc,decorations.pathreplacing}
 
-\setviutitle{Coordinacion distribuida acoplada de multiples AMR para el transporte cooperativo de cargas heterogeneas}
+\setviutitle{Coordinación distribuida acoplada de múltiples AMR para el transporte cooperativo de cargas heterogéneas}
 \setviustudent{Jorge Luis Mayorga Taborda}
-\setviututor{Jose Ignacio Iniguez Amigot}
+\setviututor{José Ignacio Iñíguez Amigot}
 \setviuedition{2025--26}
 \setviudate{30 de junio de 2026}
-\setviuheadertitle{Coordinacion distribuida de AMR cooperativos para cargas heterogeneas}
+\setviuheadertitle{Coordinación distribuida de AMR cooperativos para cargas heterogéneas}
 
 \newcommand{\RR}{\mathbb{R}}
 \newcommand{\simplex}{\Delta}
@@ -47,16 +47,16 @@
 \pagenumbering{arabic}
 \input{sections/mainmatter/01-introduction.tex}
 \input{sections/mainmatter/02-objectives.tex}
-%\input{sections/mainmatter/03-hypothesis.tex}
-%\input{sections/mainmatter/04-methodology.tex}
-%\input{sections/mainmatter/05-theoretical-framework.tex}
-%\input{sections/mainmatter/06-results-and-analysis.tex}
-%\input{sections/mainmatter/07-conclusions.tex}
+\input{sections/mainmatter/03-hypothesis.tex}
+\input{sections/mainmatter/04-methodology.tex}
+\input{sections/mainmatter/05-theoretical-framework/index.tex}
+\input{sections/mainmatter/06-results-and-analysis/index.tex}
+\input{sections/mainmatter/07-conclusions.tex}
 
 \appendix
-%\input{sections/anexo-a-matematico}
-%\input{sections/anexo-b-reproducibilidad}
-%\input{sections/anexo-c-validacion}
+\input{sections/anexo-a-matematico}
+\input{sections/anexo-b-reproducibilidad}
+\input{sections/anexo-c-validacion}
 
 \nocite{*}
 \bibliographystyle{apalike}

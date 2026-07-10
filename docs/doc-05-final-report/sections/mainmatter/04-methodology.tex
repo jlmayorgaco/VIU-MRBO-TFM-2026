@@ -1,61 +1,43 @@
-﻿\section{Metodologia}
+\section{Metodología}
 
-La metodologia combina modelado, simulacion, ablacion y validacion estadistica. El
-procedimiento se organiza por modulos, de forma que cada paso de la escalera M0--M5 tenga
-una pregunta falsable, una ecuacion minima, un escenario y una lectura de resultados. El
-flujo general se resume en cinco pasos.
+La metodología combina modelado matemático, simulación multiagente, comparación pareada y análisis crítico de validez. El diseño experimental sigue una regla simple: cada nuevo mecanismo se añade sobre un caso base ya comprendido y se evalúa con los mismos mundos que sus comparadores. Así, una mejora no se atribuye a un escenario más favorable, sino al mecanismo que se está contrastando.
+
+\input{figures/fig-metodologia-investigacion}
+
+El procedimiento general consta de cinco etapas:
 
 \begin{enumerate}[leftmargin=2em]
-  \item Definir escenarios reproducibles con semillas fijas, cargas, robots, obstaculos,
-  conectividad y demanda de coalicion.
-  \item Ejecutar tratamientos comparables: greedy, centralizado limitado, Smith,
-  Smith-QR, proxies clasicos y baselines MARL.
-  \item Registrar trayectorias, asignaciones, preferencias, precios, estados de carga,
-  esfuerzo, distancia, contactos y tiempos de completacion.
-  \item Agregar metricas por escenario y semilla, usando comparaciones pareadas cuando
-  los metodos comparten condiciones iniciales.
-  \item Ejecutar una suite de hipotesis que produce CSV, JSON, tablas LaTeX y una figura
-  de resumen.
+  \item Definir escenarios con semillas fijadas, número de robots, cargas, obstáculos, comunicación, batería y demanda física de coalición.
+  \item Ejecutar familias comparables: reglas clásicas, referencias centralizadas, subastas o proxies de consenso, métodos basados en modelo, variantes propuestas y comparadores aprendidos.
+  \item Registrar trayectorias, asignaciones, estados de carga, esfuerzos, contactos, energía, distancias, tiempos, mensajes y eventos de seguridad.
+  \item Agregar métricas por escenario y semilla, usando contrastes pareados cuando los métodos comparten condiciones iniciales.
+  \item Decidir cada hipótesis con intervalos de confianza, correcciones por comparaciones múltiples y límites de interpretación explícitos.
 \end{enumerate}
 
-La configuracion experimental queda fuera del codigo de control. Los escenarios
-reproducibles se describen en \texttt{experiments/*/config.yaml}; los parametros
-transversales y modelos aprendidos se documentan en \texttt{configs/}; y las campanas
-H10--H12 usan scripts de orquestacion con salidas cerradas en \texttt{results/campaigns/}.
-Esta separacion permite cambiar semillas, radio de comunicacion, cargas, fallos o
-tratamientos sin modificar asignadores ni controladores.
+La evaluación separa entrenamiento, ajuste y prueba final. Los métodos aprendidos no se entrenan sobre las mismas semillas usadas para declarar resultados; las variantes basadas en parámetros se ajustan antes de la comparación final; y las referencias no desplegables se reportan como cotas superiores, no como soluciones operativas. Esta separación reduce el riesgo de sobreajuste y permite interpretar las diferencias como efecto del método, no como contaminación experimental.
 
-El motor principal es Python porque permite miles de corridas rapidas y deterministas.
-CoppeliaSim queda como capa de plausibilidad robotica e integracion visual. Cuando una
-campana usa render sintetico de respaldo, se reporta como evidencia de artefactos y no
-como simulacion fisica. Esta separacion evita que el TFM dependa de una simulacion pesada
-para probar cada hipotesis, pero conserva una ruta de integracion con un entorno robotico
-mas rico.
+CoppeliaSim y las secuencias visuales cumplen un papel complementario. Sirven para inspeccionar formación, movimiento, contactos, recuperación y plausibilidad geométrica, pero no sustituyen la inferencia estadística ni equivalen a validación física con hardware. Cuando una evidencia es visual u observacional, se declara como tal.
 
 \subsection*{Protocolo incremental por fases}
 
-Para cada modulo se ejecuta el mismo patron experimental. Primero se fija el caso minimo:
-numero de robots, cargas, grafo, obstaculos, demanda y tratamiento. Segundo se ejecuta el
-metodo base del nivel anterior. Tercero se activa el nuevo mecanismo: quorum entero,
-capacidad efectiva, rol fisico, campo unico o bateria. Cuarto se comparan metricas
-pareadas, evitando declarar dominancia cuando el intervalo de confianza no lo soporta.
+Para cada módulo se repite el mismo patrón experimental. Primero se fija el caso mínimo: robots, cargas, grafo, obstáculos, demanda y tratamiento. Después se ejecuta el método base del nivel anterior. A continuación se activa el nuevo mecanismo: quórum entero, capacidad efectiva, rol físico, campo de movimiento, transporte de carga o reparación de fallos. Finalmente se comparan métricas pareadas y se evita declarar dominancia cuando el intervalo de confianza no lo sostiene.
 
 \begin{table}[H]
 \centering
 \footnotesize
-\begin{tabularx}{\textwidth}{@{}p{0.12\textwidth}p{0.25\textwidth}Y Y@{}}
+\begin{tabularx}{\textwidth}{@{}p{0.12\textwidth}p{0.27\textwidth}Y Y@{}}
 \toprule
-Modulo & Escenario minimo & Metrica principal & Salida en el reporte \\
+Módulo & Escenario mínimo & Métrica principal & Lectura en la memoria \\
 \midrule
-M0 & Greedy/centralizado/Smith bajo condiciones nominales y R3. & Captura, entregas, distancia desperdiciada. & Tabla comparativa y fallo declarado. \\
-M1 & Varias cargas con demanda de quorum. & Deficit entero y tareas completadas. & Water-filling y clearing. \\
-M1.3 & Cargas ligeras y pesadas con robots iguales. & Priorizacion, throughput y deadlines. & Barridos de carga/escasez. \\
-M1.4 & Carga que requiere fuerza y torque. & Residual wrench y saturacion. & Gate algebraico y H11. \\
-M2--M3 & Carga rectangular con slots. & Error de formacion y contacto valido. & Escenas, roles derivados y H12. \\
-M4 & Obstaculos, fallos y comunicacion local. & Recuperacion, congestion y switches. & H10--H12. \\
-M5 & Robot con bateria baja. & Margen de retornabilidad. & Gate G7 y extension futura. \\
+M0--M1 & Reclutamiento bajo demanda heterogénea. & Satisfacción de demanda, brecha frente a referencia y coste. & Sirve como línea base de asignación. \\
+M2 & Cargas con capacidad efectiva variable. & Capacidad servida, exceso, déficit, energía y distancia. & Muestra que cardinalidad y capacidad no son equivalentes. \\
+M3 & Cargas que requieren fuerza y torque. & Residual \emph{wrench}, falsos positivos y cobertura de slots. & Conecta asignación con factibilidad mecánica. \\
+M4 & Movimiento con obstáculos y comunicación local. & Llegada, colisión, despeje, energía y tiempo. & Expone compromisos de control. \\
+M5 & Transporte cooperativo de una carga extendida. & Pose final, formación, seguridad y éxito de transporte. & Evalúa la carga como cuerpo físico. \\
+M6 & Fallos, batería, retrasos y cargas inviables. & Recuperación, cargas perdidas, tiempo y detección. & Mide reparación operativa. \\
+M7--M8 & Degradación de comunicación y escala de almacén. & Conectividad temporal, throughput, coste y factibilidad. & Delimita robustez y frontera de escalabilidad. \\
 \bottomrule
 \end{tabularx}
-\caption{Contrato experimental incremental por modulo.}
+\caption{Contrato experimental incremental por módulo.}
 \label{tab:protocolo-modular}
 \end{table}

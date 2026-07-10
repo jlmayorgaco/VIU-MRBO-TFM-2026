@@ -1,72 +1,102 @@
-\section{Desarrollo matematico extendido}
+\section{Desarrollo matemático extendido}
 
-El aporte teorico que se conserva en anexo es la unificacion de tres lecturas: juego,
-mercado y mecanica. El mismo deficit $\delta_k = D_k-S_k$ alimenta payoffs, precios y
-requerimientos de wrench. En el modelo reducido, la afirmacion que guia el diseno se
-puede formular como una proposicion de alcance limitado.
+El anexo reúne las garantías que sostienen la formulación. No pretende demostrar
+estabilidad global de una planta física con contacto real, fricción no modelada y
+percepción imperfecta; su alcance es más preciso: justificar que la ley propuesta tiene
+una lectura de juego potencial, que el equilibrio de Nash poblacional es el punto natural
+de reposo, que el cierre entero introduce una perturbación acotable y que la evaluación
+de obstáculos puede expresarse mediante una barrera de seguridad verificable.
 
-\paragraph{Proposicion de trabajo.}
+\subsection*{A.1 Juego, mercado y mecánica}
 
-\begin{quote}
-Si el grafo de comunicacion es conexo a trozos, los payoffs derivan de un potencial
-regular, la dinamica Smith es mas rapida que la cinematica de transporte, la formacion
-rigida preserva contactos utiles y el campo de navegacion mantiene seguridad, entonces
-el sistema acoplado converge practicamente a un conjunto donde las cargas factibles
-reciben coaliciones con deficit acotado y residual wrench bajo umbral.
-\end{quote}
-
-\paragraph{Hipotesis tecnicas.}
-La afirmacion requiere: (i) payoffs localmente Lipschitz, (ii) conectividad suficiente
-para que el consenso de ocupacion no acumule sesgo, (iii) separacion de escalas entre
-asignacion y movimiento, (iv) saturaciones acotadas, y (v) ausencia de bloqueos
-geometricos persistentes. Sin estas condiciones, la proposicion se interpreta como
-criterio de diseno, no como teorema cerrado.
-
-\paragraph{Esquema de demostracion.}
-La prueba completa queda fuera del cuerpo por alcance. El esquema es:
-\begin{enumerate}[leftmargin=2em]
-  \item Smith aumenta el potencial hasta un conjunto de Nash del juego poblacional.
-  \item El clearing entero perturba la solucion continua con error acotado.
-  \item El consenso dinamico mantiene $\xhat$ cerca de la ocupacion real si el grafo no
-  pierde conectividad durante demasiado tiempo.
-  \item La formacion rigida asigna a cada robot un slot fijo $(r_j,n_j)$ en el marco de
-  la carga, por lo que el objetivo local cambia suavemente con la pose del objeto.
-  \item El juego vectorial de wrench resuelve una proyeccion acotada sobre
-  $\{G_C\lambda: 0\le\lambda\le\bar f\}$ y rechaza coaliciones que no puedan producir
-  fuerza y torque.
-  \item El campo de navegacion estabiliza la llegada local salvo obstaculos o saturacion.
-\end{enumerate}
-
-Esta no es una teoria completamente nueva desde cero: usa dinamicas poblacionales,
-consenso, grafos, potenciales, formaciones rigidas y wrench closure. La novedad
-defendible esta en ensamblar esas piezas para cargas heterogeneas con una senal
-fisico-economica comun y validacion computacional trazable.
-
-\paragraph{Limites de validez.}
-La formulacion no demuestra estabilidad global ante colisiones, comunicacion
-permanentemente desconectada, contacto fisico real con friccion no modelada ni ejecucion
-industrial. Esas extensiones exigen CBF-QP, contacto dinamico o validacion hardware.
-
-\subsection*{Demostraciones minimas por modulo}
-
-\paragraph{M1.1: regla de water-filling.}
-En el caso homogeneo, supongase que cada carga activa tiene utilidad marginal decreciente
-$p_k(n_k)=v_k-\alpha n_k$ y que los robots pueden redistribuirse entre cargas. En
-equilibrio interior de Smith no puede existir un par $(k,\ell)$ con
-$p_k(n_k)>p_\ell(n_\ell)$ y robots asignados a $\ell$, porque la dinamica traslada masa
-decisional hacia $k$:
+El aporte teórico consiste en unificar tres lecturas. La lectura de juego indica qué
+robots prefieren qué carga o slot. La lectura de mercado interpreta la demanda residual
+como un precio de escasez. La lectura mecánica exige que la coalición produzca fuerza y
+torque suficientes. La misma variable
 \[
-  \dot y_{i k} \supset y_{i\ell}[p_k-p_\ell]_+ > 0 .
+  \delta_k=D_k-S_k
+\]
+alimenta las tres capas: incrementa el payoff de una carga subatendida, eleva su precio
+implícito y mantiene activo el requisito de \emph{wrench} mientras la capacidad efectiva
+sea insuficiente.
+
+\begin{proposicion}[Convergencia práctica del modelo acoplado]
+Supóngase que el grafo de comunicación es conexo a trozos, los payoffs derivan de un
+potencial regular, la dinámica de Smith evoluciona más rápido que la cinemática de
+transporte, la formación rígida preserva contactos útiles y el campo de navegación
+mantiene el margen de seguridad. Entonces el sistema acoplado converge de forma práctica
+a un conjunto donde las cargas factibles reciben coaliciones con déficit acotado y
+residual \emph{wrench} bajo umbral.
+\end{proposicion}
+
+\begin{proof}[Demostración]
+La dinámica de Smith asciende el potencial común hasta un conjunto de Nash poblacional.
+El consenso dinámico mantiene la ocupación estimada cerca de la ocupación real siempre
+que la conectividad no se pierda durante intervalos persistentes. El cierre entero
+convierte la solución continua en una coalición discreta y añade un error de redondeo
+finito. La formación rígida asigna slots suaves en el marco de la carga, de modo que el
+objetivo local de cada robot varía de forma continua con la pose del objeto. Finalmente,
+el juego vectorial de \emph{wrench} proyecta la demanda física sobre el conjunto de
+fuerzas admisibles y rechaza coaliciones cuyo residual excede el umbral. La composición
+de estos pasos no prueba estabilidad global exacta, pero sí acota el error operativo
+mientras las hipótesis permanezcan vigentes.
+\end{proof}
+
+\subsection*{A.2 Ascenso de potencial y equilibrio de Nash}
+
+Sea $x\in\Delta_M$ la distribución poblacional sobre cargas y sea $p_k(x)$ el payoff de
+la carga $k$. Si $p=\nabla\Phi$, la dinámica de Smith cumple
+\[
+  \dot x_k =
+  \sum_{\ell}x_\ell\pos{p_k-p_\ell}
+  -x_k\sum_{\ell}\pos{p_\ell-p_k}.
+\]
+Entonces
+\[
+  \dot\Phi
+  =
+  \sum_{k,\ell}x_\ell\pos{p_k-p_\ell}^2\geq 0.
+\]
+En reposo, toda estrategia con masa positiva tiene payoff máximo. En términos de Nash,
+ningún robot representativo puede migrar hacia otra carga y obtener una mejora unilateral
+sin cambiar el estado del resto de la población.
+
+Para flotas finitas, el equilibrio relevante es aproximado. Si el cierre entero produce
+una ocupación $\hat x$ con $\norm{\hat x-x^\star}_1\leq\eta$ y los payoffs son
+$L$-Lipschitz, entonces la pérdida estratégica queda acotada por
+\[
+  \max_k p_k(\hat x)-p_{\hat k}(\hat x)
+  \leq
+  \varepsilon_{\rm Smith}+2L\eta,
+\]
+donde $\varepsilon_{\rm Smith}$ recoge el error de parada de la dinámica continua. Esta
+cota explica por qué el quórum entero no invalida la lectura de Nash: la transforma en un
+equilibrio aproximado, medible y compatible con robots indivisibles.
+
+\subsection*{A.3 Regla de reparto tipo \emph{water-filling}}
+
+En el caso homogéneo, supóngase que cada carga activa tiene utilidad marginal
+decreciente
+\[
+  p_k(n_k)=v_k-\alpha n_k,\qquad \alpha>0,
+\]
+y que los robots pueden redistribuirse entre cargas. En equilibrio interior no puede
+existir un par $(k,\ell)$ con $p_k(n_k)>p_\ell(n_\ell)$ y robots asignados a $\ell$,
+porque la dinámica traslada masa decisional hacia $k$:
+\[
+  \dot y_{ik} \supset y_{i\ell}\pos{p_k-p_\ell}>0 .
 \]
 Por tanto, todas las cargas usadas igualan payoff marginal:
 \[
   p_k(n_k)=\lambda,\qquad
   n_k=\frac{v_k-\lambda}{\alpha},
 \]
-con $\lambda$ escogido para satisfacer $\sum_k n_k=N$. Esta es la lectura tipo
-\emph{water-filling} que valida H1.
+con $\lambda$ escogido para satisfacer $\sum_k n_k=N$. La interpretación es inmediata:
+el sistema llena primero las cargas de mayor valor residual y deja de enviar robots
+cuando la utilidad marginal cae al nivel común.
 
-\paragraph{M1.4: contraejemplo de cardinalidad.}
+\subsection*{A.4 Contraejemplo de cardinalidad}
+
 Sea una carga que requiere torque planar $w^{\rm dem}=[0,0,\tau]^\top$. Dos robots
 colocados en la misma cara con normales paralelas pueden cumplir cardinalidad
 $|C|=2$, pero su matriz de contactos
@@ -82,41 +112,315 @@ puede tener rango insuficiente o torque casi nulo. Entonces
 \[
   \min_{0\le \lambda\le \bar f}\norm{G_C\lambda-w^{\rm dem}}_2>\epsilon ,
 \]
-aunque $|C|$ alcance el minimo. Este es el gate G3: quorum numerico no implica capacidad
-wrench.
+aunque $|C|$ alcance el mínimo. La consecuencia es central para la memoria: quórum
+numérico no implica capacidad mecánica.
 
-\paragraph{M3: rol fisico como decision adicional.}
-Si $h$ indexa slots de contacto, la asignacion completa es
+\subsection*{A.5 Rol físico como decisión estratégica}
+
+Si $h$ indexa slots de contacto, la asignación completa es
 \[
   \max_{z_{ikh}}\sum_{i,k,h} U_{ikh}z_{ikh},
   \qquad
   \sum_{k,h}z_{ikh}\le 1,\qquad
   \sum_i z_{ikh}\le 1 .
 \]
-El termino $U_{ikh}$ debe mezclar valor de carga, coste de llegada, compatibilidad del
-robot con el slot, bateria y reduccion esperada del residual wrench. La version actual
-aproxima esta decision en dos pasos: primero elige $k$ con Smith-QR y luego deriva $h$
-por ranking de coalicion. Esta aproximacion es ejecutable, pero no equivale a resolver
-el problema $z_{ikh}$ completo.
+El término $U_{ikh}$ debe mezclar valor de carga, coste de llegada, compatibilidad del
+robot con el slot, batería y reducción esperada del residual \emph{wrench}. La
+formulación desarrollada aproxima esta decisión en dos pasos: primero elige la carga
+mediante Smith-QR y luego deriva el slot por ranking interno de coalición. Esta
+aproximación es ejecutable, pero no equivale a resolver el problema completo
+$z_{ikh}$.
 
-\paragraph{M4--M5: energia y bateria en el potencial.}
-El campo unico puede leerse como descenso de una energia compuesta:
+\subsection*{A.6 Barrera de obstáculos}
+
+Para un robot o envolvente de carga, sea
+\[
+  h(q)=d(q,\mathcal O)^2-d_{\min}^2 .
+\]
+La región segura es $\mathcal C=\{q:h(q)\geq 0\}$. Si el controlador satisface
+\[
+  \dot h(q,u)+\alpha h(q)\geq 0,\qquad \alpha>0,
+\]
+entonces $h(t)\geq h(0)e^{-\alpha t}$ por comparación diferencial. En particular, si
+$h(0)\geq0$, la trayectoria permanece en $\mathcal C$ mientras la desigualdad pueda
+satisfacerse. Esta es la razón matemática para evaluar obstáculos mediante despeje
+mínimo durante toda la trayectoria y no solo mediante ausencia de colisión al final.
+
+Cuando el punto controlado tiene dinámica de segundo orden, la condición anterior se
+eleva a una barrera de orden alto. Para $\dot q=v$ y $\dot v=w$, la restricción segura se
+escribe como
+\[
+  \ddot h(q,v,w)+2\alpha \dot h(q,v)+\alpha^2 h(q)\geq 0,
+  \qquad \alpha>0 .
+\]
+Al fijar $q$ y $v$, esta desigualdad es afín en la aceleración deseada:
+\[
+  a_o(q,v)^\top w \ge b_o(q,v).
+\]
+Por tanto, el campo nominal no se sustituye por una regla heurística ante obstáculos; se
+proyecta sobre el semiespacio seguro más cercano. Si solo hay una restricción activa, la
+corrección mínima en norma euclídea es
+\[
+  w^+ =
+  w+
+  \frac{\pos{b_o-a_o^\top w}}{\norm{a_o}^2}a_o .
+\]
+Con varias restricciones, la misma idea se aplica por proyección cuadrática sobre la
+intersección de semiespacios. Esta forma permite auditar la seguridad con una métrica
+directa: no basta con que la trayectoria finalice bien, debe mantener $h(q(t))\geq0$ en
+todo instante muestreado y sobre la envolvente física relevante.
+
+\subsection*{A.7 Energía y batería en el potencial}
+
+El campo único puede leerse como descenso de una energía compuesta:
 \[
   \Phi_i =
   \Phi_i^{\rm tarea}+\Phi_i^{\rm formacion}+\Phi_i^{\rm obstaculo}
   +\Phi_i^{\rm bateria}+\Phi_i^{\rm congestion}.
 \]
-Si $b_i$ es la bateria normalizada y $\rho_i(q)$ estima coste de retorno, una penalizacion
-minima es
+Si $b_i$ es la batería normalizada y $\rho_i(q)$ estima coste de retorno, una penalización
+mínima es
 \[
   \Phi_i^{\rm bateria} =
-  \kappa_b \left[\rho_i(q_i)-b_i+b_{\min}\right]_+^2 .
+  \kappa_b \pos{\rho_i(q_i)-b_i+b_{\min}}^2 .
 \]
-Asi, el robot deja de ser atractivo para cargas lejanas antes de quedar sin retorno. M5
-completo agregaria estaciones $s\in\mathcal S$, colas $Q_s$ y una estrategia adicional de
+Así, el robot deja de ser atractivo para cargas lejanas antes de quedar sin retorno. Una
+extensión natural añade estaciones $s\in\mathcal S$, colas $Q_s$ y una estrategia de
 carga:
 \[
   p_{i,s}^{\rm charge}= -\alpha d(q_i,s)-\gamma Q_s+\eta(1-b_i).
 \]
-Esta memoria usa la primera parte como restriccion de retornabilidad; la planificacion
-con estaciones queda como extension.
+La memoria usa la primera parte como restricción de retornabilidad; la planificación con
+estaciones queda como continuación lógica.
+
+\subsection*{A.8 Solución analítica del juego cuadrático}
+
+La capa de transporte admite una solución cerrada cuando se trabaja con el punto de mano
+del uniciclo y la formación rígida de la carga. Para el robot $i$, sea
+\[
+  h_i=p_i+a
+  \begin{bmatrix}
+  \cos\theta_i\\ \sin\theta_i
+  \end{bmatrix},
+\]
+donde $a>0$ desplaza el punto de control por delante del centro geométrico. La dinámica
+del punto de mano puede escribirse como
+\[
+  \ddot h_i=\Gamma_i(\theta_i)u_i+g_i(q_i,\dot q_i),
+\]
+con $\Gamma_i(\theta_i)$ invertible para $a>0$. La realimentación
+\[
+  u_i=\Gamma_i(\theta_i)^{-1}\bigl(w_i-g_i(q_i,\dot q_i)\bigr)
+\]
+produce exactamente $\ddot h_i=w_i$. Esta reducción permite formular el juego de reparto
+sobre aceleraciones y fuerzas sin esconder una aproximación cinemática en la última etapa.
+
+Considérese una carga con masa total $M_T$, perturbación equivalente $d$ y aceleración
+deseada $a^{\rm des}$. Se define
+\[
+  s=a^{\rm des}+d,\qquad
+  H=\sum_{j=1}^N \eta_j,\qquad
+  \gamma=\frac{\kappa H}{M_T^2},
+\]
+donde $\eta_i>0$ representa la salud actuadora efectiva y $\kappa>0$ pondera el error de
+seguimiento común. Cada robot elige una fuerza plana $f_i$ y afronta el coste
+\[
+  J_i(f_i;f_{-i})=
+  \frac{1}{2\eta_i}\norm{f_i}^2+
+  \frac{\kappa}{2}
+  \norm{s-\frac{1}{M_T}\sum_{j=1}^N f_j}^2 .
+\]
+El primer término penaliza esfuerzo ponderado por salud; el segundo mide el error común
+de aceleración de la carga.
+
+\begin{proposicion}[Equilibrio de Nash en forma cerrada]
+El juego cuadrático anterior tiene un único equilibrio de Nash. En dicho equilibrio,
+\[
+  f_i^{\rm NE}=
+  \frac{\kappa \eta_i M_T}{M_T^2+\kappa H}\,s
+  =
+  \frac{\eta_i}{H}\frac{\gamma}{1+\gamma}M_Ts,
+  \qquad
+  e^{\rm NE}=s-\frac{1}{M_T}\sum_{j=1}^N f_j^{\rm NE}
+  =\frac{1}{1+\gamma}s .
+\]
+\end{proposicion}
+
+\begin{proof}[Demostración]
+La condición de primer orden para el robot $i$ es
+\[
+  \frac{1}{\eta_i}f_i
+  -\frac{\kappa}{M_T}
+  \left(s-\frac{1}{M_T}\sum_{j=1}^N f_j\right)=0 .
+\]
+Si se denota por
+\[
+  e=s-\frac{1}{M_T}\sum_{j=1}^N f_j
+\]
+el error común, entonces toda mejor respuesta interior satisface
+\[
+  f_i=\frac{\kappa\eta_i}{M_T}e .
+\]
+Al sumar sobre la coalición se obtiene
+\[
+  \sum_i f_i=\frac{\kappa H}{M_T}e,
+  \qquad
+  e=s-\frac{\kappa H}{M_T^2}e.
+\]
+Por tanto, $(1+\gamma)e=s$ y las expresiones anteriores se deducen por sustitución. La
+unicidad se sigue de la convexidad estricta de cada coste en $f_i$ y de la fuerte
+monotonicidad del mapa de mejores respuestas inducido por la matriz cuadrática común.
+\end{proof}
+
+La solución muestra un fenómeno estructural: cada robot internaliza todo su esfuerzo,
+pero solo una fracción del beneficio colectivo de reducir el error común. Por eso el
+equilibrio no coincide, en general, con el óptimo social.
+
+\begin{proposicion}[Coste de anarquía exacto]
+Si el coste social es $\sum_i J_i$, el coste de anarquía del juego anterior es
+\[
+  {\rm PoA}(\gamma,N)=
+  \frac{(\gamma+N)(1+N\gamma)}
+  {N(1+\gamma)^2},
+  \qquad
+  {\rm PoA}_{\max}=\frac{(N+1)^2}{4N}.
+\]
+El máximo se alcanza en $\gamma=1$.
+\end{proposicion}
+
+\begin{proof}[Demostración]
+Para una fuerza total $F=\sum_i f_i$, el reparto de mínimo esfuerzo ponderado es
+$f_i=(\eta_i/H)F$. Así,
+\[
+  \sum_i\frac{1}{2\eta_i}\norm{f_i}^2
+  =
+  \frac{1}{2H}\norm{F}^2 .
+\]
+El óptimo social minimiza
+\[
+  \frac{1}{2H}\norm{F}^2+
+  \frac{N\kappa}{2}
+  \norm{s-\frac{1}{M_T}F}^2 .
+\]
+En la dirección de $s$, con $z=F/M_T$, el problema queda proporcional a
+\[
+  \norm{z}^2+N\gamma\norm{s-z}^2,
+\]
+cuyo minimizador es $z^{\rm SO}=\frac{N\gamma}{1+N\gamma}s$. El equilibrio de Nash
+tiene $z^{\rm NE}=\frac{\gamma}{1+\gamma}s$. Al evaluar ambos costes sociales se obtiene
+\[
+  C_{\rm NE}\propto
+  \frac{\gamma(\gamma+N)}{(1+\gamma)^2}\norm{s}^2,
+  \qquad
+  C_{\rm SO}\propto
+  \frac{N\gamma}{1+N\gamma}\norm{s}^2 .
+\]
+El cociente da la expresión de ${\rm PoA}$. Su derivada se anula en $\gamma=1$ y el valor
+correspondiente es $(N+1)^2/(4N)$.
+\end{proof}
+
+La lectura operativa es precisa: el juego no falla por ruido numérico, sino por
+subinversión estratégica cuando la acción de cada robot beneficia a toda la coalición.
+La restricción de \emph{wrench} acoplado corrige ese efecto. Si se impone producir una
+fuerza total y un torque requeridos,
+\[
+  \sum_i f_i=w_p^{\rm req},
+  \qquad
+  \sum_i (Rr_i)^\perp{}^\top f_i=w_\phi^{\rm req},
+\]
+el equilibrio variacional coincide con el reparto ponderado de mínimo esfuerzo:
+\[
+  f_i^\star=
+  \frac{\eta_i}{H}w_p^{\rm req}
+  +
+  \frac{\eta_i}{S}(Rr_i)^\perp w_\phi^{\rm req},
+  \qquad
+  S=\sum_j \eta_j\norm{r_j}^2,
+\]
+bajo centrado ponderado $\sum_i\eta_i r_i=0$. En esta forma, la decisión estratégica deja
+de ser una invitación a esperar que otros compensen el error y pasa a ser un reparto
+explícito de la llave física que mueve la carga.
+
+\subsection*{A.9 Estabilidad del cierre distribuido}
+
+La solución cerrada anterior se ejecuta con estimaciones locales de magnitudes agregadas.
+Sea $L_G$ el laplaciano del grafo de comunicación, $\lambda_2(L_G)>0$ su conectividad
+algebraica y $\mu$ la constante de monotonicidad fuerte del juego cuadrático. Una forma
+continua simplificada del buscador distribuido es
+\[
+  \dot z_i=-\nabla_{f_i}J_i(z_i,z_{-i})-
+  c\sum_{j\in\mathcal N_i}(z_i-z_j),
+\]
+donde $c>0$ es la ganancia de consenso. Si los acoplamientos de gradiente son
+Lipschitz con constante transversal $\vartheta$, una condición suficiente de estabilidad
+exponencial local del equilibrio consensuado es
+\[
+  c\,\lambda_2(L_G)\,\mu>\vartheta^2 .
+\]
+La desigualdad resume el compromiso: el término de consenso debe dominar la curvatura
+cruzada que aparece porque el error de carga es compartido. Cuando la batería cambia
+despacio, $\eta_i(t)$ entra como parámetro lento. La singular perturbación resultante
+mantiene el seguimiento del equilibrio instantáneo siempre que la escala temporal de
+descarga sea mayor que la escala de convergencia del consenso y del controlador físico.
+
+En la capa mecánica, si la fuerza requerida se convierte en una aceleración deseada de
+carga mediante
+\[
+  \ddot{\tilde p}+2\sqrt{k_p}\dot{\tilde p}+k_p\tilde p=0,
+  \qquad
+  \ddot{\tilde\phi}+2\sqrt{k_\phi}\dot{\tilde\phi}+k_\phi\tilde\phi=0,
+\]
+los errores traslacional y angular tienen polos reales negativos en ausencia de
+saturación y perturbaciones no compensadas. Con perturbación acotada, el mismo argumento
+da estabilidad práctica: el error queda en una bola cuyo radio crece con saturación,
+retardo, error de estimación y contacto no modelado.
+
+\subsection*{A.10 Ley explícita sensor--motor}
+
+La ley final puede ejecutarse como una secuencia cerrada de nueve cálculos. Cada ciclo
+usa estado propio, vecinos, detecciones locales y estimaciones internas; no necesita
+resolver un programa global para cada paso de integración.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}p{0.07\textwidth}p{0.24\textwidth}X@{}}
+\toprule
+Paso & Cálculo & Función en la ley \\
+\midrule
+1 & $\displaystyle \eta_i=\bar\eta_i\frac{\max(E_i,E_{\min})}{E_i^0}$ & Convierte batería y actuador en salud efectiva. Un robot degradado sigue participando, pero recibe menos carga física. \\
+2 & $\displaystyle \hat h_i^+=\hat h_i+T_sc\sum_{j\in\mathcal N_i}(\hat h_j-\hat h_i)+\eta_i^+-\eta_i$ & Estima agregados como $H=\sum_i\eta_i$ y $S=\sum_i\eta_i\norm{r_i}^2$ con comunicación local. \\
+3 & $\displaystyle \phi_L=\theta_i-\theta_i^{\rm grasp},\quad p_L=h_i-R(\phi_L)r_i$ & Reconstruye la pose de la carga desde el contacto rígido observado por cada robot. \\
+4 & $\displaystyle w_p^{\rm req}=M_T(\ddot p_L^{\rm des}+2\sqrt{k_p}\dot{\tilde p}+k_p\tilde p)+\hat d_p$ & Calcula la fuerza total requerida para cerrar el error de pose con amortiguamiento crítico. \\
+5 & $\displaystyle f_i^\star=\frac{\eta_i}{\hat H_i}w_p^{\rm req}+\frac{\eta_i}{\hat S_i}(Rr_i)^\perp w_\phi^{\rm req}$ & Reparte fuerza y torque según salud, geometría y capacidad efectiva. \\
+6 & $\displaystyle h_i^{\rm ref}=p_L^{\rm ref}+R(\phi_L^{\rm ref})r_i$ & Genera la referencia rígida del punto de mano que corresponde al slot del robot. \\
+7 & $\displaystyle a_o^\top w_i\ge b_o$ & Filtra la aceleración nominal mediante barreras de obstáculos y envolvente de carga. \\
+8 & $\displaystyle u_i=\Gamma_i(\theta_i)^{-1}(w_i-g_i)$ & Convierte la aceleración filtrada del punto de mano en fuerza y par del uniciclo. \\
+9 & $\displaystyle \dot E_i=-\alpha_i\norm{F_iv_i}-\beta_i$ & Actualiza la energía y realimenta la salud para el siguiente ciclo. \\
+\bottomrule
+\end{tabularx}
+\caption{Ley explícita de control desde percepción local hasta mando motor.}
+\label{tab:ley-explicita-sensor-motor}
+\end{table}
+
+La estabilidad discreta del consenso requiere que el paso de integración no invierta la
+dinámica de mezcla:
+\[
+  cT_s\lambda_{\max}(L_G)<2.
+\]
+Una condición conservadora, fácil de verificar con grado máximo $\Delta_G$, es
+\[
+  cT_s<\frac{1}{\Delta_G}.
+\]
+La saturación se aplica preservando dirección cuando la aceleración requerida supera la
+capacidad conjunta estimada:
+\[
+  a_{\rm cmd}\leftarrow
+  a_{\rm cmd}\min\left\{1,\frac{a_{\rm cmd}^{\max}}{\norm{a_{\rm cmd}}}\right\},
+  \qquad
+  a_{\rm cmd}^{\max}=0.8\frac{\sum_j F_j^{\max}}{M_T}.
+\]
+La forma completa conecta tres garantías que suelen presentarse separadas: equilibrio de
+Nash ponderado, factibilidad de \emph{wrench} y seguridad por barreras. Por eso las
+simulaciones no se limitan a medir llegada; verifican también residual físico, saturación,
+despeje, recuperación y degradación de comunicación.

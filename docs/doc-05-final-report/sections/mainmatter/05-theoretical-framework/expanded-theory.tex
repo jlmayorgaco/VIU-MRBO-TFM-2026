@@ -1,0 +1,209 @@
+\subsection{Desarrollo teórico unificado}
+
+La dificultad central del transporte cooperativo no está en elegir una única abstracción,
+sino en hacer compatibles varias abstracciones que operan a escalas distintas. La
+asignación es discreta, porque un AMR se compromete con una carga concreta; la preferencia
+puede ser continua, porque una dinámica poblacional reparte masa entre alternativas; la
+factibilidad mecánica es convexa a nivel de esfuerzos admisibles, pero combinatoria a
+nivel de selección de contactos; y la seguridad se expresa como desigualdades sobre
+trayectorias. La arquitectura propuesta se defiende precisamente porque conserva esos
+niveles separados hasta el momento en que deben acoplarse.
+
+Un subproblema elemental puede escribirse como
+\[
+  \min_{a,z,u,\lambda}
+  \quad
+  J_{\rm op}(a,z,u)
+  + \sum_{k}\alpha_k\pos{D_k-S_k(C_k)}
+  + \sum_{k}\beta_k\rho_k(C_k)
+\]
+sujeto a
+\[
+  a_i\in\mathcal L,\qquad
+  z_{ikh}\in\{0,1\},\qquad
+  u_i(t)\in\mathcal U_i,\qquad
+  h_{io}(q_i(t))\geq 0,
+\]
+\[
+  C_k=\{i:a_i=k\},\qquad
+  0\leq\lambda\leq\bar f,\qquad
+  \rho_k(C_k)=
+  \min_{0\leq\lambda\leq\bar f}
+  \norm{G_{C_k}\lambda-w_k^{\rm dem}}_2 .
+\]
+La formulación no se resuelve de forma monolítica en la memoria. Su función es fijar qué
+debe conservar cualquier aproximación: demanda no servida, geometría de contacto,
+saturación, seguridad, energía y coste de cómputo. Smith-QR actúa como una relajación
+estructurada de este problema. La dinámica de Smith aproxima la presión de asignación,
+el cierre QR produce una decisión entera, y las guardias físicas rechazan coaliciones que
+no cumplen capacidad, wrench o seguridad.
+
+\begin{definicion}[Juego físico de coalición]
+Un juego físico de coalición para transporte AMR se define por
+\[
+  \mathcal G_{\rm phys} =
+  \langle \mathcal R,\mathcal L,\{\mathcal A_i\},\{J_i\},
+  \{F_k\},G(t)\rangle ,
+\]
+donde $\mathcal A_i$ contiene cargas y roles admisibles, $J_i$ es la utilidad local del
+robot, $F_k$ agrupa las restricciones físicas de la carga $k$ y $G(t)$ limita la
+información que puede circular. Una coalición $C_k$ es válida si satisface al mismo
+tiempo cierre entero, capacidad efectiva, residual wrench, margen de seguridad y
+retornabilidad energética.
+\end{definicion}
+
+Esta definición evita una confusión frecuente. Una partición de robots puede ser una
+coalición en sentido combinatorio y, aun así, no ser una coalición física. La diferencia
+no es terminológica: aparece en los experimentos cuando una asignación escalar completa
+una demanda aparente pero no genera torque, cuando la carga llega con mala orientación o
+cuando un robot asignado queda fuera de rango y deja de aportar información útil.
+
+\begin{proposicion}[Monotonía del déficit de capacidad]
+Sea $S_k(C)=\sum_{i\in C}c_i\eta_{ik}$ con $c_i\geq 0$ y
+$\eta_{ik}\in[0,1]$. Si $C\subseteq C'$, entonces
+\[
+  \pos{D_k-S_k(C')}\leq \pos{D_k-S_k(C)} .
+\]
+\end{proposicion}
+
+\begin{proof}[Demostración]
+Como todos los términos añadidos son no negativos,
+$S_k(C')=S_k(C)+\sum_{i\in C'\setminus C}c_i\eta_{ik}\geq S_k(C)$. La función
+$x\mapsto\pos{D_k-x}$ es no creciente. Al componer ambas relaciones se obtiene la
+desigualdad.
+\end{proof}
+
+La proposición justifica el uso de precios de déficit: añadir capacidad efectiva nunca
+empeora el déficit de una carga. No dice que añadir robots sea siempre deseable. El coste
+de viaje, la congestión, el uso de batería y la pérdida de disponibilidad para otras
+cargas pueden hacer que una coalición sobredimensionada sea mala aunque reduzca déficit.
+Por eso el payoff incluye penalización de exceso y distancia, no solo recompensa por
+unirse a la carga más demandante.
+
+\begin{proposicion}[Residual wrench como distancia a un conjunto admisible]
+Para una coalición $C$, defínase
+\[
+  \mathcal W(C)=\{G_C\lambda:\ 0\leq\lambda\leq\bar f_C\}.
+\]
+Entonces $\rho(C)=\min_{w\in\mathcal W(C)}\norm{w-w^{\rm dem}}_2$ es la distancia
+euclídea desde el wrench demandado hasta el conjunto de wrench admisibles. Si
+$C\subseteq C'$ y los contactos añadidos no eliminan contactos previos, entonces
+\[
+  \rho(C')\leq \rho(C).
+\]
+\end{proposicion}
+
+\begin{proof}[Demostración]
+El conjunto $\mathcal W(C)$ es la imagen lineal de una caja cerrada y acotada, por lo que
+es compacto. La distancia euclídea al conjunto alcanza mínimo. Si $C\subseteq C'$, toda
+solución factible de $C$ también puede representarse en $C'$ asignando esfuerzo cero a
+los contactos añadidos. Por tanto, $\mathcal W(C)\subseteq\mathcal W(C')$. Minimizar la
+misma distancia sobre un conjunto mayor no puede aumentar el valor óptimo.
+\end{proof}
+
+Esta monotonía es más débil de lo que parece. El residual no aumenta al añadir un contacto
+ideal, pero el sistema real sí puede empeorar por saturación, mala orientación, bloqueo
+geométrico o coste de coordinación. La evaluación no puede quedarse en $\rho(C)$; debe
+leer también $s_k^{\rm sat}$, el despeje de la carga y el tiempo requerido para ocupar el
+slot. Esa es la razón de SP3 a SP5: primero se mide capacidad de producir wrench; después
+se exige trayectoria segura; finalmente se exige pose de carga extendida.
+
+\begin{lema}[Cierre entero bajo demanda visible]
+Supóngase que todas las cargas son visibles, que $\sum_k n_k\leq N$, que cada robot puede
+ser asignado a una sola carga y que el redondeo escoge robots sin repetir hasta cubrir las
+demandas $n_k$. Si ninguna guardia física rechaza asignaciones, el cierre QR produce
+$|C_k|\geq n_k$ para toda carga demandada.
+\end{lema}
+
+\begin{proof}[Demostración]
+La hipótesis $\sum_k n_k\leq N$ garantiza que existe al menos una asignación entera con
+quórum completo. El procedimiento de cierre consume a lo sumo un robot por selección y
+no repite robots. Al iterar sobre las cargas demandadas, cada carga recibe robots hasta
+alcanzar $n_k$ antes de pasar a capacidad sobrante. Como no hay rechazos físicos ni
+invisibilidad, ninguna selección válida se descarta. Por inducción sobre las cargas, el
+quórum queda cerrado en todas ellas.
+\end{proof}
+
+El lema delimita el papel exacto de QR. QR no prueba optimalidad global ni factibilidad
+mecánica; prueba que la preferencia continua de Smith puede transformarse en un conjunto
+entero cuando el problema discreto es materialmente cerrable. Si la demanda excede la
+flota, si una carga no ha sido descubierta o si una guardia física descarta contactos, el
+resultado correcto ya no es cerrar todo: es reportar déficit, reasignar o declarar
+inviabilidad.
+
+\begin{proposicion}[Invariancia de seguridad bajo filtro de barrera]
+Sea $\mathcal S=\{q:h(q)\geq0\}$ un conjunto seguro y supóngase que la acción aplicada
+cumple
+\[
+  \dot h(q,u)+\alpha h(q)\geq0,\qquad \alpha>0 .
+\]
+Si $q(0)\in\mathcal S$, entonces la trayectoria continua permanece en $\mathcal S$.
+\end{proposicion}
+
+\begin{proof}[Demostración]
+La desigualdad implica $\dot h(t)\geq-\alpha h(t)$. Por comparación escalar,
+$h(t)\geq h(0)e^{-\alpha t}$. Como $h(0)\geq0$, se obtiene $h(t)\geq0$ para todo
+$t\geq0$.
+\end{proof}
+
+En simulación discreta esta garantía se usa con prudencia. El paso temporal, la saturación
+del uniciclo, la geometría rectangular de la carga y la presencia de varios robots pueden
+introducir errores de discretización. Por eso la memoria no declara seguridad solo porque
+un campo tenga término repulsivo; la declara cuando la trayectoria renderizada y las
+métricas discretas conservan margen frente a obstáculo, sin colisión ni bloqueo persistente.
+
+\subsubsection{Acoplamiento entre potencial, mercado y ejecución}
+
+La lectura de potencial permite unir asignación y control sin confundirlos. Sea
+\[
+  \Phi(a)=
+  -\sum_k\alpha_k\pos{D_k-S_k(C_k)}
+  -\sum_k\beta_k\rho_k(C_k)
+  -\sum_i\gamma_i d(q_i,q_{a_i})
+  -\sum_i\zeta_i\pos{b_{\min}-b_i}.
+\]
+Si el payoff local aproxima la diferencia marginal
+\[
+  J_i(k;a_{-i})\approx
+  \Phi(k,a_{-i})-\Phi(\varnothing,a_{-i}),
+\]
+entonces cada robot recibe una señal coherente con el objetivo común: entrar en una carga
+solo tiene sentido si reduce déficit, residual o coste operativo de forma suficiente. El
+precio de déficit $\pi_k$ puede verse como multiplicador local de la restricción
+$S_k(C_k)\geq D_k$:
+\[
+  \pi_k(t+1)=\pos{\pi_k(t)+\eta_\pi\bigl(D_k-S_k(C_k,t)\bigr)}.
+\]
+Cuando falta capacidad, $\pi_k$ sube y atrae robots; cuando hay exceso, la presión cae.
+La misma idea se aplica al residual wrench con un precio mecánico $\mu_k$:
+\[
+  \mu_k(t+1)=\pos{\mu_k(t)+\eta_\mu\bigl(\rho_k(C_k,t)-\epsilon_k\bigr)}.
+\]
+El payoff útil no es una suma arbitraria de preferencias. Es una contabilidad local de
+escasez, distancia, batería y viabilidad mecánica.
+
+Esta construcción explica por qué la tesis compara métodos heterogéneos. Un greedy
+cercano prueba si basta con distancia. Un Hungarian centralizado prueba si basta con
+optimización escalar. CBBA prueba si una subasta local con consenso es suficiente. Las
+variantes aprendidas prueban si una política entrenada captura interacciones no lineales.
+Los oráculos fijan cotas. Smith-QR y sus extensiones prueban la hipótesis específica de
+la memoria: una señal local con precios físicos y cierre entero puede competir mejor en
+los regímenes donde la tarea deja de ser una unidad indivisible y pasa a ser una carga
+compartida.
+
+\subsubsection{Criterio de verdad experimental}
+
+La teoría anterior conduce a un criterio de evaluación severo. Una afirmación del tipo
+``el método asigna bien'' queda incompleta si no especifica qué nivel superó. En esta
+memoria, una solución puede fallar por ocho razones distintas: no cierra quórum, cubre
+cardinalidad pero no capacidad, cubre capacidad pero no wrench, genera wrench pero no
+trayectoria, llega con robots individuales pero no con la carga, no se recupera ante
+fallo, depende de comunicación global o deja de ser practicable al crecer la flota.
+
+La escalera SP1--SP8 no es una taxonomía decorativa. Es la forma de impedir que una mejora
+local se confunda con una solución general. Cada subproblema añade una restricción que
+vuelve falso algún éxito anterior. Si SP1 se supera, todavía puede fallar SP2; si SP2 se
+supera, todavía puede fallar SP3; si SP3 se supera, todavía queda movimiento seguro,
+pose, recuperación, comunicación y escala. La contribución queda entonces formulada con
+precisión: no se afirma dominancia universal, se identifica en qué capas la arquitectura
+distribuida conserva valor frente a familias clásicas, aprendidas y centralizadas.

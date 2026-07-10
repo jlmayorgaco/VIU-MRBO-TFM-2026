@@ -1,0 +1,36 @@
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  font=\scriptsize,
+  axis/.style={-{Latex[length=2.2mm]},thick,VIUDark},
+  flow/.style={-{Latex[length=2.2mm]},thick,VIUOrange!90!black},
+  point/.style={circle,draw=VIUOrange,fill=VIUOrange!18,thick,minimum size=5.5mm},
+  note/.style={draw=VIUGray!55,fill=VIUWhite,rounded corners=3pt,
+    align=left,text width=5.15cm,inner sep=6pt,font=\scriptsize}
+]
+\draw[axis] (0,0) -- (6.4,0) node[right] {$x_1$};
+\draw[axis] (0,0) -- (0,4.1) node[above] {$x_2$};
+\draw[axis] (0,0) -- (-1.6,-1.15) node[left] {$x_3$};
+\draw[VIUDark!45,thick] (0,0) -- (4.9,0.85) -- (2.4,3.35) -- cycle;
+\node[font=\scriptsize,VIUDark] at (2.45,-0.36) {símplex de asignación};
+
+\foreach \x/\y in {0.85/0.35,1.45/0.85,2.05/1.4,2.7/1.95,3.35/2.38}
+  \draw[flow] (\x,\y) -- ++(0.52,0.25);
+\foreach \x/\y in {3.95/1.05,3.55/1.55,3.08/2.05,2.65/2.52}
+  \draw[flow] (\x,\y) -- ++(-0.38,0.22);
+
+\node[point] (ne) at (2.78,2.42) {};
+\node[above right=1mm of ne,font=\small\bfseries,VIUOrange!90!black] {Nash};
+
+\node[note] (reading) at (9.35,2.1)
+  {\textbf{Equilibrio.} Ninguna estrategia usada mejora unilateralmente el payoff.\\[2pt]
+   \textbf{Smith.} La masa migra desde menor utilidad hacia mayor utilidad.\\[2pt]
+   \textbf{Lectura robótica.} Tareas, slots y contactos son estrategias; déficit y seguridad forman el payoff.};
+
+\draw[flow] (ne) -- (reading.west);
+\end{tikzpicture}
+\caption{Lectura de Nash y Smith para asignación distribuida. La dinámica no busca una
+etiqueta abstracta de tarea, sino un punto donde las desviaciones locales dejan de
+mejorar utilidad una vez incorporados déficit, coste espacial y factibilidad física.}
+\label{fig:equilibrio-nash-smith}
+\end{figure}
