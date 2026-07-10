@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import platform
+import re
 import shutil
 import subprocess
 import sys
@@ -48,6 +49,11 @@ def run_text(args: list[str], timeout_s: int = 20) -> str:
         return completed.stdout.strip()
     except Exception as exc:  # pragma: no cover - defensive audit code
         return f"ERROR: {exc}"
+
+
+def stable_pytest_collect_tail(collect_output: str) -> str:
+    tail = "\n".join(collect_output.splitlines()[-5:])
+    return re.sub(r"(\d+\s+tests collected) in [0-9.]+s", r"\1 in <duration>", tail)
 
 
 def parse_make_targets() -> list[str]:
@@ -123,7 +129,7 @@ def main() -> int:
             "viu_mrob_tfm.controllers": grep_imports("viu_mrob_tfm.controllers"),
         },
         "coppeliasim_in_path": coppelia_found,
-        "pytest_collect_only_tail": "\n".join(collect_only.splitlines()[-5:]),
+        "pytest_collect_only_tail": stable_pytest_collect_tail(collect_only),
     }
 
     json_path = DOCS_GENERATED / "preflight_repo_audit.json"

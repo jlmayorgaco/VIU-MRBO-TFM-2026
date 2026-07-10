@@ -2,7 +2,7 @@
 
 - Branch: `tfm-submit-freeze`
 - Python: `3.13.9`
-- Dirty entries: `296`
+- Dirty entries: `76`
 - CoppeliaSim in PATH: `not found`
 
 ## Canonical SP Status
@@ -44,5 +44,5 @@ tests/test_warehouse_simulation.py::test_all_warehouse_assignment_policies_run
 tests/test_wrench_market_games_integration.py::test_wrench_market_games_configs_are_factory_valid
 tests/test_wrench_market_games_integration.py::test_wrench_market_games_documentation_is_linked_from_tfm
 
-216 tests collected in 3.13s
+216 tests collected in <duration>
 ```
