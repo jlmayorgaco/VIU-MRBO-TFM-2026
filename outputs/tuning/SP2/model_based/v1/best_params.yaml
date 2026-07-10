@@ -1,0 +1,57 @@
+best_params:
+  bnn_capacity:
+    params:
+      capacity_weight: 0.8
+      completion_weight: 0.0
+      deficit_weight: 1.15
+      distance_weight: 0.22
+      exponent: 2.0
+      reward_weight: 0.95
+    score: 1.5071737992216345
+  local_primal_dual_capacity:
+    params:
+      capacity_weight: 1.35
+      completion_weight: 0.0
+      deficit_weight: 1.55
+      distance_weight: 0.14
+      reward_weight: 1.1
+    score: 1.5981870080854061
+  primal_dual_capacity:
+    params:
+      capacity_weight: 1.35
+      completion_weight: 0.0
+      deficit_weight: 1.55
+      distance_weight: 0.15
+      reward_weight: 1.1
+    score: 1.5401366254033937
+  replicator_capacity:
+    params:
+      capacity_weight: 0.8
+      completion_weight: 0.0
+      deficit_weight: 1.0
+      distance_weight: 0.28
+      exponent: 1.0
+      reward_weight: 0.85
+    score: 1.4541458009785955
+  smith_capacity:
+    params:
+      capacity_weight: 1.2
+      completion_weight: 0.0
+      deficit_weight: 1.45
+      distance_weight: 0.18
+      exponent: 1.15
+      reward_weight: 1.0
+    score: 1.5298561845306262
+config_path: configs\training\sp2\SP2_model_based_tuning.yaml
+experiment_id: SP2_model_based_tuning_v1
+mode: tune_model_based
+scenario_generators:
+- light_mixed
+- balanced_capacity
+- heavy_capacity
+- battery_constrained
+- monte_carlo
+seed_count: 8
+seed_start: 1300
+validation_seed_count: 6
+validation_seed_start: 2300

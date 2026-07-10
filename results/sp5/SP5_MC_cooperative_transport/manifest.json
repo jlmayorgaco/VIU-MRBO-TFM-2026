@@ -1,0 +1,253 @@
+{
+  "config_path": "configs\\experiments\\sp5\\SP5_MC_cooperative_transport.yaml",
+  "experiment_id": "SP5_MC_cooperative_transport",
+  "hypotheses": 4,
+  "methods": [
+    "classic_centralized_shortest_push",
+    "classic_decentralized_apf_push",
+    "sota_centralized_cbf_push",
+    "sota_decentralized_vo_push",
+    "sota_centralized_cbf_cargo",
+    "sota_decentralized_vo_cargo",
+    "ours_primal_dual_wrench_push",
+    "ours_tensor_game_push",
+    "ours_hamiltonian_cargo",
+    "reference_centralized_mpc_cbf_cargo"
+  ],
+  "mode": "monte_carlo",
+  "output_dir": "results\\sp5\\SP5_MC_cooperative_transport",
+  "performance_ranking": "results\\sp5\\SP5_MC_cooperative_transport\\tables\\performance_ranking.csv",
+  "report": "results\\sp5\\SP5_MC_cooperative_transport\\report.md",
+  "runs": 3000,
+  "scenario_generators": [
+    "formation_corridor_push",
+    "cargo_overhead_delivery",
+    "multi_group_crossing_push",
+    "overactuated_push_drag",
+    "scarce_cargo_multi_load",
+    "monte_carlo"
+  ],
+  "scenario_videos": [
+    {
+      "method": "reference_centralized_mpc_cbf_cargo",
+      "scenario_generator": "cargo_overhead_delivery",
+      "seed": 6126,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_cargo-overhead-delivery_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6126.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_cargo-overhead-delivery_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6126.mp4"
+    },
+    {
+      "method": "ours_hamiltonian_cargo",
+      "scenario_generator": "cargo_overhead_delivery",
+      "seed": 6133,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_cargo-overhead-delivery_proposed_model-based_decentralized_cargo_hamiltonian-tensor-cargo_ours-hamiltonian-cargo_seed6133.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_cargo-overhead-delivery_proposed_model-based_decentralized_cargo_hamiltonian-tensor-cargo_ours-hamiltonian-cargo_seed6133.mp4"
+    },
+    {
+      "method": "sota_centralized_cbf_cargo",
+      "scenario_generator": "cargo_overhead_delivery",
+      "seed": 6141,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_cargo-overhead-delivery_baseline_sota_centralized_cargo_cbf-overhead-cargo_sota-centralized-cbf-cargo_seed6141.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_cargo-overhead-delivery_baseline_sota_centralized_cargo_cbf-overhead-cargo_sota-centralized-cbf-cargo_seed6141.mp4"
+    },
+    {
+      "method": "sota_decentralized_vo_cargo",
+      "scenario_generator": "cargo_overhead_delivery",
+      "seed": 6141,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_cargo-overhead-delivery_baseline_sota_decentralized_cargo_velocity-obstacle-cargo_sota-decentralized-vo-cargo_seed6141.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_cargo-overhead-delivery_baseline_sota_decentralized_cargo_velocity-obstacle-cargo_sota-decentralized-vo-cargo_seed6141.mp4"
+    },
+    {
+      "method": "reference_centralized_mpc_cbf_cargo",
+      "scenario_generator": "formation_corridor_push",
+      "seed": 6121,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_formation-corridor-push_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6121.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_formation-corridor-push_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6121.mp4"
+    },
+    {
+      "method": "sota_centralized_cbf_cargo",
+      "scenario_generator": "formation_corridor_push",
+      "seed": 6141,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_formation-corridor-push_baseline_sota_centralized_cargo_cbf-overhead-cargo_sota-centralized-cbf-cargo_seed6141.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_formation-corridor-push_baseline_sota_centralized_cargo_cbf-overhead-cargo_sota-centralized-cbf-cargo_seed6141.mp4"
+    },
+    {
+      "method": "sota_decentralized_vo_cargo",
+      "scenario_generator": "formation_corridor_push",
+      "seed": 6141,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_formation-corridor-push_baseline_sota_decentralized_cargo_velocity-obstacle-cargo_sota-decentralized-vo-cargo_seed6141.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_formation-corridor-push_baseline_sota_decentralized_cargo_velocity-obstacle-cargo_sota-decentralized-vo-cargo_seed6141.mp4"
+    },
+    {
+      "method": "ours_hamiltonian_cargo",
+      "scenario_generator": "formation_corridor_push",
+      "seed": 6136,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_formation-corridor-push_proposed_model-based_decentralized_cargo_hamiltonian-tensor-cargo_ours-hamiltonian-cargo_seed6136.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_formation-corridor-push_proposed_model-based_decentralized_cargo_hamiltonian-tensor-cargo_ours-hamiltonian-cargo_seed6136.mp4"
+    },
+    {
+      "method": "reference_centralized_mpc_cbf_cargo",
+      "scenario_generator": "monte_carlo",
+      "seed": 6148,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_monte-carlo_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6148.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_monte-carlo_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6148.mp4"
+    },
+    {
+      "method": "sota_centralized_cbf_cargo",
+      "scenario_generator": "monte_carlo",
+      "seed": 6108,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_monte-carlo_baseline_sota_centralized_cargo_cbf-overhead-cargo_sota-centralized-cbf-cargo_seed6108.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_monte-carlo_baseline_sota_centralized_cargo_cbf-overhead-cargo_sota-centralized-cbf-cargo_seed6108.mp4"
+    },
+    {
+      "method": "sota_decentralized_vo_cargo",
+      "scenario_generator": "monte_carlo",
+      "seed": 6108,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_monte-carlo_baseline_sota_decentralized_cargo_velocity-obstacle-cargo_sota-decentralized-vo-cargo_seed6108.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_monte-carlo_baseline_sota_decentralized_cargo_velocity-obstacle-cargo_sota-decentralized-vo-cargo_seed6108.mp4"
+    },
+    {
+      "method": "ours_hamiltonian_cargo",
+      "scenario_generator": "monte_carlo",
+      "seed": 6141,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_monte-carlo_proposed_model-based_decentralized_cargo_hamiltonian-tensor-cargo_ours-hamiltonian-cargo_seed6141.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_monte-carlo_proposed_model-based_decentralized_cargo_hamiltonian-tensor-cargo_ours-hamiltonian-cargo_seed6141.mp4"
+    },
+    {
+      "method": "sota_decentralized_vo_cargo",
+      "scenario_generator": "multi_group_crossing_push",
+      "seed": 6126,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_multi-group-crossing-push_baseline_sota_decentralized_cargo_velocity-obstacle-cargo_sota-decentralized-vo-cargo_seed6126.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_multi-group-crossing-push_baseline_sota_decentralized_cargo_velocity-obstacle-cargo_sota-decentralized-vo-cargo_seed6126.mp4"
+    },
+    {
+      "method": "ours_hamiltonian_cargo",
+      "scenario_generator": "multi_group_crossing_push",
+      "seed": 6104,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_multi-group-crossing-push_proposed_model-based_decentralized_cargo_hamiltonian-tensor-cargo_ours-hamiltonian-cargo_seed6104.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_multi-group-crossing-push_proposed_model-based_decentralized_cargo_hamiltonian-tensor-cargo_ours-hamiltonian-cargo_seed6104.mp4"
+    },
+    {
+      "method": "reference_centralized_mpc_cbf_cargo",
+      "scenario_generator": "multi_group_crossing_push",
+      "seed": 6104,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_multi-group-crossing-push_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6104.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_multi-group-crossing-push_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6104.mp4"
+    },
+    {
+      "method": "sota_centralized_cbf_cargo",
+      "scenario_generator": "multi_group_crossing_push",
+      "seed": 6104,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_multi-group-crossing-push_baseline_sota_centralized_cargo_cbf-overhead-cargo_sota-centralized-cbf-cargo_seed6104.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_multi-group-crossing-push_baseline_sota_centralized_cargo_cbf-overhead-cargo_sota-centralized-cbf-cargo_seed6104.mp4"
+    },
+    {
+      "method": "reference_centralized_mpc_cbf_cargo",
+      "scenario_generator": "overactuated_push_drag",
+      "seed": 6125,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_overactuated-push-drag_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6125.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_overactuated-push-drag_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6125.mp4"
+    },
+    {
+      "method": "sota_centralized_cbf_cargo",
+      "scenario_generator": "overactuated_push_drag",
+      "seed": 6103,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_overactuated-push-drag_baseline_sota_centralized_cargo_cbf-overhead-cargo_sota-centralized-cbf-cargo_seed6103.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_overactuated-push-drag_baseline_sota_centralized_cargo_cbf-overhead-cargo_sota-centralized-cbf-cargo_seed6103.mp4"
+    },
+    {
+      "method": "sota_decentralized_vo_cargo",
+      "scenario_generator": "overactuated_push_drag",
+      "seed": 6103,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_overactuated-push-drag_baseline_sota_decentralized_cargo_velocity-obstacle-cargo_sota-decentralized-vo-cargo_seed6103.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_overactuated-push-drag_baseline_sota_decentralized_cargo_velocity-obstacle-cargo_sota-decentralized-vo-cargo_seed6103.mp4"
+    },
+    {
+      "method": "ours_hamiltonian_cargo",
+      "scenario_generator": "overactuated_push_drag",
+      "seed": 6141,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_overactuated-push-drag_proposed_model-based_decentralized_cargo_hamiltonian-tensor-cargo_ours-hamiltonian-cargo_seed6141.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_overactuated-push-drag_proposed_model-based_decentralized_cargo_hamiltonian-tensor-cargo_ours-hamiltonian-cargo_seed6141.mp4"
+    },
+    {
+      "method": "reference_centralized_mpc_cbf_cargo",
+      "scenario_generator": "scarce_cargo_multi_load",
+      "seed": 6114,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_scarce-cargo-multi-load_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6114.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_scarce-cargo-multi-load_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6114.mp4"
+    },
+    {
+      "method": "ours_hamiltonian_cargo",
+      "scenario_generator": "scarce_cargo_multi_load",
+      "seed": 6129,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_scarce-cargo-multi-load_proposed_model-based_decentralized_cargo_hamiltonian-tensor-cargo_ours-hamiltonian-cargo_seed6129.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_scarce-cargo-multi-load_proposed_model-based_decentralized_cargo_hamiltonian-tensor-cargo_ours-hamiltonian-cargo_seed6129.mp4"
+    },
+    {
+      "method": "sota_centralized_cbf_cargo",
+      "scenario_generator": "scarce_cargo_multi_load",
+      "seed": 6132,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_scarce-cargo-multi-load_baseline_sota_centralized_cargo_cbf-overhead-cargo_sota-centralized-cbf-cargo_seed6132.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_scarce-cargo-multi-load_baseline_sota_centralized_cargo_cbf-overhead-cargo_sota-centralized-cbf-cargo_seed6132.mp4"
+    },
+    {
+      "method": "sota_decentralized_vo_cargo",
+      "scenario_generator": "scarce_cargo_multi_load",
+      "seed": 6109,
+      "snapshot": "results\\sp5\\SP5_MC_cooperative_transport\\figures\\sp5_scarce-cargo-multi-load_baseline_sota_decentralized_cargo_velocity-obstacle-cargo_sota-decentralized-vo-cargo_seed6109.png",
+      "video": "results\\sp5\\SP5_MC_cooperative_transport\\videos\\sp5_scarce-cargo-multi-load_baseline_sota_decentralized_cargo_velocity-obstacle-cargo_sota-decentralized-vo-cargo_seed6109.mp4"
+    }
+  ],
+  "seeds": [
+    6100,
+    6101,
+    6102,
+    6103,
+    6104,
+    6105,
+    6106,
+    6107,
+    6108,
+    6109,
+    6110,
+    6111,
+    6112,
+    6113,
+    6114,
+    6115,
+    6116,
+    6117,
+    6118,
+    6119,
+    6120,
+    6121,
+    6122,
+    6123,
+    6124,
+    6125,
+    6126,
+    6127,
+    6128,
+    6129,
+    6130,
+    6131,
+    6132,
+    6133,
+    6134,
+    6135,
+    6136,
+    6137,
+    6138,
+    6139,
+    6140,
+    6141,
+    6142,
+    6143,
+    6144,
+    6145,
+    6146,
+    6147,
+    6148,
+    6149
+  ],
+  "theory_audit": "results\\sp5\\SP5_MC_cooperative_transport\\theory_audit.json"
+}

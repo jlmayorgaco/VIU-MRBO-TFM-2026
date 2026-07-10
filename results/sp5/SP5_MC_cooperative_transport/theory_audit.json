@@ -1,0 +1,22 @@
+{
+  "checks": 3000,
+  "failed_checks": 0,
+  "failed_examples": [],
+  "method_count": 10,
+  "model_scope": "planar_rigid_payload_euler_lagrange_transport_with_slot_formation_static_obstacles_and_mobile_group_disks",
+  "not_claimed": "SP5 is a reduced-order cooperative transport benchmark, not full rigid-body contact/friction simulation, kinodynamic MAPF optimality or hardware validation.",
+  "passed": true,
+  "safety_margin_warning_checks": 0,
+  "safety_margin_warning_examples": [],
+  "scenario_generators": [
+    "formation_corridor_push",
+    "cargo_overhead_delivery",
+    "multi_group_crossing_push",
+    "overactuated_push_drag",
+    "scarce_cargo_multi_load",
+    "monte_carlo"
+  ],
+  "seed_count": 50,
+  "seed_end": 6149,
+  "seed_start": 6100
+}

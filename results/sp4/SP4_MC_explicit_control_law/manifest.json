@@ -1,0 +1,85 @@
+{
+  "config_path": "configs\\experiments\\sp4\\SP4_MC_explicit_control_law.yaml",
+  "experiment_id": "SP4_MC_explicit_control_law",
+  "hypotheses": 3,
+  "methods": [
+    "direct_to_target",
+    "cbf_safety_filter",
+    "tensor_flow_motion_field",
+    "explicit_vgne_cbf_motion",
+    "smith_motion_field",
+    "reference_time_expanded_cbf"
+  ],
+  "mode": "monte_carlo",
+  "output_dir": "results\\sp4\\SP4_MC_explicit_control_law",
+  "performance_ranking": "results\\sp4\\SP4_MC_explicit_control_law\\tables\\performance_ranking.csv",
+  "report": "results\\sp4\\SP4_MC_explicit_control_law\\report.md",
+  "runs": 432,
+  "scenario_generators": [
+    "open_field_arrival",
+    "crossing_traffic",
+    "narrow_passage",
+    "cluttered_warehouse",
+    "communication_limited",
+    "long_distance_energy"
+  ],
+  "scenario_videos": [
+    {
+      "method": "cbf_safety_filter",
+      "scenario_generator": "cluttered_warehouse",
+      "seed": 5400,
+      "snapshot": "results\\sp4\\SP4_MC_explicit_control_law\\figures\\sp4_cluttered-warehouse_baseline_sota_centralized_cbf-velocity-projection-proxy_cbf-safety-filter_seed5400.png",
+      "video": "results\\sp4\\SP4_MC_explicit_control_law\\videos\\sp4_cluttered-warehouse_baseline_sota_centralized_cbf-velocity-projection-proxy_cbf-safety-filter_seed5400.mp4"
+    },
+    {
+      "method": "reference_time_expanded_cbf",
+      "scenario_generator": "communication_limited",
+      "seed": 5400,
+      "snapshot": "results\\sp4\\SP4_MC_explicit_control_law\\figures\\sp4_communication-limited_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5400.png",
+      "video": "results\\sp4\\SP4_MC_explicit_control_law\\videos\\sp4_communication-limited_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5400.mp4"
+    },
+    {
+      "method": "reference_time_expanded_cbf",
+      "scenario_generator": "crossing_traffic",
+      "seed": 5400,
+      "snapshot": "results\\sp4\\SP4_MC_explicit_control_law\\figures\\sp4_crossing-traffic_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5400.png",
+      "video": "results\\sp4\\SP4_MC_explicit_control_law\\videos\\sp4_crossing-traffic_reference_model-based-reference_centralized_time-expanded-safe-cbf-reference_reference-time-expanded-cbf_seed5400.mp4"
+    },
+    {
+      "method": "direct_to_target",
+      "scenario_generator": "long_distance_energy",
+      "seed": 5400,
+      "snapshot": "results\\sp4\\SP4_MC_explicit_control_law\\figures\\sp4_long-distance-energy_baseline_classic_decentralized_direct-single-integrator_direct-to-target_seed5400.png",
+      "video": "results\\sp4\\SP4_MC_explicit_control_law\\videos\\sp4_long-distance-energy_baseline_classic_decentralized_direct-single-integrator_direct-to-target_seed5400.mp4"
+    },
+    {
+      "method": "direct_to_target",
+      "scenario_generator": "narrow_passage",
+      "seed": 5400,
+      "snapshot": "results\\sp4\\SP4_MC_explicit_control_law\\figures\\sp4_narrow-passage_baseline_classic_decentralized_direct-single-integrator_direct-to-target_seed5400.png",
+      "video": "results\\sp4\\SP4_MC_explicit_control_law\\videos\\sp4_narrow-passage_baseline_classic_decentralized_direct-single-integrator_direct-to-target_seed5400.mp4"
+    },
+    {
+      "method": "direct_to_target",
+      "scenario_generator": "open_field_arrival",
+      "seed": 5400,
+      "snapshot": "results\\sp4\\SP4_MC_explicit_control_law\\figures\\sp4_open-field-arrival_baseline_classic_decentralized_direct-single-integrator_direct-to-target_seed5400.png",
+      "video": "results\\sp4\\SP4_MC_explicit_control_law\\videos\\sp4_open-field-arrival_baseline_classic_decentralized_direct-single-integrator_direct-to-target_seed5400.mp4"
+    }
+  ],
+  "seeds": [
+    5400,
+    5401,
+    5402,
+    5403,
+    5404,
+    5405,
+    5406,
+    5407,
+    5408,
+    5409,
+    5410,
+    5411
+  ],
+  "theory_audit": "results\\sp4\\SP4_MC_explicit_control_law\\theory_audit.json"
+}

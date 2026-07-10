@@ -1,0 +1,100 @@
+{
+  "config_path": "configs\\experiments\\sp5\\SP5_MC_explicit_control_law.yaml",
+  "experiment_id": "SP5_MC_explicit_control_law",
+  "hypotheses": 4,
+  "methods": [
+    "classic_decentralized_apf_push",
+    "sota_centralized_cbf_push",
+    "sota_decentralized_vo_push",
+    "sota_decentralized_vo_cargo",
+    "ours_tensor_game_push",
+    "ours_explicit_vgne_cbf_push",
+    "ours_explicit_vgne_cbf_cargo",
+    "ours_hamiltonian_cargo",
+    "reference_centralized_mpc_cbf_cargo"
+  ],
+  "mode": "monte_carlo",
+  "output_dir": "results\\sp5\\SP5_MC_explicit_control_law",
+  "performance_ranking": "results\\sp5\\SP5_MC_explicit_control_law\\tables\\performance_ranking.csv",
+  "report": "results\\sp5\\SP5_MC_explicit_control_law\\report.md",
+  "runs": 432,
+  "scenario_generators": [
+    "formation_corridor_push",
+    "multi_group_crossing_push",
+    "overactuated_push_drag",
+    "monte_carlo"
+  ],
+  "scenario_videos": [
+    {
+      "key_metrics": "transport_success=1.0000; target_reached=1.0000; pose_error_m=0.000316; orientation_error_deg=4.26e-10; formation_break=0.0686; wrench_residual=0.0887; collision_rate=0.0000",
+      "method": "reference_centralized_mpc_cbf_cargo",
+      "method_label": "Reference centralized MPC-CBF cargo",
+      "n_loads": 2,
+      "n_robots": 6,
+      "objective": "Move the selected payload from initial pose to target pose while preserving slot formation, wrench feasibility and obstacle/traffic clearance.",
+      "scenario_generator": "formation_corridor_push",
+      "scenario_variant_id": "formation_corridor_push_v00",
+      "seed": 6651,
+      "snapshot": "results\\sp5\\SP5_MC_explicit_control_law\\figures\\sp5_formation-corridor-push_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6651.png",
+      "transport_mode": "cargo",
+      "video": "results\\sp5\\SP5_MC_explicit_control_law\\videos\\sp5_formation-corridor-push_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6651.mp4"
+    },
+    {
+      "key_metrics": "transport_success=1.0000; target_reached=1.0000; pose_error_m=0.000365; orientation_error_deg=5.62e-11; formation_break=0.0000; wrench_residual=0.0775; collision_rate=0.0000",
+      "method": "reference_centralized_mpc_cbf_cargo",
+      "method_label": "Reference centralized MPC-CBF cargo",
+      "n_loads": 3,
+      "n_robots": 8,
+      "objective": "Move the selected payload from initial pose to target pose while preserving slot formation, wrench feasibility and obstacle/traffic clearance.",
+      "scenario_generator": "monte_carlo",
+      "scenario_variant_id": "monte_carlo_multi_group_crossing_push_seed6661",
+      "seed": 6661,
+      "snapshot": "results\\sp5\\SP5_MC_explicit_control_law\\figures\\sp5_monte-carlo_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6661.png",
+      "transport_mode": "cargo",
+      "video": "results\\sp5\\SP5_MC_explicit_control_law\\videos\\sp5_monte-carlo_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6661.mp4"
+    },
+    {
+      "key_metrics": "transport_success=1.0000; target_reached=1.0000; pose_error_m=0.000662; orientation_error_deg=1.02e-10; formation_break=0.0574; wrench_residual=0.0959; collision_rate=0.0000",
+      "method": "reference_centralized_mpc_cbf_cargo",
+      "method_label": "Reference centralized MPC-CBF cargo",
+      "n_loads": 3,
+      "n_robots": 8,
+      "objective": "Move the selected payload from initial pose to target pose while preserving slot formation, wrench feasibility and obstacle/traffic clearance.",
+      "scenario_generator": "multi_group_crossing_push",
+      "scenario_variant_id": "multi_group_crossing_push_v00",
+      "seed": 6661,
+      "snapshot": "results\\sp5\\SP5_MC_explicit_control_law\\figures\\sp5_multi-group-crossing-push_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6661.png",
+      "transport_mode": "cargo",
+      "video": "results\\sp5\\SP5_MC_explicit_control_law\\videos\\sp5_multi-group-crossing-push_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6661.mp4"
+    },
+    {
+      "key_metrics": "transport_success=1.0000; target_reached=1.0000; pose_error_m=9.92e-05; orientation_error_deg=2.86e-10; formation_break=0.0040; wrench_residual=0.0784; collision_rate=0.0000",
+      "method": "reference_centralized_mpc_cbf_cargo",
+      "method_label": "Reference centralized MPC-CBF cargo",
+      "n_loads": 2,
+      "n_robots": 10,
+      "objective": "Move the selected payload from initial pose to target pose while preserving slot formation, wrench feasibility and obstacle/traffic clearance.",
+      "scenario_generator": "overactuated_push_drag",
+      "scenario_variant_id": "overactuated_push_drag_v00",
+      "seed": 6655,
+      "snapshot": "results\\sp5\\SP5_MC_explicit_control_law\\figures\\sp5_overactuated-push-drag_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6655.png",
+      "transport_mode": "cargo",
+      "video": "results\\sp5\\SP5_MC_explicit_control_law\\videos\\sp5_overactuated-push-drag_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6655.mp4"
+    }
+  ],
+  "seeds": [
+    6650,
+    6651,
+    6652,
+    6653,
+    6654,
+    6655,
+    6656,
+    6657,
+    6658,
+    6659,
+    6660,
+    6661
+  ],
+  "theory_audit": "results\\sp5\\SP5_MC_explicit_control_law\\theory_audit.json"
+}

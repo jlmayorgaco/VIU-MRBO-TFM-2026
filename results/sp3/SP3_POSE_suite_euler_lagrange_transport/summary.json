@@ -1,0 +1,22 @@
+{
+  "case_count": 3,
+  "experiment_id": "SP3_POSE_suite_euler_lagrange_transport",
+  "mean_final_orientation_error_deg": 19.27908067320497,
+  "mean_final_position_error_m": 1.2278729178677419,
+  "mean_slot_coverage_ratio": 0.75,
+  "method_count": 6,
+  "mode": "pose_transport_suite",
+  "pose_success_rate": 0.6111111111111112,
+  "runs": 18,
+  "theory_audit": {
+    "checks": 18,
+    "euler_lagrange_model": "M(q) qdd + D qd = G(q) lambda",
+    "failed_checks": 0,
+    "hamiltonian": "0.5 qd^T M qd + V(q)",
+    "note": "A failed pose_success is a method outcome, not a theory-audit failure.",
+    "passed": true,
+    "vector_game_signal": "residual-support payoff eta^T g_i with bounded force effort",
+    "wrench_projection": "bounded least-squares over planar slot force columns"
+  },
+  "video_ok_count": 18
+}

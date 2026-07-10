@@ -1,0 +1,18 @@
+{
+  "checks": 20176,
+  "failed_checks": 0,
+  "failed_examples": [],
+  "method_count": 8,
+  "model_scope": "temporal_unit_disk_packet_network_plus_sp5_planar_payload_transport",
+  "not_claimed": "SP7 is a communication/sensing robustness benchmark, not RF channel propagation, hardware networking, or full multi-agent POMDP validation.",
+  "passed": true,
+  "scenario_generators": [
+    "radius_sweep_balanced_push",
+    "multi_group_obstacle_crossing",
+    "cargo_sensor_degradation",
+    "over_robot_relay",
+    "under_robot_multi_load",
+    "monte_carlo"
+  ],
+  "seed_count": 97
+}

@@ -1,0 +1,48 @@
+{
+  "checks": 2700,
+  "failed_checks": 0,
+  "gates": {
+    "G4_reference_no_worse_collision_than_direct": {
+      "checks": 300,
+      "description": "The safe reference is a heuristic reference, not an exact MAPF oracle; it must reduce paired collision rate in aggregate versus direct target tracking.",
+      "failed_checks": 0,
+      "mean_reference_minus_direct_collision_rate": -0.04023351554533628,
+      "outlier_count": 2,
+      "outliers": [
+        {
+          "delta": 0.003508771929824562,
+          "direct_collision_rate": 0.01929824561403509,
+          "reference_collision_rate": 0.02280701754385965,
+          "scenario_generator": "crossing_traffic",
+          "scenario_variant_id": "crossing_traffic_v00",
+          "seed": 5102
+        },
+        {
+          "delta": 0.01605758582502767,
+          "direct_collision_rate": 0.14950166112956811,
+          "reference_collision_rate": 0.16555924695459578,
+          "scenario_generator": "narrow_passage",
+          "scenario_variant_id": "narrow_passage_v00",
+          "seed": 5135
+        }
+      ],
+      "passed": true,
+      "truncated_outliers": 0
+    }
+  },
+  "method_count": 8,
+  "model_scope": "single_integrator_planar_motion_with_obstacles_and_pairwise_robot_clearance",
+  "not_claimed": "SP4 is not a full kinodynamic MAPF optimum and not a contact/manipulation controller.",
+  "passed": true,
+  "scenario_generators": [
+    "open_field_arrival",
+    "crossing_traffic",
+    "narrow_passage",
+    "cluttered_warehouse",
+    "communication_limited",
+    "long_distance_energy"
+  ],
+  "seed_count": 50,
+  "seed_end": 5149,
+  "seed_start": 5100
+}

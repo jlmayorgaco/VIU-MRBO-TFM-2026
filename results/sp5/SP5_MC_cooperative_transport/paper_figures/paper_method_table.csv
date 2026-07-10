@@ -1,0 +1,11 @@
+rank,method,method_label,method_family,method_scope,method_ownership,pickup_success_mean,transport_success_mean,collision_count_mean,collision_rate_mean,completion_time_s_mean,runtime_ms_mean,performance_gap_vs_reference_mean,optimality_gap_vs_reference_mean
+1,reference_centralized_mpc_cbf_cargo,Reference centralized MPC-CBF cargo,model_based_reference,centralized,reference,1.0,0.9966666666666668,0.0,0.0,40.227133333333335,3052.9799330005576,0.0,0.0
+2,sota_centralized_cbf_cargo,SOTA centralized CBF cargo,sota,centralized,baseline,1.0,0.99,0.0,0.0,42.75866666666668,492.8505976657228,0.0201534441246964,0.0201534441246964
+3,sota_decentralized_vo_cargo,SOTA decentralized VO cargo,sota,decentralized,baseline,1.0,0.99,0.0,0.0,42.724,509.6189356661246,0.025869395594974,0.025869395594974
+4,ours_hamiltonian_cargo,Ours Hamiltonian cargo,model_based,decentralized,proposed,1.0,0.97,0.0,0.0,42.54580000000001,511.9787669950165,0.0313522403409813,0.0313522403409813
+5,classic_centralized_shortest_push,Classic centralized shortest push,classic,centralized,baseline,1.0,0.01,0.0,0.0,76.12993094674057,1001.016758667926,0.9893450754488136,0.9893450754488136
+6,ours_tensor_game_push,Ours tensor-game push,model_based,decentralized,proposed,1.0,0.0,0.0,0.0,75.53747540620823,1325.7206443316925,0.9989229961071652,0.9989229961071652
+7,ours_primal_dual_wrench_push,Ours primal-dual wrench push,model_based,decentralized,proposed,1.0,0.0,0.0,0.0,76.55753094674058,1031.0059933325583,0.9986116403495932,0.9986116403495932
+8,classic_decentralized_apf_push,Classic decentralized APF push,classic,decentralized,baseline,1.0,0.0,0.0,0.0,74.97473094674058,783.3120093370477,0.9982039540680216,0.9982039540680216
+9,sota_centralized_cbf_push,SOTA centralized CBF push,sota,centralized,baseline,1.0,0.0,0.0,0.0,76.46973094674058,1050.5170146663052,0.998894729950774,0.998894729950774
+10,sota_decentralized_vo_push,SOTA decentralized VO push,sota,decentralized,baseline,1.0,0.0,0.0,0.0,76.55753094674058,1048.4774703350074,0.9989566418141242,0.9989566418141242

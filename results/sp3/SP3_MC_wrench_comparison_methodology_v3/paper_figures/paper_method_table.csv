@@ -1,0 +1,11 @@
+rank,method,method_label,method_family,method_scope,method_ownership,scalar_feasible_rate_mean,wrench_feasible_rate_mean,feasible_assigned_loads_mean,infeasible_assigned_loads_mean,feasible_available_loads_mean,feasible_coverage_mean,wrench_residual_feasible_available_mean,max_wrench_residual_feasible_available_mean
+1,wrench_oracle,Wrench oracle,model_based_oracle,centralized,reference,0.5,0.5,0.6666666666666666,0.0,0.6666666666666666,1.0,7.805353647610999e-17,8.702652919776581e-17
+2,smith_wrench_marginal,Smith-QR wrench marginal,model_based,decentralized,proposed,0.9883333333333332,0.5,0.6666666666666666,0.5,0.6666666666666666,1.0,7.914665790236241e-17,8.921277205027065e-17
+3,bnn_wrench_deficit,BNN wrench deficit,model_based,decentralized,baseline,1.0,0.5,0.6666666666666666,0.5,0.6666666666666666,1.0,7.933795645340592e-17,8.959536915235768e-17
+4,replicator_wrench_deficit,Replicator wrench deficit,model_based,decentralized,baseline,1.0,0.5,0.6666666666666666,0.5,0.6666666666666666,1.0,7.933795645340592e-17,8.959536915235768e-17
+5,smith_wrench_deficit,Smith-QR wrench deficit,model_based,decentralized,proposed,1.0,0.5,0.6666666666666666,0.5,0.6666666666666666,1.0,7.925141882455227e-17,8.942229389465038e-17
+6,oracle_scalar_assignment,Oracle scalar assignment,model_based_oracle,centralized,reference,1.0,0.5,0.6666666666666666,0.5,0.6666666666666666,1.0,7.805353647610999e-17,8.702652919776581e-17
+7,hungarian_slots,Hungarian slots,classic,centralized,baseline,0.9983333333333332,0.5,0.6666666666666666,0.5,0.6666666666666666,1.0,7.805353647610999e-17,8.702652919776581e-17
+8,cbba_slots,CBBA slots,sota,decentralized,baseline,0.665,0.5,0.6666666666666666,0.5,0.6666666666666666,1.0,7.935617974674214e-17,8.963181573903011e-17
+9,support_dual_wrench_market,Residual-support wrench market,model_based,decentralized,proposed,0.9691666666666666,0.5,0.6666666666666666,0.5,0.6666666666666666,1.0,7.275250266556915e-17,8.007586174656238e-17
+10,capacity_greedy_slots,Capacity greedy slots,classic,decentralized,baseline,1.0,0.5,0.6666666666666666,0.5,0.6666666666666666,1.0,7.885059842912902e-17,8.86206531038039e-17

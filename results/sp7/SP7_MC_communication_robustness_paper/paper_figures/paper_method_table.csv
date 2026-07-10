@@ -1,0 +1,9 @@
+rank,method,method_label,method_family,method_scope,method_ownership,collision_rate_mean,completion_time_s_mean,optimality_gap_vs_reference_mean,pickup_success_mean,relay_success_rate_mean,runtime_ms_mean,transport_success_mean
+1,ours_connectivity_wrench_game,Ours connectivity-aware wrench game,model_based,decentralized,proposed,0.0,41.16057692307693,0.0382053130796307,1.0,0.3002045826513911,584.3740624998015,0.1346153846153846
+2,ours_delay_robust_repair,Ours delay-robust local repair,model_based,decentralized_local,proposed,0.0,41.16057692307693,0.0648741996603767,1.0,0.2255728314238952,352.27102018745006,0.1346153846153846
+3,reference_full_communication,Reference full-communication controller,model_based_reference,centralized,reference,0.0,41.31346153846153,0.0,1.0,0.3212356792144026,400.2137855713954,0.0769230769230769
+4,classic_decentralized_sensor_apf,Classic decentralized sensor APF,classic,decentralized,baseline,0.0,41.55865384615385,0.1995683735355314,1.0,0.0651391162029459,308.4562432688052,0.0288461538461538
+5,sota_delay_tolerant_consensus,SOTA delay-tolerant consensus,sota,decentralized,baseline,0.0,41.67,0.1226552746283373,1.0,0.2515139116202946,402.93405000724863,0.0192307692307692
+6,sota_decentralized_cbba_relay,SOTA decentralized relay/CBBA,sota,decentralized,baseline,0.0,41.73923076923078,0.1504223613233963,1.0,0.255278232405892,398.2060499928104,0.0096153846153846
+7,sota_centralized_cbf_networked,SOTA centralized CBF networked,sota,centralized,baseline,0.0,41.81711538461539,0.1685928726875769,1.0,0.2480360065466448,391.7929932593744,0.0
+8,classic_centralized_global_mpc,Classic centralized global comms,classic,centralized,baseline,0.0,41.847115384615385,0.1860376750184537,1.0,0.2542962356792144,336.4571432612138,0.0

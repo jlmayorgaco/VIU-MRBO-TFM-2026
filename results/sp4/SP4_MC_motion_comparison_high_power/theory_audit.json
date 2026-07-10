@@ -1,0 +1,104 @@
+{
+  "checks": 21408,
+  "failed_checks": 0,
+  "gates": {
+    "G4_reference_no_worse_collision_than_direct": {
+      "checks": 1338,
+      "description": "The safe reference is a heuristic reference, not an exact MAPF oracle; it must reduce paired collision rate in aggregate versus direct target tracking.",
+      "failed_checks": 0,
+      "mean_reference_minus_direct_collision_rate": -0.039246218533941536,
+      "outlier_count": 9,
+      "outliers": [
+        {
+          "delta": 0.0023391812865497085,
+          "direct_collision_rate": 0.008771929824561403,
+          "reference_collision_rate": 0.011111111111111112,
+          "scenario_generator": "crossing_traffic",
+          "scenario_variant_id": "crossing_traffic_v00",
+          "seed": 5669
+        },
+        {
+          "delta": 0.0011695906432748534,
+          "direct_collision_rate": 0.010526315789473684,
+          "reference_collision_rate": 0.011695906432748537,
+          "scenario_generator": "crossing_traffic",
+          "scenario_variant_id": "crossing_traffic_v00",
+          "seed": 5758
+        },
+        {
+          "delta": 0.011695906432748537,
+          "direct_collision_rate": 0.006432748538011696,
+          "reference_collision_rate": 0.018128654970760234,
+          "scenario_generator": "crossing_traffic",
+          "scenario_variant_id": "crossing_traffic_v00",
+          "seed": 5761
+        },
+        {
+          "delta": 0.0076023391812865505,
+          "direct_collision_rate": 0.005263157894736842,
+          "reference_collision_rate": 0.012865497076023392,
+          "scenario_generator": "crossing_traffic",
+          "scenario_variant_id": "crossing_traffic_v00",
+          "seed": 5789
+        },
+        {
+          "delta": 0.004093567251461988,
+          "direct_collision_rate": 0.014035087719298246,
+          "reference_collision_rate": 0.018128654970760234,
+          "scenario_generator": "crossing_traffic",
+          "scenario_variant_id": "crossing_traffic_v00",
+          "seed": 5820
+        },
+        {
+          "delta": 0.044296788482834984,
+          "direct_collision_rate": 0.10575858250276855,
+          "reference_collision_rate": 0.15005537098560354,
+          "scenario_generator": "narrow_passage",
+          "scenario_variant_id": "narrow_passage_v00",
+          "seed": 5645
+        },
+        {
+          "delta": 0.008208955223880599,
+          "direct_collision_rate": 0.09253731343283582,
+          "reference_collision_rate": 0.10074626865671642,
+          "scenario_generator": "cluttered_warehouse",
+          "scenario_variant_id": "cluttered_warehouse_v00",
+          "seed": 5683
+        },
+        {
+          "delta": 0.014552238805970147,
+          "direct_collision_rate": 0.07126865671641791,
+          "reference_collision_rate": 0.08582089552238806,
+          "scenario_generator": "cluttered_warehouse",
+          "scenario_variant_id": "cluttered_warehouse_v00",
+          "seed": 5802
+        },
+        {
+          "delta": 0.0012458471760797354,
+          "direct_collision_rate": 0.015780730897009966,
+          "reference_collision_rate": 0.0170265780730897,
+          "scenario_generator": "communication_limited",
+          "scenario_variant_id": "communication_limited_v00",
+          "seed": 5787
+        }
+      ],
+      "passed": true,
+      "truncated_outliers": 0
+    }
+  },
+  "method_count": 15,
+  "model_scope": "single_integrator_planar_motion_with_obstacles_and_pairwise_robot_clearance",
+  "not_claimed": "SP4 is not a full kinodynamic MAPF optimum and not a contact/manipulation controller.",
+  "passed": true,
+  "scenario_generators": [
+    "open_field_arrival",
+    "crossing_traffic",
+    "narrow_passage",
+    "cluttered_warehouse",
+    "communication_limited",
+    "long_distance_energy"
+  ],
+  "seed_count": 223,
+  "seed_end": 5822,
+  "seed_start": 5600
+}
