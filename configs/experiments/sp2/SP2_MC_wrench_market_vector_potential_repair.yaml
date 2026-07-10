@@ -1,0 +1,73 @@
+experiment_id: SP2_MC_wrench_market_vector_potential_repair
+mode: monte_carlo
+description: "Wrench-market-games inspired SP2 diagnostic: vector-aggregative marginal pricing, factorization failure of plain payoffs, and finite local completion repair."
+output_dir: results/sp2/SP2_MC_wrench_market_vector_potential_repair
+
+seeds:
+  start: 3400
+  count: 60
+
+scenarios:
+  - param_generator: light_mixed
+  - param_generator: balanced_capacity
+  - param_generator: heavy_capacity
+  - param_generator: battery_constrained
+  - param_generator: monte_carlo
+
+methods:
+  - id: centralized_capacity_milp
+  - id: capacity_oracle_reference
+  - id: greedy_capacity_nearest
+  - id: cbba_capacity
+  - id: replicator_capacity_plain
+  - id: replicator_capacity_marginal
+  - id: replicator_capacity_marginal_repair
+  - id: smith_capacity_plain
+  - id: smith_capacity_marginal
+  - id: smith_capacity_marginal_repair
+  - id: logit_capacity_repair
+  - id: bnn_capacity_repair
+  - id: primal_dual_capacity_repair
+  - id: pid_capacity_repair
+
+hypotheses:
+  - id: H_WMG_SP2_marginal_smith_lower_score_gap
+    metric: optimality_gap_vs_oracle
+    method_a: smith_capacity_marginal
+    method_b: smith_capacity_plain
+    direction: less
+    alpha: 0.05
+
+  - id: H_WMG_SP2_marginal_replicator_lower_incomplete_capacity
+    metric: incomplete_capacity_ratio
+    method_a: replicator_capacity_marginal
+    method_b: replicator_capacity_plain
+    direction: less
+    alpha: 0.05
+
+  - id: H_WMG_SP2_smith_repair_lower_score_gap_than_marginal
+    metric: optimality_gap_vs_oracle
+    method_a: smith_capacity_marginal_repair
+    method_b: smith_capacity_marginal
+    direction: less
+    alpha: 0.05
+
+  - id: H_WMG_SP2_repair_methods_differ_diagnostic
+    metric: optimality_gap_vs_oracle
+    methods:
+      - replicator_capacity_marginal_repair
+      - logit_capacity_repair
+      - bnn_capacity_repair
+      - primal_dual_capacity_repair
+      - pid_capacity_repair
+      - smith_capacity_marginal_repair
+    alpha: 0.05
+
+artifacts:
+  save_video: true
+  video:
+    fps: 10
+    duration_s: 24
+    final_hold_s: 6
+    max_per_scenario: 6
+    selection_metric: capacity_success_rate

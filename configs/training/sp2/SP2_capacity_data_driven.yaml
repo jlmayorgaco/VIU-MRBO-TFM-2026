@@ -1,0 +1,51 @@
+training_id: SP2_capacity_data_driven_v1
+mode: train_imitation
+
+training:
+  model_type: both
+  output_dir: outputs/trained_models/SP2/capacity_data_driven/v1
+  linear_artifact: outputs/trained_models/SP2/capacity_data_driven/v1/model.json
+  neural_artifact: outputs/trained_models/SP2/capacity_data_driven/v1/neural_model.json
+  neural_hidden_dim: 12
+  neural_epochs: 220
+  neural_learning_rate: 0.012
+  random_seed: 2026
+
+train_seeds:
+  start: 1200
+  count: 24
+
+validation_seeds:
+  start: 2200
+  count: 10
+
+test_seeds:
+  start: 3200
+  count: 10
+
+scenarios:
+  - param_generator: light_mixed
+  - param_generator: balanced_capacity
+  - param_generator: heavy_capacity
+  - param_generator: battery_constrained
+  - param_generator: monte_carlo
+
+quality_gates:
+  imitation_capacity:
+    validation:
+      capacity_satisfaction_ratio_mean_min: 0.48
+      optimality_gap_vs_oracle_mean_max: 0.20
+      capacity_gap_vs_capacity_oracle_mean_max: 0.30
+    test:
+      capacity_satisfaction_ratio_mean_min: 0.48
+      optimality_gap_vs_oracle_mean_max: 0.20
+      capacity_gap_vs_capacity_oracle_mean_max: 0.30
+  neural_capacity_scorer:
+    validation:
+      capacity_satisfaction_ratio_mean_min: 0.47
+      optimality_gap_vs_oracle_mean_max: 0.20
+      capacity_gap_vs_capacity_oracle_mean_max: 0.30
+    test:
+      capacity_satisfaction_ratio_mean_min: 0.47
+      optimality_gap_vs_oracle_mean_max: 0.20
+      capacity_gap_vs_capacity_oracle_mean_max: 0.30

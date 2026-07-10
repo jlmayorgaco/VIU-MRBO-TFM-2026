@@ -1,0 +1,34 @@
+experiment_id: SP3_POSE_euler_lagrange_transport
+mode: pose_transport
+output_dir: results/sp3/SP3_POSE_euler_lagrange_transport
+
+scenario:
+  param_generator: pose_transport_rotate
+
+seed: 5200
+method: wrench_oracle
+
+pose_transport:
+  load_index: 0
+  initial_theta_deg: -28.0
+  target_pose:
+    x: 2.2
+    y: 1.25
+    theta_deg: 58.0
+  recruit_fraction: 0.24
+  dynamics:
+    dt: 0.04
+    steps: 320
+    kp_pos: 34.0
+    kd_pos: 22.0
+    kp_theta: 28.0
+    kd_theta: 60.0
+    linear_damping: 7.5
+    angular_damping: 60.0
+    force_command_limit_n: 95.0
+    torque_command_limit_nm: 45.0
+
+artifacts:
+  fps: 12
+  duration_s: 30
+  final_hold_s: 8

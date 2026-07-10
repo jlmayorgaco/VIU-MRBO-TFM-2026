@@ -22,6 +22,11 @@ class SP1Metrics:
     robots_underassigned: int
     robots_overassigned: int
     assignment_cost: float
+    travel_distance_m: float
+    mean_assigned_travel_distance_m: float
+    max_assigned_travel_distance_m: float
+    estimated_arrival_time_s: float
+    energy_proxy_wh: float
     priority_regret: float
     optimality_gap_vs_oracle: float
     strategy_switches: int
@@ -95,7 +100,8 @@ def evaluate_assignment(
     underassigned = int(sum(row["robot_deficit"] for row in diagnostics))
     overassigned = int(sum(row["robot_surplus"] for row in diagnostics))
     captured_reward = float(sum(row["reward"] for row in served))
-    assignment_cost = _assignment_distance(world, assignment)
+    travel_stats = _assignment_travel_stats(world, assignment)
+    assignment_cost = travel_stats["travel_distance_m"]
 
     oracle_reward = captured_reward
     oracle_cost = assignment_cost
@@ -119,6 +125,11 @@ def evaluate_assignment(
         robots_underassigned=underassigned,
         robots_overassigned=overassigned,
         assignment_cost=assignment_cost,
+        travel_distance_m=travel_stats["travel_distance_m"],
+        mean_assigned_travel_distance_m=travel_stats["mean_assigned_travel_distance_m"],
+        max_assigned_travel_distance_m=travel_stats["max_assigned_travel_distance_m"],
+        estimated_arrival_time_s=travel_stats["estimated_arrival_time_s"],
+        energy_proxy_wh=travel_stats["energy_proxy_wh"],
         priority_regret=max(0.0, oracle_reward - captured_reward),
         optimality_gap_vs_oracle=gap,
         strategy_switches=0,
@@ -129,6 +140,39 @@ def evaluate_assignment(
         assigned_robots=int(np.sum(labels > 0)),
         idle_robots=int(np.sum(labels == 0)),
     )
+
+
+def _assignment_travel_stats(world: WorldState, assignment: Assignment) -> dict[str, float]:
+    labels = np.asarray(assignment.labels, dtype=int)
+    distances = []
+    arrival_times = []
+    energy_proxy = 0.0
+    for robot_idx, label in enumerate(labels):
+        if label <= 0:
+            continue
+        robot = world.robots[robot_idx]
+        load = world.loads[int(label) - 1]
+        distance = float(np.linalg.norm(robot.position - load.pickup))
+        speed = max(float(robot.spec.max_speed), 1.0e-9)
+        distances.append(distance)
+        arrival_times.append(distance / speed)
+        energy_proxy += distance * float(robot.spec.battery.discharge_per_meter) * float(robot.spec.battery.capacity_wh)
+    if not distances:
+        return {
+            "travel_distance_m": 0.0,
+            "mean_assigned_travel_distance_m": 0.0,
+            "max_assigned_travel_distance_m": 0.0,
+            "estimated_arrival_time_s": 0.0,
+            "energy_proxy_wh": 0.0,
+        }
+    distance_array = np.asarray(distances, dtype=float)
+    return {
+        "travel_distance_m": float(np.sum(distance_array)),
+        "mean_assigned_travel_distance_m": float(np.mean(distance_array)),
+        "max_assigned_travel_distance_m": float(np.max(distance_array)),
+        "estimated_arrival_time_s": float(np.max(arrival_times)),
+        "energy_proxy_wh": float(energy_proxy),
+    }
 
 
 def _assignment_distance(world: WorldState, assignment: Assignment) -> float:

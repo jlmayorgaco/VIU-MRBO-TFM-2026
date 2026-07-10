@@ -1,0 +1,81 @@
+experiment_id: SP2_MC_capacity_comparison
+mode: monte_carlo
+output_dir: results/sp2/SP2_MC_capacity_comparison
+
+tuning_artifacts:
+  - outputs/tuning/SP2/model_based/v1/best_params.yaml
+
+seeds:
+  start: 3100
+  count: 40
+
+scenarios:
+  - param_generator: light_mixed
+  - param_generator: balanced_capacity
+  - param_generator: heavy_capacity
+  - param_generator: battery_constrained
+  - param_generator: monte_carlo
+
+methods:
+  - id: greedy_capacity_nearest
+  - id: hungarian_capacity
+  - id: centralized_capacity_milp
+  - id: cbba_capacity
+  - id: replicator_capacity
+  - id: bnn_capacity
+  - id: smith_capacity
+  - id: primal_dual_capacity
+  - id: local_primal_dual_capacity
+  - id: imitation_capacity
+    params:
+      checkpoint: outputs/trained_models/SP2/capacity_data_driven/v1/model.json
+  - id: neural_capacity_scorer
+    params:
+      checkpoint: outputs/trained_models/SP2/capacity_data_driven/v1/neural_model.json
+
+hypotheses:
+  - id: H01_methods_differ_capacity_gap
+    metric: optimality_gap_vs_oracle
+    methods:
+      - greedy_capacity_nearest
+      - centralized_capacity_milp
+      - cbba_capacity
+      - primal_dual_capacity
+      - neural_capacity_scorer
+  - id: H01b_methods_differ_capacity_ceiling_gap
+    metric: capacity_gap_vs_capacity_oracle
+    methods:
+      - greedy_capacity_nearest
+      - centralized_capacity_milp
+      - cbba_capacity
+      - primal_dual_capacity
+      - neural_capacity_scorer
+  - id: H02_primal_dual_higher_capacity_success_than_greedy
+    metric: capacity_success_rate
+    method_a: primal_dual_capacity
+    method_b: greedy_capacity_nearest
+    direction: greater
+  - id: H03_neural_lower_gap_than_linear_imitation
+    metric: optimality_gap_vs_oracle
+    method_a: neural_capacity_scorer
+    method_b: imitation_capacity
+    direction: less
+  - id: H04_local_primal_dual_lower_messages_than_oracle
+    metric: communication_messages
+    method_a: local_primal_dual_capacity
+    method_b: centralized_capacity_milp
+    direction: less
+  - id: H05_smith_lower_runtime_than_neural
+    metric: runtime_ms
+    method_a: smith_capacity
+    method_b: neural_capacity_scorer
+    direction: less
+
+artifacts:
+  save_video: true
+  video:
+    fps: 10
+    duration_s: 24
+    final_hold_s: 6
+    max_per_scenario: 8
+    selection_metric: capacity_satisfaction_ratio

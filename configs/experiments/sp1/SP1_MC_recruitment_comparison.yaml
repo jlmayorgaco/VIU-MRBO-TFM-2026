@@ -51,19 +51,77 @@ metrics:
   - robots_underassigned
   - robots_overassigned
   - assignment_cost
+  - travel_distance_m
+  - mean_assigned_travel_distance_m
+  - max_assigned_travel_distance_m
+  - estimated_arrival_time_s
+  - energy_proxy_wh
   - priority_regret
   - optimality_gap_vs_oracle
   - strategy_switches
   - communication_messages
   - runtime_ms
 
+hypotheses:
+  - id: H01_methods_differ_theoretical_gap
+    class: MultiMethodFriedmanHypothesis
+    metric: optimality_gap_vs_oracle
+    methods:
+      - greedy_nearest
+      - centralized_coalition_milp
+      - primal_dual_wrench_market
+      - imitation_oracle
+      - mappo_recruitment
+    alpha: 0.05
+    paired_by: [scenario_generator, scenario_variant_id, seed]
+
+  - id: H02_mappo_lower_gap_than_imitation
+    class: PairedSuperiorityHypothesis
+    metric: optimality_gap_vs_oracle
+    treatment: mappo_recruitment
+    control: imitation_oracle
+    alternative: less
+    alpha: 0.05
+    paired_by: [scenario_generator, scenario_variant_id, seed]
+
+  - id: H03_mappo_lower_gap_than_hungarian_classic
+    class: PairedSuperiorityHypothesis
+    metric: optimality_gap_vs_oracle
+    treatment: mappo_recruitment
+    control: hungarian_expanded
+    alternative: less
+    alpha: 0.05
+    paired_by: [scenario_generator, scenario_variant_id, seed]
+
+  - id: H04_smith_lower_runtime_than_mappo
+    class: PairedSuperiorityHypothesis
+    metric: runtime_ms
+    treatment: smith_cardinality
+    control: mappo_recruitment
+    alternative: less
+    alpha: 0.05
+    paired_by: [scenario_generator, scenario_variant_id, seed]
+
+  - id: H05_mappo_higher_coalition_success_than_smith
+    class: PairedSuperiorityHypothesis
+    metric: coalition_success_rate
+    treatment: mappo_recruitment
+    control: smith_cardinality
+    alternative: greater
+    alpha: 0.05
+    paired_by: [scenario_generator, scenario_variant_id, seed]
+
 artifacts:
   save_snapshots: true
   save_trajectory_plot: true
   save_video: true
   video:
+    save_per_method: true
     save_all_runs: false
-    save_best_run: true
+    save_best_run: false
     save_median_run: true
-    save_worst_run: true
+    save_worst_run: false
+    fps: 10
+    duration_s: 24
+    final_hold_s: 6
     selection_metric: demand_satisfaction_ratio

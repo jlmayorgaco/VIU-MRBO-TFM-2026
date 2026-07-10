@@ -1,0 +1,55 @@
+experiment_id: SP2_DIAG_wrench_market_vector_potential_repair
+mode: monte_carlo
+description: "Fast diagnostic for Wrench-Market SP2 marginal pricing and completion repair without video generation."
+output_dir: results/sp2/SP2_DIAG_wrench_market_vector_potential_repair
+
+seeds:
+  start: 3400
+  count: 20
+
+scenarios:
+  - param_generator: light_mixed
+  - param_generator: balanced_capacity
+  - param_generator: heavy_capacity
+  - param_generator: battery_constrained
+  - param_generator: monte_carlo
+
+methods:
+  - id: centralized_capacity_milp
+  - id: capacity_oracle_reference
+  - id: greedy_capacity_nearest
+  - id: cbba_capacity
+  - id: replicator_capacity_plain
+  - id: replicator_capacity_marginal
+  - id: replicator_capacity_marginal_repair
+  - id: smith_capacity_plain
+  - id: smith_capacity_marginal
+  - id: smith_capacity_marginal_repair
+  - id: logit_capacity_repair
+  - id: bnn_capacity_repair
+  - id: primal_dual_capacity_repair
+  - id: pid_capacity_repair
+
+hypotheses:
+  - id: H_DIAG_SP2_marginal_smith_lower_score_gap
+    metric: optimality_gap_vs_oracle
+    method_a: smith_capacity_marginal
+    method_b: smith_capacity_plain
+    direction: less
+  - id: H_DIAG_SP2_smith_repair_lower_score_gap_than_marginal
+    metric: optimality_gap_vs_oracle
+    method_a: smith_capacity_marginal_repair
+    method_b: smith_capacity_marginal
+    direction: less
+  - id: H_DIAG_SP2_repair_methods_differ
+    metric: optimality_gap_vs_oracle
+    methods:
+      - replicator_capacity_marginal_repair
+      - logit_capacity_repair
+      - bnn_capacity_repair
+      - primal_dual_capacity_repair
+      - pid_capacity_repair
+      - smith_capacity_marginal_repair
+
+artifacts:
+  save_video: false

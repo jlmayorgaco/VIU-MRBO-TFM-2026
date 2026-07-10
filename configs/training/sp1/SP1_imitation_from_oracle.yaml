@@ -14,11 +14,29 @@ validation_seeds:
   start: 1000
   count: 200
 
+test_seeds:
+  start: 1200
+  count: 200
+
 algorithm:
   id: recruitment.data_driven.decentralized.imitation_oracle
   params:
     model_class: linear_score_policy
     teacher: centralized_coalition_milp
+
+quality_gates:
+  validation:
+    demand_satisfaction_ratio_mean_min: 0.70
+    coalition_success_rate_mean_min: 0.60
+    optimality_gap_vs_oracle_mean_max: 0.55
+    estimated_arrival_time_s_mean_max: 25.0
+    energy_proxy_wh_mean_max: 260.0
+  test:
+    demand_satisfaction_ratio_mean_min: 0.70
+    coalition_success_rate_mean_min: 0.60
+    optimality_gap_vs_oracle_mean_max: 0.55
+    estimated_arrival_time_s_mean_max: 25.0
+    energy_proxy_wh_mean_max: 260.0
 
 output:
   checkpoint_dir: outputs/trained_models/SP1/imitation_oracle/v1

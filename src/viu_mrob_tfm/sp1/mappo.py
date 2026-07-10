@@ -21,7 +21,7 @@ from torch.distributions import Categorical
 from scipy.optimize import linear_sum_assignment
 
 from viu_mrob_tfm.allocation import Assignment, BaseAllocator, DecisionContext, timed_allocate
-from viu_mrob_tfm.sp1.methods import CentralizedCoalitionOracleAllocator
+from viu_mrob_tfm.sp1.methods import CentralizedCoalitionOracleAllocator, iter_complete_slot_plans
 from viu_mrob_tfm.sp1.metrics import evaluate_assignment, load_diagnostics
 from viu_mrob_tfm.sp1.scenario import iter_sp1_worlds
 from viu_mrob_tfm.utils.io import ensure_directory, save_json
@@ -164,6 +164,7 @@ def train_mappo_recruitment(config: dict[str, Any], *, config_path: Path) -> dic
     output_dir = ensure_directory(config.get("output", {}).get("checkpoint_dir", "outputs/trained_models/SP1/mappo_recruitment/v1"))
     train_seeds = _seed_range(config.get("train_seeds", {"start": 0, "count": 32}))
     validation_seeds = _seed_range(config.get("validation_seeds", {"start": 1000, "count": 8}))
+    test_seeds = _seed_range(config.get("test_seeds", {"start": 1200, "count": 0}))
     generators = [str(item.get("param_generator", item.get("generator", "monte_carlo"))) for item in config.get("scenarios", [{"param_generator": "monte_carlo"}])]
 
     random_seed = int(algorithm.get("random_seed", 1234))
@@ -183,6 +184,9 @@ def train_mappo_recruitment(config: dict[str, Any], *, config_path: Path) -> dic
     bc_pretrain_epochs = max(0, int(algorithm.get("bc_pretrain_epochs", 0)))
     bc_learning_rate = float(algorithm.get("bc_learning_rate", max(learning_rate, 1.0e-3)))
     use_quorum_decoder = bool(algorithm.get("use_quorum_decoder", True))
+    rollout_action_mode = str(algorithm.get("rollout_action_mode", "sampled_policy"))
+    if rollout_action_mode not in {"sampled_policy", "greedy_policy", "decoder_guided"}:
+        raise ValueError(f"Unknown MAPPO rollout_action_mode: {rollout_action_mode}")
 
     actor = PairActor(feature_dim=len(PAIR_FEATURE_NAMES), hidden_dim=hidden_dim)
     critic = CentralCritic(feature_dim=len(GLOBAL_FEATURE_NAMES), hidden_dim=hidden_dim)
@@ -214,6 +218,7 @@ def train_mappo_recruitment(config: dict[str, Any], *, config_path: Path) -> dic
                 params.communication_radius,
                 reward_config,
                 use_quorum_decoder=use_quorum_decoder,
+                rollout_action_mode=rollout_action_mode,
             )
             for _generator, _variant_id, _seed, params, world in batch_worlds
         ]
@@ -242,7 +247,7 @@ def train_mappo_recruitment(config: dict[str, Any], *, config_path: Path) -> dic
         update_idx += 1
 
     metadata = {
-        "model_version": "sp1-mappo-v4",
+        "model_version": "sp1-mappo-v5",
         "algorithm": "MAPPO with shared decentralized actor, centralized critic, behavior-cloning warm start, and quorum decoder",
         "training_id": training_id,
         "config_path": str(config_path),
@@ -251,6 +256,7 @@ def train_mappo_recruitment(config: dict[str, Any], *, config_path: Path) -> dic
         "hidden_dim": hidden_dim,
         "train_seed_count": len(train_seeds),
         "validation_seed_count": len(validation_seeds),
+        "test_seed_count": len(test_seeds),
         "total_episodes": total_episodes,
         "rollout_horizon": rollout_horizon,
         "ppo_epochs": ppo_epochs,
@@ -261,6 +267,10 @@ def train_mappo_recruitment(config: dict[str, Any], *, config_path: Path) -> dic
         "bc_pretrain_epochs": bc_pretrain_epochs,
         "bc_learning_rate": bc_learning_rate,
         "use_quorum_decoder": use_quorum_decoder,
+        "rollout_action_mode": rollout_action_mode,
+        "actor_trainable_parameters": _parameter_count(actor),
+        "critic_trainable_parameters": _parameter_count(critic),
+        "training_trainable_parameters": _parameter_count(actor) + _parameter_count(critic),
         "decoder_reward_weight": float(algorithm.get("decoder_reward_weight", 2.0)),
         "decoder_distance_weight": float(algorithm.get("decoder_distance_weight", 0.02)),
         "decoder_capacity_weight": float(algorithm.get("decoder_capacity_weight", 0.02)),
@@ -290,20 +300,33 @@ def train_mappo_recruitment(config: dict[str, Any], *, config_path: Path) -> dic
         training_id=training_id,
     )
     write_csv(output_dir / "validation_runs.csv", validation_rows, _columns(validation_rows))
-    validation_metrics = {
-        "training_id": training_id,
-        "validation_seed_count": len(validation_seeds),
-        "validation_runs": len(validation_rows),
-        "demand_satisfaction_ratio_mean": _mean(validation_rows, "demand_satisfaction_ratio"),
-        "coalition_success_rate_mean": _mean(validation_rows, "coalition_success_rate"),
-        "robots_underassigned_mean": _mean(validation_rows, "robots_underassigned"),
-        "robots_overassigned_mean": _mean(validation_rows, "robots_overassigned"),
-        "captured_reward_mean": _mean(validation_rows, "captured_reward"),
-    }
+    validation_metrics = _validation_metric_summary(training_id, "validation", validation_rows, len(validation_seeds))
     save_json(output_dir / "validation_metrics.json", validation_metrics)
     metadata["validation"] = validation_metrics
+    split_metrics = {"validation": validation_metrics}
+    test_rows: list[dict[str, Any]] = []
+    if test_seeds:
+        test_rows = validate_mappo_checkpoint(
+            model_path,
+            generators=generators,
+            seeds=test_seeds,
+            training_id=training_id,
+        )
+        write_csv(output_dir / "test_runs.csv", test_rows, _columns(test_rows))
+        test_metrics = _validation_metric_summary(training_id, "test", test_rows, len(test_seeds))
+        save_json(output_dir / "test_metrics.json", test_metrics)
+        metadata["test"] = test_metrics
+        split_metrics["test"] = test_metrics
+    quality_gates = evaluate_quality_gates(split_metrics, dict(config.get("quality_gates", {})))
+    if quality_gates:
+        save_json(output_dir / "quality_gates.json", {"checks": quality_gates, "passed": all(row["passed"] for row in quality_gates)})
+        metadata["quality_gates"] = quality_gates
     model_path.write_text(json.dumps(metadata, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     write_mappo_readme(output_dir / "README.md", metadata)
+    failed_gates = [row for row in quality_gates if not bool(row["passed"])]
+    if failed_gates:
+        names = ", ".join(f"{row['split']}.{row['metric']}" for row in failed_gates)
+        raise ValueError(f"MAPPO quality gates failed: {names}")
 
     return {
         "training_id": training_id,
@@ -313,6 +336,8 @@ def train_mappo_recruitment(config: dict[str, Any], *, config_path: Path) -> dic
         "train_seed_count": len(train_seeds),
         "validation_seed_count": len(validation_seeds),
         "validation_runs": len(validation_rows),
+        "test_seed_count": len(test_seeds),
+        "test_runs": len(test_rows),
     }
 
 
@@ -328,18 +353,23 @@ def supervised_pretrain_actor(
     optimizer = torch.optim.Adam(actor.parameters(), lr=learning_rate)
     history: list[dict[str, Any]] = []
     oracle = CentralizedCoalitionOracleAllocator()
+    examples = []
+    for _generator, _variant_id, _seed, params, world in train_worlds:
+        context = DecisionContext(world=world, metadata={"communication_radius": params.communication_radius})
+        oracle_assignment, _ = timed_allocate(oracle, context)
+        pair_features, load_mask = pair_features_for_world(world, params.communication_radius)
+        examples.append(
+            (
+                torch.as_tensor(pair_features, dtype=torch.float32),
+                torch.as_tensor(load_mask, dtype=torch.bool),
+                torch.as_tensor(oracle_assignment.labels, dtype=torch.long),
+            )
+        )
     for epoch in range(epochs):
         losses = []
         accuracies = []
-        for _generator, _variant_id, _seed, params, world in train_worlds:
-            context = DecisionContext(world=world, metadata={"communication_radius": params.communication_radius})
-            oracle_assignment, _ = timed_allocate(oracle, context)
-            pair_features, load_mask = pair_features_for_world(world, params.communication_radius)
-            logits = actor(
-                torch.as_tensor(pair_features, dtype=torch.float32),
-                torch.as_tensor(load_mask, dtype=torch.bool),
-            )
-            target = torch.as_tensor(oracle_assignment.labels, dtype=torch.long)
+        for pair_tensor, mask_tensor, target in examples:
+            logits = actor(pair_tensor, mask_tensor)
             loss = nn.functional.cross_entropy(logits, target)
             optimizer.zero_grad()
             loss.backward()
@@ -372,8 +402,9 @@ def decode_quorum_assignment(
     """Decode actor logits into a complete-coalition SP1 assignment.
 
     The actor supplies learned pair scores; the decoder enforces executable
-    SP1 recruitment semantics: complete load quorums, no overassignment, and
-    idle robots when demand is lower than fleet size.
+    SP1 recruitment semantics: complete load quorums, payload-capacity
+    feasibility, and idle robots when demand is lower than fleet size. Extra
+    AMRs are allowed only when they improve feasibility or the decoded score.
     """
 
     robot_count = len(world.robots)
@@ -396,49 +427,53 @@ def decode_quorum_assignment(
     load_indices = range(load_count)
     for subset_size in range(1, load_count + 1):
         for subset in combinations(load_indices, subset_size):
-            required_slots = int(np.sum(demands[list(subset)])) if subset else 0
-            if required_slots > robot_count:
-                continue
-            slot_loads = [load_idx for load_idx in subset for _ in range(int(demands[load_idx]))]
-            cost = np.zeros((robot_count, len(slot_loads)), dtype=float)
-            for col, load_idx in enumerate(slot_loads):
-                invalid = ~load_mask[:, load_idx]
-                actor_score = load_logits[:, load_idx]
-                capacity_score = np.minimum(payloads, required_capacity[load_idx]) / max(required_capacity[load_idx], 1.0e-9)
-                utility = actor_weight * actor_score + capacity_weight * capacity_score - distance_weight * distances[:, load_idx]
-                utility[invalid] = -1.0e9
-                cost[:, col] = -utility
-            rows, cols = linear_sum_assignment(cost)
-            if rows.size < len(slot_loads):
-                continue
-            assigned_cost = cost[rows, cols]
-            if np.any(assigned_cost > 1.0e8):
-                continue
-            candidate = np.zeros(robot_count, dtype=int)
-            for row, col in zip(rows, cols):
-                candidate[int(row)] = int(slot_loads[int(col)]) + 1
-            diagnostics = load_diagnostics(world, Assignment(labels=candidate, method="mappo_decoder"))
-            selected_rows = [row for row in diagnostics if int(row["assigned_robots"]) > 0]
-            subset_reward = float(np.sum(rewards[list(subset)]))
-            served_reward = float(sum(row["reward"] for row in diagnostics if row["status"] in {"OK", "OVER"}))
-            selected_under_penalty = float(
-                sum(row["robot_deficit"] for row in selected_rows)
-                + sum(row["capacity_deficit_kg"] for row in selected_rows) / 25.0
-            )
-            assignment_distance = float(sum(distances[int(row), int(slot_loads[int(col)])] for row, col in zip(rows, cols)))
-            decoder_mean_utility = -float(np.sum(assigned_cost)) / max(len(slot_loads), 1)
-            score = (
-                reward_weight * served_reward
-                + 0.3 * subset_reward
-                + demand_weight * float(required_slots)
-                + decoder_mean_utility
-                - distance_weight * assignment_distance
-                - 2.0 * selected_under_penalty
-            )
-            if score > best_score:
-                best_score = score
-                best_labels = candidate
-                found_candidate = True
+            for slot_plan, extra_robots in iter_complete_slot_plans(demands, subset, robot_count):
+                if not slot_plan:
+                    continue
+                slot_loads = tuple(int(load_idx) for load_idx in slot_plan)
+                cost = np.zeros((robot_count, len(slot_loads)), dtype=float)
+                for col, load_idx in enumerate(slot_loads):
+                    invalid = ~load_mask[:, load_idx]
+                    actor_score = load_logits[:, load_idx]
+                    capacity_score = np.minimum(payloads, required_capacity[load_idx]) / max(required_capacity[load_idx], 1.0e-9)
+                    utility = actor_weight * actor_score + capacity_weight * capacity_score - distance_weight * distances[:, load_idx]
+                    utility[invalid] = -1.0e9
+                    cost[:, col] = -utility
+                rows, cols = linear_sum_assignment(cost)
+                if rows.size < len(slot_loads):
+                    continue
+                assigned_cost = cost[rows, cols]
+                if np.any(assigned_cost > 1.0e8):
+                    continue
+                candidate = np.zeros(robot_count, dtype=int)
+                for row, col in zip(rows, cols):
+                    candidate[int(row)] = int(slot_loads[int(col)]) + 1
+                diagnostics = load_diagnostics(world, Assignment(labels=candidate, method="mappo_decoder"))
+                selected_rows = [row for row in diagnostics if int(row["assigned_robots"]) > 0]
+                subset_reward = float(np.sum(rewards[list(subset)]))
+                served_reward = float(sum(row["reward"] for row in diagnostics if row["status"] in {"OK", "OVER"}))
+                selected_under_penalty = float(
+                    sum(row["robot_deficit"] for row in selected_rows)
+                    + sum(row["capacity_deficit_kg"] for row in selected_rows) / 25.0
+                )
+                if selected_under_penalty > 1.0e-9:
+                    continue
+                assignment_distance = float(sum(distances[int(row), int(slot_loads[int(col)])] for row, col in zip(rows, cols)))
+                decoder_mean_utility = -float(np.sum(assigned_cost)) / max(len(slot_loads), 1)
+                required_slots = int(np.sum(demands[list(subset)]))
+                score = (
+                    reward_weight * served_reward
+                    + 0.3 * subset_reward
+                    + demand_weight * float(required_slots)
+                    + decoder_mean_utility
+                    - distance_weight * assignment_distance
+                    - 2.0 * selected_under_penalty
+                    - 0.05 * float(extra_robots)
+                )
+                if score > best_score:
+                    best_score = score
+                    best_labels = candidate
+                    found_candidate = True
     if not found_candidate:
         return labels
     return best_labels
@@ -452,6 +487,7 @@ def collect_rollout_sample(
     reward_config: dict[str, Any],
     *,
     use_quorum_decoder: bool,
+    rollout_action_mode: str = "sampled_policy",
 ) -> RolloutSample:
     pair_features, load_mask = pair_features_for_world(world, communication_radius)
     global_features = global_features_for_world(world)
@@ -462,21 +498,22 @@ def collect_rollout_sample(
     with torch.no_grad():
         logits = actor(pair_tensor, mask_tensor)
         distribution = Categorical(logits=logits)
-        if use_quorum_decoder:
+        if rollout_action_mode == "decoder_guided" and use_quorum_decoder:
             decoded = decode_quorum_assignment(world, logits[:, 1:].cpu().numpy(), load_mask=load_mask)
             actions = torch.as_tensor(decoded, dtype=torch.int64)
+        elif rollout_action_mode == "greedy_policy":
+            actions = torch.argmax(logits, dim=1)
         else:
             actions = distribution.sample()
         joint_logprob = torch.sum(distribution.log_prob(actions))
         value = critic(global_tensor)
 
     assignment = Assignment(labels=actions.cpu().numpy().astype(int), method="mappo_recruitment")
-    oracle_assignment, _ = timed_allocate(CentralizedCoalitionOracleAllocator(), DecisionContext(world=world))
     metrics = evaluate_assignment(
         world,
         assignment,
         runtime_ms=0.0,
-        oracle_assignment=oracle_assignment,
+        oracle_assignment=None,
         communication_radius=communication_radius,
     )
     reward = reward_from_metrics(metrics.to_dict(), world, reward_config)
@@ -585,14 +622,75 @@ def validate_mappo_checkpoint(
     return rows
 
 
+def _validation_metric_summary(
+    training_id: str,
+    split: str,
+    rows: list[dict[str, Any]],
+    seed_count: int,
+) -> dict[str, Any]:
+    return {
+        "training_id": training_id,
+        "split": split,
+        f"{split}_seed_count": seed_count,
+        f"{split}_runs": len(rows),
+        "demand_satisfaction_ratio_mean": _mean(rows, "demand_satisfaction_ratio"),
+        "coalition_success_rate_mean": _mean(rows, "coalition_success_rate"),
+        "robots_underassigned_mean": _mean(rows, "robots_underassigned"),
+        "robots_overassigned_mean": _mean(rows, "robots_overassigned"),
+        "captured_reward_mean": _mean(rows, "captured_reward"),
+        "optimality_gap_vs_oracle_mean": _mean(rows, "optimality_gap_vs_oracle"),
+        "travel_distance_m_mean": _mean(rows, "travel_distance_m"),
+        "estimated_arrival_time_s_mean": _mean(rows, "estimated_arrival_time_s"),
+        "energy_proxy_wh_mean": _mean(rows, "energy_proxy_wh"),
+        "runtime_ms_mean": _mean(rows, "runtime_ms"),
+    }
+
+
+def evaluate_quality_gates(
+    split_metrics: dict[str, dict[str, Any]],
+    gates: dict[str, Any],
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for split, split_gates in gates.items():
+        metrics = split_metrics.get(str(split))
+        if metrics is None:
+            continue
+        for name, threshold in dict(split_gates or {}).items():
+            metric, direction = _parse_gate_name(str(name))
+            value = float(metrics.get(metric, math.nan))
+            target = float(threshold)
+            passed = value >= target if direction == "min" else value <= target
+            rows.append(
+                {
+                    "split": str(split),
+                    "metric": metric,
+                    "direction": direction,
+                    "value": value,
+                    "threshold": target,
+                    "passed": bool(passed),
+                }
+            )
+    return rows
+
+
+def _parse_gate_name(name: str) -> tuple[str, str]:
+    if name.endswith("_min"):
+        return name[: -len("_min")], "min"
+    if name.endswith("_max"):
+        return name[: -len("_max")], "max"
+    return name, "min"
+
+
 def reward_from_metrics(metrics: dict[str, Any], world: Any, reward_config: dict[str, Any]) -> float:
     success_weight = float(reward_config.get("success_weight", 10.0))
     demand_weight = float(reward_config.get("demand_weight", 4.0))
     under_penalty = float(reward_config.get("underassigned_penalty", 5.0))
     over_penalty = float(reward_config.get("overassigned_penalty", 2.0))
     distance_penalty = float(reward_config.get("distance_penalty", 0.15))
+    energy_penalty = float(reward_config.get("energy_penalty", 0.02))
     communication_penalty = float(reward_config.get("communication_penalty", 0.01))
     max_distance = max(float(world.map.size_m), 1.0) * max(len(world.robots), 1)
+    max_energy = max_distance * 500.0 * 0.01
     max_messages = max(len(world.robots) * max(len(world.loads), 1), 1)
     return (
         success_weight * float(metrics["coalition_success_rate"])
@@ -601,6 +699,7 @@ def reward_from_metrics(metrics: dict[str, Any], world: Any, reward_config: dict
         - under_penalty * float(metrics["robots_underassigned"]) / max(len(world.robots), 1)
         - over_penalty * float(metrics["robots_overassigned"]) / max(len(world.robots), 1)
         - distance_penalty * float(metrics["assignment_cost"]) / max_distance
+        - energy_penalty * float(metrics["energy_proxy_wh"]) / max(max_energy, 1.0e-9)
         - communication_penalty * float(metrics["communication_messages"]) / max_messages
     )
 
@@ -677,15 +776,22 @@ def load_mappo_checkpoint(checkpoint: Path | None) -> tuple[dict[str, Any], dict
 
 def write_mappo_readme(path: Path, metadata: dict[str, Any]) -> None:
     validation = metadata.get("validation", {})
+    test = metadata.get("test", {})
     lines = [
         f"# {metadata['training_id']}",
         "",
-        "Real MAPPO checkpoint for SP1 recruitment.",
+        "MAPPO-style CTDE checkpoint for SP1 recruitment.",
         "- Actor: shared decentralized AMR-load pair scorer.",
         "- Critic: centralized state-value network used only during training.",
+        f"- PPO rollout action mode: `{metadata.get('rollout_action_mode', 'unknown')}`",
+        f"- Execution quorum decoder: `{metadata.get('use_quorum_decoder', False)}`",
+        f"- Actor parameters: `{metadata.get('actor_trainable_parameters', 0)}`",
+        f"- Training parameters actor+critic: `{metadata.get('training_trainable_parameters', 0)}`",
         f"- Training episodes: `{metadata['total_episodes']}`",
         f"- Validation runs: `{validation.get('validation_runs', 0)}`",
         f"- Validation demand satisfaction: `{validation.get('demand_satisfaction_ratio_mean', math.nan):.4f}`",
+        f"- Test runs: `{test.get('test_runs', 0)}`",
+        f"- Test demand satisfaction: `{test.get('demand_satisfaction_ratio_mean', math.nan):.4f}`",
     ]
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -712,3 +818,7 @@ def _columns(rows: list[dict[str, Any]]) -> list[str]:
 def _mean(rows: list[dict[str, Any]], metric: str) -> float:
     values = np.asarray([float(row[metric]) for row in rows], dtype=float)
     return float(np.nanmean(values)) if values.size else math.nan
+
+
+def _parameter_count(module: nn.Module) -> int:
+    return int(sum(parameter.numel() for parameter in module.parameters() if parameter.requires_grad))

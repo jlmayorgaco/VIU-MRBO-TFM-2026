@@ -13,10 +13,15 @@ methods:
   - id: centralized_coalition_milp
   - id: cbba
   - id: replicator_cardinality
+  - id: replicator_cardinality_repair
+  - id: logit_cardinality_repair
   - id: smith_cardinality
   - id: bnn_cardinality
+  - id: bnn_cardinality_repair
   - id: primal_dual_cardinality_capacity
+  - id: primal_dual_local_repair
   - id: primal_dual_wrench_market
+  - id: tensor_quorum_flow_repair
   - id: imitation_oracle
     params:
       checkpoint: outputs/trained_models/SP1/imitation_oracle/v1/model.json
@@ -31,3 +36,7 @@ seeds:
 artifacts:
   save_plots: true
   save_video: true
+  video:
+    fps: 10
+    duration_s: 24
+    final_hold_s: 6

@@ -1,0 +1,32 @@
+experiment_id: SP7_MC_communication_robustness_paper
+mode: monte_carlo
+output_dir: results/sp7/SP7_MC_communication_robustness_paper
+seeds:
+  start: 8900
+  count: 4
+profile_ids:
+  - nominal_full_mesh
+  - radius_9m_low_loss
+  - radius_6m_moderate_loss
+  - radius_4m_loss_delay
+  - harsh_4m_35loss_400ms
+scenarios:
+  - param_generator: radius_sweep_balanced_push
+  - param_generator: multi_group_obstacle_crossing
+  - param_generator: cargo_sensor_degradation
+  - param_generator: over_robot_relay
+  - param_generator: under_robot_multi_load
+  - param_generator: monte_carlo
+methods:
+  - id: classic_centralized_global_mpc
+  - id: classic_decentralized_sensor_apf
+  - id: sota_centralized_cbf_networked
+  - id: sota_decentralized_cbba_relay
+  - id: sota_delay_tolerant_consensus
+  - id: ours_connectivity_wrench_game
+  - id: ours_delay_robust_repair
+  - id: reference_full_communication
+trajectory_sample_runs: 48
+video_sample_runs: 0
+make_figures: true
+make_videos: false

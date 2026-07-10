@@ -1,0 +1,52 @@
+experiment_id: SP6_DEBUG_smoke
+mode: monte_carlo
+output_dir: results/sp6/SP6_DEBUG_smoke
+seeds:
+  start: 7100
+  count: 1
+scenarios:
+  - param_generator: communication_radius_decay
+  - param_generator: robot_dropout_mid_task
+  - param_generator: battery_depletion_reallocation
+  - param_generator: blocked_corridor_recovery
+  - param_generator: infeasible_load_detection
+  - param_generator: delayed_information_consensus
+  - param_generator: multi_load_priority_shift
+methods:
+  - classic_centralized_replan
+  - classic_decentralized_greedy_recovery
+  - cbba_recovery
+  - cbf_recovery
+  - replicator_repair_recovery
+  - smith_qr_recovery
+  - primal_dual_recovery
+  - tensor_flow_recovery
+  - ours_guarded_wrench_market_recovery
+  - reference_resilient_oracle
+trajectory_sample_runs: 8
+hypotheses:
+  - id: H6_DEBUG_ours_reduces_lost_load_vs_classic_greedy
+    method_a: ours_guarded_wrench_market_recovery
+    method_b: classic_decentralized_greedy_recovery
+    metric: lost_load_rate
+    direction: less
+  - id: H6_DEBUG_ours_improves_completion_vs_smith_qr
+    method_a: ours_guarded_wrench_market_recovery
+    method_b: smith_qr_recovery
+    metric: task_completion_rate
+    direction: greater
+  - id: H6_DEBUG_recovery_family_differs_reference_gap
+    methods:
+      - classic_decentralized_greedy_recovery
+      - cbba_recovery
+      - smith_qr_recovery
+      - ours_guarded_wrench_market_recovery
+    metric: performance_gap_vs_reference
+artifacts:
+  save_video: true
+  video:
+    fps: 6
+    duration_s: 22
+    final_hold_s: 4
+    max_per_scenario: 1
+    selection_metric: score_value

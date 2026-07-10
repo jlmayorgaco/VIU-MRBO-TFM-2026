@@ -1,0 +1,16 @@
+experiment_id: SP8_DEBUG_smoke
+mode: debug
+output_dir: results/sp8/SP8_DEBUG_smoke
+seeds:
+  start: 9800
+  count: 1
+scenarios:
+  - param_generator: debug
+methods:
+  - id: centralized_hungarian_expanded
+  - id: centralized_coalition_oracle
+  - id: classic_local_greedy
+  - id: cbba_partitioned
+  - id: ours_wrench_market_hierarchical
+  - id: ours_mean_field_approximation
+make_figures: true

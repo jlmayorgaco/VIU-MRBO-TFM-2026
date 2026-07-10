@@ -1,0 +1,28 @@
+experiment_id: SP8_MC_scalability_warehouse_full
+mode: monte_carlo
+output_dir: results/sp8/SP8_MC_scalability_warehouse_full
+seeds:
+  start: 9900
+  count: 8
+scenarios:
+  - param_generator: scale_ladder
+  - param_generator: warehouse_large
+  - param_generator: mega_peak
+  - param_generator: obstacle_monte_carlo
+methods:
+  - id: centralized_hungarian_expanded
+  - id: centralized_coalition_oracle
+  - id: centralized_time_expanded_mpc
+  - id: classic_local_greedy
+  - id: cbba_partitioned
+  - id: auction_market_local
+  - id: ours_primal_dual_spatial
+  - id: ours_tensor_quorum_flow
+  - id: ours_wrench_market_hierarchical
+  - id: ours_mean_field_approximation
+make_figures: true
+make_videos: true
+video_methods:
+  - classic_local_greedy
+  - cbba_partitioned
+  - ours_wrench_market_hierarchical
