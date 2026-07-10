@@ -1,0 +1,29 @@
+# Theory Validation Report
+
+This report is generated from V1-V3 numerical checks. It supports the thesis theory chapter but does not replace the formal appendix.
+
+## V1 vGNE share
+- `validation`: `V1 vGNE share`
+- `seed`: `20260710`
+- `n_rows`: `779`
+- `rmse`: `3.249236646926366e-17`
+- `mae`: `1.781042151586971e-17`
+- `r2`: `1.0`
+- `figure_png`: `results\theory_validation\v1\figures\fig_v1_share_vs_theory.png`
+- `table`: `results\theory_validation\v1\tables\v1_share_vs_theory.csv`
+
+## V2 PoA curve
+- `validation`: `V2 PoA curve`
+- `gamma_grid`: `logspace(-2,2,80)`
+- `N`: `[2, 3, 4, 5, 6]`
+- `rmse_by_N`: `{'2': 0.0, '3': 0.0, '4': 0.0, '5': 0.0, '6': 0.0}`
+- `figure_png`: `results\theory_validation\v2\figures\fig_v2_poa_curve.png`
+
+## V3 stability boundary
+- `validation`: `V3 stability boundary`
+- `mu`: `0.75`
+- `theta`: `1.0`
+- `grid_rows`: `5600`
+- `false_positive_count`: `0`
+- `false_negative_count`: `0`
+- `figure_png`: `results\theory_validation\v3\figures\fig_v3_stability_boundary.png`
