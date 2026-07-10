@@ -1,0 +1,122 @@
+experiment:
+  id: SP9_COPPELIA_gap_study
+  sp: sp9
+  question: >
+    Que magnitudes predichas por la teoria T1-T8 sobreviven a la implementacion
+    en un simulador fisico con Pioneer 3-DX, y que causa cada degradacion?
+  promotion_target: canonical
+
+simulator:
+  backend: coppeliasim_zmq
+  scene_dir: coppeliasim/scenes
+  timestep_s: 0.05
+  headless: true
+  video:
+    enabled: true
+    per_scenario: 1
+
+robot:
+  model: pioneer_3dx
+  hand_offset_a_m: 0.15
+  motor:
+    F_max_N: from_urdf
+    tau_max_Nm: from_urdf
+    deadband: measure
+  battery:
+    model: first_order
+    E0: 1.0
+    alpha: 2.0e-5
+    beta: 1.0e-5
+    E_min: 0.05
+  sensing:
+    type: ultrasonic_ring
+    r_sens_m: 3.0
+    cone_deg: 15
+    noise: sim_default
+  comm:
+    r_com_m: 6.0
+    drop_outside_radius: true
+
+scenarios:
+  - nominal
+  - robot_failure
+  - human_crossing
+  - comm_r3
+  - sensor_degraded
+
+methods:
+  - id: ours_smith_qr
+    family: population
+    allocator: smith_qr
+  - id: classic_replicator
+    family: population
+    allocator: replicator
+  - id: ours_primal_dual_wrench
+    family: nash_seeking
+    allocator: primal_dual_wrench
+
+controller:
+  law: explicit_law_v1
+  gains:
+    k_p: 1.0
+    k_h: 25.0
+    c_consensus: 8.0
+    cbf_k1k2: 4.0
+    d_s_m: 0.6
+
+fidelity_ablations:
+  - id: ideal_contact
+    patch: contact=weld
+  - id: ideal_sensing
+    patch: sensing=ground_truth
+  - id: ideal_motor
+    patch: motor.deadband=0,motor.dynamics=off
+  - id: small_ts
+    patch: timestep_s=0.01
+
+seeds:
+  count: 10
+  base: 20260701
+
+metrics:
+  transport: [success, final_pose_err_m, final_pose_err_deg, formation_broken_rate]
+  safety: [collisions, min_clearance_m]
+  resources: [energy_Wh_proxy, messages, cpu_time_s]
+  predicted_vs_measured:
+    - name: rho_L
+      theory: sqrt(k_p)
+      measured: fit_exp_tail
+    - name: share_eta_H
+      theory: eta_i/H
+      measured: force_share_mean
+    - name: N_min
+      theory: ceil(M_T*(a+d)/Fmax)
+      measured: min_team_success
+    - name: cbf_clearance
+      theory: ">= d_s"
+      measured: min_clearance_m
+    - name: t_consensus
+      theory: approx 1/(c*lambda2)
+      measured: fit_consensus_tau
+
+statistics:
+  paired: true
+  omnibus: friedman
+  pairwise: wilcoxon_signed_rank
+  correction: holm
+  report_negative_results: true
+
+outputs:
+  results_dir: results/sp9/SP9_COPPELIA_gap_study
+  blocked_dir: results/sp9/SP9_BLOCKED_EXECUTION
+  required:
+    - report.md
+    - tables/runs.csv
+    - tables/summary.csv
+    - tables/predicted_vs_measured.csv
+    - tables/hypothesis_results.csv
+    - tables/degradation_by_cause.csv
+    - figures
+    - videos
+    - theory_audit.json
+    - manifest.json
