@@ -1,0 +1,53 @@
+{
+  "config_path": "configs\\experiments\\sp1\\SP1_DIAG_wrench_market_protocol_repair.yaml",
+  "experiment_id": "SP1_DIAG_wrench_market_protocol_repair",
+  "hypotheses": 2,
+  "methods": [
+    "centralized_coalition_milp",
+    "greedy_nearest",
+    "cbba",
+    "replicator_cardinality",
+    "bnn_cardinality",
+    "smith_cardinality",
+    "replicator_cardinality_repair",
+    "logit_cardinality_repair",
+    "bnn_cardinality_repair",
+    "primal_dual_local_repair",
+    "tensor_quorum_flow_repair"
+  ],
+  "mode": "monte_carlo",
+  "output_dir": "results\\sp1\\SP1_DIAG_wrench_market_protocol_repair",
+  "performance_ranking": "results\\sp1\\SP1_DIAG_wrench_market_protocol_repair\\tables\\performance_ranking.csv",
+  "report": "results\\sp1\\SP1_DIAG_wrench_market_protocol_repair\\report.md",
+  "runs": 5040,
+  "scenario_generators": [
+    "under_demand",
+    "balanced_demand",
+    "over_demand",
+    "monte_carlo"
+  ],
+  "scenario_videos": [],
+  "seeds": [
+    2400,
+    2401,
+    2402,
+    2403,
+    2404,
+    2405,
+    2406,
+    2407,
+    2408,
+    2409,
+    2410,
+    2411,
+    2412,
+    2413,
+    2414,
+    2415,
+    2416,
+    2417,
+    2418,
+    2419
+  ],
+  "theory_audit": "results\\sp1\\SP1_DIAG_wrench_market_protocol_repair\\theory_audit.json"
+}

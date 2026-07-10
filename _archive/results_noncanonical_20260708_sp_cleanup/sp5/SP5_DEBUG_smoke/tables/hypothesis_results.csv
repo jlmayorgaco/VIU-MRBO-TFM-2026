@@ -1,0 +1,3 @@
+id,metric,test,n_pairs,p_value,p_value_raw,p_value_holm,effect,effect_name,ci95_low,ci95_high,effect_size,effect_size_name,rank_biserial,alpha,reject_raw,reject_holm,reject,status,methods
+H5_DEBUG_reference_gap,performance_gap_vs_reference,wilcoxon_signed_rank,6,0.015625,0.015625,0.03125,-1.0,mean_paired_difference,-1.0,-1.0,0.0,cohens_dz,-1.0,0.05,True,True,True,ok,reference_centralized_mpc_cbf_cargo vs classic_decentralized_apf_push
+H5_DEBUG_ours_formation,formation_broken_rate,wilcoxon_signed_rank,6,0.21875,0.21875,0.21875,-0.2442141231258487,mean_paired_difference,-0.5060100668619939,0.016244652969883366,-0.6484038251114471,cohens_dz,-0.42857142857142855,0.05,False,False,False,ok,ours_hamiltonian_cargo vs classic_decentralized_apf_push

@@ -1,0 +1,118 @@
+{
+  "config_path": "configs\\experiments\\sp5\\SP5_DEBUG_smoke.yaml",
+  "experiment_id": "SP5_DEBUG_smoke",
+  "hypotheses": 2,
+  "methods": [
+    "classic_centralized_shortest_push",
+    "classic_decentralized_apf_push",
+    "sota_centralized_cbf_push",
+    "sota_decentralized_vo_push",
+    "sota_centralized_cbf_cargo",
+    "sota_decentralized_vo_cargo",
+    "ours_primal_dual_wrench_push",
+    "ours_tensor_game_push",
+    "ours_hamiltonian_cargo",
+    "reference_centralized_mpc_cbf_cargo"
+  ],
+  "mode": "monte_carlo",
+  "output_dir": "results\\sp5\\SP5_DEBUG_smoke",
+  "performance_ranking": "results\\sp5\\SP5_DEBUG_smoke\\tables\\performance_ranking.csv",
+  "report": "results\\sp5\\SP5_DEBUG_smoke\\report.md",
+  "runs": 60,
+  "scenario_generators": [
+    "formation_corridor_push",
+    "cargo_overhead_delivery",
+    "multi_group_crossing_push"
+  ],
+  "scenario_videos": [
+    {
+      "key_metrics": "transport_success=1.0000; target_reached=1.0000; pose_error_m=0.00019; orientation_error_deg=4.33e-13; formation_break=0.0645; wrench_residual=0.0910; collision_rate=0.0000",
+      "method": "reference_centralized_mpc_cbf_cargo",
+      "method_label": "Reference centralized MPC-CBF cargo",
+      "n_loads": 2,
+      "n_robots": 5,
+      "objective": "Move the selected payload from initial pose to target pose while preserving slot formation, wrench feasibility and obstacle/traffic clearance.",
+      "scenario_generator": "cargo_overhead_delivery",
+      "scenario_variant_id": "cargo_overhead_delivery_v00",
+      "seed": 6100,
+      "snapshot": "results\\sp5\\SP5_DEBUG_smoke\\figures\\sp5_cargo-overhead-delivery_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6100.png",
+      "transport_mode": "cargo",
+      "video": "results\\sp5\\SP5_DEBUG_smoke\\videos\\sp5_cargo-overhead-delivery_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6100.mp4"
+    },
+    {
+      "key_metrics": "transport_success=1.0000; target_reached=1.0000; pose_error_m=0.0038; orientation_error_deg=2.37e-08; formation_break=0.2067; wrench_residual=0.3037; collision_rate=0.0000",
+      "method": "ours_hamiltonian_cargo",
+      "method_label": "Ours Hamiltonian cargo",
+      "n_loads": 2,
+      "n_robots": 5,
+      "objective": "Move the selected payload from initial pose to target pose while preserving slot formation, wrench feasibility and obstacle/traffic clearance.",
+      "scenario_generator": "cargo_overhead_delivery",
+      "scenario_variant_id": "cargo_overhead_delivery_v00",
+      "seed": 6101,
+      "snapshot": "results\\sp5\\SP5_DEBUG_smoke\\figures\\sp5_cargo-overhead-delivery_proposed_model-based_decentralized_cargo_hamiltonian-tensor-cargo_ours-hamiltonian-cargo_seed6101.png",
+      "transport_mode": "cargo",
+      "video": "results\\sp5\\SP5_DEBUG_smoke\\videos\\sp5_cargo-overhead-delivery_proposed_model-based_decentralized_cargo_hamiltonian-tensor-cargo_ours-hamiltonian-cargo_seed6101.mp4"
+    },
+    {
+      "key_metrics": "transport_success=1.0000; target_reached=1.0000; pose_error_m=7.43e-05; orientation_error_deg=4.95e-07; formation_break=0.0832; wrench_residual=0.1857; collision_rate=0.0000",
+      "method": "sota_decentralized_vo_cargo",
+      "method_label": "SOTA decentralized VO cargo",
+      "n_loads": 2,
+      "n_robots": 6,
+      "objective": "Move the selected payload from initial pose to target pose while preserving slot formation, wrench feasibility and obstacle/traffic clearance.",
+      "scenario_generator": "formation_corridor_push",
+      "scenario_variant_id": "formation_corridor_push_v00",
+      "seed": 6100,
+      "snapshot": "results\\sp5\\SP5_DEBUG_smoke\\figures\\sp5_formation-corridor-push_baseline_sota_decentralized_cargo_velocity-obstacle-cargo_sota-decentralized-vo-cargo_seed6100.png",
+      "transport_mode": "cargo",
+      "video": "results\\sp5\\SP5_DEBUG_smoke\\videos\\sp5_formation-corridor-push_baseline_sota_decentralized_cargo_velocity-obstacle-cargo_sota-decentralized-vo-cargo_seed6100.mp4"
+    },
+    {
+      "key_metrics": "transport_success=1.0000; target_reached=1.0000; pose_error_m=0.00012; orientation_error_deg=1.29e-07; formation_break=0.0771; wrench_residual=0.1791; collision_rate=0.0000",
+      "method": "sota_centralized_cbf_cargo",
+      "method_label": "SOTA centralized CBF cargo",
+      "n_loads": 2,
+      "n_robots": 6,
+      "objective": "Move the selected payload from initial pose to target pose while preserving slot formation, wrench feasibility and obstacle/traffic clearance.",
+      "scenario_generator": "formation_corridor_push",
+      "scenario_variant_id": "formation_corridor_push_v00",
+      "seed": 6100,
+      "snapshot": "results\\sp5\\SP5_DEBUG_smoke\\figures\\sp5_formation-corridor-push_baseline_sota_centralized_cargo_cbf-overhead-cargo_sota-centralized-cbf-cargo_seed6100.png",
+      "transport_mode": "cargo",
+      "video": "results\\sp5\\SP5_DEBUG_smoke\\videos\\sp5_formation-corridor-push_baseline_sota_centralized_cargo_cbf-overhead-cargo_sota-centralized-cbf-cargo_seed6100.mp4"
+    },
+    {
+      "key_metrics": "transport_success=1.0000; target_reached=1.0000; pose_error_m=0.000171; orientation_error_deg=1.1e-08; formation_break=0.1303; wrench_residual=0.2224; collision_rate=0.0000",
+      "method": "ours_hamiltonian_cargo",
+      "method_label": "Ours Hamiltonian cargo",
+      "n_loads": 3,
+      "n_robots": 8,
+      "objective": "Move the selected payload from initial pose to target pose while preserving slot formation, wrench feasibility and obstacle/traffic clearance.",
+      "scenario_generator": "multi_group_crossing_push",
+      "scenario_variant_id": "multi_group_crossing_push_v00",
+      "seed": 6100,
+      "snapshot": "results\\sp5\\SP5_DEBUG_smoke\\figures\\sp5_multi-group-crossing-push_proposed_model-based_decentralized_cargo_hamiltonian-tensor-cargo_ours-hamiltonian-cargo_seed6100.png",
+      "transport_mode": "cargo",
+      "video": "results\\sp5\\SP5_DEBUG_smoke\\videos\\sp5_multi-group-crossing-push_proposed_model-based_decentralized_cargo_hamiltonian-tensor-cargo_ours-hamiltonian-cargo_seed6100.mp4"
+    },
+    {
+      "key_metrics": "transport_success=1.0000; target_reached=1.0000; pose_error_m=0.0038; orientation_error_deg=9.85e-11; formation_break=0.0000; wrench_residual=0.1035; collision_rate=0.0000",
+      "method": "reference_centralized_mpc_cbf_cargo",
+      "method_label": "Reference centralized MPC-CBF cargo",
+      "n_loads": 3,
+      "n_robots": 8,
+      "objective": "Move the selected payload from initial pose to target pose while preserving slot formation, wrench feasibility and obstacle/traffic clearance.",
+      "scenario_generator": "multi_group_crossing_push",
+      "scenario_variant_id": "multi_group_crossing_push_v00",
+      "seed": 6100,
+      "snapshot": "results\\sp5\\SP5_DEBUG_smoke\\figures\\sp5_multi-group-crossing-push_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6100.png",
+      "transport_mode": "cargo",
+      "video": "results\\sp5\\SP5_DEBUG_smoke\\videos\\sp5_multi-group-crossing-push_reference_model-based-reference_centralized_cargo_time-expanded-mpc-cbf-cargo_reference-centralized-mpc-cbf-cargo_seed6100.mp4"
+    }
+  ],
+  "seeds": [
+    6100,
+    6101
+  ],
+  "theory_audit": "results\\sp5\\SP5_DEBUG_smoke\\theory_audit.json"
+}

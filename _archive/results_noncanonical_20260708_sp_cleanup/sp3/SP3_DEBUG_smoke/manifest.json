@@ -1,0 +1,97 @@
+{
+  "config_path": "configs\\experiments\\sp3\\SP3_DEBUG_smoke.yaml",
+  "experiment_id": "SP3_DEBUG_smoke",
+  "hypotheses": 4,
+  "methods": [
+    "wrench_oracle",
+    "oracle_scalar_assignment",
+    "capacity_greedy_slots",
+    "cbba_slots",
+    "smith_wrench_deficit",
+    "smith_wrench_marginal",
+    "smith_wrench_marginal_guarded",
+    "support_dual_wrench_market",
+    "support_dual_wrench_market_guarded",
+    "smith_wrench_pairs_guarded"
+  ],
+  "mode": "monte_carlo",
+  "output_dir": "results\\sp3\\SP3_DEBUG_smoke",
+  "performance_ranking": "results\\sp3\\SP3_DEBUG_smoke\\tables\\performance_ranking.csv",
+  "report": "results\\sp3\\SP3_DEBUG_smoke\\report.md",
+  "runs": 60,
+  "scenario_generators": [
+    "setup",
+    "point_load_degenerate",
+    "slot_saturation"
+  ],
+  "scenario_videos": [
+    {
+      "method": "oracle_scalar_assignment",
+      "scenario_generator": "point_load_degenerate",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_DEBUG_smoke\\figures\\sp3_point-load-degenerate_reference_model-based-oracle_centralized_exact-scalar-capacity-reference_oracle-scalar-assignment_seed4100.png",
+      "video": "results\\sp3\\SP3_DEBUG_smoke\\videos\\sp3_point-load-degenerate_reference_model-based-oracle_centralized_exact-scalar-capacity-reference_oracle-scalar-assignment_seed4100.mp4"
+    },
+    {
+      "method": "wrench_oracle",
+      "scenario_generator": "point_load_degenerate",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_DEBUG_smoke\\figures\\sp3_point-load-degenerate_reference_model-based-oracle_centralized_exact-role-slot-wrench_wrench-oracle_seed4100.png",
+      "video": "results\\sp3\\SP3_DEBUG_smoke\\videos\\sp3_point-load-degenerate_reference_model-based-oracle_centralized_exact-role-slot-wrench_wrench-oracle_seed4100.mp4"
+    },
+    {
+      "method": "smith_wrench_pairs_guarded",
+      "scenario_generator": "point_load_degenerate",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_DEBUG_smoke\\figures\\sp3_point-load-degenerate_proposed_model-based_decentralized_pair-aware-wrench-guarded-repair_smith-wrench-pairs-guarded_seed4100.png",
+      "video": "results\\sp3\\SP3_DEBUG_smoke\\videos\\sp3_point-load-degenerate_proposed_model-based_decentralized_pair-aware-wrench-guarded-repair_smith-wrench-pairs-guarded_seed4100.mp4"
+    },
+    {
+      "method": "oracle_scalar_assignment",
+      "scenario_generator": "setup",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_DEBUG_smoke\\figures\\sp3_setup_reference_model-based-oracle_centralized_exact-scalar-capacity-reference_oracle-scalar-assignment_seed4100.png",
+      "video": "results\\sp3\\SP3_DEBUG_smoke\\videos\\sp3_setup_reference_model-based-oracle_centralized_exact-scalar-capacity-reference_oracle-scalar-assignment_seed4100.mp4"
+    },
+    {
+      "method": "smith_wrench_marginal",
+      "scenario_generator": "setup",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_DEBUG_smoke\\figures\\sp3_setup_proposed_model-based_decentralized_smith-qr-delta-rho-wrench-marginal_smith-wrench-marginal_seed4100.png",
+      "video": "results\\sp3\\SP3_DEBUG_smoke\\videos\\sp3_setup_proposed_model-based_decentralized_smith-qr-delta-rho-wrench-marginal_smith-wrench-marginal_seed4100.mp4"
+    },
+    {
+      "method": "cbba_slots",
+      "scenario_generator": "setup",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_DEBUG_smoke\\figures\\sp3_setup_baseline_sota_decentralized_cbba-slot-wrench-proxy_cbba-slots_seed4100.png",
+      "video": "results\\sp3\\SP3_DEBUG_smoke\\videos\\sp3_setup_baseline_sota_decentralized_cbba-slot-wrench-proxy_cbba-slots_seed4100.mp4"
+    },
+    {
+      "method": "support_dual_wrench_market_guarded",
+      "scenario_generator": "slot_saturation",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_DEBUG_smoke\\figures\\sp3_slot-saturation_proposed_model-based_decentralized_residual-support-guarded-local-repair_support-dual-wrench-market-guarded_seed4100.png",
+      "video": "results\\sp3\\SP3_DEBUG_smoke\\videos\\sp3_slot-saturation_proposed_model-based_decentralized_residual-support-guarded-local-repair_support-dual-wrench-market-guarded_seed4100.mp4"
+    },
+    {
+      "method": "smith_wrench_marginal_guarded",
+      "scenario_generator": "slot_saturation",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_DEBUG_smoke\\figures\\sp3_slot-saturation_proposed_model-based_decentralized_smith-qr-delta-rho-guarded-local-repair_smith-wrench-marginal-guarded_seed4100.png",
+      "video": "results\\sp3\\SP3_DEBUG_smoke\\videos\\sp3_slot-saturation_proposed_model-based_decentralized_smith-qr-delta-rho-guarded-local-repair_smith-wrench-marginal-guarded_seed4100.mp4"
+    },
+    {
+      "method": "wrench_oracle",
+      "scenario_generator": "slot_saturation",
+      "seed": 4100,
+      "snapshot": "results\\sp3\\SP3_DEBUG_smoke\\figures\\sp3_slot-saturation_reference_model-based-oracle_centralized_exact-role-slot-wrench_wrench-oracle_seed4100.png",
+      "video": "results\\sp3\\SP3_DEBUG_smoke\\videos\\sp3_slot-saturation_reference_model-based-oracle_centralized_exact-role-slot-wrench_wrench-oracle_seed4100.mp4"
+    }
+  ],
+  "seeds": [
+    4100,
+    4101
+  ],
+  "theory_audit": "results\\sp3\\SP3_DEBUG_smoke\\theory_audit.json"
+}
