@@ -9,7 +9,6 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import datetime, timezone
 from pathlib import Path
 
 import yaml
@@ -32,7 +31,6 @@ def write_blocked_report(config_path: Path, config: dict, reason: str, missing_s
         "status": "PENDING_RUNTIME",
         "reason": reason,
         "config": str(config_path.relative_to(ROOT)),
-        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
         "missing_scene_files": [str(path.relative_to(ROOT)) for path in missing_scenes],
         "safe_thesis_wording": "SP9 queda preparado como protocolo de brecha teoria-implementacion; no se reporta como evidencia ejecutada hasta disponer de CSV, figuras y manifest de CoppeliaSim.",
     }
