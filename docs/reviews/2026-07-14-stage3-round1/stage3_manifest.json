@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0",
+  "pipeline_stage": "3",
+  "review_round": 1,
+  "generated_at": "2026-07-14",
+  "status": "COMPLETE_AWAITING_USER_CONFIRMATION",
+  "decision": "minor_revision",
+  "panel": {
+    "required": 5,
+    "usable": 5,
+    "roles": [
+      "EIC",
+      "R1_methodology",
+      "R2_domain",
+      "R3_perspective",
+      "devils_advocate"
+    ],
+    "critical_findings": 0,
+    "dimension_blocks": 0
+  },
+  "review_target": {
+    "commit": "1218a06451f8e6b1f2c4624e49a601e492be5feb",
+    "tex_closure_fh_v2": "2fe96009eb6dbf047bc56e86c957410c1057a68da90ee7cedc3b03cc014abee6",
+    "pages_from_integrity_manifest": 80,
+    "sealed_pdf_sha256": "6c68d2197facf29dd79f86876fbec4547d24cd707a0ea16e90b6e99cc8638ded",
+    "sealed_pdf_available_at_review_time": false,
+    "evidence_locator": "section_path_line"
+  },
+  "contract": {
+    "path": "docs/reviews/TFM_2026_BULLETPROOF_AUDIT/reviewer_full_tfm_contract.json",
+    "contract_id": "tfm-reviewer-full-bulletproof-v1",
+    "panel_size": 5,
+    "sha256": "d28d9f1d9d0e07d1a58d4f4e60619ac7209acdad6adebd88304287b1a529aae9"
+  },
+  "upstream_integrity": {
+    "path": "docs/doc-05-final-report/.aris/traces/integrity/2026-07-14_stage2_5/stage2_5_final_manifest.json",
+    "sha256": "81c7a0dcac4a6a0f49e670d0b209fcfd39a41adfeb3c0c5e1550dc6320e11aec"
+  },
+  "contract_evaluation": {
+    "F1": false,
+    "F2": false,
+    "F3": false,
+    "F4": true,
+    "F5": true,
+    "F0": false,
+    "winning_condition": "F4",
+    "winning_severity": 2,
+    "action": "minor_revision"
+  },
+  "revision_roadmap": {
+    "stable_ids": 10,
+    "required": ["R1", "R2", "R3", "R4", "R5", "R6", "R7"],
+    "respond_or_justify": ["R8", "R9"],
+    "editorial": ["R10"]
+  },
+  "artifacts": {
+    "00_field_analysis_and_panel.md": "58efd381721efe810c279e097b3a981c0276059c30154477738921a2d7f880a4",
+    "10_eic_review.md": "839f96277f9d05ff8fe6d8436f1d744bcc6b92d2cfe75f4e16ef6e57a7598213",
+    "11_methodology_review.md": "6e5ad9e68317fa9ecb4736f3964bb6aa81f3367ebb57b4e65061c9569d3c452c",
+    "12_domain_review.md": "5a55c1d9c592da455f32bfe8d38e364b2a549c2bee79feb9624c9003bb933f0a",
+    "13_perspective_review.md": "8e90073edf8993373ba59a45a915717d1c1f6a91f61b9f47151bed50d69fa56a",
+    "14_devils_advocate_review.md": "bef0e890d08cb9817a073b07aacbce92805b5bc8fe2c8ced586371f60a353d9b",
+    "20_editorial_decision_and_roadmap.md": "0ab07a39ca5924f2c176181052178af0047bafb9fbbac1396776f68dc91c10e3"
+  },
+  "phase1_disclosures": {
+    "EIC": "clean_context",
+    "R1_methodology": "prior_manuscript_exposure_no_paper_access_in_phase1",
+    "R2_domain": "prior_manuscript_exposure_no_paper_access_in_phase1_phase0_phase1_reconstructed_after_compaction",
+    "R3_perspective": "prior_manuscript_exposure_no_paper_access_in_phase1",
+    "devils_advocate": "prior_manuscript_exposure_no_paper_access_in_phase1_phase1_reconstructed_after_compaction"
+  },
+  "validation": {
+    "dimension_rows": 8,
+    "failure_condition_rows": 6,
+    "stable_revision_ids": 10,
+    "unique_evidence_paths": 32,
+    "missing_evidence_paths": 0,
+    "manuscript_modified_by_reviewers": false
+  }
+}
