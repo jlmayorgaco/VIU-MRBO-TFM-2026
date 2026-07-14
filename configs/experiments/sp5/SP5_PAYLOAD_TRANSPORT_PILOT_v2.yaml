@@ -1,0 +1,37 @@
+experiment_id: SP5_PAYLOAD_TRANSPORT_PILOT_v2
+protocol_family: payload_transport_v2
+mode: pilot
+description: "CPU-only semantic pilot: fixed post-SP4 contacts, RAW/SAFE/EXEC separation and no post-integration pose repair. Not confirmatory evidence."
+output_dir: results/sp5/SP5_PAYLOAD_TRANSPORT_PILOT_v2
+
+seeds:
+  start: 573000
+  count: 2
+
+scenarios:
+  - id: open_nominal
+  - id: static_corridor
+  - id: mobile_crossing
+  - id: mixed_corridor
+  - id: actuator_limited
+  - id: multi_load_clutter
+
+robot_counts: [4, 8, 12]
+
+methods:
+  - id: pose_pd_raw
+  - id: apf_wrench_heuristic
+  - id: velocity_obstacle_proxy
+  - id: cbf_wrench_local
+  - id: damped_hamiltonian_raw
+  - id: damped_hamiltonian_cbf
+  - id: distributed_preview_cbf
+  - id: centralized_preview_reference
+
+simulation:
+  dt_s: 0.15
+  horizon_s: 45.0
+  stable_steps: 5
+
+representative_scenario: mobile_crossing
+hypotheses: []

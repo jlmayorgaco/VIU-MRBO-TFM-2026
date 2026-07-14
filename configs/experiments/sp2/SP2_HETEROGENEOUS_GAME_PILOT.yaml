@@ -1,0 +1,40 @@
+experiment_id: SP2_HETEROGENEOUS_GAME_PILOT
+description: Numerical and theory-audit pilot; excluded from thesis claims.
+output_dir: results/sp2/SP2_HETEROGENEOUS_GAME_PILOT
+confirmatory: false
+base_seed: 339900
+replicates_per_cell: 2
+factors:
+  n_robots: [8]
+  n_loads: [3]
+  heterogeneity: [low, high]
+  demand_ratio: [0.70, 1.00, 1.25]
+  geometry: [uniform]
+  graph: [complete, ring]
+population:
+  alpha: 4.0
+  beta: 0.35
+  epsilon: 0.20
+  dt: 0.01
+  max_steps: 220
+  tolerance: 0.015
+  stable_steps: 6
+  consensus_rounds: 4
+objective:
+  partial_weight: 0.30
+  distance_weight: 0.08
+methods:
+  - smith__plain_deficit
+  - smith__marginal_deficit
+  - smith__marginal_log
+  - replicator__plain_deficit
+  - replicator__marginal_deficit
+  - replicator__marginal_log
+  - erv_bnn__plain_deficit
+  - erv_bnn__marginal_deficit
+  - erv_bnn__marginal_log
+  - uniform_closure
+  - random_closure
+  - greedy_capacity
+  - auction_capacity
+  - milp_exact

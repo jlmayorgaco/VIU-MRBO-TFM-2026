@@ -88,21 +88,35 @@ def canonical_status() -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
     for sp, meta in CANONICAL_SPS.items():
         result_dir = ROOT / meta.result_dir
+        config_exists = (ROOT / meta.config).exists()
+        result_dir_exists = result_dir.exists()
+        report_exists = (result_dir / "report.md").exists()
+        runs_exists = canonical_file(sp, "runs.csv").exists()
+        summary_exists = canonical_file(sp, "summary.csv").exists()
+        failed_checks = failed_checks_from_audit(audit_file(sp))
         rows.append(
             {
                 "sp": sp,
                 "title": meta.title,
                 "config": str(meta.config),
-                "config_exists": (ROOT / meta.config).exists(),
+                "config_exists": config_exists,
                 "result_dir": str(meta.result_dir),
-                "result_dir_exists": result_dir.exists(),
-                "report_exists": (result_dir / "report.md").exists(),
-                "runs_exists": canonical_file(sp, "runs.csv").exists(),
-                "summary_exists": canonical_file(sp, "summary.csv").exists(),
+                "result_dir_exists": result_dir_exists,
+                "report_exists": report_exists,
+                "runs_exists": runs_exists,
+                "summary_exists": summary_exists,
                 "ranking_exists": canonical_file(sp, "performance_ranking.csv").exists(),
                 "hypothesis_exists": canonical_file(sp, "hypothesis_results.csv").exists(),
                 "theory_audit": str(audit_file(sp).relative_to(ROOT)),
-                "failed_checks": failed_checks_from_audit(audit_file(sp)),
+                "failed_checks": failed_checks,
+                "core_artifacts_complete": bool(
+                    config_exists
+                    and result_dir_exists
+                    and report_exists
+                    and runs_exists
+                    and summary_exists
+                    and failed_checks == 0
+                ),
             }
         )
     return rows
@@ -145,12 +159,12 @@ def main() -> int:
         "",
         "## Canonical SP Status",
         "",
-        "| SP | Result dir | Ranking | Hypotheses | Audit failed checks |",
-        "|---|---|---:|---:|---:|",
+        "| SP | Result dir | Core artifacts | Separate ranking (optional) | Hypotheses | Audit failed checks |",
+        "|---|---|---:|---:|---:|---:|",
     ]
     for row in audit["canonical_status"]:
         lines.append(
-            "| {sp} | `{result_dir}` | {ranking_exists} | {hypothesis_exists} | {failed_checks} |".format(
+            "| {sp} | `{result_dir}` | {core_artifacts_complete} | {ranking_exists} | {hypothesis_exists} | {failed_checks} |".format(
                 **row
             )
         )

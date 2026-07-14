@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-from scipy.optimize import linear_sum_assignment
+from scipy.optimize import Bounds, LinearConstraint, linear_sum_assignment, milp
 
 from viu_mrob_tfm.allocation import (
     Assignment,
@@ -62,7 +62,7 @@ SP1_METHOD_METADATA = {
         "family": "model_based_oracle",
         "scope": "centralized",
         "ownership": "reference",
-        "variant": "exact_capacity_feasible_coalition",
+        "variant": "exact_binary_quorum_capacity_milp",
         "comparison_group": "centralized_oracle_reference",
     },
     "cbba": {
@@ -193,10 +193,10 @@ SP1_METHOD_RESOURCE_METADATA = {
     },
     "centralized_coalition_milp": {
         "training_type": "none",
-        "execution_model": "centralized_exact_subset_slot_search",
+        "execution_model": "centralized_exact_binary_milp",
         "communication_pattern": "centralized_all_robot_load_pairs",
         "trainable_parameters": 0,
-        "tuned_parameters": 2,
+        "tuned_parameters": 3,
         "uses_neural_policy": False,
         "uses_decoder": False,
     },
@@ -533,51 +533,97 @@ def make_sp1_allocator(method_id: str, params: dict[str, Any] | None = None) -> 
 
 @dataclass(slots=True)
 class CentralizedCoalitionOracleAllocator(BaseAllocator):
-    """Exact complete-coalition oracle over load subsets plus Hungarian assignment.
+    """Exact binary MILP reference for complete SP1 coalitions.
 
-    It is small but exact for SP1-scale load counts: each candidate subset of
-    loads is accepted only if its cardinality and payload-capacity demand fit
-    the fleet. Cardinality is a minimum, so optional extra AMRs are considered
-    when heterogeneous payloads are needed to make a load physically feasible.
+    Binary ``x[i,k]`` assigns robot ``i`` to load ``k`` and ``y[k]`` activates
+    a served load.  The model enforces one load per robot, quorum, payload
+    capacity, and zero assignments to inactive loads.  Unassigned robots are
+    the explicit idle state represented by label 0.
     """
 
     name: str = "centralized_coalition_milp"
     distance_weight: float = 0.01
     overassignment_weight: float = 0.03
+    timeout_s: float = 5.0
+    last_solve_status: str = "not_run"
+    last_mip_gap: float = math.nan
 
     def allocate(self, context: DecisionContext) -> Assignment:
         distances = _distance_matrix(context)
         robot_count, load_count = distances.shape
         if robot_count == 0 or load_count == 0:
             return Assignment(labels=np.zeros(robot_count, dtype=int), method=self.name)
-        demands = _load_demands(context)
+        demands = _load_demands(context).astype(float)
         rewards = np.array([load.reward for load in context.world.loads], dtype=float)
         payloads = np.array([robot.spec.capacity.payload_kg for robot in context.world.robots], dtype=float)
         required_capacity = np.array([load.min_capacity_kg for load in context.world.loads], dtype=float)
+        x_count = robot_count * load_count
+        variable_count = x_count + load_count
+        objective = np.zeros(variable_count, dtype=float)
+        for robot_idx in range(robot_count):
+            for load_idx in range(load_count):
+                variable_idx = robot_idx * load_count + load_idx
+                objective[variable_idx] = (
+                    self.distance_weight * distances[robot_idx, load_idx]
+                    + self.overassignment_weight
+                    + 1.0e-10 * (variable_idx + 1)
+                )
+        for load_idx in range(load_count):
+            objective[x_count + load_idx] = (
+                -rewards[load_idx]
+                - self.overassignment_weight * demands[load_idx]
+                + 1.0e-12 * (load_idx + 1)
+            )
 
-        best_score = -np.inf
-        best_labels = np.zeros(robot_count, dtype=int)
-        load_indices = range(load_count)
-        for size in range(load_count + 1):
-            for subset in combinations(load_indices, size):
-                for slot_loads, extra_robots in iter_complete_slot_plans(demands, subset, robot_count):
-                    labels, assignment_distance = _assign_capacity_feasible_plan(
-                        distances,
-                        payloads,
-                        required_capacity,
-                        tuple(slot_loads),
-                    )
-                    if labels is None:
-                        continue
-                    score = (
-                        float(np.sum(rewards[list(subset)]))
-                        - self.distance_weight * assignment_distance
-                        - self.overassignment_weight * extra_robots
-                    )
-                    if score > best_score:
-                        best_score = score
-                        best_labels = labels
-        return Assignment(labels=best_labels, scores=-distances, method=self.name)
+        rows: list[np.ndarray] = []
+        lower: list[float] = []
+        upper: list[float] = []
+        for robot_idx in range(robot_count):
+            row = np.zeros(variable_count, dtype=float)
+            start = robot_idx * load_count
+            row[start : start + load_count] = 1.0
+            rows.append(row)
+            lower.append(-np.inf)
+            upper.append(1.0)
+        for load_idx in range(load_count):
+            assigned = np.zeros(variable_count, dtype=float)
+            assigned[load_idx:x_count:load_count] = 1.0
+            quorum = -assigned
+            quorum[x_count + load_idx] = demands[load_idx]
+            rows.append(quorum)
+            lower.append(-np.inf)
+            upper.append(0.0)
+
+            activation = assigned.copy()
+            activation[x_count + load_idx] = -float(robot_count)
+            rows.append(activation)
+            lower.append(-np.inf)
+            upper.append(0.0)
+
+            capacity = np.zeros(variable_count, dtype=float)
+            capacity[load_idx:x_count:load_count] = -payloads
+            capacity[x_count + load_idx] = required_capacity[load_idx]
+            rows.append(capacity)
+            lower.append(-np.inf)
+            upper.append(0.0)
+
+        result = milp(
+            c=objective,
+            integrality=np.ones(variable_count, dtype=int),
+            bounds=Bounds(np.zeros(variable_count), np.ones(variable_count)),
+            constraints=LinearConstraint(np.vstack(rows), np.asarray(lower), np.asarray(upper)),
+            options={"time_limit": float(self.timeout_s), "mip_rel_gap": 0.0, "presolve": True},
+        )
+        status_names = {0: "optimal", 1: "timeout_or_limit", 2: "infeasible", 3: "unbounded", 4: "solver_error"}
+        self.last_solve_status = status_names.get(int(result.status), f"unknown_{result.status}")
+        self.last_mip_gap = float(getattr(result, "mip_gap", math.nan))
+        if result.x is None:
+            return Assignment(labels=np.zeros(robot_count, dtype=int), scores=-distances, method=self.name)
+        x = np.asarray(result.x[:x_count], dtype=float).reshape(robot_count, load_count)
+        labels = np.zeros(robot_count, dtype=int)
+        active = np.max(x, axis=1) > 0.5
+        labels[active] = np.argmax(x[active], axis=1) + 1
+        return Assignment(labels=labels, scores=-distances, method=self.name)
 
 
 @dataclass(slots=True)

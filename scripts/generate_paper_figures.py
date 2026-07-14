@@ -33,11 +33,11 @@ class ExperimentSpec:
 
 
 EXPERIMENTS = [
-    ExperimentSpec("SP1", "SP1 coalition recruitment", Path("results/sp1/SP1_MC_recruitment_comparison"), "coalition_success_rate", "Coalition success rate", True, "optimality_gap_vs_oracle"),
-    ExperimentSpec("SP2", "SP2 heterogeneous capacity", Path("results/sp2/SP2_MC_capacity_comparison"), "capacity_success_rate", "Capacity success rate", True, "optimality_gap_vs_oracle"),
-    ExperimentSpec("SP3", "SP3 wrench feasibility", Path("results/sp3/SP3_MC_wrench_comparison_methodology_v3"), "wrench_feasible_rate", "Wrench feasible rate", True, "optimality_gap_vs_wrench_oracle"),
-    ExperimentSpec("SP4", "SP4 motion and safety", Path("results/sp4/SP4_MC_motion_comparison"), "arrival_success_rate", "Arrival success rate", True, "collision_rate"),
-    ExperimentSpec("SP5", "SP5 cooperative transport", Path("results/sp5/SP5_MC_cooperative_transport_high_power"), "transport_success", "Transport success rate", True, "collision_rate"),
+    ExperimentSpec("SP1", "SP1 homogeneous quorum recruitment", Path("results/sp1/SP1_HOMOGENEOUS_v1_1"), "normalized_regret", "Normalized regret", False, "messages"),
+    ExperimentSpec("SP2", "SP2 heterogeneous capacity game", Path("results/sp2/SP2_HETEROGENEOUS_GAME_v1_2"), "final_served_rate", "Served-load rate", True, "normalized_regret"),
+    ExperimentSpec("SP3", "SP3 wrench-feasible game", Path("results/sp3/SP3_WRENCH_NASH_GAME_v1_1"), "wrench_feasible_rate", "Wrench-feasible rate", True, "optimality_gap_vs_wrench_oracle"),
+    ExperimentSpec("SP4", "SP4 safe docking game", Path("results/sp4/SP4_DOCKING_GAME_CONFIRMATORY_v3"), "safe_docking_success", "Safe docking success", True, "any_collision"),
+    ExperimentSpec("SP5", "SP5 executed payload transport", Path("results/sp5/SP5_PAYLOAD_TRANSPORT_CONFIRMATORY_v2"), "safe_transport_success", "Safe transport success", True, "any_collision"),
     ExperimentSpec("SP6", "SP6 operational robustness", Path("results/sp6/SP6_MC_robustness_comparison_high_power"), "recovery_success", "Recovery success rate", True, "lost_load_rate"),
     ExperimentSpec("SP7", "SP7 communication robustness", Path("results/sp7/SP7_MC_communication_robustness_high_power"), "transport_network_score", "Transport-network score", True, "delay_violation_rate"),
     ExperimentSpec("SP8", "SP8 warehouse-scale scalability", Path("results/sp8/SP8_MC_fleet_ladder_high_power"), "task_completion_rate", "Task completion rate", True, "timeout_rate"),
@@ -54,6 +54,11 @@ FAMILY_COLORS = {
 }
 
 KEY_METRIC_CANDIDATES = [
+    "safe_docking_success",
+    "safe_transport_success",
+    "final_served_rate",
+    "normalized_regret",
+    "any_collision",
     "coalition_success_rate",
     "capacity_success_rate",
     "wrench_feasible_rate",
@@ -66,6 +71,9 @@ KEY_METRIC_CANDIDATES = [
     "timeout_rate",
     "false_positive_rate",
     "runtime_ms",
+    "runtime_s",
+    "runtime_wall_s",
+    "messages",
     "communication_messages",
     "energy_proxy_wh",
     "optimality_gap_vs_oracle",

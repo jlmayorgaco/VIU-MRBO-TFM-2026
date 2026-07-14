@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from itertools import product
 from pathlib import Path
 
 import numpy as np
@@ -38,6 +39,78 @@ def test_sp1_setup_generator_matches_requested_demand() -> None:
     assert len(world.loads) == 1
     assert world.loads[0].min_coalition_size == 2
     assert all(robot.identifier.startswith("amr-") for robot in world.robots)
+
+
+def test_sp1_oracle_uses_binary_milp_and_leaves_surplus_robots_idle() -> None:
+    params = SP1RecruitmentScenarioParams(
+        n_robots=4,
+        n_loads=1,
+        demand_ratio=0.5,
+        min_cardinality_choices=(2,),
+        position_noise_std=0.0,
+    )
+    world = SP1RecruitmentScenario(params).build(seed=19)
+    oracle = CentralizedCoalitionOracleAllocator()
+    assignment = oracle.allocate(DecisionContext(world=world))
+    metrics = evaluate_assignment(world, assignment, runtime_ms=0.0, oracle_assignment=assignment, centralized=True)
+
+    assert oracle.last_solve_status == "optimal"
+    assert np.sum(assignment.labels > 0) == 2
+    assert metrics.idle_robots == 2
+    assert metrics.fully_served_load_fraction == 1.0
+
+
+def test_sp1_partial_coalition_is_not_counted_as_served() -> None:
+    params = SP1RecruitmentScenarioParams(
+        n_robots=4,
+        n_loads=1,
+        demand_ratio=0.5,
+        min_cardinality_choices=(2,),
+        position_noise_std=0.0,
+    )
+    world = SP1RecruitmentScenario(params).build(seed=23)
+    partial = np.array([1, 0, 0, 0], dtype=int)
+    from viu_mrob_tfm.allocation import Assignment
+
+    metrics = evaluate_assignment(world, Assignment(labels=partial), runtime_ms=0.0)
+    assert metrics.coalition_success_rate == 0.0
+    assert metrics.fully_served_load_fraction == 0.0
+    assert metrics.robots_in_incomplete_coalitions == 1
+    assert metrics.unmet_quorum == 1
+
+
+def test_sp1_milp_matches_bruteforce_on_enumerable_instance() -> None:
+    params = SP1RecruitmentScenarioParams(
+        n_robots=4,
+        n_loads=2,
+        demand_ratio=1.0,
+        min_cardinality_choices=(1, 2),
+        heterogeneous_robots=True,
+    )
+    world = SP1RecruitmentScenario(params).build(seed=31)
+    oracle = CentralizedCoalitionOracleAllocator()
+    assignment = oracle.allocate(DecisionContext(world=world))
+
+    def objective(labels: np.ndarray) -> float:
+        value = 0.0
+        for load_idx, load in enumerate(world.loads):
+            members = np.flatnonzero(labels == load_idx + 1)
+            if members.size == 0:
+                continue
+            payload = sum(world.robots[int(idx)].spec.capacity.payload_kg for idx in members)
+            if members.size < load.min_coalition_size or payload + 1e-9 < load.min_capacity_kg:
+                return -np.inf
+            value += float(load.reward) - oracle.overassignment_weight * (members.size - load.min_coalition_size)
+        for robot_idx, label in enumerate(labels):
+            if label > 0:
+                value -= oracle.distance_weight * float(
+                    np.linalg.norm(world.robots[robot_idx].position - world.loads[int(label) - 1].pickup)
+                )
+        return value
+
+    brute_best = max(objective(np.asarray(labels, dtype=int)) for labels in product(range(3), repeat=4))
+    assert oracle.last_solve_status == "optimal"
+    assert objective(assignment.labels) == pytest.approx(brute_best, abs=1e-8)
 
 
 @pytest.mark.parametrize("generator", SP1_GENERATORS)

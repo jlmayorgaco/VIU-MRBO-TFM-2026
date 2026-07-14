@@ -40,9 +40,43 @@ def cell_for_family(rows: list[dict[str, str]], family: str, metric: str) -> tup
     method = best.get("method_label") or best.get("method") or "unknown"
     value = best.get(metric, best.get("rank", ""))
     marker = f"star: {method}"
-    if "oracle" in (best.get("method", "") + best.get("method_variant", "")).lower():
+    if family == "Referencias centralizadas" or "oracle" in (best.get("method", "") + best.get("method_variant", "")).lower():
         marker = f"ref: {method}"
     return marker, str(value)
+
+
+def _lower_is_better(metric: str) -> bool:
+    return any(token in metric.lower() for token in (
+        "regret", "gap", "collision", "timeout", "error", "residual",
+        "runtime", "messages", "energy", "lost", "violation",
+    ))
+
+
+def load_canonical_ranking(sp: str) -> tuple[list[dict[str, str]], str, str | None]:
+    """Load a promoted ranking or derive one transparently from its summary table."""
+    meta = CANONICAL_SPS[sp]
+    ranking_path = canonical_file(sp, "performance_ranking.csv")
+    if ranking_path.exists():
+        rows = read_csv(ranking_path)
+        return rows, best_metric_column(rows, meta.primary_metric_hint + "_mean"), None
+
+    summary_path = canonical_file(sp, "summary.csv")
+    if not summary_path.exists():
+        return [], "rank", str(summary_path.relative_to(ROOT))
+    rows = read_csv(summary_path)
+    if not rows:
+        return [], "rank", str(summary_path.relative_to(ROOT))
+    candidates = (meta.primary_metric_hint, meta.primary_metric_hint + "_mean")
+    metric = next((item for item in candidates if item in rows[0]), best_metric_column(rows))
+    ordered = sorted(
+        rows,
+        key=lambda row: float(row.get(metric, "nan") or "nan"),
+        reverse=not _lower_is_better(metric),
+    )
+    for rank, row in enumerate(ordered, start=1):
+        row["rank"] = str(rank)
+        row.setdefault("method_variant", row.get("method", ""))
+    return ordered, metric, None
 
 
 def main() -> int:
@@ -51,18 +85,17 @@ def main() -> int:
     metrics: dict[str, str] = {}
     families = set(FAMILY_ORDER)
     missing: list[str] = []
-    for sp, meta in CANONICAL_SPS.items():
-        path = canonical_file(sp, "performance_ranking.csv")
-        if not path.exists():
-            missing.append(str(path.relative_to(ROOT)))
+    for sp in CANONICAL_SPS:
+        rows, metric, missing_path = load_canonical_ranking(sp)
+        if missing_path:
+            missing.append(missing_path)
             continue
-        rows = read_csv(path)
         rankings[sp] = rows
-        metrics[sp] = best_metric_column(rows, meta.primary_metric_hint + "_mean")
+        metrics[sp] = metric
         for row in rows:
             families.add(normalize_family(row))
     if missing:
-        raise FileNotFoundError("Missing canonical ranking files: " + ", ".join(missing))
+        raise FileNotFoundError("Missing canonical ranking and summary files: " + ", ".join(missing))
 
     ordered_families = [family for family in FAMILY_ORDER if family in families]
     ordered_families.extend(sorted(families - set(ordered_families)))
@@ -96,7 +129,7 @@ def main() -> int:
         DOCS_GENERATED / "method_matrix.tex",
         headers,
         tex_rows,
-        "Matriz metodo por SP generada desde rankings canonicos.",
+        "Matriz metodo por SP generada desde rankings canonicos o, cuando no existe ranking separado, desde la tabla summary promovida.",
         "tab:method-matrix-generated",
     )
     write_markdown_table(DOCS_GENERATED / "method_matrix.md", headers, tex_rows)

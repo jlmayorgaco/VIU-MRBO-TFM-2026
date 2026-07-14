@@ -1,0 +1,33 @@
+protocol_id: PHYSICAL_COALITION_CERTIFICATE_v1
+certificate_order:
+  - id: A0_RAW_PREF
+    condition: local preference selection only
+    certifies: [nothing_physical]
+  - id: A1_INTEGER_QR
+    condition: selected_robots >= quorum
+    certifies: [integer_quorum]
+  - id: A2_CAPACITY
+    condition: sum_i capacity_i * health_i >= capacity_demand
+    certifies: [integer_quorum, effective_capacity]
+  - id: A3_WRENCH_PAIR
+    condition: normalized distance from demanded static wrench to bounded unilateral wrench cone <= 0.16
+    certifies: [integer_quorum, effective_capacity, static_wrench_feasibility]
+  - id: A4_MECHANICS_SAFE
+    condition: A3 plus retained traction authority, Euler-Lagrange tracking and HOCBF trajectory check
+    certifies: [integer_quorum, effective_capacity, static_wrench_feasibility, mechanics, collision_avoidance]
+  - id: FULL_ROBUST_LOCAL
+    condition: A4 plus delayed lossy local messages and one bounded dropout replacement
+    certifies: [integer_quorum, effective_capacity, static_wrench_feasibility, mechanics, collision_avoidance, bounded_local_recovery]
+failure_codes:
+  - incomplete_quorum
+  - capacity_deficit
+  - wrench_infeasible
+  - collision
+  - dropout_unrecovered
+  - target_not_reached
+  - pose_invalid
+  - numerical_error
+semantics:
+  accepted_by_stage: all certificates required by that stage pass before dynamic execution
+  final_physical_success: all static certificates plus target, collision and recovery checks pass
+  physical_false_positive: accepted_by_stage and not final_physical_success

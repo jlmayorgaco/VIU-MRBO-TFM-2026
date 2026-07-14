@@ -1,0 +1,49 @@
+﻿version: SP0_THEORY_CONTRACTS_v1.1
+notes: >-
+  Potential monotonicity is checked only for dynamics and discretizations with an
+  explicit positive-correlation or projected-ascent contract in the SP0 numerical
+  integrator. LOG, HYB and IBR are recorded but not auto-passed as monotone.
+default_tolerance: 1.0e-8
+contracts:
+  - methods: [REP, SMI, BNN, PROJ, GPC]
+    fitness: [LIN, QUAD, ASYM, MC]
+    closures: [RAW, ARG, REPAIR, QR1, QR2]
+    potential_check_applicable: true
+    expected_property: nondecreasing_continuous_potential_under_configured_step
+    potential_function_id: separable_load_potential_minus_distance
+    tolerance: 1.0e-8
+  - methods: [LOG]
+    fitness: [LIN, QUAD, ASYM, SIG, MC]
+    closures: [RAW, ARG, REPAIR, QR1, QR2]
+    potential_check_applicable: false
+    expected_property: perturbed_logit_target_not_exact_potential_monotonicity
+    potential_function_id: none
+    tolerance: null
+  - methods: [HYB]
+    fitness: [LIN, QUAD, ASYM, SIG, MC]
+    closures: [RAW, ARG, REPAIR, QR1, QR2]
+    potential_check_applicable: false
+    expected_property: empirical_hybrid_requires_specific_proof
+    potential_function_id: none
+    tolerance: null
+  - methods: [IBR]
+    fitness: [LIN, QUAD, ASYM, SIG, MC]
+    closures: [RAW, ARG, REPAIR, QR1, QR2]
+    potential_check_applicable: false
+    expected_property: inertial_best_response_can_jump_and_is_not_monotone_under_this_discretization
+    potential_function_id: none
+    tolerance: null
+  - methods: [REP, SMI, BNN, PROJ, GPC]
+    fitness: [SIG]
+    closures: [RAW, ARG, REPAIR, QR1, QR2]
+    potential_check_applicable: false
+    expected_property: sigmoidal_contract_not_used_for_confirmatory_potential_monotonicity_without_integral_proof
+    potential_function_id: none
+    tolerance: null
+  - methods: [REP, SMI, BNN, LOG, PROJ, IBR, GPC, HYB]
+    fitness: [LIN, QUAD, ASYM, SIG, MC]
+    closures: [QRA]
+    potential_check_applicable: false
+    expected_property: QRA_is_global_strong_closure_analyzed_separately_from_continuous_dynamics
+    potential_function_id: discrete_matching_objective_when_exhaustive
+    tolerance: null

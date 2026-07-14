@@ -28,10 +28,12 @@ def main() -> int:
     if not manifests:
         lines.append("No manifests found. Run `make theory-validation`.")
     (THEORY_ROOT / "report.md").write_text("\n".join(lines), encoding="utf-8")
-    merged = {"validations": manifests}
+    complete = len(manifests) == 3
+    all_passed = complete and all(manifest.get("passed") is True for manifest in manifests)
+    merged = {"complete": complete, "all_passed": all_passed, "validations": manifests}
     (THEORY_ROOT / "manifest.json").write_text(json.dumps(merged, indent=2), encoding="utf-8")
     print(f"Wrote {(THEORY_ROOT / 'report.md').relative_to(ROOT)}")
-    return 0
+    return 0 if all_passed else 1
 
 
 if __name__ == "__main__":
