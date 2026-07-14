@@ -1,10 +1,9 @@
-\subsection*{Registro completo de precisión A0--FULL}
+\subsection*{Registro completo de contrastes A0--FULL}
 
-La tabla siguiente se deriva sin selección de
-\texttt{statistics/paired\_contrasts\_holm.csv}. La regla de extensión observó
-la anchura máxima por familia; Holm se aplicó una sola vez a los veinte
-contrastes en el tamaño final. El tope de 100 mundos era duro, pero las veinte
-anchuras finales observadas quedaron en $[0,0{,}20]$.
+Los veinte contrastes se fijaron antes de abrir semillas. Todos usan 100 mundos, diferencia
+de riesgos pareada, IC95\% percentil con 4.000 remuestreos, McNemar exacto bilateral y Holm
+sobre la familia completa. La tabla registra efectos nulos e inconclusos sin convertirlos
+en equivalencia.
 
 \begingroup
 \scriptsize
@@ -13,41 +12,41 @@ anchuras finales observadas quedaron en $[0,0{,}20]$.
 \begin{table}[H]
 \centering
 \scriptsize
-\caption{Veinte contrastes pareados finales de la campaña A0--FULL.}
+\caption{Veinte contrastes pareados de tamaño fijo de la campaña A0--FULL.}
 \label{tab:a0-full-20-contrasts}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.115\textwidth}>{\raggedright\arraybackslash}p{0.11\textwidth}r >{\raggedright\arraybackslash}p{0.20\textwidth}r r >{\raggedright\arraybackslash}p{0.11\textwidth}>{\raggedright\arraybackslash}p{0.14\textwidth}@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.13\textwidth}>{\raggedright\arraybackslash}p{0.12\textwidth} >{\raggedright\arraybackslash}p{0.25\textwidth}r r >{\raggedright\arraybackslash}p{0.15\textwidth}@{}}
 \toprule
-Familia & Paso & $n$ & $\Delta$ [IC95\%] & Anch. & $+/-$ & $p_{\rm Holm}$ & Decisión \\
+Familia & Paso & $\Delta$ [IC95\%] & $+/-$ & $p_{\rm Holm}$ & Decisión \\
 \midrule
-Nominal & A0--A1 & 60 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
-Nominal & A1--A2 & 60 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
-Nominal & A2--A3 & 60 & $0{,}05$ $[-0{,}05,0{,}15]$ & $0{,}20$ & 6/3 & $1$ & nulo/inconcl. \\
-Nominal & A3--A4 & 60 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
-Nominal & A4--FULL & 60 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
+Nominal & A0--A1 & $0{,}00$ $[0{,}00,0{,}00]$ & 0/0 & $1$ & nulo/inconcl. \\
+Nominal & A1--A2 & $0{,}00$ $[0{,}00,0{,}00]$ & 0/0 & $1$ & nulo/inconcl. \\
+Nominal & A2--A3 & $0{,}07$ $[0{,}02,0{,}1203]$ & 7/0 & $0{,}203$ & nulo/inconcl. \\
+Nominal & A3--A4 & $0{,}00$ $[0{,}00,0{,}00]$ & 0/0 & $1$ & nulo/inconcl. \\
+Nominal & A4--FULL & $0{,}00$ $[0{,}00,0{,}00]$ & 0/0 & $1$ & nulo/inconcl. \\
 \midrule
-Escasez & A0--A1 & 100 & $0{,}67$ $[0{,}58,0{,}76]$ & $0{,}18$ & 67/0 & $2{,}71\!\times\!10^{-19}$ & positivo \\
-Escasez & A1--A2 & 100 & $0{,}33$ $[0{,}24,0{,}42]$ & $0{,}18$ & 33/0 & $3{,}96\!\times\!10^{-9}$ & positivo \\
-Escasez & A2--A3 & 100 & $-0{,}18$ $[-0{,}25,-0{,}11]$ & $0{,}14$ & 0/18 & $1{,}14\!\times\!10^{-4}$ & negativo \\
-Escasez & A3--A4 & 100 & $0{,}07$ $[0{,}03,0{,}12]$ & $0{,}09$ & 7/0 & $0{,}219$ & nulo/inconcl. \\
-Escasez & A4--FULL & 100 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
+Escasez & A0--A1 & $0{,}56$ $[0{,}46,0{,}65]$ & 56/0 & $5{,}00\!\times\!10^{-16}$ & positivo \\
+Escasez & A1--A2 & $0{,}44$ $[0{,}34,0{,}54]$ & 44/0 & $1{,}93\!\times\!10^{-12}$ & positivo \\
+Escasez & A2--A3 & $-0{,}16$ $[-0{,}24,-0{,}09]$ & 0/16 & $4{,}58\!\times\!10^{-4}$ & negativo \\
+Escasez & A3--A4 & $0{,}08$ $[0{,}03,0{,}14]$ & 8/0 & $0{,}109$ & nulo/inconcl. \\
+Escasez & A4--FULL & $0{,}00$ $[0{,}00,0{,}00]$ & 0/0 & $1$ & nulo/inconcl. \\
 \midrule
-Torque & A0--A1 & 100 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
-Torque & A1--A2 & 100 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
-Torque & A2--A3 & 100 & $0{,}60$ $[0{,}50,0{,}70]$ & $0{,}20$ & 61/1 & $4{,}92\!\times\!10^{-16}$ & positivo \\
-Torque & A3--A4 & 100 & $0{,}01$ $[0{,}00,0{,}03]$ & $0{,}03$ & 1/0 & $1$ & nulo/inconcl. \\
-Torque & A4--FULL & 100 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
+Momento & A0--A1 & $0{,}00$ $[0{,}00,0{,}00]$ & 0/0 & $1$ & nulo/inconcl. \\
+Momento & A1--A2 & $0{,}00$ $[0{,}00,0{,}00]$ & 0/0 & $1$ & nulo/inconcl. \\
+Momento & A2--A3 & $0{,}63$ $[0{,}54,0{,}72]$ & 63/0 & $4{,}12\!\times\!10^{-18}$ & positivo \\
+Momento & A3--A4 & $0{,}01$ $[0{,}00,0{,}03]$ & 1/0 & $1$ & nulo/inconcl. \\
+Momento & A4--FULL & $0{,}00$ $[0{,}00,0{,}00]$ & 0/0 & $1$ & nulo/inconcl. \\
 \midrule
-Obstáculo/red & A0--A1 & 100 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
-Obstáculo/red & A1--A2 & 100 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
-Obstáculo/red & A2--A3 & 100 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
-Obstáculo/red & A3--A4 & 100 & $0{,}24$ $[0{,}16,0{,}33]$ & $0{,}17$ & 24/0 & $1{,}91\!\times\!10^{-6}$ & positivo \\
-Obstáculo/red & A4--FULL & 100 & $0{,}62$ $[0{,}52,0{,}71]$ & $0{,}19$ & 62/0 & $8{,}24\!\times\!10^{-18}$ & positivo \\
+Obstáculo/red & A0--A1 & $0{,}00$ $[0{,}00,0{,}00]$ & 0/0 & $1$ & nulo/inconcl. \\
+Obstáculo/red & A1--A2 & $0{,}00$ $[0{,}00,0{,}00]$ & 0/0 & $1$ & nulo/inconcl. \\
+Obstáculo/red & A2--A3 & $0{,}00$ $[0{,}00,0{,}00]$ & 0/0 & $1$ & nulo/inconcl. \\
+Obstáculo/red & A3--A4 & $0{,}22$ $[0{,}14,0{,}30]$ & 22/0 & $7{,}63\!\times\!10^{-6}$ & positivo \\
+Obstáculo/red & A4--FULL & $0{,}67$ $[0{,}58,0{,}76]$ & 67/0 & $2{,}71\!\times\!10^{-19}$ & positivo \\
 \bottomrule
 \end{tabular}
 \end{table}
 \endgroup
 
-En la columna $+/-$, el primer valor cuenta mundos mejorados y el segundo,
-mundos degradados. ``Nulo/inconcl.'' agrupa ausencia de discordancias o un
-contraste cuyo intervalo/ajuste no respalda una dirección; no significa prueba
-de equivalencia.
+En $+/-$, el primer valor cuenta mundos mejorados y el segundo, mundos degradados.
+``Nulo/inconcl.'' agrupa ausencia de discordancias o falta de soporte tras el ajuste; no
+significa prueba de equivalencia. El registro máquina-legible añade estimando, semilla de
+análisis y artefacto para cada fila.

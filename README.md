@@ -17,7 +17,7 @@ wrench requerido, reparto vGNE, HOCBF e inversion uniciclo; ver
 
 - Rama de organizacion: `v6-organization`.
 - Reporte final canonico: `docs/doc-05-final-report/main.tex` y `main.pdf`.
-- Certificado integrado CPU A0--FULL: `results/physical_coalition/PHYSICAL_COALITION_CERTIFICATE_v1/` (960 base, 2.160 total, sin GPU).
+- Certificado integrado CPU A0--FULL: `results/physical_coalition/PHYSICAL_COALITION_CERTIFICATE_v1_1_FIXEDN/` (400 mundos, 2.400 ejecuciones, $n=100$ fijo por familia, sin GPU).
 - SP0 canonico: `results/sp0/SP0_PROTOCOL_v1_2_CPU/`; el intento v1.1 detenido no es evidencia confirmatoria.
 - Codigo principal: `src/viu_mrob_tfm`.
 - Registro actual de resultados SP1-SP8: `results/README.md` y `docs/CANONICAL_RESULTS.md`.

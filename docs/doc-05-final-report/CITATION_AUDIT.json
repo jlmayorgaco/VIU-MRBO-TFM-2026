@@ -2,49 +2,50 @@
   "audit_skill": "citation-audit",
   "verdict": "WARN",
   "reason_code": "local_citation_verification_passed_external_cross_family_and_similarity_pending",
-  "summary": "All 107 bibliography entries passed isolated local verification; the 55 cited entries occur in 97 supported key-context uses. Thirteen metadata fixes and two context repairs were rechecked against primary or official sources. External cross-family review and institutional similarity remain pending.",
+  "summary": "The 107 entries in the three fresh batches passed isolated local verification; two supplemental 2026 entries and one foundational ISS entry were checked separately against publisher/author records; the 61 cited entries occur in 123 supported key-context uses. Thirteen metadata fixes and two context repairs were rechecked against primary or official sources. External cross-family review and institutional similarity remain pending.",
   "audited_input_hashes": {
-    "main.tex": "sha256:fd05b3c5a7fd39af3f2bdb77d815a24e89fa25922134378d89da22a31ba0fa21",
+    "main.tex": "sha256:b98c3385ce21256959a1d57dba068cf3c1b3e1208579006d1f12208c9624090d",
     "sections/frontmatter/00-cover.tex": "sha256:e12ccd3defe1772dbdd02e1b36a8ed67d874e3e66b368e2e2bf5237c57fbd6ce",
-    "sections/frontmatter/01-summary.tex": "sha256:31a0a947616a42ce33db74d7e271414a2c2e897c3e870ce4c437cc008e738ae5",
-    "sections/frontmatter/02-abstract.tex": "sha256:f3572d1e6d844fe7a891e0c1e6cd8b7689aac0542db3789340b2255a92d746a0",
+    "sections/frontmatter/01-summary.tex": "sha256:72a6b530a8b5ea144187de50e40587d86225e8e432c3f04a40c488858b2b586f",
+    "sections/frontmatter/02-abstract.tex": "sha256:09f3cb2cf77ed6a9ad9bbe92147f2a8b077ffd5f52a2a6f08217a9552f34353f",
     "sections/frontmatter/03-contents.tex": "sha256:305915c5cbac392fc9a6fd0816da1602daf84173cba222dc63713e2d6dbff008",
-    "sections/frontmatter/04-nomenclature.tex": "sha256:e1fa19c04d02c27f18925fdf5f1d52904d32ae5939251e94631ed0ef5877b20a",
-    "sections/mainmatter/01-introduction.tex": "sha256:555f6ece64398829e783996f0b0ac8f670e609bc5901610c177512cede11aef4",
-    "sections/mainmatter/02-objectives.tex": "sha256:9273a035806a38ce5d713886c5f3c8de2086a32dcf6ccc2c54ebf917c72de214",
+    "sections/frontmatter/04-nomenclature.tex": "sha256:e2d3adad666159d8d9c66887f6032f3943c6f453247e5a8b04db77277c2e92b0",
+    "sections/mainmatter/01-introduction.tex": "sha256:99be3029147263caa5e2a02d179e94eb1e205f51926e35a3b5cbeb22f05b0ffe",
+    "sections/mainmatter/02-objectives.tex": "sha256:d0613256ed537e2be783f3fb2ec27819e7c323268cfd211b82f653248483759a",
     "sections/mainmatter/03-hypothesis.tex": "sha256:aff4b4bf3fcde0a5fdaba8bdcaba5c71b806383d5dbc76e74fc6e7213b0ad605",
-    "sections/mainmatter/04-methodology.tex": "sha256:2770b68d27a665b979235486277fff2ae37b51e55fdca52a5995d3f3f40d4161",
+    "sections/mainmatter/04-methodology.tex": "sha256:0bf7fb888cc1ad0244351c6f4db7f432dd2bd542b74ffb7f60dc81f6057c3eaa",
     "figures/fig-metodologia-investigacion.tex": "sha256:eb1a8a8d26169f68394de3b7df8bdf12d3c95cd4b81e08bb014ad54328ffa960",
-    "sections/mainmatter/05-theoretical-framework/index.tex": "sha256:f8542732f223ef84f49b5f9743ec714532f1d1c9a5668b0e8a1868e8bbb0a6d5",
-    "figures/fig-sota-transporte-cooperativo.tex": "sha256:c09ace8842bce82d34fad7256085ba7058f98244520d95e7696f063f689bce6e",
-    "figures/fig-equilibrio-nash-smith.tex": "sha256:bd6e0389ba06a83ff4fbd297feb5c8d5a0e3d03b8d074a45001b7960364a758d",
+    "sections/claim-artifact-registry.tex": "sha256:e185e20631a7f9a9f78b57f4e71759babecc107c45ca9dd82c627a58d853cc91",
+    "sections/mainmatter/05-theoretical-framework/index.tex": "sha256:f6a81aebed7bba0ef7ca589fdddef0bb34a38e713bdc95bcbc0b62712c2a7116",
+    "figures/fig-sota-transporte-cooperativo.tex": "sha256:629391cb52d8cf4eaba3b24901761093111004ff1f5624c9a2785d5ee2e4a83e",
+    "figures/fig-equilibrio-nash-smith.tex": "sha256:131238a5463d5e7479f59122236d5cbda531960ae69c6f6c2b9e303ac123cf70",
     "figures/fig-campo-obstaculos.tex": "sha256:f26d848ecc65a63cafdc91bee21fabbff04e536efdbc4bebd445504d57fb58a1",
-    "sections/mainmatter/05-theoretical-framework/integrated-theory-core.tex": "sha256:e277d5e955174b65bc6e37be9b07fe8a4dbc7f96728e37775dd168c7b551f973",
-    "figures/fig-gap-literatura.tex": "sha256:86d845a5e9d16c2f947d45c6c5b884914795371e91d0fd0a2ad22faf42babeb2",
-    "sections/mainmatter/06-results-and-analysis/index.tex": "sha256:a74b4ccdd44e3faf677113c07da46da239be4d752dea007525057f5f4551cc72",
-    "sections/mainmatter/06-results-and-analysis/physical-coalition-integrated.tex": "sha256:de713c528efa220d40a53cd43033ed058b03b7e344799147abd2872e989e3618",
-    "sections/mainmatter/06-results-and-analysis/modular-evidence-synthesis.tex": "sha256:3d1e4fda04d6c61776faeb945e1b520e15c1fcc86c71b9c1ef6b84a58074c273",
-    "sections/mainmatter/06-results-and-analysis/sp4-motion.tex": "sha256:45800fd43875814e50e1706f62be0bd7ffce0b009c1f60864a1bf0a9869bc586",
+    "sections/mainmatter/05-theoretical-framework/integrated-theory-core.tex": "sha256:a64a87b201501d9260778e8c55e563394545bdc63ac016dc10b49d08f76b0220",
+    "figures/fig-gap-literatura.tex": "sha256:7b6df5f0f1eaabfd0b26821574990e7b0750960da38b5064280a1cca2604c7cc",
+    "sections/mainmatter/06-results-and-analysis/index.tex": "sha256:5a08b996716f8fba468be5bb38f8e222c699468e9b2e0a45247a757727a5718d",
+    "sections/mainmatter/06-results-and-analysis/physical-coalition-integrated.tex": "sha256:752e27aa4527cd9bcd42609946e57ed5958101db63abf0eb1ce8afe16b7aca65",
+    "sections/mainmatter/06-results-and-analysis/modular-evidence-synthesis.tex": "sha256:b9ebd4f7cb25946350efa430406755c76096375b010255a1585538fed181cc8c",
+    "sections/mainmatter/06-results-and-analysis/sp4-motion.tex": "sha256:a167b1ba79928cb2dccf8a19a05077f910a780ac0fd136148f1c58339af9194b",
     "figures/fig-sp4-docking-game-architecture.tex": "sha256:2e414ece8939a048d4c42ef6533b58df7d4945ea1ac6c9a3742b2dfc69e4357a",
-    "sections/mainmatter/07-conclusions.tex": "sha256:78614578f883969289491c888a26d5378707bf4f1c568cc5afb25184229ab1ef",
-    "sections/anexo-b-reproducibilidad.tex": "sha256:d794753412819e70f84e74aa643d58bf3da84b67b12e4642404048ab0a076115",
-    "sections/anexo-c-validacion.tex": "sha256:5675e2c4423325b7ef5a81be3fdb27982657c943f680c164bebfd423219087e8",
-    "sections/a0-full-precision-contrasts.tex": "sha256:547c5b5e962c7e4597b06f58c1ceadebd56da7c3995d581cccb971eb134a3851",
+    "sections/mainmatter/07-conclusions.tex": "sha256:71bec3b28ec69f4b7c203b1ca7f1f90fdd94622eb234b4bcbfc5ac8b59ae716b",
+    "sections/anexo-b-reproducibilidad.tex": "sha256:1bbf4d677be2fa0ac8e1b0b53ce4f049f30296c47814370d35bb7752d5d5ba5e",
+    "sections/anexo-c-validacion.tex": "sha256:d6931afb30d0e0fb8db7664536b3914523f96d266c1a0baf813d84363ef9a542",
+    "sections/a0-full-precision-contrasts.tex": "sha256:7f149c6a675d1ce84a03fbbaa1f8fbdd546819e2d9ddfca8d7669b6a8cdce018",
     "sections/anexo-d-declaracion-ia.tex": "sha256:f336d369ce60fa4edf65a897326aa513128fb3227d755e4725635c592b8a5448",
-    "sections/anexo-e-declaraciones.tex": "sha256:6eaa1318600a6372890cd17adf7dcac48c61fda61e5fe743c02d4d0fbf57fc23",
-    "references.bib": "sha256:2788b3f3ae69066f5967e460060a1bafbfdfba533e40ec6b2443ccaca0529095"
+    "sections/anexo-e-declaraciones.tex": "sha256:ea7d58f76d2430fef70624b4a4f52ea768f72319d7bf6778bdbaf310f934fa32",
+    "references.bib": "sha256:fa4e3dbccda251a74f0cf4fde7f7f9ce2ba7567625f3dc6fbd462cd7ebbef163"
   },
   "trace_path": ".aris/citation-audit/contexts.txt",
   "thread_id": "2026-07-14_stage2_5_three_fresh_isolated_local_batches",
   "reviewer_model": "three fresh isolated same-family reviewer agents with primary-source web verification",
-  "reviewer_reasoning": "107 entries partitioned into disjoint batches; prior audit outputs excluded as evidence; all fixes and formerly weak contexts locally rechecked; no external cross-family reviewer was available",
-  "generated_at": "2026-07-14T13:16:23.361394+00:00",
+  "reviewer_reasoning": "107 entries partitioned into disjoint batches; two supplemental 2026 entries and Sontag's foundational ISS article were verified separately against publisher/author records; prior audit outputs excluded as evidence; all fixes and formerly weak contexts locally rechecked; no external cross-family reviewer was available",
+  "generated_at": "2026-07-14T18:40:46.599867+00:00",
   "details": {
-    "total_entries": 107,
-    "cited_entries": 55,
-    "citation_uses": 97,
+    "total_entries": 110,
+    "cited_entries": 61,
+    "citation_uses": 123,
     "counts": {
-      "KEEP": 107,
+      "KEEP": 110,
       "FIX": 0,
       "REPLACE": 0,
       "REMOVE": 0
@@ -247,12 +248,17 @@
           },
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 453,
+            "line": 422,
             "verdict": "SUPPORTS"
           },
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 462,
+            "line": 431,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 460,
             "verdict": "SUPPORTS"
           }
         ],
@@ -270,12 +276,12 @@
           },
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 453,
+            "line": 422,
             "verdict": "SUPPORTS"
           },
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 463,
+            "line": 432,
             "verdict": "SUPPORTS"
           }
         ],
@@ -302,12 +308,17 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 453,
+            "line": 422,
             "verdict": "SUPPORTS"
           },
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 463,
+            "line": 432,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 460,
             "verdict": "SUPPORTS"
           }
         ],
@@ -320,12 +331,17 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 453,
+            "line": 422,
             "verdict": "SUPPORTS"
           },
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 463,
+            "line": 432,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 460,
             "verdict": "SUPPORTS"
           }
         ],
@@ -343,12 +359,17 @@
           },
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 453,
+            "line": 422,
             "verdict": "SUPPORTS"
           },
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 463,
+            "line": 432,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 460,
             "verdict": "SUPPORTS"
           }
         ],
@@ -452,7 +473,12 @@
           },
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 462,
+            "line": 431,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 459,
             "verdict": "SUPPORTS"
           }
         ],
@@ -482,7 +508,12 @@
           },
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 462,
+            "line": 431,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 459,
             "verdict": "SUPPORTS"
           }
         ],
@@ -718,7 +749,12 @@
           },
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 462,
+            "line": 431,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 459,
             "verdict": "SUPPORTS"
           }
         ],
@@ -769,7 +805,12 @@
           },
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 462,
+            "line": 431,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 459,
             "verdict": "SUPPORTS"
           }
         ],
@@ -797,6 +838,11 @@
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
             "line": 238,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 463,
             "verdict": "SUPPORTS"
           },
           {
@@ -869,6 +915,11 @@
           },
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 431,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
             "line": 462,
             "verdict": "SUPPORTS"
           }
@@ -900,7 +951,12 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 361,
+            "line": 330,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 464,
             "verdict": "SUPPORTS"
           }
         ],
@@ -910,7 +966,13 @@
         "key": "shibata2023event",
         "verdict": "KEEP",
         "axis_failures": [],
-        "uses": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 464,
+            "verdict": "SUPPORTS"
+          }
+        ],
         "note": "uncited entry; not emitted by the compiled manuscript"
       },
       {
@@ -920,7 +982,12 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 363,
+            "line": 332,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 464,
             "verdict": "SUPPORTS"
           }
         ],
@@ -933,7 +1000,7 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 364,
+            "line": 333,
             "verdict": "SUPPORTS"
           }
         ],
@@ -946,7 +1013,7 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 370,
+            "line": 339,
             "verdict": "SUPPORTS"
           }
         ],
@@ -959,12 +1026,17 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 352,
+            "line": 321,
             "verdict": "SUPPORTS"
           },
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 464,
+            "line": 433,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 461,
             "verdict": "SUPPORTS"
           }
         ],
@@ -977,12 +1049,17 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 354,
+            "line": 323,
             "verdict": "SUPPORTS"
           },
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 464,
+            "line": 433,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 461,
             "verdict": "SUPPORTS"
           }
         ],
@@ -995,7 +1072,12 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 374,
+            "line": 343,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 465,
             "verdict": "SUPPORTS"
           }
         ],
@@ -1008,7 +1090,12 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 371,
+            "line": 340,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 465,
             "verdict": "SUPPORTS"
           }
         ],
@@ -1021,12 +1108,17 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 356,
+            "line": 325,
             "verdict": "SUPPORTS"
           },
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 464,
+            "line": 433,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 461,
             "verdict": "SUPPORTS"
           }
         ],
@@ -1039,7 +1131,7 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 381,
+            "line": 350,
             "verdict": "SUPPORTS"
           }
         ],
@@ -1052,7 +1144,12 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 383,
+            "line": 352,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 463,
             "verdict": "SUPPORTS"
           }
         ],
@@ -1065,7 +1162,7 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 394,
+            "line": 363,
             "verdict": "SUPPORTS"
           }
         ],
@@ -1078,7 +1175,7 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 395,
+            "line": 364,
             "verdict": "SUPPORTS"
           }
         ],
@@ -1091,7 +1188,7 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 396,
+            "line": 365,
             "verdict": "SUPPORTS"
           }
         ],
@@ -1104,7 +1201,7 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 397,
+            "line": 366,
             "verdict": "SUPPORTS"
           }
         ],
@@ -1117,7 +1214,7 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 400,
+            "line": 369,
             "verdict": "SUPPORTS"
           }
         ],
@@ -1130,7 +1227,7 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 401,
+            "line": 370,
             "verdict": "SUPPORTS"
           }
         ],
@@ -1143,7 +1240,7 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 402,
+            "line": 371,
             "verdict": "SUPPORTS"
           }
         ],
@@ -1156,7 +1253,7 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 404,
+            "line": 373,
             "verdict": "SUPPORTS"
           }
         ],
@@ -1231,7 +1328,7 @@
         "uses": [
           {
             "file": "sections/mainmatter/05-theoretical-framework/index.tex",
-            "line": 393,
+            "line": 362,
             "verdict": "SUPPORTS"
           }
         ],
@@ -1335,6 +1432,11 @@
         "note": "metadata and source scope verified against Automatica publisher record",
         "uses": [
           {
+            "file": "sections/mainmatter/06-results-and-analysis/modular-evidence-synthesis.tex",
+            "line": 74,
+            "verdict": "SUPPORTS"
+          },
+          {
             "file": "sections/mainmatter/06-results-and-analysis/sp4-motion.tex",
             "line": 106,
             "verdict": "SUPPORTS"
@@ -1348,6 +1450,11 @@
         "axis_failures": [],
         "note": "metadata and source scope verified against University of Groningen institutional record",
         "uses": [
+          {
+            "file": "sections/mainmatter/06-results-and-analysis/modular-evidence-synthesis.tex",
+            "line": 74,
+            "verdict": "SUPPORTS"
+          },
           {
             "file": "sections/mainmatter/06-results-and-analysis/sp4-motion.tex",
             "line": 108,
@@ -1373,11 +1480,41 @@
         "verification_source": "https://doi.org/10.1016/j.automatica.2021.110101"
       },
       {
+        "key": "martinezpiazuelo2026gne",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 460,
+            "verdict": "SUPPORTS"
+          }
+        ]
+      },
+      {
+        "key": "martinezpiazuelo2026dissipativity",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 460,
+            "verdict": "SUPPORTS"
+          }
+        ]
+      },
+      {
         "key": "bicchi1995closure",
         "verdict": "KEEP",
         "axis_failures": [],
         "note": "metadata and source scope verified against SAGE IJRR publisher record",
-        "uses": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 462,
+            "verdict": "SUPPORTS"
+          }
+        ],
         "verification_source": "https://doi.org/10.1177/027836499501400402"
       },
       {
@@ -1385,11 +1522,29 @@
         "verdict": "KEEP",
         "axis_failures": [],
         "note": "metadata and source scope verified against IEEE DOI metadata and DBLP index",
-        "uses": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 462,
+            "verdict": "SUPPORTS"
+          }
+        ],
         "verification_source": "https://doi.org/10.1109/ROBOT.1992.219918"
+      },
+      {
+        "key": "sontag1989smooth",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/integrated-theory-core.tex",
+            "line": 88,
+            "verdict": "SUPPORTS"
+          }
+        ]
       }
     ],
-    "included_tex_files": 27,
+    "included_tex_files": 28,
     "current_delta_verified_entries": [
       "garey1978strong",
       "shmoys1993generalized",
@@ -1406,7 +1561,7 @@
       "FIX": 13,
       "REPLACE": 0,
       "REMOVE": 0,
-      "existence_yes": 107,
+      "existence_yes": 110,
       "contexts_supports": 75,
       "contexts_weak": 2,
       "contexts_wrong": 0

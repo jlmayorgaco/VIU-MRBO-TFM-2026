@@ -22,6 +22,7 @@ PDF = DOCS / "build" / "main.pdf"
 AUDIT_JSON = DOCS / "CITATION_AUDIT.json"
 AUDIT_MD = DOCS / "CITATION_AUDIT.md"
 FRESHNESS_JSON = DOCS / "CITATION_AUDIT_FRESHNESS.json"
+FRESHNESS_MD = DOCS / "CITATION_AUDIT_FRESHNESS.md"
 CONTEXTS = DOCS / ".aris" / "citation-audit" / "contexts.txt"
 TRACE = DOCS / ".aris" / "traces" / "citation-audit" / "2026-07-14_stage2_5_fresh"
 
@@ -173,7 +174,7 @@ def refresh_audit(
             "verdict": "WARN",
             "reason_code": "local_citation_verification_passed_external_cross_family_and_similarity_pending",
             "summary": (
-                f"All {len(bib_keys)} bibliography entries passed isolated local verification; "
+                f"The 107 entries in the three fresh batches passed isolated local verification; two supplemental 2026 entries and one foundational ISS entry were checked separately against publisher/author records; "
                 f"the {len(cited)} cited entries occur in {len(contexts)} supported "
                 "key-context uses. Thirteen metadata fixes and two context repairs were "
                 "rechecked against primary or official sources. External cross-family "
@@ -184,7 +185,7 @@ def refresh_audit(
             "thread_id": "2026-07-14_stage2_5_three_fresh_isolated_local_batches",
             "reviewer_model": "three fresh isolated same-family reviewer agents with primary-source web verification",
             "reviewer_reasoning": (
-                "107 entries partitioned into disjoint batches; prior audit outputs excluded "
+                "107 entries partitioned into disjoint batches; two supplemental 2026 entries and Sontag's foundational ISS article were verified separately against publisher/author records; prior audit outputs excluded "
                 "as evidence; all fixes and formerly weak contexts locally rechecked; "
                 "no external cross-family reviewer was available"
             ),
@@ -262,6 +263,8 @@ def write_reports(audit: dict[str, object], contexts: list[dict[str, object]]) -
         "bibliography_entries": details["total_entries"],
         "unresolved_cited_keys": len(details["current_unresolved_keys"]),
         "fresh_independent_batches": 3,
+        "supplemental_publisher_verified_entries": 2,
+        "supplemental_author_verified_entries": 1,
         "metadata_fixes_rechecked": 13,
         "context_repairs_rechecked": 2,
         "local_gate": "PASS_LOCAL",
@@ -271,6 +274,28 @@ def write_reports(audit: dict[str, object], contexts: list[dict[str, object]]) -
     FRESHNESS_JSON.write_text(
         json.dumps(freshness, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
+    freshness_report = f"""# Citation audit freshness addendum
+
+- Current bibliography SHA-256: `{bib_hash}`
+- Current compiled PDF SHA-256: `{pdf_hash}`
+- Current unique cited keys: **{details['cited_entries']}**
+- Current citation key-context uses: **{len(contexts)}**
+- Current bibliography entries: **{details['total_entries']}**
+- Unresolved cited keys: **{len(details['current_unresolved_keys'])}**
+- Fresh independent batches: **3**
+- Supplemental publisher-verified entries: **2**
+- Supplemental author-verified foundational entries: **1**
+- Metadata fixes rechecked: **13**
+- Context repairs rechecked: **2**
+- Local gate: **PASS_LOCAL**
+
+The local citation audit resolves every cited key and found no wrong-context
+citation after the repair pass. The global status remains `WARN_EXTERNAL`
+because an independent cross-family review and the institutional similarity
+report are not available in this workspace. Neither local report is a substitute
+for those external controls.
+"""
+    FRESHNESS_MD.write_text(freshness_report, encoding="utf-8")
 
     report = f"""# Citation Audit Report
 
@@ -284,7 +309,7 @@ def write_reports(audit: dict[str, object], contexts: list[dict[str, object]]) -
 
 - The recursive {details['included_tex_files']}-file LaTeX inclusion graph was rebuilt from `main.tex`.
 - Every cited key resolves; unresolved cited keys: **0**.
-- Three fresh, disjoint, same-family review batches locally verified **{details['total_entries']}/{details['total_entries']}** entries against primary, publisher or official sources without using the earlier ledger as evidence.
+- Three fresh, disjoint, same-family review batches locally verified **107/107** entries against primary, publisher or official sources; two supplemental 2026 entries were checked against publisher records and Sontag's foundational ISS article against the author's publication record and DOI metadata.
 - The initial batch verdicts were 94 `KEEP` and 13 `FIX`; all 13 metadata repairs passed a separate post-correction recheck.
 - The 75 initially supported contexts and two repaired weak contexts now have verdict `SUPPORTS`; wrong-context citations: **0**.
 

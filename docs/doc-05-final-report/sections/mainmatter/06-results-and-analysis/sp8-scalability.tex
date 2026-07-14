@@ -34,7 +34,11 @@ Mercado \emph{wrench} jerárquico & Jerárquico & Combina resúmenes de zona y p
 \label{tab:sp8-methods}
 \end{table}
 
-El diseño programa veinte tamaños y cien semillas por tamaño para diez métodos, lo que produce $20\,000$ filas de protocolo. Una fila programada no equivale necesariamente a una ejecución observada: las ramas que declaran límite, omiten cálculo o asignan una salida nula deben distinguirse de timeout, error y solución. Además, ciertas fórmulas de memoria y mitigación dependen de la identidad del método. Estas decisiones impiden una comparación confirmatoria de coste computacional.
+El diseño programa veinte tamaños y cien semillas por tamaño para diez métodos, lo que produce $20\,000$ filas de protocolo. Una fila programada no equivale necesariamente a una ejecución observada: las ramas que declaran límite, omiten cálculo o asignan una salida nula deben distinguirse de timeout, error y solución. Además, \texttt{route\_mitigation} y las reglas de completitud dependen de la identidad del
+método; una diferencia de calidad mezcla por tanto política y evaluador. Las fórmulas de
+memoria y mitigación también dependen del método. Los contrastes H8.2--H8.3 no se
+interpretan como efectos causales entre algoritmos, y estas decisiones impiden una
+comparación confirmatoria de coste computacional.
 
 \subsubsection{Resultados descriptivos}
 

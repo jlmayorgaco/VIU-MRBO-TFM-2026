@@ -84,6 +84,12 @@ estado inicial seguro y autoridad realizable; por eso su alcance se limita al mo
 
 \subsubsection{ISS práctica bajo sustitución de coalición}
 
+La lectura robusta sigue la noción de estabilidad entrada--estado introducida por
+\citet{sontag1989smooth}: una perturbación acotada produce un transitorio decreciente y
+un término último proporcional a su cota. Aquí no se reclama un nuevo teorema ISS
+general; se deriva esa propiedad para la planta linealizada común y el error de
+realización de \emph{wrench} que aparece al sustituir miembros.
+
 \begin{teorema}[Lyapunov común para error de wrench acotado]
 \label{thm:iss-practica-coalicion}
 Sea $z=(e,\dot e)$ el error de seguimiento y

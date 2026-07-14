@@ -48,6 +48,23 @@ La comparación incluye reglas voraces, asignación húngara, subastas o consens
 
 Cuando intervienen aprendizaje o ajuste, el protocolo exige registros de semillas disjuntos para entrenamiento, ajuste, validación y prueba. Los hiperparámetros y campeones se seleccionan con validación. En las campañas confirmatorias con \emph{freeze}, las semillas confirmatorias permanecen selladas hasta la congelación del protocolo. Las políticas finales se evalúan mediante el checkpoint fijado por presupuesto; una semilla fallida se conserva y no se reemplaza. Las referencias con información global se reportan como cotas internas o comparadores, no como soluciones desplegables.
 
+La Tabla~\ref{tab:protocolo-marl} evita presentar un nombre de algoritmo como evidencia suficiente. El comparador aprendido conservado es reproducible en arquitectura y checkpoint, pero no supera sus gates de comportamiento. Por ello participa en la taxonomía de comparación y en la discusión de O5, no en una afirmación favorable de rendimiento.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}p{0.12\textwidth}p{0.20\textwidth}p{0.18\textwidth}p{0.22\textwidth}X@{}}
+\toprule
+Comparador & Actor/observación & Crítico y entrenamiento & Réplicas y checkpoints & Resultado de auditoría \\
+\midrule
+MAPPO--GNN cfg03 & Actor GNN compartido, 3 capas y 64 unidades; observación del vecindario del grafo; ejecución local. & Crítico global solo durante entrenamiento CTDE; PPO recortado; horizonte 4; $\gamma=0{,}95$; CPU. & Semillas 15001--15003; 200.000 transiciones conjuntas por semilla. SHA-256 finales: \texttt{de6de331\ldots}, \texttt{58655bb1\ldots}, \texttt{ac07f856\ldots}. & Checkpoints cargables, pero éxito RAW $=0$ para actor aleatorio, finales y perturbado; éxito tras reparación $=1$. Gate de sensibilidad FAIL: no se autoriza superioridad aprendida. \\
+Controles de atribución & Actor aleatorio y logits uniformes sobre los mismos mundos. & Sin entrenamiento; misma ruta de evaluación y reparación. & Controles fijados por la auditoría SP0. & Reproducen RAW $=0$ y reparación $=1$; confirman dominancia del cierre determinista. \\
+\bottomrule
+\end{tabularx}
+\caption{Protocolo del comparador MARL y decisión de promoción. Los hashes completos y los gates se conservan en \texttt{training/champion.yaml} y \texttt{SP0\_AUDIT\_REPORT.md}.}
+\label{tab:protocolo-marl}
+\end{table}
+
 \subsection{Presupuesto de centralización}
 
 La palabra \emph{distribuida} describe únicamente las etapas cuya actualización y observación satisfacen la vista local declarada. La implementación integrada es un instrumento diagnóstico centralizado que evalúa componentes distribuibles y cierres globales sobre la misma planta; no es un controlador local de extremo a extremo. La Tabla~\ref{tab:presupuesto-centralizacion} hace visible esa deuda de información.
@@ -73,6 +90,30 @@ SP7--SP8 & Descriptores de red o agregados por zona. & La red no cierra el contr
 \caption{Presupuesto de centralización. Una fórmula local no convierte en local el umbral, el cierre o la guardia que consume estado global.}
 \label{tab:presupuesto-centralizacion}
 \end{table}
+
+\begin{landscape}
+\scriptsize
+\begin{longtable}{p{1.3cm}p{2.6cm}p{3.0cm}p{2.5cm}p{2.5cm}p{2.4cm}p{2.7cm}}
+\caption{Generador, mecanismo, cierre, salvaguarda, recuperación y localidad por experimento.}\label{tab:mecanismo-por-experimento}\\
+\toprule
+Campaña & Generador/planta & Jugadores y acciones & Cierre & Guardia/recuperación & Localidad efectiva & Afirmación autorizada \\
+\midrule
+\endfirsthead
+\toprule Campaña & Generador/planta & Jugadores y acciones & Cierre & Guardia/recuperación & Localidad efectiva & Afirmación autorizada \\
+\midrule
+\endhead
+A0--FULL & Carga Euler--Lagrange planar, cuatro familias. & A0: utilidad y umbral, no juego; capas posteriores: capacidad, contactos y mensajes. & Ranking, cuórum, búsqueda de uno/dos robots y unión A2--A3. & HOCBF; FULL sustituye como máximo un miembro por baja. & Umbral, cierres y selector globales. & Efecto acumulativo del paquete añadido, no causalidad de un componente aislado. \\
+SP1 & Asignación homogénea sintética. & Robots reparten preferencia; Smith, replicator y BNN. & QR entero. & Sin recuperación física. & Actualización local por variante; QR canónico global. & Separa preferencia y cierre; no superioridad general de Smith. \\
+SP2 & Capacidades heterogéneas sintéticas. & Robots eligen carga con fitness de capacidad. & Closure por capacidad y distancia. & Control uniforme como atribución rival. & Cierre global. & La capacidad importa; el decodificador puede dominar la dinámica. \\
+SP3 & Contactos y demanda planar cuasiestática. & Robots eligen carga--slot; primal--dual/poblacionales. & Cierre entero y asignación de slots. & Guardia global añade individuos o pares. & Precios pueden ser locales; guardia consulta todos los libres. & KKT/v-GNE de la relajación y necesidad del residual; CLOSED no se atribuye al juego. \\
+SP4 & Uniciclo dinámico reducido. & Robots eligen primitivas espacio--tiempo. & Reserva greedy global de recursos. & Proyección CBF; sin recuperación de coalición. & Exacta o consenso según variante; cierre global. & Resultados de docking en 18 bloques; no transporte ni seguridad funcional. \\
+SP5 & Carga Euler--Lagrange desde contactos fijos. & Controladores generan wrench nominal. & Reparto a fuerzas acotadas. & CBF local/preview; RAW--SAFE--EXEC. & Depende de variante; contactos predefinidos. & Transporte simulado; cero colisiones no implica invariancia/hardware. \\
+SP6 & Fallos sintéticos durante transporte. & Métodos reparan o conservan coalición. & Reasignación por variante. & Guardia de factibilidad posterior al evento. & Histórica; autoridad global por variante. & Evidencia descriptiva de recuperación simulada. \\
+SP7 & Red/sensado sintéticos sobre mundos SP5. & Métodos reciben perfiles de comunicación. & No cierra un controlador de red independiente. & Sin gate físico. & Evaluador conoce la red completa. & Descriptores y asociaciones, no tolerancia confirmatoria. \\
+SP8 & Generador mesoscópico dependiente del método. & Políticas agregadas por flota/zona. & Reglas de completitud del evaluador. & Mitigación declarada por método. & Agregados globales/zonales. & Tendencias exploratorias; no coste computacional observado. \\
+\bottomrule
+\end{longtable}
+\end{landscape}
 
 \subsection{Métricas y semántica de ejecución}
 
@@ -101,19 +142,65 @@ Los contrastes confirmatorios de SP1 se fijaron antes de abrir las semillas 3300
 
 \subsection{Protocolo integrado de comprobaciones físicas}
 
-El protocolo integrado v1 se preespecificó para resolver una limitación de la escalera modular: SP1--SP8 no comparten una única planta. Cuatro familias de mundo aíslan rotación nominal, escasez, complementariedad de torque y obstáculo con pérdida de paquetes, retardo y dropout. Cada mundo se ejecuta con seis prefijos acumulativos A0--FULL y el mismo \texttt{world\_hash}; por ello, el contraste relevante es el cambio dentro del mundo al añadir una comprobación.
+El protocolo integrado v1.1 de tamaño fijo se preespecificó para resolver una limitación de la escalera modular: SP1--SP8 no comparten una única planta. Cuatro familias de mundo aíslan rotación nominal, escasez, complementariedad de torque y obstáculo con pérdida de paquetes, retardo y \emph{dropout}. Cada mundo se ejecuta con seis prefijos acumulativos A0--FULL y el mismo \texttt{world\_hash}; por ello, el contraste relevante es el cambio dentro del mundo al añadir una comprobación.
 
-El protocolo contiene 40 mundos base por familia. En los checkpoints 40 y 60 se calcula el IC95\% \emph{bootstrap} de cada diferencia de éxito consecutiva. Una familia se amplía a 60 o 100 mundos si la mayor anchura excede $0{,}20$; 100 es un tope duro y no implica que todos los intervalos hayan alcanzado el umbral. El signo del efecto, el ranking y el valor $p$ no participan en la decisión. Holm se aplica una vez, en el tamaño final, sobre los veinte contrastes familia--escalón. Esta regla produjo 2.160 ejecuciones: 60 mundos nominales y 100 en las otras tres familias.
+El contrato correctivo fija, antes de abrir semillas, 100 mundos independientes por familia y seis tratamientos repetidos por mundo: 400 mundos y 2.400 ejecuciones. No existe checkpoint intermedio ni regla de extensión. Para cada uno de los veinte cambios consecutivos se estima la diferencia de riesgos \emph{después menos antes}; se calcula un IC95\% mediante 4.000 remuestreos pareados con semilla de análisis congelada y se aplica McNemar exacto bilateral. Holm corrige conjuntamente los veinte valores $p$. Un efecto positivo o negativo solo se respalda si el intervalo excluye cero en esa dirección y $p_{\rm Holm}<0{,}05$; cualquier otro resultado es inconcluso o nulo.
 
 Los estados \texttt{accepted\_by\_stage}, \texttt{final\_physical\_success} y \texttt{physical\_false\_positive} se conservan por separado. La primera variable solo acredita lo que el escalón sabe comprobar. La segunda exige todas las comprobaciones estáticas y el resultado dinámico. La tercera identifica la aceptación que se vuelve inválida al ejecutar la carga. La semántica impide que un QP resuelto, un waypoint alcanzado o una reparación local oculten una colisión, un déficit o un fallo de llegada.
 
-La ejecución fue exclusivamente CPU. El manifiesto registra Python~3.13.9, NumPy~2.3.5, 22 procesadores lógicos y cuatro workers con un hilo numérico por worker. El dry-run usó semillas ajenas al conjunto confirmatorio. El registro de semillas se abrió después del manifiesto congelado; todos los fallos, extensiones y hashes se conservaron.
+La ejecución fue exclusivamente CPU. El manifiesto registra Python~3.13.9, NumPy~2.3.5, 22 procesadores lógicos y cuatro \emph{workers} con un hilo numérico por \emph{worker}. El \emph{dry-run} usó semillas ajenas al conjunto confirmatorio. El registro de semillas se abrió después del manifiesto congelado; se preservaron fallos, hashes y las 2.400 filas únicas. La campaña adaptativa v1 queda supersedida y no se mezcla con estas estimaciones.
 \subsection{Validez, reproducibilidad y evidencia visual}
 
 Una campaña se promueve a evidencia canónica cuando dispone de configuración congelada, semillas, hashes, mundos compartidos, tablas de ejecución, esquema válido y manifiesto de cierre. Los fallos y timeouts forman parte del denominador. Las campañas históricas que no cumplen el contrato actual se conservan como evidencia exploratoria o de desarrollo y no se renombran como confirmatorias.
 
 Las secuencias visuales permiten inspeccionar formación, movimiento, contacto y recuperación. No sustituyen la inferencia ni acreditan comportamiento físico con hardware. CoppeliaSim se usa, cuando corresponde, como inspección cualitativa separada; SP1 homogéneo emplea exclusivamente el simulador numérico Python. Las limitaciones incluyen contacto planar simplificado, modelos sintéticos de comunicación, proyección geométrica en algunas campañas y agregación mesoscópica en las flotas mayores.
 
+\subsection{Identidad canónica de la evidencia}
+
+Para evitar que una versión exploratoria sustituya a la evidencia confirmatoria, la memoria congela una identidad por experimento. SP4 v3 (\texttt{SP4\_DOCKING\_GAME\_CONFIRMATORY\_v3}) es la campaña canónica: 18 bloques independientes definidos por semilla y tamaño de flota, observados en seis escenarios, para 108 instancias pareadas y 1.188 ejecuciones de método. Las tasas sobre 108 instancias son descriptivas; la sensibilidad inferencial agrega primero cada endpoint dentro del bloque y aplica un test de signos exacto con Holm. SP4 v4 y sus variantes no promocionadas quedan como evidencia complementaria y no modifican las conclusiones de v3. La escena CoppeliaSim se conserva como \emph{replay} cinemático de trayectorias precalculadas; no ejecuta dinámica independiente, contacto cerrado ni hardware.
+
+La misma regla se aplica a SP8: sus tendencias de calidad son exploratorias y sus límites de tiempo y memoria son declarados o analíticos, no mediciones externas de \emph{wall-clock} o RSS. El protocolo conserva la correspondencia entre resultados, figuras y afirmaciones.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}p{0.25\textwidth}p{0.26\textwidth}X@{}}
+\toprule
+Artefacto & Estado & Qué permite afirmar \\
+\midrule
+SP4 v3 confirmatorio & Canónico & Tasas y contrastes declarados para el juego de docking en el simulador reducido. \\
+SP4 v4 y escenas auxiliares & Complementario/no canónico & Diagnóstico adicional; no sustituye v3 ni se mezcla con sus denominadores. \\
+CoppeliaSim paired scene & Replay cinemático & Inspección geométrica y visual de trayectorias precalculadas; no validación dinámica independiente ni hardware. \\
+HIL & No realizado & No existen entradas/salidas temporizadas, hashes ni datos de sensores/actuadores; no aporta evidencia. \\
+AMR físico & No realizado & No existen ensayos, registro de riesgos ni validación de seguridad funcional. \\
+SP8 fleet ladder & Exploratorio & Tendencias del generador mesoscópico; sin medición externa de recursos. \\
+\bottomrule
+\end{tabularx}
+\caption{Gobierno de la evidencia y alcance de los artefactos no canónicos.}
+\label{tab:identidad-evidencia}
+\end{table}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}p{0.13\textwidth}p{0.17\textwidth}p{0.16\textwidth}p{0.18\textwidth}X@{}}
+\toprule
+Modalidad & Motor/dinámica & Control y sensores & Entradas/salidas trazables & Alcance \\
+\midrule
+A0--FULL v1.1 & Python; carga Euler--Lagrange planar. & Selector, cierres, HOCBF y recuperación simulados; estado sintético completo. & YAML, registro de semillas, CSV/Parquet, hashes y manifiesto cerrado. & Evidencia integrada canónica dentro del modelo. \\
+SP4 v3 & Python; uniciclo dinámico reducido. & Primitivas, juego y filtros con observación definida por variante. & Configuración, tabla de ejecuciones, trazas, auditoría y sensibilidad por bloques. & Evidencia modular de \emph{docking}; no contacto físico real. \\
+CoppeliaSim SP4 v4 & Replay cinemático. & Reproduce trayectorias precalculadas; sin controlador ni sensores independientes. & Escena y trayectorias; no cadena cerrada de entrada--salida física. & Inspección visual, no validación dinámica. \\
+HIL & No implementado. & No disponible. & No hay artefacto ni hash de campaña. & Sin evidencia. \\
+Hardware AMR & No implementado. & No disponible. & No hay ensayo ni registro de seguridad. & Sin evidencia. \\
+\bottomrule
+\end{tabularx}
+\caption{Modalidades de validación y frontera entre simulación, replay, HIL y hardware. Cero colisiones en una campaña numérica no equivale a seguridad funcional.}
+\label{tab:modalidades-validacion}
+\end{table}
 \subsection{Jerarquía de la evidencia}
 
 A0--FULL decide la hipótesis integradora sobre una sola planta. Las campañas SP1--SP3 explican el paso desde preferencia continua hasta capacidad y contactos; SP4--SP6 aíslan movimiento, carga extendida y recuperación; SP7--SP8 delimitan preguntas sobre red y escala que permanecen descriptivas o exploratorias. Esta jerarquía impide usar una campaña histórica para sostener una afirmación que exige ejecución integrada.
+
+El registro único de la Tabla~\ref{tab:claim-artifact-registry} enlaza cada afirmación con su artefacto y su límite. Su versión completa, incluidos configuración, comando, semillas, manifiesto y SHA-256, se genera en \texttt{docs/generated/claim\_artifact\_registry.csv}; el registro de estimandos y contrastes se conserva en \texttt{contrast\_estimand\_registry.csv}.
+
+\input{sections/claim-artifact-registry}

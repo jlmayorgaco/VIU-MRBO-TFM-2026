@@ -196,7 +196,7 @@ def test_sp0_data_driven_run_sp0_method_requires_checkpoint() -> None:
         raise AssertionError("IPPO-GNN ran without a real checkpoint")
 
 
-def test_sp0_data_driven_checkpoint_executor_is_oracle_free() -> None:
+def test_sp0_data_driven_checkpoint_executor_is_oracle_free(tmp_path: Path) -> None:
     import torch
     from viu_mrob_tfm.sp0.audit import OracleBlockedWorld
     from viu_mrob_tfm.sp0.data_driven import SP0GNNActorCritic, build_policy_batch, run_checkpoint_policy
@@ -205,7 +205,7 @@ def test_sp0_data_driven_checkpoint_executor_is_oracle_free() -> None:
     access_log: list[str] = []
     blocked = OracleBlockedWorld(world, access_log)
     model = SP0GNNActorCritic(hidden_dim=16, critic_global=False)
-    checkpoint_dir = Path("results/sp0/test_artifacts/sp0_dd_checkpoint_executor")
+    checkpoint_dir = tmp_path / "sp0_dd_checkpoint_executor"
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
     checkpoint = checkpoint_dir / "checkpoint.pt"
     torch.save(

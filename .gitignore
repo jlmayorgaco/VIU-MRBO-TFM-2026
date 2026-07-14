@@ -23,6 +23,7 @@ dist/
 *.mkv
 *.webm
 *.pdf
+!docs/doc-05-final-report/main.pdf
 
 # IDE / OS
 .DS_Store
@@ -98,3 +99,7 @@ guidelines/
 output/
 pytest-cache-files-*/
 docs/thesis-final/
+
+# Local delivery mirror. The only editable/canonical TFM source is
+# docs/doc-05-final-report; this mirror is retained locally, not versioned.
+docs/07-tfm/

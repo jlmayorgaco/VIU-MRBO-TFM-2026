@@ -1,4 +1,7 @@
-# Physical-coalition certificate campaign — final report
+# Physical-coalition certificate campaign — SUPERSEDED / NON-CANONICAL
+
+> This post-freeze diagnostic rerun is retained for audit only. The canonical thesis
+> evidence is `PHYSICAL_COALITION_CERTIFICATE_v1_1_FIXEDN`; see `SUPERSEDED.md`.
 
 Protocol: `PHYSICAL_COALITION_CERTIFICATE_v1`. CPU-only reduced-order Python simulation; no GPU, MARL training, CoppeliaSim, replacement seeds or synthetic rows.
 
@@ -14,10 +17,10 @@ Protocol: `PHYSICAL_COALITION_CERTIFICATE_v1`. CPU-only reduced-order Python sim
 
 | scenario_family          |   success_rate |   physical_false_positive_rate |   mean_messages |   mean_runtime_wall_s |
 |:-------------------------|---------------:|-------------------------------:|----------------:|----------------------:|
-| nominal_rotation         |           0.95 |                           0.05 |          471    |              0.440843 |
-| obstacle_network_dropout |           0.86 |                           0.14 |          661.46 |              0.533422 |
-| scarcity_capacity        |           0.89 |                           0.11 |          501.72 |              0.326943 |
-| torque_complementarity   |           1    |                           0    |          427.64 |              0.447155 |
+| nominal_rotation         |           0.95 |                           0.05 |          471    |              0.484676 |
+| obstacle_network_dropout |           0.86 |                           0.14 |          616.67 |              0.535255 |
+| scarcity_capacity        |           0.89 |                           0.11 |          501.72 |              0.36197  |
+| torque_complementarity   |           1    |                           0    |          427.64 |              0.453029 |
 
 ## Confirmatory paired contrasts
 

@@ -16,19 +16,23 @@
 \usepackage{enumitem}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{pdflscape}
 \usetikzlibrary{shapes.geometric,positioning,arrows.meta,calc,decorations.pathreplacing}
 
-\setviutitle{Arquitectura escalonada para la coordinación distribuida de múltiples AMR en el transporte cooperativo de cargas heterogéneas}
+\setviutitle{Arquitectura escalonada con componentes basados en juegos para \mbox{coaliciones} multi-AMR: formación, ejecución simulada y cierres auditados}
 \setviustudent{Jorge Luis Mayorga Taborda}
 \setviututor{José Ignacio Iñíguez Amigot}
 \setviuedition{2025--26}
 \setviudate{Julio de 2026}
-\setviuheadertitle{Coordinación distribuida de AMR cooperativos para cargas heterogéneas}
+\setviuheadertitle{Coaliciones multi-AMR: juegos y cierres auditados}
 
 \newcommand{\RR}{\mathbb{R}}
 \newcommand{\simplex}{\Delta}
 \newcommand{\pos}[1]{\left[#1\right]_{+}}
-\newcommand{\norm}[1]{\left\|#1\right\|}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+% LuaLaTeX + Arial + newtxmath can route the legacy short-bar accent to a
+% missing control-code glyph.  The semantic overline is stable in this stack.
+\renewcommand{\bar}[1]{\overline{#1}}
 \newcommand{\xhat}{\hat{x}}
 \newcommand{\dd}{\,\mathrm{d}}
 \DeclareMathOperator*{\argmax}{arg\,max}

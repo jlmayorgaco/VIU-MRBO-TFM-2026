@@ -22,14 +22,14 @@ juegos poblacionales \citep{sandholm2010population,quijano2017population}; AMR y
 objetos \citep{tuci2018cooperative,farivarnejad2022multirobot,an2023cooperative}. Sobre esa
 base se añade la literatura reciente específica de transporte con \emph{payload}, roles y
 restricciones físicas, que se discute en los apartados siguientes mediante comparadores contemporáneos y
-como fuente de las brechas que motivan la tesis.
+como fuente de las brechas que motivan este estudio.
 
 La lectura conjunta de estas fuentes muestra un campo activo pero fragmentado. Los trabajos
 de asignación escalan mejor cuando abstraen la física. Los de control físico son más
 realistas cuando presuponen la coalición ya formada. Los métodos aprendidos ganan
 adaptabilidad, pero dependen de los escenarios de entrenamiento. Las soluciones comerciales
 resuelven flotas de material handling más que coaliciones físicas para una misma carga.
-Esa fragmentación define el espacio de contribución de esta memoria, que une asignación
+Esa fragmentación sitúa el aporte en la unión de asignación
 distribuida, cierre entero de coaliciones y factibilidad física bajo comunicación local.
 
 \subsection{Formulación del problema focal}
@@ -286,37 +286,6 @@ Así, la demanda de una carga no compra cardinalidad; compra capacidad mecánica
 
 \input{sections/mainmatter/05-theoretical-framework/integrated-theory-core}
 
-\subsection{Comprobación numérica de los aportes teóricos}
-
-Las proposiciones anteriores se acompa\~nan de tres comprobaciones num\'ericas reproducibles e independientes del c\'alculo cerrado que validan. V1 compara el reparto ponderado de \emph{wrench} con la soluci\'on directa del sistema KKT de igualdad. V2 contrasta la identidad de potencia Hamiltoniana por diferencias finitas y la proyecci\'on HOCBF cerrada frente a un QP SLSQP. V3 integra el sistema lineal con entradas conmutadas acotadas y verifica la cota ISS derivada de un Lyapunov com\'un. Estas pruebas comprueban \'algebra e implementaci\'on dentro de sus supuestos; no constituyen validaci\'on f\'isica ni ampl\'ian el dominio de los teoremas.
-
-\IfFileExists{../../results/theory_validation/v1/figures/fig_v1_kkt_wrench_allocation.png}{%
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.72\textwidth]{../../results/theory_validation/v1/figures/fig_v1_kkt_wrench_allocation.png}
-\caption{V1: error del reparto cerrado de \emph{wrench} frente a una soluci\'on KKT independiente en 250 casos.}
-\viuownsource
-\label{fig:v1-kkt-wrench-allocation}
-\end{figure}}{}
-
-\IfFileExists{../../results/theory_validation/v2/figures/fig_v2_hamiltonian_hocbf.png}{%
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.72\textwidth]{../../results/theory_validation/v2/figures/fig_v2_hamiltonian_hocbf.png}
-\caption{V2: error de la identidad de potencia Hamiltoniana y de la proyecci\'on HOCBF frente a un QP independiente.}
-\viuownsource
-\label{fig:v2-hamiltonian-hocbf}
-\end{figure}}{}
-
-\IfFileExists{../../results/theory_validation/v3/figures/fig_v3_practical_iss.png}{%
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.62\textwidth]{../../results/theory_validation/v3/figures/fig_v3_practical_iss.png}
-\caption{V3: trayectoria con entrada acotada y cota ISS obtenida mediante un Lyapunov com\'un.}
-\viuownsource
-\label{fig:v3-practical-iss}
-\end{figure}}{}
-
 \subsection{Familias algorítmicas del estado del arte}
 
 \begin{table}[H]
@@ -364,7 +333,7 @@ y política distribuida; \citet{naito2024tihdp} estructuran el aprendizaje en ca
 asignación, prioridad dinámica y control; y \citet{shida2024infeasible} tratan tareas
 inviables para evitar bloqueos ante objetos no transportables. Estos trabajos aportan
 comparadores recientes para un número variable de robots y objetos bajo incertidumbre de
-peso. Su límite para esta tesis es que la interpretabilidad del cierre de coalición y la
+peso. El límite relevante es que la interpretabilidad del cierre de coalición y la
 trazabilidad física de la utilidad no siempre quedan explícitas.
 
 En la línea de capacidad de carga, \citet{qiu2024cbpa} extienden CBBA con consumo de
@@ -446,11 +415,11 @@ quórum, roles físicos y liberación de robots.
 
 \input{figures/fig-gap-literatura}
 
-\subsection{Posicionamiento: componentes de juego distribuido y cierres auditados}
+\subsection{Posicionamiento: arquitectura escalonada con componentes basados en juegos y cierres auditados}
 
-La contribuci\'on de esta memoria es una arquitectura de control y decisi\'on basada en juegos para el transporte cooperativo de robots y cargas heterog\'eneas. Sus instancias comparten el siguiente esquema; una variante solo se denomina distribuida cuando actor, estimadores y cierre usan exclusivamente la vista local declarada. Un payoff o \emph{fitness} local traduce el d\'eficit f\'isico de cada carga en presi\'on de asignaci\'on. Una din\'amica poblacional reparte masa entre cargas. Un cierre entero (QR/cu\'orum) transforma la preferencia continua en coaliciones ejecutables. Un juego de \emph{wrench} decide si la coalici\'on produce fuerza y torque. Una capa de precios y ejecuci\'on cierra el bucle. Smith-QR es una instancia evaluada, pero su cierre can\'onico usa preferencias globales. Replicator, logit, BNN, proyecci\'on y variantes primal--dual o de mercado ocupan el mismo esquema cambiando la din\'amica, la regulaci\'on o la funci\'on de fitness. \emph{Water-filling} y campo medio delimitan extensiones de dise\~no, pero no se presentan como m\'etodos confirmatorios de todas las campa\~nas.
+La contribuci\'on propuesta es una arquitectura escalonada de control y decisi\'on que combina componentes basados en juegos con comprobaciones y cierres no necesariamente lúdicos. A0 es una utilidad calculada por robot seguida de un umbral global y, por tanto, no constituye un juego formal. Las instancias posteriores comparten el siguiente esquema; una variante solo se denomina distribuida cuando actor, estimadores y cierre usan exclusivamente la vista local declarada. Un payoff o \emph{fitness} traduce el d\'eficit f\'isico en presi\'on de asignaci\'on. Una din\'amica poblacional puede repartir masa entre cargas; un cierre entero (QR/cu\'orum) transforma la preferencia continua en coaliciones; un juego de \emph{wrench} comprueba fuerza y momento; y una capa de precios y ejecuci\'on cierra el bucle. Smith--QR es una instancia evaluada, pero su cierre can\'onico usa preferencias globales. Replicator, logit, BNN, proyecci\'on y variantes primal--dual o de mercado ocupan el mismo esquema cambiando la din\'amica, la regulaci\'on o la funci\'on de fitness. \emph{Water-filling} y campo medio delimitan extensiones de dise\~no, pero no se presentan como m\'etodos confirmatorios de todas las campa\~nas.
 
-La Tabla~\ref{tab:matriz-originalidad} separa herencia y aporte. En particular, los juegos poblacionales para control distribuido, las dinámicas distribuidas en tiempo discreto y la búsqueda de Nash bajo capacidad y migración ya están establecidas en la literatura \citep{quijano2017population,barreiro2017distributed,martinez2020formation,martinezpiazuelo2022tcss,martinezpiazuelo2022automatica}. La tesis no reclama prioridad sobre esos mecanismos.
+La Tabla~\ref{tab:matriz-originalidad} separa herencia y aporte. En particular, los juegos poblacionales para control distribuido, las dinámicas distribuidas en tiempo discreto y la búsqueda de Nash bajo capacidad y migración ya están establecidas en la literatura \citep{quijano2017population,barreiro2017distributed,martinez2020formation,martinezpiazuelo2022tcss,martinezpiazuelo2022automatica}. No se reclama prioridad sobre esos mecanismos.
 
 \begin{table}[H]
 \centering
@@ -461,13 +430,42 @@ Aporte & Antecedente y elemento heredado & Delta técnico del TFM & Evidencia y 
 \midrule
 A1 & Taxonomías MRTA \citep{gerkey2004formal,korsah2013taxonomy}, formación de coaliciones \citep{dutta2021hedonic,zhang2024coalition}, transporte cooperativo \citep{tuci2018cooperative} y juegos poblacionales como representación continua \citep{quijano2017population}. & Semántica operacional de coalición física: aceptación por etapa, falso positivo físico y éxito final no son equivalentes. & A0--FULL y SP1--SP3; definición válida en simulación planar, sin validación de hardware. \\
 A2 & Dinámicas distribuidas y discretas, capacidad/migración y búsqueda de Nash \citep{barreiro2017distributed,martinez2020formation,martinezpiazuelo2022tcss,martinezpiazuelo2022automatica}. & Interfaz explícita entre déficit, capacidad efectiva, contacto, residual wrench y realización dinámica; aplicación ISS bajo matriz común. & V1--V3 y SP2--SP3; relajación continua y carga fija, sin garantía para el cierre entero ni resets. \\
-A3 & Trabajos que integran asignación, equipos, rutas o control de transporte \citep{paul2023collective,brown2025assembly,zhou2026cttapf}. & Escalera causal de seis prefijos sobre la misma planta y el mismo mundo para localizar interacciones entre certificados. & 2.160 ejecuciones A0--FULL; planta reducida y operaciones globales declaradas. \\
+A3 & Trabajos que integran asignación, equipos, rutas o control de transporte \citep{paul2023collective,brown2025assembly,zhou2026cttapf}. & Escalera causal de seis prefijos sobre la misma planta y el mismo mundo para localizar interacciones entre certificados. & 2.400 ejecuciones A0--FULL de tamaño fijo; planta reducida y operaciones globales declaradas. \\
 A4 & Comparación clásica de familias y arquitecturas poblacionales. & Auditoría RAW/CLOSED y RAW/SAFE/EXEC que conserva controles uniformes, guardias globales, timeouts, colisiones y resultados negativos. & SP1--SP8; las campañas modulares tienen plantas distintas y no constituyen integración extremo a extremo. \\
 \bottomrule
 \end{tabularx}
 \caption{Matriz de originalidad. El aporte propio reside en las interfaces, la semántica de evidencia y la auditoría integrada; las dinámicas y herramientas listadas como antecedentes son heredadas.}
 \label{tab:matriz-originalidad}
 \end{table}
+
+
+\begin{landscape}
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{1.06}
+\begin{longtable}{@{}p{3.2cm}p{3.4cm}p{3.5cm}p{3.2cm}p{2.5cm}p{5.2cm}@{}}
+\caption{Comparación mecanismo--por--mecanismo con antecedentes próximos. La última columna formula el delta defendible; una integración de componentes no se presenta como novedad suficiente por sí sola.}\label{tab:comparacion-mecanismos}\\
+\toprule
+Familia comparada & Decisión y dinámica & Restricción y modelo de carga & Información y cierre & Validación & Diferencia defendible del TFM \\
+\midrule
+\endfirsthead
+\toprule
+Familia comparada & Decisión y dinámica & Restricción y modelo de carga & Información y cierre & Validación & Diferencia defendible del TFM \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+MRTA y coaliciones \citep{gerkey2004formal,korsah2013taxonomy,dutta2021hedonic,zhang2024coalition} & Asignación, subasta o equipos. & Cardinalidad y coste; la mecánica suele quedar fuera. & Cierre discreto, centralizado o distribuido según antecedente. & Benchmarks y simulación. & Define \emph{coalición física} y separa aceptación, falso positivo y éxito; no reclama un nuevo algoritmo MRTA. \\
+Juegos poblacionales y GNE \citep{quijano2017population,martinez2020formation,martinezpiazuelo2022tcss,martinezpiazuelo2022automatica,martinezpiazuelo2026gne,martinezpiazuelo2026dissipativity} & Replicator, Smith, BNN, logit, primal--dual y GNE. & Restricciones acopladas y capacidad; contacto y ejecución se verifican aparte. & Actores locales posibles; Smith--QR canónico usa preferencias y cierre globales. & Teoremas o ejemplos de convergencia. & Conecta payoff con déficit, residual \emph{wrench} y planta; ISS solo bajo matriz común, sin convergencia de todos los cierres. \\
+Stacks integrados de transporte \citep{paul2023collective,brown2025assembly,zhou2026cttapf} & Equipos, rutas y control en una aplicación. & Geometría y transporte con fidelidad variable. & Información y autoridad dependen de la arquitectura. & Simulación integrada y evaluación algorítmica; no constituyen por sí solas validación física del transporte. & Aporta la escalera causal A0--FULL sobre mundos emparejados; conserva interacciones negativas y no afirma superioridad universal. \\
+Contacto y capacidad \emph{wrench} \citep{bicchi1995closure,ferrari1992grasps,tuci2018cooperative} & Cierre de fuerza, grasp y reparto de esfuerzos. & Fuerza, momento y geometría de contacto. & La coalición suele fijarse antes del control. & Modelos quasi-estáticos o de manipulación. & Audita capacidad escalar frente a residual vectorial y KKT; modelo planar, sin contacto tridimensional. \\
+Seguridad y control por barreras \citep{ames2017cbf,zhuang2026safe} & CBF, filtros cuadráticos y arquitecturas jerárquicas activadas por eventos. & Despeje, invariancia y límites de entrada. & Filtro local; la saturación puede romper su realización. & Simulación y, en algunos casos, física. & Separa RAW--SAFE--EXEC y remide el residual ejecutado; no demuestra invariancia continua ni seguridad funcional. \\
+Comunicación y recuperación \citep{shibata2022learning,shibata2023event,naito2024tihdp} & Consenso, comunicación activada y aprendizaje. & Ancho de banda, frecuencia de comunicación y variación del número de robots; pérdida, retardo, batería y sustitución no se validan conjuntamente. & Los antecedentes combinan observaciones locales con consenso vecinal o información global; FULL consulta candidatos globales. & Simulación de red; transferencia física depende del antecedente. & Mide deuda de centralización y usa selector global como proxy; no es cierre local extremo a extremo. \\
+Validación física y escala \citep{bhatt2026box,guan2025low} & Transporte descentralizado o planificación escalable. & Superficies, no holonomía o agregación. & Información y dinámica dependen del artefacto. & Algunos reportan robots; SP8 es mesoscópico. & Evidencia limitada a simulación planar y tendencias; Coppelia replay y SP8 no son validación dinámica, hardware ni RSS observado. \\
+\end{longtable}
+\endgroup
+\end{landscape}
 
 \begin{table}[H]
 \centering
@@ -493,7 +491,7 @@ Cierre QR / quórum & redondeo entero de la preferencia continua. & Coaliciones 
 \label{tab:familia-controladores}
 \end{table}
 
-La arquitectura se instancia mediante tres decisiones: la din\'amica poblacional $D$ (replicator, Smith, logit, BNN o proyecci\'on); la regulaci\'on (precios primal--dual o mercado, con \emph{water-filling} y campo medio como extensiones no confirmatorias); y la funci\'on de fitness, que codifica la mezcla de d\'eficit, distancia, bater\'ia, saturaci\'on y utilidad marginal de \emph{wrench}. El aporte formaliza un bucle com\'un; la evidencia emp\'irica solo se atribuye a las combinaciones implementadas y ejecutadas:
+La arquitectura se instancia mediante tres decisiones. La din\'amica poblacional $D$ puede ser replicator, Smith, logit, BNN o proyecci\'on; la regulaci\'on usa precios primal--dual o mercado, con \emph{water-filling} y campo medio como extensiones no confirmatorias; y la funci\'on de fitness codifica d\'eficit, distancia, bater\'ia, saturaci\'on y utilidad marginal de \emph{wrench}. Este bucle com\'un solo sustenta evidencia emp\'irica para las combinaciones efectivamente implementadas y ejecutadas.
 \[
   \begin{aligned}
     \text{payoff / fitness:}\quad
@@ -510,6 +508,37 @@ La arquitectura se instancia mediante tres decisiones: la din\'amica poblacional
   \end{aligned}
 \]
 
+\subsection{Comprobación numérica de los aportes teóricos}
+
+Una vez delimitados los antecedentes y el delta propio, las proposiciones se acompa\~nan de tres comprobaciones num\'ericas reproducibles e independientes del c\'alculo cerrado que validan. V1 compara el reparto ponderado de \emph{wrench} con la soluci\'on directa del sistema KKT de igualdad. V2 contrasta la identidad de potencia Hamiltoniana por diferencias finitas y la proyecci\'on HOCBF cerrada frente a un QP SLSQP. V3 integra el sistema lineal con entradas conmutadas acotadas y verifica la cota ISS derivada de un Lyapunov com\'un. Estas pruebas comprueban \'algebra e implementaci\'on dentro de sus supuestos; no constituyen validaci\'on f\'isica ni ampl\'ian el dominio de los teoremas.
+
+\IfFileExists{../../results/theory_validation/v1/figures/fig_v1_kkt_wrench_allocation.png}{%
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{../../results/theory_validation/v1/figures/fig_v1_kkt_wrench_allocation.png}
+\caption{V1: error del reparto cerrado de \emph{wrench} frente a una soluci\'on KKT independiente en 250 casos.}
+\viuownsource
+\label{fig:v1-kkt-wrench-allocation}
+\end{figure}}{}
+
+\IfFileExists{../../results/theory_validation/v2/figures/fig_v2_hamiltonian_hocbf.png}{%
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{../../results/theory_validation/v2/figures/fig_v2_hamiltonian_hocbf.png}
+\caption{V2: error de la identidad de potencia Hamiltoniana y de la proyecci\'on HOCBF frente a un QP independiente.}
+\viuownsource
+\label{fig:v2-hamiltonian-hocbf}
+\end{figure}}{}
+
+\IfFileExists{../../results/theory_validation/v3/figures/fig_v3_practical_iss.png}{%
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.62\textwidth]{../../results/theory_validation/v3/figures/fig_v3_practical_iss.png}
+\caption{V3: trayectoria con entrada acotada y cota ISS obtenida mediante un Lyapunov com\'un.}
+\viuownsource
+\label{fig:v3-practical-iss}
+\end{figure}}{}
+
 La comparación experimental utiliza como mínimo \emph{greedy}, asignación centralizada de
 coste mínimo, CBBA o una aproximación de subasta con consenso, una variante sensible a la
 carga útil, control con coalición fija, MARL-CTDE y un oráculo usado únicamente como cota.
@@ -518,10 +547,11 @@ quórum cerrado, tareas inviables, residual \emph{wrench}, saturación, energía
 desperdiciada, fallos bajo comunicación degradada, recuperación ante pérdida de robot y
 coste computacional.
 
-El alcance de la tesis queda así delimitado. No se afirma resolver todo el transporte
+El alcance queda delimitado. No se afirma resolver todo el transporte
 cooperativo multi-robot ni que un miembro concreto de la familia domine universalmente.
-Se propone y evalúa una familia de controladores de juego distribuido para almacenes
-multi-AMR con cargas heterogéneas, comunicación local y coaliciones físicas, y se
-identifica en qué regímenes cada variante mejora frente a las familias clásicas, de
-mercado, de control y aprendidas, manteniendo trazabilidad matemática y una vía clara
-hacia la factibilidad de carga mediante capacidad efectiva.
+Se propone y evalúa una arquitectura escalonada con componentes basados en juegos para
+almacenes multi-AMR con cargas heterogéneas y coaliciones físicas. La memoria identifica
+qué operaciones pueden ejecutarse con información local y cuáles conservan autoridad
+global, y en qué regímenes cada variante mejora, empata o empeora frente a comparadores
+clásicos, de mercado, de control y aprendidos. La contribución es esa interfaz trazable;
+no una familia íntegramente distribuida ni una superioridad universal.
