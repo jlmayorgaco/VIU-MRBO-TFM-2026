@@ -2,7 +2,7 @@
 
 - Branch: `main`
 - Python: `3.13.9`
-- Dirty entries: `73`
+- Dirty entries: `0`
 - CoppeliaSim in PATH: `not found`
 
 ## Canonical SP Status
