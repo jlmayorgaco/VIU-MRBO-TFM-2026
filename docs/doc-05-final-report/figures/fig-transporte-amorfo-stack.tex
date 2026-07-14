@@ -1,39 +1,45 @@
 \begin{figure}[htbp]
 \centering
-\resizebox{0.98\textwidth}{!}{%
+\resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
-  block/.style={draw=VIUDark,fill=VIULight,rounded corners=2pt,
-    align=center,minimum width=3.15cm,minimum height=0.95cm,font=\small},
-  blockO/.style={draw=VIUOrange!85!black,fill=VIUOrange!7,rounded corners=2pt,
-    align=center,minimum width=3.15cm,minimum height=0.95cm,font=\small},
-  arrow/.style={-{Latex[length=2mm]},thick,color=VIUOrange!90!black},
-  arrowB/.style={-{Latex[length=2mm]},thick,color=VIUDark}
+  font=\sffamily\small,
+  block/.style={draw=VIUDark!70,fill=VIULight,rounded corners=4pt,
+    align=center,text width=3.0cm,minimum height=1.0cm,inner sep=5pt},
+  core/.style={draw=VIUOrange!90!black,fill=VIUOrange!8,rounded corners=4pt,
+    align=center,text width=3.0cm,minimum height=1.0cm,inner sep=5pt,
+    font=\sffamily\small\bfseries},
+  flow/.style={-{Latex[length=2.3mm]},line width=0.9pt,draw=VIUOrange!90!black},
+  feed/.style={-{Latex[length=2.0mm]},line width=0.8pt,draw=VIUDark!60}
 ]
-\node[blockO] (load) {carga rígida\\$X_L,V_L,p_L,H_L$};
-\node[block, right=0.75cm of load] (cost) {coste anisotrópico\\$\Psi_L,\mathcal E_{\partial L}$};
-\node[blockO, right=0.75cm of cost] (solver) {oráculo continuo\\HJB--FPK / Hopf--Cole};
-\node[block, right=0.75cm of solver] (field) {campo ideal\\$u^\star=2\sigma\nabla\psi/\psi$};
+\node[core]  (load) at (0,1.2) {Carga r\'igida\\estado y energ\'ia};
+\node[block] (cost) at (3.8,1.2) {Coste\\anisotr\'opico};
+\node[core]  (solver) at (7.6,1.2) {Flujo continuo\\HJB--FPK};
+\node[block] (field) at (11.4,1.2) {Campo ideal\\direcci\'on local};
 
-\node[block, below=0.95cm of load] (rho) {densidad de fase\\$\rho(x,v,t)$};
-\node[block, below=0.95cm of cost] (force) {puerto mecánico\\$F_\rho,\tau_\rho$};
-\node[blockO, below=0.95cm of solver] (safety) {MF-CBF / QP\\$u_{\rm safe}$};
-\node[block, below=0.95cm of field] (unicycle) {uniciclo\\$v_i,\omega_i,\tau_i$};
+\node[block] (rho) at (0,-1.05) {Densidad\\fase colectiva};
+\node[block] (port) at (3.8,-1.05) {Puerto mec\'anico\\fuerza y torque};
+\node[core]  (safe) at (7.6,-1.05) {Filtro seguro\\MF-CBF / QP};
+\node[block] (uni) at (11.4,-1.05) {Uniciclo\\mando motor};
 
-\draw[arrow] (load)--(cost);
-\draw[arrow] (cost)--(solver);
-\draw[arrow] (solver)--(field);
-\draw[arrow] (field)--(unicycle);
-\draw[arrow] (unicycle)--(rho);
-\draw[arrow] (rho)--(force);
-\draw[arrow] (force)--(load);
-\draw[arrowB] (field)--(safety);
-\draw[arrowB] (safety)--(unicycle);
-\draw[arrowB] (rho)--(solver);
-\draw[arrowB] (load)--(rho);
+\draw[flow] (load) -- (cost);
+\draw[flow] (cost) -- (solver);
+\draw[flow] (solver) -- (field);
+\draw[flow] (field) -- (uni);
+\draw[flow] (uni) -- (safe);
+\draw[flow] (safe) -- (port);
+\draw[flow] (port) -- (load);
+\draw[feed] (rho) -- (solver);
+\draw[feed] (load) -- (rho);
+\draw[feed] (rho) -- (port);
+
+\node[draw=VIUGray!55,fill=VIUWhite,rounded corners=4pt,
+  align=center,text width=11.0cm,inner sep=5pt,font=\sffamily\scriptsize,
+  below=0.6cm of port] {Lectura: el flujo continuo propone una direcci\'on; cada AMR la discretiza, la filtra y devuelve esfuerzo a la carga.};
 \end{tikzpicture}}
 \caption{Arquitectura matemática del transporte cooperativo amorfo. La carga modifica el
 coste de campo medio; la densidad resuelve un flujo continuo; cada AMR discretiza ese
 flujo mediante un punto adelantado y un filtro CBF; el contacto resultante vuelve a
 inyectar fuerza en el puerto port-Hamiltoniano de la carga.}
+\viuownsource
 \label{fig:transporte-amorfo-stack}
 \end{figure}

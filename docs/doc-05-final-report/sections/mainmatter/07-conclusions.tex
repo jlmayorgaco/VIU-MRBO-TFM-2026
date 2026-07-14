@@ -1,21 +1,43 @@
-\section{Conclusiones}
+\section{Conclusiones y recomendaciones}
 
-La memoria propone y evalúa una arquitectura distribuida para coordinar coaliciones multi-AMR en transporte de cargas heterogéneas. La contribución principal no es un algoritmo aislado ni una promesa de dominancia universal, sino un marco físico-económico que conecta asignación, quórum, capacidad efectiva, formación, \emph{wrench}, comunicación y recuperación bajo un protocolo experimental común.
+\subsection*{Respuesta al objetivo general}
 
-Las conclusiones principales son las siguientes:
+El TFM diseña y evalúa una arquitectura escalonada para formar coaliciones multi-AMR bajo requisitos de cardinalidad, capacidad, wrench, dinámica, seguridad e información. La contribución deja de ser únicamente una suma de módulos. A0--FULL ejecuta los seis prefijos de comprobación sobre la misma carga Euler--Lagrange y los mismos mundos, mientras SP1--SP8 conservan la función de aislar constructos y comparadores.
+
+El objetivo general se cumple dentro del simulador numérico declarado. La campaña integrada cerró 960 ejecuciones base y 2.160 tras extensión por precisión, sin errores numéricos y con semillas abiertas después del freeze. Los resultados demuestran que la validez física no es monótona por añadir una prueba: A3 resolvió complementariedad de torque, pero degradó escasez al eliminar reserva dinámica. Este hallazgo vincula decisión y mecánica de una forma que los estudios separados no podían identificar.
+\subsection*{Cumplimiento de los objetivos específicos}
+
+Los objetivos se cumplen con alcances distintos. O1 y O2 quedan cubiertos por la definición de coalición física y la escalera integrada y modular. O3 se cumple solo de forma parcial: Smith-QR incorpora memoria, ocupación y cierre, pero el cierre original y el selector FULL todavía consultan información global. O4 queda sustentado por los juegos de capacidad y contacto de SP2--SP3 dentro del modelo planar. O5 se aborda con comparadores clásicos, centralizados, aprendidos y basados en modelo, cuyas implementaciones proxy se identifican como tales. O6 queda trazado mediante configuraciones congeladas, semillas, hashes, manifiestos y contrastes pareados.
+\subsection*{Aportes teóricos y metodológicos}
+
+La \emph{coalición física} separa partición combinatoria y ejecución. La aplicación teórica derivada formaliza esa relación en el lazo de carga: si el cambio de coalición modifica un error de realización de wrench acotado, no reinicia el estado y conserva la misma matriz cerrada, una solución común de Lyapunov proporciona ISS práctica para cualquier secuencia medible de sustituciones. El teorema no cubre cambios de masa, resets ni contacto tridimensional. V1--V3 dejaron de comparar una fórmula consigo misma: usan una solución KKT independiente, la identidad de potencia por diferencias finitas, un QP SLSQP y una integración lineal separada.
+
+El aporte metodológico combina mundos emparejados, semántica explícita de aceptación y extensión por precisión. A0--FULL distingue \texttt{accepted\_by\_stage}, falso positivo físico y éxito final. La extensión no depende de $p$, ranking o signo; nominal se detuvo en 60 y las otras familias alcanzaron el tope de 100; el tope no prueba que todos los IC fueran menores que el umbral. Todos los fallos permanecieron en el denominador.
+\subsection*{Lectura de las hipótesis}
+
+Las campañas producen resultados favorables, parciales, negativos y no estimables:
+La hip\'otesis central recibe apoyo espec\'ifico, no mon\'otono. En escasez, A1 y A2 mejoraron la tasa de \'exito en $0{,}67$ y $0{,}33$, pero A3 la redujo en $0{,}18$: cerrar el \emph{wrench} est\'atico retir\'o reserva de tracci\'on. En torque, obst\'aculo y \emph{dropout}, A3, A4 y FULL aportaron $0{,}60$, $0{,}24$ y $0{,}62$, respectivamente. El \'ultimo efecto pertenece al paquete comunicaci\'on--reemplazo y no permite atribuci\'on individual.
+
+H1--H3 explican la formaci\'on de la coalici\'on, pero no demuestran un ganador universal. Smith+QR redujo el \emph{regret} frente a \emph{greedy}, aunque qued\'o por detr\'as de la subasta proxy y de uniforme+QR. Los \emph{fitness} marginales mejoraron las versiones \emph{plain}, pero uniforme+\emph{closure} obtuvo el menor \emph{regret}. La guardia de \emph{wrench} elimin\'o los falsos positivos condicionados; como uniforme+guardia tambi\'en alcanz\'o cobertura completa, la mejora CLOSED se atribuye principalmente a la reparaci\'on global, no a superioridad distribuida extremo a extremo.
+
+H4--H6 muestran qué ocurre una vez formada la coalición. En SP4 v3, Replicator+CBF obtuvo $0{,}2685$ de éxito seguro y cero colisiones barridas, pero $0{,}7315$ de timeouts; el contraste frente a CBF fue $0{,}0926$ y sobrevivió Holm. SP5 v2 separó RAW, SAFE y EXEC sin reparar poses: CBF local alcanzó $0{,}593$ de éxito seguro y cero colisiones; Hamiltoniano+CBF obtuvo $0{,}426$ y cero colisiones, frente a $0{,}167$ de éxito y $0{,}833$ de colisión en RAW. El proxy VO logró $0{,}657$, pero con $0{,}343$ de colisiones, y la referencia centralizada solo $0{,}167$. En SP6, la guardia \emph{wrench-market} redujo la pérdida de carga en $0{,}0227$ frente a \emph{greedy}. Estos resultados pertenecen al simulador planar y no equivalen a seguridad funcional ni a contacto realista.
+
+H7 y H8 no son confirmatorias. La asociaci\'on entre radio y conectividad ($\rho=0{,}8934$) es descriptiva, H7.3 carece de bloques completos y la campa\~na mesosc\'opica no midi\'o de forma externa \emph{timeouts} ni memoria residente. La conclusi\'on correcta es conservar esas preguntas abiertas, no convertir tendencias en evidencia.
+
+\subsection*{Limitaciones}
+
+La evidencia se limita a simulación planar. El agarre se comprueba con fuerzas estáticas unilaterales, mientras el seguimiento supone un agarre rígido capaz de transmitir tracción acotada de ambos signos. Esa hipótesis permite frenar, pero no reproduce contacto, deformación, fricción ni saturación de rueda tridimensionales. El waypoint del caso de obstáculo es nominal; la seguridad se decide por el despeje observado. FULL conserva un $14\%$ de colisiones en el régimen adverso porque el wrench realizado no siempre reproduce la aceleración HOCBF. Por tanto, no se demuestra seguridad funcional.
+
+La red integrada incluye colas, timestamps implícitos, pérdida y retardo, pero usa un modelo sintético y un solo dropout. El selector de reemplazo consulta todos los robots ociosos y no restringe candidatos por adyacencia; FULL es, por tanto, un proxy de recuperación y no una implementación local extremo a extremo. SP7 histórico sigue siendo descriptivo y SP8 mesoscópico no acredita timeouts ni RSS observados. El cierre A3 explora un vecindario acotado de uno o dos robots; no optimiza globalmente carga, contacto y trayectoria. La matriz ISS común exige carga y ganancias fijas y no cubre resets o dinámica de contacto cambiante. El umbral $\rho\leq0{,}16$, las ganancias HOCBF y el horizonte de 22~s fueron congelados, pero no se sometieron a sensibilidad post-hoc. Las frecuencias por familia describen el generador y no estiman prevalencia industrial.
+\subsection*{Trabajo futuro prioritario}
+
+Las extensiones se ordenan por su efecto sobre la validez:
 \begin{itemize}[leftmargin=2em]
-  \item La escalera experimental muestra que el problema cambia de naturaleza al pasar de un robot por tarea a coaliciones con carga física compartida. Cardinalidad, capacidad y factibilidad \emph{wrench} no son equivalentes.
-  \item Smith ofrece una base interpretable para la asignación poblacional, pero no basta por sí solo en regímenes de comunicación local, preferencias fraccionarias o cierre entero de tareas.
-  \item Smith-QR aporta una integración defendible entre presión distribuida, memoria local, quórum entero y guardias de factibilidad, con mejoras claras en los regímenes donde Smith puro pierde información o produce coaliciones no ejecutables.
-  \item La evaluación de fuerza y torque evita falsos positivos físicos: una coalición puede satisfacer una demanda escalar y aun así no generar el \emph{wrench} requerido por la carga.
-  \item Los comparadores aprendidos enriquecen la validación, pero su lectura debe ser prudente: aportan adaptación y contraste, no una sustitución de las garantías estructurales del modelo.
-  \item Los experimentos de movimiento, transporte, recuperación, comunicación y escala confirman que la calidad de una solución multi-AMR debe medirse con varias dimensiones simultáneas: completitud, seguridad, energía, tiempo, mensajes, coste computacional y validez física.
+  \item incorporar el margen de autoridad dinámica dentro del cierre de contactos, sin seleccionar después de observar test;
+  \item extender el teorema a matrices dependientes de coalición mediante Lyapunov múltiple y tiempos de permanencia verificables;
+  \item reemplazar el agarre rígido planar por contacto con fricción, límites de rueda y carga tridimensional;
+  \item someter el filtro HOCBF a factibilidad conjunta con el wrench, de modo que una aceleración segura no realizable produzca abstención antes de entrar al obstáculo;
+  \item validar una muestra congelada en un motor dinámico independiente y, posteriormente, en hardware instrumentado;
+  \item medir RSS y deadlines mediante un watchdog externo común en las campañas de escala.
 \end{itemize}
-
-\IfFileExists{../generated/regime_map.tex}{\input{../generated/regime_map.tex}}{}
-
-El trabajo queda acotado a simulación reproducible, análisis estadístico e integración visual. No se afirma transferencia directa a hardware, contacto real con fricción completa, certificación de seguridad ni despliegue industrial. Esta restricción no debilita la contribución; define con precisión qué se ha demostrado y qué necesita una etapa posterior.
-
-Las líneas futuras son claras. La asignación de slots debe promoverse a decisión estratégica explícita; el control de seguridad puede reforzarse con formulaciones CBF-QP; la batería debe ampliarse hacia estaciones de carga, colas y replanificación energética; y la validación debería avanzar hacia ROS 2, CoppeliaSim con contacto más rico y ensayos físicos controlados. En el plano teórico, la continuación natural es formalizar el límite de campo medio, acotar el error finito de flota y estudiar garantías prácticas para juegos generalizados con restricciones de fuerza, conectividad y seguridad.
-
-En síntesis, el TFM demuestra que el transporte cooperativo de cargas heterogéneas exige tratar la asignación como una decisión física. Los robots no solo eligen tareas: compran capacidad, ocupan contactos, producen fuerza y torque, consumen energía y dependen de una red local. Esa lectura permite construir una tesis cohesionada, técnicamente verificable y abierta a una línea doctoral sólida.
+La conclusión central es mecánica y diagnóstica. Una coalición combinatoriamente válida puede fallar por capacidad, contacto, dinámica, seguridad o información; incluso un cierre que mejora el wrench estático puede empeorar el transporte al retirar reserva de tracción. A0--FULL localiza ese intercambio, mientras la cota ISS delimita cuándo la sustitución permanece estable. El resultado es una arquitectura auditable, no una promesa de superioridad universal.

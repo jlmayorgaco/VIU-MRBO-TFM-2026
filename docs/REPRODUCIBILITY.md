@@ -37,18 +37,20 @@ Final LaTeX report plus generated PDF summaries:
 make build-report
 ```
 
-Canonical high-power SP3-SP8 runs:
+Promoted CPU-only canonical campaigns:
 
 ```powershell
-python -m viu_mrob_tfm.cli.run_sp3 configs/experiments/sp3/SP3_MC_wrench_comparison_high_power.yaml
-python -m viu_mrob_tfm.cli.run_sp4 configs/experiments/sp4/SP4_MC_motion_comparison_high_power.yaml
-python scripts/run_sp5_experiment.py configs/experiments/sp5/SP5_MC_cooperative_transport_high_power.yaml
+python scripts/run_sp1_homogeneous.py configs/experiments/sp1/SP1_HOMOGENEOUS_v1_1.yaml
+python scripts/run_sp2_heterogeneous.py configs/experiments/sp2/SP2_HETEROGENEOUS_GAME_v1_2.yaml
+python scripts/run_sp3_wrench_nash.py configs/experiments/sp3/SP3_WRENCH_NASH_GAME_v1_1.yaml
+python scripts/run_sp4_docking_game.py configs/experiments/sp4/SP4_DOCKING_GAME_CONFIRMATORY_v3.yaml
+python scripts/run_sp5_payload_transport.py configs/experiments/sp5/SP5_PAYLOAD_TRANSPORT_CONFIRMATORY_v2.yaml
 python scripts/run_sp6_experiment.py configs/experiments/sp6/SP6_MC_robustness_comparison_high_power.yaml
 python scripts/run_sp7_experiment.py configs/experiments/sp7/SP7_MC_communication_robustness_high_power.yaml
 python scripts/run_sp8_experiment.py configs/experiments/sp8/SP8_MC_fleet_ladder_high_power.yaml
 ```
 
-SP5 and SP6 high-power retain trajectory-level state until the end of the run. On the July 2026 workstation runs, SP5 (`20,040` rollouts) and SP6 (`20,000` rollouts) took several hours and several GB of RAM. SP7 (`20,176` runs) and SP8 (`20,000` runs) are also multi-hour CPU-bound runs. For video inspection, use the compact runs below; the high-power runs are the statistical evidence.
+`make run-canonical` invokes this same promoted sequence and can require several CPU-hours because SP6--SP8 retain the historical high-power scope. No command requires or reports GPU execution. SP5 v2 contains 864 paired CPU runs and recorded 198.1 s of summed method runtime on the July 2026 workstation. Its historical 20,040-rollout predecessor is retained only as non-canonical context because that plant repaired poses after integration; it must not be used as continuous-safety evidence.
 
 Representative video/compact runs:
 

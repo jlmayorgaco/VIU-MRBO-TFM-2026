@@ -1,43 +1,93 @@
 \section{Metodología}
 
-La metodología combina modelado matemático, simulación multiagente, comparación pareada y análisis crítico de validez. El diseño experimental sigue una regla simple: cada nuevo mecanismo se añade sobre un caso base ya comprendido y se evalúa con los mismos mundos que sus comparadores. Así, una mejora no se atribuye a un escenario más favorable, sino al mecanismo que se está contrastando.
+\subsection{Diseño de investigación}
+
+La investigación adopta un diseño cuantitativo, comparativo y reproducible por simulación. La unidad independiente es el mundo experimental, identificado por escenario, variante y semilla. El método es un tratamiento repetido sobre ese mundo, no una réplica independiente. Robots, cargas, contactos y muestras temporales quedan anidados dentro de la ejecución. Esta estructura permite comparar métodos sobre condiciones iniciales idénticas sin inflar el tamaño muestral mediante filas correlacionadas.
 
 \input{figures/fig-metodologia-investigacion}
 
-El procedimiento general consta de cinco etapas:
-
+El procedimiento general comprende cinco operaciones:
 \begin{enumerate}[leftmargin=2em]
-  \item Definir escenarios con semillas fijadas, número de robots, cargas, obstáculos, comunicación, batería y demanda física de coalición.
-  \item Ejecutar familias comparables: reglas clásicas, referencias centralizadas, subastas o proxies de consenso, métodos basados en modelo, variantes propuestas y comparadores aprendidos.
-  \item Registrar trayectorias, asignaciones, estados de carga, esfuerzos, contactos, energía, distancias, tiempos, mensajes y eventos de seguridad.
-  \item Agregar métricas por escenario y semilla, usando contrastes pareados cuando los métodos comparten condiciones iniciales.
-  \item Decidir cada hipótesis con intervalos de confianza, correcciones por comparaciones múltiples y límites de interpretación explícitos.
+  \item generar y fijar mundos con robots, cargas, grafo, obstáculos, batería, demanda física y eventos;
+  \item separar semillas de desarrollo, ajuste, validación, entrenamiento y prueba;
+  \item ejecutar cada tratamiento sobre el mismo mundo y preservar éxitos, fallos, excepciones y timeouts;
+  \item calcular métricas físicas, operativas y computacionales con semántica y unidades explícitas;
+  \item decidir cada afirmación mediante efecto, intervalo de confianza, multiplicidad y límite de interpretación.
 \end{enumerate}
 
-La evaluación separa entrenamiento, ajuste y prueba final. Los métodos aprendidos no se entrenan sobre las mismas semillas usadas para declarar resultados; las variantes basadas en parámetros se ajustan antes de la comparación final; y las referencias no desplegables se reportan como cotas superiores, no como soluciones operativas. Esta separación reduce el riesgo de sobreajuste y permite interpretar las diferencias como efecto del método, no como contaminación experimental.
+\subsection{Unidad experimental, emparejamiento y dependencia}
 
-CoppeliaSim y las secuencias visuales cumplen un papel complementario. Sirven para inspeccionar formación, movimiento, contactos, recuperación y plausibilidad geométrica, pero no sustituyen la inferencia estadística ni equivalen a validación física con hardware. Cuando una evidencia es visual u observacional, se declara como tal.
-
-\subsection*{Protocolo incremental por fases}
-
-Para cada módulo se repite el mismo patrón experimental. Primero se fija el caso mínimo: robots, cargas, grafo, obstáculos, demanda y tratamiento. Después se ejecuta el método base del nivel anterior. A continuación se activa el nuevo mecanismo: quórum entero, capacidad efectiva, rol físico, campo de movimiento, transporte de carga o reparación de fallos. Finalmente se comparan métricas pareadas y se evita declarar dominancia cuando el intervalo de confianza no lo sostiene.
+Para una comparación entre métodos $a$ y $b$, la observación básica es la diferencia dentro del mismo mundo,
+\[
+  d_w = y_{w,a}-y_{w,b},
+\]
+donde $w$ identifica escenario, variante y semilla. Las inferencias agregan $d_w$ o modelan el resultado con un efecto de mundo. No se tratan como independientes las mediciones por robot, carga, frame, método o checkpoint cuando proceden del mismo mundo. Las curvas temporales son trayectorias descriptivas; su uso inferencial requiere un modelo longitudinal o un resumen predefinido por ejecución.
 
 \begin{table}[H]
 \centering
 \footnotesize
-\begin{tabularx}{\textwidth}{@{}p{0.12\textwidth}p{0.27\textwidth}Y Y@{}}
+\begin{tabularx}{\textwidth}{@{}p{0.20\textwidth}p{0.31\textwidth}X@{}}
 \toprule
-Módulo & Escenario mínimo & Métrica principal & Lectura en la memoria \\
+Elemento & Papel & Regla de análisis \\
 \midrule
-M0--M1 & Reclutamiento bajo demanda heterogénea. & Satisfacción de demanda, brecha frente a referencia y coste. & Sirve como línea base de asignación. \\
-M2 & Cargas con capacidad efectiva variable. & Capacidad servida, exceso, déficit, energía y distancia. & Muestra que cardinalidad y capacidad no son equivalentes. \\
-M3 & Cargas que requieren fuerza y torque. & Residual \emph{wrench}, falsos positivos y cobertura de slots. & Conecta asignación con factibilidad mecánica. \\
-M4 & Movimiento con obstáculos y comunicación local. & Llegada, colisión, despeje, energía y tiempo. & Expone compromisos de control. \\
-M5 & Transporte cooperativo de una carga extendida. & Pose final, formación, seguridad y éxito de transporte. & Evalúa la carga como cuerpo físico. \\
-M6 & Fallos, batería, retrasos y cargas inviables. & Recuperación, cargas perdidas, tiempo y detección. & Mide reparación operativa. \\
-M7--M8 & Degradación de comunicación y escala de almacén. & Conectividad temporal, throughput, coste y factibilidad. & Delimita robustez y frontera de escalabilidad. \\
+Mundo & Unidad independiente & Define el cluster y el bloque de emparejamiento. \\
+Método o variante & Tratamiento repetido & Se compara dentro del mismo mundo. \\
+Robot, carga o contacto & Unidad anidada & No incrementa por sí sola el número de réplicas. \\
+Frame o iteración & Medida longitudinal & Se resume por ejecución o se modela con dependencia temporal. \\
+Semilla de entrenamiento & Réplica del proceso de aprendizaje & Se conserva como unidad; no se elige la mejor semilla. \\
+Timeout o error & Resultado observado & Se preserva; nunca se elimina ni se convierte en dato ausente. \\
 \bottomrule
 \end{tabularx}
-\caption{Contrato experimental incremental por módulo.}
-\label{tab:protocolo-modular}
+\caption{Jerarquía de unidades y tratamiento de la dependencia.}
+\label{tab:variables-diseno-experimental}
 \end{table}
+
+\subsection{Comparadores, ajuste y prueba}
+
+La comparación incluye reglas voraces, asignación húngara, subastas o consenso, métodos basados en modelo, referencias centralizadas, variantes propuestas y políticas aprendidas. Las etiquetas \emph{proxy}, \emph{adaptación} o \emph{inspirado en} identifican implementaciones que no reproducen íntegramente la formulación y el alcance de información de la fuente. Un método solo se presenta como reproducción fiel cuando coinciden algoritmo, observación, restricciones y protocolo.
+
+Entrenamiento, ajuste, validación y prueba utilizan registros de semillas disjuntos. Los hiperparámetros y campeones se seleccionan con validación. Las semillas confirmatorias permanecen selladas hasta el freeze del protocolo. Las políticas finales se evalúan mediante el checkpoint fijado por presupuesto; una semilla fallida se conserva y no se reemplaza. Las referencias con información global se reportan como cotas internas o comparadores, no como soluciones desplegables.
+
+\subsection{Métricas y semántica de ejecución}
+
+Las métricas se agrupan en completitud, factibilidad física, seguridad y recursos. La completitud incluye cargas servidas, llegada y recuperación. La factibilidad reúne déficit de capacidad, residual \emph{wrench}, pose y formación. La seguridad registra colisión por ejecución, duración, despeje y activación de correcciones geométricas. Los recursos comprenden energía aproximada, distancia, mensajes, bytes, memoria observada y tiempo en segundos.
+
+SP1 separa la dinámica continua del cierre discreto. Un horizonte agotado puede coexistir con un cierre válido; por ello, \texttt{continuous\_converged}, validez RAW, \texttt{closure\_success} y éxito final se reportan por separado. La preferencia continua, el $\arg\max$ y QR son etapas distintas. El húngaro expandido se registra como óptimo centralizado, nunca como operación del método distribuido.
+
+SP5 v2 aplica la misma disciplina a la mecánica. RAW es el \emph{wrench} nominal; SAFE es la orden después del filtro de barrera; EXEC es el \emph{wrench} que las fuerzas de contacto saturadas realizan y el único que mueve la carga. La campaña no proyecta posiciones después de integrar. Una colisión EXEC no se convierte en éxito porque la orden SAFE fuera factible, y un timeout sin colisión permanece en el denominador. Los contactos se consideran fijos desde el cierre de SP4; por tanto, SP5 evalúa transporte posterior al acoplamiento y no vuelve a acreditar reclutamiento físico.
+
+\subsection{Análisis por tipo de endpoint}
+
+La prueba y el intervalo dependen del endpoint y de la salida efectivamente generada por cada protocolo:
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Resultados binarios.} Se informa la diferencia de riesgos pareada con intervalo del $95\%$. Los contrastes congelados usan McNemar exacto, equivalente al test binomial exacto sobre pares discordantes.
+  \item \textbf{Regret y magnitudes continuas.} Las campa\~nas can\'onicas usan diferencias por mundo, \emph{bootstrap} percentil pareado e intervalos del $95\%$; cuando estaba preespecificado se a\~nade Wilcoxon pareado. Media, mediana y CVaR se distinguen y conservan sus unidades.
+  \item \textbf{Tiempo a soluci\'on.} Los timeouts permanecen como resultados censurados y nunca se convierten en \`exitos ni en datos ausentes. Cuando una campa\~na no genera un modelo de supervivencia, se reportan tasa de timeout y tiempo truncado de forma descriptiva, sin inferir razones de riesgo ni efectos temporales.
+  \item \textbf{Mensajes y bytes.} Se resumen sobre los mismos mundos y se contrastan solo cuando existe una salida pareada expl\'icita. No se atribuyen modelos de conteo, mixtos o log-ratios a campa\~nas que no los produjeron.
+  \item \textbf{Asociaciones e interacciones.} Los t\'erminos m\'etodo por r\'egimen, m\'etodo por $\log N$, m\'etodo por $\lambda_2$, din\'amica por fitness y din\'amica por cierre se presentan como confirmatorios \`unicamente si aparecen en una tabla de inferencia can\'onica; en otro caso son descripciones reagrupadas por mundo.
+\end{itemize}
+
+Cada resultado confirmatorio debe contener estimación, intervalo del $95\%$, tamaño de efecto, número de mundos, eventos, fallos, timeouts, margen y decisión. Un contraste es no estimable si carece de bloques completos, presenta efecto o intervalo no finito, o no identifica la unidad inferencial. En ese caso no se sustituye la ausencia de estimación por $p=1$ ni por una conclusión nula.
+
+\subsection{Relevancia práctica y multiplicidad}
+
+Los contrastes confirmatorios de SP1 se fijaron antes de abrir las semillas 330000--330899. Las cinco comparaciones Smith--referencia usan diferencias por mundo, intervalos pareados del 95\% y corrección de Holm. La decisión combina efecto, intervalo y alcance; la significación aislada no establece superioridad práctica.
+
+\subsection{Protocolo integrado de comprobaciones físicas}
+
+El protocolo integrado v1 se preespecificó para resolver una limitación de la escalera modular: SP1--SP8 no comparten una única planta. Cuatro familias de mundo aíslan rotación nominal, escasez, complementariedad de torque y obstáculo con pérdida de paquetes, retardo y dropout. Cada mundo se ejecuta con seis prefijos acumulativos A0--FULL y el mismo \texttt{world\_hash}; por ello, el contraste relevante es el cambio dentro del mundo al añadir una comprobación.
+
+El protocolo contiene 40 mundos base por familia. En los checkpoints 40 y 60 se calcula el IC95\% \emph{bootstrap} de cada diferencia de éxito consecutiva. Una familia se amplía a 60 o 100 mundos si la mayor anchura excede $0{,}20$; 100 es un tope duro y no implica que todos los intervalos hayan alcanzado el umbral. El signo del efecto, el ranking y el valor $p$ no participan en la decisión. Holm se aplica una vez, en el tamaño final, sobre los veinte contrastes familia--escalón. Esta regla produjo 2.160 ejecuciones: 60 mundos nominales y 100 en las otras tres familias.
+
+Los estados \texttt{accepted\_by\_stage}, \texttt{final\_physical\_success} y \texttt{physical\_false\_positive} se conservan por separado. La primera variable solo acredita lo que el escalón sabe comprobar. La segunda exige todas las comprobaciones estáticas y el resultado dinámico. La tercera identifica la aceptación que se vuelve inválida al ejecutar la carga. La semántica impide que un QP resuelto, un waypoint alcanzado o una reparación local oculten una colisión, un déficit o un fallo de llegada.
+
+La ejecución fue exclusivamente CPU. El manifiesto registra Python~3.13.9, NumPy~2.3.5, 22 procesadores lógicos y cuatro workers con un hilo numérico por worker. El dry-run usó semillas ajenas al conjunto confirmatorio. El registro de semillas se abrió después del manifiesto congelado; todos los fallos, extensiones y hashes se conservaron.
+\subsection{Validez, reproducibilidad y evidencia visual}
+
+Una campaña se promueve a evidencia canónica cuando dispone de configuración congelada, semillas, hashes, mundos compartidos, tablas de ejecución, esquema válido y manifiesto de cierre. Los fallos y timeouts forman parte del denominador. Las campañas históricas que no cumplen el contrato actual se conservan como evidencia exploratoria o de desarrollo y no se renombran como confirmatorias.
+
+Las secuencias visuales permiten inspeccionar formación, movimiento, contacto y recuperación. No sustituyen la inferencia ni acreditan comportamiento físico con hardware. CoppeliaSim se usa, cuando corresponde, como inspección cualitativa separada; SP1 homogéneo emplea exclusivamente el simulador numérico Python. Las limitaciones incluyen contacto planar simplificado, modelos sintéticos de comunicación, proyección geométrica en algunas campañas y agregación mesoscópica en las flotas mayores.
+
+\subsection{Jerarquía de la evidencia}
+
+A0--FULL decide la hipótesis integradora sobre una sola planta. Las campañas SP1--SP3 explican el paso desde preferencia continua hasta capacidad y contactos; SP4--SP6 aíslan movimiento, carga extendida y recuperación; SP7--SP8 delimitan preguntas sobre red y escala que permanecen descriptivas o exploratorias. Esta jerarquía impide usar una campaña histórica para sostener una afirmación que exige ejecución integrada.

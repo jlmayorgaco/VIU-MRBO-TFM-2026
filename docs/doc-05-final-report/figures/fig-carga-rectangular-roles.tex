@@ -1,40 +1,38 @@
 \begin{figure}[htbp]
 \centering
+\resizebox{0.86\textwidth}{!}{%
 \begin{tikzpicture}[
-  scale=0.92,
-  force/.style={-{Latex[length=2mm]}, thick, draw=VIUOrange},
-  aux/.style={-{Latex[length=2mm]}, thick, draw=VIUDark},
-  robot/.style={circle, draw=VIUDark, fill=VIUOrange!25, minimum size=7mm, font=\scriptsize\sffamily}
+  font=\sffamily\small,
+  force/.style={-{Latex[length=2.5mm]},line width=1.0pt,draw=VIUOrange!90!black},
+  aux/.style={-{Latex[length=2.2mm]},line width=0.9pt,draw=VIUDark!75},
+  robot/.style={circle,draw=VIUDark!80,fill=VIUOrange!20,line width=0.9pt,minimum size=8.5mm,font=\sffamily\scriptsize\bfseries},
+  note/.style={draw=VIUDark!60,fill=VIUWhite,rounded corners=4pt,align=left,text width=4.2cm,inner sep=6pt}
 ]
 \coordinate (C) at (0,0);
-\begin{scope}[rotate=16]
-  \filldraw[fill=VIULight, draw=VIUDark, thick] (-2.0,-1.0) rectangle (2.0,1.0);
-  \node[robot] (FL) at (-2.0,1.0) {FL};
-  \node[robot] (FR) at (2.0,1.0) {FR};
-  \node[robot] (RL) at (-2.0,-1.0) {RL};
-  \node[robot] (RR) at (2.0,-1.0) {RR};
-  \coordinate (frc) at (2.0,1.0);
-  \coordinate (flc) at (-2.0,1.0);
-  \coordinate (rlc) at (-2.0,-1.0);
-  \coordinate (rrc) at (2.0,-1.0);
+\begin{scope}[rotate=14]
+  \filldraw[fill=VIULight,draw=VIUDark,line width=1pt,rounded corners=2pt] (-2.65,-1.22) rectangle (2.65,1.22);
+  \node[robot] (FL) at (-2.65,1.22) {FL};
+  \node[robot] (FR) at (2.65,1.22) {FR};
+  \node[robot] (RL) at (-2.65,-1.22) {RL};
+  \node[robot] (RR) at (2.65,-1.22) {RR};
+  \draw[VIUDark!45,dashed] (-2.65,0) -- (2.65,0);
+  \draw[VIUDark!45,dashed] (0,-1.22) -- (0,1.22);
 \end{scope}
-\fill[VIUDark] (C) circle (1.4pt) node[below right, font=\scriptsize] {$q_k=(x_k,y_k,\psi_k)$};
+\fill[VIUDark] (C) circle (1.8pt) node[below right=2pt,font=\scriptsize] {$q_k=(x_k,y_k,\psi_k)$};
 
-\draw[force] (FR) -- ++(-0.95,0.38) node[midway, above, font=\scriptsize] {$f_{FR}$};
-\draw[force] (FL) -- ++(-0.36,0.42);
-\draw[force] (RL) -- ++(-0.36,-0.42);
-\draw[force] (RR) -- ++(0.38,-0.32);
+\draw[force] (FR) -- ++(-1.25,0.42) node[midway,above=1pt] {$f_{FR}$};
+\draw[force] (FL) -- ++(-0.65,0.55) node[midway,left=1pt] {$f_{FL}$};
+\draw[force] (RL) -- ++(-0.72,-0.48) node[midway,left=1pt] {$f_{RL}$};
+\draw[force] (RR) -- ++(0.68,-0.45) node[midway,right=1pt] {$f_{RR}$};
+\draw[aux] (0.35,1.8) arc[start angle=34,end angle=142,radius=1.9] node[midway,above] {$\tau_z$};
 
-\draw[aux] (0.25,1.58) arc[start angle=35, end angle=142, radius=1.65]
-  node[midway, above, font=\scriptsize] {$\tau_z$};
-\filldraw[draw=VIUDark, fill=VIUDark!12] (3.35,0.55) circle (0.55)
-  node[font=\scriptsize\sffamily, align=center] {obst\'aculo};
-\draw[dashed, draw=VIUDark] (2.78,0.55) circle (0.95);
+\node[draw=VIUDark!60,fill=VIUDark!8,circle,minimum size=1.1cm] (obs) at (4.5,0.65) {obs.};
+\draw[draw=VIUOrange!65,dashed,line width=0.8pt] (obs) circle (1.0cm);
 
-\node[align=left, font=\small\sffamily, text=VIUDark] at (-0.3,-2.25)
-  {$W_k=\sum_\rho J_\rho(q_k)^\top f_\rho$,\quad
-   $\tau_z=\sum_\rho[(Rr_\rho)_x f_{\rho,y}-(Rr_\rho)_y f_{\rho,x}]$};
-\end{tikzpicture}
-\caption[Carga rectangular con roles geom\'etricos]{Carga rectangular con roles geom\'etricos de coalici\'on. Las fuerzas aplicadas en las esquinas generan un wrench sobre la carga; si no pasan por el centro, aparece un torque que permite rotar para rodear obst\'aculos.}
+\node[note] at (0,-3.45) {$W_k=\sum_\rho J_\rho(q_k)^\top f_\rho$\\[2pt]
+$\tau_z$ aparece si la l\'inea de acci\'on no pasa por el centro.};
+\end{tikzpicture}}
+\caption[Carga rectangular con roles geométricos]{Carga rectangular con roles geométricos de coalición. Las fuerzas aplicadas en las esquinas generan un wrench sobre la carga; si no pasan por el centro, aparece un torque que permite rotar para rodear obstáculos.}
+\viuownsource
 \label{fig:carga-rectangular-roles}
 \end{figure}

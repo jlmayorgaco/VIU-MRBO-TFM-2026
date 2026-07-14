@@ -1,0 +1,15 @@
+\begin{viuabstract}
+Este Trabajo Fin de Máster estudia coaliciones de robots móviles autónomos para transportar cargas heterogéneas. Una asignación puede cubrir el número de robots y fallar por capacidad, contacto, autoridad dinámica, colisión o información obsoleta. Se denomina \emph{coalición física} a la selección que supera esas comprobaciones sin confundir aceptación estática con éxito de transporte.
+
+La contribución principal es A0--FULL, una cadena acumulativa evaluada sobre una planta Euler--Lagrange. Sus escalones añaden preferencia local, cuórum entero, capacidad efectiva, complementariedad de contactos, reserva dinámica con HOCBF y recuperación bajo red degradada. SP1--SP8 aportan evidencia modular y no se interpretan como una ejecución única.
+
+El protocolo se congeló antes de abrir las semillas confirmatorias. La campaña reunió 2.160 ejecuciones emparejadas tras extensiones decididas solo por precisión; los contrastes usaron McNemar, \emph{bootstrap} pareado y corrección de Holm.
+
+En escasez, el cierre entero aumentó el éxito en $0{,}67$ y la capacidad añadió $0{,}33$; el cierre de \emph{wrench} lo redujo después en $0{,}18$ al retirar reserva de tracción. En torque, la búsqueda pareada añadió $0{,}60$; con obstáculo y \emph{dropout}, los dos últimos escalones añadieron $0{,}24$ y $0{,}62$. FULL alcanzó entre $0{,}86$ y $1{,}00$, pero conservó un $14\%$ de fallos en el régimen más adverso. Su selector usa candidatos globales: el resultado es un proxy de recuperación, no una prueba de cierre local distribuido.
+
+El desarrollo teórico establece un resultado ISS práctico bajo una matriz de Lyapunov común y supuestos explícitos. El alcance se limita a simulación planar: no se afirma validación física, seguridad funcional demostrada ni superioridad universal.
+
+\keywords{robots móviles autónomos, transporte cooperativo, coalición física, wrench, Euler--Lagrange, HOCBF, estabilidad ISS.}
+\end{viuabstract}
+
+\clearpage

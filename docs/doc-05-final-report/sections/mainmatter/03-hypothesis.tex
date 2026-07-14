@@ -1,50 +1,29 @@
-\section{Hipótesis}
+\section{Hipótesis de partida}
 
-Las hipótesis se formulan como afirmaciones falsables sobre la relación entre decisión distribuida, factibilidad física y coste operativo. Cada una se evalúa con mundos compartidos, métricas comparables y una lectura explícita del alcance. La tesis no exige que un único método domine todas las métricas; exige demostrar dónde aparece la mejora, dónde falla y qué parte del fenómeno queda fuera de la validación.
+Las hipótesis distinguen tres tipos de inferencia. Las hipótesis competitivas comparan métodos sobre mundos pareados; las validaciones de constructo comprueban que dos definiciones físicas no son equivalentes; los análisis exploratorios describen un régimen sin promover una conclusión confirmatoria. Una diferencia solo se interpreta cuando el efecto y su intervalo son estimables, la unidad inferencial es válida y la familia de multiplicidad está definida.
 
 \begin{table}[H]
 \centering
-\footnotesize
-\begin{tabularx}{\textwidth}{@{}p{0.10\textwidth}X X@{}}
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}p{0.07\textwidth}p{0.42\textwidth}p{0.18\textwidth}X@{}}
 \toprule
-ID & Hipótesis & Criterio de lectura \\
+ID & Afirmación evaluada & Tipo & Criterio de lectura \\
 \midrule
-H1 & El reclutamiento distribuido puede cerrar coaliciones útiles para cargas heterogéneas sin asignación central completa. & Mayor satisfacción de demanda o menor brecha frente a referencias bajo los mismos mundos. \\
-H2 & La capacidad efectiva cambia el problema respecto a la cardinalidad pura. & Una coalición con suficientes robots puede seguir siendo insuficiente si aporta poca capacidad mecánica. \\
-H3 & La factibilidad \emph{wrench} evita falsos positivos físicos. & El residual de fuerza y torque debe separar coberturas escalares aparentes de contactos físicamente útiles. \\
-H4 & La llegada segura al objetivo introduce un compromiso entre rapidez, energía y colisiones. & No se declara ganador único cuando la mejora en llegada aumenta coste o reduce margen de seguridad. \\
-H5 & El transporte cooperativo exige evaluar la carga como cuerpo extendido. & La pose final, la integridad de formación y los despejes son tan relevantes como la asignación inicial. \\
-H6 & La recuperación ante fallos requiere reparar coaliciones durante la ejecución, no solo reasignar al inicio. & La lectura combina éxito de recuperación, cargas perdidas, tiempo de reparación y seguridad posterior al evento. \\
-H7 & La comunicación local y el sensado degradado pueden romper el transporte aunque la asignación inicial sea válida. & Se distinguen conectividad directa, conectividad temporal, retransmisión y éxito de transporte. \\
-H8 & A escala de almacén, las soluciones centralizadas exactas pierden practicidad antes que las familias distribuidas o jerárquicas. & El criterio combina tiempo de ejecución, finalización, factibilidad \emph{wrench}, mensajes y coste por recurso. \\
+HC & Una cadena acumulativa de comprobaciones distingue aceptación estática y éxito físico; cada restricción debe evaluarse en su familia objetivo sin asumir monotonía global. & Confirmatoria integrada & Diferencias de éxito pareadas A0--FULL, falsos positivos físicos, McNemar, IC95\% y Holm. \\
+H1 & Un juego poblacional homogéneo puede producir preferencias estables y competitivas para $q=1$ y $q>1$, separando dinámica y cierre entero. & Competitiva y teórica & Regret pareado, invariantes, potencial, convergencia y efecto del cierre. \\
+H2 & Incorporar $e_{ik}$ al fitness marginal cambia la decisión respecto de contar robots o usar déficit plain. & Competitiva y teórica & Potencial, regret pareado, interacción fitness--protocolo y efecto del cierre. \\
+H3 & Un juego robot--carga--slot con precio wrench y cierre guardado separa equilibrio continuo de coalición mecánicamente ejecutable. & Teórica, competitiva y de constructo & KKT/v-GNE, brecha QP, falsos positivos RAW/CLOSED, cobertura y consenso. \\
+H4 & La llegada segura introduce un compromiso entre rapidez, energía y colisiones. & Competitiva & No se declara ganador único cuando una mejora degrada seguridad o tiempo. \\
+H5 & El transporte cooperativo exige evaluar la carga como cuerpo extendido. & Constructo y competitiva & Pose final, integridad de formación, despejes y transporte. \\
+H6 & La recuperación ante fallos requiere reparar coaliciones durante la misión. & Competitiva & Recuperación, carga perdida, tiempo y seguridad posterior al evento. \\
+H7 & La conectividad temporal se asocia con la calidad de red y puede limitar el transporte bajo información local. & Constructo; confirmación aún no disponible & La asociación se informa por clusters de mundo. El contraste de intermitencia extrema exige bloques completos. \\
+H8 & El modelo mesoscópico permite explorar cómo varían calidad y recursos con la escala. & Exploratoria & Los timeouts declarados y la memoria analítica no se interpretan como mediciones de ejecución. \\
 \bottomrule
 \end{tabularx}
-\caption{Hipótesis principales de la memoria y criterio de lectura.}
+\caption{Afirmaciones principales, tipo de inferencia y criterio de lectura.}
 \label{tab:hipotesis-principales}
 \end{table}
 
-\subsection*{Escalera modular de validación}
-\label{sec:escalera-modular}
+H7.3 se clasifica como no estimable porque el perfil requerido no forma bloques completos en la campaña conservada. H8.1--H8.2 quedan suspendidas como hipótesis confirmatorias: parte del coste computacional fue fijado por reglas del evaluador o estimado mediante fórmulas dependientes del tamaño. H8.3 se mantiene como análisis exploratorio del modelo mesoscópico. Esta reclasificación evita convertir ausencia de datos o valores impuestos por diseño en evidencia favorable.
 
-La memoria avanza por una escalera de dificultad creciente. Esta organización evita mezclar evidencias de distinta madurez: algunas conclusiones se apoyan en Monte Carlo de simulación, otras en pruebas algebraicas o en inspección visual, y otras quedan delimitadas como extensión.
-
-\begin{table}[H]
-\centering
-\footnotesize
-\begin{tabularx}{\textwidth}{@{}p{0.12\textwidth}p{0.28\textwidth}Y Y@{}}
-\toprule
-Módulo & Pregunta técnica & Evidencia esperada & Estado de lectura \\
-\midrule
-M0 & ¿Qué ocurre con reglas clásicas, centralizadas o puramente locales? & Línea base de coste, calidad y fallo bajo comunicación local. & Comparativo. \\
-M1 & ¿Cómo se cierran quórums enteros para cargas con demanda mínima? & Reducción de coaliciones parciales y mejora de completitud. & Implementado y evaluado. \\
-M2 & ¿Cómo cambia el problema cuando los robots tienen capacidades efectivas distintas? & Satisfacción de capacidad, coste físico y brecha frente a referencia. & Implementado y evaluado. \\
-M3 & ¿La coalición genera el \emph{wrench} que exige la carga? & Residual, falsos positivos escalares y roles de contacto. & Implementado en simulación planar. \\
-M4 & ¿Los robots llegan y mantienen seguridad durante el movimiento? & Tiempo, energía, colisiones, despeje y fallo por escenario. & Implementado y evaluado. \\
-M5 & ¿La carga se mueve como cuerpo extendido hasta una pose final? & Éxito de transporte, formación, orientación y obstáculos. & Implementado y evaluado. \\
-M6 & ¿El sistema repara fallos, batería y cargas inviables durante la misión? & Recuperación, cargas perdidas, detección y coste de reasignación. & Implementado y evaluado. \\
-M7--M8 & ¿Qué ocurre con comunicación degradada y escala de almacén? & Conectividad temporal, sensado, rendimiento y frontera de intractabilidad. & Implementado en modelo mesoscópico. \\
-\bottomrule
-\end{tabularx}
-\caption{Escalera modular usada para ordenar la validación.}
-\label{tab:hipotesis-modulos}
-\end{table}
+HC es la hipótesis integradora y se decide con A0--FULL. H1--H3 explican la transición desde una preferencia continua hasta una coalición con capacidad y contactos; H4--H6 evalúan su ejecución; H7--H8 delimitan fronteras que la evidencia histórica todavía no permite tratar como confirmatorias. La metodología conserva esta jerarquía para evitar que una campaña exploratoria sostenga una conclusión principal.

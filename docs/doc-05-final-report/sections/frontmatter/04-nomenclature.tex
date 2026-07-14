@@ -6,18 +6,25 @@
 \begin{description}[leftmargin=3.2em,style=nextline]
   \item[$\mathcal R$] Conjunto de robots móviles autónomos, con $N=|\mathcal R|$.
   \item[$\mathcal L$] Conjunto de cargas o tareas físicas, con $M=|\mathcal L|$.
+  \item[$a_{ik}$] Variable de asignación uno a uno: vale $1$ si el robot $i$ atiende la carga $k$.
+  \item[$c_{ik}$] Coste de asignación robot--carga (distancia normalizada) en el reclutamiento homogéneo SP1.
   \item[$q_i,\theta_i$] Posición y orientación del robot $i$.
   \item[$q_k^L$] Pose de referencia de la carga $k$.
   \item[$C_k$] Coalición de robots asignada a la carga $k$.
   \item[$n_k$] Cardinalidad mínima requerida por una carga en el modelo escalar.
   \item[$D_k$] Demanda física de la carga $k$.
   \item[$S_k$] Capacidad efectiva agregada entregada por una coalición.
+  \item[$S^\star$] Cardinalidad máxima de emparejamiento en el límite $q=1$ de SP1, $S^\star=\min(N,M)$.
+  \item[$c_i$] Capacidad nominal del robot $i$.
+  \item[$\eta_{ik}$] Factor de efectividad que descuenta distancia, orientación, batería, saturación o desconexión.
   \item[$G_C$] Matriz de contactos que transforma esfuerzos locales en fuerza y torque planar.
-  \item[$w_k^{\rm dem}$] \emph{Wrench} demandado por la carga: fuerza longitudinal, fuerza lateral y torque.
+  \item[$w_k^{\rm dem}$] Vector de fuerza y torque (\emph{wrench}) demandado por la carga.
   \item[$\lambda$] Vector de esfuerzos admisibles en los contactos.
   \item[$\delta_k$] Déficit físico-económico de una carga, definido como demanda no satisfecha.
+  \item[$\rho_k$] Residual de \emph{wrench} de una coalición frente a la demanda de fuerza y torque.
+  \item[$\pi_k,\mu_k$] Precios locales de déficit de capacidad y de residual \emph{wrench}.
   \item[$y_{ik}$] Preferencia continua del robot $i$ por la carga $k$ dentro de una dinámica poblacional.
-  \item[$p_{ik}$] Payoff local percibido por el robot $i$ para atender la carga $k$.
+  \item[$p_{ik}$] Utilidad local (\emph{payoff}) percibida por el robot $i$ para atender la carga $k$.
   \item[$G(t)$] Grafo de comunicación local entre robots.
   \item[AMR] \emph{Autonomous Mobile Robot}.
   \item[CBBA] \emph{Consensus-Based Bundle Algorithm}.

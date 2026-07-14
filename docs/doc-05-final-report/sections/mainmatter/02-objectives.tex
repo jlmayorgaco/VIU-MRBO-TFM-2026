@@ -2,21 +2,21 @@
 
 \subsection{Objetivo general}
 
-Diseñar, implementar y evaluar una arquitectura distribuida para la coordinación de coaliciones multi-AMR en el transporte de cargas heterogéneas, integrando dinámicas poblacionales, cierre entero de quórum, capacidad efectiva en espacio \emph{wrench} y validación experimental reproducible por simulación.
+Diseñar, implementar y evaluar una arquitectura escalonada para coordinar coaliciones multi-AMR en el transporte de cargas heterogéneas, integrando decisiones locales, cierre entero de cuórum, capacidad efectiva, factibilidad \emph{wrench} y validación reproducible por simulación.
 
 \subsection{Objetivos específicos}
 
 \begin{enumerate}[label=O\arabic*.,leftmargin=2.2em]
   \item Formular el transporte cooperativo como un problema de asignación física, donde cada robot decide localmente su participación en una carga y la utilidad depende de déficit, coste operativo y factibilidad mecánica.
-  \item Construir una escalera de validación que avance desde reclutamiento escalar hasta capacidad heterogénea, contactos, movimiento, transporte, recuperación, comunicación y escala de flota.
-  \item Diseñar Smith-QR como extensión de la dinámica de Smith con memoria local, estimación de ocupación, cierre entero de coaliciones y guardias de ejecución.
+  \item Construir y ejecutar una escalera de validación que avance desde preferencia local hasta capacidad heterogénea, contactos, dinámica, seguridad, recuperación, comunicación y escala de flota.
+  \item Diseñar y delimitar Smith-QR como extensión de la dinámica de Smith con memoria local, estimación de ocupación, cierre entero y guardias de ejecución, identificando qué operaciones aún requieren información global.
   \item Extender el criterio de quórum desde cardinalidad hacia capacidad efectiva, incorporando fuerza, torque, orientación, batería, distancia y conectividad.
   \item Comparar la arquitectura propuesta frente a referencias centralizadas, heurísticas clásicas, subastas distribuidas, variantes basadas en modelo y comparadores aprendidos.
-  \item Garantizar trazabilidad experimental mediante semillas disjuntas, mundos compartidos, métricas homogéneas, contrastes pareados y límites de validez explícitos.
+  \item Documentar la trazabilidad experimental mediante semillas disjuntas, freeze previo a test, mundos compartidos, métricas homogéneas, extensiones solo por precisión, contrastes pareados y límites de validez explícitos.
 \end{enumerate}
 
 \subsection{Alcance}
 
-El alcance defendible de la memoria es simulación reproducible con integración visual y análisis cuantitativo. No se declara validación física en hardware, certificación de seguridad, percepción real ni despliegue industrial. Los métodos aprendidos se usan como comparadores y no como sustituto de la contribución analítica principal. La memoria distingue tres niveles de madurez: resultados implementados y evaluados en campañas principales, pruebas de consistencia matemática o sintética, y extensiones que quedan como trabajo futuro.
+El alcance de la memoria comprende simulación reproducible, integración visual y análisis cuantitativo. Queda fuera del alcance la validación física, la validación de seguridad funcional, la percepción real y la prueba en una instalación industrial. Los métodos aprendidos se usan como comparadores de la contribución analítica principal. La memoria distingue resultados evaluados en campañas, pruebas de consistencia matemática o sintética y extensiones propuestas como trabajo futuro.
 
-En particular, la asignación explícita de roles de contacto se aproxima mediante formación derivada dentro de cada coalición, no como una optimización completa de todos los pares robot--carga--slot. La batería se incorpora como restricción económica y de retornabilidad, sin modelar todavía una red completa de estaciones, colas y recarga física.
+Los roles de contacto se derivan de la formación interna de cada coalición. La campaña integrada explora un vecindario acotado de uno y dos robots para complementar wrench, pero no resuelve globalmente todos los pares robot--carga--contacto. La batería se incorpora como restricción económica y de retornabilidad, sin modelar una red completa de estaciones, colas y recarga física.

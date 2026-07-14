@@ -1,431 +1,53 @@
-\section{Modelo, ley de control y resultados}
+\section{Resultados y análisis}
 \label{sec:modelo-resultados}
 
-\subsection{Estado del sistema}
+El capítulo sigue una jerarquía explícita. A0--FULL aporta la evidencia principal porque ejecuta selección, mecánica, seguridad y recuperación sobre una misma planta. Después, SP1--SP8 se sintetizan en tres bloques: formación de la coalición, ejecución de la misión y fronteras todavía no confirmatorias. Esta separación impide sumar campañas con plantas y unidades experimentales distintas como si fueran una sola ejecución.
 
-El estado mínimo contiene robots, cargas, obstáculos y grafo de comunicación:
-\[
-  x = \{(q_i,\theta_i,b_i,c_i)_{i=1}^{N},
-  (q_k^L,w_k^{\rm dem},D_k,\ell_k,a_k)_{k=1}^{M}, G(t)\}.
-\]
-Cada robot observa información local: vecinos, cargas descubiertas, ocupación estimada, distancia, batería y margen de seguridad. Para cargas no puntuales, $\ell_k$ y $a_k$ representan largo y ancho de la huella rectangular usada por la formación rígida.
+Todas las comparaciones utilizan mundos compartidos entre métodos. Una semilla fija posiciones, cargas, obstáculos y eventos, de modo que cada diferencia se calcula sobre la misma instancia. Las tasas se interpretan junto con la factibilidad física, la seguridad y el coste de recursos. Las referencias centralizadas actúan como cotas internas de la campaña y no como soluciones desplegables en cualquier escala.
 
-\input{figures/fig-problema}
+\input{sections/mainmatter/06-results-and-analysis/physical-coalition-integrated}
+\input{sections/mainmatter/06-results-and-analysis/modular-evidence-synthesis}
 
-\subsection{Lectura escalonada del modelo}
+% La transición se deja libre para evitar páginas vacías causadas por flotantes forzados.
+\subsection{Validación de los resultados}
 
-La formulación avanza de menor a mayor exigencia física. En el nivel de reclutamiento, el robot solo elige carga:
-\[
-  y_i \in \Delta_M,\qquad
-  C_k(t)=\{i:\argmax_{\ell} y_{i\ell}(t)=k\}.
-\]
-En el caso homogéneo, una carga queda servida si la coalición alcanza cardinalidad mínima:
-\[
-  |C_k| \ge n_k .
-\]
-Cuando los robots y las cargas son heterogéneos, la cardinalidad se reemplaza por capacidad efectiva:
-\[
-  S_k(C_k,t)=\sum_{i\in C_k} c_{ik}(t),\qquad
-  c_{ik}(t)=c_i\,\eta_{ik}(q_i,b_i,G(t)),
-  \qquad S_k(C_k,t)\ge D_k .
-\]
-El factor $\eta_{ik}$ resume la pérdida por distancia, orientación, batería, saturación, contacto inútil o desconexión. En el nivel de roles, el robot no solo elige carga sino también un punto de contacto:
-\[
-  z_{ikh}\in\{0,1\},\qquad
-  \sum_{k,h} z_{ikh}\le 1,\qquad
-  C_{kh}=\{i:z_{ikh}=1\}.
-\]
-La memoria usa esta idea de forma ejecutable en dos pasos: Smith-QR asigna la carga y la formación deriva el slot por orden interno de la coalición. Resolver de forma simultánea la decisión robot--carga--slot queda como extensión natural.
-
-\input{figures/fig-capacidad-efectiva-mercado}
-
-\subsection{Comunicación, memoria local y Smith-QR}
-
-La comunicación se modela mediante un grafo $G(t)$ dependiente de rango, pérdidas y descubrimiento local. La condición nominal para el análisis es conectividad a trozos, pero los experimentos incluyen regímenes degradados para medir qué ocurre cuando la información global deja de estar disponible. Smith-QR no asume difusión perfecta: cada robot conserva memoria de descriptores de carga, estima ocupación por consenso dinámico y usa compromiso temporal para reducir cambios espurios de tarea.
-
-Smith-QR conserva la dinámica poblacional de Smith y añade cinco mecanismos de ejecución:
-\begin{itemize}[leftmargin=2em]
-  \item memoria de descriptores de carga bajo comunicación local;
-  \item estimación dinámica de ocupación;
-  \item cierre entero de quórums útiles;
-  \item compromiso en ruta para reducir oscilaciones;
-  \item guardias de factibilidad para no declarar transporte sin coalición física.
-\end{itemize}
-
-\input{figures/fig-framework-integrado}
-
-\subsection{Equilibrio operativo}
-
-La noción de equilibrio usada en la memoria es práctica. No se exige que la flota alcance
-un equilibrio de Nash ideal en un juego estático completo, porque la misión combina
-movimiento, obstáculos, comunicación local y cierre entero de coaliciones. Se exige una
-condición verificable: una vez estabilizada la asignación, ningún robot debe encontrar
-una alternativa local con mejora relevante y, además, la coalición resultante debe superar
-los filtros físicos.
-\[
-  \Delta_i =
-  \max_{k,h} J_i(k,h;a_{-i}) - J_i(k_i,h_i;a_{-i}),
-  \qquad
-  \Delta_i \leq \varepsilon_{\rm NE}.
-\]
-El término $J_i(k,h;a_{-i})$ evalúa una carga y un slot de contacto dados los compromisos
-del resto de la coalición. Su composición es deliberadamente física:
-\[
-  J_i =
-  \omega_D\,\pos{D_k-S_k}
-  -\omega_q\,\norm{q_i-q_{kh}^{\rm slot}}
-  -\omega_b\,\pos{b_{\min}-b_i}
-  -\omega_o\,\Psi_i^{\rm obst}
-  -\omega_s\,\sigma_i
-  +\omega_w\,\Delta W_i .
-\]
-Aquí $\Delta W_i$ mide la reducción marginal del residual de fuerza y torque al incluir
-al robot, $\Psi_i^{\rm obst}$ resume proximidad a obstáculos y $\sigma_i$ penaliza
-saturación. La lectura es estricta: una asignación puede ser estable en sentido de Nash
-aproximado y aun así rechazarse si falla el despeje mínimo, la batería de retorno o el
-residual \emph{wrench}.
-
-\subsection{Campo continuo y formación rígida}
-
-La ley deseada para el robot $i$ se expresa como suma suave de campos:
-\[
-  u_i =
-  -\nabla_{q_i}\Phi_i^{\rm tarea}
-  -\nabla_{q_i}\Phi_i^{\rm formacion}
-  -\nabla_{q_i}\Phi_i^{\rm obstaculo}
-  -\nabla_{q_i}\Phi_i^{\rm bateria}
-  + u_i^{\rm wrench}.
-\]
-El comportamiento depende del término dominante. Si la batería cae, el campo de retornabilidad gana peso; si una carga requiere torque, el término \emph{wrench} favorece contactos útiles; si el quórum se cierra, el déficit baja y el reclutamiento se relaja.
-
-\input{figures/fig-control-vectorial-seis-bloques}
-
-La evaluación de obstáculos se integra en el campo, pero se mide por criterios discretos
-de seguridad. Para una carga o robot con radio efectivo $r_i$ y un obstáculo $o$, se
-define
-\[
-  d_{io}^{\rm libre}(t)=d(q_i(t),\mathcal O_o)-r_i,
-  \qquad
-  h_{io}(t)=\bigl(d_{io}^{\rm libre}(t)\bigr)^2-d_{\min}^2 .
-\]
-La ejecución se considera segura si $h_{io}(t)\geq 0$ durante todo el tramo. La distancia
-mínima no se resume como una variable auxiliar: entra en la métrica de aceptación junto
-con llegada, tiempo, energía y bloqueo geométrico.
-\[
-  \mathcal E_{\rm obs} =
-  \{\text{sin colisión},\ d_{\min}^{\rm obs}\geq d_{\min},\
-  T\leq T_{\max},\ E\leq E_{\max},\ \text{sin bloqueo persistente}\}.
-\]
-Cuando la carga es extendida, la misma evaluación se aplica a la envolvente rectangular
-de la carga y no solo al centro de masa. Esta decisión evita falsos positivos: una
-trayectoria puede llevar el centro de la carga al objetivo y, al mismo tiempo, invadir un
-obstáculo con una esquina.
-
-La asignación Smith-QR produce una coalición $C_k$, pero transportar una carga extendida exige saber dónde actúa cada robot. Para ello se define una formación rígida solidaria al marco de la carga:
-\[
-  s_j = (r_j,n_j), \qquad r_j \in \RR^2,\quad \norm{n_j}=1,
-\]
-con $r_j$ como punto de contacto relativo al centro de masa y $n_j$ como dirección admisible de fuerza. Los slots se generan a partir de la huella rectangular de la carga: esquinas y lados permiten producir fuerza longitudinal, fuerza lateral y torque planar. Esta decisión convierte la formación en parte del modelo de carga, no en un círculo visual alrededor del objetivo.
-
-\input{figures/fig-carga-rectangular-roles}
-
-\subsection{Juego vectorial de \emph{wrench}}
-
-Para una carga plana, cada contacto aporta fuerza y torque:
-\[
-  w_j =
-  \begin{bmatrix}
-  n_{jx}\\ n_{jy}\\ r_{jx}n_{jy}-r_{jy}n_{jx}
-  \end{bmatrix}\lambda_j,
-  \qquad 0 \le \lambda_j \le \bar f_j,
-\]
-donde $\lambda_j$ es el esfuerzo escalar elegido por el robot del slot $j$ y $\bar f_j$ es su límite individual. El juego vectorial se formula como una mejor respuesta cooperativa en espacio \emph{wrench}:
-\[
-  \lambda_C^\star =
-  \argmin_{0 \le \lambda \le \bar f}
-  \norm{G_C\lambda - w_k^{\rm dem}}_2^2.
-\]
-La utilidad marginal de cada robot se interpreta como su reducción del residual común. Así, una coalición es físicamente aceptable si el residual $\norm{G_C\lambda_C^\star-w_k^{\rm dem}}$ y la saturación por robot quedan bajo umbrales definidos. Esta es la diferencia entre tener suficientes robots y poder mover la carga con fuerza y torque viables.
-
-\input{figures/fig-transporte-amorfo-stack}
-
-\subsection{Formalización SP1--SP8}
-\label{subsec:formalizacion-sp}
-
-\IfFileExists{../generated/method_matrix.tex}{\input{../generated/method_matrix.tex}}{}
-
-La escalera experimental se formaliza como una familia de subproblemas
-\[
-  \mathcal{SP}_s =
-  \langle X_s,\ A_s,\ F_s,\ J_s,\ \mathcal M_s,\ \mathcal D_s\rangle,
-  \qquad s=1,\dots,8.
-\]
-El conjunto $X_s$ contiene los estados observables del estudio, $A_s$ las decisiones
-admisibles, $F_s$ las restricciones de factibilidad, $J_s$ el criterio de coste o utilidad,
-$\mathcal M_s$ el vector de métricas y $\mathcal D_s$ la regla de lectura. Esta notación
-evita mezclar niveles: un método puede ser bueno en reclutamiento y débil en movimiento,
-o puede cerrar capacidad escalar y fallar al producir torque.
-
-La comparación entre métodos se realiza de forma pareada sobre mundos compartidos. Si
-$a$ y $b$ son dos tratamientos y $\omega$ representa un mundo experimental, la diferencia
-relevante no es una media aislada, sino
-\[
-  \Delta_{ab}^{(s)}(\omega)=
-  m_s(a,\omega)-m_s(b,\omega),
-  \qquad
-  \bar\Delta_{ab}^{(s)} \pm {\rm IC}_{95\%}.
-\]
-La decisión $\mathcal D_s$ solo declara ventaja cuando la mejora es consistente con el
-intervalo de confianza y no contradice métricas de seguridad o factibilidad física.
-
-\paragraph{SP1: reclutamiento con demanda mínima.}
-El primer subproblema abstrae cada carga como una demanda entera de robots. La decisión
-de cada AMR es una carga candidata:
-\[
-  a_i\in\mathcal L,\qquad
-  C_k=\{i\in\mathcal R:a_i=k\}.
-\]
-La restricción principal es cerrar el quórum:
-\[
-  e_k^{\rm card}=\pos{n_k-|C_k|},\qquad
-  \chi_k^{\rm card}=\mathbf{1}\{|C_k|\ge n_k\}.
-\]
-El criterio de coste combina demanda no servida y coste operativo:
-\[
-  J_1 =
-  \sum_{k\in\mathcal L}\alpha_k e_k^{\rm card}
-  + \sum_{i\in\mathcal R}\beta_i d(q_i,q_{a_i})
-  + \gamma\,N_{\rm cambios}.
-\]
-SP1 evalúa si una regla distribuida puede cerrar coaliciones útiles sin depender de una
-asignación central completa.
-
-\paragraph{SP2: capacidad efectiva heterogénea.}
-El segundo subproblema sustituye cardinalidad por capacidad. Cada robot aporta una
-capacidad efectiva dependiente de estado:
-\[
-  S_k(C_k)=\sum_{i\in C_k}c_i\eta_{ik}(q_i,b_i,G),
-  \qquad
-  e_k^{\rm cap}=\pos{D_k-S_k(C_k)}.
-\]
-La asignación es aceptable si
-\[
-  S_k(C_k)\ge D_k
-  \quad\text{y}\quad
-  \sum_{k}\pos{S_k(C_k)-D_k}
-  \ \text{permanece acotado}.
-\]
-El criterio ya no premia sumar robots sin necesidad; penaliza déficit, exceso de capacidad,
-distancia y batería. SP2 decide si el payoff marginal corrige la falsa equivalencia entre
-``muchos robots'' y ``suficiente capacidad''.
-
-\paragraph{SP3: factibilidad \emph{wrench}.}
-El tercer subproblema evalúa si la coalición asignada puede producir fuerza y torque.
-Para una carga plana:
-\[
-  \rho_k(C_k)=
-  \min_{0\le\lambda\le\bar f}
-  \norm{G_{C_k}\lambda-w_k^{\rm dem}}_2,
-  \qquad
-  \chi_k^{\rm wrench}=\mathbf{1}\{\rho_k(C_k)\le\epsilon_k\}.
-\]
-También se controla saturación:
-\[
-  s_k^{\rm sat}=\max_j\frac{\lambda_j^\star}{\bar f_j}.
-\]
-La decisión de SP3 es positiva solo si el residual queda bajo umbral y la solución no
-depende de saturar contactos. Este subproblema separa coaliciones aparentes de coaliciones
-mecánicamente útiles.
-
-\paragraph{SP4: movimiento seguro posterior a la asignación.}
-El cuarto subproblema añade cinemática, obstáculos y coste de llegada. La decisión ya no
-es solo $a_i$, sino una trayectoria admisible:
-\[
-  q_i(t+1)=f_i(q_i(t),u_i(t)),
-  \qquad u_i(t)\in\mathcal U_i.
-\]
-La factibilidad exige seguridad durante todo el tramo:
-\[
-  h_{io}(q_i(t))\ge 0,\quad
-  \forall i,o,t,
-  \qquad
-  q_i(T)\in\mathcal B(q_{a_i}^{\rm goal},r_{\rm goal}).
-\]
-El coste de lectura es
-\[
-  J_4 =
-  \omega_T T+\omega_E E+\omega_d d_{\min}^{-1}
-  +\omega_c N_{\rm colisiones}+\omega_f N_{\rm fallos}.
-\]
-SP4 no declara ganador por llegar antes si el método aumenta colisiones, reduce despeje o
-consume energía de forma no competitiva.
-
-\paragraph{SP5: transporte cooperativo de carga extendida.}
-El quinto subproblema desplaza la atención desde robots individuales hacia la pose de la
-carga. Cada robot debe mantener un slot solidario al marco de la carga:
-\[
-  q_{ij}^{\rm slot}(t)=q_k^L(t)+R(\theta_k^L(t))r_j,
-  \qquad
-  e_{ij}^{\rm form}(t)=\norm{q_i(t)-q_{ij}^{\rm slot}(t)}.
-\]
-La carga se considera transportada si cumple simultáneamente:
-\[
-  \norm{q_k^L(T)-q_k^{L,\star}}\le\epsilon_q,\qquad
-  |\theta_k^L(T)-\theta_k^{L,\star}|\le\epsilon_\theta,
-  \qquad
-  \max_{i,j,t}e_{ij}^{\rm form}(t)\le\epsilon_f.
-\]
-Además, los despejes se evalúan sobre la envolvente de la carga, no solo sobre su centro.
-SP5 formaliza el paso de ``robots llegan'' a ``el objeto llega con formación y orientación
-válidas''.
-
-\paragraph{SP6: recuperación ante eventos.}
-El sexto subproblema introduce eventos adversos:
-\[
-  \xi(t)\in
-  \{\text{fallo de robot},\ \text{batería baja},\ \text{retardo},\
-  \text{carga inviable}\}.
-\]
-Tras un evento en $t_e$, el conjunto activo cambia:
-\[
-  \mathcal R^+(t_e)=\mathcal R(t_e)\setminus\mathcal R_{\rm no\ disponible}(t_e),
-  \qquad
-  C_k^+=\mathcal R^+(t_e)\cap C_k .
-\]
-La recuperación se mide por tiempo hasta volver a una coalición factible:
-\[
-  T_{\rm rec}=\inf\{t\ge t_e:
-  e_k^{\rm cap}(t)=0,\ \rho_k(t)\le\epsilon_k,\ h(t)\ge 0\}.
-\]
-SP6 acepta una estrategia si repara sin ocultar pérdidas: también se registran cargas
-abandonadas, detección de inviabilidad, sobrecoste energético y seguridad posterior al
-evento.
-
-\paragraph{SP7: comunicación y sensado degradado.}
-El séptimo subproblema hace explícita la información disponible. Cada robot observa solo
-un subconjunto local:
-\[
-  \mathcal I_i(t)=
-  \{j:(i,j)\in E(t)\}\cup
-  \{k:d(q_i(t),q_k^L(t))\le r_{\rm sens}\}.
-\]
-La conectividad relevante es temporal:
-\[
-  G_{[t,t+\tau]}=\bigcup_{r=t}^{t+\tau}G(r),
-  \qquad
-  \lambda_2\bigl(L(G_{[t,t+\tau]})\bigr)>0.
-\]
-La lectura de SP7 distingue conectividad instantánea, conectividad acumulada, pérdidas de
-mensaje y descubrimiento tardío de cargas. El éxito exige que el método mantenga
-factibilidad sin depender de difusión global continua.
-
-\paragraph{SP8: escalabilidad de flota.}
-El octavo subproblema estudia la frontera de practicidad al crecer $N$. La evaluación se
-define sobre una familia de tamaños:
-\[
-  N\in\mathcal N,\qquad
-  \mathcal N=\{N_1<N_2<\cdots<N_r\}.
-\]
-Para cada método se mide calidad, tiempo, mensajes y memoria:
-\[
-  \mathcal M_8(N)=
-  \bigl(Q(N),\ T_{\rm calc}(N),\ M_{\rm msg}(N),\ R_{\rm mem}(N),\
-  \chi_{\rm fact}(N)\bigr).
-\]
-Una referencia centralizada se considera fuera de frontera operativa si
-\[
-  T_{\rm calc}(N)>T_{\max}
-  \quad\text{o}\quad
-  R_{\rm mem}(N)>R_{\max}.
-\]
-SP8 no prueba despliegue industrial; delimita cuándo las familias distribuidas o
-jerárquicas conservan una relación defendible entre calidad y recurso.
-
-\paragraph{Cierre formal de la escalera.}
-La familia SP1--SP8 debe leerse como una sucesión de refinamientos, no como ocho
-experimentos independientes. Sea $\pi_s$ la proyección que elimina del subproblema
-$s+1$ las variables nuevas introducidas en ese nivel. La escalera es coherente si
-\[
-  \pi_s(F_{s+1}) \subseteq F_s,
-  \qquad
-  J_{s+1}=J_s+\Gamma_{s+1},
-  \qquad
-  \Gamma_{s+1}\ge 0
-  \ \text{ante violación física o informacional}.
-\]
-La inclusión expresa que una solución capaz de superar un nivel más rico no debe
-contradecir la factibilidad ya exigida en el nivel anterior. El término
-$\Gamma_{s+1}$ representa la penalización añadida por capacidad efectiva, wrench,
-seguridad, formación, recuperación, comunicación o escala. Por tanto, cada SP
-introduce una nueva causa posible de fallo sin borrar las anteriores.
-
-\begin{proposicion}[No extrapolación entre niveles]
-Si un método supera $\mathcal{SP}_s$ pero existe una restricción nueva
-$g_{s+1}(x,a)>0$ con probabilidad positiva, entonces no puede declararse válido para
-$\mathcal{SP}_{s+1}$ aunque conserve la misma media en $J_s$.
-\end{proposicion}
-
-\begin{proof}
-Por definición, la factibilidad del nivel siguiente exige
-$F_{s+1}=F_s\cap\{(x,a):g_{s+1}(x,a)\le 0\}$, salvo cambios de notación inducidos por
-$\pi_s$. Si $g_{s+1}>0$ ocurre con probabilidad positiva, existe un conjunto de mundos
-en el que la decisión pertenece a $F_s$ pero no a $F_{s+1}$. La media de $J_s$ no
-detecta esa violación porque no contiene el término nuevo. Al añadir
-$\Gamma_{s+1}$, la decisión queda penalizada o rechazada por la regla
-$\mathcal D_{s+1}$. Así, la validez en un nivel no implica validez en el siguiente.
-\end{proof}
-
-Esta proposición justifica la prudencia de la interpretación experimental. SP1 puede
-mostrar buen reclutamiento y, aun así, SP2 puede revelar falta de capacidad. SP2 puede
-cerrar capacidad y SP3 descubrir torque inviable. SP4 puede llegar rápido y fallar por
-seguridad; SP5 puede mover robots y no transportar la carga; SP6 puede exponer
-fragilidad ante eventos; SP7 puede romper la coordinación por información parcial; y
-SP8 puede convertir una referencia centralizada en una solución fuera de frontera. La
-contribución no es una promesa de dominancia universal, sino una cadena de filtros que
-obliga a defender cada afirmación en el nivel físico que le corresponde.
-
-\subsection{Síntesis experimental SP1--SP8}
-
-La validación final se estructura como una escalera de ocho subproblemas. La lectura conjunta no busca un ganador universal: busca demostrar qué mecanismo resuelve cada dificultad y dónde aparecen límites operativos.
+La tabla~\ref{tab:lectura-transversal-resultados} resume qué aporta cada estudio y dónde termina su alcance. La secuencia experimental muestra que las restricciones añadidas en un nivel cambian la lectura del anterior. El cierre de cardinalidad pierde capacidad explicativa ante robots heterogéneos. La capacidad escalar produce falsos positivos cuando la carga exige torque. La asignación físicamente factible puede fallar durante el movimiento, y una trayectoria segura puede dejar de ser viable al transportar una carga extendida o perder comunicación.
 
 \begin{table}[H]
 \centering
 \scriptsize
-\begin{tabularx}{\textwidth}{@{}p{0.08\textwidth}p{0.24\textwidth}p{0.25\textwidth}X@{}}
+\begin{tabularx}{\textwidth}{@{}p{0.09\textwidth}p{0.37\textwidth}X@{}}
 \toprule
-Estudio & Pregunta & Escala de evidencia & Lectura principal \\
+Estudio & Resultado principal & Límite observado \\
 \midrule
-SP1 & Reclutamiento de AMR para cargas heterogéneas. & $27\,300$ evaluaciones, $100$ semillas, $4$ familias de escenarios, auditoría limpia. & Los métodos aprendidos se acercan a la referencia pagando coste de entrenamiento; Smith es rápido pero necesita cierre y reparación para competir. \\
-SP2 & Capacidad efectiva bajo límites heterogéneos. & $40$ semillas finales, $5$ familias de escenarios, $13$ métodos y $20\,280$ comprobaciones sin fallos. & Cubrir cardinalidad no equivale a servir capacidad; el payoff marginal corrige parte de la dispersión de capacidad. \\
-SP3 & Factibilidad planar de fuerza y torque. & $20\,040$ corridas, $6$ escenarios, $10$ métodos y $38\,076$ comprobaciones sin fallos. & La evaluación \emph{wrench} detecta falsos positivos que un criterio escalar aceptaría. \\
-SP4 & Movimiento posterior a la asignación. & $20\,070$ ejecuciones, $15$ métodos, $6$ escenarios y $21\,408$ comprobaciones sin fallos. & La llegada al objetivo debe leerse junto con colisiones, despeje, energía y tiempo. \\
-SP5 & Transporte cooperativo de una carga extendida. & $20\,040$ ejecuciones/comprobaciones, $334$ semillas, $10$ métodos y auditoría sin fallos. & El ranking cambia al exigir pose final de la carga, integridad de formación y no interpenetración con obstáculos o tráfico. \\
-SP6 & Recuperación ante fallos, batería y cargas inviables. & $20\,000$ ejecuciones/comprobaciones, $250$ semillas, $8$ escenarios y auditoría sin fallos. & La robustez se mide por reparación, pérdida de carga, detección de inviabilidad y seguridad después del evento. \\
-SP7 & Comunicación, sensores y conectividad temporal. & $20\,176$ evaluaciones/comprobaciones, $97$ semillas, $8$ métodos y auditoría sin fallos. & La conectividad directa no basta; la conectividad temporal y el sensado condicionan el éxito del transporte. \\
-SP8 & Escalabilidad de flota y frontera centralizada. & $20\,000$ evaluaciones, $20$ tamaños de flota, hasta $50\,000$ AMR y auditoría sin fallos. & Las referencias centralizadas declaran intractabilidad creciente; las familias distribuidas o jerárquicas conservan mejor relación entre calidad y recurso. \\
+A0--FULL & La cadena integrada localiza falsos positivos de cardinalidad, capacidad, wrench, mecánica y recuperación. & FULL alcanza $0{,}86$--$1{,}00$ según régimen; persisten fallos cuando el wrench no realiza la aceleración segura. \\
+SP1 & El juego homogéneo verifica invariancia y ascenso de potencial; Smith+QR mejora a greedy en regret. & Pierde frente a subasta y uniforme+QR; el cierre entero no es aún distribuido. \\
+SP2 & El fitness marginal reduce el regret frente a plain; la auditoría de potencial pasa en los tres protocolos. & Uniforme+closure supera a todos los juegos; el cierre no es distribuido. \\
+SP3 & El juego wrench alcanza la referencia QP y la guardia elimina falsos positivos CLOSED. & Uniforme+guardia también cubre todo; la reparación global domina la decisión final. \\
+SP4 & Replicator+CBF alcanza $0{,}2685$ de \'exito seguro y los m\'etodos guardados no colisionan. & Persiste $0{,}7315$ de timeout; no hubo saturaci\'on de par y el cierre no mejora a Nash RAW. \\
+SP5 & CBF local alcanza $0{,}593$ de éxito seguro sin colisiones; Hamiltoniano+CBF mejora a RAW en éxito y colisión. & El proxy VO logra $0{,}657$ pero colisiona en $0{,}343$; la referencia centralizada solo alcanza $0{,}167$. \\
+SP6 & La reparación con guardia reduce la pérdida de carga frente a \emph{greedy} en $0{,}0227$. & La mejora de completitud frente a Smith-QR no es concluyente. \\
+SP7 & La campaña describe una asociación entre radio y conectividad temporal. & H7.3 no es estimable y las filas repetidas requieren agrupación por mundo. \\
+SP8 & El modelo mesoscópico produce diferencias descriptivas de completitud. & Los timeouts declarados y la memoria analítica no sustentan claims computacionales confirmatorios. \\
 \bottomrule
 \end{tabularx}
-\caption{Síntesis de la evidencia experimental canónica.}
-\label{tab:sintesis-sp1-sp8}
+\caption{Síntesis de los resultados y límites de SP1--SP8.}
+\label{tab:lectura-transversal-resultados}
 \end{table}
 
-La evidencia complementaria añade ablaciones, variantes de alta exigencia, validación de
-pose dinámica, ley de control cerrada, degradación de comunicación y escala de almacén.
-Esa capa no cambia la pregunta de cada SP; la endurece. Por ello, los resultados se leen
-como una cadena de filtros: cada nivel conserva la dificultad anterior y añade una causa
-nueva de fallo medible.
+Los resultados negativos también forman parte de la validación. SP2 no identifica un protocolo ganador y muestra que uniforme+closure supera a las nueve variantes de juego. En SP3, el projected primal--dual converge cerca del QP, pero RAW conserva falsos positivos y uniforme+guardia alcanza cobertura completa; por ello no se atribuye la calidad CLOSED al motor de revisión. SP4 muestra que menor residual KKT no implica mayor éxito cerrado y que el cierre Nash no mejora a RAW. SP5 confirma que el filtro CBF reduce la colisión del Hamiltoniano RAW, pero no que la referencia centralizada supere al CBF local ni la dirección del contraste CBF--APF. SP6 tampoco demuestra mayor completitud que Smith-QR. Estas observaciones acotan cada conclusión al indicador y a la campaña que la sustentan.
 
-\input{sections/mainmatter/06-results-and-analysis/experimental-deep-dive}
+\clearpage
+\subsection{Discusión crítica de la contribución}
+\label{sec:discusion-critica}
 
-\subsection{SP9: protocolo de brecha teoria--implementacion}
+La lectura conjunta de SP1--SP8 obliga a responder una objeción directa. En SP1, Smith+QR mejora a greedy, pero la subasta proxy y el control uniforme seguido del mismo cierre obtienen menor regret. Por tanto, el aporte no puede formularse como superioridad general de la dinámica poblacional. La evidencia separa tres componentes: estructura teórica del juego, calidad de la preferencia continua y efecto del cierre entero.
 
-SP9 queda definido como estudio de brecha entre las predicciones cerradas del modelo y
-una ejecucion de mayor fidelidad en CoppeliaSim/Pioneer. En esta congelacion, el
-repositorio incluye la configuracion
-\texttt{configs/experiments/sp9/SP9\_COPPELIA\_gap\_study.yaml}, el runner
-\texttt{scripts/run\_sp9\_experiment.py} y las escenas base. Si el ejecutable de
-CoppeliaSim no esta disponible, el runner genera
-\texttt{results/sp9/SP9\_BLOCKED\_EXECUTION/report.md} y SP9 se redacta como protocolo
-preparado, no como resultado estadistico. Solo se promovera como evidencia cuando existan
-\texttt{manifest.json}, CSV de corridas, tabla predicho-vs-medido, figuras y videos
-derivados de ejecucion real.
+Primero, la contribución consiste en una arquitectura de decisión, más amplia que un algoritmo aislado: una contribución vectorial por robot alimenta un agregado de carga, un precio marginal traduce el déficit físico en presión de asignación, un motor de revisión distribuye masa, un cierre entero con guardia produce coaliciones ejecutables y una comprobación de \emph{wrench} decide la factibilidad. La dinámica Smith es la instancia analíticamente trazable bajo información de ocupación; el cierre QR de SP1 aún usa preferencias globales y, por ello, no acredita despliegue distribuido de extremo a extremo. Los métodos aprendidos son comparadores del motor de revisión y requieren ablaciones propias para atribuir su rendimiento.
+
+Segundo, ganar en cardinalidad no implica resolver el problema. SP3 demuestra que una asignación que cubre cardinalidad o capacidad escalar puede seguir siendo físicamente inválida: el criterio escalar aceptó indebidamente $0{,}5000$ de los casos. Una ventaja en SP1 es, por tanto, condición necesaria y no suficiente. El valor de la escalera es diagnóstico: localiza en qué capa ---cardinalidad, capacidad, \emph{wrench}, movimiento, transporte, recuperación, comunicación o escala--- se origina el fallo, algo que un ranking agregado de un único nivel oculta.
+
+Tercero, la familia distribuida conserva interés en los regímenes donde la factibilidad física y el coste de comunicación dominan. La comprobación \emph{wrench} identifica falsos positivos que la señal escalar no detecta (SP3), y la guardia posterior al evento reduce la pérdida de carga en la campaña SP6. SP7 solo aporta aquí evidencia descriptiva porque su contraste de intermitencia extrema no es estimable. SP8 no permite afirmar que una referencia central agotó tiempo o memoria: esos valores fueron declarados o estimados por el evaluador y se conservan como diagnóstico exploratorio.
+
+SP3 v1.1 resuelve el falso positivo estático mediante guardia pareada, pero deja explícito que la reparación usa información global. La campaña integrada de la Sección~\ref{sec:campana-integrada-certificados} añade el siguiente límite: A3 mejoró torque en $0{,}60$, pero degradó escasez en $0{,}18$ al retirar reserva de tracción. A4 conservó la unión de las coaliciones de capacidad y wrench, aunque su mejora de $0{,}07$ no sobrevivió Holm. La complementariedad resuelve el par estático; no puede optimizarse separada de la autoridad dinámica.
+En síntesis, la contribución defendible es la formulación, el cierre entero y la auditoría por capas de coaliciones físicamente ejecutables, junto con una campaña integrada que demuestra dónde interactúan capacidad, wrench, dinámica, seguridad y recuperación. La evidencia no establece una superioridad general de la dinámica poblacional frente a los métodos aprendidos y delimita el régimen en que cada familia mejora, empata o falla.
