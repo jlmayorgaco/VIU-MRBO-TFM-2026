@@ -425,6 +425,9 @@ def analyze_campaign(config_path: str | Path) -> dict[str, Any]:
 def render_figures(config_path: str | Path) -> dict[str, Any]:
     import matplotlib.pyplot as plt
 
+    # Embed TrueType outlines in PDF/PS outputs; Type-3 fonts are unsuitable for deposit.
+    plt.rcParams.update({"pdf.fonttype": 42, "ps.fonttype": 42})
+
     config = load_config(config_path)
     root = output_root(config)
     figures = root / "figures"
