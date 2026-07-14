@@ -61,7 +61,7 @@ Etapa & Señal disponible por robot & Operación global del artefacto & Alcance 
 \midrule
 A0 & Salud, capacidad y distancia para calcular utilidad individual. & Cuantil global $0{,}55$ y selección sobre toda la flota; registra $N$ mensajes. & Preferencia por robot; no cierre local. \\
 A1 & Preferencia y distancia. & Ranking de todos los candidatos, cuórum y slots. & Cierre entero auditado con información global. \\
-A2 & Capacidad efectiva y salud. & Ordenación de ociosos y suma global hasta cubrir demanda. & Certificado de capacidad; no mercado local cerrado. \\
+A2 & Capacidad efectiva y salud. & Ordenación de ociosos y suma global hasta cubrir demanda. & Comprobación global de capacidad; no mercado local cerrado. \\
 A3 & Demanda y contribución wrench de contactos. & Vecindario global de altas/bajas de uno o dos robots y asignación de slots. & Búsqueda acotada; coste de candidatos $O(N^2)$ en el peor caso. \\
 A4 & Orden HOCBF y wrench realizable. & Unión global de las coaliciones A2--A3 antes de ejecutar. & Reserva dinámica en la planta común; no optimización global de trayectoria. \\
 FULL & Mensajes retardados, pérdida y memoria expirable por robot. & Selección del reemplazo entre todos los robots ociosos usando capacidad, salud y posición. & Proxy de recuperación bajo red degradada; no reemplazo vecino extremo a extremo. \\
@@ -80,7 +80,7 @@ Las métricas se agrupan en completitud, factibilidad física, seguridad y recur
 
 SP1 separa la dinámica continua del cierre discreto. Un horizonte agotado puede coexistir con un cierre válido; por ello, \texttt{continuous\_converged}, validez RAW, \texttt{closure\_success} y éxito final se reportan por separado. La preferencia continua, el $\arg\max$ y QR son etapas distintas. El húngaro expandido se registra como óptimo centralizado, nunca como operación del método distribuido.
 
-SP5 v2 aplica la misma disciplina a la mecánica. RAW es el \emph{wrench} nominal; SAFE es la orden después del filtro de barrera; EXEC es el \emph{wrench} que las fuerzas de contacto saturadas realizan y el único que mueve la carga. La campaña no proyecta posiciones después de integrar. Una colisión EXEC no se convierte en éxito porque la orden SAFE fuera factible, y un timeout sin colisión permanece en el denominador. Los contactos se consideran fijos desde el cierre de SP4; por tanto, SP5 evalúa transporte posterior al acoplamiento y no vuelve a acreditar reclutamiento físico.
+SP5 v2 aplica la misma disciplina a la mecánica. RAW es el \emph{wrench} nominal. SAFE es la orden después del filtro de barrera. EXEC es el \emph{wrench} que realizan las fuerzas de contacto saturadas y el único que mueve la carga. La campaña no proyecta posiciones después de integrar. Una colisión EXEC no se convierte en éxito porque la orden SAFE fuera factible, y un timeout sin colisión permanece en el denominador. Los contactos se consideran fijos desde el cierre de SP4; por tanto, SP5 evalúa transporte posterior al acoplamiento y no vuelve a acreditar reclutamiento físico.
 
 \subsection{Análisis por tipo de endpoint}
 

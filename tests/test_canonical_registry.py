@@ -63,10 +63,23 @@ def test_citation_audit_is_bound_to_current_included_sources() -> None:
     report_root = ROOT / "docs/doc-05-final-report"
     audit = json.loads((report_root / "CITATION_AUDIT.json").read_text(encoding="utf-8"))
     assert audit["verdict"] == "WARN"
+    assert audit["reason_code"] == (
+        "local_citation_verification_passed_external_cross_family_and_similarity_pending"
+    )
     assert audit["details"]["total_entries"] == 107
-    assert audit["details"]["cited_entries"] == 53
-    assert audit["details"]["citation_uses"] == 75
+    assert audit["details"]["cited_entries"] == 55
+    assert audit["details"]["citation_uses"] == 97
     assert audit["details"]["current_unresolved_keys"] == []
     for relative, tagged_hash in audit["audited_input_hashes"].items():
         expected = tagged_hash.removeprefix("sha256:")
         assert hashlib.sha256((report_root / relative).read_bytes()).hexdigest() == expected
+
+    freshness = json.loads(
+        (report_root / "CITATION_AUDIT_FRESHNESS.json").read_text(encoding="utf-8")
+    )
+    assert freshness["status"] == "WARN_EXTERNAL"
+    assert freshness["citation_status"] == "PASS_LOCAL"
+    assert freshness["unresolved_cited_keys"] == 0
+    assert freshness["current_pdf_sha256"] == hashlib.sha256(
+        (report_root / "main.pdf").read_bytes()
+    ).hexdigest()

@@ -1,32 +1,27 @@
 # Citation Audit Report
 
-**Current refresh:** 2026-07-14<br>
-**Bibliography:** `references.bib`<br>
-**Scope:** 107 entries; 53 cited keys in 75 included-source uses
-**Machine verdict:** `WARN`
+**Refresh:** 2026-07-14
+**Bibliography:** `references.bib`
+**Scope:** 107 entries; 55 cited keys in 97 included-source key-context uses
+**Local citation verdict:** `PASS_LOCAL`
+**Global readiness note:** `WARN_EXTERNAL` because no cross-family citation review or institutional similarity report is available
 
 ## Outcome
 
 - The recursive 27-file LaTeX inclusion graph was rebuilt from `main.tex`.
-- Every cited key resolves in the bibliography; unresolved cited keys: **0**.
-- The prior 99-entry ledger was retained and its use locations were reindexed against the current source.
-- Eight later bibliography entries were checked against publisher, DOI, DBLP or institutional-repository records: `garey1978strong`, `shmoys1993generalized`, `yi2019operator`, `cherukuri2016primaldual`, `koshal2016aggregative`, `franci2022stochasticgne`, `bicchi1995closure` and `ferrari1992grasps`.
-- All 107 ledger entries are `KEEP`; none is marked `FIX`, `REPLACE` or `REMOVE`.
-
-## Current cited delta
-
-Only `yi2019operator` and `cherukuri2016primaldual` from the eight-entry delta are cited by the included manuscript. Their separate roles in SP4 are supported by the Automatica publisher record and the University of Groningen institutional record. The other six entries occur only in retained supplementary source or remain uncited in the compiled manuscript; their metadata were nevertheless verified because they remain in `references.bib`.
-
-## Earlier repairs retained
-
-The earlier audit corrected 18 metadata records and rewrote or removed eight weak citation contexts. Those corrections remain present. The current refresh did not silently restore any rejected context.
+- Every cited key resolves; unresolved cited keys: **0**.
+- Three fresh, disjoint, same-family review batches locally verified **107/107** entries against primary, publisher or official sources without using the earlier ledger as evidence.
+- The initial batch verdicts were 94 `KEEP` and 13 `FIX`; all 13 metadata repairs passed a separate post-correction recheck.
+- The 75 initially supported contexts and two repaired weak contexts now have verdict `SUPPORTS`; wrong-context citations: **0**.
 
 ## Residual limitation
 
-A fresh external reviewer from a different model family and the institutional similarity service are not available in this workspace. Primary-source verification and local resolution therefore support the bibliography, but they do not justify an unconditional `PASS`. The verdict remains `WARN` until those two external checks are supplied.
+Neither an external cross-family citation review nor an institutional similarity report is available in this workspace. The local citation-correctness verdict remains `PASS_LOCAL`; the global status therefore remains `WARN_EXTERNAL`. The Stage 2.5 integrity report contains only a separate web originality sample and must not be presented as a substitute for either external control.
 
 ## Artifacts
 
-- `.aris/citation-audit/contexts.txt`: current 75 use locations and source lines.
-- `CITATION_AUDIT.json`: 107-entry ledger, current source hashes and per-entry verdicts.
-- `CITATION_AUDIT_FRESHNESS.json`: final PDF/bibliography freshness binding, regenerated after compilation.
+- `.aris/citation-audit/contexts.txt`: regenerated current use locations and source lines.
+- `.aris/traces/citation-audit/2026-07-14_stage2_5_fresh/batch_[a-c].md`: fresh independent entry audits.
+- `.aris/traces/citation-audit/2026-07-14_stage2_5_fresh/postfix_recheck.md`: revalidation of all repairs.
+- `CITATION_AUDIT.json`: 107-entry ledger and current source hashes.
+- `CITATION_AUDIT_FRESHNESS.json`: current PDF/bibliography hash binding.
