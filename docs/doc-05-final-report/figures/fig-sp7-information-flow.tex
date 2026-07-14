@@ -1,0 +1,31 @@
+\begin{figure}[htbp]
+\centering
+\resizebox{0.94\textwidth}{!}{%
+\begin{tikzpicture}[
+  font=\sffamily\small,
+  robot/.style={circle,draw=VIUDark!75,fill=VIUOrange!18,line width=0.9pt,minimum size=9mm,font=\sffamily\scriptsize\bfseries},
+  memory/.style={draw=VIUDark!65,fill=VIUWhite,rounded corners=3pt,align=center,text width=3.5cm,minimum height=1.2cm,inner sep=5pt},
+  flow/.style={-{Latex[length=2.4mm]},line width=0.85pt,draw=VIUDark!70},
+  link/.style={line width=0.8pt,draw=VIUOrange!85!black}
+]
+\node[robot] (r1) at (0,1.4) {$i$};
+\node[robot] (r2) at (2.1,2.1) {$j$};
+\node[robot] (r3) at (2.1,0.7) {$h$};
+\node[robot] (r4) at (4.2,1.4) {$\ell$};
+\draw[link] (r1)--(r2)--(r4)--(r3)--(r1);
+\draw[link,dashed] (r2)--(r3);
+\node[font=\scriptsize,align=center] at (2.1,-0.05) {grafo local $G(t)$\\con p\'erdidas y retardos};
+
+\node[memory] (mem) at (7.2,1.4) {Memoria local\\descriptores, ocupaci\'on y antig\"uedad};
+\node[memory] (decision) at (11.4,1.4) {Decisi\'on distribuida\\coalici\'on y rel\'e};
+\node[memory] (check) at (11.4,-1.1) {Comprobaci\'on temporal\\$\lambda_2(\cup_\tau G(\tau))>0$};
+
+\draw[flow] (r4) -- (mem);
+\draw[flow] (mem) -- (decision);
+\draw[flow] (decision) -- (check);
+\draw[flow] (check.west) -| (mem.south);
+\end{tikzpicture}}
+\caption[Flujo de informaci\'on bajo comunicaci\'on degradada]{Flujo de informaci\'on considerado en SP7. Las decisiones usan memoria local y conectividad acumulada en una ventana temporal; no presuponen una vista global instant\'anea de la flota.}
+\viuownsource
+\label{fig:sp7-information-flow}
+\end{figure}

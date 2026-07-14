@@ -1,11 +1,11 @@
 \subsection{Desarrollo teórico unificado}
 
-La dificultad central del transporte cooperativo no está en elegir una única abstracción,
-sino en hacer compatibles varias abstracciones que operan a escalas distintas. La
-asignación es discreta, porque un AMR se compromete con una carga concreta; la preferencia
-puede ser continua, porque una dinámica poblacional reparte masa entre alternativas; la
-factibilidad mecánica es convexa a nivel de esfuerzos admisibles, pero combinatoria a
-nivel de selección de contactos; y la seguridad se expresa como desigualdades sobre
+La dificultad central del transporte cooperativo consiste en hacer compatibles varias
+abstracciones que operan a escalas distintas. La asignación es discreta porque un AMR se
+compromete con una carga concreta. La preferencia puede ser continua porque una dinámica
+poblacional reparte masa entre alternativas. La factibilidad mecánica es convexa a nivel
+de esfuerzos admisibles, pero combinatoria a nivel de selección de contactos. La
+seguridad se expresa como desigualdades sobre
 trayectorias. La arquitectura propuesta se defiende precisamente porque conserva esos
 niveles separados hasta el momento en que deben acoplarse.
 
@@ -103,10 +103,10 @@ misma distancia sobre un conjunto mayor no puede aumentar el valor óptimo.
 
 Esta monotonía es más débil de lo que parece. El residual no aumenta al añadir un contacto
 ideal, pero el sistema real sí puede empeorar por saturación, mala orientación, bloqueo
-geométrico o coste de coordinación. La evaluación no puede quedarse en $\rho(C)$; debe
-leer también $s_k^{\rm sat}$, el despeje de la carga y el tiempo requerido para ocupar el
-slot. Esa es la razón de SP3 a SP5: primero se mide capacidad de producir wrench; después
-se exige trayectoria segura; finalmente se exige pose de carga extendida.
+geométrico o coste de coordinación. La evaluación debe considerar $\rho(C)$,
+$s_k^{\rm sat}$, el despeje de la carga y el tiempo requerido para ocupar el slot. SP3
+mide la capacidad de producir wrench. SP4 exige una trayectoria segura. SP5 comprueba
+la pose de la carga extendida.
 
 \begin{lema}[Cierre entero bajo demanda visible]
 Supóngase que todas las cargas son visibles, que $\sum_k n_k\leq N$, que cada robot puede
@@ -116,7 +116,7 @@ $|C_k|\geq n_k$ para toda carga demandada.
 \end{lema}
 
 \begin{proof}[Demostración]
-La hipótesis $\sum_k n_k\leq N$ garantiza que existe al menos una asignación entera con
+La hipótesis $\sum_k n_k\leq N$ implica que existe al menos una asignación entera con
 quórum completo. El procedimiento de cierre consume a lo sumo un robot por selección y
 no repite robots. Al iterar sobre las cargas demandadas, cada carga recibe robots hasta
 alcanzar $n_k$ antes de pasar a capacidad sobrante. Como no hay rechazos físicos ni
@@ -128,8 +128,7 @@ El lema delimita el papel exacto de QR. QR no prueba optimalidad global ni facti
 mecánica; prueba que la preferencia continua de Smith puede transformarse en un conjunto
 entero cuando el problema discreto es materialmente cerrable. Si la demanda excede la
 flota, si una carga no ha sido descubierta o si una guardia física descarta contactos, el
-resultado correcto ya no es cerrar todo: es reportar déficit, reasignar o declarar
-inviabilidad.
+resultado correcto consiste en reportar déficit, reasignar o declarar inviabilidad.
 
 \begin{proposicion}[Invariancia de seguridad bajo filtro de barrera]
 Sea $\mathcal S=\{q:h(q)\geq0\}$ un conjunto seguro y supóngase que la acción aplicada
@@ -152,6 +151,109 @@ introducir errores de discretización. Por eso la memoria no declara seguridad s
 un campo tenga término repulsivo; la declara cuando la trayectoria renderizada y las
 métricas discretas conservan margen frente a obstáculo, sin colisión ni bloqueo persistente.
 
+\subsubsection{Reparto cuadrático, coste de anarquía y cierre distribuido}
+
+La capa de esfuerzo admite una solución cerrada que permite separar salud actuadora,
+beneficio colectivo y coste individual. Sea $f_i\in\RR^2$ la fuerza del robot $i$,
+$\eta_i>0$ su salud efectiva, $M_T$ la masa total y $s$ la aceleración de carga que debe
+compensarse. Cada robot minimiza
+\[
+ J_i(f_i;f_{-i})=
+ \frac{1}{2\eta_i}\norm{f_i}^2+
+ \frac{\kappa}{2}\norm{s-\frac{1}{M_T}\sum_j f_j}^2.
+\]
+Defínanse $H=\sum_j\eta_j$ y $\gamma=\kappa H/M_T^2$.
+
+\begin{proposicion}[Equilibrio del reparto cuadrático]
+El juego anterior tiene un único equilibrio de Nash. La fuerza y el error común en ese
+equilibrio son
+\[
+ f_i^{\rm NE}=\frac{\kappa\eta_i M_T}{M_T^2+\kappa H}s,
+ \qquad
+ e^{\rm NE}=\frac{1}{1+\gamma}s.
+\]
+\end{proposicion}
+
+\begin{proof}[Demostración]
+La condición de primer orden es
+$f_i/\eta_i-(\kappa/M_T)e=0$, donde
+$e=s-M_T^{-1}\sum_j f_j$. Al sumar las mejores respuestas se obtiene
+$(1+\gamma)e=s$. La sustitución produce la expresión de $f_i^{\rm NE}$. La matriz
+cuadrática es definida positiva en la decisión propia, lo que da unicidad.
+\end{proof}
+
+El equilibrio reparte el esfuerzo en proporción a $\eta_i$, pero cada robot internaliza
+solo su coste y una fracción del beneficio común. El cociente entre el coste social en
+equilibrio y su mínimo permite cuantificar esa pérdida.
+
+\begin{proposicion}[Coste de anarquía del juego cuadrático]
+Para $N$ robots, el coste de anarquía es
+\[
+ {\rm PoA}(\gamma,N)=
+ \frac{(\gamma+N)(1+N\gamma)}{N(1+\gamma)^2},
+ \qquad
+ \max_{\gamma>0}{\rm PoA}(\gamma,N)=\frac{(N+1)^2}{4N}.
+\]
+El máximo se alcanza en $\gamma=1$.
+\end{proposicion}
+
+\begin{proof}[Demostración]
+Para una fuerza total $F=\sum_i f_i$, el reparto de mínimo esfuerzo ponderado es
+$f_i=(\eta_i/H)F$. El óptimo social minimiza
+$\norm{F}^2/(2H)+(N\kappa/2)\norm{s-F/M_T}^2$ y produce
+$F^{\rm SO}/M_T=N\gamma s/(1+N\gamma)$. El equilibrio produce
+$F^{\rm NE}/M_T=\gamma s/(1+\gamma)$. Evaluar ambos costes y formar el cociente da la
+expresión anterior. Su derivada se anula en $\gamma=1$.
+\end{proof}
+
+Cuando el juego incorpora una restricción compartida de fuerza y torque, el equilibrio
+variacional recupera el reparto ponderado de mínimo esfuerzo. Para la componente
+traslacional, la participación de cada robot es $\eta_i/H$. La componente rotacional
+añade el brazo $(Rr_i)^\perp$ y el momento ponderado
+$S=\sum_j\eta_j\norm{r_j}^2$. Esta relación conecta el reparto estratégico con la
+geometría de contacto usada en SP3.
+
+La ejecución distribuida reemplaza los agregados globales por estimaciones locales. En
+el modelo linealizado, sea $\mu$ la constante de monotonicidad fuerte, $\vartheta$ el
+acoplamiento transversal, $c$ la ganancia de consenso y $\lambda_2(L_G)$ la conectividad
+algebraica. La condición suficiente
+\[
+ c\lambda_2(L_G)\mu>\vartheta^2
+\]
+hace que la contracción del juego y del consenso domine el acoplamiento cruzado. Esta
+desigualdad se aplica al buscador simplificado y no constituye una garantía para contacto
+tridimensional, saturación o pérdida persistente de conectividad. La frontera anterior se conserva como resultado del buscador simplificado, pero deja de usarse como evidencia numérica por identidad. La nueva V1 resuelve de forma independiente el sistema KKT del reparto de wrench y lo compara con la ley cerrada (error máximo $2{,}85\times10^{-14}$). V2 contrasta la identidad de potencia Lagrange--Hamilton mediante diferencias finitas y la proyección HOCBF contra un QP SLSQP independiente. V3 verifica el certificado ISS práctico que sigue.
+
+\begin{teorema}[ISS práctica común frente al error de realización de wrench]
+\label{thm:iss-practica-coalicion}
+Sea $z=(e,\dot e)$ el error de una carga fija controlada por realimentación PD,
+\[
+ \dot z=Az+B d_{\sigma(t)},
+\]
+donde $A$ es Hurwitz, el cambio de coalición no reinicia el estado y $\lVert d_{\sigma(t)}\rVert\leq\bar d$. Si $P\succ0$ satisface $A^\top P+PA=-I$, entonces, para cualquier señal medible de cambio $\sigma(t)$ y cualquier $0<\varepsilon<1$,
+\[
+ \dot V\leq-\alpha V+\sigma_d\bar d^2,
+ \qquad V=z^\top Pz,
+\]
+con
+\[
+ \alpha=\frac{1-\varepsilon}{\lambda_{\max}(P)},
+ \qquad
+ \sigma_d=\frac{\lVert PB\rVert_2^2}{\varepsilon}.
+\]
+En consecuencia,
+\[
+ \lVert z(t)\rVert
+ \leq
+ \sqrt{\frac{V(0)e^{-\alpha t}+(\sigma_d/\alpha)\bar d^2(1-e^{-\alpha t})}{\lambda_{\min}(P)}}.
+\]
+\end{teorema}
+
+\begin{proof}[Demostración]
+La ecuación de Lyapunov da $\dot V=-\lVert z\rVert^2+2z^\top PBd_{\sigma(t)}$. La desigualdad de Young produce $2z^\top PBd\leq\varepsilon\lVert z\rVert^2+\lVert PB\rVert_2^2\lVert d\rVert^2/\varepsilon$. Como $V\leq\lambda_{\max}(P)\lVert z\rVert^2$, se obtiene la desigualdad diferencial. El lema de comparación y $V\geq\lambda_{\min}(P)\lVert z\rVert^2$ proporcionan la cota.
+\end{proof}
+
+La matriz cerrada es común porque la masa, la inercia y las ganancias de la carga no cambian durante la sustitución; la coalición modifica el error de realización $d_{\sigma(t)}$. Por ello no se impone tiempo de permanencia. Si cambia $A$, existe un reset de estado o el error deja de estar acotado, el teorema no aplica y sería necesario un argumento de Lyapunov múltiple. Para los parámetros de la campaña, V3 obtuvo $\lambda_{\min}(P)=0{,}278$, residual de Lyapunov $9{,}04\times10^{-16}$ y ninguna violación de la cota en las trayectorias lineales independientes.
 \subsubsection{Acoplamiento entre potencial, mercado y ejecución}
 
 La lectura de potencial permite unir asignación y control sin confundirlos. Sea
@@ -167,7 +269,7 @@ Si el payoff local aproxima la diferencia marginal
   J_i(k;a_{-i})\approx
   \Phi(k,a_{-i})-\Phi(\varnothing,a_{-i}),
 \]
-entonces cada robot recibe una señal coherente con el objetivo común: entrar en una carga
+entonces cada robot recibe una señal coherente con el objetivo común. Entrar en una carga
 solo tiene sentido si reduce déficit, residual o coste operativo de forma suficiente. El
 precio de déficit $\pi_k$ puede verse como multiplicador local de la restricción
 $S_k(C_k)\geq D_k$:
@@ -179,8 +281,8 @@ La misma idea se aplica al residual wrench con un precio mecánico $\mu_k$:
 \[
   \mu_k(t+1)=\pos{\mu_k(t)+\eta_\mu\bigl(\rho_k(C_k,t)-\epsilon_k\bigr)}.
 \]
-El payoff útil no es una suma arbitraria de preferencias. Es una contabilidad local de
-escasez, distancia, batería y viabilidad mecánica.
+El payoff útil contabiliza escasez, distancia, batería y viabilidad mecánica mediante
+señales locales.
 
 Esta construcción explica por qué la tesis compara métodos heterogéneos. Un greedy
 cercano prueba si basta con distancia. Un Hungarian centralizado prueba si basta con
@@ -191,7 +293,7 @@ la memoria: una señal local con precios físicos y cierre entero puede competir
 los regímenes donde la tarea deja de ser una unidad indivisible y pasa a ser una carga
 compartida.
 
-\subsubsection{Criterio de verdad experimental}
+\subsubsection{Correspondencia entre afirmación y evidencia}
 
 La teoría anterior conduce a un criterio de evaluación severo. Una afirmación del tipo
 ``el método asigna bien'' queda incompleta si no especifica qué nivel superó. En esta
@@ -200,10 +302,10 @@ cardinalidad pero no capacidad, cubre capacidad pero no wrench, genera wrench pe
 trayectoria, llega con robots individuales pero no con la carga, no se recupera ante
 fallo, depende de comunicación global o deja de ser practicable al crecer la flota.
 
-La escalera SP1--SP8 no es una taxonomía decorativa. Es la forma de impedir que una mejora
-local se confunda con una solución general. Cada subproblema añade una restricción que
+La escalera SP1--SP8 impide que una mejora local se confunda con una solución general.
+Partiendo del reclutamiento homogéneo unificado SP1, cada subproblema añade una restricción que
 vuelve falso algún éxito anterior. Si SP1 se supera, todavía puede fallar SP2; si SP2 se
 supera, todavía puede fallar SP3; si SP3 se supera, todavía queda movimiento seguro,
-pose, recuperación, comunicación y escala. La contribución queda entonces formulada con
-precisión: no se afirma dominancia universal, se identifica en qué capas la arquitectura
-distribuida conserva valor frente a familias clásicas, aprendidas y centralizadas.
+pose, recuperación, comunicación y escala. La contribución queda formulada por capas y
+se identifica dónde la arquitectura distribuida conserva valor frente a familias
+clásicas, aprendidas y centralizadas.

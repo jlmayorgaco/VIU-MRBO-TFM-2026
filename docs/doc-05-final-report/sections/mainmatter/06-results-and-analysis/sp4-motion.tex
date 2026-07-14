@@ -1,0 +1,309 @@
+\paragraph{SP4: juego de reclutamiento f\'isico hasta contactos seguros.}
+\label{sec:resultados-sp4}
+
+\medskip
+\noindent\textbf{Frontera SP3--SP4--SP5.}
+SP3 entrega una pose de contacto fija $g_i=(p_i^\star,\theta_i^\star)$ y una
+prioridad wrench $\varpi_i$ para cada robot seleccionado. SP4 no vuelve a decidir
+la coalici\'on ni transporta la carga: coordina el movimiento de los robots libres
+hasta esas poses. SP5 comienza s\'olo despu\'es de que los robots est\'an acoplados y
+la carga pasa a ser un cuerpo extendido m\'ovil. Esta frontera evita atribuir a la
+planificaci\'on de SP4 la factibilidad wrench demostrada en SP3 o la estabilidad de
+transporte estudiada en SP5.
+
+El estado del robot diferencial es
+$z_i=[p_{x,i},p_{y,i},\theta_i,v_i,\omega_i]^\top$ y evoluciona como
+\begin{equation}
+ \dot p_i=v_i[\cos\theta_i,\sin\theta_i]^\top,\qquad
+ \dot\theta_i=\omega_i,\qquad
+ \dot v_i=a_i,\qquad
+ \dot\omega_i=\alpha_i .
+ \label{eq:sp4-unicycle}
+\end{equation}
+Para masa $m_i$, inercia $J_i$, radio de rueda $r_w$ y v\'ia $b$, las fuerzas
+longitudinales deseadas se transforman en pares
+\begin{equation}
+ \tau_{R,i}=r_w\left(\frac{m_i a_i}{2}+\frac{J_i\alpha_i}{b}\right),
+ \qquad
+ \tau_{L,i}=r_w\left(\frac{m_i a_i}{2}-\frac{J_i\alpha_i}{b}\right).
+ \label{eq:sp4-wheel-torque}
+\end{equation}
+La simulaci\'on satura $\tau_R,\tau_L$, reconstruye $a_i,\alpha_i$ ejecutados e
+integra \eqref{eq:sp4-unicycle} con paso $0{,}16$ s. No corrige posiciones despu\'es
+de integrar. Un robot queda acoplado cuando, simult\'aneamente,
+\begin{equation}
+ \norm{p_i-p_i^\star}\leq0{,}18\ {\rm m},\quad
+ |\operatorname{wrap}(\theta_i-\theta_i^\star)|\leq0{,}24\ {\rm rad},\quad
+ |v_i|\leq0{,}16\ {\rm m\,s^{-1}}.
+ \label{eq:sp4-docking}
+\end{equation}
+El \'exito seguro exige que todos los robots cumplan \eqref{eq:sp4-docking} antes
+de 35 s y que el monitor barrido no detecte colisi\'on robot--robot,
+robot--obst\'aculo, robot--carga ni frontera.
+
+\input{figures/fig-sp4-docking-game-architecture}
+
+\medskip
+\noindent\textbf{Juego de primitivas espacio--tiempo.}
+En cada replanteo, el robot $i$ distribuye una preferencia
+$x_i\in\Delta^6$ sobre cinco primitivas de movimiento y una de espera. Las
+primitivas representan dos arcos horarios, la ruta angular localmente corta, dos
+arcos antihorarios y espera/alineaci\'on. Si la carga separa al robot de su contacto,
+la clase horaria o antihoraria elegida se conserva hasta que el segmento directo
+sea geom\'etricamente libre. Esta memoria impide cambios de homotop\'ia inducidos
+por el horizonte recedente; no constituye un plan global.
+
+Sea $H_{ia,r}\in\{0,1\}$ la ocupaci\'on de la celda espacio--tiempo $r$ por la
+acci\'on $a$ del robot $i$ en los tiempos de predicci\'on
+$0{,}45$, $0{,}90$, $1{,}35$ y $1{,}80$ s. El coste congelado $c_{ia}$ combina
+distancia terminal ponderada por $\varpi_i$, error angular, esfuerzo, proximidad
+a obst\'aculos, espera y cambio de clase de ruta. La relajaci\'on minimiza
+\begin{equation}
+ \Phi(x)=
+ \sum_{i,a}c_{ia}x_{ia}
+ +\frac{\beta}{2}\left\|\sum_i H_i x_i\right\|_2^2
+ +\frac{\epsilon}{2}\sum_i\norm{x_i}_2^2,
+ \qquad
+ \sum_i H_i x_i\leq\mathbf 1 ,
+ \label{eq:sp4-potential}
+\end{equation}
+con $\beta=0{,}38$ y $\epsilon=0{,}04$. La construcci\'on sigue la idea de usar
+un potencial com\'un para coordinar decisiones locales
+\citep{monderer1996potential,hurtado2024potential}, pero aqu\'i las acciones son
+primitivas no hol\'onomas y los recursos son celdas espacio--tiempo.
+
+\begin{proposicion}[Potencial exacto de la instant\'anea]
+Para una instant\'anea con $c$ y $H$ fijos, el pseudogradiente del juego coincide
+por bloques con $\nabla\Phi$. Por tanto, toda desviaci\'on unilateral cambia el
+coste del jugador en la misma direcci\'on que el potencial.
+\end{proposicion}
+\begin{proof}
+Si $y=\sum_jH_jx_j$, entonces
+\[
+ \nabla_{x_i}\Phi=c_i+\beta H_i^\top y+\epsilon x_i.
+\]
+La parte que depende de $x_i$ en el coste del jugador puede escribirse como
+$c_i^\top x_i+\frac{\beta}{2}\norm{H_ix_i}^2+
+\beta(H_ix_i)^\top\sum_{j\neq i}H_jx_j+
+\frac{\epsilon}{2}\norm{x_i}^2$. Su gradiente es la expresi\'on anterior.
+Integrar el gradiente a lo largo de una desviaci\'on unilateral prueba la
+identidad de potencial.
+\end{proof}
+
+Con un multiplicador compartido $\lambda\geq0$, las KKT de la relajaci\'on son
+\begin{equation}
+\begin{aligned}
+ 0&\in c_i+\beta H_i^\top Hx+\epsilon x_i+H_i^\top\lambda
+       +N_{\Delta^6}(x_i),\\
+ 0&\leq\lambda\perp\mathbf1-Hx\geq0 .
+\end{aligned}
+\label{eq:sp4-kkt}
+\end{equation}
+Si existe Slater, la convexidad de \eqref{eq:sp4-potential} hace estas condiciones
+necesarias y suficientes para el \'optimo de la instant\'anea; al compartir
+$\lambda$, ese punto es el v-GNE de la relajaci\'on. La caracterizaci\'on variacional
+mediante un multiplicador compartido para restricciones acopladas sigue el marco de
+\citet{yi2019operator}. La convergencia de din\'amicas primal--dual restringidas
+requiere las hip\'otesis de regularidad estudiadas por
+\citet{cherukuri2016primaldual}. Estas referencias no prueban optimalidad de la
+trayectoria no lineal completa.
+
+El protocolo Nash--PD aplica
+\begin{equation}
+ x_i^{+}=\Pi_{\Delta^6}\!\left[
+ x_i-\eta\left(c_i+\beta H_i^\top\widehat y_i+\epsilon x_i+
+ H_i^\top\lambda_i\right)\right],\qquad
+ \lambda_i^{+}=\left[\lambda_i+\eta_\lambda(\widehat y_i-\mathbf1)\right]_+ .
+ \label{eq:sp4-pd}
+\end{equation}
+La variante exacta usa el agregado $y=Hx$; la variante en anillo ejecuta cuatro
+rondas Metropolis por iteraci\'on. Como ablaci\'on del motor, el mismo payoff
+negativo alimenta Smith, replicator y ERV--BNN. Replicator y BNN siguen
+\begin{equation}
+ \dot x_{ia}^{\rm rep}=x_{ia}(\pi_{ia}-\bar\pi_i),\qquad
+ \dot x_{ia}^{\rm BNN}=[\pi_{ia}-\bar\pi_i]_+
+ -x_{ia}\sum_b[\pi_{ib}-\bar\pi_i]_+ .
+ \label{eq:sp4-population}
+\end{equation}
+La proyecci\'on num\'erica conserva el s\'implex en los cuatro protocolos. El teorema
+KKT se aplica al projected primal--dual con informaci\'on exacta bajo sus
+hip\'otesis; no se transfiere autom\'aticamente a Smith, replicator, BNN ni a consenso
+finito.
+
+Para $A=6$ acciones y $R$ recursos, evaluar gradiente y ocupaci\'on cuesta
+$O(NAR)$ por iteraci\'on; Smith a\~nade comparaciones $O(NA^2)$ y el consenso cuesta
+$O(L|E|R)$ para $L$ rondas. El QP convexo de una instant\'anea es polinomial con
+datos racionales, pero el cierre entero de rutas con conflictos contiene
+\emph{set packing} y es NP-hard en general. La campa\~na implementa un cierre
+\emph{greedy}, no un solver entero \'optimo.
+
+\medskip
+\noindent\textbf{Cierre, barrera y separaci\'on RAW--SAFE--EXEC.}
+RAW selecciona el \emph{argmax} de cada preferencia. La variante cerrada ordena
+robots por prioridad wrench y elige para cada uno la primitiva mejor valorada que
+no reutiliza un recurso ya reservado. Este cierre observa todas las preferencias
+y recursos; por tanto, es un postproceso global y no acredita distribuci\'on
+extremo a extremo. La ablaci\'on Nash--PD RAW permite medir su efecto.
+
+La seguridad se impone sobre el punto adelantado
+$y_i=p_i+\ell[\cos\theta_i,\sin\theta_i]^\top$, con $\ell=0{,}02$ m. Para dos
+robots se usa
+\begin{equation}
+ h_{ij}=\norm{y_i-y_j}^2-d_{ij}^2,\qquad
+ 2(y_i-y_j)^\top(\dot y_i-\dot y_j)+\gamma h_{ij}\geq0 ,
+ \label{eq:sp4-cbf-pair}
+\end{equation}
+donde $d_{ij}=2r_{\rm rob}+m_s+2|\ell|$. Para un obst\'aculo circular, el radio
+se infla en $r_{\rm rob}+m_s+|\ell|$. Estas inflaciones usan la desigualdad
+triangular para que separar los puntos adelantados implique separar los discos.
+La velocidad SAFE se obtiene por proyecciones alternadas sobre los semiespacios
+de \eqref{eq:sp4-cbf-pair}, con cotas de aceleraci\'on alcanzable. Es una
+proyecci\'on CBF, no un QP monol\'itico. Las CBF formalizan invariancia hacia
+adelante para el modelo y las hip\'otesis declaradas \citep{ames2017cbf}.
+
+EXEC transforma SAFE a pares de rueda, satura e integra la planta. Como la
+saturaci\'on puede romper una desigualdad cinem\'atica, el residual CBF se vuelve a
+evaluar con la velocidad ejecutada y la colisi\'on se determina mediante distancia
+m\'inima entre segmentos consecutivos. No hay teleportaci\'on, separaci\'on
+geom\'etrica posterior ni reparaci\'on de una trayectoria ya ejecutada.
+
+\medskip
+\noindent\textbf{Dise\~no confirmatorio.}
+El piloto v2 se us\'o s\'olo para comprobar factibilidad y congelar el protocolo.
+La campa\~na confirmatoria abre semillas nuevas y cruza seis escenarios
+---abierto, cruce, pasaje estrecho, obst\'aculos dispersos, bloqueo sim\'etrico y
+actuadores limitados--- con $N\in\{4,8,12\}$. Se comparan movimiento directo,
+APF, un proxy RVO, proyecci\'on CBF, PD central con 70 iteraciones, Nash--PD RAW,
+Nash--PD exacto y en anillo, Smith, replicator y ERV--BNN. Los mundos son
+id\'enticos entre m\'etodos.
+
+Las m\'etricas primarias son \'exito seguro y cualquier colisi\'on barrida. Se
+a\~naden tiempo truncado, error final, despeje, energ\'ia de rueda, saturaciones,
+intervenci\'on de barrera, residual KKT, mensajes y tiempo de c\'omputo. Cinco
+contrastes se congelaron antes de abrir la confirmatoria: \'exito de replicator
+frente a CBF; colisi\'on de replicator frente a directo; KKT exacto frente a
+anillo; \'exito de replicator frente a Nash--PD; y error posicional de replicator
+frente a PD central. Las tasas usan prueba binomial exacta sobre pares discordantes;
+las variables continuas usan Wilcoxon unilateral. Se informa bootstrap pareado del
+95\,\% y correcci\'on de Holm.
+
+\medskip
+\noindent\textbf{Resultados confirmatorios.}
+La candidata can\'onica \texttt{SP4\_DOCKING\_GAME\_CONFIRMATORY\_v3} contiene
+108 mundos y 1188 ejecuciones: seis semillas nuevas, seis escenarios, tres
+tama\~nos de flota y once m\'etodos. La auditor\'ia termin\'o en PASS. No hubo
+colisiones iniciales; el despeje inicial m\'inimo fue $0{,}2724$ m. El error
+m\'aximo del s\'implex fue $2{,}22\times10^{-16}$, la violaci\'on de capacidad fue
+cero, la brecha m\'axima frente al QP independiente fue $1{,}139\times10^{-4}$ y
+el error de gradiente fue $8{,}07\times10^{-10}$. Los seis QP auditados
+convergieron y no se repar\'o ninguna posici\'on.
+
+\begin{table}[tbp]
+\centering
+\caption{Resultados confirmatorios de SP4 v3. KKT no aplica a los comparadores sin juego.}
+\label{tab:sp4-v3-main}
+\scriptsize
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+M\'etodo & \'Exito & Colisi\'on & Timeout & KKT & Tiempo (s)\\
+\midrule
+Directo al contacto & 0,1667 & 0,8333 & 0,0000 & -- & 0,025\\
+APF & 0,1111 & 0,7593 & 0,1296 & -- & 0,136\\
+RVO proxy & 0,1667 & 0,8333 & 0,0000 & -- & 0,028\\
+Proyecci\'on CBF & 0,1759 & 0,0000 & 0,8241 & -- & 1,598\\
+PD central (70 iter.) & 0,0370 & 0,0000 & 0,9630 & 0,0661 & 2,939\\
+Nash--PD RAW & 0,0278 & 0,0000 & 0,9722 & 0,0576 & 1,843\\
+Nash--PD exacto & 0,0278 & 0,0000 & 0,9722 & 0,0892 & 1,767\\
+Nash--PD anillo & 0,0093 & 0,0000 & 0,9907 & 0,4244 & 2,038\\
+Smith + CBF & 0,0093 & 0,0000 & 0,9907 & 0,1286 & 2,164\\
+Replicator + CBF & 0,2685 & 0,0000 & 0,7315 & 1,7036 & 2,250\\
+ERV--BNN + CBF & 0,0000 & 0,0000 & 1,0000 & 0,1884 & 2,157\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Replicator obtuvo la mayor tasa de \'exito seguro, $0{,}2685$ (IC95\,\%
+$[0{,}1852,0{,}3519]$), frente a $0{,}1759$ de la proyecci\'on CBF y
+$0{,}0278$ de Nash--PD exacto. Esta ventaja no equivale a completitud:
+$0{,}7315$ de sus mundos terminaron por tiempo. Los m\'etodos guardados no
+colisionaron; directo y RVO colisionaron en $0{,}8333$ y APF en $0{,}7593$.
+Por tanto, la llegada de los controles directos no es un \'exito seguro.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig-sp4-scenario-matrix.png}
+\caption[\'Exito y colisi\'on por escenario en SP4]{Matriz confirmatoria por
+m\'etodo y escenario. Replicator resuelve parte de cruce, bloqueo sim\'etrico y
+obst\'aculos dispersos, pero no el pasaje estrecho ni los actuadores limitados.}
+\viuownsource
+\label{fig:sp4-scenario-matrix}
+\end{figure}
+
+La estratificaci\'on impide convertir el promedio en una afirmaci\'on general.
+Replicator alcanz\'o $1{,}000$ en abierto, $0{,}278$ en cruce, $0{,}222$ en
+bloqueo sim\'etrico y $0{,}111$ con obst\'aculos dispersos; obtuvo cero en pasaje
+estrecho y actuadores limitados. La proyecci\'on CBF alcanz\'o $1{,}000$ en
+abierto y $0{,}056$ con obst\'aculos dispersos, pero cero en los otros cuatro
+escenarios.
+
+Los cinco contrastes congelados sobrevivieron Holm. Replicator aument\'o el
+\'exito frente a CBF en $0{,}0926$ (IC95\,\% $[0{,}0370,0{,}1574]$,
+$p_{\rm Holm}=0{,}00317$) y frente a Nash--PD en $0{,}2407$
+(IC95\,\% $[0{,}1667,0{,}3241]$, $p_{\rm Holm}=2{,}98\times10^{-8}$).
+Frente al control directo, redujo la colisi\'on en $0{,}8333$
+(IC95\,\% $[-0{,}8981,-0{,}7593]$, $p_{\rm Holm}=4{,}04\times10^{-27}$).
+Su error posicional fue $1{,}0436$ m menor que el PD central
+(IC95\,\% $[-1{,}1896,-0{,}8971]$, $p_{\rm Holm}=3{,}74\times10^{-19}$).
+La informaci\'on exacta redujo el residual KKT frente al anillo en $0{,}3351$
+(IC95\,\% $[-0{,}3962,-0{,}2727]$, $p_{\rm Holm}=1{,}81\times10^{-14}$).
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=0.86\textwidth]{figures/fig-sp4-kkt-potential.png}
+\caption[Auditor\'ia del potencial de SP4]{Evoluci\'on del coste y residual KKT
+de una instant\'anea auditada frente al QP convexo independiente.}
+\viuownsource
+\label{fig:sp4-kkt-potential}
+\end{figure}
+
+La disminuci\'on de KKT no predijo el \'exito cerrado. Replicator obtuvo residual
+medio $1{,}7036$, pero la mayor llegada; Nash--PD exacto redujo KKT a $0{,}0892$
+y casi siempre agot\'o el horizonte. Esto sugiere que el transitorio de revisi\'on
+y la secuencia de primitivas importan m\'as que resolver con precisi\'on cada
+instant\'anea miope. Adem\'as, Nash--PD RAW y cerrado empataron en \'exito
+($0{,}0278$): las $6{,}26$ intervenciones medias del cierre no explican una
+mejora terminal en esta campa\~na.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{figures/fig-sp4-scaling.png}
+\caption[Escalado observado de SP4]{Tiempo, mensajes contabilizados y \'exito
+seguro para los m\'etodos de juego al pasar de 4 a 12 robots.}
+\viuownsource
+\label{fig:sp4-scaling}
+\end{figure}
+
+El \'exito de replicator cay\'o de $0{,}4167$ con cuatro robots a $0{,}2222$ con
+ocho y $0{,}1667$ con doce. Su tiempo subi\'o de $1{,}06$ a $3{,}62$ s y los
+mensajes contabilizados de $4{,}62\times10^5$ a $1{,}62\times10^7$. En el
+anillo, los mensajes alcanzaron $4{,}30\times10^7$ con doce robots. Son medidas
+del simulador, no cotas asint\'oticas ni latencia de red real.
+
+Finalmente, no hubo saturaciones de par en las 1188 ejecuciones. La campa\~na
+modela la transformaci\'on y los l\'imites, pero no excita esa no linealidad y no
+valida robustez frente a saturaci\'on. Tambi\'en aparecieron residuales CBF EXEC
+positivos ---$48{,}64$ pasos por ejecuci\'on en replicator y $98{,}81$ en CBF,
+en promedio--- aunque el monitor barrido no registr\'o colisiones. Por ello, el
+cero emp\'irico de colisi\'on no demuestra seguridad continua despu\'es
+de la ejecuci\'on.
+
+\medskip
+\noindent\textbf{Alcance.}
+La contribuci\'on de SP4 es la formulaci\'on y auditor\'ia de un juego recedente
+wrench-aware sobre una planta no hol\'onoma saturada, no una demostraci\'on de
+optimalidad global. La equivalencia QP/KKT se limita a instant\'aneas convexas; la
+composici\'on con cierre, replanteo, CBF y pares saturados se eval\'ua
+experimentalmente. El cierre y la informaci\'on completa siguen siendo globales.
+El proxy RVO no es una implementaci\'on completa de ORCA. La carga permanece fija:
+la estabilidad del transporte y la fricci\'on de contacto son preguntas de SP5 y
+de validaci\'on f\'isica futura.

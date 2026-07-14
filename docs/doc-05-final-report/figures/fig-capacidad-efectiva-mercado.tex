@@ -1,53 +1,36 @@
 \begin{figure}[htbp]
 \centering
-\resizebox{0.98\textwidth}{!}{%
+\resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
-  node distance=0.75cm,
-  block/.style={
-    draw=VIUDark,
-    fill=VIULight,
-    rounded corners=2pt,
-    minimum width=3.05cm,
-    minimum height=0.95cm,
-    align=center,
-    font=\small\sffamily
-  },
-  emphblock/.style={
-    draw=VIUOrange,
-    fill=VIUOrange!10,
-    rounded corners=2pt,
-    minimum width=3.05cm,
-    minimum height=0.95cm,
-    align=center,
-    font=\small\sffamily
-  },
-  flow/.style={-{Latex[length=2.1mm]}, thick, draw=VIUDark},
-  oflow/.style={-{Latex[length=2.1mm]}, thick, draw=VIUOrange}
+  font=\sffamily\small,
+  block/.style={draw=VIUDark!70,fill=VIULight,rounded corners=4pt,
+    align=center,text width=3.15cm,minimum height=1.05cm,inner sep=5pt},
+  core/.style={draw=VIUOrange,fill=VIUOrange!10,rounded corners=5pt,
+    align=center,text width=3.55cm,minimum height=1.18cm,inner sep=6pt,
+    font=\sffamily\small\bfseries},
+  flow/.style={-{Latex[length=2.3mm]},line width=0.9pt,draw=VIUDark!70},
+  oflow/.style={-{Latex[length=2.5mm]},line width=1.0pt,draw=VIUOrange!90!black}
 ]
-\node[block] (demand) {Demanda física\\$D_k(q,\mathcal{O})$};
-\node[block, right=of demand] (supply) {Oferta efectiva\\$S_k(C,q)$};
-\node[emphblock, right=of supply] (deficit) {Déficit\\$\delta_k=D_k-S_k$};
-\node[block, below=of supply] (price) {Precio sombra\\$\pi_k=\partial J/\partial\delta_k$};
-\node[block, right=of deficit] (payoff) {Payoff\\$F_{ik}^{eff}$};
-\node[block, right=of payoff] (smith) {Smith\\$\dot y_i$};
-\node[block, below=of payoff] (mech) {Ejecución\\port-Hamiltoniana};
-\node[block, below=of demand] (capacity) {Recursos robot\\fuerza, torque, fricción, batería};
+\node[block] (demand) at (0,1.15) {Demanda\\masa\\par\\fricci\'on};
+\node[block] (robots) at (0,-1.15) {Oferta AMR\\fuerza\\bater\'ia\\contacto};
+\node[core] (deficit) at (4.2,0) {D\'eficit f\'isico\\$\delta_k=D_k-S_k$};
+\node[block] (signal) at (8.4,0) {Se\~nal econ\'omica\\precio sombra\\utilidad local};
+\node[core] (smith) at (12.6,0) {Smith-QR\\coalici\'on entera};
+\node[block] (exec) at (16.6,0) {Ejecuci\'on\\\emph{wrench}\\seguridad};
 
-\draw[flow] (demand) -- (supply);
-\draw[oflow] (supply) -- (deficit);
-\draw[oflow] (deficit) -- (payoff);
-\draw[flow] (payoff) -- (smith);
-\draw[flow] (smith) |- (mech);
-\draw[flow] (capacity) -- (supply);
-\draw[flow] (deficit) -- (price);
-\draw[flow] (price) -| (payoff);
-\draw[flow] (mech.west) -| (capacity.south);
+\draw[oflow] (demand.east) -- (deficit.west);
+\draw[flow] (robots.east) -- (deficit.west);
+\draw[oflow] (deficit.east) -- (signal.west);
+\draw[oflow] (signal.east) -- (smith.west);
+\draw[oflow] (smith.east) -- (exec.west);
+\draw[flow,dashed] (exec.south) .. controls +(down:1.15cm) and +(down:1.15cm) .. (robots.south);
 
-\node[font=\small\sffamily, align=center, text=VIUDark, below=0.32cm of mech] {
-La tarea no compra robots: compra capacidad mecánica efectiva hasta cerrar el déficit físico.
-};
-\end{tikzpicture}
-}
-\caption[Mercado distribuido de capacidad mecánica efectiva]{Mercado distribuido de capacidad mecánica efectiva. La cardinalidad mínima se reemplaza por un déficit físico que combina masa, torque, fricción, geometría, obstáculo, batería y saturación de actuadores.}
+\node[draw=VIUGray!55,fill=VIUWhite,rounded corners=4pt,
+  align=center,text width=11.6cm,inner sep=5pt,font=\sffamily\scriptsize]
+  at (8.25,-2.55)
+  {La decisi\'on se basa en capacidad mec\'anica efectiva\\hasta cerrar el d\'eficit f\'isico con coste aceptable.};
+\end{tikzpicture}}
+\caption[Mercado distribuido de capacidad mecánica efectiva]{Mercado distribuido de capacidad mecánica efectiva. La cardinalidad mínima se reemplaza por un déficit físico que combina masa, par, fricción, geometría, obstáculo, batería y saturación de actuadores.}
+\viuownsource
 \label{fig:capacidad-efectiva-mercado}
 \end{figure}

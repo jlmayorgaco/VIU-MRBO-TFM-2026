@@ -1,46 +1,42 @@
-\section{Marco teórico y estado del arte}
+\section{Marco teórico}
 \label{sec:marco}
 
 \subsection{Alcance de la revisión}
 
-El problema de este TFM no es la coordinación multiagente en abstracto, sino el
-transporte cooperativo distribuido de cargas por robots móviles. Esa precisión cambia la
+Este TFM aborda el transporte cooperativo distribuido de cargas por robots móviles.
+Esta delimitación cambia la
 lectura del estado del arte: una solución útil debe decidir qué robots atienden qué
-cargas, cerrar coaliciones enteras, garantizar que la geometría de contacto puede
+cargas, cerrar coaliciones enteras, comprobar que la geometría de contacto puede
 producir fuerza y torque suficientes, navegar en un entorno compartido y mantener
 robustez bajo batería, congestión, fallos y comunicación local. Por tanto, el campo
 relevante queda en la intersección de MRTA, control distribuido, teoría de grafos,
 formaciones rígidas, teoría de juegos, optimización, aprendizaje multiagente y robótica
 de almacén.
 
-La revisión usada para este capítulo combina dos capas. La primera es una capa clásica
-de literatura fundacional y revisiones consolidadas: MRTA y mercados robóticos
-\citep{gerkey2004formal,dias2006market,korsah2013taxonomy}, consenso y redes
-\citep{olfati2004consensus,olfati2007consensus,ren2008distributed,bullo2009distributed},
-juegos poblacionales \citep{sandholm2010population,quijano2017population}, AMR y
-almacenes \citep{leanh2006agv,wurman2008coordinating,azadeh2019warehouse}, y transporte
-cooperativo de objetos \citep{tuci2018cooperative,farivarnejad2022multirobot,an2023cooperative}.
-La segunda es un mapeo sistemático local, construido sobre un corpus arXiv-first de
-5665 registros y 5931 enlaces tema-año, con 174 estudios de alta prioridad y 91 registros
-focales en transporte/carga. Esta segunda capa no se presenta como PRISMA final, porque
-faltan IEEE Xplore, ACM Digital Library, Scopus/Web of Science y rastreo formal de citas;
-sí se usa como mapa reproducible para detectar tendencias, baselines y brechas.
+La revisión de este capítulo se organiza alrededor de la literatura fundacional y de las
+revisiones consolidadas que delimitan cada capa del problema: MRTA y mercados robóticos
+\citep{gerkey2004formal,dias2006market,korsah2013taxonomy}; consenso, redes y control
+distribuido \citep{olfati2004consensus,olfati2007consensus,ren2008distributed,bullo2009distributed};
+juegos poblacionales \citep{sandholm2010population,quijano2017population}; AMR y almacenes
+\citep{leanh2006agv,wurman2008coordinating,azadeh2019warehouse}; y transporte cooperativo de
+objetos \citep{tuci2018cooperative,farivarnejad2022multirobot,an2023cooperative}. Sobre esa
+base se añade la literatura reciente específica de transporte con \emph{payload}, roles y
+restricciones físicas, que se discute en los apartados siguientes mediante comparadores contemporáneos y
+como fuente de las brechas que motivan la tesis.
 
-En los registros focales, el término dominante fue \emph{payload} (43 registros), seguido
-por \emph{cooperative transport} (16), \emph{object transport} (13), \emph{carrying} (13)
-y \emph{load transport} (7). La categoría más frecuente fue cs.RO, y la densidad
-temporal se concentró en 2021--2026. La lectura científica es clara: la literatura está
-activa, pero fragmentada. Los trabajos de asignación escalan mejor cuando abstraen la
-física; los trabajos de control físico son más realistas cuando presuponen la coalición;
-los métodos aprendidos ganan adaptabilidad, pero suelen depender de escenarios de
-entrenamiento; y las soluciones comerciales resuelven flotas de material handling, no
-necesariamente coaliciones físicas para una misma carga.
+La lectura conjunta de estas fuentes muestra un campo activo pero fragmentado. Los trabajos
+de asignación escalan mejor cuando abstraen la física. Los de control físico son más
+realistas cuando presuponen la coalición ya formada. Los métodos aprendidos ganan
+adaptabilidad, pero dependen de los escenarios de entrenamiento. Las soluciones comerciales
+resuelven flotas de material handling más que coaliciones físicas para una misma carga.
+Esa fragmentación define el espacio de contribución de esta memoria, que une asignación
+distribuida, cierre entero de coaliciones y factibilidad física bajo comunicación local.
 
 \subsection{Formulación del problema focal}
 
 Sea $\mathcal R=\{1,\dots,N\}$ el conjunto de robots y
 $\mathcal L=\{1,\dots,M\}$ el conjunto de cargas. Cada carga $k$ tiene una demanda
-física $D_k$ que puede incluir peso, fricción, dimensiones, centro de masa, deadline,
+física $D_k$ que puede incluir peso, fricción, dimensiones, centro de masa, plazo,
 dirección deseada y wrench requerido $w_k^{\rm dem}$. Una asignación puramente discreta
 devuelve una coalición $C_k\subseteq\mathcal R$; una asignación físicamente válida debe
 cumplir además
@@ -98,13 +94,13 @@ puede mejorar unilateralmente manteniendo fijas las decisiones de los demás:
 \]
 \end{definicion}
 
-El resultado seminal de Nash garantiza existencia de equilibrio en juegos finitos cuando
+El resultado seminal de Nash demuestra existencia de equilibrio en juegos finitos cuando
 se admiten estrategias mixtas \citep{nash1950equilibrium,nash1951noncooperative}. Para
 este TFM, esa idea no se usa como una receta directa de asignación centralizada, sino
 como una condición de estabilidad estratégica: una coalición madura debe ser tal que un
 robot no encuentre una carga alternativa con mayor utilidad local una vez considerados
 los demás robots. Esta lectura es más fuerte que una asignación voraz y más débil que una
-garantía global de transporte físico. Una decisión puede ser estable como juego y aun
+prueba global de transporte físico. Una decisión puede ser estable como juego y aun
 así ser inviable si no produce el \emph{wrench} requerido o viola despejes de seguridad.
 
 \begin{definicion}[Juego potencial]
@@ -155,15 +151,15 @@ ren2008distributed,bullo2009distributed}. En robótica móvil, esta base permite
 ocupaciones, compartir estados, coordinar formaciones, propagar precios y acotar efectos
 de retardo o topología conmutada. El consenso dinámico de media es especialmente útil
 cuando la magnitud agregada cambia durante la misión \citep{kia2019tutorial}, como ocurre
-con número de robots disponibles, carga pendiente, batería o congestión.
+con número de robots disponibles, carga restante, batería o congestión.
 
-El transporte de cargas introduce una exigencia adicional: no basta con que los robots
-consensen una variable; deben consensar decisiones que producen contacto físico. Esto
+El transporte de cargas introduce una exigencia adicional. Los robots deben consensar
+decisiones que producen contacto físico, además de variables compartidas. Esto
 convierte el grafo de comunicación en una restricción operativa. Un robot puede ser
 útil desde el punto de vista de coste, pero inútil si no observa la carga, no puede
-mantener comunicación mínima con la coalición o llega cuando el quorum ya cerró. De ahí
-que el escenario R3 de comunicación degradada sea más que una perturbación experimental:
-es una prueba de si el algoritmo depende de broadcast implícito.
+mantener comunicación mínima con la coalición o llega cuando el quórum ya cerró. De ahí
+que el escenario R3 de comunicación degradada permita comprobar si el algoritmo depende
+de broadcast implícito.
 
 \subsubsection{Juegos poblacionales y dinámica de Smith}
 
@@ -218,9 +214,18 @@ La ventaja para este TFM es interpretativa. Smith permite leer la asignación co
 continua bajo escasez, no como una secuencia rígida de subastas. Su debilidad, si se usa
 solo, es que produce preferencias fraccionarias. El transporte de una carga requiere una
 coalición entera, roles concretos y guardias de ejecución. Por eso Smith-QR se plantea
-como una arquitectura híbrida: Smith genera presión distribuida; QR/quorum transforma
+como una arquitectura híbrida: Smith genera presión distribuida; QR/quórum transforma
 preferencias en coaliciones ejecutables; y la capa wrench decide si la coalición es
 físicamente válida.
+
+\paragraph{Especialización homogénea unificada.}
+En SP1 cada robot conserva su propio símplex $x_i\in\Delta^K$ y las cargas comparten
+un cuórum $q\geq1$. El caso $q=1$ es el límite uno a uno, no un subproblema
+independiente. El potencial cuadrático de déficit y distancia, su gradiente como
+fitness, la invariancia del símplex y la condición de Nash se formalizan en la
+sección~\ref{sec:resultados-sp1-homogeneous}. Las garantías se aplican a la dinámica
+continua con ocupación exacta; no se trasladan automáticamente al cierre entero ni a
+estimaciones de consenso finitas.
 
 \subsubsection{Campos potenciales, obstáculos y barreras}
 
@@ -279,39 +284,37 @@ El factor $\eta_{ik}$ reduce la contribución cuando el robot está lejos, mal o
 saturado, con batería insuficiente, en contacto inútil o desconectado de la coalición.
 Así, la demanda de una carga no compra cardinalidad; compra capacidad mecánica efectiva.
 
-\input{sections/mainmatter/05-theoretical-framework/expanded-theory}
+\input{sections/mainmatter/05-theoretical-framework/integrated-theory-core}
 
-\subsection{Validacion numerica de resultados teoricos}
+\subsection{Comprobación numérica de los aportes teóricos}
 
-Las garantias formales del Capitulo~5 se acompanan de tres comprobaciones numericas
-reproducibles. V1 contrasta el reparto vGNE frente a la proporcion $\eta_i/H$; V2
-superpone la curva cerrada de Price of Anarchy con su calculo numerico; y V3 dibuja la
-frontera $c\lambda_2\mu=\vartheta^2$ de estabilidad Nash seeking. Estas figuras no
-reemplazan las demostraciones del Anexo~A: sirven como puente entre teoria, codigo y
-lectura experimental.
+Las proposiciones anteriores se acompa\~nan de tres comprobaciones num\'ericas reproducibles e independientes del c\'alculo cerrado que validan. V1 compara el reparto ponderado de \emph{wrench} con la soluci\'on directa del sistema KKT de igualdad. V2 contrasta la identidad de potencia Hamiltoniana por diferencias finitas y la proyecci\'on HOCBF cerrada frente a un QP SLSQP. V3 integra el sistema lineal con entradas conmutadas acotadas y verifica la cota ISS derivada de un Lyapunov com\'un. Estas pruebas comprueban \`algebra e implementaci\'on dentro de sus supuestos; no constituyen validaci\'on f\'isica ni ampl\'ian el dominio de los teoremas.
 
-\IfFileExists{../../results/theory_validation/v1/figures/fig_v1_share_vs_theory.png}{%
+\IfFileExists{../../results/theory_validation/v1/figures/fig_v1_kkt_wrench_allocation.png}{%
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.72\textwidth]{../../results/theory_validation/v1/figures/fig_v1_share_vs_theory.png}
-\caption{V1: validacion numerica del reparto vGNE frente a la proporcion $\eta_i/H$.}
-\label{fig:v1-share-vs-theory}
+\includegraphics[width=0.72\textwidth]{../../results/theory_validation/v1/figures/fig_v1_kkt_wrench_allocation.png}
+\caption{V1: error del reparto cerrado de \emph{wrench} frente a una soluci\'on KKT independiente en 250 casos.}
+\viuownsource
+\label{fig:v1-kkt-wrench-allocation}
 \end{figure}}{}
 
-\IfFileExists{../../results/theory_validation/v2/figures/fig_v2_poa_curve.png}{%
+\IfFileExists{../../results/theory_validation/v2/figures/fig_v2_hamiltonian_hocbf.png}{%
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.72\textwidth]{../../results/theory_validation/v2/figures/fig_v2_poa_curve.png}
-\caption{V2: curva de Price of Anarchy cerrada y calculo numerico para $N=2,\dots,6$.}
-\label{fig:v2-poa-curve}
+\includegraphics[width=0.72\textwidth]{../../results/theory_validation/v2/figures/fig_v2_hamiltonian_hocbf.png}
+\caption{V2: error de la identidad de potencia Hamiltoniana y de la proyecci\'on HOCBF frente a un QP independiente.}
+\viuownsource
+\label{fig:v2-hamiltonian-hocbf}
 \end{figure}}{}
 
-\IfFileExists{../../results/theory_validation/v3/figures/fig_v3_stability_boundary.png}{%
+\IfFileExists{../../results/theory_validation/v3/figures/fig_v3_practical_iss.png}{%
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.72\textwidth]{../../results/theory_validation/v3/figures/fig_v3_stability_boundary.png}
-\caption{V3: frontera de estabilidad asociada a $c\lambda_2\mu>\vartheta^2$.}
-\label{fig:v3-stability-boundary}
+\includegraphics[width=0.62\textwidth]{../../results/theory_validation/v3/figures/fig_v3_practical_iss.png}
+\caption{V3: trayectoria con entrada acotada y cota ISS obtenida mediante un Lyapunov com\'un.}
+\viuownsource
+\label{fig:v3-practical-iss}
 \end{figure}}{}
 
 \subsection{Familias algorítmicas del estado del arte}
@@ -319,110 +322,109 @@ lectura experimental.
 \begin{table}[H]
 \centering
 \footnotesize
-\begin{tabularx}{\textwidth}{p{2.85cm}Y Y Y}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{p{3.0cm}Y Y Y}
 \toprule
 Familia & Mecanismo dominante & Fortalezas & Límite frente a este TFM \\
 \midrule
-Planificación centralizada/MILP/MAPF & Optimización global de asignación, rutas y conflictos. &
+Planificación centralizada / MILP / MAPF & Optimización global de asignación, rutas y conflictos. &
 Puede dar cotas fuertes y soluciones de alta calidad en instancias acotadas. &
 Escala mal con coaliciones, incertidumbre y ejecución distribuida; suele requerir información global. \\
-CBBA, subastas y mercados & Pujas locales, bundles, consenso y precios. &
+CBBA, subastas y mercados & Pujas locales, paquetes de tareas, consenso y precios duales. &
 Buen balance entre descentralización, trazabilidad y coste computacional. &
 La utilidad suele ser escalar; la factibilidad física de la carga queda externa. \\
-Control distribuido/formación & Leyes locales, consenso, campos, MPC o control de formación. &
-Buena conexión con estabilidad, tracking, seguridad y ejecución real. &
+Control distribuido / formación & Leyes locales, consenso, campos, MPC o control de formación. &
+Buena conexión con estabilidad, seguimiento, seguridad y ejecución real. &
 A menudo presupone coalición, roles o formación inicial ya definidos. \\
-Teoría de juegos/dinámicas poblacionales & Payoffs, potenciales, respuesta mejor, Smith/replicator/Stackelberg. &
-Interpretable, distribuible y compatible con escasez y equilibrio. &
-Debe traducir payoff a capacidad, wrench, energía y comunicación para no quedar abstracta. \\
-MARL/GNN/aprendizaje jerárquico & Políticas aprendidas, message passing, CTDE, descriptores topológicos. &
+Juegos poblacionales y arquitecturas de decisi\'on basadas en juegos & Utilidades y potenciales sobre una distribuci\'on de masa: din\'amica replicadora, Smith, logit, BNN, proyecci\'on y mecanismos primal--dual o de mercado. \emph{Water-filling} y campo medio se conservan como ejes conceptuales o exploratorios. &
+Arquitectura interpretable y compatible con escasez, precios y equilibrio; sus garant\'ias de localidad dependen de la informaci\'on y del cierre usados. &
+Debe traducir la utilidad a capacidad, \emph{wrench}, energ\'ia y comunicaci\'on, y cerrar preferencia fraccionaria en coaliciones enteras. \\
+MARL / GNN / aprendizaje jerárquico & Políticas aprendidas, paso de mensajes, CTDE y descriptores topológicos. &
 Adapta a escenarios variables y captura interacciones no lineales. &
 Menor auditabilidad, dependencia de entrenamiento y generalización difícil fuera de distribución. \\
 \bottomrule
 \end{tabularx}
-\caption{Taxonomía compacta de familias algorítmicas relevantes para transporte cooperativo distribuido de cargas.}
+\caption{Taxonom\'ia de familias algor\'itmicas relevantes. La contribuci\'on es una arquitectura con componentes basados en juegos y cierres cuya localidad se declara por variante; no todos los ejes de dise\~no se eval\'uan confirmatoriamente.}
 \label{tab:taxonomia_sota}
 \end{table}
 
-La tendencia reciente no es la sustitución de una familia por otra, sino su acoplamiento.
-El trabajo de \citet{paul2023collective} formula MRTA-collective transport con cargas,
-deadlines, restricciones de vuelo/comunicación/payload y GNN con descriptores
+La tendencia reciente acopla familias que antes se estudiaban por separado.
+El trabajo de \citet{paul2023collective} formula la asignación de tareas para transporte
+colectivo con cargas, plazos, restricciones de vuelo, comunicación y capacidad, además de GNN con descriptores
 topológicos. \citet{brown2025assembly} integran asignación de subequipos, transporte
 colaborativo, planificación geométrica y control distribuido en manufactura a gran
-escala. \citet{zhou2026cttapf} formalizan Cooperative Transportation Task Allocation and
-Path Finding, donde formación de equipo, asignación y path finding se resuelven como un
-problema integrado. Estos trabajos confirman que el problema relevante ya no es MRTA
-aislado: es MRTA con acoplamiento físico y rutas compartidas.
+escala. \citet{zhou2026cttapf} formalizan la asignación de tareas y planificación de rutas
+para transporte cooperativo, donde la formación de equipos, la asignación y las rutas se resuelven como un
+problema integrado. Estos trabajos sitúan el problema en MRTA con acoplamiento físico y
+rutas compartidas.
 
 En la línea de transporte cooperativo aprendido, \citet{shibata2022learning} proponen
 asignación para transporte multiobjeto con pesos desconocidos usando prioridades globales
 y política distribuida; \citet{naito2024tihdp} estructuran el aprendizaje en capas de
 asignación, prioridad dinámica y control; y \citet{shida2024infeasible} tratan tareas
-inviables para evitar deadlocks ante objetos no transportables. Estos trabajos son
-baselines modernos porque enfrentan número variable de robots/objetos e incertidumbre de
+inviables para evitar bloqueos ante objetos no transportables. Estos trabajos aportan
+comparadores recientes para un número variable de robots y objetos bajo incertidumbre de
 peso. Su límite para esta tesis es que la interpretabilidad del cierre de coalición y la
-trazabilidad física del payoff no siempre quedan explícitas.
+trazabilidad física de la utilidad no siempre quedan explícitas.
 
-En la línea de payload y capacidad, \citet{qiu2024cbpa} extienden CBBA con consumo de
-payload mediante matrices de asignación compartidas por consenso. \citet{guan2025low}
+En la línea de capacidad de carga, \citet{qiu2024cbpa} extienden CBBA con consumo de
+capacidad mediante matrices de asignación compartidas por consenso. \citet{guan2025low}
 proponen transporte cooperativo de baja complejidad para robots no holonómicos bajo
-restricciones escalables, reduciendo el coste de generación/tracking frente a enfoques
+restricciones escalables, reduciendo el coste de generación y seguimiento frente a enfoques
 puramente optimizados. \citet{bhatt2026box} plantean transporte descentralizado de cajas
 con roles de empuje, soporte y prevención sobre superficies con distinta fricción e
 inclinación, incluyendo validación física con TurtleBots. En conjunto, estos trabajos
-demuestran que payload, roles, restricciones de actuación y superficie ya son variables
+demuestran que la capacidad, los roles, las restricciones de actuación y la superficie ya son variables
 centrales del estado del arte.
 
-También hay una rama aérea y de manipulación compartida. Los payloads suspendidos con
-quadrotors integran planificación, obstáculos y NMPC \citep{kargar2025cable}, mientras
-que la manipulación cooperativa con CBFs event-triggered conecta consenso, seguridad y
+También hay una rama aérea y de manipulación compartida. Las cargas suspendidas con
+cuadricópteros integran planificación, obstáculos y NMPC \citep{kargar2025cable}, mientras
+que la manipulación cooperativa con CBF activadas por eventos conecta consenso, seguridad y
 restricciones de comunicación \citep{zhuang2026safe}. Para el TFM, estas ramas no son
 aplicaciones directas de almacén, pero sí prueban una idea transferible: cuando la carga
-es físicamente compartida, el control debe razonar sobre restricciones de fuerza, torque,
+es físicamente compartida, el control debe razonar sobre restricciones de fuerza, par,
 seguridad y comunicación al mismo tiempo.
 
 \subsection{Aplicaciones industriales y soluciones comerciales}
 
-La robótica comercial de almacén muestra madurez clara en AMR, goods-to-person,
-robots-to-goods, picking, transporte de pallets, tugging, clasificación y fleet
-management. Amazon Robotics describe sistemas donde robots móviles transportan inventario
-hacia almacenamiento o estaciones de picking \citep{amazonRobotics2024}. Locus Robotics
-ofrece AMRs y software LocusONE para orquestar personas, robots y workflows de fulfillment
-\citep{locusRobotics2026}. Geek+ comercializa soluciones con AMRs, smart storage e
-integración WMS/MES para flujos shelf-to-person y goods-to-production
-\citep{geekplus2026}. MiR posiciona AMRs modulares para logística y fabricación, con
-movimiento de piezas, cargas y pallets \citep{mirRobots2026}. OTTO Motors/Rockwell
-enfatiza fleet management para llevar la pieza correcta al lugar correcto y mantener
-tráfico eficiente en flotas grandes \citep{ottoFleet2026}. KUKA ofrece plataformas AMR
-de transporte pesado, incluyendo KMP 1500P y KMP 3000P para cargas de 1.5 y 3 toneladas
-\citep{kukaAmr2026}; OMRON comercializa series LD/MD/HD con payloads hasta 1500 kg
-\citep{omronRobotics2026}; AGILOX promueve X-SWARM como coordinación AMR sin ordenador
-maestro central \citep{agilox2026}; y Boston Dynamics Stretch automatiza manipulación de
-cajas en descarga de trailers y contenedores \citep{bostonStretch2026}.
+La robótica comercial de almacén incluye modelos \emph{goods-to-person}, preparación de
+pedidos, transporte de palés, remolque, clasificación y gestión de flotas. Amazon Robotics
+describe sistemas que transportan inventario hacia zonas de almacenamiento o estaciones de
+preparación \citep{amazon2026robotsFulfillment}. Locus Robotics combina AMR y el software LocusONE
+para coordinar personas y robots \citep{locusRobotics2026}. Geek+ integra AMR,
+almacenamiento automatizado y sistemas WMS/MES \citep{geekplus2026}. MiR ofrece robots
+modulares para mover piezas, cargas y palés \citep{mirRobots2026}. OTTO Motors/Rockwell
+incorpora gestión de tráfico para flotas grandes \citep{ottoFleet2026}.
 
-Esta evidencia comercial es importante por lo que muestra y por lo que no muestra. El
-mercado sí resuelve navegación autónoma, seguridad industrial, integración con WMS,
-orquestación de flotas, tráfico, carga unitaria y manipulación de cajas. Sin embargo, la
-oferta pública se concentra en que un AMR compatible mueve una unidad de carga, o en que
-un fleet manager coordina varios robots independientes. La coordinación comercial tipo
-\emph{swarm} suele significar distribución de órdenes, evitación de tráfico y resiliencia
-de flota, no necesariamente una coalición física descentralizada que transporte una misma
-carga rígida mediante contactos múltiples. Ese vacío no invalida las soluciones
-comerciales; delimita la brecha investigadora: llevar el rigor de MRTA/control distribuido
-a una capacidad industrial todavía poco expuesta como producto general.
+KUKA ofrece las plataformas KMP 1500P y KMP 3000P para cargas de $1{,}5$ y $3$ toneladas
+\citep{kukaAmr2026}. OMRON comercializa las series LD, MD y HD con capacidades de hasta
+$1500$ kg \citep{omronRobotics2026}. AGILOX presenta X-SWARM como un sistema de
+coordinación sin ordenador maestro \citep{agilox2026}. Boston Dynamics utiliza Stretch
+para manipular cajas durante la descarga de remolques y contenedores
+\citep{bostonStretch2026}.
+
+La oferta comercial revisada cubre navegación autónoma, integración con WMS, gestión de
+tráfico, carga unitaria y manipulación de cajas. Las descripciones públicas se concentran
+en un robot por unidad de carga o en la coordinación de varios vehículos independientes.
+La distribución de órdenes y la evitación de tráfico no implican una coalición física que
+transporte una misma carga rígida mediante contactos múltiples. Esta diferencia sitúa la
+brecha investigadora entre la gestión de flotas disponible y el transporte cooperativo
+descentralizado estudiado en la memoria.
 
 \subsection{Tendencias y brechas científicas}
 
-Del corpus y de la literatura consolidada emergen cinco tendencias. Primera, el campo se
-mueve de asignaciones abstractas hacia tareas con payload, energía, comunicación,
-deadlines y seguridad. Segunda, la teoría de grafos ya no se usa solo para comunicación:
-también aparece en topología del entorno, formación, GNN y descriptores persistentes.
-Tercera, MARL/GNN crece como baseline adaptativo, pero los mejores enfoques añaden
-estructura jerárquica o gráfica en vez de aprender todo end-to-end. Cuarta, el warehouse
-es un dominio de validación fuerte porque combina congestión, rutas estrechas, WMS,
-prioridades y repetibilidad experimental. Quinta, el transporte cooperativo físico sigue
-siendo más estrecho que la coordinación multiagente general, por lo que las afirmaciones
-de la tesis deben apoyarse en estudios de payload/carga, no solo en consensus o MRTA.
+La literatura revisada muestra un desplazamiento desde asignaciones abstractas hacia tareas
+que incorporan capacidad de carga, energía, comunicación, plazos y seguridad. La teoría de
+grafos ya interviene en la topología del entorno, la formación, las GNN y los descriptores
+persistentes, además de representar los enlaces de comunicación.
+
+MARL y GNN se utilizan como comparadores adaptativos. Los enfoques recientes suelen
+incorporar estructura jerárquica o gráfica en lugar de aprender el proceso completo de
+extremo a extremo. El almacén ofrece un dominio de evaluación reproducible con congestión,
+rutas estrechas, prioridades y conexión con WMS. Aun así, el transporte cooperativo físico
+es un problema más específico que la coordinación multiagente general. Por esta razón, las
+afirmaciones de la memoria se contrastan con estudios de capacidad y carga, además de la
+literatura sobre consenso y MRTA.
 
 La brecha principal puede formularse de forma precisa:
 \[
@@ -434,51 +436,73 @@ La brecha principal puede formularse de forma precisa:
   \mathcal S_{\rm acoplamiento}.
 \]
 Aquí $\mathcal A_{\rm MRTA}$ denota asignación distribuida, $\mathcal Q_{\rm entero}$
-cierre de quorum, $\mathcal F_{\rm wrench}$ factibilidad física y
-$\mathcal G_{\rm local}$ comunicación local. La brecha no es que no existan algoritmos de
-transporte cooperativo; existen y algunos son muy cercanos. La brecha es que las capas
-suelen quedar separadas: MRTA decide, control ejecuta, seguridad corrige, aprendizaje
+cierre de quórum, $\mathcal F_{\rm wrench}$ factibilidad física y
+$\mathcal G_{\rm local}$ comunicación local. Existen algoritmos de transporte cooperativo
+y algunos son muy cercanos a este trabajo. La brecha surge porque las capas suelen quedar
+separadas: MRTA decide, control ejecuta, seguridad corrige, aprendizaje
 ajusta y la carga se modela con una fidelidad distinta en cada capa. Faltan arquitecturas
 reproducibles donde una misma señal local conecte déficit de carga, reclutamiento,
-quorum, roles físicos y liberación de robots.
+quórum, roles físicos y liberación de robots.
 
 \input{figures/fig-gap-literatura}
 
-\subsection{Posicionamiento de Smith-QR}
+\subsection{Posicionamiento: familia de controladores de juego distribuido}
 
-Smith-QR se posiciona como arquitectura de integración. La dinámica de Smith aporta una
-ley distribuida para mover preferencia hacia tareas con mayor payoff; el déficit común
-traduce demanda física en presión de asignación; QR/quorum convierte preferencia continua
-en coaliciones enteras; el grafo de comunicación limita lo que cada robot puede conocer;
-y la capa de capacidad efectiva/wrench decide si la coalición puede mover la carga. La
-contribución no es competir con toda la literatura de consensus, ni prometer superioridad
-universal frente a MARL. La contribución defendible es cerrar un bucle que muchas líneas
-tratan por separado:
+La contribuci\'on de esta memoria es una arquitectura de control y decisi\'on basada en juegos para el transporte cooperativo de robots y cargas heterog\'eneas. Sus instancias comparten el siguiente esquema; una variante solo se denomina distribuida cuando actor, estimadores y cierre usan exclusivamente la vista local declarada. Un payoff o \emph{fitness} local traduce el d\'eficit f\'isico de cada carga en presi\'on de asignaci\'on. Una din\'amica poblacional reparte masa entre cargas. Un cierre entero (QR/cu\'orum) transforma la preferencia continua en coaliciones ejecutables. Un juego de \emph{wrench} decide si la coalici\'on produce fuerza y torque. Una capa de precios y ejecuci\'on cierra el bucle. Smith-QR es una instancia evaluada. Replicator, logit, BNN, proyecci\'on y variantes primal--dual o de mercado ocupan el mismo esquema cambiando la din\'amica, la regulaci\'on o la funci\'on de fitness. \emph{Water-filling} y campo medio delimitan extensiones de dise\~no, pero no se presentan como m\'etodos confirmatorios de todas las campa\~nas.
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{p{2.9cm} Y Y}
+\toprule
+Eje / variante & Mecanismo de actualización & Papel en la familia \\
+\midrule
+Replicator & masa proporcional a la ventaja de payoff. & Dinámica poblacional de referencia. \\
+Smith & flujo por diferencias positivas de payoff. & Presión local robusta a la saturación. \\
+Logit & mejor respuesta suavizada por temperatura. & Exploración controlada del reparto. \\
+BNN & revisión Brown--von Neumann--Nash. & Tasa de revisión acotada. \\
+Proyección & gradiente proyectado sobre el símplex. & Relajación convexa del reparto. \\
+Primal-dual (precios) & $\pi_k$ y $\mu_k$ como multiplicadores de déficit y \emph{wrench}. & Regulación por precios. \\
+Mercado / subasta & pujas y consenso sobre coste marginal. & Asignación descentralizada. \\
+Water-filling & reparto de capacidad efectiva sobre cargas. & Saturación eficiente de la demanda. \\
+Campo medio & aproximación agregada para $N$ grande. & Escalabilidad de flota. \\
+Cierre QR / quórum & redondeo entero de la preferencia continua. & Coaliciones ejecutables. \\
+\bottomrule
+\end{tabularx}
+\caption{Ejes de dise\~no de la arquitectura. La tabla incluye mecanismos confirmatorios y extensiones conceptuales; cada resultado identifica la instancia realmente ejecutada y su alcance de informaci\'on.}
+\label{tab:familia-controladores}
+\end{table}
+
+La arquitectura se instancia mediante tres decisiones: la din\'amica poblacional $D$ (replicator, Smith, logit, BNN o proyecci\'on); la regulaci\'on (precios primal--dual o mercado, con \emph{water-filling} y campo medio como extensiones no confirmatorias); y la funci\'on de fitness, que codifica la mezcla de d\'eficit, distancia, bater\'ia, saturaci\'on y utilidad marginal de \emph{wrench}. El aporte formaliza un bucle com\'un; la evidencia emp\'irica solo se atribuye a las combinaciones implementadas y ejecutadas:
 \[
-  p_{ik}
-  \longrightarrow
-  \dot y_{ik}
-  \longrightarrow
-  C_k
-  \longrightarrow
-  G_{C_k}\lambda
-  \longrightarrow
-  \delta_k, \pi_k, u_i .
+  \begin{aligned}
+    \text{payoff / fitness:}\quad
+      & p_{ik}(x)\ \text{(déficit, distancia, batería, \emph{wrench})}, \\
+    \text{dinámica poblacional } D:\quad
+      & \dot y_{ik} = D_{ik}\bigl(y,\,p(x)\bigr), \\
+    \text{cierre entero (QR / quórum):}\quad
+      & C_k = \mathrm{QR}(y), \\
+    \text{juego de \emph{wrench}:}\quad
+      & \lambda_{C_k}^\star = \argmin_{0\le\lambda\le\bar f}
+        \norm{G_{C_k}\lambda - w_k^{\rm dem}}_2, \\
+    \text{precios y ejecución:}\quad
+      & (\delta_k,\ \pi_k,\ u_i).
+  \end{aligned}
 \]
 
-La comparación experimental debe reflejar esa posición. Los baselines mínimos son:
-greedy nearest/dispatching, asignación centralizada tipo min-cost/Hungarian, CBBA o un
-proxy de consensus bundle, una variante payload-aware tipo CBPA, formación/control con
-coalición fija, MARL-CTDE o proxy aprendido, y un oracle solo como cota superior no
-desplegable. Las métricas no deben limitarse a recompensa o makespan: deben incluir
-quorum cerrado, tareas inviables, residual wrench, saturación, energía, distancia
+La comparación experimental utiliza como mínimo \emph{greedy}, asignación centralizada de
+coste mínimo, CBBA o una aproximación de subasta con consenso, una variante sensible a la
+carga útil, control con coalición fija, MARL-CTDE y un oráculo usado únicamente como cota.
+Las métricas incluyen
+quórum cerrado, tareas inviables, residual \emph{wrench}, saturación, energía, distancia
 desperdiciada, fallos bajo comunicación degradada, recuperación ante pérdida de robot y
 coste computacional.
 
 El alcance de la tesis queda así delimitado. No se afirma resolver todo el transporte
-cooperativo multi-robot. Se propone una arquitectura compacta para el caso de almacenes
-multi-AMR con cargas heterogéneas, comunicación local y necesidad de coaliciones físicas.
-El criterio de éxito no es dominar todos los métodos en todas las métricas, sino demostrar
-que Smith-QR mejora el régimen donde Smith puro falla por información local y preferencias
-fraccionarias, manteniendo trazabilidad matemática y una vía clara hacia factibilidad de
-carga mediante capacidad efectiva.
+cooperativo multi-robot ni que un miembro concreto de la familia domine universalmente.
+Se propone y evalúa una familia de controladores de juego distribuido para almacenes
+multi-AMR con cargas heterogéneas, comunicación local y coaliciones físicas, y se
+identifica en qué regímenes cada variante mejora frente a las familias clásicas, de
+mercado, de control y aprendidas, manteniendo trazabilidad matemática y una vía clara
+hacia la factibilidad de carga mediante capacidad efectiva.

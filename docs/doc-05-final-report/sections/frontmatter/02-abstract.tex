@@ -1,9 +1,20 @@
-\begin{viuabstract}
-Este Trabajo Fin de Master estudia la coordinacion distribuida de robots moviles autonomos para transportar cargas heterogeneas en entornos intralogisticos. La tesis formula el problema como una cadena fisico-economica: una carga no demanda solo robots, sino capacidad efectiva, contactos utiles, fuerza y torque, movimiento seguro, comunicacion local y recuperacion ante eventos. Sobre esa lectura se evaluan familias clasicas, centralizadas, de mercado, poblacionales, primal-dual, aprendidas y de control.
+\thispagestyle{frontmatter}
+\phantomsection
+\addcontentsline{toc}{section}{Abstract}
+\noindent{\sffamily\bfseries\color{VIUOrange}\fontsize{18}{22}\selectfont Abstract}\par
+\vspace{0.8em}
 
-La propuesta se articula alrededor de una senal comun de deficit y de la arquitectura Smith-QR, que combina dinamicas poblacionales, memoria local, estimacion de ocupacion, cierre entero de coaliciones y verificacion de capacidad en espacio \emph{wrench}. La validacion se organiza en ocho estudios SP1--SP8: reclutamiento, capacidad efectiva, factibilidad \emph{wrench}, movimiento, transporte cooperativo, robustez, comunicacion degradada y escalabilidad. Las campanas canonicas suman mas de 160.000 evaluaciones/comprobaciones, con mundos compartidos, contrastes pareados, correccion de Holm, auditorias sin fallos y videos de inspeccion cualitativa.
+This Master's Thesis studies coalitions of autonomous mobile robots for transporting heterogeneous loads. An assignment may meet the requested robot count and still fail because of limited capacity, poor contact geometry, insufficient dynamic authority, collision, or stale information. A \emph{physical coalition} passes these checks without conflating static acceptance with transport success.
 
-Los resultados muestran que cardinalidad, capacidad escalar y factibilidad fisica no son equivalentes; que los enfoques aprendidos son comparadores utiles pero no sustituyen la trazabilidad del modelo; y que las familias distribuidas o jerarquicas conservan valor cuando las referencias centralizadas pierden practicidad a escala. El alcance se mantiene acotado a simulacion reproducible e integracion visual: no se declara validacion en hardware ni despliegue industrial. Esta delimitacion permite una contribucion ambiciosa, falsable y defendible.
+The main contribution is A0--FULL, a cumulative chain evaluated on one Euler--Lagrange plant. Its stages add local preference, integer quorum closure, effective capacity, contact complementarity, dynamic reserve with HOCBF, and recovery under network degradation. SP1--SP8 provide modular evidence rather than one end-to-end execution.
 
-\keywords{AMR, transporte cooperativo, capacidad efectiva, wrench, teoria de juegos.}
-\end{viuabstract}
+The protocol was frozen before opening the confirmatory seeds. It comprised 2,160 paired runs after precision-only extensions; inference used McNemar tests, paired bootstrap intervals, and Holm correction.
+
+Under scarcity, integer closure increased success by $0.67$, effective capacity added $0.33$, and wrench closure then reduced success by $0.18$ after removing traction reserve. Paired contact search added $0.60$ under torque; the last two stages added $0.24$ and $0.62$ under an obstacle and dropout. FULL achieved $0.86$--$1.00$ success but retained $14\%$ failures in the most adverse regime. Its selector uses global candidates: this is a recovery proxy, not evidence of fully distributed local closure.
+
+The theoretical development establishes a practical ISS result under a common Lyapunov matrix and explicit assumptions. The scope is planar simulation; the thesis makes no claim of physical validation, demonstrated functional safety, or universal superiority.
+
+\vspace{0.8em}
+\noindent{\bfseries\color{VIUOrange}Keywords:}\enspace autonomous mobile robots, cooperative transport, physical coalition, wrench, Euler--Lagrange, HOCBF, ISS stability.
+
+\clearpage

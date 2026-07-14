@@ -1,0 +1,173 @@
+\subsection{SP4: juego distribuido para navegación y acoplamiento seguro}
+\label{subsec:sp4-v4-metodo}
+
+SP4 conecta la selección mecánica de SP3 con el contacto físico: una coalición ya
+reclutada debe alcanzar sus puertos sin colisiones, sin exceder torque de rueda y sin
+quedar bloqueada por decisiones simétricas. La contribución no es un planificador
+multiagente monolítico. Es una composición de tres capas: (i) un juego poblacional
+local de vivacidad, (ii) una clausura distribuida de derecho de paso y admisión por
+colores, y (iii) un filtro HOCBF en el espacio de aceleraciones ejecutables. La
+arquitectura adapta la lógica de juegos poblacionales distribuidos de
+\citet{quijano2017population,martinezpiazuelo2022automatica} a robots móviles con
+dinámica, obstáculos y pares de rueda.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  node distance=6mm and 7mm,
+  block/.style={draw,rounded corners,align=center,minimum height=10mm,minimum width=27mm,fill=blue!6},
+  gate/.style={draw,rounded corners,align=center,minimum height=10mm,minimum width=27mm,fill=orange!10},
+  arr/.style={-{Latex[length=2mm]},thick}
+]
+\node[block] (astar) {A* y cola radial\\por puerto};
+\node[block,right=of astar] (game) {Juego local\\$\{\mathrm{go,slow,wait}\}$};
+\node[gate,right=of game] (cap) {Proyección de capacidad\\y dueño del recurso};
+\node[gate,below=of cap] (hocbf) {HOCBF de pares,\\obstáculos y carga};
+\node[block,left=of hocbf] (torque) {Proyección de\\torque y aceleración};
+\node[block,left=of torque] (plant) {Uniciclo dinámico\\sin reparar posición};
+\draw[arr] (astar)--(game);
+\draw[arr] (game)--(cap);
+\draw[arr] (cap)--(hocbf);
+\draw[arr] (hocbf)--(torque);
+\draw[arr] (torque)--(plant);
+\draw[arr,dashed] (plant.south) -- ++(0,-7mm) -|
+  node[pos=0.28,below,align=center,font=\scriptsize]{estado, conflictos y robots acoplados}
+  (game.south);
+\end{tikzpicture}
+\caption{Cadena ejecutable de SP4 v4. La capa de juego decide vivacidad; la HOCBF
+modifica aceleraciones, no posiciones.}
+\label{fig:sp4-v4-chain}
+\end{figure}
+
+\subsubsection{Juego de recursos de pareja}
+
+Cada robot $i$ mantiene una distribución
+$x_i\in\Delta_3$ sobre $\mathcal A=\{g,s,w\}$, correspondientes a avanzar,
+avanzar lento y esperar. Sea $\rho=(i,j)$ un recurso asociado a una arista activa del
+grafo de conflicto $\mathcal G_c(t)$. Con intensidades
+$q=(1,0{,}42,0)^\top$, su ocupación es
+\begin{equation}
+ z_\rho(x)=c_{i\rho}q^\top x_i+c_{j\rho}q^\top x_j,
+ \qquad z_\rho(x)\leq 1,
+ \label{eq:sp4-pair-capacity}
+\end{equation}
+donde $c_{i\rho}=1$ si el robot participa en el recurso. La función potencial usada en
+cada grafo congelado es
+\begin{equation}
+ \Phi(x)=\sum_i c_i^\top x_i+
+ \frac{\beta}{2}\lVert z(x)\rVert_2^2+
+ \frac{\varepsilon}{2}\sum_i\lVert x_i\rVert_2^2,
+ \qquad \beta=0{,}52,\quad\varepsilon=0{,}08.
+ \label{eq:sp4-potential}
+\end{equation}
+El término lineal premia progreso y prioridad wrench; la edad de espera solo crece si el
+robot está admitido y cede realmente, y se satura para que no domine el precio dual.
+El gradiente local es
+\begin{equation}
+ \nabla_{x_i}\Phi=c_i+\beta\sum_\rho c_{i\rho}qz_\rho+
+ \varepsilon x_i.
+ \label{eq:sp4-gradient}
+\end{equation}
+
+Para protocolo primal--dual se actualizan preferencias y precios persistentes mediante
+\begin{align}
+ x_i^{\ell+1}&=\Pi_{\Delta_3}\!\left[x_i^\ell-\eta
+ \left(\nabla_{x_i}\Phi+\sum_\rho c_{i\rho}q\lambda_\rho\right)\right],\\
+ \lambda_\rho^{\ell+1}&=\left[\lambda_\rho^\ell+gamma
+ (z_\rho-1)\right]_+.
+ \label{eq:sp4-pd}
+\end{align}
+La variante replicator usa el paso espejo entrópico
+\begin{equation}
+ x_{ia}^{\ell+1}=\frac{x_{ia}^{\ell}
+ \exp[-\eta g_{ia}^{\ell}]}{\sum_bx_{ib}^{\ell}
+ \exp[-\eta g_{ib}^{\ell}]},
+ \label{eq:sp4-replicator}
+\end{equation}
+con $g_i$ igual al gradiente aumentado. Tras cada revisión se aplica una proyección
+local del recurso: si $z_{ij}>1$, ambos robots escalan proporcionalmente su masa
+$\{g,s\}$ y trasladan el exceso a $w$. Como esta operación solo reduce actividad, una
+restricción ya satisfecha no vuelve a violarse durante la barrida.
+
+Para un grafo estático, el conjunto factible es compacto y convexo. Como
+$\varepsilon>0$, \eqref{eq:sp4-potential} es estrictamente convexa; por tanto, posee un
+minimizador único y sus condiciones KKT caracterizan el equilibrio variacional del
+juego restringido. La convergencia asintótica de \eqref{eq:sp4-pd} requiere los
+supuestos habituales sobre pasos y grafo estático. En la implementación híbrida, con
+grafo, rutas y admisión variables, no se reclama esa convergencia global: se auditan
+residual KKT, simplex y capacidad en cada ejecución. Esta separación evita convertir
+un resultado condicional en un teorema sobre todo el sistema.
+
+La preferencia continua se convierte en escala de velocidad mediante
+$\sigma_i=q^\top x_i$. Si dos predicciones comparten recurso, un protocolo local conserva
+un dueño hasta que desaparece el conflicto; el dueño recibe
+$\sigma_i\geq0{,}8$ y el otro cede. En escenarios densos, una coloración conservadora
+admite una clase por fase. Para el paso estrecho se priorizan primero los puertos con
+menor clearance geométrico, evitando que contactos anteriores cierren el acceso.
+
+\subsubsection{HOCBF y límites de rueda}
+
+El estado dinámico del robot es
+$s_i=(p_i,\theta_i,v_i,\omega_i)$, con
+$\dot p_i=v_ie(\theta_i)$, $\dot v_i=a_i$ y
+$\dot\omega_i=\alpha_i$. Para dos discos se define
+\begin{equation}
+ h_{ij}=\lVert p_i-p_j\rVert_2^2-d_{ij}^2.
+ \label{eq:sp4-hij}
+\end{equation}
+La restricción HOCBF de orden relativo dos es
+\begin{equation}
+ \ddot h_{ij}+(k_1+k_2)\dot h_{ij}+k_1k_2h_{ij}\geq0,
+ \qquad k_1=k_2=2{,}8,
+ \label{eq:sp4-hocbf}
+\end{equation}
+y es afín en las aceleraciones longitudinales $a_i,a_j$. Se construye análogamente
+para obstáculos circulares y la carga. El giro nominal conduce la ruta; $\alpha_i$ no
+aparece directamente en \eqref{eq:sp4-hocbf} para el centro del uniciclo, una limitación
+que motiva márgenes A* y replanificación en cuellos. La formulación sigue el principio
+de filtrado de seguridad de \citet{ames2017cbf}, pero se aplica aquí después del juego y
+antes de los actuadores.
+
+La conversión a ruedas es
+\begin{equation}
+ \tau_{R,L}=r_w\left(\frac{m_ia_i}{2}
+ \pm\frac{I_i\alpha_i}{L_i}\right),
+ \qquad |\tau_{R,L}|\leq\bar\tau_i.
+ \label{eq:sp4-wheel-torque}
+\end{equation}
+Las cajas de $a_i,\alpha_i,v_i,\omega_i$ y los cuatro semiespacios de torque se incluyen
+en la proyección alternada. Después se saturan físicamente los torques, se reconstruye
+la aceleración realizada y se vuelve a evaluar \eqref{eq:sp4-hocbf}. No se corrigen
+posiciones después de integrar.
+
+La invariancia continua de \eqref{eq:sp4-hocbf} es condicional a factibilidad e
+inicialización compatible. No implica automáticamente invariancia de la integración
+discreta. Por ello se reportan por separado residual ejecutado y clearance barrido; el
+confirmatorio contiene un contraejemplo de baseline donde residual casi nulo coexiste
+con una penetración discreta de $5{,}7$ mm.
+
+\subsubsection{Complejidad y protocolo experimental}
+
+Con $A=3$, $I_g$ revisiones y $|\mathcal E_c|$ conflictos, el juego local cuesta
+$\mathcal O(I_gA|\mathcal E_c|)$ y comunica dos mensajes por arista y revisión. La
+implementación secuencial HOCBF cuesta
+$\mathcal O(I_b(N^2+NM))$ para $M$ obstáculos. La referencia central enumera subconjuntos
+y, en esta implementación, crece como $2^N$; no se usa más allá de flotas pequeñas.
+Así, el juego continuo de SP4 no es el componente NP-hard: la dificultad combinatoria
+queda en la referencia central y en el planeamiento multi-robot conjunto, que aquí se
+descompone en A*, coloración y filtros locales.
+
+Se comparan cinco métodos bajo mundos pareados: directo+HOCBF, prioridad local+HOCBF,
+referencia central+HOCBF, replicator distribuido+HOCBF y primal--dual distribuido+HOCBF.
+No se etiqueta ningún proxy como ORCA: ORCA real no está implementado en esta campaña.
+El desarrollo usa una semilla; el confirmatorio congela parámetros y usa dos semillas
+nuevas, seis escenarios y $N=4$ (60 ejecuciones). Un certificado de stress separado
+prueba el método propuesto con $N=12$; no sustituye potencia estadística multi-semilla.
+
+Como comprobación visual posterior se construye una única escena pareada en el motor
+real de CoppeliaSim: dos copias de \texttt{narrow\_passage}, semilla 886001, muestran
+respectivamente directo+HOCBF y primal--dual+HOCBF. Las trayectorias ejecutables se
+embeben en el archivo \texttt{.ttt} mediante Lua y se reproducen con paso $0{,}12$ s.
+El gate exige escena guardada, capturas reales, error de reproducción inferior a 1 mm y
+reproducción de ambos desenlaces. Esta prueba valida geometría, reproducibilidad y
+plausibilidad visual; no es un lazo dinámico independiente ni evidencia de hardware.

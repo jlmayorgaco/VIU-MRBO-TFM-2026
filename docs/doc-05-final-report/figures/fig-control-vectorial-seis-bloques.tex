@@ -1,47 +1,33 @@
 \begin{figure}[htbp]
 \centering
+\resizebox{0.92\textwidth}{!}{%
 \begin{tikzpicture}[
-  font=\small,
-  block/.style={
-    draw=VIUOrange,
-    very thick,
-    rounded corners=2pt,
-    align=center,
-    minimum width=0.24\linewidth,
-    minimum height=12mm,
-    fill=VIUOrange!6
-  },
-  gate/.style={
-    draw=black!55,
-    thick,
-    rounded corners=2pt,
-    align=center,
-    minimum width=0.24\linewidth,
-    minimum height=10mm,
-    fill=black!3
-  },
-  arrow/.style={-{Latex[length=2.4mm]}, thick, black!70},
-  node distance=7mm and 5mm
+  font=\sffamily\small,
+  block/.style={draw=VIUOrange,line width=0.9pt,rounded corners=4pt,
+    align=center,text width=3.05cm,minimum height=1.05cm,inner sep=6pt,fill=VIUOrange!7},
+  gate/.style={draw=VIUDark!55,line width=0.8pt,rounded corners=4pt,
+    align=center,text width=9.2cm,minimum height=0.88cm,inner sep=6pt,fill=VIUWhite},
+  flow/.style={-{Latex[length=2.3mm]},line width=0.9pt,draw=VIUDark!75}
 ]
-\node[block] (geo) {1. Geometría\\superelipse};
-\node[block, right=of geo] (wrench) {2. Torsor\\y error físico};
-\node[block, right=of wrench] (phase) {3. Fase\\Smith--Kuramoto};
-\node[block, below=of phase] (rigid) {4. Rigidez\\local};
-\node[block, left=of rigid] (cbf) {5. Filtro\\CBF--QP};
-\node[block, left=of cbf] (uni) {6. Uniciclo\\y ruedas};
+\node[block] (g) at (0,1.4) {1. Geometr\'ia\\normal y contacto};
+\node[block] (w) at (3.8,1.4) {2. \emph{Wrench}\\error f\'isico};
+\node[block] (p) at (7.6,1.4) {3. Fase\\Smith--Kuramoto};
+\node[block] (r) at (7.6,-0.35) {4. Rigidez\\marco local};
+\node[block] (c) at (3.8,-0.35) {5. Filtro\\CBF--QP};
+\node[block] (u) at (0,-0.35) {6. Uniciclo\\ruedas};
 
-\draw[arrow] (geo) -- (wrench);
-\draw[arrow] (wrench) -- (phase);
-\draw[arrow] (phase) -- (rigid);
-\draw[arrow] (rigid) -- (cbf);
-\draw[arrow] (cbf) -- (uni);
+\draw[flow] (g) -- (w);
+\draw[flow] (w) -- (p);
+\draw[flow] (p) -- (r);
+\draw[flow] (r) -- (c);
+\draw[flow] (c) -- (u);
 
-\node[gate, below=9mm of cbf] (verif) {Gates: normal finita, residual de wrench,\\
-QP factible, saturación de uniciclo y eventos sin Zeno};
-\draw[arrow, dashed] (cbf.south) -- (verif.north);
-\end{tikzpicture}
+\node[gate] (gate) at (3.8,-2.05) {Criterios medibles: residual \emph{wrench}, QP factible,\\saturaci\'on de uniciclo, normal finita y eventos sin Zeno};
+\draw[flow,dashed] (c.south) -- (gate.north);
+\end{tikzpicture}}
 \caption{Bucle finito de control vectorial para bajar el marco integrado a una
-implementación tipo CoppeliaSim. Cada bloque produce una señal medible y un gate de
+implementación tipo CoppeliaSim. Cada bloque produce una señal medible y un criterio de
 verificación local.}
+\viuownsource
 \label{fig:control-vectorial-seis-bloques}
 \end{figure}

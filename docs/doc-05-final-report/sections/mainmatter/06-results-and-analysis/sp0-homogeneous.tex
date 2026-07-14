@@ -1,0 +1,57 @@
+\subsection{SP0: asignación homogénea uno a uno}
+\label{subsec:sp0}
+
+SP0 fija el control mínimo de la escalera. Considera $N$ robots homogéneos y $K$ cargas homogéneas; cada robot atiende como máximo una carga y cada carga recibe como máximo un robot. Con $a_{ik}\in\{0,1\}$,
+\[
+  \sum_{k=1}^{K} a_{ik}\leq 1,
+  \qquad
+  \sum_{i=1}^{N} a_{ik}\leq 1.
+\]
+El objetivo lexicográfico maximiza primero la cardinalidad $S(A)$ y minimiza después el coste $c_{ik}$. Para $S^\star=\min(N,K)$ y $B$ mayor que cualquier mejora posible de coste,
+\[
+  J(A)=B\bigl(S^\star-S(A)\bigr)+\sum_{i=1}^{N}\sum_{k=1}^{K}c_{ik}a_{ik}.
+\]
+El algoritmo húngaro resuelve la referencia exacta en tiempo polinomial \citep{kuhn1955hungarian}.
+
+\subsubsection{Corrección protocolaria v1.1}
+
+La primera versión se congeló antes de disponer del ejecutor completo B1--B7 y del entrenamiento data-driven real. La revisión v1.1 se abrió antes de exponer semillas confirmatorias. Corrige cuatro ambigüedades: separa convergencia continua, timeout, cierre y éxito final; aplica monotonía de potencial solo cuando existe contrato teórico; aísla la vista pública del mundo y el namespace del oráculo; y expresa todos los tiempos en segundos.
+
+Para una ejecución $r$ se distinguen
+\[
+  C_r=\mathbf{1}\{\text{convergencia continua}\},\qquad
+  T_r=\mathbf{1}\{\text{timeout continuo}\},
+\]
+\[
+  Q_r=\mathbf{1}\{\text{cierre válido}\},\qquad
+  F_r=\mathbf{1}\{\text{matching válido de cardinalidad máxima}\}.
+\]
+Por tanto, $T_r=1$ y $F_r=1$ no son contradictorios: la dinámica puede agotar el horizonte y el cierre discreto producir después una asignación válida. Los rankings de dinámica continua, cierre y coste adicional se mantienen separados.
+
+\subsubsection{Evidencia preconfirmatoria}
+
+B0 v1.1 ejecutó 300 casos sobre REP, SMI, BNN, LOG, PROJ, IBR, GPC y HYB. Los 389 checks de G1--G7 y el smoke test terminaron en PASS. La auditoría de leakage cubrió, además, GRD, subasta $\varepsilon$, IPPO-GNN y MAPPO-GNN. Ningún método no-oráculo accedió a campos reservados ni llamó al algoritmo húngaro.
+
+La separación semántica cambia la interpretación de B0. Solo 8 de las 300 dinámicas alcanzaron el criterio continuo dentro de $T_{\max}=10$ s; 292 agotaron el horizonte. Los 300 casos alcanzaron una asignación final válida después del cierre y, en 292 casos, coexistieron \texttt{continuous\_timeout=true} y \texttt{final\_success=true}. Este resultado no prueba convergencia de la dinámica. En B2, una familia con tasa de timeout superior a $0{,}20$ queda marcada como no convergente o se elimina según la regla pre-registrada.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{@{}p{0.24\textwidth}p{0.18\textwidth}X@{}}
+\toprule
+Componente & Estado & Lectura \\
+\midrule
+B0, 300 ejecuciones & PASS & Semántica, fixtures, leakage, unidades y esquema válidos. \\
+Dry-run integral, 430 filas & PASS & Métodos, cierres, tamaños variables y reanudación ejecutables. \\
+Entrenamiento IPPO/MAPPO & En ejecución CPU & Presupuesto total fijado en 26 millones de transiciones. \\
+Freeze v1.1 & Por ejecutar & No se permite antes de los tres checkpoints finales y del dry-run válido. \\
+Semillas confirmatorias & Selladas & Se abrirán mediante evento auditable después del freeze. \\
+B2--B7 y análisis final & Por ejecutar & No se promueven cifras hasta concluir el manifiesto canónico. \\
+\bottomrule
+\end{tabularx}
+\caption{Estado preconfirmatorio de SP0 v1.1 durante la preparación de la memoria.}
+\label{tab:sp0-estado-v11}
+\end{table}
+
+\paragraph{Límite de lectura.}
+B0 y el dry-run son evidencia de implementación y contrato, no resultados confirmatorios. Las tablas de rendimiento, hipótesis, rankings y figuras de SP0 se incorporarán únicamente desde el manifiesto final v1.1 y sus archivos Parquet. La campaña histórica v1.2-CPU se conserva para auditoría, pero su presupuesto reducido no es equivalente al protocolo v1.1.

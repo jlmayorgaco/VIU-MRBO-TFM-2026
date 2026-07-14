@@ -16,7 +16,9 @@ wrench requerido, reparto vGNE, HOCBF e inversion uniciclo; ver
 ## Estado V6
 
 - Rama de organizacion: `v6-organization`.
-- Reporte final canonico: `docs/doc-05-final-report/main.tex`.
+- Reporte final canonico: `docs/doc-05-final-report/main.tex` y `main.pdf`.
+- Certificado integrado CPU A0--FULL: `results/physical_coalition/PHYSICAL_COALITION_CERTIFICATE_v1/` (960 base, 2.160 total, sin GPU).
+- SP0 canonico: `results/sp0/SP0_PROTOCOL_v1_2_CPU/`; el intento v1.1 detenido no es evidencia confirmatoria.
 - Codigo principal: `src/viu_mrob_tfm`.
 - Registro actual de resultados SP1-SP8: `results/README.md` y `docs/CANONICAL_RESULTS.md`.
 - Suite compacta de validacion: `results/validation_suite_v1` (`39/39` gates en el snapshot actual).
@@ -68,6 +70,7 @@ make theory-validation
 make stats-annex
 make figures-paper
 make thesis
+make submit-ready
 make submit-check
 ```
 
@@ -90,6 +93,23 @@ Tras `pip install -e .`, los entry points equivalentes son:
 viu-run-experiment experiments/exp-001-baseline-nominal/config.yaml
 viu-run-sp8 configs/experiments/sp8/SP8_MC_fleet_ladder_high_power.yaml
 viu-validate-suite
+```
+
+### Gate documental submit-ready
+
+El gate local para una memoria concreta es:
+
+```powershell
+make submit-ready FILE=docs/doc-05-final-report/main.tex
+```
+
+Genera reportes en `docs/generated/submit_ready/` y falla ante bloqueos de plantilla
+VIU, secciones obligatorias, bibliografia, claims peligrosos, placeholders,
+declaracion de IA ausente o texto no extraible. Para el cierre final con reporte
+externo de similitud:
+
+```powershell
+make submit-ready FILE=docs/doc-05-final-report/main.tex SIMILARITY_REPORT=path/to/report.pdf REQUIRE_SIMILARITY=1
 ```
 
 ## Arquitectura OOP nueva

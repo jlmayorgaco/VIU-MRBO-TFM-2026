@@ -1,0 +1,41 @@
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[
+  node distance=6mm and 7mm,
+  box/.style={draw=VIULinkBlue, rounded corners=1.5mm, fill=VIULight,
+    minimum width=28mm, minimum height=12mm, align=center, font=\small},
+  phys/.style={box, draw=VIUOrange, fill=VIUOrange!10},
+  guard/.style={box, draw=VIUDeep, fill=VIUDeep!8},
+  flow/.style={->, >=stealth, thick, draw=VIUDeep}
+]
+\node[phys] (sp3) {SP3\\contactos y\\prioridad wrench};
+\node[box, right=of sp3] (primitives) {Seis primitivas\\espacio--tiempo};
+\node[box, right=of primitives] (game) {Juego potencial\\PD / Smith /\\replicator / BNN};
+\node[box, right=of game] (fractional) {Preferencia\\$x_i\in\Delta^6$};
+
+\node[guard, below=of fractional] (closure) {Cierre discreto\\sin conflicto};
+\node[box, left=of closure] (raw) {RAW\\$(v_i^d,\omega_i^d)$};
+\node[guard, left=of raw] (safe) {SAFE\\proyeccion CBF};
+\node[phys, left=of safe] (plant) {EXEC\\par de ruedas\\y uniciclo};
+
+\node[guard, below=of plant] (monitor) {Monitor barrido\\sin reparacion};
+\node[phys, right=of monitor] (dock) {Pose de contacto\\y velocidad nula};
+\node[phys, right=of dock] (sp5) {SP5\\transporte de\\carga acoplada};
+
+\draw[flow] (sp3) -- (primitives);
+\draw[flow] (primitives) -- (game);
+\draw[flow] (game) -- (fractional);
+\draw[flow] (fractional) -- (closure);
+\draw[flow] (closure) -- (raw);
+\draw[flow] (raw) -- (safe);
+\draw[flow] (safe) -- (plant);
+\draw[flow] (plant) -- (monitor);
+\draw[flow] (monitor) -- (dock);
+\draw[flow] (dock) -- (sp5);
+\draw[flow, dashed] (monitor.east) to[bend right=18]
+  node[below, font=\scriptsize, align=center]{estado ejecutado\\y precios} (primitives.south);
+\end{tikzpicture}
+\caption[Arquitectura RAW--SAFE--EXEC de SP4]{SP4 recibe de SP3 contactos fijos y prioridad wrench, coordina clases de ruta mediante un juego de primitivas, filtra seguridad antes de ejecutar una planta no holonoma saturada y entrega a SP5 robots acoplados.}
+\viuownsource
+\label{fig:sp4-docking-game-architecture}
+\end{figure}

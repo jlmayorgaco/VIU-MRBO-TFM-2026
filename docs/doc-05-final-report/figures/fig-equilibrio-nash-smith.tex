@@ -1,36 +1,47 @@
 \begin{figure}[H]
 \centering
+\resizebox{0.92\textwidth}{!}{%
 \begin{tikzpicture}[
-  font=\scriptsize,
-  axis/.style={-{Latex[length=2.2mm]},thick,VIUDark},
-  flow/.style={-{Latex[length=2.2mm]},thick,VIUOrange!90!black},
-  point/.style={circle,draw=VIUOrange,fill=VIUOrange!18,thick,minimum size=5.5mm},
-  note/.style={draw=VIUGray!55,fill=VIUWhite,rounded corners=3pt,
-    align=left,text width=5.15cm,inner sep=6pt,font=\scriptsize}
+  font=\sffamily\small,
+  flow/.style={-{Latex[length=2.4mm]},line width=0.95pt,draw=VIUOrange!90!black},
+  simplex/.style={draw=VIUDark!70,line width=0.9pt,fill=VIULight!35},
+  state/.style={circle,draw=VIUOrange,fill=VIUOrange!18,line width=0.9pt,minimum size=5.6mm},
+  note/.style={draw=VIUDark!65,fill=VIUWhite,rounded corners=4pt,
+    align=left,text width=5.8cm,inner sep=7pt}
 ]
-\draw[axis] (0,0) -- (6.4,0) node[right] {$x_1$};
-\draw[axis] (0,0) -- (0,4.1) node[above] {$x_2$};
-\draw[axis] (0,0) -- (-1.6,-1.15) node[left] {$x_3$};
-\draw[VIUDark!45,thick] (0,0) -- (4.9,0.85) -- (2.4,3.35) -- cycle;
-\node[font=\scriptsize,VIUDark] at (2.45,-0.36) {símplex de asignación};
+\coordinate (A) at (0,0);
+\coordinate (B) at (6.4,0);
+\coordinate (C) at (3.2,4.6);
+\filldraw[simplex] (A) -- (B) -- (C) -- cycle;
+\node[below left=1mm of A] {$x_1$};
+\node[below right=1mm of B] {$x_2$};
+\node[above=1mm of C] {$x_3$};
+\node[font=\sffamily\scriptsize\color{VIUDark}] at (3.2,-0.45) {simplex de asignaci\'on};
 
-\foreach \x/\y in {0.85/0.35,1.45/0.85,2.05/1.4,2.7/1.95,3.35/2.38}
-  \draw[flow] (\x,\y) -- ++(0.52,0.25);
-\foreach \x/\y in {3.95/1.05,3.55/1.55,3.08/2.05,2.65/2.52}
-  \draw[flow] (\x,\y) -- ++(-0.38,0.22);
+\node[state] (s0) at (1.15,0.55) {};
+\node[state] (s1) at (2.0,1.15) {};
+\node[state] (s2) at (2.85,1.85) {};
+\node[state] (s3) at (3.55,2.65) {};
+\node[state] (ne) at (3.05,3.05) {};
+\node[font=\sffamily\bfseries\color{VIUOrange!90!black},above right=1mm of ne] {Nash};
 
-\node[point] (ne) at (2.78,2.42) {};
-\node[above right=1mm of ne,font=\small\bfseries,VIUOrange!90!black] {Nash};
+\draw[flow] (s0) -- (s1);
+\draw[flow] (s1) -- (s2);
+\draw[flow] (s2) -- (s3);
+\draw[flow] (s3) -- (ne);
+\draw[flow] (5.15,0.75) .. controls (4.5,1.7) and (3.8,2.35) .. (ne);
+\draw[flow] (1.8,3.2) .. controls (2.15,3.55) and (2.55,3.45) .. (ne);
 
-\node[note] (reading) at (9.35,2.1)
-  {\textbf{Equilibrio.} Ninguna estrategia usada mejora unilateralmente el payoff.\\[2pt]
-   \textbf{Smith.} La masa migra desde menor utilidad hacia mayor utilidad.\\[2pt]
-   \textbf{Lectura robótica.} Tareas, slots y contactos son estrategias; déficit y seguridad forman el payoff.};
-
-\draw[flow] (ne) -- (reading.west);
-\end{tikzpicture}
+\node[note] (r) at (10.6,2.25) {
+  \textbf{Nash}\\ning\'un robot mejora solo\\[3pt]
+  \textbf{Smith}\\masa hacia mayor utilidad\\[3pt]
+  \textbf{TFM}\\utilidad = d\'eficit, distancia,\\seguridad y \emph{wrench}
+};
+\draw[flow] (ne.east) -- (r.west);
+\end{tikzpicture}}
 \caption{Lectura de Nash y Smith para asignación distribuida. La dinámica no busca una
 etiqueta abstracta de tarea, sino un punto donde las desviaciones locales dejan de
 mejorar utilidad una vez incorporados déficit, coste espacial y factibilidad física.}
+\viuownsource
 \label{fig:equilibrio-nash-smith}
 \end{figure}

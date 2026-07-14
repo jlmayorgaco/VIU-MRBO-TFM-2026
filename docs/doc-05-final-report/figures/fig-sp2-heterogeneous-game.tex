@@ -1,0 +1,38 @@
+﻿\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  node distance=7mm and 8mm,
+  block/.style={draw=VIULinkBlue, rounded corners=2pt, fill=VIULight,
+    align=center, minimum height=10mm, text width=27mm, font=\scriptsize},
+  decision/.style={draw=VIUOrange, rounded corners=2pt, fill=VIULight,
+    align=center, minimum height=10mm, text width=28mm, font=\scriptsize},
+  audit/.style={draw=VIUDeep, rounded corners=2pt, fill=VIULight,
+    align=center, minimum height=10mm, text width=28mm, font=\scriptsize},
+  arrow/.style={->, >=stealth, thick, draw=VIULinkBlue}
+]
+\node[block] (state) {Estado local\\$c_i,b_i,q_i$};
+\node[block, right=of state] (pair) {Contribución par\\$e_{ik}=c_i\eta_{ik}$};
+\node[block, right=of pair] (aggregate) {Consenso\\$\hat s_{ik}\to s_k$};
+\node[decision, right=of aggregate] (fitness) {Fitness\\plain / marginal / log};
+\node[decision, below=of fitness] (revision) {Revisión\\Smith / replicator / ERV--BNN};
+\node[block, left=of revision] (simplex) {Preferencia continua\\$x_i\in\Delta^{K+1}$};
+\node[decision, left=of simplex] (closure) {Cierre entero\\por capacidad};
+\node[audit, left=of closure] (execute) {Coaliciones\\RAW / CLOSED};
+\draw[arrow] (state) -- (pair);
+\draw[arrow] (pair) -- (aggregate);
+\draw[arrow] (aggregate) -- (fitness);
+\draw[arrow] (fitness) -- (revision);
+\draw[arrow] (revision) -- (simplex);
+\draw[arrow] (simplex) -- (closure);
+\draw[arrow] (closure) -- (execute);
+\draw[arrow, dashed] (simplex.north) to[bend left=18] node[above, font=\tiny]{nueva estimación} (aggregate.south);
+\node[audit, below=13mm of pair] (oracle) {MILP centralizado\\cota entera NP-hard};
+\node[audit, right=of oracle] (metrics) {Auditoría\\potencial, regret, mensajes};
+\draw[arrow] (execute.south) |- (metrics.west);
+\draw[arrow] (oracle) -- (metrics);
+\end{tikzpicture}
+\caption[Arquitectura factorial de SP2]{SP2 separa capacidad efectiva, fitness,
+protocolo de revisión, cierre entero y referencia centralizada.}
+\viuownsource
+\label{fig:sp2-heterogeneous-game}
+\end{figure}

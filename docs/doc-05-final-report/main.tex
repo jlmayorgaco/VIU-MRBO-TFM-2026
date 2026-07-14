@@ -1,7 +1,16 @@
 \documentclass[12pt,a4paper]{article}
 
 \usepackage{viu-mrob-midreport}
-\usepackage[authoryear,round,sort]{natbib}
+\usepackage{csquotes}
+\usepackage[backend=biber,style=apa,natbib=true,sorting=nyt,sortcites=true]{biblatex}
+\DeclareSourcemap{
+  \maps[datatype=bibtex]{
+    \map{
+      \step[fieldset=langid, fieldvalue=english]
+    }
+  }
+}
+\addbibresource{references.bib}
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{enumitem}
@@ -9,11 +18,11 @@
 \usepackage{algpseudocode}
 \usetikzlibrary{shapes.geometric,positioning,arrows.meta,calc,decorations.pathreplacing}
 
-\setviutitle{Coordinación distribuida acoplada de múltiples AMR para el transporte cooperativo de cargas heterogéneas}
+\setviutitle{Arquitectura escalonada para la coordinación distribuida de múltiples AMR en el transporte cooperativo de cargas heterogéneas}
 \setviustudent{Jorge Luis Mayorga Taborda}
 \setviututor{José Ignacio Iñíguez Amigot}
 \setviuedition{2025--26}
-\setviudate{30 de junio de 2026}
+\setviudate{Julio de 2026}
 \setviuheadertitle{Coordinación distribuida de AMR cooperativos para cargas heterogéneas}
 
 \newcommand{\RR}{\mathbb{R}}
@@ -53,13 +62,14 @@
 \input{sections/mainmatter/06-results-and-analysis/index.tex}
 \input{sections/mainmatter/07-conclusions.tex}
 
+\section{Referencias bibliográficas}
+\printbibliography[heading=none]
+
+\clearpage
 \appendix
-\input{sections/anexo-a-matematico}
 \input{sections/anexo-b-reproducibilidad}
 \input{sections/anexo-c-validacion}
-
-\nocite{*}
-\bibliographystyle{apalike}
-\bibliography{references}
+\input{sections/anexo-d-declaracion-ia}
+\input{sections/anexo-e-declaraciones}
 
 \end{document}

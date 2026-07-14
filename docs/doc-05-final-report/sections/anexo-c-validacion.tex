@@ -1,6 +1,6 @@
 \section{Matrices de validación}
 
-Este anexo resume la lectura de validación usada para cerrar la memoria. Las tablas separan evidencia estadística, pruebas de consistencia y alcance de la inferencia. Las cifras se reportan como escala de evaluación y no como garantía de despliegue industrial.
+Este anexo resume la lectura de validación y distingue evidencia canónica, descriptiva, exploratoria y no estimable. Las tablas separan evidencia estadística, pruebas de consistencia y alcance de la inferencia. Las cifras se reportan como escala de evaluación y no como evidencia de operación en una instalación real.
 
 \begin{table}[H]
 \centering
@@ -9,23 +9,24 @@ Este anexo resume la lectura de validación usada para cerrar la memoria. Las ta
 \toprule
 Estudio & Magnitud validada & Escala & Decisión de lectura \\
 \midrule
-SP1 & Reclutamiento y satisfacción de demanda. & $27\,300$ evaluaciones. & Evidencia favorable para coaliciones distribuidas; la superioridad depende de métrica y coste. \\
-SP2 & Capacidad efectiva heterogénea. & $20\,280$ comprobaciones. & La capacidad marginal mejora la lectura frente a cardinalidad plana. \\
-SP3 & Residual de fuerza y torque. & $20\,040$ corridas y $38\,076$ comprobaciones. & Se refuta la equivalencia entre cobertura escalar y factibilidad física. \\
-SP4 & Movimiento, llegada y seguridad. & $20\,070$ ejecuciones y $21\,408$ comprobaciones. & El resultado debe leerse como compromiso Pareto, no como ranking absoluto. \\
-SP5 & Transporte de carga extendida. & $20\,040$ ejecuciones/comprobaciones. & La pose final de la carga y los despejes cambian la evaluación respecto a llegada individual. \\
+A0--FULL & Cadena integrada de selección, mecánica, HOCBF y recuperación. & 960 ejecuciones base; 2.160 finales. & Confirmatoria; freeze previo a test, extensión por precisión, Holm y 0 errores. \\
+SP1 & Reclutamiento homogéneo con $q\geq1$. & 900 mundos y 7200 ejecuciones. & Evidencia confirmatoria; auditoría teórica PASS y superioridad general no respaldada. \\
+SP2 & Capacidad efectiva heterogénea. & 480 mundos y 6720 ejecuciones. & Potenciales marginales auditados; cierre uniforme domina a los juegos. \\
+SP3 & Juego de contactos, KKT y cierre wrench. & 600 mundos y 7200 ejecuciones v1.1. & Auditoría PASS; guardia sin falsos positivos y límite global declarado. \\
+SP4 & Juego de reclutamiento físico, movimiento y seguridad. & 108 mundos, 1188 ejecuciones y auditoría KKT/QP PASS. & Replicator mejora el éxito, pero conserva 0,7315 de timeout. \\
+SP5 & Transporte de carga extendida con RAW--SAFE--EXEC. & 108 mundos y 864 ejecuciones CPU. & Confirmatoria v2; cero reparación de poses, colisiones/timeouts preservados y tres de cinco H5 respaldadas tras Holm. \\
 SP6 & Recuperación ante eventos. & $20\,000$ ejecuciones/comprobaciones. & La robustez exige medir reparación, tiempo, carga perdida y seguridad posterior. \\
-SP7 & Comunicación y sensado degradado. & $20\,176$ evaluaciones/comprobaciones. & La conectividad temporal es más informativa que la conectividad instantánea. \\
-SP8 & Escala de flota e intractabilidad. & $20\,000$ evaluaciones hasta $50\,000$ AMR. & La escala favorece métodos reparables y distribuidos; el modelo sigue siendo mesoscópico. \\
+SP7 & Comunicación y sensado degradado. & $20\,176$ filas con mundos repetidos. & Asociación descriptiva; H7.3 no estimable y red fuera del lazo. \\
+SP8 & Escala agregada. & $20\,000$ filas programadas hasta $50\,000$ AMR. & Exploratorio: timeouts declarados y memoria analítica no son mediciones observadas. \\
 \bottomrule
 \end{tabularx}
 \caption{Matriz de validación por estudio experimental.}
 \label{tab:matriz-validacion-sp}
 \end{table}
 
-\subsection*{C.1 Mapa extendido de evidencia}
+\subsection*{Mapa extendido de evidencia}
 
-La lectura canónica de SP1--SP8 se apoya en barridos complementarios. La tabla siguiente
+La lectura de A0--FULL y SP1--SP8 se apoya en campañas con distinto nivel de madurez. La tabla siguiente
 separa qué añade cada capa de evaluación para que las conclusiones no dependan de una
 sola parametrización ni de un único tipo de escenario.
 
@@ -36,17 +37,18 @@ sola parametrización ni de un único tipo de escenario.
 \toprule
 Estudio & Capas evaluadas & Profundidad & Función dentro de la validación \\
 \midrule
-SP1 & Reclutamiento principal, comparación con referencia central y control visual de trayectorias. & $27\,300$ evaluaciones, $65$ ordenaciones y $51$ inspecciones cinemáticas. & Fija la base de comparación: cerrar demanda con coste razonable antes de introducir capacidad física. \\
-SP2 & Capacidad efectiva y ablación de utilidad marginal. & $20\,280$ comprobaciones principales, más $6$ familias de ablación. & Aísla el efecto de ponderar aportes heterogéneos frente a contar robots como unidades equivalentes. \\
-SP3 & Barrido de \emph{wrench}, versión de alta exigencia y batería dinámica de pose. & $20\,040$ corridas, $38\,076$ comprobaciones y validación con modelo Euler--Lagrange. & Demuestra que fuerza y torque deben evaluarse como magnitudes vectoriales, no como capacidad escalar acumulada. \\
-SP4 & Ley explícita de movimiento, comparación de navegación y variante de alta potencia. & $72$ ejecuciones de ley cerrada, $300$ casos pareados y $20\,070$ ejecuciones exigentes. & Separa llegada, seguridad, energía y despeje; evita declarar superioridad por una sola métrica de movimiento. \\
-SP5 & Transporte cooperativo, variante de alta potencia y ley explícita aplicada a carga extendida. & $20\,040$ ejecuciones principales, $334$ semillas y validación específica de control. & Verifica que la pose de la carga, la formación y la envolvente geométrica cambian la lectura frente a llegada individual. \\
+A0--FULL & Quórum, capacidad, wrench, carga Euler--Lagrange, HOCBF y red con dropout. & 4 familias, 6 prefijos y 60--100 mundos pareados por familia. & Localiza falsos positivos e interacción entre factibilidad estática y autoridad dinámica. \\
+SP1 & Juego poblacional, cierre entero y referencias clásica y central. & 900 mundos, 7200 ejecuciones y cuatro invariantes auditados. & Separa preferencia RAW, cierre CLOSED y regret frente al óptimo. \\
+SP2 & Capacidad efectiva, tres fitness y tres revisiones. & 6720 ejecuciones, MILP y controles RAW/CLOSED. & Aísla fitness, protocolo y cierre bajo contribución $e_{ik}$. \\
+SP3 & Relajación wrench, v-GNE/KKT, consenso y cierres RAW/CLOSED. & 7200 ejecuciones, QP independiente, seis escenarios y semillas 461000--461099. & Separa convergencia continua, contacto entero y comprobación mecánica. \\
+SP4 & Dinámica de uniciclo, pares de rueda, seis primitivas, cinco protocolos y RAW--SAFE--EXEC. & Seis escenarios, $N\in\{4,8,12\}$ y cinco contrastes pareados. & El cierre es global, EXEC puede violar la CBF y no se excitó la saturación. \\
+SP5 & Planta Euler--Lagrange, reparto de fuerzas acotado, CBF local/preview y Hamiltoniano. & Seis escenarios, $N\in\{4,8,12\}$, seis semillas y ocho métodos. & Separa seguridad comandada de wrench ejecutado; el bloque histórico proyectado queda no canónico. \\
 SP6 & Recuperación explícita, robustez comparativa y variante de alta potencia. & $20\,000$ ejecuciones principales, $250$ semillas y $8$ familias de escenario. & Mide reparación tras fallo, batería baja, retardo, carga inviable y seguridad posterior al evento. \\
-SP7 & Comunicación degradada con exigencia estadística. & $20\,176$ evaluaciones, $97$ semillas y perfiles de radio, pérdida, retardo, jitter y sensado. & Comprueba que el transporte depende de conectividad temporal, descubrimiento local y tolerancia a pérdida de mensajes. \\
-SP8 & Escalera de flota, variante de alta potencia y escenario de almacén. & $20\,000$ evaluaciones, $20$ tamaños de flota y escala hasta $50\,000$ AMR. & Delimita cuándo una referencia central pierde practicidad y cuándo una política distribuida conserva relación útil entre calidad y recurso. \\
+SP7 & Descriptores de comunicación degradada. & $20\,176$ filas, $97$ semillas y cinco perfiles. & Describe conectividad temporal; no demuestra tolerancia cerrada a pérdida y retardo. \\
+SP8 & Escalera mesoscópica de flota. & $20\,000$ filas, $20$ tamaños y escala nominal hasta $50\,000$ AMR. & Explora calidad agregada; el coste computacional requiere una nueva medición ciega. \\
 \bottomrule
 \end{tabularx}
-\caption{Mapa extendido de la evidencia experimental SP1--SP8.}
+\caption{Mapa extendido y estado de la evidencia integrada y modular.}
 \label{tab:mapa-extendido-sp}
 \end{table}
 
@@ -61,7 +63,7 @@ Prueba algebraica & Coherencia interna del modelo, existencia de contraejemplos 
 Monte Carlo pareado & Diferencias agregadas entre métodos bajo mundos compartidos y semillas controladas. & Garantía universal fuera del dominio simulado. \\
 Inspección visual & Plausibilidad de trayectorias, formación, recuperación y movimiento de carga. & Validación física en hardware o contacto realista completo. \\
 Referencia centralizada & Cota superior o punto de comparación para medir coste de descentralización. & Solución operativa a gran escala cuando el coste se vuelve prohibitivo. \\
-Método aprendido & Comparación adaptativa frente a reglas analíticas y referencias clásicas. & Garantía estructural, interpretabilidad completa o dominancia fuera de distribución. \\
+Método aprendido & Comparación adaptativa frente a reglas analíticas y referencias clásicas. & Garantía estructural, interpretabilidad completa o validez fuera de distribución. \\
 \bottomrule
 \end{tabularx}
 \caption{Alcance de cada tipo de evidencia usado en la memoria.}
@@ -75,15 +77,13 @@ Método aprendido & Comparación adaptativa frente a reglas analíticas y refere
 \toprule
 Riesgo de sobreafirmación & Formulación defendible & Formulación que se evita \\
 \midrule
-Capacidad \emph{wrench} & Certificado planar cuasiestático para decidir si una coalición asignada puede generar fuerza y torque. & Prueba completa de manipulación física real con fricción y contacto 3D. \\
-Escalabilidad & Comparación mesoscópica de coste, completitud y factibilidad hasta escalas de almacén. & No afirmar validación industrial directa en una instalación real. \\
+Capacidad \emph{wrench} & Chequeo planar cuasiestático para decidir si una coalición asignada puede generar fuerza y torque. & Prueba completa de manipulación física real con fricción y contacto 3D. \\
+Escalabilidad & Tendencias de calidad dentro del generador mesoscópico. & Coste computacional observado, tiempo real o extrapolación industrial. \\
 Vídeos & Evidencia cualitativa de inspección asociada a métricas. & Prueba suficiente por sí sola. \\
-Métodos aprendidos & Comparadores entrenados bajo el simulador y evaluados con separación de fases. & Estado del arte universal o solución dominante. \\
-Seguridad & Medición de colisiones, despejes y restricciones en el dominio simulado. & Certificación de seguridad funcional. \\
+Métodos aprendidos & Comparadores entrenados bajo el simulador y evaluados con separación de fases. & Superioridad general o validez fuera del dominio de prueba. \\
+Seguridad & Medición de colisiones, despejes y restricciones en el dominio simulado. & Garantía de seguridad funcional. \\
 \bottomrule
 \end{tabularx}
 \caption{Reglas de redacción para mantener afirmaciones defendibles.}
 \label{tab:riesgos-sobreafirmacion}
 \end{table}
-
-\IfFileExists{../generated/stats_master_table.tex}{\input{../generated/stats_master_table.tex}}{}

@@ -1,0 +1,1287 @@
+{
+  "audit_skill": "citation-audit",
+  "verdict": "WARN",
+  "reason_code": "current_citations_resolved_delta_primary_verified_external_independence_and_similarity_pending",
+  "summary": "All 107 bibliography entries resolve structurally; the 53 cited entries occur in 75 source-supported uses. Eight bibliography additions were checked against authoritative records. External cross-family review and the institutional similarity report remain unavailable.",
+  "audited_input_hashes": {
+    "references.bib": "sha256:eb6557b06fea6a7c747711ad03f0f9563c94e80bf06e5d4a7784201fbd7a0ac1",
+    "main.tex": "sha256:fd05b3c5a7fd39af3f2bdb77d815a24e89fa25922134378d89da22a31ba0fa21",
+    "sections/frontmatter/00-cover.tex": "sha256:e12ccd3defe1772dbdd02e1b36a8ed67d874e3e66b368e2e2bf5237c57fbd6ce",
+    "sections/frontmatter/01-summary.tex": "sha256:f28cf4b20f3c6451347e16fc727808774c655e8562e0cef2efaec0a617f61e30",
+    "sections/frontmatter/02-abstract.tex": "sha256:92a841169de8e5f6ce6753e397d2a78e2a92cc3a7e578fa0c70450cf6f684ab0",
+    "sections/frontmatter/03-contents.tex": "sha256:a0441542a637c796f9904c46d25eddbe59679503206de10733d1f7efa569785c",
+    "sections/frontmatter/04-nomenclature.tex": "sha256:e1fa19c04d02c27f18925fdf5f1d52904d32ae5939251e94631ed0ef5877b20a",
+    "sections/mainmatter/01-introduction.tex": "sha256:74119bd52f2356d80cc353c7f332bcbd232aa3e5cdf5e8df92c835dd5f14283b",
+    "sections/mainmatter/02-objectives.tex": "sha256:9273a035806a38ce5d713886c5f3c8de2086a32dcf6ccc2c54ebf917c72de214",
+    "sections/mainmatter/03-hypothesis.tex": "sha256:3018dad95fc88c309d63129494aabed66855b172f3a2b9198f86f0fe02791496",
+    "sections/mainmatter/04-methodology.tex": "sha256:5527f567e811331681737fe552414cd190c30a0d19b279e9684f8423630679c2",
+    "figures/fig-metodologia-investigacion.tex": "sha256:eb1a8a8d26169f68394de3b7df8bdf12d3c95cd4b81e08bb014ad54328ffa960",
+    "sections/mainmatter/05-theoretical-framework/index.tex": "sha256:44722cb4fbc58c1d26d663472cc0a0c4d1fdad85b0bad70c256db3c89930c7c9",
+    "figures/fig-sota-transporte-cooperativo.tex": "sha256:c09ace8842bce82d34fad7256085ba7058f98244520d95e7696f063f689bce6e",
+    "figures/fig-equilibrio-nash-smith.tex": "sha256:e0d289e0aa5d9db4e301612bd0538ced238c50cb23fa980ef8269dece8b1bcf5",
+    "figures/fig-campo-obstaculos.tex": "sha256:467e37266774968c44c0abfbeb66e3814fb56d5ae15590b605e2e4b51194dd3d",
+    "sections/mainmatter/05-theoretical-framework/integrated-theory-core.tex": "sha256:e277d5e955174b65bc6e37be9b07fe8a4dbc7f96728e37775dd168c7b551f973",
+    "figures/fig-gap-literatura.tex": "sha256:86d845a5e9d16c2f947d45c6c5b884914795371e91d0fd0a2ad22faf42babeb2",
+    "sections/mainmatter/06-results-and-analysis/index.tex": "sha256:a74b4ccdd44e3faf677113c07da46da239be4d752dea007525057f5f4551cc72",
+    "sections/mainmatter/06-results-and-analysis/physical-coalition-integrated.tex": "sha256:a5f3dc1b01e6af8f6bb1f2a0e7c5178d8960ef167ff8db3ffbadc7481b920dcc",
+    "sections/mainmatter/06-results-and-analysis/modular-evidence-synthesis.tex": "sha256:940740bc5b19c3449196489c47d8170a224ae8d613712f966098f760285cdd0f",
+    "sections/mainmatter/06-results-and-analysis/sp4-motion.tex": "sha256:08d794382204e27f6d27b2c5255bfdf66f0f5c7e371fe308e64c99f6eddd236d",
+    "figures/fig-sp4-docking-game-architecture.tex": "sha256:2e414ece8939a048d4c42ef6533b58df7d4945ea1ac6c9a3742b2dfc69e4357a",
+    "sections/mainmatter/07-conclusions.tex": "sha256:9a10f3aab8d66ec09cac740872e3c79ef71cde17f8e8f3dcded2ca177e42a597",
+    "sections/anexo-b-reproducibilidad.tex": "sha256:f2ee1078d084ef66fa37dd25e499ba9b715fd83a5c0d554c9ed5cd8b5e4e172a",
+    "sections/anexo-c-validacion.tex": "sha256:d063ebb37492d728b5074c219163836aacc8f5db87767e481d1790fefe366d71",
+    "sections/anexo-d-declaracion-ia.tex": "sha256:f336d369ce60fa4edf65a897326aa513128fb3227d755e4725635c592b8a5448",
+    "sections/anexo-e-declaraciones.tex": "sha256:82e92ab3d52cb7fec65fdd60c14a5c4b3ff9258d1759ba7d7a457ffe30a4f8fe"
+  },
+  "trace_path": ".aris/citation-audit/contexts.txt",
+  "thread_id": "prior_isolated_batches_plus_2026-07-14_primary_source_delta",
+  "reviewer_model": "prior fresh-context reviewers plus current primary/publisher/institutional-source verification",
+  "reviewer_reasoning": "current included-source graph, key resolution and use locations regenerated; eight-entry bibliography delta checked individually",
+  "generated_at": "2026-07-14T03:01:33.705320+00:00",
+  "details": {
+    "total_entries": 107,
+    "cited_entries": 53,
+    "citation_uses": 75,
+    "counts": {
+      "KEEP": 107,
+      "FIX": 0,
+      "REPLACE": 0,
+      "REMOVE": 0
+    },
+    "crossref": {
+      "doi_entries": 66,
+      "resolved_crossref": 65,
+      "verified_at_publisher": 1,
+      "catalog_variations_explained": 4
+    },
+    "applied_metadata_fixes": {
+      "benaim2003deterministic": "DOI",
+      "dutta2021hedonic": "DOI",
+      "hurtado2024potential": "DOI",
+      "verginis2018communication": "DOI",
+      "wurman2008coordinating": "pages",
+      "agilox2026": "title",
+      "paul2023collective": "pages",
+      "ifr2025service": "title",
+      "mckinsey2023warehouseAutomation": "authors",
+      "qiu2024cbpa": "published version",
+      "shida2024infeasible": "published version",
+      "amazon2026robotsFulfillment": "authors/title/date",
+      "geekplus2026": "undocumented year removed",
+      "kia2019tutorial": "issue",
+      "kukaAmr2026": "undocumented year removed",
+      "mirRobots2026": "title/year",
+      "ottoFleet2026": "title/year",
+      "quijano2017population": "subtitle"
+    },
+    "applied_context_repairs": [
+      "amazon2026robotsFulfillment",
+      "aziz2021complexity",
+      "dhl2023warehouseRobotics",
+      "mckinsey2023warehouseAutomation",
+      "mordor2026warehouseAutomation",
+      "rohmer2013vrep",
+      "sandholm2010population",
+      "vda2026vda5050"
+    ],
+    "per_entry": [
+      {
+        "key": "bullo2009distributed",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 19,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "sandholm2010population",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/01-introduction.tex",
+            "line": 20,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 20,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 167,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "unsupported use removed or rewritten; remaining uses reviewed"
+      },
+      {
+        "key": "nash1950equilibrium",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 98,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "nash1951noncooperative",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 98,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "benaim2003deterministic",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "metadata corrected: DOI; uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "kurtz1970solutions",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "friston2010free",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "kuramoto1984chemical",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "vickrey1961counterspeculation",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "clarke1971multipart",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "groves1973incentives",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "ren2008distributed",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 19,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "quijano2017population",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/01-introduction.tex",
+            "line": 20,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 20,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 167,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "metadata corrected: subtitle"
+      },
+      {
+        "key": "barreiro2017distributed",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/01-introduction.tex",
+            "line": 20,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "barreiro2021uav",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "dinh2026bsplines",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "martinez2020formation",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "martinezpiazuelo2022automatica",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "martinezpiazuelo2022tcss",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/01-introduction.tex",
+            "line": 20,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "martinez2022contractive",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "kia2019tutorial",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 153,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "metadata corrected: issue"
+      },
+      {
+        "key": "olfati2004consensus",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 19,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "olfati2007consensus",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 19,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "tabuada2007event",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "choi2009consensus",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/01-introduction.tex",
+            "line": 16,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 133,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "dutta2021hedonic",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 140,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "metadata corrected: DOI"
+      },
+      {
+        "key": "bezerra2025learning",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "zhang2024coalition",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 140,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "ebel2024cooperative",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "shan2024distributed",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "an2023cooperative",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/01-introduction.tex",
+            "line": 7,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 22,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "rosenfelder2024force",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "dijkstra1959note",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "hart1968formal",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "lavalle2006planning",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "khatib1986real",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 234,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "rimon1992exact",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 236,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "hurtado2024potential",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/06-results-and-analysis/sp4-motion.tex",
+            "line": 72,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "metadata corrected: DOI; uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "monderer1996potential",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 115,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/06-results-and-analysis/sp4-motion.tex",
+            "line": 72,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "sandryhaila2013dsp",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "sandryhaila2014frequency",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "theraulaz1999stigmergy",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "wurman2008coordinating",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/01-introduction.tex",
+            "line": 5,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 21,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "metadata corrected: pages"
+      },
+      {
+        "key": "brambilla2013swarm",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "dorigo2021swarm",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "leanh2006agv",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 21,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "azadeh2019warehouse",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 21,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "keith2024amrwarehouse",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "gerkey2004formal",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/01-introduction.tex",
+            "line": 7,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 18,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 63,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 130,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "dias2006market",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 18,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 132,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "korsah2013taxonomy",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/01-introduction.tex",
+            "line": 7,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 18,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 64,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 130,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "vanderschraft2017l2gain",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "ortega2002interconnection",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "ames2017cbf",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 238,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/06-results-and-analysis/sp4-motion.tex",
+            "line": 162,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "fisher1978submodular",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "lasry2007mfg",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "huang2006large",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "villani2009optimal",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "verginis2018communication",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "metadata corrected: DOI; uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "tuci2018cooperative",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/01-introduction.tex",
+            "line": 7,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/01-introduction.tex",
+            "line": 18,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 22,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 273,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "farivarnejad2022multirobot",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/01-introduction.tex",
+            "line": 7,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/01-introduction.tex",
+            "line": 18,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 22,
+            "verdict": "SUPPORTS"
+          },
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 273,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "shibata2022learning",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 361,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "shibata2023event",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "naito2024tihdp",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 363,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "shida2024infeasible",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 364,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "metadata corrected: published version"
+      },
+      {
+        "key": "qiu2024cbpa",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 370,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "metadata corrected: published version"
+      },
+      {
+        "key": "paul2023collective",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 352,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "metadata corrected: pages"
+      },
+      {
+        "key": "brown2025assembly",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 354,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "bhatt2026box",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 374,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "guan2025low",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 371,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "zhou2026cttapf",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 356,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "kargar2025cable",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 381,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "zhuang2026safe",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 383,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "locusRobotics2026",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 394,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "geekplus2026",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 395,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "metadata corrected: undocumented year removed"
+      },
+      {
+        "key": "mirRobots2026",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 396,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "metadata corrected: title/year"
+      },
+      {
+        "key": "ottoFleet2026",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 397,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "metadata corrected: title/year"
+      },
+      {
+        "key": "kukaAmr2026",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 400,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "metadata corrected: undocumented year removed"
+      },
+      {
+        "key": "omronRobotics2026",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 401,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "agilox2026",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 402,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "metadata corrected: title"
+      },
+      {
+        "key": "bostonStretch2026",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 404,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "ifr2025industrial",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "ifr2025service",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/01-introduction.tex",
+            "line": 5,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "metadata corrected: title"
+      },
+      {
+        "key": "mordor2026warehouseAutomation",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "unsupported use removed or rewritten; remaining uses reviewed"
+      },
+      {
+        "key": "interact2026mobileRobots",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "descartes2024workforceChallenge",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "mhi2025digitalSupplyChain",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "mckinsey2023warehouseAutomation",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "metadata corrected: authors; unsupported use removed or rewritten; remaining uses reviewed"
+      },
+      {
+        "key": "amazon2025millionRobots",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "amazon2026robotsFulfillment",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/05-theoretical-framework/index.tex",
+            "line": 393,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "metadata corrected: authors/title/date; unsupported use removed or rewritten; remaining uses reviewed"
+      },
+      {
+        "key": "dhl2023warehouseRobotics",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "unsupported use removed or rewritten; remaining uses reviewed"
+      },
+      {
+        "key": "vda2026vda5050",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "unsupported use removed or rewritten; remaining uses reviewed"
+      },
+      {
+        "key": "aziz2021complexity",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "unsupported use removed or rewritten; remaining uses reviewed"
+      },
+      {
+        "key": "sandholm1999coalition",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/01-introduction.tex",
+            "line": 16,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "rahwan2015coalition",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [
+          {
+            "file": "sections/mainmatter/01-introduction.tex",
+            "line": 16,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "gelblum2015antGroups",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "feinerman2018physics",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "rohmer2013vrep",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "unsupported use removed or rewritten; remaining uses reviewed; uncited entry; not emitted by the compiled manuscript"
+      },
+      {
+        "key": "kuhn1955hungarian",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "uses": [],
+        "note": "reviewed against primary/authoritative source"
+      },
+      {
+        "key": "garey1978strong",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "note": "metadata and source scope verified against ACM publisher DOI record",
+        "uses": [],
+        "verification_source": "https://dl.acm.org/doi/10.1145/322077.322090"
+      },
+      {
+        "key": "shmoys1993generalized",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "note": "metadata and source scope verified against Springer journal record and Cornell author copy",
+        "uses": [],
+        "verification_source": "https://link.springer.com/article/10.1007/BF01585178"
+      },
+      {
+        "key": "yi2019operator",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "note": "metadata and source scope verified against Automatica publisher record",
+        "uses": [
+          {
+            "file": "sections/mainmatter/06-results-and-analysis/sp4-motion.tex",
+            "line": 106,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "verification_source": "https://www.sciencedirect.com/science/article/pii/S0005109819300081"
+      },
+      {
+        "key": "cherukuri2016primaldual",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "note": "metadata and source scope verified against University of Groningen institutional record",
+        "uses": [
+          {
+            "file": "sections/mainmatter/06-results-and-analysis/sp4-motion.tex",
+            "line": 108,
+            "verdict": "SUPPORTS"
+          }
+        ],
+        "verification_source": "https://research.rug.nl/en/publications/asymptotic-convergence-of-constrained-primal-dual-dynamics/"
+      },
+      {
+        "key": "koshal2016aggregative",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "note": "metadata and source scope verified against INFORMS Operations Research publisher record",
+        "uses": [],
+        "verification_source": "https://pubsonline.informs.org/doi/10.1287/opre.2016.1501"
+      },
+      {
+        "key": "franci2022stochasticgne",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "note": "metadata and source scope verified against TU Delft institutional repository and Automatica DOI record",
+        "uses": [],
+        "verification_source": "https://doi.org/10.1016/j.automatica.2021.110101"
+      },
+      {
+        "key": "bicchi1995closure",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "note": "metadata and source scope verified against SAGE IJRR publisher record",
+        "uses": [],
+        "verification_source": "https://doi.org/10.1177/027836499501400402"
+      },
+      {
+        "key": "ferrari1992grasps",
+        "verdict": "KEEP",
+        "axis_failures": [],
+        "note": "metadata and source scope verified against IEEE DOI metadata and DBLP index",
+        "uses": [],
+        "verification_source": "https://doi.org/10.1109/ROBOT.1992.219918"
+      }
+    ],
+    "included_tex_files": 27,
+    "current_delta_verified_entries": [
+      "garey1978strong",
+      "shmoys1993generalized",
+      "yi2019operator",
+      "cherukuri2016primaldual",
+      "koshal2016aggregative",
+      "franci2022stochasticgne",
+      "bicchi1995closure",
+      "ferrari1992grasps"
+    ],
+    "current_unresolved_keys": []
+  }
+}

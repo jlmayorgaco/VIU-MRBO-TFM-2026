@@ -1,4 +1,5 @@
 \section{Reproducibilidad}
+\label{sec:reproducibilidad}
 
 La reproducibilidad de la memoria se apoya en cuatro principios: definición explícita de escenarios, separación entre ajuste y evaluación, conservación de semillas, y generación consistente de métricas por cada familia de métodos. Cada resultado cuantitativo incluido en el cuerpo del trabajo procede de una comparación donde los métodos evaluados comparten condiciones iniciales, cargas, obstáculos y perfiles de comunicación.
 
@@ -12,6 +13,33 @@ La evidencia se organiza en tres niveles. El primer nivel corresponde a métrica
 
 Una afirmación se considera resultado principal solo cuando está respaldada por métricas agregadas y por una lectura de alcance. Una figura o vídeo aislado se usa como inspección cualitativa; una prueba algebraica se usa como consistencia del modelo; una campaña Monte Carlo se usa como evidencia estadística. Esta distinción evita confundir demostración visual, garantía matemática y validación experimental.
 
+\subsection*{Protocolo integrado A0--FULL}
+
+El archivo YAML congelado del protocolo integrado, ubicado bajo \texttt{configs/experiments}, declara cuatro familias, seis escalones y checkpoints 40--60--100. El módulo \texttt{experiments.physical\_coalition} separa preparación, dry-run, freeze, ejecución, extensión, análisis y figuras. El directorio homónimo bajo \texttt{results/physical\_coalition} conserva el manifiesto congelado, el evento de apertura, 2.160 filas, decisiones de precisión, contrastes Holm, figuras y hashes. El manifiesto final registra \texttt{campaign\_closed} y cero errores numéricos.
+\subsection*{Protocolo SP1 homogéneo v1.1}
+
+La configuración \texttt{SP1\_HOMOGENEOUS\_v1\_1} fija 900 mundos pareados, ocho métodos y las semillas 330000--330899. El ejecutor conserva asignaciones RAW y CLOSED, historias de potencial, tablas CSV/Parquet, figuras, manifiesto y auditoría teórica. La campaña se reproduce con \texttt{python scripts/run\_sp1\_homogeneous.py configs/experiments/sp1/SP1\_HOMOGENEOUS\_v1\_1.yaml}.
+
+El piloto v1 se conserva como no canónico porque la discretización inicial de Smith violó la monotonía predeclarada. La campaña v1.1 usa semillas nuevas; no modifica el payoff, los comparadores ni las hipótesis después de observar el piloto.
+
+\subsection*{Protocolo SP2 heterogéneo v1.2}
+
+La configuración \texttt{SP2\_HETEROGENEOUS\_GAME\_v1\_2} cruza 96 celdas factoriales, cinco réplicas, catorce métodos y semillas 360000--360479. Conserva preferencias RAW, asignaciones CLOSED, historias de potencial, tablas CSV/Parquet, figuras, manifiesto y auditoría. Se reproduce con \texttt{python scripts/run\_sp2\_heterogeneous.py configs/experiments/sp2/SP2\_HETEROGENEOUS\_GAME\_v1\_2.yaml}.
+
+SP2 conserva dos campañas supersedidas: v1 falló la monotonía discreta en dos ejecuciones Smith y v1.1 midió reproducción del MILP en lugar del solver. La v1.2 usa semillas nuevas y tiempo inclusivo de solver; fitness, protocolos, hipótesis y objetivo permanecen congelados.
+
+\subsection*{Protocolo SP3 wrench v1.1}
+
+La configuración \texttt{SP3\_WRENCH\_NASH\_GAME\_v1\_1} fija seis escenarios, 100 semillas por escenario, doce métodos y 7200 ejecuciones. Conserva RAW, CLOSED, residual KKT, brecha frente al QP, precios de slot, mensajes, figuras, manifiesto y auditoría. Se reproduce con \texttt{python scripts/run\_sp3\_wrench\_nash.py configs/experiments/sp3/SP3\_WRENCH\_NASH\_GAME\_v1\_1.yaml}.
+
+La v1 se conserva como no canónica: su horizonte de 500 iteraciones produjo brecha máxima $0{,}01972$ frente al gate $0{,}01$. v1.1 usa 1200 iteraciones únicamente para projected primal--dual, semillas nuevas 461000--461099 y mantiene payoff, cierres, baselines, hipótesis y gate.
+
+\subsection*{Protocolos SP4--SP5 de ejecución física}
+
+SP4 usa \texttt{SP4\_DOCKING\_GAME\_CONFIRMATORY\_v3}: 108 mundos, 11 métodos y 1188 ejecuciones de uniciclo dinámico. SP5 usa \texttt{SP5\_PAYLOAD\_TRANSPORT\_CONFIRMATORY\_v2}: seis escenarios, $N\in\{4,8,12\}$, seis semillas confirmatorias, ocho métodos, 108 mundos y 864 ejecuciones CPU. Se reproduce con \texttt{python scripts/run\_sp5\_payload\_transport.py configs/experiments/sp5/SP5\_PAYLOAD\_TRANSPORT\_CONFIRMATORY\_v2.yaml}. El directorio de resultados conserva piloto, freeze inmutable, evento de apertura, RAW/SAFE/EXEC, colisiones, timeouts, hipótesis con Holm, trazas, figuras y hashes.
+
+El SP5 histórico de 20.040 filas permanece como no canónico porque proyectaba poses después de integrar. La v2 no usa GPU ni CoppeliaSim, parte de contactos fijos posteriores a SP4 y no corrige la trayectoria ejecutada.
+
 \subsection*{Criterio de auditoría}
 
-Las campañas promovidas a evidencia final deben cumplir tres condiciones: comparación sobre mundos compartidos, métricas homogéneas entre métodos y ausencia de fallos en las comprobaciones declaradas, salvo que el fallo sea precisamente el fenómeno estudiado. Cuando una hipótesis no alcanza soporte estadístico, se reporta como resultado negativo o límite operativo. En esta memoria, esa disciplina es tan importante como las mejoras obtenidas: el objetivo no es presentar una narrativa de victoria permanente, sino una evaluación defendible de cuándo y por qué funciona cada mecanismo.
+Las campañas promovidas a evidencia final deben cumplir tres condiciones: comparación sobre mundos compartidos, métricas homogéneas entre métodos y ausencia de fallos en las comprobaciones declaradas, salvo que el fallo sea precisamente el fenómeno estudiado. Cuando una hipótesis no alcanza soporte estadístico, se reporta como resultado negativo o límite operativo. El objetivo es obtener una evaluación defendible de cuándo y por qué funciona cada mecanismo, sin construir una narrativa de victoria permanente.
