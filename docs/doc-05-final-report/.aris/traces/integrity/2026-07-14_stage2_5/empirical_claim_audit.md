@@ -1,10 +1,15 @@
 # Auditoría exhaustiva de afirmaciones empíricas, estadísticas y de reproducibilidad
 
-**Artefacto auditado:** `docs/doc-05-final-report/main.tex` y su clausura recursiva de `\input`/`\include`  
-**Fecha de corte (UTC):** 2026-07-14T12:50:56.5121656Z  
-**Commit base:** `ee6520081aeb3e4ebc6b6cb1f4f8089a2c210ccd` (árbol de trabajo con cambios no confirmados)  
-**SHA-256 de `main.tex`:** `fd05b3c5a7fd39af3f2bdb77d815a24e89fa25922134378d89da22a31ba0fa21`  
-**Clausura TeX:** 28 archivos; SHA-256 compuesto `e37320f0fb441c44d3e0b4f8f0534cb0d17671d4a12ecabc65e71df981484fd4`  
+**Artefacto auditado:** `docs/doc-05-final-report/main.tex` y su clausura recursiva de `\input`/`\include`
+
+**Fecha de corte (UTC):** 2026-07-14T12:50:56.5121656Z
+
+**Commit base:** `ee6520081aeb3e4ebc6b6cb1f4f8089a2c210ccd` (árbol de trabajo con cambios no confirmados)
+
+**SHA-256 de `main.tex`:** `fd05b3c5a7fd39af3f2bdb77d815a24e89fa25922134378d89da22a31ba0fa21`
+
+**Clausura TeX:** 28 archivos; SHA-256 compuesto `e37320f0fb441c44d3e0b4f8f0534cb0d17671d4a12ecabc65e71df981484fd4`
+
 **Protocolos aplicados:** `integrity_verification_agent.md`, `claim_verification_protocol.md` y `reproducibility_audit.md`.
 
 ## 1. Resultado ejecutivo
