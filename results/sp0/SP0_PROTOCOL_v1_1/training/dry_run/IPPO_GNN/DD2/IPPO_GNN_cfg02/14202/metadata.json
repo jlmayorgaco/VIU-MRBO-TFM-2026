@@ -1,0 +1,54 @@
+{
+  "algorithm": "IPPO-GNN",
+  "checkpoint_hash": "ddeaa8d3005d10560d4922f71e6e20dd3cf1daf5b70646015215efcf818c0fd7",
+  "checkpoint_path": "results\\sp0\\SP0_PROTOCOL_v1_1\\training\\dry_run\\IPPO_GNN\\DD2\\IPPO_GNN_cfg02\\14202\\checkpoint.pt",
+  "device": "cpu",
+  "discount_factor": 0.99,
+  "entropy_coefficient": 0.01,
+  "episode_horizon": 4,
+  "gnn_layers": 2,
+  "gpu_hours": 0.0,
+  "hidden_dim": 64,
+  "history": [
+    {
+      "loss": {
+        "entropy": 3.3047232314159998,
+        "policy_loss": -0.0005815068357868936,
+        "total_loss": 0.13331377506256104,
+        "value_loss": 0.16694249448023346
+      },
+      "optimizer_updates": 1,
+      "training_steps": 32,
+      "validation": {
+        "CVaR95_NR": 0.022577645038691696,
+        "NR_minus_Greedy": 0.006526415992947015,
+        "algorithm": "IPPO-GNN",
+        "greedy_mean_NR": 0.0014670780605179064,
+        "inference_time_s": 0.004111325930959235,
+        "mean_NR": 0.007993494053464922,
+        "mean_closure_NR_delta": -1.5303597541207172,
+        "mean_closure_vs_raw_decode_NR_delta": -1.5303597541207172,
+        "mean_raw_decode_NR": 1.5383532481741826,
+        "n_validation_worlds": 54.0,
+        "raw_success": 0.0,
+        "success": 1.0
+      }
+    }
+  ],
+  "learning_rate": 0.0003,
+  "optimizer_updates": 1,
+  "policy_version": "sp0_gnn_ppo_v1_2_cpu_batched",
+  "ppo_clip": 0.2,
+  "ppo_epochs": 4,
+  "progress_checkpoint_path": "results\\sp0\\SP0_PROTOCOL_v1_1\\training\\dry_run\\IPPO_GNN\\DD2\\IPPO_GNN_cfg02\\14202\\progress.pt",
+  "resume_reused": false,
+  "resumed_from_step": 0,
+  "rollout_environment_steps": 128,
+  "timestamp_utc": "2026-07-11T21:26:47.757930+00:00",
+  "train_seed": 14202,
+  "trainer_version": "sp0_gnn_ppo_v1_2_cpu_batched",
+  "training_converged": false,
+  "training_step_unit": "joint_environment_transition",
+  "training_steps": 32,
+  "training_wall_s": 0.5838029999285936
+}

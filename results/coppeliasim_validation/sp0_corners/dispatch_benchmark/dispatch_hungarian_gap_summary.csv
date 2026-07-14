@@ -1,0 +1,13 @@
+case,policy,events,active_events,j_policy_mean,j_hungarian_opt_mean,j_gap_abs_mean,j_gap_pct_mean,j_regret_mean,assignment_count_gap_mean,hungarian_pair_match_rate
+balanced,distributed_greedy,5412,538,17.704301,17.656468,0.047833,0.15573,0.047833,0.0,0.891803
+balanced,hungarian_centralized,5412,549,17.081934,17.081934,0.0,0.0,0.0,0.0,1.0
+balanced,replicator_distributed,5412,548,17.136548,17.136221,0.000327,0.00104,0.000327,0.0,0.993367
+battery_stress,distributed_greedy,5412,84,15.556047,15.556047,0.0,0.0,0.0,0.0,1.0
+battery_stress,hungarian_centralized,5412,84,15.556047,15.556047,0.0,0.0,0.0,0.0,1.0
+battery_stress,replicator_distributed,5412,84,15.556047,15.556047,0.0,0.0,0.0,0.0,1.0
+scarce_robots,distributed_greedy,5412,398,17.406719,17.58454,0.00209,0.006221,10.052342,0.01005,0.964365
+scarce_robots,hungarian_centralized,5412,401,17.388818,17.388818,0.0,0.0,0.0,0.0,1.0
+scarce_robots,replicator_distributed,5412,390,17.571264,17.52048,0.050784,0.146815,0.050784,0.0,0.909091
+target_skew,distributed_greedy,5412,420,16.626337,17.213973,0.001996,0.006577,35.716282,0.035714,0.931034
+target_skew,hungarian_centralized,5412,434,16.885166,16.885166,0.0,0.0,0.0,0.0,1.0
+target_skew,replicator_distributed,5412,433,16.93852,16.938174,0.000346,0.001174,0.000346,0.0,0.995745

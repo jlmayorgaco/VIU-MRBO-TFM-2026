@@ -1,0 +1,33 @@
+{
+  "config_path": "configs\\experiments\\sp0\\SP0_DEBUG_smoke.yaml",
+  "expected_full_campaign_evaluations": 15436,
+  "experiment_id": "SP0_DEBUG_smoke",
+  "implementation_decisions": {
+    "data_driven_champion_rule": "validation_between_IPPO_GNN_and_MAPPO_GNN",
+    "data_driven_final_seeds": 3,
+    "exp4_population_finalist_rule": "validation_top5_among_REP_SMI_BNN_LOG_PROJ_HYB_local_variants",
+    "exp4_population_finalists": 5
+  },
+  "methods": [
+    "HUN",
+    "GRD",
+    "DA",
+    "REP",
+    "SMI",
+    "BNN",
+    "LOG",
+    "PROJ",
+    "HYB"
+  ],
+  "mode": "debug",
+  "output_dir": "results\\sp0\\SP0_DEBUG_smoke",
+  "parquet_files": [
+    "results\\sp0\\SP0_DEBUG_smoke\\tables\\runs.parquet",
+    "results\\sp0\\SP0_DEBUG_smoke\\tables\\summary.parquet",
+    "results\\sp0\\SP0_DEBUG_smoke\\tables\\theory_checks.parquet"
+  ],
+  "report": "results\\sp0\\SP0_DEBUG_smoke\\report.md",
+  "runs": 288,
+  "theory_audit": "results\\sp0\\SP0_DEBUG_smoke\\theory_audit.json",
+  "worlds": 32
+}

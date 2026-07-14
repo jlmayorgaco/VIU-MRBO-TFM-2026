@@ -1,0 +1,6 @@
+hypothesis,metric,method_a,method_b,direction,n_pairs,mean_a,mean_b,mean_difference,ci95_low,ci95_high,statistic,p_raw,p_holm,supported
+H4_1_replicator_safe_success_above_cbf,safe_docking_success,replicator_primitives,cbf_qp,greater,18,0.2777777777777778,0.16666666666666666,0.1111111111111111,0.0,0.2777777777777778,2.0,0.25,0.25,False
+H4_2_replicator_collision_below_direct,any_collision,replicator_primitives,direct_to_slot,less,18,0.0,0.8333333333333334,-0.8333333333333334,-1.0,-0.6666666666666666,-15.0,3.0517578125e-05,0.0001220703125,True
+H4_3_exact_kkt_below_ring,final_kkt_residual,nash_pd_exact,nash_pd_ring,less,18,0.006240737629069354,0.4046409652346378,-0.3984002276055684,-0.5296157791105182,-0.2609190930428421,1.0,0.0001757662842537316,0.0005272988527611948,True
+H4_4_replicator_safe_success_above_nash_pd,safe_docking_success,replicator_primitives,nash_pd_exact,greater,18,0.2777777777777778,0.05555555555555555,0.2222222222222222,0.05555555555555555,0.4444444444444444,4.0,0.0625,0.125,False
+H4_5_replicator_position_error_below_central,final_position_error_m,replicator_primitives,central_potential_reference,less,18,0.6657158441697407,1.7647493461633807,-1.09903350199364,-1.4373579498758042,-0.7565236970435237,0.0,3.814697265625e-06,1.9073486328125e-05,True

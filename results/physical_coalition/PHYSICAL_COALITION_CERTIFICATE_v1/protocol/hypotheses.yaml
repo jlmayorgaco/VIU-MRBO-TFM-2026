@@ -1,0 +1,29 @@
+protocol_id: PHYSICAL_COALITION_CERTIFICATE_v1
+frozen_before_confirmatory_seed_opening: false
+primary_estimand: paired difference in final physical success between cumulative certificate stages
+primary_contrasts:
+  - A1_INTEGER_QR - A0_RAW_PREF
+  - A2_CAPACITY - A1_INTEGER_QR
+  - A3_WRENCH_PAIR - A2_CAPACITY
+  - A4_MECHANICS_SAFE - A3_WRENCH_PAIR
+  - FULL_ROBUST_LOCAL - A4_MECHANICS_SAFE
+families:
+  nominal_rotation:
+    expected_bottleneck: none
+  scarcity_capacity:
+    expected_bottleneck: capacity and dynamic authority
+  torque_complementarity:
+    expected_bottleneck: planar wrench cone
+  obstacle_network_dropout:
+    expected_bottleneck: safety and bounded local recovery
+confirmatory_rules:
+  - all stages use the same world hash within a paired world
+  - Holm adjustment is applied once at the final precision-selected sample size
+  - extension depends only on CI95 width, never p-values, ranking, or sign
+  - every failure and timeout row is preserved
+  - physical false positives are accepted_by_stage AND NOT final_physical_success
+claim_limits:
+  - results apply to the deterministic reduced-order Python model
+  - HOCBF claims require initial safety and feasible bounded actuation
+  - practical ISS claims require the stated common-Lyapunov assumptions
+  - observed dominance is not a universal theorem

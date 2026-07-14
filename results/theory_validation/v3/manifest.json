@@ -1,9 +1,11 @@
 {
-  "validation": "V3 stability boundary",
-  "mu": 0.75,
-  "theta": 1.0,
-  "grid_rows": 5600,
-  "false_positive_count": 0,
-  "false_negative_count": 0,
-  "figure_png": "results\\theory_validation\\v3\\figures\\fig_v3_stability_boundary.png"
+  "validation": "V3 common-Lyapunov practical ISS",
+  "theorem_status": "proved_under_stated_fixed-load_no-reset_bounded-input_assumptions",
+  "lyapunov_min_eigenvalue": 0.277956190366176,
+  "lyapunov_residual_2norm": 9.042006413725378e-16,
+  "alpha": 0.2663471710824953,
+  "sigma": 0.0420532109953044,
+  "max_numeric_bound_violation": -0.16822028183926083,
+  "switching_interpretation": "coalition replacement changes bounded wrench-realization input but not load state or common closed-loop A",
+  "passed": true
 }

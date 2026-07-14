@@ -1,0 +1,42 @@
+algorithm_champions:
+  IPPO-GNN:
+    CVaR95_NR: 0.0007587225848460564
+    S_val: 0.0009484032310575705
+    algorithm: IPPO-GNN
+    config_id: IPPO_GNN_cfg02
+    discount_factor: 0.99
+    entropy_coefficient: 0.01
+    failure_rate: 0.0
+    gnn_layers: 2
+    hidden_dim: 64
+    inference_cost: 0.003578303712721983
+    learning_rate: 0.0003
+    mean_NR: 0.0007587225848460564
+    n: 2
+    ppo_clip: 0.2
+  MAPPO-GNN: &id001
+    CVaR95_NR: 0.0007587225848460564
+    S_val: 0.0009484032310575705
+    algorithm: MAPPO-GNN
+    config_id: MAPPO_GNN_cfg03
+    discount_factor: 0.95
+    entropy_coefficient: 0.001
+    failure_rate: 0.0
+    gnn_layers: 3
+    hidden_dim: 64
+    inference_cost: 0.0032992805548322695
+    learning_rate: 0.001
+    mean_NR: 0.0007587225848460564
+    n: 2
+    ppo_clip: 0.2
+champion_config: *id001
+champion_id: MAPPO-GNN
+rounds:
+  DD-1_steps: 10000
+  DD-2_steps: 50000
+selection_rule: validation_between_IPPO_GNN_and_MAPPO_GNN
+timestamp_utc: '2026-07-11T12:12:29.641485+00:00'
+training_contract:
+  episode_horizon: 4
+  ppo_epochs: 1
+  rollout_environment_steps: 512

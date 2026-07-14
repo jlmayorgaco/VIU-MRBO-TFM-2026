@@ -1,0 +1,152 @@
+protocol_id: SP1_PROTOCOL_v1
+inherits: configs/experiments/common/SP_COMMON_PROTOCOL_v1.yaml
+status: DRAFT
+decision: BLOCKED
+sp_id: SP1
+scientific_question: "How do allocation methods form complete integer-quorum coalitions under scarcity without crediting deterministic closure to the upstream method?"
+primary_hypothesis: "After prioritizing complete feasible coalitions, the selected distributed method reduces regret to the exact coalition oracle relative to greedy and expanded Hungarian baselines."
+primary_metric: raw_fully_served_load_fraction
+scarcity_variable: "rho = N / sum_k(q_k)"
+
+problem_contract:
+  idle_label: 0
+  quorum_integer: true
+  partial_coalition_is_success: false
+  capacity_required: true
+  one_robot_at_most_one_load: true
+
+oracle_definition:
+  id: sp1_binary_coalition_milp_v1
+  implementation: src/viu_mrob_tfm/sp1/methods.py::CentralizedCoalitionOracleAllocator
+  variables: [x_robot_load_binary, y_load_served_binary]
+  constraints: [robot_exclusivity, integer_quorum, load_activation, payload_capacity, idle]
+  objective: lexicographic_feasibility_then_reward_then_travel_and_overassignment_cost
+  deterministic_tie_break: true
+  timeout_s: 5.0
+  statuses: [optimal, feasible, timeout_or_limit, infeasible, solver_error]
+  report_optimality_gap: true
+  hungarian_is_oracle: false
+
+methods:
+  - id: sp1_binary_coalition_milp_v1
+    role: oracle
+  - id: hungarian_expanded
+    role: imperfect_centralized_baseline
+  - id: greedy_nearest
+    role: classic_baseline
+  - id: cbba
+    role: cbba_like_baseline
+  - id: smith_cardinality
+    role: model_based_ablation
+  - id: primal_dual_local_repair
+    role: model_based_finalist_pending_validation
+  - id: tensor_quorum_flow_repair
+    role: model_based_finalist_pending_validation
+  - id: mappo_recruitment
+    role: learned_comparator_blocked_pending_checkpoint_sensitivity
+
+method_manifest_required_fields:
+  - method_family
+  - centralized_or_distributed
+  - information_scope
+  - oracle_access
+  - training_required
+  - number_of_parameters
+  - decoder
+  - repair
+  - closure
+  - communication_model
+
+stages:
+  - RAW
+  - REPAIR
+  - QR
+stage_rule: "Every assignment and metric is persisted before the next stage; no stage may overwrite another."
+
+metrics:
+  primary:
+    - raw_fully_served_load_fraction
+  secondary:
+    - raw_coalition_success_rate
+    - repair_coalition_success_rate
+    - qr_coalition_success_rate
+    - raw_served_load_rate
+    - repair_served_load_rate
+    - qr_served_load_rate
+    - raw_robot_demand_satisfaction_ratio
+    - repair_robot_demand_satisfaction_ratio
+    - qr_robot_demand_satisfaction_ratio
+    - raw_unmet_quorum
+    - raw_robots_in_incomplete_coalitions
+    - raw_robots_overallocated
+    - raw_idle_robots
+    - regret_vs_coalition_oracle
+    - optimality_gap_vs_oracle
+    - time_to_close_quorums_s
+    - messages_to_close_quorums
+    - inference_runtime_s
+    - decoder_runtime_s
+    - repair_runtime_s
+    - qr_runtime_s
+    - energy_proxy
+    - travel_distance
+    - timeout_rate
+    - failure_rate
+
+ranking_rule:
+  order:
+    - feasibility_and_completeness
+    - gap_vs_exact_oracle
+    - resource_costs
+  arbitrary_weighted_sum_forbidden: true
+
+splits:
+  tuning_seeds: development_existing_do_not_reuse_for_test
+  training_seeds: development_existing_do_not_reuse_for_test
+  validation_seeds: new_public_preconfirmatory_registry_required
+  confirmatory_seeds: SEALED_NOT_CREATED_OR_OPENED
+  confirmatory_world_hash: PENDING_AFTER_FREEZE
+  observed_SP1_SP8_results: exploratory_or_development
+
+design:
+  scenario_families: [small, medium, large, scarcity_under, scarcity_balanced, scarcity_over]
+  planned_worlds_base: 160
+  planned_methods_including_oracle: 8
+  planned_evaluations_base: 1280
+  maximum_worlds_after_precision_extension: 240
+  maximum_evaluations: 1920
+  extension_rule: "Only if the preregistered 95% CI width of raw_fully_served_load_fraction exceeds its target."
+
+runtime_budget:
+  planned_total_s: 11700
+  hard_cap_s: 13500
+  final_reserve_s: 1800
+  projection_statistic: high_percentile_not_mean
+  abort_before_test_seed_opening_if_over_budget: true
+
+required_artifact_root: results/sp1/<experiment_id>
+required_directories: [00_manifest, 01_raw, 02_tables, 03_figures, 04_videos, 05_thesis_packet]
+
+promotion_gates:
+  - G_SCHEMA
+  - G_PRIMARY_KEYS
+  - G_WORLD_PAIRING
+  - G_SPLIT_ISOLATION
+  - G_ORACLE_EXACT_SMALL
+  - G_ORACLE_NO_LEAKAGE
+  - G_CHECKPOINT_LOAD
+  - G_CHECKPOINT_SENSITIVITY
+  - G_CACHE_ISOLATION
+  - G_RAW_REPAIR_QR_SEPARATION
+  - G_FAILURE_TAXONOMY
+  - G_STATISTICAL_FINITE_RESULTS
+  - G_REBUILD_FROM_RAW
+  - G_VIDEO_REBUILD
+  - G_BUDGET_PREFLIGHT
+  - G_FINAL_ACCEPTANCE
+
+prohibited_until_ready:
+  - open_confirmatory_seeds
+  - execute_confirmatory_holdout
+  - final_training
+  - multi_hour_campaign

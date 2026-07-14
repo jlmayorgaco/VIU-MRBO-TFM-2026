@@ -1,0 +1,442 @@
+{
+  "benchmark_rows": 12,
+  "checks": 389,
+  "convergence_diagnostics": [
+    {
+      "continuous_convergence_rate": 0.0,
+      "continuous_timeout_rate": 1.0,
+      "final_success_rate": 1.0,
+      "interpretation": "continuous timeout is distinct from successful integer closure",
+      "median_convergence_time_s": NaN,
+      "median_equilibrium_residual": 0.033533458780225726,
+      "median_fractionality": 0.5950263712290844,
+      "median_simulation_end_time_s": 10.0,
+      "median_state_change": 0.0016869795909896235,
+      "method_variant": "BNN",
+      "residual_ids": [
+        "bnn_excess_payoff_vector_field"
+      ],
+      "runs": 38
+    },
+    {
+      "continuous_convergence_rate": 0.0,
+      "continuous_timeout_rate": 1.0,
+      "final_success_rate": 1.0,
+      "interpretation": "continuous timeout is distinct from successful integer closure",
+      "median_convergence_time_s": NaN,
+      "median_equilibrium_residual": 0.036456034868228515,
+      "median_fractionality": 0.5288629850824156,
+      "median_simulation_end_time_s": 10.0,
+      "median_state_change": 0.0018399057132833518,
+      "method_variant": "GPC",
+      "residual_ids": [
+        "generalized_pairwise_vector_field"
+      ],
+      "runs": 37
+    },
+    {
+      "continuous_convergence_rate": 0.0,
+      "continuous_timeout_rate": 1.0,
+      "final_success_rate": 1.0,
+      "interpretation": "continuous timeout is distinct from successful integer closure",
+      "median_convergence_time_s": NaN,
+      "median_equilibrium_residual": 0.04315683345912452,
+      "median_fractionality": 0.5617866578220445,
+      "median_simulation_end_time_s": 10.0,
+      "median_state_change": 0.0021744438792761223,
+      "method_variant": "HYB",
+      "residual_ids": [
+        "hybrid_smith_phase_vector_field"
+      ],
+      "runs": 37
+    },
+    {
+      "continuous_convergence_rate": 0.05405405405405406,
+      "continuous_timeout_rate": 0.9459459459459459,
+      "final_success_rate": 1.0,
+      "interpretation": "continuous timeout is distinct from successful integer closure",
+      "median_convergence_time_s": 3.3000000000000003,
+      "median_equilibrium_residual": 0.9461786242551691,
+      "median_fractionality": 0.5606398999271269,
+      "median_simulation_end_time_s": 10.0,
+      "median_state_change": 0.277861140365096,
+      "method_variant": "IBR",
+      "residual_ids": [
+        "inertial_best_response_fixed_point"
+      ],
+      "runs": 37
+    },
+    {
+      "continuous_convergence_rate": 0.15789473684210525,
+      "continuous_timeout_rate": 0.8421052631578947,
+      "final_success_rate": 1.0,
+      "interpretation": "continuous timeout is distinct from successful integer closure",
+      "median_convergence_time_s": 9.400000000000002,
+      "median_equilibrium_residual": 0.0013105256865008075,
+      "median_fractionality": 0.7354758296631498,
+      "median_simulation_end_time_s": 10.0,
+      "median_state_change": 6.896540188235101e-05,
+      "method_variant": "LOG",
+      "residual_ids": [
+        "target_logit_fixed_point"
+      ],
+      "runs": 38
+    },
+    {
+      "continuous_convergence_rate": 0.0,
+      "continuous_timeout_rate": 1.0,
+      "final_success_rate": 1.0,
+      "interpretation": "continuous timeout is distinct from successful integer closure",
+      "median_convergence_time_s": NaN,
+      "median_equilibrium_residual": 0.05470832907876311,
+      "median_fractionality": 0.45246859643693677,
+      "median_simulation_end_time_s": 10.0,
+      "median_state_change": 0.0027082288544978197,
+      "method_variant": "PROJ",
+      "residual_ids": [
+        "projection_gradient_mapping"
+      ],
+      "runs": 37
+    },
+    {
+      "continuous_convergence_rate": 0.0,
+      "continuous_timeout_rate": 1.0,
+      "final_success_rate": 1.0,
+      "interpretation": "continuous timeout is distinct from successful integer closure",
+      "median_convergence_time_s": NaN,
+      "median_equilibrium_residual": 0.030195355310869205,
+      "median_fractionality": 0.5990529161907339,
+      "median_simulation_end_time_s": 10.0,
+      "median_state_change": 0.001521912299091016,
+      "method_variant": "REP",
+      "residual_ids": [
+        "replicator_support_conditioned_vector_field"
+      ],
+      "runs": 38
+    },
+    {
+      "continuous_convergence_rate": 0.0,
+      "continuous_timeout_rate": 1.0,
+      "final_success_rate": 1.0,
+      "interpretation": "continuous timeout is distinct from successful integer closure",
+      "median_convergence_time_s": NaN,
+      "median_equilibrium_residual": 0.039732107239642406,
+      "median_fractionality": 0.5570362114297047,
+      "median_simulation_end_time_s": 10.0,
+      "median_state_change": 0.0020029678662223105,
+      "method_variant": "SMI",
+      "residual_ids": [
+        "smith_vector_field"
+      ],
+      "runs": 38
+    }
+  ],
+  "failed_checks": 0,
+  "families": [
+    {
+      "affected_methods": [
+        "BNN",
+        "GPC",
+        "HYB",
+        "IBR",
+        "LOG",
+        "PROJ",
+        "REP",
+        "SMI"
+      ],
+      "check_family": "b0_budget_execution",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 300,
+      "number_passed": 300,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "graph"
+      ],
+      "check_family": "cache_consistency",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 2,
+      "number_passed": 2,
+      "tolerance": 1e-09
+    },
+    {
+      "affected_methods": [
+        "schema"
+      ],
+      "check_family": "duplicate_rows",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 1,
+      "number_passed": 1,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "BNN",
+        "GPC",
+        "HYB",
+        "IBR",
+        "LOG",
+        "PROJ",
+        "REP",
+        "SMI"
+      ],
+      "check_family": "mass_conservation",
+      "max_absolute_error": 2.220446049250313e-16,
+      "max_relative_error": 0.0002220446049250313,
+      "number_failed": 0,
+      "number_of_cases": 12,
+      "number_passed": 12,
+      "tolerance": 1e-06
+    },
+    {
+      "affected_methods": [
+        "ARG",
+        "HUN",
+        "QR1",
+        "REPAIR"
+      ],
+      "check_family": "matching_validity",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 5,
+      "number_passed": 5,
+      "tolerance": 1e-09
+    },
+    {
+      "affected_methods": [
+        "HUN",
+        "objective"
+      ],
+      "check_family": "metric_correctness",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 5,
+      "number_passed": 5,
+      "tolerance": 1e-09
+    },
+    {
+      "affected_methods": [
+        "BNN",
+        "GPC",
+        "HYB",
+        "IBR",
+        "LOG",
+        "PROJ",
+        "REP",
+        "SMI"
+      ],
+      "check_family": "non_negativity",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 8,
+      "number_passed": 8,
+      "tolerance": 1e-09
+    },
+    {
+      "affected_methods": [
+        "schema:b0_budget",
+        "schema:smoke"
+      ],
+      "check_family": "null_semantics",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 2,
+      "number_passed": 2,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "HUN"
+      ],
+      "check_family": "oracle_correctness",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 15,
+      "number_passed": 15,
+      "tolerance": 1e-09
+    },
+    {
+      "affected_methods": [
+        "BNN",
+        "DA",
+        "GPC",
+        "GRD",
+        "HYB",
+        "IBR",
+        "IPPO-GNN",
+        "LOG",
+        "MAPPO-GNN",
+        "PROJ",
+        "REP",
+        "SMI"
+      ],
+      "check_family": "oracle_leakage",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 12,
+      "number_passed": 12,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "schema:b0_budget",
+        "schema:smoke"
+      ],
+      "check_family": "parquet_schema",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 2,
+      "number_passed": 2,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "BNN",
+        "GPC",
+        "HYB",
+        "IBR",
+        "LOG",
+        "PROJ",
+        "REP",
+        "SMI"
+      ],
+      "check_family": "potential_monotonicity",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 8,
+      "number_passed": 8,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "QR2"
+      ],
+      "check_family": "qr_acceptance",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 1,
+      "number_passed": 1,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "QR1",
+        "QRA"
+      ],
+      "check_family": "qr_termination",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 2,
+      "number_passed": 2,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "HUN"
+      ],
+      "check_family": "runtime_correctness",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 3,
+      "number_passed": 3,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "HUN"
+      ],
+      "check_family": "seed_reproducibility",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 1,
+      "number_passed": 1,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "BNN",
+        "GPC",
+        "HYB",
+        "IBR",
+        "LOG",
+        "PROJ",
+        "REP",
+        "SMI"
+      ],
+      "check_family": "simplex",
+      "max_absolute_error": 2.220446049250313e-16,
+      "max_relative_error": 0.0002220446049250313,
+      "number_failed": 0,
+      "number_of_cases": 8,
+      "number_passed": 8,
+      "tolerance": 1e-06
+    },
+    {
+      "affected_methods": [
+        "SMI",
+        "schema"
+      ],
+      "check_family": "timeout_preservation",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 2,
+      "number_passed": 2,
+      "tolerance": 0.0
+    }
+  ],
+  "gates": {
+    "G1": {
+      "failed_checks": [],
+      "status": "PASS"
+    },
+    "G2": {
+      "failed_checks": [],
+      "status": "PASS"
+    },
+    "G3": {
+      "failed_checks": [],
+      "status": "PASS"
+    },
+    "G4": {
+      "failed_checks": [],
+      "status": "PASS"
+    },
+    "G5": {
+      "failed_checks": [],
+      "status": "PASS"
+    },
+    "G6": {
+      "failed_checks": [],
+      "status": "PASS"
+    },
+    "G7": {
+      "failed_checks": [],
+      "status": "PASS"
+    },
+    "SMOKE": {
+      "failed_checks": [],
+      "status": "PASS"
+    }
+  },
+  "generated_at_utc": "2026-07-11T21:28:26.904999+00:00"
+}

@@ -1,0 +1,12 @@
+# SP0 Gate Status
+
+| Gate | Status | Failed checks |
+|---|---:|---|
+| G1 | PASS | - |
+| G2 | PASS | - |
+| G3 | PASS | - |
+| G4 | PASS | - |
+| G5 | PASS | - |
+| G6 | PASS | - |
+| G7 | PASS | - |
+| SMOKE | PASS | - |

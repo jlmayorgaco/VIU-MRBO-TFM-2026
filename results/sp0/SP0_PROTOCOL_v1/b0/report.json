@@ -1,0 +1,303 @@
+{
+  "benchmark_rows": 12,
+  "checks": 380,
+  "failed_checks": 0,
+  "families": [
+    {
+      "affected_methods": [
+        "BNN",
+        "GPC",
+        "HYB",
+        "IBR",
+        "LOG",
+        "PROJ",
+        "REP",
+        "SMI"
+      ],
+      "check_family": "b0_budget_execution",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 300,
+      "number_passed": 300,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "graph"
+      ],
+      "check_family": "cache_consistency",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 2,
+      "number_passed": 2,
+      "tolerance": 1e-09
+    },
+    {
+      "affected_methods": [
+        "schema"
+      ],
+      "check_family": "duplicate_rows",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 1,
+      "number_passed": 1,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "BNN",
+        "GPC",
+        "HYB",
+        "IBR",
+        "LOG",
+        "PROJ",
+        "REP",
+        "SMI"
+      ],
+      "check_family": "mass_conservation",
+      "max_absolute_error": 2.220446049250313e-16,
+      "max_relative_error": 0.0002220446049250313,
+      "number_failed": 0,
+      "number_of_cases": 12,
+      "number_passed": 12,
+      "tolerance": 1e-06
+    },
+    {
+      "affected_methods": [
+        "ARG",
+        "HUN",
+        "QR1",
+        "REPAIR"
+      ],
+      "check_family": "matching_validity",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 5,
+      "number_passed": 5,
+      "tolerance": 1e-09
+    },
+    {
+      "affected_methods": [
+        "HUN",
+        "objective"
+      ],
+      "check_family": "metric_correctness",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 5,
+      "number_passed": 5,
+      "tolerance": 1e-09
+    },
+    {
+      "affected_methods": [
+        "BNN",
+        "GPC",
+        "HYB",
+        "IBR",
+        "LOG",
+        "PROJ",
+        "REP",
+        "SMI"
+      ],
+      "check_family": "non_negativity",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 8,
+      "number_passed": 8,
+      "tolerance": 1e-09
+    },
+    {
+      "affected_methods": [
+        "schema"
+      ],
+      "check_family": "null_semantics",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 1,
+      "number_passed": 1,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "HUN"
+      ],
+      "check_family": "oracle_correctness",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 15,
+      "number_passed": 15,
+      "tolerance": 1e-09
+    },
+    {
+      "affected_methods": [
+        "DA",
+        "GRD",
+        "HYB",
+        "REP",
+        "SMI"
+      ],
+      "check_family": "oracle_leakage",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 5,
+      "number_passed": 5,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "schema"
+      ],
+      "check_family": "parquet_schema",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 1,
+      "number_passed": 1,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "BNN",
+        "GPC",
+        "HYB",
+        "IBR",
+        "LOG",
+        "PROJ",
+        "REP",
+        "SMI"
+      ],
+      "check_family": "potential_monotonicity",
+      "max_absolute_error": 14.0,
+      "max_relative_error": 14.0,
+      "number_failed": 0,
+      "number_of_cases": 8,
+      "number_passed": 8,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "QR2"
+      ],
+      "check_family": "qr_acceptance",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 1,
+      "number_passed": 1,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "QR1",
+        "QRA"
+      ],
+      "check_family": "qr_termination",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 2,
+      "number_passed": 2,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "HUN"
+      ],
+      "check_family": "runtime_correctness",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 3,
+      "number_passed": 3,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "HUN"
+      ],
+      "check_family": "seed_reproducibility",
+      "max_absolute_error": 0.0,
+      "max_relative_error": 0.0,
+      "number_failed": 0,
+      "number_of_cases": 1,
+      "number_passed": 1,
+      "tolerance": 0.0
+    },
+    {
+      "affected_methods": [
+        "BNN",
+        "GPC",
+        "HYB",
+        "IBR",
+        "LOG",
+        "PROJ",
+        "REP",
+        "SMI"
+      ],
+      "check_family": "simplex",
+      "max_absolute_error": 2.220446049250313e-16,
+      "max_relative_error": 0.0002220446049250313,
+      "number_failed": 0,
+      "number_of_cases": 8,
+      "number_passed": 8,
+      "tolerance": 1e-06
+    },
+    {
+      "affected_methods": [
+        "SMI",
+        "schema"
+      ],
+      "check_family": "timeout_preservation",
+      "max_absolute_error": 63.0,
+      "max_relative_error": 63.0,
+      "number_failed": 0,
+      "number_of_cases": 2,
+      "number_passed": 2,
+      "tolerance": 0.0
+    }
+  ],
+  "gates": {
+    "G1": {
+      "failed_checks": [],
+      "status": "PASS"
+    },
+    "G2": {
+      "failed_checks": [],
+      "status": "PASS"
+    },
+    "G3": {
+      "failed_checks": [],
+      "status": "PASS"
+    },
+    "G4": {
+      "failed_checks": [],
+      "status": "PASS"
+    },
+    "G5": {
+      "failed_checks": [],
+      "status": "PASS"
+    },
+    "G6": {
+      "failed_checks": [],
+      "status": "PASS"
+    },
+    "G7": {
+      "failed_checks": [],
+      "status": "PASS"
+    },
+    "SMOKE": {
+      "failed_checks": [],
+      "status": "PASS"
+    }
+  },
+  "generated_at_utc": "2026-07-11T01:29:34.586045+00:00"
+}

@@ -1,0 +1,7 @@
+id,candidate,reference,metric,n_pairs,effect_mean_paired,ci95_low,ci95_high,p_value_raw,interpretation,p_value_holm,reject_holm_005
+H-SP2-1,smith__marginal_deficit,smith__plain_deficit,normalized_regret,24,-0.059680317298775376,-0.16089131004798854,0.0383270438477285,0.5677604675292969,inconclusive,1.0,False
+H-SP2-2,replicator__marginal_deficit,replicator__plain_deficit,normalized_regret,24,0.03581371933823469,-0.0434678588869248,0.11447938555800583,0.231201171875,inconclusive,1.0,False
+H-SP2-3,erv_bnn__marginal_deficit,erv_bnn__plain_deficit,normalized_regret,24,-0.059228927368066446,-0.15932078851645654,0.03370757029528031,0.38837623596191406,inconclusive,1.0,False
+H-SP2-4,erv_bnn__marginal_deficit,greedy_capacity,normalized_regret,24,0.01411087939063504,-0.08925906501758735,0.12851276965920533,0.481952428817749,inconclusive,1.0,False
+H-SP2-5,erv_bnn__marginal_deficit,auction_capacity,normalized_regret,24,-0.031372990870007146,-0.11845691957366591,0.05837840513888917,0.5660676956176758,inconclusive,1.0,False
+H-SP2-6,erv_bnn__marginal_deficit,milp_exact,normalized_regret,24,0.2917042497364993,0.19720923017673364,0.3890448712958715,1.1920928955078125e-07,reference_better,7.152557373046875e-07,True

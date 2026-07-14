@@ -1,0 +1,30 @@
+{
+  "experiment_id": "SP2_HETEROGENEOUS_GAME_v1",
+  "status": "completed",
+  "worlds": 480,
+  "runs": 6720,
+  "methods": [
+    "smith__plain_deficit",
+    "smith__marginal_deficit",
+    "smith__marginal_log",
+    "replicator__plain_deficit",
+    "replicator__marginal_deficit",
+    "replicator__marginal_log",
+    "erv_bnn__plain_deficit",
+    "erv_bnn__marginal_deficit",
+    "erv_bnn__marginal_log",
+    "uniform_closure",
+    "random_closure",
+    "greedy_capacity",
+    "auction_capacity",
+    "milp_exact"
+  ],
+  "confirmatory": true,
+  "seeds_opened": [
+    340000,
+    340479
+  ],
+  "theory_audit_passed": false,
+  "config_path": "configs\\experiments\\sp2\\SP2_HETEROGENEOUS_GAME_v1.yaml",
+  "config_hash": "890e07cd5d7887a81a11c0ac0726414b292338fc5fb2d628531195f55ad7d97f"
+}

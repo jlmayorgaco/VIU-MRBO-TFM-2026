@@ -1,0 +1,30 @@
+{
+  "experiment_id": "SP5_PAYLOAD_TRANSPORT_PILOT_v2",
+  "mode": "pilot",
+  "status": "complete",
+  "worlds": 36,
+  "runs": 288,
+  "methods": 8,
+  "scenarios": 6,
+  "robot_counts": [
+    4,
+    8,
+    12
+  ],
+  "expected_runs": 288,
+  "count_valid": true,
+  "theory_audit": "PASS",
+  "hardware": {
+    "cpu_model": "Intel64 Family 6 Model 170 Stepping 4, GenuineIntel",
+    "machine": "AMD64",
+    "logical_cpus": 22,
+    "gpu_used": false,
+    "execution_device": "CPU",
+    "python_version": "3.13.9",
+    "numpy_version": "2.3.5",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "config": "configs\\experiments\\sp5\\SP5_PAYLOAD_TRANSPORT_PILOT_v2.yaml",
+  "frozen_before_confirmatory_seed_opening": true,
+  "legacy_high_power_status": "historical_noncanonical_post_integration_projection"
+}
