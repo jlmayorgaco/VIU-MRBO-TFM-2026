@@ -116,3 +116,25 @@ Las citas se extrajeron de la versión identificada por estos hashes. Cada uso s
 ### Residual y resolución sugerida
 
 El único residual está en A1, línea 462. `tuci2018cooperative` es una fuente sólida para “transporte cooperativo”, pero el rótulo compuesto también afirma antecedentes de “MRTA” y “coaliciones”. Para convertir el uso en `SUPPORTS` pleno basta con separar explícitamente qué fuente respalda cada componente o acompañar Tuci con referencias específicas ya presentes en la bibliografía, por ejemplo una taxonomía MRTA (`gerkey2004formal` o `korsah2013taxonomy`) y un trabajo de formación de coaliciones (`dutta2021hedonic` o `zhang2024coalition`). Esta auditoría no aplicó ese cambio.
+
+### Revalidación poscorrección de A1
+
+**Generada:** 2026-07-14T12:47:17.470Z  
+**Línea revalidada:** 462  
+**Hash vigente de `sections/mainmatter/05-theoretical-framework/index.tex`:** SHA-256 `2A0EB03DFF9EAB113FAAD82EC13CCA564DCC6E109FCE82BC1FEFAE9902DA510B`  
+**Hash vigente de `references.bib`:** SHA-256 `2788B3F3AE69066F5967E460060A1BAFBFDFBA533E40EC6B2443CCACA0529095`
+
+La celda corregida separa ahora cuatro afirmaciones y coloca las fuentes inmediatamente después del componente correspondiente:
+
+| Componente actual de A1 | Fuentes | Revalidación independiente | Dictamen |
+|---|---|---|---|
+| Taxonomías MRTA | `gerkey2004formal`, `korsah2013taxonomy` | Ambos artículos formulan expresamente taxonomías de asignación de tareas multirrobot; Korsah et al. amplían la taxonomía previa para utilidades y restricciones interrelacionadas. | SUPPORTS |
+| Formación de coaliciones | `dutta2021hedonic`, `zhang2024coalition` | Dutta et al. formulan formación distribuida de coaliciones hedónicas para MRTA; Zhang et al. formulan un juego de formación de coaliciones para MRTA heterogénea con restricciones de recursos. | SUPPORTS |
+| Transporte cooperativo | `tuci2018cooperative` | La revisión estudia explícitamente transporte cooperativo de objetos por sistemas multirrobot, incluyendo estrategias de empuje, agarre y caging. | SUPPORTS |
+| Juegos poblacionales como representación continua | `quijano2017population` | El artículo representa decisiones mediante masas de población distribuidas entre estrategias y desarrolla sus dinámicas para control distribuido. | SUPPORTS |
+
+**Balance de la línea:** 7/7 citas `SUPPORTS`; 0 `WEAK`; 0 `WRONG`.
+
+La separación semántica elimina el residual anterior: Tuci ya no se utiliza para sostener MRTA o formación formal de coaliciones. Los hashes se recalcularon después de leer la corrección y antes de emitir este cierre.
+
+**CIERRE POSCORRECCIÓN: PASS.** Esta comprobación sustituye el `WARN` de la adenda anterior. El alcance ampliado completo queda en **PASS**, sin residuales contextuales en la matriz de originalidad auditada.

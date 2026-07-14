@@ -2,7 +2,7 @@
 
 This script does not perform source verification.  It records the current LaTeX
 inclusion graph, citation locations, bibliography resolution, source hashes and
-PDF hash after the independent verification reports have been completed.
+PDF hash after the isolated local verification reports have been completed.
 """
 
 from __future__ import annotations
@@ -165,21 +165,23 @@ def refresh_audit(
     audit.update(
         {
             "audit_skill": "citation-audit",
-            "verdict": "PASS",
-            "reason_code": "all_entries_exist_metadata_corrected_all_current_contexts_supported",
+            "verdict": "WARN",
+            "reason_code": "local_citation_verification_passed_external_cross_family_and_similarity_pending",
             "summary": (
-                f"All {len(bib_keys)} bibliography entries were independently verified; "
+                f"All {len(bib_keys)} bibliography entries passed isolated local verification; "
                 f"the {len(cited)} cited entries occur in {len(contexts)} supported "
                 "key-context uses. Thirteen metadata fixes and two context repairs were "
-                "rechecked against primary or official sources."
+                "rechecked against primary or official sources. External cross-family "
+                "review and institutional similarity remain pending."
             ),
             "audited_input_hashes": hashes,
             "trace_path": ".aris/citation-audit/contexts.txt",
-            "thread_id": "2026-07-14_stage2_5_three_fresh_independent_batches",
-            "reviewer_model": "three fresh isolated reviewer agents with primary-source web verification",
+            "thread_id": "2026-07-14_stage2_5_three_fresh_isolated_local_batches",
+            "reviewer_model": "three fresh isolated same-family reviewer agents with primary-source web verification",
             "reviewer_reasoning": (
                 "107 entries partitioned into disjoint batches; prior audit outputs excluded "
-                "as evidence; all fixes and formerly weak contexts independently rechecked"
+                "as evidence; all fixes and formerly weak contexts locally rechecked; "
+                "no external cross-family reviewer was available"
             ),
             "generated_at": datetime.now(timezone.utc).isoformat(),
         }
@@ -204,7 +206,7 @@ def refresh_audit(
             "postfix_recheck": {
                 "metadata_fixes_verified": 13,
                 "context_repairs_verified": 2,
-                "verdict": "PASS",
+                "verdict": "PASS_LOCAL",
             },
             "per_entry": per_entry,
             "included_tex_files": len(sources) - 1,
@@ -216,17 +218,17 @@ def refresh_audit(
         {
             "agilox2026": "unsupported year removed",
             "aziz2021complexity": "DOI added",
-            "bostonDynamicsWarehouse2026": "unsupported year removed",
+            "bostonStretch2026": "unsupported year removed",
             "dinh2026bsplines": "author, year/status metadata corrected",
-            "dorigo2006swarm": "canonical title restored",
-            "fisher1978assignment": "editors, series, volume and DOI added",
-            "huang2019adaptive": "DOI added",
-            "interactAnalysis2025": "author corrected",
+            "dorigo2021swarm": "canonical title restored",
+            "fisher1978submodular": "editors, series, volume and DOI added",
+            "huang2006large": "DOI added",
+            "interact2026mobileRobots": "author corrected",
             "locusRobotics2026": "current official title restored and year removed",
             "mirRobots2026": "current official title and URL restored",
             "mordor2026warehouseAutomation": "current title and publication date restored",
-            "omronFleetManager2026": "unsupported year removed",
-            "villani2008transport": "DOI added",
+            "omronRobotics2026": "unsupported year removed",
+            "villani2009optimal": "DOI added",
         }
     )
     details["applied_context_repairs"] = [
@@ -245,9 +247,9 @@ def write_reports(audit: dict[str, object], contexts: list[dict[str, object]]) -
     pdf_hash = sha256(PDF)
     bib_hash = sha256(BIB)
     freshness = {
-        "status": "PASS_WITH_NOTES",
-        "citation_status": "PASS",
-        "note": "institutional_similarity_report_not_available; independent_web_originality_sample_recorded_separately",
+        "status": "WARN_EXTERNAL",
+        "citation_status": "PASS_LOCAL",
+        "note": "external_cross_family_citation_review_and_institutional_similarity_report_not_available; local_primary_source_verification_passed",
         "current_bibliography_sha256": bib_hash,
         "current_pdf_sha256": pdf_hash,
         "unique_cited_keys": details["cited_entries"],
@@ -257,7 +259,7 @@ def write_reports(audit: dict[str, object], contexts: list[dict[str, object]]) -
         "fresh_independent_batches": 3,
         "metadata_fixes_rechecked": 13,
         "context_repairs_rechecked": 2,
-        "local_gate": "PASS",
+        "local_gate": "PASS_LOCAL",
         "audit": "CITATION_AUDIT.json",
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
@@ -270,20 +272,20 @@ def write_reports(audit: dict[str, object], contexts: list[dict[str, object]]) -
 **Refresh:** 2026-07-14  
 **Bibliography:** `references.bib`  
 **Scope:** {details['total_entries']} entries; {details['cited_entries']} cited keys in {len(contexts)} included-source key-context uses  
-**Citation verdict:** `PASS`  
-**Readiness note:** `PASS_WITH_NOTES` because no institutional similarity report is available
+**Local citation verdict:** `PASS_LOCAL`  
+**Global readiness note:** `WARN_EXTERNAL` because no cross-family citation review or institutional similarity report is available
 
 ## Outcome
 
 - The recursive {details['included_tex_files']}-file LaTeX inclusion graph was rebuilt from `main.tex`.
 - Every cited key resolves; unresolved cited keys: **0**.
-- Three fresh, disjoint review batches verified **{details['total_entries']}/{details['total_entries']}** entries against primary, publisher or official sources without using the earlier ledger as evidence.
+- Three fresh, disjoint, same-family review batches locally verified **{details['total_entries']}/{details['total_entries']}** entries against primary, publisher or official sources without using the earlier ledger as evidence.
 - The initial batch verdicts were 94 `KEEP` and 13 `FIX`; all 13 metadata repairs passed a separate post-correction recheck.
 - The 75 initially supported contexts and two repaired weak contexts now have verdict `SUPPORTS`; wrong-context citations: **0**.
 
 ## Residual limitation
 
-An institutional similarity report is not available in this workspace. This does not alter the citation-correctness verdict; it remains an explicit readiness note and is complemented by the independent web originality sample in the Stage 2.5 integrity report.
+Neither an external cross-family citation review nor an institutional similarity report is available in this workspace. The local citation-correctness verdict remains `PASS_LOCAL`; the global status therefore remains `WARN_EXTERNAL`. The Stage 2.5 integrity report contains only a separate web originality sample and must not be presented as a substitute for either external control.
 
 ## Artifacts
 
