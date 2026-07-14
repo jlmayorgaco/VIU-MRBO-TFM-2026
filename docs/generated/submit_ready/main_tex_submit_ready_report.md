@@ -2,9 +2,9 @@
 
 - Status: `PASS_WITH_WARNINGS`
 - File: `docs/doc-05-final-report/main.tex`
-- Word count: `15262`
+- Word count: `15430`
 - Blockers: `0`
-- Warnings: `1`
+- Warnings: `2`
 - Strict mode: `False`
 
 ## Scope
@@ -17,9 +17,10 @@ signals. It cannot certify external plagiarism unless a similarity report is pro
 
 | Severity | Category | Check | Message | Evidence | Recommendation |
 |---|---|---|---|---|---|
+| warning | human-writing | colon-density | Repeated colon structures appear across several prose paragraphs. | 9 paragraphs contain at least 2 colons; 102 total (7.94 per 1000 words). | Check that each colon follows a complete clause and introduces a real list or explanation. |
 | warning | originality | external-similarity-report | No external similarity report was provided. | Local checks cannot certify plagiarism against external corpora. | Run with SIMILARITY_REPORT=<path> or REQUIRE_SIMILARITY=1 for final lock. |
-| info | page-budget | main-pages | The main document is within the configured page limit. | Main document: 60/80; appendices: 7/8; Introduction starts on PDF page 12, Appendix A on 72, and References on 66. |  |
-| info | page-budget | appendix-pages | The appendices are within the configured page limit. | Main document: 60/80; appendices: 7/8; Introduction starts on PDF page 12, Appendix A on 72, and References on 66. |  |
+| info | page-budget | main-pages | The main document is within the configured page limit. | Main document: 60/80; appendices: 8/8; Introduction starts on PDF page 12, Appendix A on 72, and References on 66. |  |
+| info | page-budget | appendix-pages | The appendices are within the configured page limit. | Main document: 60/80; appendices: 8/8; Introduction starts on PDF page 12, Appendix A on 72, and References on 66. |  |
 
 ## Included Files
 

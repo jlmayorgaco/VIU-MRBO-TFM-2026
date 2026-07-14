@@ -15,8 +15,8 @@ El transporte cooperativo de cargas heterogeneas por AMR se formula como un jueg
 - SP5: transporte cooperativo con obstaculos, pose y formacion.
 - SP6: robustez operativa ante fallos, bateria e inviabilidad.
 - SP7: comunicacion, sensado y conectividad temporal.
-- SP8: escalabilidad warehouse e intratabilidad.
-- SP9: brecha teoria-implementacion en CoppeliaSim/Pioneer; pendiente de runtime externo si no existen CSV/figuras/manifest reales.
+- SP8: tendencias de calidad en un modelo warehouse mesoscopico; timeouts y memoria no son mediciones confirmatorias.
+- SP9/Coppelia: evidencia complementaria no canonica. El replay cinematico existente no es validacion dinamica independiente ni hardware.
 
 ## Fuente de verdad
 
@@ -31,6 +31,7 @@ El transporte cooperativo de cargas heterogeneas por AMR se formula como un jueg
 - No presentar un metodo como ganador universal.
 - No afirmar hardware real, validacion industrial, despliegue productivo ni contacto 3D completo.
 - No reportar SP9 como ejecutado sin `results/sp9/<run_id>/manifest.json`, CSV, figuras y reporte.
+- No promover SP4 v4 ni el replay Coppelia como evidencia confirmatoria sin registro canonico, potencia suficiente y dinamica independiente.
 - No convertir resultados negativos en positivos por cambio de metrica.
 - No mover ni regenerar campanas high-power SP1-SP8 salvo auditoria rota y solo con smoke/compact de equivalencia.
 

@@ -1,0 +1,54 @@
+\subsection*{Registro completo de precisión A0--FULL}
+
+La tabla siguiente se deriva sin selección de
+\texttt{statistics/paired\_contrasts\_holm.csv}. La regla de extensión observó
+la anchura máxima por familia; Holm se aplicó una sola vez a los veinte
+contrastes en el tamaño final. El tope de 100 mundos era duro, pero las veinte
+anchuras finales observadas quedaron en $[0,0{,}20]$.
+
+\begingroup
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.08}
+\begin{longtable}{@{}p{0.12\textwidth}p{0.105\textwidth}r p{0.205\textwidth}r r p{0.105\textwidth}p{0.13\textwidth}@{}}
+\caption{Veinte contrastes pareados finales de la campaña A0--FULL.}
+\label{tab:a0-full-20-contrasts}\\
+\toprule
+Familia & Paso & $n$ & $\Delta$ [IC95\%] & Anch. & $+/-$ & $p_{\rm Holm}$ & Decisión \\
+\midrule
+\endfirsthead
+\toprule
+Familia & Paso & $n$ & $\Delta$ [IC95\%] & Anch. & $+/-$ & $p_{\rm Holm}$ & Decisión \\
+\midrule
+\endhead
+Nominal & A0--A1 & 60 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
+Nominal & A1--A2 & 60 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
+Nominal & A2--A3 & 60 & $0{,}05$ $[-0{,}05,0{,}15]$ & $0{,}20$ & 6/3 & $1$ & nulo/inconcl. \\
+Nominal & A3--A4 & 60 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
+Nominal & A4--FULL & 60 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
+\midrule
+Escasez & A0--A1 & 100 & $0{,}67$ $[0{,}58,0{,}76]$ & $0{,}18$ & 67/0 & $2{,}71\!\times\!10^{-19}$ & positivo \\
+Escasez & A1--A2 & 100 & $0{,}33$ $[0{,}24,0{,}42]$ & $0{,}18$ & 33/0 & $3{,}96\!\times\!10^{-9}$ & positivo \\
+Escasez & A2--A3 & 100 & $-0{,}18$ $[-0{,}25,-0{,}11]$ & $0{,}14$ & 0/18 & $1{,}14\!\times\!10^{-4}$ & negativo \\
+Escasez & A3--A4 & 100 & $0{,}07$ $[0{,}03,0{,}12]$ & $0{,}09$ & 7/0 & $0{,}219$ & nulo/inconcl. \\
+Escasez & A4--FULL & 100 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
+\midrule
+Torque & A0--A1 & 100 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
+Torque & A1--A2 & 100 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
+Torque & A2--A3 & 100 & $0{,}60$ $[0{,}50,0{,}70]$ & $0{,}20$ & 61/1 & $4{,}92\!\times\!10^{-16}$ & positivo \\
+Torque & A3--A4 & 100 & $0{,}01$ $[0{,}00,0{,}03]$ & $0{,}03$ & 1/0 & $1$ & nulo/inconcl. \\
+Torque & A4--FULL & 100 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
+\midrule
+Obstáculo/red & A0--A1 & 100 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
+Obstáculo/red & A1--A2 & 100 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
+Obstáculo/red & A2--A3 & 100 & $0{,}00$ $[0{,}00,0{,}00]$ & $0{,}00$ & 0/0 & $1$ & nulo/inconcl. \\
+Obstáculo/red & A3--A4 & 100 & $0{,}24$ $[0{,}16,0{,}33]$ & $0{,}17$ & 24/0 & $1{,}91\!\times\!10^{-6}$ & positivo \\
+Obstáculo/red & A4--FULL & 100 & $0{,}62$ $[0{,}52,0{,}71]$ & $0{,}19$ & 62/0 & $8{,}24\!\times\!10^{-18}$ & positivo \\
+\bottomrule
+\end{longtable}
+\endgroup
+
+En la columna $+/-$, el primer valor cuenta mundos mejorados y el segundo,
+mundos degradados. ``Nulo/inconcl.'' agrupa ausencia de discordancias o un
+contraste cuyo intervalo/ajuste no respalda una dirección; no significa prueba
+de equivalencia.

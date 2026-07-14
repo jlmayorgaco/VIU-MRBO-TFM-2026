@@ -46,7 +46,33 @@ Timeout o error & Resultado observado & Se preserva; nunca se elimina ni se conv
 
 La comparación incluye reglas voraces, asignación húngara, subastas o consenso, métodos basados en modelo, referencias centralizadas, variantes propuestas y políticas aprendidas. Las etiquetas \emph{proxy}, \emph{adaptación} o \emph{inspirado en} identifican implementaciones que no reproducen íntegramente la formulación y el alcance de información de la fuente. Un método solo se presenta como reproducción fiel cuando coinciden algoritmo, observación, restricciones y protocolo.
 
-Entrenamiento, ajuste, validación y prueba utilizan registros de semillas disjuntos. Los hiperparámetros y campeones se seleccionan con validación. Las semillas confirmatorias permanecen selladas hasta el freeze del protocolo. Las políticas finales se evalúan mediante el checkpoint fijado por presupuesto; una semilla fallida se conserva y no se reemplaza. Las referencias con información global se reportan como cotas internas o comparadores, no como soluciones desplegables.
+Cuando intervienen aprendizaje o ajuste, el protocolo exige registros de semillas disjuntos para entrenamiento, ajuste, validación y prueba. Los hiperparámetros y campeones se seleccionan con validación. En las campañas confirmatorias con \emph{freeze}, las semillas confirmatorias permanecen selladas hasta la congelación del protocolo. Las políticas finales se evalúan mediante el checkpoint fijado por presupuesto; una semilla fallida se conserva y no se reemplaza. Las referencias con información global se reportan como cotas internas o comparadores, no como soluciones desplegables.
+
+\subsection{Presupuesto de centralización}
+
+La palabra \emph{distribuida} describe únicamente las etapas cuya actualización y observación satisfacen la vista local declarada. La implementación integrada es un instrumento diagnóstico centralizado que evalúa componentes distribuibles y cierres globales sobre la misma planta; no es un controlador local de extremo a extremo. La Tabla~\ref{tab:presupuesto-centralizacion} hace visible esa deuda de información.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}p{0.11\textwidth}p{0.25\textwidth}p{0.31\textwidth}X@{}}
+\toprule
+Etapa & Señal disponible por robot & Operación global del artefacto & Alcance defendible \\
+\midrule
+A0 & Salud, capacidad y distancia para calcular utilidad individual. & Cuantil global $0{,}55$ y selección sobre toda la flota; registra $N$ mensajes. & Preferencia por robot; no cierre local. \\
+A1 & Preferencia y distancia. & Ranking de todos los candidatos, cuórum y slots. & Cierre entero auditado con información global. \\
+A2 & Capacidad efectiva y salud. & Ordenación de ociosos y suma global hasta cubrir demanda. & Certificado de capacidad; no mercado local cerrado. \\
+A3 & Demanda y contribución wrench de contactos. & Vecindario global de altas/bajas de uno o dos robots y asignación de slots. & Búsqueda acotada; coste de candidatos $O(N^2)$ en el peor caso. \\
+A4 & Orden HOCBF y wrench realizable. & Unión global de las coaliciones A2--A3 antes de ejecutar. & Reserva dinámica en la planta común; no optimización global de trayectoria. \\
+FULL & Mensajes retardados, pérdida y memoria expirable por robot. & Selección del reemplazo entre todos los robots ociosos usando capacidad, salud y posición. & Proxy de recuperación bajo red degradada; no reemplazo vecino extremo a extremo. \\
+SP1--SP3 & Payoffs, ocupaciones o precios según la variante. & QR, \emph{closure} y guardia wrench consultan preferencias o candidatos globales. & Aíslan juego continuo y cierre discreto; CLOSED no acredita localidad total. \\
+SP4--SP6 & Utilidad de primitivas, barreras y estados físicos por variante. & Prioridades, cierre de contactos o reemplazo pueden ser globales. & Evidencia de movimiento, carga y fallo dentro de cada planta simulada. \\
+SP7--SP8 & Descriptores de red o agregados por zona. & La red no cierra el controlador histórico y el evaluador mesoscópico conoce el método. & Evidencia descriptiva o exploratoria, no escalado distribuido observado. \\
+\bottomrule
+\end{tabularx}
+\caption{Presupuesto de centralización. Una fórmula local no convierte en local el umbral, el cierre o la guardia que consume estado global.}
+\label{tab:presupuesto-centralizacion}
+\end{table}
 
 \subsection{Métricas y semántica de ejecución}
 
@@ -62,9 +88,9 @@ La prueba y el intervalo dependen del endpoint y de la salida efectivamente gene
 \begin{itemize}[leftmargin=2em]
   \item \textbf{Resultados binarios.} Se informa la diferencia de riesgos pareada con intervalo del $95\%$. Los contrastes congelados usan McNemar exacto, equivalente al test binomial exacto sobre pares discordantes.
   \item \textbf{Regret y magnitudes continuas.} Las campa\~nas can\'onicas usan diferencias por mundo, \emph{bootstrap} percentil pareado e intervalos del $95\%$; cuando estaba preespecificado se a\~nade Wilcoxon pareado. Media, mediana y CVaR se distinguen y conservan sus unidades.
-  \item \textbf{Tiempo a soluci\'on.} Los timeouts permanecen como resultados censurados y nunca se convierten en \`exitos ni en datos ausentes. Cuando una campa\~na no genera un modelo de supervivencia, se reportan tasa de timeout y tiempo truncado de forma descriptiva, sin inferir razones de riesgo ni efectos temporales.
+  \item \textbf{Tiempo a soluci\'on.} Los timeouts permanecen como resultados censurados y nunca se convierten en \'exitos ni en datos ausentes. Cuando una campa\~na no genera un modelo de supervivencia, se reportan tasa de timeout y tiempo truncado de forma descriptiva, sin inferir razones de riesgo ni efectos temporales.
   \item \textbf{Mensajes y bytes.} Se resumen sobre los mismos mundos y se contrastan solo cuando existe una salida pareada expl\'icita. No se atribuyen modelos de conteo, mixtos o log-ratios a campa\~nas que no los produjeron.
-  \item \textbf{Asociaciones e interacciones.} Los t\'erminos m\'etodo por r\'egimen, m\'etodo por $\log N$, m\'etodo por $\lambda_2$, din\'amica por fitness y din\'amica por cierre se presentan como confirmatorios \`unicamente si aparecen en una tabla de inferencia can\'onica; en otro caso son descripciones reagrupadas por mundo.
+  \item \textbf{Asociaciones e interacciones.} Los t\'erminos m\'etodo por r\'egimen, m\'etodo por $\log N$, m\'etodo por $\lambda_2$, din\'amica por fitness y din\'amica por cierre se presentan como confirmatorios \'unicamente si aparecen en una tabla de inferencia can\'onica; en otro caso son descripciones reagrupadas por mundo.
 \end{itemize}
 
 Cada resultado confirmatorio debe contener estimación, intervalo del $95\%$, tamaño de efecto, número de mundos, eventos, fallos, timeouts, margen y decisión. Un contraste es no estimable si carece de bloques completos, presenta efecto o intervalo no finito, o no identifica la unidad inferencial. En ese caso no se sustituye la ausencia de estimación por $p=1$ ni por una conclusión nula.
