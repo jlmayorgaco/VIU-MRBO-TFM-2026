@@ -1,11 +1,11 @@
 # Submit Ready Gate
 
-- Status: `PASS_WITH_WARNINGS`
+- Status: `FAIL`
 - File: `docs/doc-05-final-report/main.tex`
 - Word count: `16470`
 - Blockers: `0`
 - Warnings: `1`
-- Strict mode: `False`
+- Strict mode: `True`
 
 ## Scope
 

@@ -41,14 +41,19 @@ def sha256(path: Path) -> str:
 def strip_comments(text: str) -> str:
     lines: list[str] = []
     for line in text.splitlines(keepends=True):
-        cut = len(line)
-        for match in re.finditer(r"%", line):
-            preceding = len(line[: match.start()]) - len(line[: match.start()].rstrip("\\"))
+        if line.endswith("\r\n"):
+            body, newline = line[:-2], "\r\n"
+        elif line.endswith("\n") or line.endswith("\r"):
+            body, newline = line[:-1], line[-1]
+        else:
+            body, newline = line, ""
+        cut = len(body)
+        for match in re.finditer(r"%", body):
+            preceding = len(body[: match.start()]) - len(body[: match.start()].rstrip("\\"))
             if preceding % 2 == 0:
                 cut = match.start()
                 break
-        suffix = "\n" if line.endswith("\n") else ""
-        lines.append(line[:cut] + suffix)
+        lines.append(body[:cut] + newline)
     return "".join(lines)
 
 
@@ -269,10 +274,10 @@ def write_reports(audit: dict[str, object], contexts: list[dict[str, object]]) -
 
     report = f"""# Citation Audit Report
 
-**Refresh:** 2026-07-14  
-**Bibliography:** `references.bib`  
-**Scope:** {details['total_entries']} entries; {details['cited_entries']} cited keys in {len(contexts)} included-source key-context uses  
-**Local citation verdict:** `PASS_LOCAL`  
+**Refresh:** 2026-07-14
+**Bibliography:** `references.bib`
+**Scope:** {details['total_entries']} entries; {details['cited_entries']} cited keys in {len(contexts)} included-source key-context uses
+**Local citation verdict:** `PASS_LOCAL`
 **Global readiness note:** `WARN_EXTERNAL` because no cross-family citation review or institutional similarity report is available
 
 ## Outcome
