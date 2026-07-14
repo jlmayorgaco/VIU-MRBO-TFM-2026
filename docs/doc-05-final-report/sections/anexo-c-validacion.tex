@@ -24,6 +24,8 @@ SP8 & Escala agregada. & $20\,000$ filas programadas hasta $50\,000$ AMR. & Expl
 \label{tab:matriz-validacion-sp}
 \end{table}
 
+\input{sections/a0-full-precision-contrasts}
+
 \subsection*{Mapa extendido de evidencia}
 
 La lectura de A0--FULL y SP1--SP8 se apoya en campañas con distinto nivel de madurez. La tabla siguiente
@@ -44,7 +46,7 @@ SP3 & Relajación wrench, v-GNE/KKT, consenso y cierres RAW/CLOSED. & 7200 ejecu
 SP4 & Dinámica de uniciclo, pares de rueda, seis primitivas, cinco protocolos y RAW--SAFE--EXEC. & Seis escenarios, $N\in\{4,8,12\}$ y cinco contrastes pareados. & El cierre es global, EXEC puede violar la CBF y no se excitó la saturación. \\
 SP5 & Planta Euler--Lagrange, reparto de fuerzas acotado, CBF local/preview y Hamiltoniano. & Seis escenarios, $N\in\{4,8,12\}$, seis semillas y ocho métodos. & Separa seguridad comandada de wrench ejecutado; el bloque histórico proyectado queda no canónico. \\
 SP6 & Recuperación explícita, robustez comparativa y variante de alta potencia. & $20\,000$ ejecuciones principales, $250$ semillas y $8$ familias de escenario. & Mide reparación tras fallo, batería baja, retardo, carga inviable y seguridad posterior al evento. \\
-SP7 & Descriptores de comunicación degradada. & $20\,176$ filas, $97$ semillas y cinco perfiles. & Describe conectividad temporal; no demuestra tolerancia cerrada a pérdida y retardo. \\
+SP7 & Descriptores de comunicación degradada. & $20\,176$ filas, $97$ semillas, cinco perfiles nominales y un perfil Monte Carlo por semilla. & Describe conectividad temporal; no demuestra tolerancia cerrada a pérdida y retardo. \\
 SP8 & Escalera mesoscópica de flota. & $20\,000$ filas, $20$ tamaños y escala nominal hasta $50\,000$ AMR. & Explora calidad agregada; el coste computacional requiere una nueva medición ciega. \\
 \bottomrule
 \end{tabularx}

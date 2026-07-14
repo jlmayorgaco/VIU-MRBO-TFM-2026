@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-07-14T05:36:48.708394+00:00",
+  "generated_at": "2026-07-14T12:33:23.901767+00:00",
   "status": "PASS_WITH_WARNINGS",
   "strict": false,
   "file": "docs/doc-05-final-report/main.tex",
   "kind": "tex",
-  "word_count": 15262,
+  "word_count": 15430,
   "included_files": [
     "docs/doc-05-final-report/main.tex",
     "docs/doc-05-final-report/sections/frontmatter/00-cover.tex",
@@ -37,7 +37,7 @@
   "missing_includes": [],
   "counts": {
     "blockers": 0,
-    "warnings": 1,
+    "warnings": 2,
     "info": 2
   },
   "thresholds": {
@@ -57,7 +57,7 @@
       "category": "page-budget",
       "check": "main-pages",
       "message": "The main document is within the configured page limit.",
-      "evidence": "Main document: 60/80; appendices: 7/8; Introduction starts on PDF page 12, Appendix A on 72, and References on 66.",
+      "evidence": "Main document: 60/80; appendices: 8/8; Introduction starts on PDF page 12, Appendix A on 72, and References on 66.",
       "recommendation": ""
     },
     {
@@ -65,8 +65,16 @@
       "category": "page-budget",
       "check": "appendix-pages",
       "message": "The appendices are within the configured page limit.",
-      "evidence": "Main document: 60/80; appendices: 7/8; Introduction starts on PDF page 12, Appendix A on 72, and References on 66.",
+      "evidence": "Main document: 60/80; appendices: 8/8; Introduction starts on PDF page 12, Appendix A on 72, and References on 66.",
       "recommendation": ""
+    },
+    {
+      "severity": "warning",
+      "category": "human-writing",
+      "check": "colon-density",
+      "message": "Repeated colon structures appear across several prose paragraphs.",
+      "evidence": "9 paragraphs contain at least 2 colons; 102 total (7.94 per 1000 words).",
+      "recommendation": "Check that each colon follows a complete clause and introduces a real list or explanation."
     },
     {
       "severity": "warning",

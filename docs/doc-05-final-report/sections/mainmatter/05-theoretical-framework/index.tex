@@ -288,7 +288,7 @@ Así, la demanda de una carga no compra cardinalidad; compra capacidad mecánica
 
 \subsection{Comprobación numérica de los aportes teóricos}
 
-Las proposiciones anteriores se acompa\~nan de tres comprobaciones num\'ericas reproducibles e independientes del c\'alculo cerrado que validan. V1 compara el reparto ponderado de \emph{wrench} con la soluci\'on directa del sistema KKT de igualdad. V2 contrasta la identidad de potencia Hamiltoniana por diferencias finitas y la proyecci\'on HOCBF cerrada frente a un QP SLSQP. V3 integra el sistema lineal con entradas conmutadas acotadas y verifica la cota ISS derivada de un Lyapunov com\'un. Estas pruebas comprueban \`algebra e implementaci\'on dentro de sus supuestos; no constituyen validaci\'on f\'isica ni ampl\'ian el dominio de los teoremas.
+Las proposiciones anteriores se acompa\~nan de tres comprobaciones num\'ericas reproducibles e independientes del c\'alculo cerrado que validan. V1 compara el reparto ponderado de \emph{wrench} con la soluci\'on directa del sistema KKT de igualdad. V2 contrasta la identidad de potencia Hamiltoniana por diferencias finitas y la proyecci\'on HOCBF cerrada frente a un QP SLSQP. V3 integra el sistema lineal con entradas conmutadas acotadas y verifica la cota ISS derivada de un Lyapunov com\'un. Estas pruebas comprueban \'algebra e implementaci\'on dentro de sus supuestos; no constituyen validaci\'on f\'isica ni ampl\'ian el dominio de los teoremas.
 
 \IfFileExists{../../results/theory_validation/v1/figures/fig_v1_kkt_wrench_allocation.png}{%
 \begin{figure}[H]
@@ -446,9 +446,28 @@ quórum, roles físicos y liberación de robots.
 
 \input{figures/fig-gap-literatura}
 
-\subsection{Posicionamiento: familia de controladores de juego distribuido}
+\subsection{Posicionamiento: componentes de juego distribuido y cierres auditados}
 
-La contribuci\'on de esta memoria es una arquitectura de control y decisi\'on basada en juegos para el transporte cooperativo de robots y cargas heterog\'eneas. Sus instancias comparten el siguiente esquema; una variante solo se denomina distribuida cuando actor, estimadores y cierre usan exclusivamente la vista local declarada. Un payoff o \emph{fitness} local traduce el d\'eficit f\'isico de cada carga en presi\'on de asignaci\'on. Una din\'amica poblacional reparte masa entre cargas. Un cierre entero (QR/cu\'orum) transforma la preferencia continua en coaliciones ejecutables. Un juego de \emph{wrench} decide si la coalici\'on produce fuerza y torque. Una capa de precios y ejecuci\'on cierra el bucle. Smith-QR es una instancia evaluada. Replicator, logit, BNN, proyecci\'on y variantes primal--dual o de mercado ocupan el mismo esquema cambiando la din\'amica, la regulaci\'on o la funci\'on de fitness. \emph{Water-filling} y campo medio delimitan extensiones de dise\~no, pero no se presentan como m\'etodos confirmatorios de todas las campa\~nas.
+La contribuci\'on de esta memoria es una arquitectura de control y decisi\'on basada en juegos para el transporte cooperativo de robots y cargas heterog\'eneas. Sus instancias comparten el siguiente esquema; una variante solo se denomina distribuida cuando actor, estimadores y cierre usan exclusivamente la vista local declarada. Un payoff o \emph{fitness} local traduce el d\'eficit f\'isico de cada carga en presi\'on de asignaci\'on. Una din\'amica poblacional reparte masa entre cargas. Un cierre entero (QR/cu\'orum) transforma la preferencia continua en coaliciones ejecutables. Un juego de \emph{wrench} decide si la coalici\'on produce fuerza y torque. Una capa de precios y ejecuci\'on cierra el bucle. Smith-QR es una instancia evaluada, pero su cierre can\'onico usa preferencias globales. Replicator, logit, BNN, proyecci\'on y variantes primal--dual o de mercado ocupan el mismo esquema cambiando la din\'amica, la regulaci\'on o la funci\'on de fitness. \emph{Water-filling} y campo medio delimitan extensiones de dise\~no, pero no se presentan como m\'etodos confirmatorios de todas las campa\~nas.
+
+La Tabla~\ref{tab:matriz-originalidad} separa herencia y aporte. En particular, los juegos poblacionales para control distribuido, las dinámicas distribuidas en tiempo discreto y la búsqueda de Nash bajo capacidad y migración ya están establecidas en la literatura \citep{quijano2017population,barreiro2017distributed,martinez2020formation,martinezpiazuelo2022tcss,martinezpiazuelo2022automatica}. La tesis no reclama prioridad sobre esos mecanismos.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}p{0.07\textwidth}p{0.25\textwidth}p{0.29\textwidth}X@{}}
+\toprule
+Aporte & Antecedente y elemento heredado & Delta técnico del TFM & Evidencia y límite \\
+\midrule
+A1 & Taxonomías MRTA \citep{gerkey2004formal,korsah2013taxonomy}, formación de coaliciones \citep{dutta2021hedonic,zhang2024coalition}, transporte cooperativo \citep{tuci2018cooperative} y juegos poblacionales como representación continua \citep{quijano2017population}. & Semántica operacional de coalición física: aceptación por etapa, falso positivo físico y éxito final no son equivalentes. & A0--FULL y SP1--SP3; definición válida en simulación planar, no certificado de hardware. \\
+A2 & Dinámicas distribuidas y discretas, capacidad/migración y búsqueda de Nash \citep{barreiro2017distributed,martinez2020formation,martinezpiazuelo2022tcss,martinezpiazuelo2022automatica}. & Interfaz explícita entre déficit, capacidad efectiva, contacto, residual wrench y realización dinámica; aplicación ISS bajo matriz común. & V1--V3 y SP2--SP3; relajación continua y carga fija, sin garantía para el cierre entero ni resets. \\
+A3 & Trabajos que integran asignación, equipos, rutas o control de transporte \citep{paul2023collective,brown2025assembly,zhou2026cttapf}. & Escalera causal de seis prefijos sobre la misma planta y el mismo mundo para localizar interacciones entre certificados. & 2.160 ejecuciones A0--FULL; planta reducida y operaciones globales declaradas. \\
+A4 & Comparación clásica de familias y arquitecturas poblacionales. & Auditoría RAW/CLOSED y RAW/SAFE/EXEC que conserva controles uniformes, guardias globales, timeouts, colisiones y resultados negativos. & SP1--SP8; las campañas modulares tienen plantas distintas y no constituyen integración extremo a extremo. \\
+\bottomrule
+\end{tabularx}
+\caption{Matriz de originalidad. El aporte propio reside en las interfaces, la semántica de evidencia y la auditoría integrada; las dinámicas y herramientas listadas como antecedentes son heredadas.}
+\label{tab:matriz-originalidad}
+\end{table}
 
 \begin{table}[H]
 \centering

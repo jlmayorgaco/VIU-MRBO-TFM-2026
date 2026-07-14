@@ -19,7 +19,7 @@ The primary end-to-end numerical evidence is `PHYSICAL_COALITION_CERTIFICATE_v1`
 | SP5 | Can a post-docking coalition transport an extended payload without conflating safe commands with executed mechanics? | `configs/experiments/sp5/SP5_PAYLOAD_TRANSPORT_CONFIRMATORY_v2.yaml` | `results/sp5/SP5_PAYLOAD_TRANSPORT_CONFIRMATORY_v2/` | 108 paired worlds, 864 CPU runs, immutable freeze before seed opening, RAW/SAFE/EXEC wrench separation, no pose repair, collisions/timeouts preserved and Holm decisions |
 | SP6 | Can the system recover from failures/battery degradation during load transport? | `configs/experiments/sp6/SP6_MC_robustness_comparison_high_power.yaml` plus video run `SP6_MC_robustness_comparison.yaml` plus explicit-control supplement `SP6_MC_explicit_control_law.yaml` | `results/sp6/SP6_MC_robustness_comparison_high_power/` plus videos in `results/sp6/SP6_MC_robustness_comparison/` plus `results/sp6/SP6_MC_explicit_control_law/` | recovery time, replacement behavior, safety, MC statistics, videos and explicit required-wrench recovery supplement |
 | SP7 | How do communication radius, packet loss, delays, jitter and sensing degradation affect cooperative transport? | `configs/experiments/sp7/SP7_MC_communication_robustness_high_power.yaml` | `results/sp7/SP7_MC_communication_robustness_high_power/` | temporal connectivity, relay metrics, sensing, transport success, paper figures |
-| SP8 | At warehouse scale, which centralized methods become impractical and which distributed/hierarchical methods retain useful wrench-aware transport performance? | `configs/experiments/sp8/SP8_MC_fleet_ladder_high_power.yaml` plus compact video run `SP8_MC_scalability_warehouse.yaml` | `results/sp8/SP8_MC_fleet_ladder_high_power/` plus compact videos in `results/sp8/SP8_MC_scalability_warehouse/` | timeout/intractability, wrench success, throughput, complexity, resource-normalized rankings, videos |
+| SP8 | Which quality trends appear in a warehouse-scale mesoscopic generator for centralized, distributed and hierarchical methods? | `configs/experiments/sp8/SP8_MC_fleet_ladder_high_power.yaml` plus compact video run `SP8_MC_scalability_warehouse.yaml` | `results/sp8/SP8_MC_fleet_ladder_high_power/` plus compact videos in `results/sp8/SP8_MC_scalability_warehouse/` | exploratory completion and wrench trends; declared timeouts and analytical memory are not confirmatory resource measurements |
 
 ## Current SP0 CPU campaign
 
@@ -44,7 +44,7 @@ Last regenerated in this workspace:
 - SP5 legacy note: the 20,040-run high-power package and 432-run explicit supplement remain historical because the legacy plant projected payload/robot poses after integration; they are not canonical evidence for continuous safety.
 - SP6 operational robustness: `20,000` runs, `20,000` checks, `0` failed checks, `250` seeds, `10` methods, `8` scenario families.
 - SP7 communication/sensing robustness: `20,176` runs, `20,176` checks, `0` failed checks, `97` seeds, `8` methods, `6` scenario families and 5 named communication profiles plus randomized profiles.
-- SP8 fleet ladder: `20,000` runs, `20,000` checks, `0` failed checks, `100` seeds per scale, `10` methods and 20 fleet sizes.
+- SP8 fleet ladder: `20,000` mesoscopic rows, `20,000` schema/theory checks, `0` failed checks, `100` seeds per scale, `10` methods and 20 fleet sizes; statistical rows remain exploratory because resource endpoints were not measured under a common external watchdog.
 
 SP4 uses the frozen 1,188-run v3 docking campaign and SP5 uses the frozen 864-run v2 payload campaign. Their invalid or post-integration-projected predecessors remain non-canonical audit context. SP7 remains a historical high-row-count descriptive package rather than being strengthened by row count alone.
 
@@ -101,11 +101,11 @@ Last regenerated in this workspace:
 
 SP8 result interpretation:
 
-- The high-power fleet ladder is the canonical scale plot evidence; the compact run remains canonical for representative MP4 inspection.
-- The high-power fleet ladder tests 5-50.000 AMR and 1-12.500 loads with static/mobile obstacles, moving loads, wrench/torque checks, transport risk proxies and complexity/resource metrics. The duplicate `10000` requested in the scale ladder was normalized to one point to avoid overweighting that scale.
-- In the extended run, the centralized coalition oracle declares timeout increasingly with scale (`H8.1`, Holm reject). The hierarchical wrench-market method beats classic local greedy on task completion (`H8.2`, Holm reject) and beats expanded Hungarian on wrench feasibility (`H8.3`, Holm reject).
-- The model is mesoscopic/vectorized. It is appropriate for scalability and intractability claims, not for full contact dynamics, RF propagation or hardware deployment claims.
-- `SP8_MC_scalability_warehouse_full.yaml` remains useful for 1000-3000 AMR warehouse/peak scenarios with multiple seeds and videos; the promoted fleet ladder now provides the high-power 20-scale statistical evidence.
+- The high-power fleet ladder is canonical only as exploratory mesoscopic plot evidence; the compact run is retained for representative MP4 inspection.
+- The generator spans 5-50.000 AMR and 1-12.500 loads with static/mobile obstacles, moving loads, wrench/torque checks and transport-risk proxies. The duplicate `10000` requested in the scale ladder was normalized to one point to avoid overweighting that scale.
+- The centralized-oracle timeouts are declared by evaluator rules and memory is analytical rather than observed RSS. Consequently H8.1 is suspended as confirmatory; the quality contrasts H8.2--H8.3 remain exploratory even when their internal Holm calculations reject.
+- The model is mesoscopic/vectorized and method-aware. It supports trends inside its generator, not observed intractability, common-budget wall-clock/RSS, full contact dynamics, RF propagation or hardware deployment.
+- `SP8_MC_scalability_warehouse_full.yaml` remains useful for 1000-3000 AMR warehouse/peak scenarios with multiple seeds and videos. Neither run is promoted as confirmatory resource or industrial-scale evidence.
 
 ## Promotion Rule
 
@@ -119,4 +119,4 @@ An experiment may be promoted to canonical only if it has:
 
 ## Non-Canonical Artifacts
 
-Diagnostic configs, smoke runs, draft plots and one-off videos may remain in the repository while developing, but they are not thesis evidence until they are promoted here. When presenting results, use this file as the source of truth.
+Diagnostic configs, smoke runs, draft plots and one-off videos may remain in the repository while developing, but they are not thesis evidence until they are promoted here. SP4 v4 and `results/sp4/SP4_V4_COPPELIA_PAIRED_NARROW/` are complementary non-canonical artifacts: the Coppelia scene is a kinematic replay of precomputed trajectories, with neither independent dynamics nor hardware validation. When presenting results, use this file as the source of truth.
