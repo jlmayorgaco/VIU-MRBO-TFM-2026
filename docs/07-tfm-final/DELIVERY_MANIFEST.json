@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.0",
+  "package_id": "VIU_MROB_TFM_2026_FINAL_STAGE4",
+  "generated_on": "2026-07-14",
+  "status": "LOCAL_SUBMIT_READY_EXTERNAL_CHECKS_PENDING",
+  "scientific_baseline": {
+    "branch": "main",
+    "commit": "308e279c715191818910e19e5ff7fa0ffc71c106"
+  },
+  "manuscript": {
+    "title": "Arquitectura escalonada con componentes basados en juegos para coaliciones multi-AMR: formación, ejecución simulada y cierres auditados",
+    "author": "Jorge Luis Mayorga Taborda",
+    "tutor": "José Ignacio Iñíguez Amigot",
+    "edition": "2025-26",
+    "canonical_source": "docs/doc-05-final-report/main.tex",
+    "canonical_source_sha256": "b98c3385ce21256959a1d57dba068cf3c1b3e1208579006d1f12208c9624090d",
+    "reference_database": "docs/doc-05-final-report/references.bib",
+    "reference_database_sha256": "fa4e3dbccda251a74f0cf4fde7f7f9ce2ba7567625f3dc6fbd462cd7ebbef163",
+    "deliverable": "docs/07-tfm-final/01-entrega/TFM_Jorge_Luis_Mayorga_Taborda_2026.pdf",
+    "deliverable_sha256": "690fea2213c1374079f79fcdbe77df9e8df9627313c5dde8cacb5cbaddcfb56d",
+    "deliverable_bytes": 2826722,
+    "pdf_format": "A4",
+    "total_pdf_pages": 93,
+    "main_pages": 72,
+    "appendix_pages": 8,
+    "word_count": 19103
+  },
+  "validation": {
+    "build_engine": "LuaLaTeX + Biber",
+    "build_command": "make report-pdf",
+    "build_exit_code": 0,
+    "overfull_boxes": 0,
+    "missing_glyphs": 0,
+    "undefined_references_or_citations": 0,
+    "automated_tests_passed": 350,
+    "automated_tests_failed": 0,
+    "critical_claim_findings": 0,
+    "submit_ready_status": "PASS_WITH_WARNINGS",
+    "submit_ready_blockers": 0,
+    "submit_ready_warnings": 1,
+    "submit_ready_warning_codes": [
+      "external-similarity-report"
+    ],
+    "citation_audit_status": "PASS_LOCAL",
+    "bibliography_entries": 110,
+    "cited_entries": 61,
+    "citation_uses": 123,
+    "unresolved_citation_keys": 0
+  },
+  "frozen_snapshots": [
+    {
+      "path": "docs/07-tfm-final/03-revision/respuesta_a_revisores.md",
+      "snapshot_of": "docs/reviews/2026-07-14-stage4-revision/10_response_to_reviewers.md",
+      "sha256": "b80cb1d49e983d0fe4e4f6c1817c0fade75ead7cb7d9a1e612d82f0f108f6982"
+    },
+    {
+      "path": "docs/07-tfm-final/03-revision/seguimiento_revision.md",
+      "snapshot_of": "docs/reviews/2026-07-14-stage4-revision/revision_tracking.md",
+      "sha256": "2d1c80d6ef5ede6dd47e1ebdd74ffb9a5ecff60385e9829a35a7eab257dec11e"
+    },
+    {
+      "path": "docs/07-tfm-final/03-revision/manifiesto_etapa4.json",
+      "snapshot_of": "docs/reviews/2026-07-14-stage4-revision/stage4_manifest.json",
+      "sha256": "6af0455980433c592e12ea0f0d9b7f161408c2598e0386fa6ef4f3244064ae24"
+    },
+    {
+      "path": "docs/07-tfm-final/04-auditoria/informe_submit_ready.md",
+      "snapshot_of": "docs/generated/stage4_submit_ready/main_tex_submit_ready_report.md",
+      "sha256": "6d5764a1ec086e543778f819079e38caf36df8e6a62bca37fab7bfcf9fbf10df"
+    },
+    {
+      "path": "docs/07-tfm-final/04-auditoria/informe_submit_ready.json",
+      "snapshot_of": "docs/generated/stage4_submit_ready/main_tex_submit_ready_report.json",
+      "sha256": "dbea1486ad145027cf6bd62d21b3b6043e04db7344f02416c469a15aa09dc326"
+    },
+    {
+      "path": "docs/07-tfm-final/04-auditoria/auditoria_citas.md",
+      "snapshot_of": "docs/doc-05-final-report/CITATION_AUDIT.md",
+      "sha256": "f42443322d0d21d5351ff59bb1075ef68631353b10822cede2b22b298f4281ec"
+    },
+    {
+      "path": "docs/07-tfm-final/04-auditoria/auditoria_citas.json",
+      "snapshot_of": "docs/doc-05-final-report/CITATION_AUDIT.json",
+      "sha256": "942b227fa46eb9a38af0c0f04df9825b8ee4dbee2eb162fbd4fce42f0ea73a05"
+    },
+    {
+      "path": "docs/07-tfm-final/04-auditoria/vigencia_auditoria_citas.md",
+      "snapshot_of": "docs/doc-05-final-report/CITATION_AUDIT_FRESHNESS.md",
+      "sha256": "f4db528f4735eaebdbe77b9b6c57c333a3849820e0686d5eb9ea3f1c3aff20c3"
+    },
+    {
+      "path": "docs/07-tfm-final/04-auditoria/vigencia_auditoria_citas.json",
+      "snapshot_of": "docs/doc-05-final-report/CITATION_AUDIT_FRESHNESS.json",
+      "sha256": "ab3802667b717ad968eccfa56e24983eab9668597240efddae9942864e4da29a"
+    },
+    {
+      "path": "docs/07-tfm-final/05-evidencia/registro_afirmacion_artefacto.md",
+      "snapshot_of": "docs/generated/claim_artifact_registry.md",
+      "sha256": "ce9fc8ee15814d83421a3d6b3b45537ce257d25b39f6ba5326f062782fc9b00c"
+    },
+    {
+      "path": "docs/07-tfm-final/05-evidencia/registro_afirmacion_artefacto.json",
+      "snapshot_of": "docs/generated/claim_artifact_registry.json",
+      "sha256": "2abc7c036f6dd91c207d9bdefb4af4bb07028ffb89274988e08934179a6f7d38"
+    },
+    {
+      "path": "docs/07-tfm-final/05-evidencia/registro_afirmacion_artefacto.csv",
+      "snapshot_of": "docs/generated/claim_artifact_registry.csv",
+      "sha256": "f1cf726c6f8c86d060835e6ae30dec62622aef121a7184077fa29c881af78736"
+    },
+    {
+      "path": "docs/07-tfm-final/05-evidencia/registro_contraste_estimando.md",
+      "snapshot_of": "docs/generated/contrast_estimand_registry.md",
+      "sha256": "45f3c93a72657137eacc4b21faac18a2b427e46491e3af0ded2ca4c71b7744d3"
+    },
+    {
+      "path": "docs/07-tfm-final/05-evidencia/registro_contraste_estimando.json",
+      "snapshot_of": "docs/generated/contrast_estimand_registry.json",
+      "sha256": "403b3a2bee333f007a0491b15536072aef79851456fa946227b7497cf19c2e8f"
+    },
+    {
+      "path": "docs/07-tfm-final/05-evidencia/registro_contraste_estimando.csv",
+      "snapshot_of": "docs/generated/contrast_estimand_registry.csv",
+      "sha256": "d3a83547fab6a44229c121ed49e359d2e394bd8d27ee82dbe8094d3b0113909d"
+    },
+    {
+      "path": "docs/07-tfm-final/05-evidencia/resultados_canonicos.md",
+      "snapshot_of": "docs/CANONICAL_RESULTS.md",
+      "sha256": "1182ce9a83381bf5e589e50c94fa6d94387dc128897289a707976e64077cdeb1"
+    }
+  ],
+  "evidence_scope": {
+    "primary_integrated_campaign": "results/physical_coalition/PHYSICAL_COALITION_CERTIFICATE_v1_1_FIXEDN",
+    "primary_integrated_campaign_scope": "planar numerical simulation",
+    "canonical_docking_campaign": "results/sp4/SP4_DOCKING_GAME_CONFIRMATORY_v3",
+    "coppeliasim_artifact": "results/sp4/SP4_V4_COPPELIA_PAIRED_NARROW",
+    "coppeliasim_status": "COMPLEMENTARY_NON_CANONICAL_KINEMATIC_REPLAY",
+    "hardware_validation_claimed": false,
+    "universal_method_superiority_claimed": false
+  },
+  "external_checks_pending": [
+    "institutional similarity report",
+    "independent cross-family citation verification",
+    "tutor and academic committee evaluation",
+    "institutional upload confirmation"
+  ],
+  "integrity_index": "docs/07-tfm-final/PACKAGE_HASHES.sha256"
+}
