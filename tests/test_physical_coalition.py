@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
@@ -8,7 +9,7 @@ import yaml
 from viu_mrob_tfm.physical_coalition.model import CertificateStage
 from viu_mrob_tfm.physical_coalition.runner import prepare_protocol, run_official
 from viu_mrob_tfm.physical_coalition.scenario import make_world
-from viu_mrob_tfm.physical_coalition.simulation import run_variant
+from viu_mrob_tfm.physical_coalition.simulation import decision_for_stage, run_variant
 
 
 def test_world_and_evaluation_are_deterministic() -> None:
@@ -23,16 +24,48 @@ def test_world_and_evaluation_are_deterministic() -> None:
     }
 
 
-def test_obstacle_full_is_safe_and_recovers_selected_dropout() -> None:
+def test_run_identity_is_bound_to_the_declared_protocol() -> None:
+    world = make_world(family="nominal_rotation", seed=8123, ordinal=2)
+    first, _ = run_variant(
+        world,
+        CertificateStage.ROBUST_LOCAL,
+        protocol_version="PHYSICAL_COALITION_CERTIFICATE_v1",
+    )
+    second, _ = run_variant(
+        world,
+        CertificateStage.ROBUST_LOCAL,
+        protocol_version="PHYSICAL_COALITION_CERTIFICATE_v1_1_FIXEDN",
+    )
+    assert first["protocol_version"] != second["protocol_version"]
+    assert first["run_id"] != second["run_id"]
+
+
+def test_obstacle_full_ignores_dropout_outside_selected_coalition() -> None:
     world = make_world(family="obstacle_network_dropout", seed=8103, ordinal=0)
     row, trajectory = run_variant(world, CertificateStage.ROBUST_LOCAL, retain_trajectory=True)
     assert row["collision"] is False
     assert row["minimum_clearance_m"] >= 0.0
-    assert row["recovery_count"] == 1
+    assert row["recovery_count"] == 0
     assert row["dropout_unrecovered"] is False
     assert row["final_physical_success"] is True
     assert trajectory
 
+
+def test_single_dropout_has_at_most_one_recovery_and_records_final_coalition() -> None:
+    selected_dropout_seen = False
+    for ordinal in range(12):
+        world = make_world(family="obstacle_network_dropout", seed=8103 + ordinal, ordinal=ordinal)
+        decision = decision_for_stage(world, CertificateStage.ROBUST_LOCAL)
+        row, _ = run_variant(world, CertificateStage.ROBUST_LOCAL)
+        if world.dropout_robot in decision.selected:
+            selected_dropout_seen = True
+            assert row["recovery_count"] == 1
+        else:
+            assert row["recovery_count"] == 0
+        final_ids = json.loads(row["final_selected_robot_ids"])
+        assert row["final_selected_robots"] == len(final_ids)
+        assert len(final_ids) == len(set(final_ids))
+    assert selected_dropout_seen
 
 def test_certificate_false_positive_semantics_are_explicit() -> None:
     world = make_world(family="obstacle_network_dropout", seed=8103, ordinal=0)
@@ -85,3 +118,30 @@ def test_seed_registry_is_disjoint_and_official_run_is_frozen_guarded() -> None:
     assert len(flat) == len(set(flat))
     with pytest.raises(RuntimeError, match="before a valid freeze"):
         run_official(config_path, workers=1)
+
+
+def test_fixed_n_registry_has_one_confirmatory_group_per_family() -> None:
+    config_path = _small_config()
+    config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    config["protocol_id"] = "TEST_PHYSICAL_CERTIFICATE_FIXEDN"
+    config["output_dir"] = "output/test_physical_coalition_fixed_n"
+    config["worlds"]["base_per_family"] = 100
+    config["worlds"]["precision_checkpoints"] = [100]
+    config["precision"]["extension_rule"] = "fixed_n"
+    config_path.write_text(yaml.safe_dump(config), encoding="utf-8")
+
+    prepared = prepare_protocol(config_path)
+    assert prepared["seed_count"] == 404
+    registry = yaml.safe_load(
+        Path("output/test_physical_coalition_fixed_n/protocol/seed_registry.yaml").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert "test_seeds_1_40" not in registry
+    groups = registry["confirmatory_seeds_1_100"]
+    assert set(groups) == set(config["scenario_families"])
+    flat = [*registry["dry_run_seeds"]]
+    for seeds in groups.values():
+        assert len(seeds) == 100
+        flat.extend(seeds)
+    assert len(flat) == len(set(flat))
