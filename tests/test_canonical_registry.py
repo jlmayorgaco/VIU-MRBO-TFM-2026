@@ -66,9 +66,9 @@ def test_citation_audit_is_bound_to_current_included_sources() -> None:
     assert audit["reason_code"] == (
         "local_citation_verification_passed_external_cross_family_and_similarity_pending"
     )
-    assert audit["details"]["total_entries"] == 107
-    assert audit["details"]["cited_entries"] == 55
-    assert audit["details"]["citation_uses"] == 97
+    assert audit["details"]["total_entries"] == 110
+    assert audit["details"]["cited_entries"] == 61
+    assert audit["details"]["citation_uses"] == 123
     assert audit["details"]["current_unresolved_keys"] == []
     for relative, tagged_hash in audit["audited_input_hashes"].items():
         expected = tagged_hash.removeprefix("sha256:")

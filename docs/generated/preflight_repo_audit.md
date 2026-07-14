@@ -2,7 +2,7 @@
 
 - Branch: `main`
 - Python: `3.13.9`
-- Dirty entries: `264`
+- Dirty entries: `73`
 - CoppeliaSim in PATH: `not found`
 
 ## Canonical SP Status
@@ -44,5 +44,5 @@ tests/test_world_pairing.py::test_checkpoint_audit_world_pairing_is_stable_and_o
 tests/test_wrench_market_games_integration.py::test_wrench_market_games_configs_are_factory_valid
 tests/test_wrench_market_games_integration.py::test_wrench_market_games_documentation_is_linked_from_tfm
 
-347 tests collected in <duration>
+350 tests collected in <duration>
 ```

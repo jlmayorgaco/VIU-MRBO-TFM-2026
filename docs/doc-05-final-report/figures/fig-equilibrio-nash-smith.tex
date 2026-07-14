@@ -35,13 +35,11 @@
 \node[note] (r) at (10.6,2.25) {
   \textbf{Nash}\\ning\'un robot mejora solo\\[3pt]
   \textbf{Smith}\\masa hacia mayor utilidad\\[3pt]
-  \textbf{TFM}\\utilidad = d\'eficit, distancia,\\seguridad y \emph{wrench}
+  \textbf{Instancias SP1--SP4}\\utilidad = d\'eficit, distancia,\\capacidad o \emph{wrench}
 };
 \draw[flow] (ne.east) -- (r.west);
 \end{tikzpicture}}
-\caption[Lectura de Nash y Smith para asignación distribuida.]{Lectura de Nash y Smith para asignación distribuida. La dinámica no busca una
-etiqueta abstracta de tarea, sino un punto donde las desviaciones locales dejan de
-mejorar utilidad una vez incorporados déficit, coste espacial y factibilidad física.}
+\caption[Lectura de Nash y Smith en las relajaciones del TFM.]{Lectura de Nash y Smith en las relajaciones del TFM. Según la campaña, la utilidad incorpora déficit, coste espacial, capacidad o \emph{wrench}. La figura representa el juego continuo; no el umbral A0, el cierre entero ni las guardias globales.}
 \viuownsource
 \label{fig:equilibrio-nash-smith}
 \end{figure}

@@ -66,6 +66,12 @@ SP3 incorpora la geometría que SP2 omite. Para una coalición $S$, el residual 
  \frac{\min_{0\leq f\leq\bar f}\lVert G_Sf-w\rVert_2}
       {\max(\lVert w\rVert_2,\varepsilon)}.
 \]
+Para la relajación continua, los simplex locales y las restricciones acopladas son
+convexos. Si existe un punto de Slater y la regularización es estrictamente positiva,
+las KKT son necesarias y suficientes para el óptimo del potencial; al compartir el
+multiplicador de la restricción acoplada, ese punto coincide con el v-GNE. La equivalencia
+no se extiende al cierre entero ni a la guardia global
+\citep{yi2019operator,cherukuri2016primaldual}.
 La relajación continua usa precios de fuerza, torque y ocupación de slots; el cierre resuelve conflictos enteros y una guardia añade robots individuales o pares hasta satisfacer el residual. La guardia observa la geometría completa y los robots libres, por lo que se declara global.
 
 La campaña v1.1 reunió 600 mundos y 7.200 ejecuciones. Projected primal--dual con información exacta alcanzó brecha máxima de potencial $0{,}00339$ frente al QP y residual KKT medio $0{,}00221$. Sin guardia, su tasa de falsos positivos fue $0{,}3333$; la guardia la redujo a cero (IC95\% para la diferencia $[-0{,}3700,-0{,}2950]$). El criterio escalar, \emph{greedy wrench} y CBBA aceptaron indebidamente $0{,}5000$ de los casos condicionados, lo que confirma dentro del generador que capacidad escalar y factibilidad \emph{wrench} son constructos distintos.
@@ -100,7 +106,7 @@ CBF pasó a $0{,}426$ y cero colisiones. Las diferencias de colisión
 $-0{,}833$ y éxito $0{,}259$ sobrevivieron Holm. El preview distribuido también
 redujo la colisión frente a VO en $0{,}343$. En cambio, la referencia
 centralizada fue conservadora: solo alcanzó $0{,}167$ y no superó al CBF local.
-tampoco se respald\'o la direcci\'on preespecificada del contraste CBF--APF sobre
+Tampoco se respald\'o la direcci\'on preespecificada del contraste CBF--APF sobre
 residual EXEC: pese a $p_{\rm Holm}=0{,}0038$, el efecto medio fue $+0{,}0012$ y el IC95\% $[-0{,}0305,0{,}0390]$ incluy\'o cero, de modo que el rango pareado no autoriza una mejora en la direcci\'on exigida.
 
 \begin{figure}[tbp]

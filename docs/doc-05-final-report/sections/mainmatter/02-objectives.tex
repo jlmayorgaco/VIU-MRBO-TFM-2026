@@ -11,12 +11,12 @@ Diseñar, implementar y evaluar una arquitectura escalonada para coordinar coali
   \item Construir y ejecutar una escalera de validación que avance desde preferencia local hasta capacidad heterogénea, contactos, dinámica, seguridad, recuperación, comunicación y escala de flota.
   \item Diseñar y delimitar Smith-QR como extensión de la dinámica de Smith con memoria local, estimación de ocupación, cierre entero y guardias de ejecución, identificando qué operaciones aún requieren información global.
   \item Extender el criterio de quórum desde cardinalidad hacia capacidad efectiva, incorporando fuerza, torque, orientación, batería, distancia y conectividad.
-  \item Comparar la arquitectura propuesta frente a referencias centralizadas, heurísticas clásicas, subastas distribuidas, variantes basadas en modelo y comparadores aprendidos.
-  \item Documentar la trazabilidad experimental mediante semillas disjuntas, freeze previo a test, mundos compartidos, métricas homogéneas, extensiones solo por precisión, contrastes pareados y límites de validez explícitos.
+  \item Comparar la arquitectura propuesta frente a referencias centralizadas, heurísticas clásicas, subastas distribuidas, variantes basadas en modelo y comparadores aprendidos, sin promover estos últimos cuando sus gates de auditoría fallen.
+  \item Documentar la trazabilidad experimental mediante semillas disjuntas, \emph{freeze} previo a test, mundos compartidos, métricas homogéneas, tamaño confirmatorio fijo, contrastes pareados y límites de validez explícitos.
 \end{enumerate}
 
 \subsection{Alcance}
 
-El alcance de la memoria comprende simulación reproducible, integración visual y análisis cuantitativo. Queda fuera del alcance la validación física, la validación de seguridad funcional, la percepción real y la prueba en una instalación industrial. Los métodos aprendidos se usan como comparadores de la contribución analítica principal. La memoria distingue resultados evaluados en campañas, pruebas de consistencia matemática o sintética y extensiones propuestas como trabajo futuro.
+El alcance de la memoria comprende simulación reproducible, integración visual y análisis cuantitativo. Queda fuera del alcance la validación física, la validación de seguridad funcional, la percepción real y la prueba en una instalación industrial. Los métodos aprendidos se implementan como comparadores potenciales, pero solo se promueven si superan sus gates de auditoría; MAPPO-GNN no los supera en la evidencia conservada. La memoria distingue resultados evaluados en campañas, pruebas de consistencia matemática o sintética y extensiones propuestas como trabajo futuro.
 
 Los roles de contacto se derivan de la formación interna de cada coalición. La campaña integrada explora un vecindario acotado de uno y dos robots para complementar wrench, pero no resuelve globalmente todos los pares robot--carga--contacto. La batería se incorpora como restricción económica y de retornabilidad, sin modelar una red completa de estaciones, colas y recarga física.

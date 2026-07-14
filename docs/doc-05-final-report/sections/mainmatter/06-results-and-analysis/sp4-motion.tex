@@ -50,7 +50,7 @@ $x_i\in\Delta^6$ sobre cinco primitivas de movimiento y una de espera. Las
 primitivas representan dos arcos horarios, la ruta angular localmente corta, dos
 arcos antihorarios y espera/alineaci\'on. Si la carga separa al robot de su contacto,
 la clase horaria o antihoraria elegida se conserva hasta que el segmento directo
-sea geom\'etricamente libre. Esta memoria impide cambios de homotop\'ia inducidos
+sea geom\'etricamente libre. La memoria de homotop\'ia impide cambios inducidos
 por el horizonte recedente; no constituye un plan global.
 
 Sea $H_{ia,r}\in\{0,1\}$ la ocupaci\'on de la celda espacio--tiempo $r$ por la
@@ -171,8 +171,8 @@ geom\'etrica posterior ni reparaci\'on de una trayectoria ya ejecutada.
 \noindent\textbf{Dise\~no confirmatorio.}
 El piloto v2 se us\'o s\'olo para comprobar factibilidad y congelar el protocolo.
 La campa\~na confirmatoria abre semillas nuevas y cruza seis escenarios
----abierto, cruce, pasaje estrecho, obst\'aculos dispersos, bloqueo sim\'etrico y
-actuadores limitados--- con $N\in\{4,8,12\}$. Se comparan movimiento directo,
+abierto, cruce, pasaje estrecho, obst\'aculos dispersos, bloqueo sim\'etrico y
+actuadores limitados, con $N\in\{4,8,12\}$. Se comparan movimiento directo,
 APF, un proxy RVO, proyecci\'on CBF, PD central con 70 iteraciones, Nash--PD RAW,
 Nash--PD exacto y en anillo, Smith, replicator y ERV--BNN. Los mundos son
 id\'enticos entre m\'etodos.
@@ -186,11 +186,21 @@ anillo; \'exito de replicator frente a Nash--PD; y error posicional de replicato
 frente a PD central. Las tasas usan prueba binomial exacta sobre pares discordantes;
 las variables continuas usan Wilcoxon unilateral. Se informa bootstrap pareado del
 95\,\% y correcci\'on de Holm.
+La unidad de aleatorizaci\'on no es cada fila de escenario: las seis variantes
+comparten la semilla dentro de cada pareja $(\texttt{seed},N)$, por lo que la
+confirmatoria contiene 18 bloques independientes y 108 filas emparejadas. Las
+tasas y los intervalos anteriores se conservan como descripci\'on por escenario;
+como sensibilidad inferencial se agreg\'o primero por bloque y se aplic\'o una
+prueba de signos unilateral con Holm. Los cinco contrastes mantuvieron el signo
+y el rechazo a $\alpha=0{,}05$ (p ajustadas $0{,}0352$, $1{,}91\times10^{-5}$,
+$1{,}45\times10^{-4}$, $1{,}91\times10^{-5}$ y $1{,}91\times10^{-5}$,
+ordenadas por hip\'otesis). En consecuencia no se interpreta el total de 108
+filas como 108 observaciones IID.
 
 \medskip
 \noindent\textbf{Resultados confirmatorios.}
 La candidata can\'onica \texttt{SP4\_DOCKING\_GAME\_CONFIRMATORY\_v3} contiene
-108 mundos y 1188 ejecuciones: seis semillas nuevas, seis escenarios, tres
+18 bloques independientes, 108 instancias pareadas y 1188 ejecuciones: seis semillas nuevas, seis escenarios, tres
 tama\~nos de flota y once m\'etodos. La auditor\'ia termin\'o en PASS. No hubo
 colisiones iniciales; el despeje inicial m\'inimo fue $0{,}2724$ m. El error
 m\'aximo del s\'implex fue $2{,}22\times10^{-16}$, la violaci\'on de capacidad fue
@@ -246,16 +256,32 @@ estrecho y actuadores limitados. La proyecci\'on CBF alcanz\'o $1{,}000$ en
 abierto y $0{,}056$ con obst\'aculos dispersos, pero cero en los otros cuatro
 escenarios.
 
-Los cinco contrastes congelados sobrevivieron Holm. Replicator aument\'o el
-\'exito frente a CBF en $0{,}0926$ (IC95\,\% $[0{,}0370,0{,}1574]$,
-$p_{\rm Holm}=0{,}00317$) y frente a Nash--PD en $0{,}2407$
-(IC95\,\% $[0{,}1574,0{,}3241]$, $p_{\rm Holm}=2{,}98\times10^{-8}$).
-Frente al control directo, redujo la colisi\'on en $0{,}8333$
-(IC95\,\% $[-0{,}8981,-0{,}7593]$, $p_{\rm Holm}=4{,}04\times10^{-27}$).
-Su error posicional fue $1{,}0436$ m menor que el PD central
-(IC95\,\% $[-1{,}1881,-0{,}9067]$, $p_{\rm Holm}=3{,}74\times10^{-19}$).
-La informaci\'on exacta redujo el residual KKT frente al anillo en $0{,}3351$
-(IC95\,\% $[-0{,}3952,-0{,}2760]$, $p_{\rm Holm}=1{,}81\times10^{-14}$).
+A nivel descriptivo de las 108 instancias, Replicator aument\'o el éxito frente a
+CBF en $0{,}0926$ (IC95\,\% $[0{,}0370,0{,}1574]$) y frente a Nash--PD en
+$0{,}2407$ ($[0{,}1574,0{,}3241]$); redujo la colisión frente a directo en
+$0{,}8333$ ($[-0{,}8981,-0{,}7593]$), y el error posicional frente a PD central
+en $1{,}0436$~m ($[-1{,}1881,-0{,}9067]$). La información exacta redujo el
+residual KKT frente al anillo en $0{,}3351$ ($[-0{,}3952,-0{,}2760]$). Esos
+intervalos describen instancias; no se usan como si los seis escenarios dentro de
+semilla--flota fueran independientes.
+
+\begin{table}[tbp]
+\centering
+\scriptsize
+\begin{tabularx}{\textwidth}{@{}Xrrrr@{}}
+\toprule
+Hipótesis (dirección favorable) & Bloques $+/-/=$ & Diferencia media original & $p$ exacta & $p_{\rm Holm}$ \\
+\midrule
+H4.1: éxito Replicator $>$ CBF & 7/1/10 & $0{,}0926$ & $0{,}0352$ & $0{,}0352$ \\
+H4.2: colisión Replicator $<$ directo & 18/0/0 & $-0{,}8333$ & $3{,}81\times10^{-6}$ & $1{,}91\times10^{-5}$ \\
+H4.3: KKT exacto $<$ anillo & 17/1/0 & $-0{,}3351$ & $7{,}25\times10^{-5}$ & $1{,}45\times10^{-4}$ \\
+H4.4: éxito Replicator $>$ Nash--PD & 18/0/0 & $0{,}2407$ & $3{,}81\times10^{-6}$ & $1{,}91\times10^{-5}$ \\
+H4.5: error Replicator $<$ PD central & 18/0/0 & $-1{,}0436$ & $3{,}81\times10^{-6}$ & $1{,}91\times10^{-5}$ \\
+\bottomrule
+\end{tabularx}
+\caption{Sensibilidad inferencial de SP4 sobre 18 bloques independientes. El signo se orienta según la dirección preespecificada; los empates se excluyen del test de signos exacto.}
+\label{tab:sp4-block-sensitivity}
+\end{table}
 
 \begin{figure}[tbp]
 \centering
@@ -292,8 +318,8 @@ del simulador, no cotas asint\'oticas ni latencia de red real.
 Finalmente, no hubo saturaciones de par en las 1188 ejecuciones. La campa\~na
 modela la transformaci\'on y los l\'imites, pero no excita esa no linealidad y no
 valida robustez frente a saturaci\'on. Tambi\'en aparecieron residuales CBF EXEC
-positivos ---$48{,}64$ pasos por ejecuci\'on en replicator y $98{,}81$ en CBF,
-en promedio--- aunque el monitor barrido no registr\'o colisiones. Por ello, el
+positivos: $48{,}64$ pasos por ejecuci\'on en replicator y $98{,}81$ en CBF,
+en promedio, aunque el monitor barrido no registr\'o colisiones. Por ello, el
 cero emp\'irico de colisi\'on no demuestra seguridad continua despu\'es
 de la ejecuci\'on.
 

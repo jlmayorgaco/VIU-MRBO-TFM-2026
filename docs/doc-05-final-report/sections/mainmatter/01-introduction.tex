@@ -17,7 +17,7 @@ La asignación multi-robot (MRTA) y las subastas distribuidas ofrecen mecanismos
 
 La literatura de control cooperativo estudia formaciones, seguimiento y manipulación de objetos, pero con frecuencia parte de una coalición o una configuración de contacto ya definida \citep{tuci2018cooperative}. Entre ambos bloques queda una brecha operacional: MRTA decide quién participa y el controlador decide cómo moverse, sin una prueba común que determine si esa selección puede ejecutar la misión completa. El problema se agrava bajo información local, porque el cierre entero, la factibilidad mecánica y la recuperación pueden requerir datos que no están disponibles en un solo vecindario.
 
-Las dinámicas poblacionales aportan una representación analítica para repartir preferencia entre cargas mediante diferencias de utilidad \citep{sandholm2010population,quijano2017population}. En control distribuido se han usado para optimización, asignación de recursos y coordinación sobre grafos \citep{barreiro2017distributed,martinezpiazuelo2022tcss}. Su ventaja es la trazabilidad del equilibrio y del potencial; su límite es igualmente importante: una distribución continua no constituye por sí sola una coalición entera ni físicamente ejecutable. Esta tesis estudia precisamente la interfaz entre ambos niveles.
+Las dinámicas poblacionales aportan una representación analítica para repartir preferencia entre cargas mediante diferencias de utilidad \citep{sandholm2010population,quijano2017population}. En control distribuido se han usado para optimización, asignación de recursos y coordinación sobre grafos \citep{barreiro2017distributed,martinezpiazuelo2022tcss}. Su ventaja es la trazabilidad del equilibrio y del potencial; su límite es igualmente importante: una distribución continua no constituye por sí sola una coalición entera ni físicamente ejecutable. El estudio se centra en la interfaz entre ambos niveles.
 
 
 
@@ -30,7 +30,7 @@ La pregunta de investigación es: ¿en qué condiciones una arquitectura basada 
 
 La memoria denomina \emph{coalición física} a una selección que supera una cadena explícita de comprobaciones: cuórum entero, capacidad efectiva, residual \emph{wrench}, autoridad dinámica, seguridad durante el movimiento y recuperación ante eventos. Esta definición convierte cada capa en una afirmación falsable. Una coalición aceptada en un escalón puede fallar en el siguiente; ese fallo no se descarta, sino que identifica qué abstracción resultó insuficiente.
 
-La evaluación combina dos tipos de evidencia. A0--FULL ejecuta seis prefijos acumulativos sobre la misma planta Euler--Lagrange y constituye la prueba integrada de la tesis. SP1--SP8 son campañas modulares con plantas y escalas propias: aíslan reclutamiento homogéneo, capacidad heterogénea, contactos y \emph{wrench}, movimiento, carga extendida, recuperación, comunicación y escala. Sus resultados explican mecanismos concretos, pero no se suman como si procedieran de una única arquitectura de extremo a extremo.
+La evaluación combina dos tipos de evidencia. A0--FULL ejecuta seis prefijos acumulativos sobre la misma planta Euler--Lagrange y constituye la prueba integrada del protocolo. SP1--SP8 son campañas modulares con plantas y escalas propias: aíslan reclutamiento homogéneo, capacidad heterogénea, contactos y \emph{wrench}, movimiento, carga extendida, recuperación, comunicación y escala. Sus resultados explican mecanismos concretos, pero no se suman como si procedieran de una única arquitectura de extremo a extremo.
 
 
 
@@ -40,7 +40,7 @@ El trabajo aporta cuatro resultados delimitados por el simulador planar:
 \begin{enumerate}[label=A\arabic*.,leftmargin=2.2em]
   \item una definición operativa de coalición física que separa aceptación por etapa, falso positivo físico y éxito final;
   \item una formulación que conecta déficit, capacidad efectiva, geometría de contacto y reparto de \emph{wrench}, junto con una aplicaci\'on derivada de ISS pr\'actica bajo supuestos expl\'icitos;
-  \item la campaña A0--FULL, con mundos emparejados y extensiones decididas solo por precisión, para medir la interacción entre selección, mecánica, seguridad y recuperación;
+  \item la campaña A0--FULL de tamaño fijo, con mundos emparejados y un contrato de veinte contrastes, para medir la interacción entre selección, mecánica, seguridad y recuperación;
   \item una auditoría modular SP1--SP8 que conserva resultados favorables, negativos, exploratorios y no estimables, y delimita qué parte del rendimiento procede del juego, del cierre o de una guardia global.
 \end{enumerate}
 No se reivindican como novedades la dinámica de Smith, las dinámicas poblacionales distribuidas, la invariancia del símplex, las restricciones de capacidad o migración, KKT, HOCBF ni el equilibrio de Nash. El aporte propio reside en sus interfaces para coaliciones físicas, en la semántica que separa preferencia, cierre, comprobación física y ejecución, y en la evidencia emparejada que revela interacciones no monótonas y falsos positivos entre esas capas.
