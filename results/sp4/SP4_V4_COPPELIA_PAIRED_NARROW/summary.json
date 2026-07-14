@@ -1,0 +1,71 @@
+{
+  "campaign": "SP4_V4_COPPELIA_PAIRED_NARROW",
+  "status": "coppelia_real_kinematic_replay_pass",
+  "scenario": "narrow_passage",
+  "seed": 886001,
+  "n_robots_per_arena": 4,
+  "real_coppelia": true,
+  "kinematic_playback": true,
+  "independent_physics_validation": false,
+  "hardware_validation": false,
+  "synthetic_fallback": false,
+  "coppelia_executable": "C:\\Program Files\\CoppeliaRobotics\\CoppeliaSimEdu\\coppeliaSim.exe",
+  "scene_file": "coppeliasim/real_scenes/sp4_v4_paired_narrow_passage.ttt",
+  "numerical": {
+    "direct_hocbf": {
+      "label": "Directo + HOCBF",
+      "safe_success": false,
+      "arrival_success": false,
+      "any_collision": true,
+      "docking_time_s": 120.0,
+      "minimum_swept_clearance_m": -0.005679769234857024,
+      "exec_barrier_violations": 0,
+      "max_exec_barrier_residual": 9.85398429520501e-11,
+      "steps": 48
+    },
+    "distributed_pd_hocbf": {
+      "label": "Juego PD distribuido + HOCBF",
+      "safe_success": true,
+      "arrival_success": true,
+      "any_collision": false,
+      "docking_time_s": 39.96,
+      "minimum_swept_clearance_m": 0.05707253679195273,
+      "exec_barrier_violations": 0,
+      "max_exec_barrier_residual": 1.6653345369377348e-16,
+      "steps": 333
+    }
+  },
+  "runtime_s": 35.5850533999037,
+  "object_count": 701,
+  "frames": 29,
+  "measured_csv": "results/sp4/SP4_V4_COPPELIA_PAIRED_NARROW/data/coppelia_measured_poses.csv",
+  "camera_montage": "results/sp4/SP4_V4_COPPELIA_PAIRED_NARROW/plots/sp4_v4_coppelia_montage.png",
+  "camera_video": "results/sp4/SP4_V4_COPPELIA_PAIRED_NARROW/animations/sp4_v4_coppelia_paired.mp4",
+  "trajectory_plot": "results/sp4/SP4_V4_COPPELIA_PAIRED_NARROW/plots/sp4_v4_paired_trajectories.png",
+  "measured": {
+    "max_replay_error_m": 6.892773542808156e-09,
+    "direct_hocbf": {
+      "label": "Directo + HOCBF",
+      "minimum_swept_clearance_m": -0.0056797707555783505,
+      "any_collision": true,
+      "final_mean_position_error_m": 1.3257177965707694,
+      "safe_success": false
+    },
+    "distributed_pd_hocbf": {
+      "label": "Juego PD distribuido + HOCBF",
+      "minimum_swept_clearance_m": 0.05707254003105228,
+      "any_collision": false,
+      "final_mean_position_error_m": 0.07262529293678402,
+      "safe_success": true
+    }
+  },
+  "gates": {
+    "scene_saved": true,
+    "real_frames_captured": true,
+    "object_count_at_least_30": true,
+    "replay_tracking_error_below_1mm": true,
+    "direct_counterexample_reproduced": true,
+    "proposed_safe_success_reproduced": true
+  },
+  "gates_pass": true
+}

@@ -1,0 +1,44 @@
+{
+  "config_path": "results\\sp0\\SP0_PROTOCOL_v1_2_CPU\\smoke\\smoke_config.yaml",
+  "expected_full_campaign_evaluations": 15436,
+  "experiment_id": "SP0_PROTOCOL_v1_smoke",
+  "implementation_decisions": {
+    "data_driven_candidates": [
+      "IPPO-GNN",
+      "MAPPO-GNN"
+    ],
+    "data_driven_champion_rule": "validation_between_IPPO_GNN_and_MAPPO_GNN",
+    "data_driven_failed_seed_rule": "keep_report_do_not_replace",
+    "data_driven_final_seeds": 3,
+    "exp4_method_count": 10,
+    "exp4_method_count_formula": "GRD_DA_plus_5_population_plus_3_data_driven",
+    "exp4_population_finalist_rule": "validation_top5_among_REP_SMI_BNN_LOG_PROJ_HYB_local_variants",
+    "exp4_population_finalists": 5
+  },
+  "methods": [
+    "HUN",
+    "GRD",
+    "DA",
+    "REP",
+    "SMI",
+    "BNN",
+    "LOG",
+    "PROJ",
+    "IBR",
+    "GPC",
+    "HYB",
+    "IPPO-GNN",
+    "MAPPO-GNN"
+  ],
+  "mode": "debug",
+  "output_dir": "results\\sp0\\SP0_PROTOCOL_v1_2_CPU\\smoke",
+  "parquet_files": [
+    "results\\sp0\\SP0_PROTOCOL_v1_2_CPU\\smoke\\tables\\runs.parquet",
+    "results\\sp0\\SP0_PROTOCOL_v1_2_CPU\\smoke\\tables\\summary.parquet",
+    "results\\sp0\\SP0_PROTOCOL_v1_2_CPU\\smoke\\tables\\theory_checks.parquet"
+  ],
+  "report": "results\\sp0\\SP0_PROTOCOL_v1_2_CPU\\smoke\\report.md",
+  "runs": 104,
+  "theory_audit": "results\\sp0\\SP0_PROTOCOL_v1_2_CPU\\smoke\\theory_audit.json",
+  "worlds": 8
+}

@@ -1,0 +1,126 @@
+{
+  "audit_version": "SP0_AUDIT_v1",
+  "source_experiment": "C:/Users/walla/Documents/Github/VIU-MRBO-TFM-2026/results/sp0/SP0_PROTOCOL_v1_2_CPU",
+  "output": "C:/Users/walla/Documents/Github/VIU-MRBO-TFM-2026/results/sp0/SP0_AUDIT_v1",
+  "generated_at_utc": "2026-07-11T20:31:57.348473+00:00",
+  "source_experiment_modified": false,
+  "training_or_simulator_invoked": false,
+  "inventory": {
+    "files": 23575,
+    "hashed_files": 23456,
+    "bytes": 410187174,
+    "unreadable": [],
+    "reused_from_prior_audit_run": true
+  },
+  "checkpoint_sensitivity": {
+    "load_failures": [],
+    "world_set_sha256": "0dc8a9d167f2307b3543e1e1c37178ad12bf336960715cef8d898f1b7172efd2",
+    "checkpoint_count": 10,
+    "requested_effective_hash_match": true,
+    "random_vs_final": {
+      "left_checkpoint_id": "random_actor_seed15001",
+      "right_checkpoint_id": "final_seed15001",
+      "worlds": 6,
+      "mean_raw_hamming_fraction": 0.0,
+      "worlds_with_different_raw_assignment": 0,
+      "proportion_worlds_with_different_raw_assignment": 0.0,
+      "max_absolute_logit_difference": 1.910006195306778,
+      "mean_jensen_shannon_divergence": 0.05466519188190497,
+      "raw_success_difference": 0.0,
+      "raw_regret_difference": 0.0
+    },
+    "perturbed_vs_final": {
+      "left_checkpoint_id": "final_seed15001",
+      "right_checkpoint_id": "final_seed15001_perturbed",
+      "worlds": 6,
+      "mean_raw_hamming_fraction": 0.0,
+      "worlds_with_different_raw_assignment": 0,
+      "proportion_worlds_with_different_raw_assignment": 0.0,
+      "max_absolute_logit_difference": 0.06727194786071777,
+      "mean_jensen_shannon_divergence": 5.874123191864175e-05,
+      "raw_success_difference": 0.0,
+      "raw_regret_difference": 0.0
+    },
+    "random_and_final_logits_differ": true,
+    "random_and_final_raw_differ": false,
+    "perturbation_detected": true,
+    "passed": false
+  },
+  "statistics": {
+    "hypotheses": 19,
+    "hypotheses_with_nonfinite_effect_or_interval": 15,
+    "hypotheses_with_zero_p": 3,
+    "model_rows": 165,
+    "model_rows_with_nonfinite_interval": 35,
+    "model_rows_with_zero_p": 31,
+    "passed": false
+  },
+  "failures": {
+    "base_rows": 15436,
+    "expected_base_rows": 15436,
+    "historical_report_failure_or_timeout_rows": 8498,
+    "classified_failure_rows": 9150,
+    "unclassified_historical_failure_rows": 0,
+    "historical_source_has_explicit_failure_code": false,
+    "passed": false
+  },
+  "gates": {
+    "G_CHECKPOINT_LOAD": {
+      "passed": true,
+      "evidence": "10 controls/checkpoints loaded; requested and effective hashes compared.",
+      "file": "checkpoint_fingerprints.csv",
+      "consequence": "Checkpoint provenance is readable.",
+      "action": "Retain hash verification in every evaluator."
+    },
+    "G_CHECKPOINT_SENSITIVITY": {
+      "passed": false,
+      "evidence": "Random/final and controlled-perturbation comparisons use fixed paired worlds.",
+      "file": "checkpoint_pairwise_sensitivity.csv",
+      "consequence": "MAPPO claims are blocked.",
+      "action": "Require superiority to random/uniform before SP1 promotion."
+    },
+    "G_CACHE_ISOLATION": {
+      "passed": true,
+      "evidence": "Audit cache key includes protocol, trainer, policy, checkpoint, worlds, evaluation, decoder, repair, closure and stage mode.",
+      "file": "checkpoint_evaluations.csv",
+      "consequence": "Audit evaluations cannot alias across checkpoint hashes.",
+      "action": "Adopt the common key in all SP runners."
+    },
+    "G_RAW_REPAIR_QR_SEPARATION": {
+      "passed": false,
+      "evidence": "Historical policy executor exposes RAW plus one POLICY_REPAIR result, not immutable RAW/REPAIR/QR tables.",
+      "file": "raw_vs_closed_by_checkpoint.csv",
+      "consequence": "Decoder/closure contribution cannot be split into repair and QR retrospectively.",
+      "action": "SP1 must persist three separate assignment tables before confirmatory execution."
+    },
+    "G_SEED_STATE_CONSISTENCY": {
+      "passed": false,
+      "evidence": "training/status.json says confirmatory_seeds_opened=false while final manifest says confirmatory complete.",
+      "file": "audit_environment.json",
+      "consequence": "Historical lifecycle cannot be promoted as internally consistent.",
+      "action": "Keep history immutable; use append-only SP_COMMON state events from now on."
+    },
+    "G_STATISTICAL_FINITE_RESULTS": {
+      "passed": false,
+      "evidence": "15 hypothesis rows have non-finite effect/CI; 3 use p=0.",
+      "file": "hypothesis_results_audited.csv",
+      "consequence": "Affected claims are downgraded to not supported.",
+      "action": "Implement preregistered fallbacks and interpretable effect scales."
+    },
+    "G_FAILURE_TAXONOMY": {
+      "passed": false,
+      "evidence": "Historical rows lack a versioned explicit failure_code; retrospective mapping is not causal proof.",
+      "file": "failure_breakdown.csv",
+      "consequence": "The aggregate 8,498 failure/timeout statement is not methodologically adequate.",
+      "action": "Emit FailureCode at event time in SP1 and future SPs."
+    },
+    "G_REBUILD_FROM_RAW": {
+      "passed": false,
+      "evidence": "No complete simulator-free rebuild entry point or deterministic source-data contract exists.",
+      "file": "audit_plan.md",
+      "consequence": "End-to-end reproducibility is unproven.",
+      "action": "Implement and test experiment_common.rebuild before SP1 freeze."
+    }
+  },
+  "decision": "BLOCKED"
+}

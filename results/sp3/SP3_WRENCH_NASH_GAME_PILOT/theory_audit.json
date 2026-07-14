@@ -1,0 +1,82 @@
+{
+  "experiment_id": "SP3_WRENCH_NASH_GAME_PILOT",
+  "passed": true,
+  "worlds": 12,
+  "runs": 144,
+  "game_runs": 72,
+  "max_simplex_error": 2.220446049250313e-16,
+  "max_slot_violation": 0.11257374868695846,
+  "max_exact_pd_slot_violation": 0.016135207056258816,
+  "max_exact_pd_qp_potential_gap": 0.005815912850876154,
+  "max_kkt_residual": 0.11928695564195788,
+  "guarded_false_positive_violations": 0,
+  "raw_closed_distinct_runs": 50,
+  "qp_audit": [
+    {
+      "world_id": "point_load_degenerate_seed459900",
+      "qp_success": true,
+      "qp_potential": -0.0319158591313768
+    },
+    {
+      "world_id": "point_load_degenerate_seed459901",
+      "qp_success": true,
+      "qp_potential": -0.02461412101082644
+    },
+    {
+      "world_id": "bar_torque_pure_seed459900",
+      "qp_success": true,
+      "qp_potential": -0.04068213361222263
+    },
+    {
+      "world_id": "bar_torque_pure_seed459901",
+      "qp_success": true,
+      "qp_potential": -0.03928196454362761
+    },
+    {
+      "world_id": "one_sided_push_seed459900",
+      "qp_success": true,
+      "qp_potential": -0.40500000000000047
+    },
+    {
+      "world_id": "one_sided_push_seed459901",
+      "qp_success": true,
+      "qp_potential": -0.4050000000000005
+    },
+    {
+      "world_id": "off_center_com_seed459900",
+      "qp_success": true,
+      "qp_potential": -0.061707758072973636
+    },
+    {
+      "world_id": "off_center_com_seed459901",
+      "qp_success": true,
+      "qp_potential": -0.05359913628796907
+    },
+    {
+      "world_id": "long_payload_slots_seed459900",
+      "qp_success": true,
+      "qp_potential": -0.0839013269411659
+    },
+    {
+      "world_id": "long_payload_slots_seed459901",
+      "qp_success": true,
+      "qp_potential": -0.053750414449116254
+    },
+    {
+      "world_id": "slot_saturation_seed459900",
+      "qp_success": true,
+      "qp_potential": -0.6090478927944125
+    },
+    {
+      "world_id": "slot_saturation_seed459901",
+      "qp_success": true,
+      "qp_potential": -0.5641048729729516
+    }
+  ],
+  "contracts": {
+    "kkt_equivalence": "Only the convex continuous relaxation under Slater/convexity; not the integer closure.",
+    "population_protocols": "Simplex invariance is audited; convergence theorem is claimed only for projected primal-dual under stated assumptions.",
+    "ring_graph": "Finite-consensus sensitivity, not a time-varying-graph theorem.",
+    "guard": "Guarded CLOSED assignments abstain from mechanically infeasible loads; global optimality is not claimed."
+  }
+}

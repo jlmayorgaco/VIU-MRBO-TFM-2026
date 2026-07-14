@@ -1,0 +1,28 @@
+{
+  "config_path": "configs\\experiments\\sp1\\SP1_PROTOCOL_v1_DRY_RUN.yaml",
+  "experiment_id": "SP1_PROTOCOL_v1_DRY_RUN",
+  "hypotheses": 0,
+  "methods": [
+    "centralized_coalition_milp",
+    "hungarian_expanded",
+    "greedy_nearest",
+    "cbba",
+    "smith_cardinality",
+    "primal_dual_local_repair"
+  ],
+  "mode": "monte_carlo",
+  "output_dir": "results\\sp1\\SP1_PROTOCOL_v1_DRY_RUN",
+  "performance_ranking": "results\\sp1\\SP1_PROTOCOL_v1_DRY_RUN\\tables\\performance_ranking.csv",
+  "report": "results\\sp1\\SP1_PROTOCOL_v1_DRY_RUN\\report.md",
+  "runs": 28,
+  "scenario_generators": [
+    "setup",
+    "monte_carlo"
+  ],
+  "scenario_videos": [],
+  "seeds": [
+    910001,
+    910002
+  ],
+  "theory_audit": "results\\sp1\\SP1_PROTOCOL_v1_DRY_RUN\\theory_audit.json"
+}

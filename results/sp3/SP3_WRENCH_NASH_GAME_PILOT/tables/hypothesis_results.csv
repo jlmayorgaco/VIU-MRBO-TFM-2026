@@ -1,0 +1,5 @@
+id,metric,method_a,method_b,n_pairs,effect_mean,ci95_low,ci95_high,p_raw,p_holm,reject_holm_005
+H-SP3-1-guard-reduces-fp,fp_given_assigned,nash_pd_exact_guarded,nash_pd_exact_unguarded,12,-0.3333333333333333,-0.5833333333333334,-0.08333333333333333,0.0625,0.0625,False
+H-SP3-2-vector-beats-scalar-gap,optimality_gap_vs_wrench_oracle,nash_pd_exact_guarded,oracle_scalar_assignment,12,-0.0932304412609317,-0.15580621307221998,-0.035518470520484534,0.015625,0.03125,True
+H-SP3-3-pair-beats-cbba-gap,optimality_gap_vs_wrench_oracle,smith_wrench_pairs_guarded,cbba_slots,12,-0.09311067132809071,-0.1536891748633266,-0.038399681901735365,0.00390625,0.015625,True
+H-SP3-4-exact-beats-ring-kkt,kkt_residual,nash_pd_exact_guarded,nash_pd_ring_guarded,12,-0.015910393346080253,-0.037672005092873766,-0.0014568499922161717,0.0087890625,0.0263671875,True

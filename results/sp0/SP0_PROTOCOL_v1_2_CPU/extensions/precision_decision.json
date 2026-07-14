@@ -1,0 +1,40 @@
+{
+  "blocks": {
+    "B4": {
+      "base_worlds": 40,
+      "extended": false,
+      "final_checkpoint": 40,
+      "stages": []
+    },
+    "B5": {
+      "base_worlds": 40,
+      "extended": true,
+      "final_checkpoint": 100,
+      "stages": [
+        {
+          "extension_reason": "precision_only",
+          "runs": 2000,
+          "stage": "41_60"
+        },
+        {
+          "extension_reason": "precision_only",
+          "runs": 4000,
+          "stage": "61_100"
+        }
+      ]
+    },
+    "B7": {
+      "base_worlds": 40,
+      "extended": false,
+      "final_checkpoint": 40,
+      "stages": []
+    }
+  },
+  "extension_reason": "precision_only",
+  "generated_at_utc": "2026-07-11T18:04:53.927525+00:00",
+  "status": "complete",
+  "thresholds": {
+    "normalized_regret_CI_width": 0.05,
+    "success_difference_CI_width": 0.03
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "audit_id": "PHYSICAL_COALITION_POSTHOC_CLAIM_AUDIT_v1",
+  "status": "PASS_WITH_CLAIM_LIMITS",
+  "performed_after_campaign": true,
+  "campaign_integrity": {
+    "base_rows": 960,
+    "total_rows": 2160,
+    "unique_rows": true,
+    "numerical_errors": 0,
+    "seed_registry_hash_restored": true,
+    "seed_opening_log_preserved": true
+  },
+  "claim_verdicts": {
+    "cumulative_physical_certificate_ladder": "SUPPORTED_IN_NUMERICAL_MODEL",
+    "capacity_wrench_dynamic_interaction": "SUPPORTED",
+    "hocbf_unconditional_safety": "NOT_SUPPORTED",
+    "bounded_recovery_proxy": "SUPPORTED",
+    "fully_distributed_local_recovery": "NOT_SUPPORTED",
+    "common_lyapunov_practical_iss": "SUPPORTED_UNDER_STATED_ASSUMPTIONS"
+  },
+  "locality_finding": {
+    "severity": "MAJOR_CLAIM_LIMIT",
+    "evidence": "_replacement_robot enumerates all idle robots and reads global capacity, health and position arrays; no adjacency-constrained candidate set is enforced.",
+    "affected_stage": "FULL_ROBUST_LOCAL",
+    "permitted_label": "FULL recovery proxy under degraded messages",
+    "forbidden_label": "fully decentralized local recovery"
+  },
+  "safety_finding": {
+    "evidence": "FULL collision rate is 0.14 in obstacle_network_dropout.",
+    "interpretation": "HOCBF projection is insufficient when safe acceleration is not realizable by the selected wrench cone."
+  }
+}

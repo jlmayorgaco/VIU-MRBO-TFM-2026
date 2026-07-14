@@ -1,0 +1,4 @@
+hypothesis,metric,method_a,method_b,direction,n_pairs,mean_a,mean_b,mean_difference,ci95_low,ci95_high,statistic,p_raw,p_holm,supported
+H4P_1_nash_safe_success_above_direct,safe_docking_success,nash_pd_exact,direct_to_slot,greater,12,0.0,0.16666666666666666,-0.16666666666666666,-0.4166666666666667,0.0,-2.0,1.0,1.0,False
+H4P_2_nash_collision_below_apf,any_collision,nash_pd_exact,apf_navigation,less,12,0.25,0.16666666666666666,0.08333333333333333,-0.25,0.4166666666666667,1.0,0.8125,1.0,False
+H4P_3_exact_kkt_below_ring,final_kkt_residual,nash_pd_exact,nash_pd_ring,less,12,0.03369664890990758,0.08954319001033072,-0.05584654110042314,-0.11133786583598007,-0.02194337300842598,0.0,0.000244140625,0.000732421875,True

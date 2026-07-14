@@ -1,0 +1,68 @@
+experiment_id: SP5_PAYLOAD_TRANSPORT_CONFIRMATORY_v2
+protocol_family: payload_transport_v2
+mode: confirmatory
+description: 'Canonical CPU-only SP5: reduced-order rigid payload, fixed post-docking
+  contacts, bounded force realization, RAW/SAFE/EXEC separation and no pose repair.'
+output_dir: results/sp5/SP5_PAYLOAD_TRANSPORT_CONFIRMATORY_v2
+pilot_evidence: results/sp5/SP5_PAYLOAD_TRANSPORT_PILOT_v2
+seeds:
+  start: 575100
+  count: 6
+scenarios:
+- id: open_nominal
+- id: static_corridor
+- id: mobile_crossing
+- id: mixed_corridor
+- id: actuator_limited
+- id: multi_load_clutter
+robot_counts:
+- 4
+- 8
+- 12
+methods:
+- id: pose_pd_raw
+- id: apf_wrench_heuristic
+- id: velocity_obstacle_proxy
+- id: cbf_wrench_local
+- id: damped_hamiltonian_raw
+- id: damped_hamiltonian_cbf
+- id: distributed_preview_cbf
+- id: centralized_preview_reference
+simulation:
+  dt_s: 0.15
+  horizon_s: 45.0
+  stable_steps: 5
+representative_scenario: mobile_crossing
+hypotheses:
+- id: H5_1_hamiltonian_cbf_reduces_collision_vs_raw
+  metric: any_collision
+  method_a: damped_hamiltonian_cbf
+  method_b: damped_hamiltonian_raw
+  direction: less
+  margin: 0.0
+- id: H5_2_hamiltonian_cbf_improves_safe_success_vs_raw
+  metric: safe_transport_success
+  method_a: damped_hamiltonian_cbf
+  method_b: damped_hamiltonian_raw
+  direction: greater
+  margin: 0.0
+- id: H5_3_central_preview_improves_safe_success_vs_local_cbf
+  metric: safe_transport_success
+  method_a: centralized_preview_reference
+  method_b: cbf_wrench_local
+  direction: greater
+  margin: 0.0
+- id: H5_4_local_cbf_reduces_exec_barrier_violation_vs_apf
+  metric: exec_barrier_violation_rate
+  method_a: cbf_wrench_local
+  method_b: apf_wrench_heuristic
+  direction: less
+  margin: 0.0
+- id: H5_5_preview_cbf_reduces_collision_vs_vo_proxy
+  metric: any_collision
+  method_a: distributed_preview_cbf
+  method_b: velocity_obstacle_proxy
+  direction: less
+  margin: 0.0
+frozen: true
+status: frozen_ready_for_execution

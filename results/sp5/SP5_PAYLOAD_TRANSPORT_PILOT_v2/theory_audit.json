@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "gates": {
+    "initial_worlds_collision_free": true,
+    "same_world_hash_for_all_methods": true,
+    "finite_dynamics": true,
+    "mechanics_identity": true,
+    "positions_never_repaired": true,
+    "failures_and_timeouts_preserved": true,
+    "raw_safe_exec_separated": true
+  },
+  "worlds": 36,
+  "runs": 288,
+  "minimum_initial_clearance_m": 0.24166666666666548,
+  "max_mechanics_residual": 1.136946437092698e-13,
+  "positions_repaired_after_integration": false,
+  "legacy_semantic_finding": "The historical SP5 projected payload and robot poses after integration; those runs remain historical and are not canonical evidence for continuous safety.",
+  "model_scope": "reduced_order_planar_rigid_payload_bounded_planar_contact_forces_fixed_post_docking_contacts",
+  "not_claimed": "No frictional contact, wheel-ground dynamics, kinodynamic optimality, CoppeliaSim or hardware validation is claimed."
+}

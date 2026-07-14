@@ -1,0 +1,5 @@
+hypothesis,metric,method_a,method_b,direction,n_pairs,mean_a,mean_b,mean_difference,ci95_low,ci95_high,statistic,p_raw,p_holm,supported
+H4P_1_replicator_safe_success_above_cbf,safe_docking_success,replicator_primitives,cbf_qp,greater,12,0.5833333333333334,0.16666666666666666,0.4166666666666667,0.16666666666666666,0.6666666666666666,5.0,0.03125,0.0625,False
+H4P_2_replicator_collision_below_direct,any_collision,replicator_primitives,direct_to_slot,less,12,0.0,0.8333333333333334,-0.8333333333333334,-1.0,-0.5833333333333334,-10.0,0.0009765625,0.0029296875,True
+H4P_3_exact_kkt_below_ring,final_kkt_residual,nash_pd_exact,nash_pd_ring,less,12,0.026555135898955622,0.04063098043765882,-0.014075844538703197,-0.020302703156320486,-0.007949114318326676,0.0,0.000244140625,0.0009765625,True
+H4P_4_closure_safe_success_above_raw,safe_docking_success,nash_pd_exact,nash_pd_exact_raw,greater,12,0.08333333333333333,0.08333333333333333,0.0,0.0,0.0,0.0,1.0,1.0,False

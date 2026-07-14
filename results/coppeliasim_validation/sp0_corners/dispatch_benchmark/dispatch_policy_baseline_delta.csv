@@ -1,0 +1,13 @@
+case,baseline,policy,delivered_delta,delivered_delta_pct,avg_wait_s_delta,avg_wait_s_delta_pct,energy_used_pct_delta,energy_used_pct_delta_pct,assignment_cost_delta,assignment_cost_delta_pct,charge_cycles_delta,charge_cycles_delta_pct
+balanced,fifo_nearest_baseline,hungarian_centralized,1.5,3.3027,-0.6019,-4.1767,-7.9506,-0.3651,-1.1764,-0.1503,2.75,6.3707
+balanced,fifo_nearest_baseline,distributed_greedy,1.4166,3.1191,-0.6806,-4.7228,-11.7212,-0.5383,11.0679,1.4141,2.3333,5.4053
+balanced,fifo_nearest_baseline,replicator_distributed,1.5,3.3027,-0.6368,-4.4188,-8.68,-0.3986,-0.1059,-0.0135,2.8333,6.5636
+battery_stress,fifo_nearest_baseline,hungarian_centralized,-0.1667,-2.5005,12.3571,36.1293,0.3276,0.0903,0.3009,0.2771,0.0,0.0
+battery_stress,fifo_nearest_baseline,distributed_greedy,-0.1667,-2.5005,12.3571,36.1293,0.3276,0.0903,0.3009,0.2771,0.0,0.0
+battery_stress,fifo_nearest_baseline,replicator_distributed,-0.1667,-2.5005,12.3571,36.1293,0.3276,0.0903,0.3009,0.2771,0.0,0.0
+scarce_robots,fifo_nearest_baseline,hungarian_centralized,0.5,1.519,-0.0986,-0.471,5.6476,0.3327,12.3197,2.1661,1.25,3.9894
+scarce_robots,fifo_nearest_baseline,distributed_greedy,0.5,1.519,-0.299,-1.4284,6.0586,0.3569,8.5662,1.5061,1.3334,4.2555
+scarce_robots,fifo_nearest_baseline,replicator_distributed,0.4166,1.2656,-0.5975,-2.8543,-5.8043,-0.3419,2.3095,0.4061,1.0834,3.4577
+target_skew,fifo_nearest_baseline,hungarian_centralized,-0.6666,-1.8347,-1.431,-7.8967,-30.2171,-1.5263,-0.32,-0.0524,-0.3333,-0.9455
+target_skew,fifo_nearest_baseline,distributed_greedy,-2.0833,-5.7339,-0.7087,-3.9108,-113.6295,-5.7397,-29.0784,-4.7591,-1.9167,-5.4374
+target_skew,fifo_nearest_baseline,replicator_distributed,-0.6666,-1.8347,-1.2564,-6.9332,-29.7103,-1.5007,0.1981,0.0324,-0.4167,-1.1821

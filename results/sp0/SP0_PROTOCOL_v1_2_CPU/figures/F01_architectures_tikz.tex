@@ -1,0 +1,5 @@
+\begin{tikzpicture}[node distance=8mm]
+\node (obs) {Perception};\node[right=of obs] (fit) {Fitness};
+\node[right=of fit] (dyn) {Dynamics};\node[right=of dyn] (qr) {Closure};
+\node[right=of qr] (asg) {Assignment};\draw[->] (obs)--(fit)--(dyn)--(qr)--(asg);
+\end{tikzpicture}

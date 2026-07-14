@@ -1,0 +1,244 @@
+B5_top5_local_population:
+- &id001
+  CVaR95_NR: 0.0001416771546962062
+  S_val: 7.070385371749885e-05
+  mean_NR: 3.5284565043447297e-05
+  mean_runtime_wall_s: 2.3639975333353505
+  p_fail: 0.0
+  selection_id: SMI
+  spec:
+    alpha: 2.0
+    alpha_BR: 0.5
+    architecture: distributed_local
+    beta: 2.0
+    config_id: SMI_11
+    continuous_timeout_rate: 1.0
+    cvar95_normalized_regret: 0.00012402358200721306
+    delta_QR: 0.01
+    delta_x: 0.05
+    dt: 0.1
+    dwell_time_s: 1.0
+    dynamic_id: SMI
+    eta: 0.1
+    fitness_id: QUAD
+    h: 0.1
+    id: SMI
+    kappa: 1.0
+    lambda: 1.0
+    max_steps: 100
+    max_swaps: 10
+    mean_normalized_regret: 3.113203040894742e-05
+    p_fail: 0.0
+    q: 2.0
+    r: 2.0
+    rounding_id: QR2
+    score: 6.213792591075069e-05
+    stable_window_steps: 10
+- &id002
+  CVaR95_NR: 0.00022560594193244752
+  S_val: 9.381476589700983e-05
+  mean_NR: 3.741328041389795e-05
+  mean_runtime_wall_s: 1.2618212416709866
+  p_fail: 0.0
+  selection_id: PROJ
+  spec:
+    alpha: 2.0
+    alpha_BR: 0.5
+    architecture: distributed_local
+    beta: 2.0
+    config_id: PROJ_11
+    continuous_timeout_rate: 1.0
+    cvar95_normalized_regret: 0.00013567853460711126
+    delta_QR: 0.01
+    delta_x: 0.05
+    dt: 0.1
+    dwell_time_s: 1.0
+    dynamic_id: PROJ
+    eta: 0.1
+    fitness_id: QUAD
+    h: 0.1
+    id: PROJ
+    kappa: 1.0
+    lambda: 1.0
+    max_steps: 100
+    max_swaps: 10
+    mean_normalized_regret: 3.1565934781606925e-05
+    p_fail: 0.0
+    q: 2.0
+    r: 2.0
+    rounding_id: QR2
+    score: 6.548556843338474e-05
+    stable_window_steps: 10
+- &id003
+  CVaR95_NR: 0.0003153386202374354
+  S_val: 0.0001154643239923828
+  mean_NR: 3.662966893302396e-05
+  mean_runtime_wall_s: 2.137869658317262
+  p_fail: 0.0
+  selection_id: HYB
+  spec:
+    alpha: 2.0
+    alpha_BR: 0.5
+    architecture: distributed_local
+    beta: 2.0
+    config_id: HYB_11
+    continuous_timeout_rate: 1.0
+    cvar95_normalized_regret: 0.00012402358200721306
+    delta_QR: 0.01
+    delta_x: 0.05
+    dt: 0.1
+    dwell_time_s: 1.0
+    dynamic_id: HYB
+    eta: 0.1
+    fitness_id: QUAD
+    h: 0.1
+    id: HYB
+    kappa: 1.0
+    lambda: 1.0
+    max_steps: 100
+    max_swaps: 10
+    mean_normalized_regret: 3.060780166046781e-05
+    p_fail: 0.0
+    q: 2.0
+    r: 2.0
+    rounding_id: QR2
+    score: 6.161369716227108e-05
+    stable_window_steps: 10
+- &id004
+  CVaR95_NR: 0.00032730828627745384
+  S_val: 0.00012119992994980854
+  mean_NR: 3.937285838044508e-05
+  mean_runtime_wall_s: 1.0539534999988973
+  p_fail: 0.0
+  selection_id: REP
+  spec:
+    alpha: 0.5
+    alpha_BR: 0.5
+    architecture: distributed_local
+    beta: 10.0
+    config_id: REP_05
+    continuous_timeout_rate: 1.0
+    cvar95_normalized_regret: 0.00010772175543097236
+    delta_QR: 0.01
+    delta_x: 0.05
+    dt: 0.1
+    dwell_time_s: 0.2
+    dynamic_id: REP
+    eta: 0.5
+    fitness_id: LIN
+    h: 0.03
+    id: REP
+    kappa: 1.0
+    lambda: 4.0
+    max_steps: 100
+    max_swaps: 10
+    mean_normalized_regret: 2.9273198800924693e-05
+    p_fail: 0.0
+    q: 2.0
+    r: 2.0
+    rounding_id: QR2
+    score: 5.620363765866778e-05
+    stable_window_steps: 10
+- &id005
+  CVaR95_NR: 0.0003153386202374354
+  S_val: 0.00013534389361491723
+  mean_NR: 5.6509238555558395e-05
+  mean_runtime_wall_s: 1.1144503250155442
+  p_fail: 0.0
+  selection_id: LOG
+  spec:
+    alpha: 2.0
+    alpha_BR: 0.5
+    architecture: distributed_local
+    beta: 2.0
+    config_id: LOG_11
+    continuous_timeout_rate: 0.0
+    cvar95_normalized_regret: 0.00012402358200721306
+    delta_QR: 0.01
+    delta_x: 0.05
+    dt: 0.1
+    dwell_time_s: 1.0
+    dynamic_id: LOG
+    eta: 0.1
+    fitness_id: QUAD
+    h: 0.1
+    id: LOG
+    kappa: 1.0
+    lambda: 1.0
+    max_steps: 100
+    max_swaps: 10
+    mean_normalized_regret: 2.5962693215697762e-05
+    p_fail: 0.0
+    q: 2.0
+    r: 2.0
+    rounding_id: QR2
+    score: 5.6968588717501026e-05
+    stable_window_steps: 10
+B7_top3_distributed_model_based:
+- *id001
+- *id002
+- *id003
+evaluations: 96
+generated_at_utc: '2026-07-11T12:55:06.831175+00:00'
+included_in_base_15436: false
+ranked_candidates:
+- *id001
+- *id002
+- *id003
+- *id004
+- *id005
+- CVaR95_NR: 0.00032730828627745384
+  S_val: 0.00016238497106171358
+  mean_NR: 8.055789949235013e-05
+  mean_runtime_wall_s: 1.1348596000267814
+  p_fail: 0.0
+  selection_id: BNN
+  spec:
+    alpha: 0.5
+    alpha_BR: 0.5
+    architecture: distributed_local
+    beta: 10.0
+    config_id: BNN_05
+    continuous_timeout_rate: 1.0
+    cvar95_normalized_regret: 0.00015851714255741796
+    delta_QR: 0.01
+    delta_x: 0.05
+    dt: 0.1
+    dwell_time_s: 0.2
+    dynamic_id: BNN
+    eta: 0.5
+    fitness_id: LIN
+    h: 0.03
+    id: BNN
+    kappa: 1.0
+    lambda: 4.0
+    max_steps: 100
+    max_swaps: 10
+    mean_normalized_regret: 3.0186333198682758e-05
+    p_fail: 0.0
+    q: 2.0
+    r: 2.0
+    rounding_id: QR2
+    score: 6.981561883803725e-05
+    stable_window_steps: 10
+- CVaR95_NR: 0.4844063580682623
+  S_val: 0.5642882004475622
+  mean_NR: 0.10985327759716328
+  mean_runtime_wall_s: 0.21532118331136493
+  p_fail: 0.3333333333333333
+  selection_id: EPS-AUCTION
+  spec:
+    architecture: distributed_local
+    id: DA
+- CVaR95_NR: 0.484466364757776
+  S_val: 0.5652451136920216
+  mean_NR: 0.11079518916924432
+  mean_runtime_wall_s: 0.029598566664693255
+  p_fail: 0.3333333333333333
+  selection_id: GRD
+  spec:
+    architecture: distributed_local
+    id: GRD
+selection_rule: validation_only_S_val_then_CVaR_then_runtime
+validation_seed_count: 2
+validation_worlds: 12

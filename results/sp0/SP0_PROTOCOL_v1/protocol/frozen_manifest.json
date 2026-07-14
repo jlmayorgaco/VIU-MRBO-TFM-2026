@@ -1,0 +1,321 @@
+{
+  "b0_evidence_sha256": "32fb770061f5db2668057d6ad6b357561aeef5292aa23e501187a8f06cf1ce2c",
+  "campaign_counts": {
+    "B0": 300,
+    "B2": 2400,
+    "B3": 1536,
+    "B4": 5760,
+    "B5": 4000,
+    "B6": 960,
+    "B7": 480
+  },
+  "claims_allowed": [
+    "statistical_superiority_in_preregistered_metrics",
+    "non_inferiority_with_margin",
+    "pareto_tradeoff",
+    "observed_robustness",
+    "observed_scalability",
+    "empirical_convergence",
+    "approximate_equilibrium",
+    "observed_poa",
+    "observed_price_of_locality_or_decentralization"
+  ],
+  "claims_forbidden_without_proof": [
+    "universal_stability",
+    "global_optimality_of_QR1",
+    "convergence_under_any_graph",
+    "theoretical_bounded_poa",
+    "direct_transfer_to_physical_robots",
+    "industrial_safety",
+    "validity_under_real_contact_or_dynamics"
+  ],
+  "config_sha256": "83bfdf168556659780e1f8ec11722bf87150ebfb98813e118f8656e794b1d1af",
+  "environment_lock_sha256": "0b89d0cf29bd6f33d1d8a32af7ee4b74c776d1d85e971d5c52686b7b64479b74",
+  "expected_full_campaign_evaluations": 15436,
+  "experiment_id": "SP0_PROTOCOL_v1",
+  "frozen": true,
+  "frozen_at_utc": "2026-07-11T01:29:34.607691+00:00",
+  "git_commit_sha": "72418e13f1bed1a6d37698e59bf0d07400dc8b10",
+  "hardware_id": "f14731301eb54764",
+  "hyperparameters": {
+    "consensus": {
+      "degree_normalization": [
+        true,
+        false
+      ],
+      "gain": [
+        0.1,
+        0.3,
+        0.5,
+        1
+      ],
+      "retention": [
+        0,
+        0.5,
+        0.9
+      ]
+    },
+    "data_driven": {
+      "discount_factor": [
+        0.95,
+        0.99
+      ],
+      "entropy_coefficient": [
+        0.001,
+        0.01
+      ],
+      "gnn_layers": [
+        2,
+        3
+      ],
+      "hidden_dimension": [
+        64,
+        128
+      ],
+      "learning_rate": [
+        0.0001,
+        0.0003,
+        0.001
+      ],
+      "ppo_clip": [
+        0.1,
+        0.2
+      ]
+    },
+    "dynamics": {
+      "alpha_BR": [
+        0.1,
+        0.3,
+        0.5
+      ],
+      "dwell_time_s": [
+        0,
+        0.2,
+        0.5,
+        1
+      ],
+      "eta": [
+        0.05,
+        0.1,
+        0.2,
+        0.5
+      ],
+      "h": [
+        0.01,
+        0.03,
+        0.05,
+        0.1
+      ],
+      "kappa": [
+        0.5,
+        1,
+        2
+      ],
+      "q": [
+        1,
+        1.5,
+        2
+      ]
+    },
+    "fitness": {
+      "alpha": [
+        0.25,
+        0.5,
+        1,
+        2
+      ],
+      "beta": [
+        1,
+        2,
+        5,
+        10
+      ],
+      "delta_x": [
+        0.01,
+        0.05,
+        0.1
+      ],
+      "lambda": [
+        0.5,
+        1,
+        2,
+        4
+      ],
+      "r": [
+        0.5,
+        1,
+        2
+      ]
+    },
+    "qr": {
+      "delta_QR": [
+        0.0001,
+        0.001,
+        0.01
+      ],
+      "hysteresis": [
+        0,
+        0.01,
+        0.05
+      ],
+      "max_swaps": [
+        1,
+        5,
+        10
+      ],
+      "qra_depth": [
+        2,
+        4,
+        "complete"
+      ]
+    }
+  },
+  "hypotheses_sha256": "7c31c2a99628d01a02e485f7028f4a28074a070a2f223a6c3022feef0bcd8e93",
+  "implementation_decisions": {
+    "data_driven_candidates": [
+      "IPPO-GNN",
+      "MAPPO-GNN"
+    ],
+    "data_driven_champion_rule": "validation_between_IPPO_GNN_and_MAPPO_GNN",
+    "data_driven_failed_seed_rule": "keep_report_do_not_replace",
+    "data_driven_final_seeds": 3,
+    "exp4_method_count": 10,
+    "exp4_method_count_formula": "GRD_DA_plus_5_population_plus_3_data_driven",
+    "exp4_population_finalist_rule": "validation_top5_among_REP_SMI_BNN_LOG_PROJ_HYB_local_variants",
+    "exp4_population_finalists": 5
+  },
+  "metrics_primary": [
+    "success",
+    "normalized_regret",
+    "time_to_useful_solution",
+    "messages_to_useful_solution",
+    "bytes_to_useful_solution"
+  ],
+  "mode": "protocol",
+  "output_dir": "results/sp0/SP0_PROTOCOL_v1",
+  "pipeline": {
+    "B0": {
+      "config": "configs/experiments/sp0/SP0_B0_unit_benchmark.yaml",
+      "gate_tolerance_phi": 1e-08,
+      "mode": "unit_benchmark"
+    },
+    "B2": {
+      "closures": [
+        "RAW",
+        "QR1"
+      ],
+      "dynamics": [
+        "REP",
+        "SMI",
+        "BNN",
+        "LOG",
+        "PROJ",
+        "IBR",
+        "GPC",
+        "HYB"
+      ],
+      "fitness": [
+        "LIN",
+        "QUAD",
+        "ASYM",
+        "SIG",
+        "MC"
+      ],
+      "regimes": [
+        1.5,
+        1.0,
+        0.67
+      ],
+      "seeds": 5,
+      "sizes": [
+        8,
+        32
+      ]
+    },
+    "B3": {
+      "method_families": 8,
+      "rounds": [
+        {
+          "configs": 12,
+          "worlds": 6
+        },
+        {
+          "configs": 4,
+          "worlds": 15
+        },
+        {
+          "configs": 2,
+          "worlds": 30
+        }
+      ],
+      "score": "mean_NR_plus_fail_penalty_plus_0_25_CVaR95_NR"
+    },
+    "B4": {
+      "regimes": [
+        1.5,
+        1.0,
+        0.67
+      ],
+      "sizes": [
+        8,
+        16,
+        32,
+        64
+      ],
+      "units": 12,
+      "worlds_per_cell": 40
+    },
+    "B5": {
+      "mean_degrees": [
+        2,
+        4,
+        6,
+        10,
+        "N_minus_1"
+      ],
+      "methods": 10,
+      "regime": "balanced",
+      "sizes": [
+        32,
+        64
+      ],
+      "worlds_per_cell": 40
+    },
+    "B6": {
+      "stress_types": [
+        "G-TIE",
+        "G-X",
+        "G-CLU",
+        "G-BIAS_G-ZERO"
+      ],
+      "units": 12,
+      "worlds_per_type": 20
+    },
+    "B7": {
+      "methods": 6,
+      "regime": "balanced",
+      "sizes": [
+        24,
+        48
+      ],
+      "worlds_per_cell": 40
+    }
+  },
+  "scope": {
+    "assignment": "one_robot_per_load",
+    "loads": "homogeneous",
+    "out_of_scope": [
+      "CoppeliaSim",
+      "multibody_dynamics",
+      "friction",
+      "rigid_contact",
+      "real_perception",
+      "physical_actuation",
+      "hardware_validation"
+    ],
+    "robots": "homogeneous"
+  },
+  "seed_registry_sha256": "791e23c72b1e0eb06ce9ee28a89bde9f4f77d3ed6239542314d5ee9fdc57833e",
+  "sp_id": "SP0-v1.0",
+  "status": "frozen_ready_for_execution"
+}

@@ -2,28 +2,30 @@
 
 This report is generated from V1-V3 numerical checks. It supports the thesis theory chapter but does not replace the formal appendix.
 
-## V1 vGNE share
-- `validation`: `V1 vGNE share`
-- `seed`: `20260710`
-- `n_rows`: `779`
-- `rmse`: `3.249236646926366e-17`
-- `mae`: `1.781042151586971e-17`
-- `r2`: `1.0`
-- `figure_png`: `results\theory_validation\v1\figures\fig_v1_share_vs_theory.png`
-- `table`: `results\theory_validation\v1\tables\v1_share_vs_theory.csv`
+## V1 independent KKT wrench allocation
+- `validation`: `V1 independent KKT wrench allocation`
+- `independent_reference`: `direct equality-constrained quadratic KKT solve`
+- `cases`: `250`
+- `rows`: `1239`
+- `max_l2_error`: `2.847716647714797e-14`
+- `rmse`: `1.6430591078342286e-15`
+- `passed`: `True`
 
-## V2 PoA curve
-- `validation`: `V2 PoA curve`
-- `gamma_grid`: `logspace(-2,2,80)`
-- `N`: `[2, 3, 4, 5, 6]`
-- `rmse_by_N`: `{'2': 0.0, '3': 0.0, '4': 0.0, '5': 0.0, '6': 0.0}`
-- `figure_png`: `results\theory_validation\v2\figures\fig_v2_poa_curve.png`
+## V2 Lagrange-Hamilton balance and independent HOCBF QP
+- `validation`: `V2 Lagrange-Hamilton balance and independent HOCBF QP`
+- `energy_max_abs_error`: `1.3581740176960011e-08`
+- `hocbf_max_projection_error`: `6.90840681820861e-14`
+- `hocbf_min_margin`: `-1.0658141036401503e-14`
+- `qp_failures`: `0`
+- `passed`: `True`
 
-## V3 stability boundary
-- `validation`: `V3 stability boundary`
-- `mu`: `0.75`
-- `theta`: `1.0`
-- `grid_rows`: `5600`
-- `false_positive_count`: `0`
-- `false_negative_count`: `0`
-- `figure_png`: `results\theory_validation\v3\figures\fig_v3_stability_boundary.png`
+## V3 common-Lyapunov practical ISS
+- `validation`: `V3 common-Lyapunov practical ISS`
+- `theorem_status`: `proved_under_stated_fixed-load_no-reset_bounded-input_assumptions`
+- `lyapunov_min_eigenvalue`: `0.277956190366176`
+- `lyapunov_residual_2norm`: `9.042006413725378e-16`
+- `alpha`: `0.2663471710824953`
+- `sigma`: `0.0420532109953044`
+- `max_numeric_bound_violation`: `-0.16822028183926083`
+- `switching_interpretation`: `coalition replacement changes bounded wrench-realization input but not load state or common closed-loop A`
+- `passed`: `True`

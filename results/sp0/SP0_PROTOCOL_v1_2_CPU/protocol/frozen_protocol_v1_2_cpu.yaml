@@ -1,0 +1,418 @@
+auxiliary_preconfirmatory_counts:
+  included_in_base_15436: false
+  model_selection_validation: 96
+  reason: select_B5_top5_and_B7_top3_without_using_confirmatory_results
+campaign_counts:
+  B0: 300
+  B2: 2400
+  B3: 1536
+  B4: 5760
+  B5: 4000
+  B6: 960
+  B7: 480
+claims_allowed:
+- statistical_superiority_in_preregistered_metrics
+- non_inferiority_with_margin
+- pareto_tradeoff
+- observed_robustness
+- observed_scalability
+- empirical_convergence
+- approximate_equilibrium
+- observed_poa
+- observed_price_of_locality_or_decentralization
+claims_forbidden_without_proof:
+- universal_stability
+- global_optimality_of_QR1
+- convergence_under_any_graph
+- theoretical_bounded_poa
+- direct_transfer_to_physical_robots
+- industrial_safety
+- validity_under_real_contact_or_dynamics
+convergence:
+  T_max_s: 10.0
+  equilibrium_residual_tolerance: 0.001
+  integration_dt_s: 0.1
+  max_steps: 100
+  stable_window_s: 1.0
+  stable_window_steps: 10
+  state_change_tolerance: 0.0001
+  useful_solution_NR_epsilon: 0.05
+data_driven_training:
+  DD_1:
+    configurations_per_algorithm: 6
+    environment_steps: 10000
+    train_seeds_per_configuration: 1
+  DD_2:
+    environment_steps: 50000
+    retained_configurations_per_algorithm: 2
+    train_seeds_per_configuration: 2
+  MAPPO_critic_information: global_training_only
+  actor_information: graph_local_only
+  algorithms:
+  - IPPO-GNN
+  - MAPPO-GNN
+  cpu_rule: preregistered_reduced_budget_must_fit_total_three_hour_campaign
+  episode_horizon: 4
+  expected_total_environment_steps: 1120000
+  final:
+    checkpoint_rule: exact_final_checkpoint_no_best_seed_selection
+    environment_steps_per_seed: 200000
+    independent_train_seeds: 3
+  greedy_noninferiority_delta: 0.05
+  hardware_preflight:
+    benchmark_environment_steps: 10000
+    benchmark_scope: prefreeze_engineering_only
+    benchmark_seed: 777002
+    long_cpu_override_required: true
+    maximum_estimated_training_wall_hours: 1.75
+    maximum_total_campaign_wall_hours: 3.0
+  maximum_posterior_collapse: 0.05
+  ppo_epochs: 1
+  required_consecutive_evaluations: 3
+  reward_oracle_access: forbidden
+  rollout_environment_steps: 512
+  step_unit: joint_environment_transition
+  validation_success_threshold: 0.99
+expected_full_campaign_evaluations: 15436
+experiment_id: SP0_PROTOCOL_v1_2_CPU
+frozen: true
+frozen_at_utc: '2026-07-11T12:42:24.922323+00:00'
+git_commit_sha: 72418e13f1bed1a6d37698e59bf0d07400dc8b10
+hyperparameters:
+  consensus:
+    degree_normalization:
+    - true
+    - false
+    gain:
+    - 0.1
+    - 0.3
+    - 0.5
+    - 1
+    retention:
+    - 0
+    - 0.5
+    - 0.9
+  data_driven:
+    discount_factor:
+    - 0.95
+    - 0.99
+    entropy_coefficient:
+    - 0.001
+    - 0.01
+    gnn_layers:
+    - 2
+    - 3
+    hidden_dimension:
+    - 64
+    - 128
+    learning_rate:
+    - 0.0001
+    - 0.0003
+    - 0.001
+    ppo_clip:
+    - 0.1
+    - 0.2
+  dynamics:
+    alpha_BR:
+    - 0.1
+    - 0.3
+    - 0.5
+    dwell_time_s:
+    - 0
+    - 0.2
+    - 0.5
+    - 1
+    eta:
+    - 0.05
+    - 0.1
+    - 0.2
+    - 0.5
+    h:
+    - 0.01
+    - 0.03
+    - 0.05
+    - 0.1
+    kappa:
+    - 0.5
+    - 1
+    - 2
+    q:
+    - 1
+    - 1.5
+    - 2
+  fitness:
+    alpha:
+    - 0.25
+    - 0.5
+    - 1
+    - 2
+    beta:
+    - 1
+    - 2
+    - 5
+    - 10
+    delta_x:
+    - 0.01
+    - 0.05
+    - 0.1
+    lambda:
+    - 0.5
+    - 1
+    - 2
+    - 4
+    r:
+    - 0.5
+    - 1
+    - 2
+  qr:
+    delta_QR:
+    - 0.0001
+    - 0.001
+    - 0.01
+    hysteresis:
+    - 0
+    - 0.01
+    - 0.05
+    max_swaps:
+    - 1
+    - 5
+    - 10
+    qra_depth:
+    - 2
+    - 4
+    - complete
+hypotheses:
+- family: P
+  id: H0-SP0-P1
+  outcome: final_success
+  status: confirmatory
+  test: mixed_logistic_and_paired_McNemar
+- family: P
+  id: H0-SP0-P2
+  outcome: normalized_regret
+  status: confirmatory
+  test: robust_mixed_and_paired_BCa
+- family: P
+  id: H0-SP0-P3
+  outcome: time_to_useful_solution
+  status: confirmatory
+  test: survival_AFT_or_Cox_frailty
+- family: P
+  id: H0-SP0-P4
+  outcome: communication_to_useful_solution
+  status: confirmatory
+  test: paired_log_ratio_and_mixed_negative_binomial
+- family: P
+  id: H0-SP0-P5
+  outcome: method_by_regime_interaction
+  status: confirmatory
+  test: mixed_model
+- family: P
+  id: H0-SP0-P6
+  outcome: method_by_logN_interaction
+  status: confirmatory
+  test: mixed_model
+- family: G
+  id: H0-SP0-G1
+  outcome: population_dynamic
+  status: exploratory_preregistered_B2_only
+  test: preregistered_omnibus_and_planned_contrasts
+- family: G
+  id: H0-SP0-G2
+  outcome: fitness
+  status: exploratory_preregistered_B2_only
+  test: preregistered_omnibus
+- family: G
+  id: H0-SP0-G3
+  outcome: dynamic_by_fitness_interaction
+  status: exploratory_preregistered_B2_only
+  test: mixed_model
+- family: G
+  id: H0-SP0-G4
+  outcome: final_success_RAW_vs_QR
+  status: exploratory_preregistered_B2_only
+  test: paired_model
+- family: G
+  id: H0-SP0-G5
+  outcome: normalized_regret_RAW_vs_QR
+  status: exploratory_preregistered_B2_only
+  test: paired_BCa
+- family: G
+  id: H0-SP0-G6
+  outcome: closure_neighborhood_QR1_QR2_QRA
+  status: exploratory_preregistered_B2_only
+  test: planned_paired_contrasts
+- family: C
+  id: H0-SP0-C1
+  margin: 0.05
+  outcome: local_minus_global_NR
+  status: confirmatory
+  test: noninferiority
+- family: C
+  id: H0-SP0-C2
+  outcome: method_by_lambda2_interaction
+  status: confirmatory
+  test: mixed_model
+- family: C
+  id: H0-SP0-C3
+  outcome: method_by_occupancy_error_interaction
+  status: confirmatory
+  test: mixed_model
+- family: R
+  id: H0-SP0-R1
+  outcome: CVaR95_normalized_regret
+  status: confirmatory
+  test: paired_bootstrap
+- family: R
+  id: H0-SP0-R2
+  outcome: generalization_gap
+  status: confirmatory
+  test: paired_BCa
+- family: R
+  id: H0-SP0-R3
+  outcome: method_by_initialization_interaction
+  status: confirmatory
+  test: mixed_model
+- family: R
+  id: H0-SP0-R4
+  outcome: dynamic_by_initial_support_interaction
+  status: confirmatory
+  test: mixed_model
+implementation_decisions:
+  data_driven_candidates:
+  - IPPO-GNN
+  - MAPPO-GNN
+  data_driven_champion_rule: validation_between_IPPO_GNN_and_MAPPO_GNN
+  data_driven_failed_seed_rule: keep_report_do_not_replace
+  data_driven_final_seeds: 3
+  exp4_method_count: 10
+  exp4_method_count_formula: GRD_DA_plus_5_population_plus_3_data_driven
+  exp4_population_finalist_rule: validation_top5_among_REP_SMI_BNN_LOG_PROJ_HYB_local_variants
+  exp4_population_finalists: 5
+metrics_primary:
+- success
+- normalized_regret
+- time_to_useful_solution
+- messages_to_useful_solution
+- bytes_to_useful_solution
+mode: protocol
+multiplicity:
+  apply_once_at_final_precision_sample_size: true
+  correction: Holm
+  scope: within_confirmatory_family
+output_dir: results/sp0/SP0_PROTOCOL_v1_2_CPU
+pipeline:
+  B0:
+    config: configs/experiments/sp0/SP0_B0_unit_benchmark.yaml
+    gate_tolerance_phi: 1.0e-08
+    mode: unit_benchmark
+  B2:
+    closures:
+    - RAW
+    - QR1
+    dynamics:
+    - REP
+    - SMI
+    - BNN
+    - LOG
+    - PROJ
+    - IBR
+    - GPC
+    - HYB
+    fitness:
+    - LIN
+    - QUAD
+    - ASYM
+    - SIG
+    - MC
+    regimes:
+    - 1.5
+    - 1.0
+    - 0.67
+    seeds: 5
+    sizes:
+    - 8
+    - 32
+    timeout_resolution:
+      action: mark_NONCONVERGENT_CLOSURE_ONLY
+      closure_evaluation_allowed_if_no_fatal_gate: true
+      continuous_claims_allowed: false
+      threshold: 0.2
+  B3:
+    method_families: 8
+    rounds:
+    - configs: 12
+      worlds: 6
+    - configs: 4
+      worlds: 15
+    - configs: 2
+      worlds: 30
+    score: mean_NR_plus_fail_penalty_plus_0_25_CVaR95_NR
+  B4:
+    regimes:
+    - 1.5
+    - 1.0
+    - 0.67
+    sizes:
+    - 8
+    - 16
+    - 32
+    - 64
+    units: 12
+    worlds_per_cell: 40
+  B5:
+    mean_degrees:
+    - 2
+    - 4
+    - 6
+    - 10
+    - N_minus_1
+    methods: 10
+    regime: balanced
+    sizes:
+    - 32
+    - 64
+    worlds_per_cell: 40
+  B6:
+    stress_types:
+    - G-TIE
+    - G-X
+    - G-CLU
+    - G-BIAS_G-ZERO
+    units: 12
+    worlds_per_type: 20
+  B7:
+    methods: 6
+    regime: balanced
+    sizes:
+    - 24
+    - 48
+    worlds_per_cell: 40
+precision_extension:
+  checkpoints:
+  - 40
+  - 60
+  - 100
+  normalized_regret_CI_width_max: 0.05
+  success_difference_CI_width_max: 0.03
+  trigger: precision_only
+revision:
+  confirmatory_claim_scope: resource_constrained_cpu_budget
+  created_before_confirmatory_seed_opening: true
+  original_26M_training_claim_equivalence: false
+  reason: CPU-only host with a strict three-hour wall-clock budget
+  supersedes_for_cpu_execution: SP0_PROTOCOL_v1_1
+scope:
+  assignment: one_robot_per_load
+  loads: homogeneous
+  out_of_scope:
+  - CoppeliaSim
+  - multibody_dynamics
+  - friction
+  - rigid_contact
+  - real_perception
+  - physical_actuation
+  - hardware_validation
+  robots: homogeneous
+sp_id: SP0-v1.2-CPU
+status: frozen_ready_for_execution

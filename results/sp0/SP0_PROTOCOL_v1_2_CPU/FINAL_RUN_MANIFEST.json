@@ -1,0 +1,131 @@
+{
+  "acceptance": {
+    "acceptance_shim": "initialized block_integrity_ok/parquet_types_ok; frozen checks unchanged",
+    "checks": {
+      "B0_G1_G7_PASS": true,
+      "B0_count": true,
+      "B2_count": true,
+      "B3_count": true,
+      "B4_count": true,
+      "B5_count": true,
+      "B6_count": true,
+      "B7_count": true,
+      "Holm_applied": true,
+      "audit_trajectories_present": true,
+      "base_total_15436": true,
+      "block_primary_keys_and_hashes_valid": true,
+      "confirmatory_seed_opening_audited": true,
+      "data_driven_ready": true,
+      "figures_generated": true,
+      "frozen_integrity": true,
+      "parquet_boolean_types_valid": true,
+      "precision_rule_recorded": true,
+      "protocol_frozen": true,
+      "schema_valid": true,
+      "statistical_models_recorded": true,
+      "videos_generated": true,
+      "world_cache_valid": true
+    },
+    "counts": {
+      "B0": 300,
+      "B2": 2400,
+      "B3": 1536,
+      "B4": 5760,
+      "B5": 4000,
+      "B6": 960,
+      "B7": 480
+    },
+    "evaluated_at_utc": "2026-07-11T15:33:12.189121+00:00",
+    "failed_checks": [],
+    "passed": true,
+    "schema_contract": "v1.2 seconds-only oracle_lookup_time_s/oracle_solve_time_s migration"
+  },
+  "campaign": {
+    "base_total": 15436,
+    "counts": {
+      "B0": 300,
+      "B2": 2400,
+      "B3": 1536,
+      "B4": 5760,
+      "B5": 4000,
+      "B6": 960,
+      "B7": 480
+    },
+    "status": "confirmatory_blocks_complete"
+  },
+  "generated_at_utc": "2026-07-11T15:33:12.190978+00:00",
+  "postprocessing": {
+    "analysis": {
+      "confirmatory_rows": 17522,
+      "contrasts": 108,
+      "exploratory_B2_excluded_from_confirmatory_claims": true,
+      "holm_applied_by_family": true,
+      "models": 165,
+      "status": "complete"
+    },
+    "figures": {
+      "figure_count": 22,
+      "status": "complete"
+    },
+    "videos": {
+      "artifact_scope": "official_posthoc",
+      "exploratory_dry_run_rows": 430,
+      "generated": [
+        "results\\sp0\\SP0_PROTOCOL_v1_2_CPU\\videos\\V01_balanced_nominal.mp4",
+        "results\\sp0\\SP0_PROTOCOL_v1_2_CPU\\videos\\V02_robot_scarcity.mp4",
+        "results\\sp0\\SP0_PROTOCOL_v1_2_CPU\\videos\\V03_robot_surplus.mp4",
+        "results\\sp0\\SP0_PROTOCOL_v1_2_CPU\\videos\\V04_communication_sweep.mp4",
+        "results\\sp0\\SP0_PROTOCOL_v1_2_CPU\\videos\\V05_RAW_ARG_REPAIR_QR1_QR2_QRA.mp4",
+        "results\\sp0\\SP0_PROTOCOL_v1_2_CPU\\videos\\V06_REP_support_failure_vs_LOG_and_HYB.mp4",
+        "results\\sp0\\SP0_PROTOCOL_v1_2_CPU\\videos\\V07_crossed_matching_QR1_vs_QR2_vs_QRA.mp4",
+        "results\\sp0\\SP0_PROTOCOL_v1_2_CPU\\videos\\V08_generalization_N48.mp4",
+        "results\\sp0\\SP0_PROTOCOL_v1_2_CPU\\videos\\V09_worst_CVaR_case.mp4",
+        "results\\sp0\\SP0_PROTOCOL_v1_2_CPU\\videos\\V10_data_driven_success_and_failure_seed.mp4"
+      ],
+      "official_run_rows": 21458,
+      "skipped": [],
+      "status": "complete"
+    }
+  },
+  "precision_extensions": {
+    "blocks": {
+      "B4": {
+        "base_worlds": 40,
+        "extended": false,
+        "final_checkpoint": 40,
+        "stages": []
+      },
+      "B5": {
+        "base_worlds": 40,
+        "extended": true,
+        "final_checkpoint": 100,
+        "stages": [
+          {
+            "extension_reason": "precision_only",
+            "runs": 2000,
+            "stage": "41_60"
+          },
+          {
+            "extension_reason": "precision_only",
+            "runs": 4000,
+            "stage": "61_100"
+          }
+        ]
+      },
+      "B7": {
+        "base_worlds": 40,
+        "extended": false,
+        "final_checkpoint": 40,
+        "stages": []
+      }
+    },
+    "extension_reason": "precision_only",
+    "generated_at_utc": "2026-07-11T15:08:58.557411+00:00",
+    "status": "complete",
+    "thresholds": {
+      "normalized_regret_CI_width": 0.05,
+      "success_difference_CI_width": 0.03
+    }
+  },
+  "status": "SP0_COMPLETE"
+}

@@ -1,0 +1,33 @@
+{
+  "experiment_id": "SP5_PAYLOAD_TRANSPORT_CONFIRMATORY_v2",
+  "mode": "confirmatory",
+  "status": "complete",
+  "worlds": 108,
+  "runs": 864,
+  "methods": 8,
+  "scenarios": 6,
+  "robot_counts": [
+    4,
+    8,
+    12
+  ],
+  "expected_runs": 864,
+  "count_valid": true,
+  "theory_audit": "PASS",
+  "hardware": {
+    "cpu_model": "Intel64 Family 6 Model 170 Stepping 4, GenuineIntel",
+    "machine": "AMD64",
+    "logical_cpus": 22,
+    "gpu_used": false,
+    "execution_device": "CPU",
+    "python_version": "3.13.9",
+    "numpy_version": "2.3.5",
+    "platform": "Windows-11-10.0.26200-SP0"
+  },
+  "config": "configs\\experiments\\sp5\\SP5_PAYLOAD_TRANSPORT_CONFIRMATORY_v2.yaml",
+  "frozen_before_confirmatory_seed_opening": true,
+  "legacy_high_power_status": "historical_noncanonical_post_integration_projection",
+  "confirmatory_seeds_opened": true,
+  "confirmatory_seed_opening_event_sha256": "ca1439f24365dc03dd3d1bb43bb55e0389caa9d71553e9290498f42726b6538e",
+  "sum_method_runtime_wall_s": 198.11922670295462
+}

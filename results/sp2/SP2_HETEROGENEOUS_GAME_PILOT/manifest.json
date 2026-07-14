@@ -1,0 +1,30 @@
+{
+  "experiment_id": "SP2_HETEROGENEOUS_GAME_PILOT",
+  "status": "completed",
+  "worlds": 24,
+  "runs": 336,
+  "methods": [
+    "smith__plain_deficit",
+    "smith__marginal_deficit",
+    "smith__marginal_log",
+    "replicator__plain_deficit",
+    "replicator__marginal_deficit",
+    "replicator__marginal_log",
+    "erv_bnn__plain_deficit",
+    "erv_bnn__marginal_deficit",
+    "erv_bnn__marginal_log",
+    "uniform_closure",
+    "random_closure",
+    "greedy_capacity",
+    "auction_capacity",
+    "milp_exact"
+  ],
+  "confirmatory": false,
+  "seeds_opened": [
+    339900,
+    339923
+  ],
+  "theory_audit_passed": true,
+  "config_path": "configs\\experiments\\sp2\\SP2_HETEROGENEOUS_GAME_PILOT.yaml",
+  "config_hash": "290f192490dfcdca531167fbf8ff68bbe020cecee765f62dded24a70830c5b1d"
+}

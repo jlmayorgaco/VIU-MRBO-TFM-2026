@@ -1,0 +1,36 @@
+model,status,parameter,estimate,CI95_low,CI95_high,raw_p,error,model_converged,warnings,finite_interval,p_is_zero,raw_p_reported,audited_status
+clustered_logistic_GEE,not_estimable_no_variation,,,,,,,,,False,False,not_estimable,not_estimable
+mixed_regret_world_random_intercept,fit_failed,,,,,,LinAlgError: Singular matrix,,,False,False,not_estimable,not_estimable
+robust_regret_GEE_world_cluster,wald_term,TERM::Intercept,15.671149737769161,,,7.536503614410998e-05,,True,,False,False,7.5365036144109984e-05,not_estimable
+robust_regret_GEE_world_cluster,wald_term,TERM::C(unit_id),274.18830971101534,,,7.688377123001585e-54,,True,,False,False,7.6883771230015852e-54,not_estimable
+robust_regret_GEE_world_cluster,wald_term,TERM::C(regime),2.622516001418197,,,0.2694808359769192,,True,,False,False,0.26948083597691919,not_estimable
+robust_regret_GEE_world_cluster,wald_term,TERM::C(unit_id):C(regime),298.79821075973445,,,8.507197566994097e-53,,True,,False,False,8.5071975669940975e-53,not_estimable
+robust_regret_GEE_world_cluster,wald_term,TERM::logN,6.4950544257588385,,,0.010817498445607341,,True,,False,False,0.010817498445607341,not_estimable
+robust_regret_GEE_world_cluster,wald_term,TERM::C(unit_id):logN,172.90082151520517,,,1.5340415447174375e-32,,True,,False,False,1.5340415447174375e-32,not_estimable
+connectivity_regret_GEE,fit,C(unit_id)[T.GRD]:occupancy_error,-7.5856032035633e-17,,,,,True,,False,False,not_estimable,not_estimable
+connectivity_regret_GEE,wald_term,TERM::Intercept,564.6198591912515,,,8.310967288618145e-125,,True,,False,False,8.3109672886181452e-125,not_estimable
+connectivity_regret_GEE,wald_term,TERM::C(unit_id),591.8534601100164,,,1.3332991763256846e-124,,True,,False,False,1.3332991763256846e-124,not_estimable
+connectivity_regret_GEE,wald_term,TERM::lambda2,482.305865902874,,,6.729687221943288e-107,,True,,False,False,6.7296872219432877e-107,not_estimable
+connectivity_regret_GEE,wald_term,TERM::C(unit_id):lambda2,502.7506530635219,,,2.1485893125744205e-105,,True,,False,False,2.1485893125744205e-105,not_estimable
+connectivity_regret_GEE,wald_term,TERM::occupancy_error,4.973121619429584,,,0.025744144254675652,,True,,False,False,0.025744144254675652,not_estimable
+connectivity_regret_GEE,wald_term,TERM::C(unit_id):occupancy_error,53.93666195973947,,,2.1595939592020332e-10,,True,,False,False,2.1595939592020332e-10,not_estimable
+negative_binomial_messages_to_epsilon_solution_GEE,wald_term,TERM::Intercept,43071.495350786965,,,0.0,,True,ValueWarning: Negative binomial dispersion parameter alpha not set. Using default value alpha=1.0.,False,True,< 2.2250738585072014e-308,not_estimable
+negative_binomial_messages_to_epsilon_solution_GEE,wald_term,TERM::C(unit_id),6039216685.82423,,,0.0,,True,ValueWarning: Negative binomial dispersion parameter alpha not set. Using default value alpha=1.0.,False,True,< 2.2250738585072014e-308,not_estimable
+negative_binomial_messages_to_epsilon_solution_GEE,wald_term,TERM::lambda2,649.8547349015355,,,2.402721703837803e-143,,True,ValueWarning: Negative binomial dispersion parameter alpha not set. Using default value alpha=1.0.,False,False,2.4027217038378029e-143,not_estimable
+negative_binomial_messages_to_epsilon_solution_GEE,wald_term,TERM::C(unit_id):lambda2,4500.785705201082,,,0.0,,True,ValueWarning: Negative binomial dispersion parameter alpha not set. Using default value alpha=1.0.,False,True,< 2.2250738585072014e-308,not_estimable
+negative_binomial_bytes_to_epsilon_solution_GEE,wald_term,TERM::Intercept,68842.33744411136,,,0.0,,True,ValueWarning: Negative binomial dispersion parameter alpha not set. Using default value alpha=1.0.,False,True,< 2.2250738585072014e-308,not_estimable
+negative_binomial_bytes_to_epsilon_solution_GEE,wald_term,TERM::C(unit_id),5851157021.7653475,,,0.0,,True,ValueWarning: Negative binomial dispersion parameter alpha not set. Using default value alpha=1.0.,False,True,< 2.2250738585072014e-308,not_estimable
+negative_binomial_bytes_to_epsilon_solution_GEE,wald_term,TERM::lambda2,649.854573911554,,,2.4029154154143347e-143,,True,ValueWarning: Negative binomial dispersion parameter alpha not set. Using default value alpha=1.0.,False,False,2.4029154154143347e-143,not_estimable
+negative_binomial_bytes_to_epsilon_solution_GEE,wald_term,TERM::C(unit_id):lambda2,4498.052345483991,,,0.0,,True,ValueWarning: Negative binomial dispersion parameter alpha not set. Using default value alpha=1.0.,False,True,< 2.2250738585072014e-308,not_estimable
+exploratory_dynamic_fitness_closure_GEE,fit_failed,,,,,,TypeError: Cannot interpret 'string[python]' as a data type,,,False,False,not_estimable,not_estimable
+robustness_method_stress_GEE,fit_failed,,,,,,TypeError: Cannot interpret 'string[python]' as a data type,,,False,False,not_estimable,not_estimable
+initial_support_method_geometry_GEE,fit_failed,,,,,,TypeError: Cannot interpret 'string[python]' as a data type,,,False,False,not_estimable,not_estimable
+generalization_method_logN_GEE,wald_term,TERM::Intercept,6.5037880035809374,,,0.010764491349893582,,True,,False,False,0.010764491349893582,not_estimable
+generalization_method_logN_GEE,wald_term,TERM::C(unit_id),92.31361042134222,,,2.1933467088822855e-18,,True,,False,False,2.1933467088822855e-18,not_estimable
+generalization_method_logN_GEE,wald_term,TERM::np.log(N),3.1293936437072385,,,0.07689233485476708,,True,,False,False,0.076892334854767083,not_estimable
+generalization_method_logN_GEE,wald_term,TERM::C(unit_id):np.log(N),71.83310623514146,,,4.2555249537410205e-14,,True,,False,False,4.2555249537410205e-14,not_estimable
+mixed_logistic_world_random_intercept,not_estimable_no_variation,,,,,,,,,False,False,not_estimable,not_estimable
+cox_time_to_epsilon_world_cluster,fit,C(unit_id)[T.REP],-1.6088057667530165e-11,,,,,,ConvergenceWarning: Maximum Likelihood optimization failed to converge. Check mle_retvals,False,False,not_estimable,not_estimable
+cox_time_to_epsilon_world_cluster,wald_term,TERM::C(unit_id),23893581.86026697,,,0.0,,,ConvergenceWarning: Maximum Likelihood optimization failed to converge. Check mle_retvals,False,True,< 2.2250738585072014e-308,not_estimable
+cox_time_to_epsilon_world_cluster,wald_term,TERM::C(regime),1522.7023531196864,,,0.0,,,ConvergenceWarning: Maximum Likelihood optimization failed to converge. Check mle_retvals,False,True,< 2.2250738585072014e-308,not_estimable
+cox_time_to_epsilon_world_cluster,wald_term,TERM::logN,2.7725652672314416,,,0.0958923720456766,,,ConvergenceWarning: Maximum Likelihood optimization failed to converge. Check mle_retvals,False,False,0.095892372045676605,not_estimable
