@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import platform
+import shutil
 import subprocess
 import sys
 import time
@@ -122,6 +123,12 @@ def prepare_protocol(config_path: str | Path) -> dict[str, Any]:
     (protocol / "environment.lock.json").write_text(json.dumps(environment, indent=2, sort_keys=True), encoding="utf-8")
     snapshot = {key: value for key, value in config.items() if not key.startswith("_")}
     (protocol / "protocol_snapshot.yaml").write_text(yaml.safe_dump(snapshot, sort_keys=False), encoding="utf-8")
+    hypotheses_source = config.get("hypotheses_path")
+    if hypotheses_source:
+        source_path = REPO_ROOT / str(hypotheses_source)
+        if not source_path.exists():
+            raise FileNotFoundError(f"hypotheses source does not exist: {source_path}")
+        shutil.copyfile(source_path, protocol / "hypotheses.yaml")
     return {"status": "prepared_pre_freeze", "seed_count": len(flattened), "output_root": str(root)}
 
 
