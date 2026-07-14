@@ -1,0 +1,744 @@
+scenario: aws_canonical_coop_transport_pioneer_p3dx
+description: Canonical 12x10 m cooperative multi-AGV transport overlay on AWS RoboMaker
+  warehouse.
+base_scene: C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\scenes\awsRobomaker\aws_robomaker_warehouse.ttt
+dimensions_m:
+  width: 12.0
+  depth: 10.0
+model_paths:
+  pioneer_p3dx: C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\robots\mobile\pioneer
+    p3dx.ttm
+  conveyor: C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\equipment\conveyors\generic
+    conveyor (rollers).ttm
+  table: C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\furniture\tables\high
+    table.ttm
+  manipulator: C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\robots\non-mobile\ABB
+    IRB 140.ttm
+  rack: C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\furniture\shelves-cupboards-racks\rack.ttm
+zones:
+- name: zona_inicial_agvs
+  center:
+  - -4.55
+  - 3.85
+  - 0.018
+  size:
+  - 2.35
+  - 1.55
+  - 0.018
+  color:
+  - 0.16
+  - 0.34
+  - 0.54
+  kind: initial
+- name: zona_recogida_a
+  center:
+  - -4.25
+  - -1.55
+  - 0.018
+  size:
+  - 2.5
+  - 1.7
+  - 0.018
+  color:
+  - 0.86
+  - 0.62
+  - 0.12
+  kind: pickup
+- name: zona_recogida_b
+  center:
+  - 4.15
+  - 1.45
+  - 0.018
+  size:
+  - 2.5
+  - 1.7
+  - 0.018
+  color:
+  - 0.86
+  - 0.62
+  - 0.12
+  kind: pickup
+- name: zona_entrega_1
+  center:
+  - 4.25
+  - 3.75
+  - 0.018
+  size:
+  - 1.7
+  - 1.2
+  - 0.018
+  color:
+  - 0.16
+  - 0.46
+  - 0.26
+  kind: delivery
+- name: zona_entrega_2
+  center:
+  - 4.45
+  - -3.55
+  - 0.018
+  size:
+  - 1.7
+  - 1.25
+  - 0.018
+  color:
+  - 0.16
+  - 0.46
+  - 0.26
+  kind: delivery
+- name: zona_recarga
+  center:
+  - -4.55
+  - -3.95
+  - 0.018
+  size:
+  - 2.35
+  - 1.25
+  - 0.018
+  color:
+  - 0.58
+  - 0.16
+  - 0.13
+  kind: recharge
+- name: corredor_estrecho_oeste
+  center:
+  - -2.05
+  - -0.55
+  - 0.018
+  size:
+  - 1.0
+  - 1.25
+  - 0.018
+  color:
+  - 0.88
+  - 0.68
+  - 0.12
+  kind: narrow_corridor
+- name: corredor_estrecho_este
+  center:
+  - 1.95
+  - -0.55
+  - 0.018
+  size:
+  - 1.0
+  - 1.25
+  - 0.018
+  color:
+  - 0.88
+  - 0.68
+  - 0.12
+  kind: narrow_corridor
+racks:
+- name: rack_norte_01
+  position:
+  - -2.7
+  - 4.25
+  - 0.06
+  size:
+  - 1.15
+  - 0.46
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_norte_02
+  position:
+  - -1.3
+  - 4.25
+  - 0.06
+  size:
+  - 1.15
+  - 0.46
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_norte_03
+  position:
+  - 0.1
+  - 4.25
+  - 0.06
+  size:
+  - 1.15
+  - 0.46
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_norte_04
+  position:
+  - 1.5
+  - 4.25
+  - 0.06
+  size:
+  - 1.15
+  - 0.46
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_muro_oeste_sup
+  position:
+  - -5.65
+  - 2.25
+  - 0.06
+  size:
+  - 1.35
+  - 0.46
+  - 1.95
+  yaw_rad: 1.5707963267948966
+- name: rack_muro_oeste_med
+  position:
+  - -5.65
+  - 0.35
+  - 0.06
+  size:
+  - 1.35
+  - 0.46
+  - 1.95
+  yaw_rad: 1.5707963267948966
+- name: rack_muro_este_sup
+  position:
+  - 5.72
+  - 2.75
+  - 0.06
+  size:
+  - 1.35
+  - 0.46
+  - 1.95
+  yaw_rad: 1.5707963267948966
+- name: rack_muro_este_med
+  position:
+  - 5.72
+  - 0.75
+  - 0.06
+  size:
+  - 1.35
+  - 0.46
+  - 1.95
+  yaw_rad: 1.5707963267948966
+- name: rack_oeste_centro
+  position:
+  - -4.05
+  - 0.15
+  - 0.06
+  size:
+  - 1.1
+  - 0.46
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_este_superior
+  position:
+  - 2.6
+  - 2.8
+  - 0.06
+  size:
+  - 1.0
+  - 0.46
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_sur_centro_01
+  position:
+  - -1.75
+  - -2.65
+  - 0.06
+  size:
+  - 1.25
+  - 0.46
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_sur_centro_02
+  position:
+  - 0.0
+  - -2.65
+  - 0.06
+  size:
+  - 1.25
+  - 0.46
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_sur_centro_03
+  position:
+  - 1.75
+  - -2.65
+  - 0.06
+  size:
+  - 1.25
+  - 0.46
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_sur_centro_04
+  position:
+  - -1.75
+  - -3.75
+  - 0.06
+  size:
+  - 1.25
+  - 0.46
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_sur_centro_05
+  position:
+  - 0.0
+  - -3.75
+  - 0.06
+  size:
+  - 1.25
+  - 0.46
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_sur_centro_06
+  position:
+  - 1.75
+  - -3.75
+  - 0.06
+  size:
+  - 1.25
+  - 0.46
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_este_bajo
+  position:
+  - 3.0
+  - -3.2
+  - 0.06
+  size:
+  - 1.0
+  - 0.46
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_oeste_bajo
+  position:
+  - -2.9
+  - -3.65
+  - 0.06
+  size:
+  - 0.9
+  - 0.46
+  - 1.95
+  yaw_rad: 0.0
+robots:
+- name: Pioneer_01_ligero
+  position:
+  - -5.15
+  - 4.08
+  - 0.18
+  heading_rad: -1.5707963267948966
+  class: ligero
+- name: Pioneer_02_medio
+  position:
+  - -4.55
+  - 4.08
+  - 0.18
+  heading_rad: -1.5707963267948966
+  class: medio
+- name: Pioneer_03_alta_capacidad
+  position:
+  - -3.95
+  - 4.08
+  - 0.18
+  heading_rad: -1.5707963267948966
+  class: alta_capacidad
+- name: Pioneer_04_ligero
+  position:
+  - -5.15
+  - 3.48
+  - 0.18
+  heading_rad: -1.5707963267948966
+  class: ligero
+- name: Pioneer_05_medio
+  position:
+  - -4.55
+  - 3.48
+  - 0.18
+  heading_rad: -1.5707963267948966
+  class: medio
+- name: Pioneer_06_alta_capacidad
+  position:
+  - -3.95
+  - 3.48
+  - 0.18
+  heading_rad: -1.5707963267948966
+  class: alta_capacidad
+loads:
+- name: klt_a_01_3kg
+  position:
+  - -4.45
+  - -1.78
+  - 0.84
+  size: &id001
+  - 0.4
+  - 0.3
+  - 0.22
+  weight_kg: 3.0
+  required_agvs: 1
+  zone: A
+  station: pickup_a
+  assigned_amr: Pioneer_01_ligero
+  phase_offset_s: 0.0
+  workflow_load: true
+- name: klt_a_02_5kg
+  position:
+  - -4.0
+  - -1.78
+  - 0.84
+  size: *id001
+  weight_kg: 5.0
+  required_agvs: 1
+  zone: A
+  station: pickup_a
+  assigned_amr: Pioneer_04_ligero
+  phase_offset_s: 9.0
+  workflow_load: true
+- name: klt_a_03_2_5kg
+  position:
+  - -3.55
+  - -1.78
+  - 0.84
+  size: *id001
+  weight_kg: 2.5
+  required_agvs: 1
+  zone: A
+  station: pickup_a
+  assigned_amr: Pioneer_02_medio
+  phase_offset_s: 18.0
+  workflow_load: true
+- name: klt_b_01_3kg
+  position:
+  - 4.45
+  - 1.78
+  - 0.84
+  size: *id001
+  weight_kg: 3.0
+  required_agvs: 1
+  zone: B
+  station: pickup_b
+  assigned_amr: Pioneer_03_alta_capacidad
+  phase_offset_s: 4.5
+  workflow_load: true
+- name: klt_b_02_4kg
+  position:
+  - 4.0
+  - 1.78
+  - 0.84
+  size: *id001
+  weight_kg: 4.0
+  required_agvs: 1
+  zone: B
+  station: pickup_b
+  assigned_amr: Pioneer_05_medio
+  phase_offset_s: 13.5
+  workflow_load: true
+- name: klt_b_03_5kg
+  position:
+  - 3.55
+  - 1.78
+  - 0.84
+  size: *id001
+  weight_kg: 5.0
+  required_agvs: 1
+  zone: B
+  station: pickup_b
+  assigned_amr: Pioneer_06_alta_capacidad
+  phase_offset_s: 22.5
+  workflow_load: true
+central_obstacle:
+  name: obstaculo_central
+  position:
+  - 0.0
+  - 1.25
+  - 0.35
+  size:
+  - 2.4
+  - 0.8
+  - 0.7
+routes:
+- name: ruta_inicial_a_recogida_a
+  points:
+  - - -3.35
+    - 3.05
+  - - -3.0
+    - 2.5
+  - - -3.0
+    - -1.35
+  - &id002
+    - -3.95
+    - -1.05
+- name: ruta_inicial_a_recogida_b
+  points:
+  - - -3.35
+    - 3.55
+  - - 0.0
+    - 3.55
+  - - 2.5
+    - 2.45
+  - - 2.9
+    - 1.45
+- name: ruta_a_interseccion
+  points:
+  - *id002
+  - &id004
+    - -2.05
+    - -0.55
+  - - 0.0
+    - -0.55
+  - &id003
+    - 1.95
+    - -0.55
+- name: ruta_b_entrega_1
+  points:
+  - - 4.0
+    - 2.35
+  - - 4.0
+    - 2.85
+  - - 4.25
+    - 3.25
+- name: ruta_interseccion_entrega_2
+  points:
+  - *id003
+  - - 3.0
+    - -0.55
+  - - 3.0
+    - -2.3
+  - - 4.45
+    - -2.9
+- name: ruta_retorno_recarga
+  points:
+  - *id004
+  - - -3.0
+    - -2.65
+  - - -3.4
+    - -3.3
+  - - -4.55
+    - -3.3
+stations:
+  pickup_a:
+    conveyor_position:
+    - -4.05
+    - -1.78
+    - 0.0
+    source_platform_position:
+    - -4.55
+    - -1.78
+    - 0.0
+    manipulator_position:
+    - -4.65
+    - -1.1
+    - 0.2
+    pick_position:
+    - -4.2
+    - -1.78
+    - 0.84
+    handoff_position:
+    - -3.95
+    - -1.05
+    - 0.48
+  pickup_b:
+    conveyor_position:
+    - 4.05
+    - 1.78
+    - 0.0
+    source_platform_position:
+    - 4.55
+    - 1.78
+    - 0.0
+    manipulator_position:
+    - 4.65
+    - 1.1
+    - 0.2
+    pick_position:
+    - 4.2
+    - 1.78
+    - 0.84
+    handoff_position:
+    - 3.95
+    - 1.05
+    - 0.48
+  delivery_1_marker:
+  - 4.25
+  - 3.75
+  - 0.04
+  delivery_2_marker:
+  - 4.45
+  - -3.55
+  - 0.04
+  recharge_marker:
+  - -4.55
+  - -3.95
+  - 0.04
+  footprints:
+    conveyor:
+    - 1.55
+    - 0.55
+    manipulator:
+    - 0.65
+    - 0.65
+metadata:
+  communication: local radio; heterogeneous transport requests by weight
+  real_scale_assumptions:
+    abb_irb_140:
+      payload_kg: 6.0
+      reach_m: 0.81
+    pioneer_p3dx:
+      length_m: 0.455
+      width_m: 0.381
+      height_m: 0.237
+      payload_kg: 17.0
+    klt_box:
+      length_m: 0.4
+      width_m: 0.3
+      height_m: 0.22
+      max_pick_mass_kg: 5.0
+  robot_classes:
+    ligero:
+      capacity_kg: 17
+      radius_m: 0.27
+      max_speed_mps: 1.0
+    medio:
+      capacity_kg: 17
+      radius_m: 0.27
+      max_speed_mps: 1.0
+    alta_capacidad:
+      capacity_kg: 17
+      radius_m: 0.27
+      max_speed_mps: 0.8
+  narrow_corridor_width_m: 1.0
+  standard_corridor_width_m: 1.5
+  base_scene_policy: AWS /warehouse is loaded as provenance but hidden and made non-collidable;
+    the MRBO overlay provides the visible AWS-like warehouse finish on the canonical
+    layout.
+  visual_quality: restrained industrial palette, procedural concrete panels, lane
+    markings, detailed rack frames, KLT totes, real CoppeliaSim conveyor models, safety
+    hardware and animated pick-handoff-transport demo script
+animation:
+  cycle_s: 36.0
+  box_cycle_s: 27.0
+  manipulator_cycle_s: 9.0
+  robots:
+    Pioneer_01_ligero:
+    - - -5.15
+      - 4.08
+      - 0.18
+    - - -3.35
+      - 3.05
+      - 0.18
+    - - -3.95
+      - -1.05
+      - 0.18
+    - - -3.95
+      - -1.05
+      - 0.18
+    - - -1.2
+      - -0.55
+      - 0.18
+    - - 3.2
+      - -0.55
+      - 0.18
+    - - 4.45
+      - -3.0
+      - 0.18
+    - - 4.45
+      - -3.55
+      - 0.18
+    Pioneer_02_medio:
+    - - -4.55
+      - 4.08
+      - 0.18
+    - - -3.0
+      - 2.5
+      - 0.18
+    - - -3.95
+      - -1.05
+      - 0.18
+    - - -3.95
+      - -1.05
+      - 0.18
+    - - -0.35
+      - -0.55
+      - 0.18
+    - - 3.0
+      - -0.55
+      - 0.18
+    - - 4.25
+      - 3.25
+      - 0.18
+    - - 4.25
+      - 3.75
+      - 0.18
+    Pioneer_03_alta_capacidad:
+    - - -3.95
+      - 4.08
+      - 0.18
+    - - 0.0
+      - 3.55
+      - 0.18
+    - - 2.5
+      - 2.45
+      - 0.18
+    - - 3.95
+      - 1.05
+      - 0.18
+    - - 3.95
+      - 1.05
+      - 0.18
+    - - 4.0
+      - 2.35
+      - 0.18
+    - - 4.25
+      - 3.75
+      - 0.18
+    Pioneer_04_ligero:
+    - - -5.15
+      - 3.48
+      - 0.18
+    - - -3.0
+      - 2.2
+      - 0.18
+    - - -3.95
+      - -1.05
+      - 0.18
+    - - -3.95
+      - -1.05
+      - 0.18
+    - - -3.0
+      - -2.65
+      - 0.18
+    - - -4.55
+      - -3.3
+      - 0.18
+    - - -4.55
+      - -3.95
+      - 0.18
+    Pioneer_05_medio:
+    - - -4.55
+      - 3.48
+      - 0.18
+    - - -3.35
+      - 3.55
+      - 0.18
+    - - 0.0
+      - 3.55
+      - 0.18
+    - - 3.95
+      - 1.05
+      - 0.18
+    - - 3.95
+      - 1.05
+      - 0.18
+    - - 4.15
+      - 1.45
+      - 0.18
+    Pioneer_06_alta_capacidad:
+    - - -3.95
+      - 3.48
+      - 0.18
+    - - 3.95
+      - 1.05
+      - 0.18
+    - - 3.95
+      - 1.05
+      - 0.18
+    - - 0.0
+      - -0.55
+      - 0.18
+    - - 1.95
+      - -0.55
+      - 0.18
+    - - 4.45
+      - -3.55
+      - 0.18
+  manipulators:
+  - zona_recogida_a_manipulador_model
+  - zona_recogida_b_manipulador_model

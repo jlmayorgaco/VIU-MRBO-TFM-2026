@@ -1,0 +1,78 @@
+experiment_id: SP4_DOCKING_GAME_PILOT_v2
+mode: pilot
+description: "Versioned feasibility pilot after freezing homotopy memory, terminal alignment, and footprint-consistent CBF geometry."
+output_dir: results/sp4/SP4_DOCKING_GAME_PILOT_v2
+audit_worlds: 4
+
+seeds:
+  start: 462000
+  count: 2
+
+scenarios:
+  - id: open_docking
+  - id: crossing
+  - id: narrow_passage
+  - id: cluttered_docking
+  - id: symmetric_deadlock
+  - id: actuator_limited
+
+robot_counts: [4]
+
+methods:
+  - id: direct_to_slot
+  - id: apf_navigation
+  - id: rvo_proxy
+  - id: cbf_qp
+  - id: central_potential_reference
+  - id: nash_pd_exact_raw
+  - id: nash_pd_exact
+  - id: nash_pd_ring
+  - id: smith_primitives
+  - id: replicator_primitives
+  - id: erv_bnn_primitives
+
+simulation:
+  dt_s: 0.16
+  horizon_s: 35.0
+  barrier_gamma: 2.6
+  barrier_iterations: 30
+
+game:
+  steps: 20
+  replan_interval_steps: 3
+  central_steps: 70
+  audit_steps: 260
+  primal_dt: 0.12
+  dual_dt: 0.10
+  congestion_weight: 0.38
+  regularization: 0.04
+  consensus_rounds: 4
+  tolerance: 0.001
+
+audit_gates:
+  max_simplex_error: 1.0e-9
+  max_capacity_violation: 0.08
+  max_qp_potential_gap: 0.025
+  max_potential_gradient_error: 1.0e-5
+
+hypotheses:
+  - id: H4P_1_replicator_safe_success_above_cbf
+    metric: safe_docking_success
+    method_a: replicator_primitives
+    method_b: cbf_qp
+    direction: greater
+  - id: H4P_2_replicator_collision_below_direct
+    metric: any_collision
+    method_a: replicator_primitives
+    method_b: direct_to_slot
+    direction: less
+  - id: H4P_3_exact_kkt_below_ring
+    metric: final_kkt_residual
+    method_a: nash_pd_exact
+    method_b: nash_pd_ring
+    direction: less
+  - id: H4P_4_closure_safe_success_above_raw
+    metric: safe_docking_success
+    method_a: nash_pd_exact
+    method_b: nash_pd_exact_raw
+    direction: greater

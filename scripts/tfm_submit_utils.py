@@ -34,37 +34,37 @@ CANONICAL_SPS: dict[str, CanonicalSP] = {
     "SP1": CanonicalSP(
         "SP1",
         "Reclutamiento por quorum",
-        Path("configs/experiments/sp1/SP1_MC_recruitment_comparison.yaml"),
-        Path("results/sp1/SP1_MC_recruitment_comparison"),
-        "optimality_gap_vs_oracle",
+        Path("configs/experiments/sp1/SP1_HOMOGENEOUS_v1_1.yaml"),
+        Path("results/sp1/SP1_HOMOGENEOUS_v1_1"),
+        "normalized_regret",
     ),
     "SP2": CanonicalSP(
         "SP2",
         "Capacidad efectiva heterogenea",
-        Path("configs/experiments/sp2/SP2_MC_capacity_comparison.yaml"),
-        Path("results/sp2/SP2_MC_capacity_comparison"),
-        "performance_gap_vs_reference",
+        Path("configs/experiments/sp2/SP2_HETEROGENEOUS_GAME_v1_2.yaml"),
+        Path("results/sp2/SP2_HETEROGENEOUS_GAME_v1_2"),
+        "regret",
     ),
     "SP3": CanonicalSP(
         "SP3",
         "Factibilidad wrench planar",
-        Path("configs/experiments/sp3/SP3_MC_wrench_comparison_high_power.yaml"),
-        Path("results/sp3/SP3_MC_wrench_comparison_high_power"),
+        Path("configs/experiments/sp3/SP3_WRENCH_NASH_GAME_v1_1.yaml"),
+        Path("results/sp3/SP3_WRENCH_NASH_GAME_v1_1"),
         "optimality_gap_vs_wrench_oracle",
     ),
     "SP4": CanonicalSP(
         "SP4",
         "Movimiento y llegada segura",
-        Path("configs/experiments/sp4/SP4_MC_motion_comparison_high_power.yaml"),
-        Path("results/sp4/SP4_MC_motion_comparison_high_power"),
-        "performance_gap_vs_reference",
+        Path("configs/experiments/sp4/SP4_DOCKING_GAME_CONFIRMATORY_v3.yaml"),
+        Path("results/sp4/SP4_DOCKING_GAME_CONFIRMATORY_v3"),
+        "safe_docking_success",
     ),
     "SP5": CanonicalSP(
         "SP5",
         "Transporte cooperativo con obstaculos",
-        Path("configs/experiments/sp5/SP5_MC_cooperative_transport_high_power.yaml"),
-        Path("results/sp5/SP5_MC_cooperative_transport_high_power"),
-        "performance_gap_vs_reference",
+        Path("configs/experiments/sp5/SP5_PAYLOAD_TRANSPORT_CONFIRMATORY_v2.yaml"),
+        Path("results/sp5/SP5_PAYLOAD_TRANSPORT_CONFIRMATORY_v2"),
+        "safe_transport_success",
     ),
     "SP6": CanonicalSP(
         "SP6",
@@ -280,21 +280,27 @@ def normalize_family(row: dict[str, str]) -> str:
     raw = (row.get("method_family") or row.get("family") or "").strip()
     variant = (row.get("method_variant") or row.get("method") or "").lower()
     group = (row.get("method_comparison_group") or "").lower()
-    if "oracle" in raw or "oracle" in variant or "reference" in group:
+    if (
+        "oracle" in raw
+        or "oracle" in variant
+        or "reference" in group
+        or variant in {"hungarian_exact", "milp_exact", "centralized_preview_reference"}
+        or variant.startswith("centralized_")
+    ):
         return "Referencias centralizadas"
     if "mappo" in variant or "neural" in variant or "imitation" in variant:
         return "Aprendidas"
-    if "cbf" in variant or "hocbf" in variant or "safety" in variant:
+    if any(token in variant for token in ("cbf", "hocbf", "safety", "hamiltonian", "velocity_obstacle")):
         return "Control/safety"
     if "market" in variant or "cbba" in variant or "auction" in variant:
         return "Mercado/subasta"
     if any(token in variant for token in ("smith", "replicator", "logit", "bnn", "brown")):
         return "Dinamicas poblacionales"
-    if any(token in variant for token in ("primal", "dual", "vgne", "tensor")):
+    if any(token in variant for token in ("primal", "dual", "vgne", "tensor", "nash_pd")):
         return "Primal-dual / Nash seeking"
     if raw in FAMILY_LABELS:
         return FAMILY_LABELS[raw]
-    if "classic" in raw or "greedy" in variant or "apf" in variant:
+    if "classic" in raw or any(token in variant for token in ("greedy", "apf", "uniform", "random")):
         return "Clasicas locales"
     if raw:
         return raw

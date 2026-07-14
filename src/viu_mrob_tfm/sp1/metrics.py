@@ -36,6 +36,16 @@ class SP1Metrics:
     oracle_reward: float
     assigned_robots: int
     idle_robots: int
+    fully_served_load_fraction: float
+    robot_demand_satisfaction_ratio: float
+    unmet_quorum: int
+    robots_in_incomplete_coalitions: int
+    robots_overallocated: int
+    regret_vs_coalition_oracle: float
+    time_to_close_quorums_s: float
+    messages_to_close_quorums: int
+    timeout_rate: float
+    failure_rate: float
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -99,6 +109,8 @@ def evaluate_assignment(
     demand_met = sum(min(row["assigned_robots"], row["required_robots"]) for row in diagnostics)
     underassigned = int(sum(row["robot_deficit"] for row in diagnostics))
     overassigned = int(sum(row["robot_surplus"] for row in diagnostics))
+    incomplete_labels = {int(row["load_index"]) for row in diagnostics if row["status"] == "UNDER"}
+    robots_in_incomplete = int(sum(int(label) in incomplete_labels for label in labels if int(label) > 0))
     captured_reward = float(sum(row["reward"] for row in served))
     travel_stats = _assignment_travel_stats(world, assignment)
     assignment_cost = travel_stats["travel_distance_m"]
@@ -139,6 +151,16 @@ def evaluate_assignment(
         oracle_reward=oracle_reward,
         assigned_robots=int(np.sum(labels > 0)),
         idle_robots=int(np.sum(labels == 0)),
+        fully_served_load_fraction=float(len(served) / max(len(world.loads), 1)),
+        robot_demand_satisfaction_ratio=float(demand_met / max(demand_total, 1)),
+        unmet_quorum=underassigned,
+        robots_in_incomplete_coalitions=robots_in_incomplete,
+        robots_overallocated=overassigned,
+        regret_vs_coalition_oracle=max(0.0, oracle_reward - captured_reward),
+        time_to_close_quorums_s=1.0 if underassigned == 0 else float("nan"),
+        messages_to_close_quorums=_communication_messages(world, communication_radius, centralized),
+        timeout_rate=0.0,
+        failure_rate=float(not np.all((labels >= 0) & (labels <= len(world.loads)))),
     )
 
 

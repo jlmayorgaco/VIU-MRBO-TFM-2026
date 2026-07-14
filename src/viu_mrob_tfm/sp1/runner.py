@@ -126,6 +126,7 @@ def run_monte_carlo(config: dict[str, Any], *, config_path: Path) -> dict[str, A
                 "n_robots": params.n_robots,
                 "n_loads": params.n_loads,
                 "demand_ratio": params.demand_ratio,
+                "rho": float(len(world.robots) / max(sum(load.min_coalition_size for load in world.loads), 1)),
                 "heterogeneous_robots": params.heterogeneous_robots,
                 "communication_radius": params.communication_radius,
                 "oracle_runtime_ms": oracle_runtime_ms,
@@ -161,6 +162,7 @@ def run_monte_carlo(config: dict[str, Any], *, config_path: Path) -> dict[str, A
                 "n_robots": params.n_robots,
                 "n_loads": params.n_loads,
                 "demand_ratio": params.demand_ratio,
+                "rho": float(len(world.robots) / max(sum(load.min_coalition_size for load in world.loads), 1)),
                 "heterogeneous_robots": params.heterogeneous_robots,
                 "communication_radius": params.communication_radius,
                 "oracle_runtime_ms": oracle_runtime_ms,
@@ -676,8 +678,12 @@ def _finite_or_ceiling(value: Any) -> float:
 STRICT_COMPLETE_METHODS = {"centralized_coalition_milp", "mappo_recruitment", "oracle_reference"}
 
 
-def method_taxonomy_fields(method_id: str) -> dict[str, str]:
+def method_taxonomy_fields(method_id: str) -> dict[str, Any]:
     metadata = sp1_method_metadata(method_id)
+    scope = str(metadata["scope"])
+    is_oracle = metadata["family"] == "model_based_oracle" or metadata["ownership"] == "reference"
+    information_scope = "global" if scope == "centralized" else "local_radius_limited" if "local" in scope else "local"
+    method = method_id.lower()
     return {
         "method_family": metadata["family"],
         "method_scope": metadata["scope"],
@@ -686,6 +692,12 @@ def method_taxonomy_fields(method_id: str) -> dict[str, str]:
         "method_comparison_group": metadata["comparison_group"],
         "method_file_tag": metadata["file_tag"],
         "method_title": metadata["title"],
+        "centralized_or_distributed": scope,
+        "information_scope": information_scope,
+        "oracle_access": bool(is_oracle),
+        "decoder": "quorum_decoder" if method == "mappo_recruitment" else "none",
+        "repair": "local_repair" if "repair" in method else "none",
+        "closure": "quorum_decoder" if method == "mappo_recruitment" else "allocator_internal" if "repair" in method else "none",
     }
 
 
@@ -738,6 +750,9 @@ def method_resource_fields(method_id: str, params: dict[str, Any] | None = None)
         "method_uses_decoder": bool(metadata.get("uses_decoder", False)),
         "method_checkpoint_version": checkpoint_version,
         "method_rollout_action_mode": rollout_action_mode,
+        "training_required": str(metadata.get("training_type", "none")) not in {"none", "model_based_tuning_optional"},
+        "number_of_parameters": trainable_parameters,
+        "communication_model": metadata.get("communication_pattern", "unknown"),
     }
 
 
@@ -1489,6 +1504,7 @@ def run_columns(rows: list[dict[str, Any]]) -> list[str]:
         "n_robots",
         "n_loads",
         "demand_ratio",
+        "rho",
         "heterogeneous_robots",
         "communication_radius",
     ]

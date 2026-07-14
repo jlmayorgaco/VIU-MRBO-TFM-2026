@@ -1,0 +1,29 @@
+experiment_id: SP1_PROTOCOL_v1_DRY_RUN
+mode: monte_carlo
+description: "Public-seed SP1 smoke/dry-run only; never a confirmatory result."
+output_dir: results/sp1/SP1_PROTOCOL_v1_DRY_RUN
+
+scenarios:
+  - id: SP1_recruitment
+    param_generator: setup
+  - id: SP1_recruitment
+    param_generator: monte_carlo
+
+methods:
+  - id: centralized_coalition_milp
+  - id: hungarian_expanded
+  - id: greedy_nearest
+  - id: cbba
+  - id: smith_cardinality
+  - id: primal_dual_local_repair
+
+seeds: [910001, 910002]
+
+artifacts:
+  save_video: false
+  save_plots: true
+
+provenance:
+  split: public_dry_run
+  confirmatory: false
+  confirmatory_seeds_opened: false

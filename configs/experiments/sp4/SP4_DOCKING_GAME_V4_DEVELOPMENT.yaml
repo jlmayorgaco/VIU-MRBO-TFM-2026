@@ -1,0 +1,43 @@
+experiment_id: SP4_DOCKING_GAME_V4_DEVELOPMENT
+mode: development
+description: "Pre-registered tuning campaign for the torque-feasible distributed docking game; not confirmatory evidence."
+output_dir: results/sp4/SP4_DOCKING_GAME_V4_DEVELOPMENT
+representative_scenario: crossing
+
+seeds:
+  start: 884001
+  count: 1
+
+scenarios:
+  - id: open_docking
+  - id: crossing
+  - id: symmetric_deadlock
+  - id: actuator_limited
+  - id: cluttered_docking
+  - id: narrow_passage
+
+robot_counts: [4]
+
+methods:
+  - id: direct_hocbf
+  - id: priority_hocbf
+  - id: central_hocbf
+  - id: distributed_replicator_hocbf
+  - id: distributed_pd_hocbf
+
+simulation:
+  dt_s: 0.12
+  horizon_s: 100.0
+  game_iterations: 64
+  hocbf_iterations: 140
+  hocbf_margin_m: 0.005
+  hocbf_rate: 2.8
+  docking_position_tolerance_m: 0.12
+  docking_orientation_tolerance_rad: 0.24
+  docking_speed_tolerance_mps: 0.16
+
+audit_gates:
+  min_goal_clearance_m: 0.0
+  max_exec_barrier_violations: 0
+  max_physical_torque_saturations: 0
+  max_capacity_violation: 0.01

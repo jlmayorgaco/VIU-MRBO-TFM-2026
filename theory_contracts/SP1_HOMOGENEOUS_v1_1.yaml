@@ -1,0 +1,53 @@
+contract_id: SP1_HOMOGENEOUS_v1_1
+title: Homogeneous multi-AMR recruitment through population games
+scope:
+  robots: homogeneous
+  loads: homogeneous
+  common_quorum: "q >= 1"
+  balanced_regime: "N = K q"
+  graph: fixed_connected
+  excluded:
+    - heterogeneous_capacity
+    - wrench
+    - physical_contact
+    - obstacle_avoidance
+    - time_varying_graph
+state:
+  constraint: "x_i in Delta^K"
+  occupancy: "n_k = sum_i x_ik"
+potential:
+  expression: "Phi(x) = -alpha/2 sum_k (n_k-q)^2 - beta sum_ik c_ik x_ik"
+  fitness_contract: "f_ik = partial Phi / partial x_ik"
+protocols:
+  - smith
+  - replicator
+  - brown_von_neumann_nash
+claims:
+  - id: T-SP1-1
+    statement: Each continuous revision field conserves every robot simplex.
+    assumptions: [continuous_time, exact_fitness]
+  - id: T-SP1-2
+    statement: Phi is nondecreasing under the exact-information continuous Smith field.
+    assumptions: [full_information, fitness_is_gradient]
+  - id: T-SP1-2B
+    statement: Phi is nondecreasing under exact-information replicator and BNN fields.
+    assumptions: [full_information, fitness_is_gradient]
+  - id: T-SP1-2C
+    statement: Full-support Nash conditions characterize global optima of the concave continuous potential.
+    assumptions: [exact_fitness, product_of_simplexes]
+  - id: T-SP1-3
+    statement: Smith stationary points satisfy the population Nash support condition.
+    assumptions: [compact_simplex, continuous_fitness]
+  - id: T-SP1-4
+    statement: The q-slot closure terminates with a valid integer assignment in the balanced regime.
+    assumptions: [N_equals_Kq, all_pairs_admissible]
+nonclaims:
+  - global_optimality_of_integer_assignments_from_population_dynamics
+  - potential_monotonicity_under_finite_consensus
+  - convergence_under_time_varying_graphs
+  - distributed_optimality_of_integer_closure
+  - physical_transport_feasibility
+evidence_contract:
+  immutable_stages: [RAW, CLOSED]
+  controls: [uniform_qr, random_qr]
+  references: [greedy, auction_proxy, hungarian_exact]
