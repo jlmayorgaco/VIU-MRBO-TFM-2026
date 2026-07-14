@@ -64,21 +64,45 @@ def prepare_protocol(config_path: str | Path) -> dict[str, Any]:
         directory.mkdir(parents=True, exist_ok=True)
     families = list(config["scenario_families"])
     checkpoints = list(config["worlds"]["precision_checkpoints"])
+    fixed_n = str(config["precision"].get("extension_rule", "width_only")) == "fixed_n"
     registry: dict[str, Any] = {
         "protocol_id": config["protocol_id"],
         "confirmatory_opened": False,
         "dry_run_seeds": list(config["worlds"]["dry_run_seeds"]),
-        "test_seeds_1_40": {},
-        "extension_seeds_41_60": {},
-        "extension_seeds_61_100": {},
     }
-    for family_index, family in enumerate(families):
-        all_seeds = [_seed_for(config, family_index, ordinal) for ordinal in range(max(checkpoints))]
-        registry["test_seeds_1_40"][family] = all_seeds[:40]
-        registry["extension_seeds_41_60"][family] = all_seeds[40:60]
-        registry["extension_seeds_61_100"][family] = all_seeds[60:100]
+    seed_group_keys: tuple[str, ...]
+    if fixed_n:
+        n_worlds = int(config["worlds"]["base_per_family"])
+        key = f"confirmatory_seeds_1_{n_worlds}"
+        registry[key] = {}
+        for family_index, family in enumerate(families):
+            registry[key][family] = [
+                _seed_for(config, family_index, ordinal) for ordinal in range(n_worlds)
+            ]
+        seed_group_keys = (key,)
+    else:
+        registry.update(
+            {
+                "test_seeds_1_40": {},
+                "extension_seeds_41_60": {},
+                "extension_seeds_61_100": {},
+            }
+        )
+        for family_index, family in enumerate(families):
+            all_seeds = [
+                _seed_for(config, family_index, ordinal)
+                for ordinal in range(max(checkpoints))
+            ]
+            registry["test_seeds_1_40"][family] = all_seeds[:40]
+            registry["extension_seeds_41_60"][family] = all_seeds[40:60]
+            registry["extension_seeds_61_100"][family] = all_seeds[60:100]
+        seed_group_keys = (
+            "test_seeds_1_40",
+            "extension_seeds_41_60",
+            "extension_seeds_61_100",
+        )
     flattened = list(registry["dry_run_seeds"])
-    for key in ("test_seeds_1_40", "extension_seeds_41_60", "extension_seeds_61_100"):
+    for key in seed_group_keys:
         for seeds in registry[key].values():
             flattened.extend(seeds)
     if len(flattened) != len(set(flattened)):
@@ -111,7 +135,12 @@ def run_dry_run(config_path: str | Path) -> dict[str, Any]:
         seed = int(config["worlds"]["dry_run_seeds"][ordinal])
         world = make_world(family=family, seed=seed, ordinal=ordinal)
         for stage in CertificateStage:
-            row, trajectory = run_variant(world, stage, retain_trajectory=stage == CertificateStage.ROBUST_LOCAL)
+            row, trajectory = run_variant(
+                world,
+                stage,
+                retain_trajectory=stage == CertificateStage.ROBUST_LOCAL,
+                protocol_version=str(config["protocol_id"]),
+            )
             row["campaign_partition"] = "dry_run"
             rows.append(row)
             for point in trajectory:
@@ -121,8 +150,16 @@ def run_dry_run(config_path: str | Path) -> dict[str, Any]:
     frame.to_csv(root / "smoke" / "runs.csv", index=False)
     pd.DataFrame(trajectories).to_parquet(root / "smoke" / "trajectories.parquet", index=False)
     deterministic_world = make_world(family=SCENARIO_FAMILIES[0], seed=991337, ordinal=99)
-    first, _ = run_variant(deterministic_world, CertificateStage.ROBUST_LOCAL)
-    second, _ = run_variant(deterministic_world, CertificateStage.ROBUST_LOCAL)
+    first, _ = run_variant(
+        deterministic_world,
+        CertificateStage.ROBUST_LOCAL,
+        protocol_version=str(config["protocol_id"]),
+    )
+    second, _ = run_variant(
+        deterministic_world,
+        CertificateStage.ROBUST_LOCAL,
+        protocol_version=str(config["protocol_id"]),
+    )
     ignored = {"runtime_wall_s", "runtime_cpu_s", "runtime_s"}
     deterministic = all(first[key] == second[key] for key in first.keys() - ignored)
     expected_rows = len(config["scenario_families"]) * len(config["certificate_stages"])
@@ -196,22 +233,42 @@ def freeze_protocol(config_path: str | Path) -> dict[str, Any]:
     return manifest
 
 
-def _task_payload(config: dict[str, Any], family: str, family_index: int, ordinal: int, stage: str) -> tuple[str, int, int, str]:
-    return family, _seed_for(config, family_index, ordinal), ordinal, stage
+def _task_payload(
+    config: dict[str, Any],
+    family: str,
+    family_index: int,
+    ordinal: int,
+    stage: str,
+) -> tuple[str, int, int, str, str, str]:
+    base_per_family = int(config["worlds"]["base_per_family"])
+    if ordinal < base_per_family:
+        partition = "base"
+    elif ordinal < 60:
+        partition = "extension_41_60"
+    else:
+        partition = "extension_61_100"
+    return (
+        family,
+        _seed_for(config, family_index, ordinal),
+        ordinal,
+        stage,
+        str(config["protocol_id"]),
+        partition,
+    )
 
 
-def _safe_task(payload: tuple[str, int, int, str]) -> dict[str, Any]:
-    family, seed, ordinal, stage = payload
+def _safe_task(payload: tuple[str, int, int, str, str, str]) -> dict[str, Any]:
+    family, seed, ordinal, stage, protocol_id, partition = payload
     try:
         world = make_world(family=family, seed=seed, ordinal=ordinal)
-        row, _ = run_variant(world, stage)
+        row, _ = run_variant(world, stage, protocol_version=protocol_id)
         row["world_ordinal"] = ordinal
-        row["campaign_partition"] = "base" if ordinal < 40 else ("extension_41_60" if ordinal < 60 else "extension_61_100")
+        row["campaign_partition"] = partition
         row["exception"] = None
         return row
     except Exception as exc:  # failures are evidence and must remain rows
         return {
-            "protocol_version": PROTOCOL_VERSION,
+            "protocol_version": protocol_id,
             "run_id": hashlib.sha256(stable_json(payload).encode()).hexdigest()[:24],
             "world_id": f"pcert-{family}-{ordinal:03d}",
             "world_hash": None,
@@ -223,7 +280,7 @@ def _safe_task(payload: tuple[str, int, int, str]) -> dict[str, Any]:
             "final_physical_success": False,
             "success": False,
             "failure_code": FailureCode.NUMERICAL_ERROR.value,
-            "campaign_partition": "base" if ordinal < 40 else ("extension_41_60" if ordinal < 60 else "extension_61_100"),
+            "campaign_partition": partition,
             "runtime_wall_s": np.nan,
             "runtime_cpu_s": np.nan,
             "exception": "".join(traceback.format_exception_only(type(exc), exc)).strip(),
@@ -242,13 +299,20 @@ def _persist_runs(frame: pd.DataFrame, root: Path) -> None:
     frame.to_csv(root / "campaign" / "runs.csv", index=False)
 
 
-def _execute_tasks(tasks: list[tuple[str, int, int, str]], existing: pd.DataFrame, root: Path, workers: int) -> pd.DataFrame:
+def _execute_tasks(
+    tasks: list[tuple[str, int, int, str, str, str]],
+    existing: pd.DataFrame,
+    root: Path,
+    workers: int,
+) -> pd.DataFrame:
     existing_ids = set(existing["run_id"].astype(str)) if not existing.empty and "run_id" in existing else set()
-    pending: list[tuple[str, int, int, str]] = []
+    pending: list[tuple[str, int, int, str, str, str]] = []
     for payload in tasks:
-        family, seed, ordinal, stage = payload
+        family, seed, ordinal, stage, protocol_id, _partition = payload
         world = make_world(family=family, seed=seed, ordinal=ordinal)
-        expected_id = hashlib.sha256(f"{PROTOCOL_VERSION}|{world.world_hash}|{stage}".encode()).hexdigest()
+        expected_id = hashlib.sha256(
+            f"{protocol_id}|{world.world_hash}|{stage}".encode()
+        ).hexdigest()
         if expected_id not in existing_ids:
             pending.append(payload)
     rows = existing.to_dict("records") if not existing.empty else []
@@ -338,6 +402,38 @@ def extend_by_precision(config_path: str | Path, *, workers: int | None = None) 
     frame = _load_runs(root / "campaign" / "runs.parquet")
     if frame.empty:
         raise RuntimeError("base campaign must run before precision extension")
+    if str(config["precision"].get("extension_rule", "width_only")) == "fixed_n":
+        n_worlds = int(config["worlds"]["base_per_family"])
+        final_sizes = (
+            frame.groupby("scenario_family")["world_ordinal"].nunique().astype(int).to_dict()
+        )
+        if any(final_sizes.get(family) != n_worlds for family in config["scenario_families"]):
+            raise RuntimeError("fixed-n campaign is incomplete")
+        decisions = pd.DataFrame(
+            [
+                {
+                    "checkpoint": n_worlds,
+                    "scenario_family": family,
+                    "max_ci95_width": np.nan,
+                    "threshold": np.nan,
+                    "decision": "not_applicable",
+                    "reason": "fixed_n_no_optional_stopping",
+                }
+                for family in config["scenario_families"]
+            ]
+        )
+        decisions.to_csv(root / "campaign" / "precision_decisions.csv", index=False)
+        decisions.to_parquet(root / "campaign" / "precision_decisions.parquet", index=False)
+        manifest = {
+            "status": "fixed_n_complete",
+            "final_worlds_by_family": final_sizes,
+            "total_rows": len(frame),
+            "extension_rule": "fixed_n_no_optional_stopping",
+        }
+        (root / "campaign" / "precision_manifest.json").write_text(
+            json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8"
+        )
+        return manifest
     decisions: list[dict[str, Any]] = []
     active_families = set(config["scenario_families"])
     checkpoints = list(config["worlds"]["precision_checkpoints"])
@@ -520,7 +616,11 @@ def _write_report(config: dict[str, Any], frame: pd.DataFrame, summary: pd.DataF
         f"- Numerical errors: {(frame['failure_code'] == FailureCode.NUMERICAL_ERROR.value).sum()}.",
         f"- Final paired worlds by family: `{json.dumps(final_sizes, sort_keys=True)}`.",
         "- Confirmatory seeds were opened only after `frozen_manifest.json` recorded `frozen_ready_for_execution`.",
-        "- Precision extensions used CI-width only; Holm was applied at final sample sizes.",
+        (
+            "- The confirmatory analysis used a fixed sample size; no optional stopping was applied."
+            if str(config["precision"].get("extension_rule", "width_only")) == "fixed_n"
+            else "- Precision extensions used CI-width only; Holm was applied at final sample sizes."
+        ),
         "",
         "## FULL robust-local stage",
         "",
@@ -541,12 +641,17 @@ def finalize_manifest(config_path: str | Path) -> dict[str, Any]:
     config = load_config(config_path)
     root = output_root(config)
     frame = pd.read_parquet(root / "campaign" / "runs.parquet")
-    expected_base = len(config["scenario_families"]) * 40 * len(config["certificate_stages"])
-    base_rows = int((frame["world_ordinal"] < 40).sum())
+    base_per_family = int(config["worlds"]["base_per_family"])
+    expected_base = (
+        len(config["scenario_families"])
+        * base_per_family
+        * len(config["certificate_stages"])
+    )
+    base_rows = int((frame["world_ordinal"] < base_per_family).sum())
     required = [root / "protocol/frozen_manifest.json", root / "campaign/precision_manifest.json", root / "statistics/manifest.json", root / "figures/manifest.json", root / "FINAL_REPORT.md"]
     gates = {
         "freeze_valid": json.loads(required[0].read_text(encoding="utf-8")).get("status") == "frozen_ready_for_execution",
-        "base_count_960": base_rows == expected_base == 960,
+        "base_count_expected": base_rows == expected_base,
         "unique_rows": frame["run_id"].nunique() == len(frame),
         "all_failures_preserved": not frame["failure_code"].isna().any(),
         "no_numerical_errors": not (frame["failure_code"] == FailureCode.NUMERICAL_ERROR.value).any(),

@@ -52,6 +52,7 @@ def run_variant(
     stage: CertificateStage | str,
     *,
     retain_trajectory: bool = False,
+    protocol_version: str = PROTOCOL_VERSION,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Execute one cumulative variant and retain every certificate outcome."""
 
@@ -84,8 +85,8 @@ def run_variant(
     runtime_wall = time.perf_counter() - started_wall
     runtime_cpu = time.process_time() - started_cpu
     row: dict[str, Any] = {
-        "protocol_version": PROTOCOL_VERSION,
-        "run_id": stable_token(PROTOCOL_VERSION, world.world_hash, selected_stage.value),
+        "protocol_version": protocol_version,
+        "run_id": stable_token(protocol_version, world.world_hash, selected_stage.value),
         "task_token": stable_token(world.world_hash, selected_stage.value, "task"),
         "world_id": world.world_id,
         "world_hash": world.world_hash,
@@ -336,6 +337,7 @@ def simulate_load(
     collision = False
     dropout_unrecovered = False
     recovery_count = 0
+    recovery_attempted = False
     recovered_robot = -1
     messages = int(decision.messages)
     delivered_step = -1
@@ -352,13 +354,23 @@ def simulate_load(
             active.remove(world.dropout_robot)
         if stage == CertificateStage.ROBUST_LOCAL:
             messages += _update_messages(world, step, active, latest_health, last_seen, queues, rng)
-            if step >= dropout_step + max(2, world.delay_steps) and world.dropout_robot not in active:
+            if (
+                not recovery_attempted
+                and world.dropout_robot in original_decision.selected
+                and step >= dropout_step + max(2, world.delay_steps)
+                and world.dropout_robot not in active
+            ):
+                # One dropout is one recovery event.  The old implementation
+                # retriggered this branch on every subsequent step and could
+                # recruit several idle robots for the same failure.
+                recovery_attempted = True
                 replacement = _replacement_robot(world, decision, active)
-                if replacement >= 0:
-                    vacated_slot = decision.slot_map().get(world.dropout_robot, 0)
+                slot_map = decision.slot_map()
+                vacated_slot = slot_map.get(world.dropout_robot)
+                if replacement >= 0 and vacated_slot is not None:
                     selected = tuple(idx for idx in decision.selected if idx != world.dropout_robot) + (replacement,)
                     slots = tuple(
-                        decision.slot_map()[idx] for idx in decision.selected if idx != world.dropout_robot
+                        slot_map[idx] for idx in decision.selected if idx != world.dropout_robot
                     ) + (vacated_slot,)
                     decision = CoalitionDecision(
                         selected=selected,
@@ -477,6 +489,9 @@ def simulate_load(
             "dropout_unrecovered": bool(dropout_unrecovered and recovery_count == 0),
             "recovery_count": int(recovery_count),
             "recovered_robot_dynamic": int(recovered_robot),
+            "final_selected_robot_ids": json_list(tuple(sorted(active))),
+            "final_selected_slot_ids": json_list(decision.slot_by_robot),
+            "final_selected_robots": int(len(active)),
             "time_to_solution_s": float(time_to_solution),
             "time_censored": bool(not target_reached),
             "final_position_error_m": final_position_error,
