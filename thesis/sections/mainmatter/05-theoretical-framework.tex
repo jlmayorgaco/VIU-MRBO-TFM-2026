@@ -1,0 +1,157 @@
+\section{Marco teórico y estado del arte}
+\label{sec:theoretical-framework}
+
+El transporte cooperativo enlaza decisiones que suelen estudiarse por separado: selección de robots, formación de la coalición, estimación de recursos, contacto y movimiento de la carga. Cada resultado conserva su dominio. Un Nash puede ser ineficiente; una suma de capacidades puede ocultar un torque irrealizable; el consenso no estabiliza la planta; una trayectoria sin colisión puede terminar bloqueada.
+
+\subsection{Transporte cooperativo y contratos entre capas}
+\label{subsec:tf-agv-transport}
+
+Los AGV surgieron ligados a rutas e infraestructura predefinidas, mientras los AMR incorporaron percepción y planificación a bordo. En instalaciones actuales la diferencia es funcional, no comercial: una plataforma puede navegar con flexibilidad y seguir sometida a corredores, prioridades y recursos compartidos \parencite{leanh2006agv,azadeh2019warehouse}. La coordinación estudiada exige que cada robot revise su decisión con estado propio y mensajes vecinales.
+
+Una carga excede a un solo robot por masa, dimensiones, torque o maniobrabilidad. La cooperación exige algo más que llegada simultánea. El equipo debe cerrar su composición, ocupar contactos compatibles, producir el \emph{wrench} requerido y conservar seguridad durante el transporte \parencite{an2023cooperativeReview}. La Figura~\ref{fig:tf-problem-gap} muestra esas dependencias. Las flechas no expresan una garantía conjunta: cada transición necesita un modelo y una prueba propios.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    font=\sffamily,
+    stage/.style={rounded corners=2pt,draw=VIUGray!70,line width=0.75pt,
+      minimum width=2.42cm,minimum height=1.55cm,text width=2.15cm,
+      align=center,inner sep=3pt,font=\fontsize{8.2}{9.1}\selectfont},
+    measured/.style={stage,draw=SPBlue,fill=SPBlue!7},
+    decided/.style={stage,draw=SPPurple,fill=SPPurple!7},
+    certified/.style={stage,draw=VIUOrange,fill=VIUOrange!8},
+    applied/.style={stage,draw=SPGreen,fill=SPGreen!8},
+    arrow/.style={-{Latex[length=2.1mm]},draw=VIUDark,line width=0.9pt},
+    return/.style={-{Latex[length=2mm]},draw=SPRed,line width=0.75pt,dashed},
+    band/.style={rounded corners=2pt,draw=SPPurple!75,fill=SPPurple!4,
+      minimum width=13.25cm,minimum height=0.60cm,align=center,
+      font=\fontsize{7.8}{8.6}\selectfont}
+  ]
+    \node[measured] (measure) at (0, 0) {\textbf{Medición local}\\pose, batería, contacto};
+    \node[measured] (estimate) at (2.75, 0) {\textbf{Estimación}\\ocupación y recursos};
+    \node[decided] (decision) at (5.50, 0) {\textbf{Coalición}\\preferencia y cierre};
+    \node[certified] (certificate) at (8.25, 0) {\textbf{Certificado}\\capacidad y \emph{wrench}};
+    \node[applied] (plant) at (11.00, 0) {\textbf{Planta}\\pose, seguridad y fallo};
+
+    \draw[arrow] (measure) -- (estimate);
+    \draw[arrow] (estimate) -- (decision);
+    \draw[arrow] (decision) -- (certificate);
+    \draw[arrow] (certificate) -- (plant);
+    \draw[return] (plant.south) -- ++(0,-0.62) -| (measure.south);
+    \node[font=\fontsize{7.4}{8.0}\selectfont,text=SPRed,fill=white,inner sep=1pt]
+      at (5.50,-0.93) {déficit, pérdida de contacto, error de pose o retirada};
+    \node[band] at (5.50,-1.55)
+      {Red imperfecta y escala: radio, retardo, pérdidas, mensajes, CPU y memoria};
+  \end{tikzpicture}
+  \caption{Contratos que separan información, decisión, factibilidad física y ejecución.}
+  \label{fig:tf-problem-gap}
+  \viuownsource
+\end{figure}
+
+La modalidad primaria, Cargo, modela la carga y los robots acoplados como un cuerpo planar soportado. El empuje cooperativo usa contactos unilaterales y admite deslizamiento. El \emph{caging} añade una condición geométrica de confinamiento. Estas modalidades comparten la tarea, pero no el modelo de contacto ni la prueba de estabilidad.
+
+\subsection{Asignación y formación de coaliciones}
+\label{subsec:tf-mrta}
+
+La asignación multi-robot de tareas (MRTA) clasifica relaciones entre robots, tareas y horizonte de decisión \parencite{gerkeyMataric2004MRTA,korsahStentzDias2013iTax}. El caso uno a uno admite asignación bipartita y el algoritmo húngaro \parencite{kuhn1955Hungarian}. Una carga que requiere varios robots introduce dependencias entre ganadores. Su formulación mínima incluye
+\begin{equation}
+  \sum_{k=1}^{K}x_{ik}\leq 1,\qquad
+  \sum_{i=1}^{N}x_{ik}\geq n_k,\qquad
+  \sum_{i=1}^{N}\boldsymbol c_i x_{ik}\succeq \boldsymbol r_k,
+  \qquad x_{ik}\in\{0, 1\}.
+  \label{eq:tf-coalition-resource-feasibility}
+\end{equation}
+La primera restricción impone exclusividad; las otras dos, cuota y recursos. Replicar una tarea en plazas independientes no preserva necesariamente simultaneidad ni compatibilidad. MILP y \emph{set partitioning} son oráculos adecuados para instancias pequeñas, aunque dependen de información global.
+
+Las subastas distribuyen la adjudicación mediante precios. El algoritmo de Bertsekas resuelve la asignación clásica \parencite{bertsekas1988Auction}; MURDOCH usa contratos en equipos robóticos \parencite{gerkeyMataric2002MURDOCH}. CBBA construye paquetes locales y resuelve conflictos por consenso, y ACBBA admite mensajes fuera de orden \parencite{choiBrunetHow2009CBBA,johnson2011acbba}. Sus garantías no cubren, sin una extensión explícita, el contacto simultáneo de varios robots con una carga.
+
+La formación de coaliciones toma al grupo como unidad. Los métodos \emph{anytime} de Shehory y Kraus, las coaliciones basadas en capacidades de Vig y Adams y los juegos hedónicos cubren composición y preferencia colectiva \parencite{shehoryKraus1998Coalition,vigAdams2006Coalition,dutta2021hedonic}. ASyMTRe combina esquemas sensoriales, motores y de comunicación; IQ-ASyMTRe descarta composiciones incompatibles con requisitos funcionales \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}. Estas formulaciones mejoran la selección del equipo, pero una coalición estable o rica en recursos todavía puede ser mecánicamente inviable.
+
+Los antecedentes más próximos de 2024--2025 estrechan la comparación. Shan
+et al. resuelven mediante subasta descentralizada tareas de transporte colectivo
+que llegan dinámicamente, con ventanas temporales y corrección de desviaciones
+de agenda \parencite{shan2024collectiveTransport}. Dai et al. aprenden de forma
+conjunta coaliciones y rutas para tareas de cardinalidad variable
+\parencite{dai2024dynamicCoalition}; Bezerra et al. incorporan mapas espaciales,
+intenciones y revisión local de asignación mediante MAPPO
+\parencite{bezerra2025dynamicCoalition}. Qiu et al. actualizan coaliciones cuando
+el consumo reduce la capacidad disponible \parencite{qiu2024payloadConsumption},
+y Shida et al. aprenden a excluir temporalmente tareas inviables para evitar
+bloqueos \parencite{shida2025infeasibleTasks}. Estos trabajos enlazan asignación
+con tiempo, movimiento o revisión dinámica, pero usan capacidad nominal o
+aprendida y no el certificado explícito de contacto, \emph{wrench}, seguridad y
+recuperación exigido por el problema. Los métodos aprendidos constituyen
+comparadores cercanos, no el método principal, porque su decisión no es
+directamente interpretable.
+
+\subsection{Información local, juegos y optimización distribuida}
+\label{subsec:tf-games-consensus}
+
+La comunicación se representa mediante $\mathcal G(t)=(\Robots,\mathcal E(t))$. En un grafo no dirigido y conectado, $\lambda_2(L)>0$ mide conectividad algebraica y condiciona la disipación del desacuerdo \parencite{bullo2009distributed}. Los grafos conmutados requieren propiedades temporales, como conectividad conjunta, y cotas sobre retardo y actualización \parencite{olfatiSaber2004switchingConsensus}. El consenso certifica acuerdo sobre una variable; no certifica el juego ni el transporte.
+
+Los juegos poblacionales describen preferencias continuas sobre acciones. En un Nash poblacional, toda estrategia con masa positiva maximiza el \emph{payoff} bajo el estado agregado \parencite{sandholm2010population}. Los juegos de potencial añaden una función escalar cuya variación coincide con cada desviación unilateral:
+\begin{equation}
+  u_i(a_i',a_{-i})-u_i(a_i,a_{-i})
+  =\Phi(a_i',a_{-i})-\Phi(a_i,a_{-i}).
+  \label{eq:tf-exact-potential}
+\end{equation}
+Esta igualdad debe probarse para el \emph{payoff} implementado. Descuentos, proyecciones o información obsoleta pueden romperla. Replicator, Smith, BNN y logit tampoco son nombres intercambiables: cambian la comparación de incentivos, el soporte y los estados estacionarios \parencite{sandholm2010population}. La masa continua necesita un cierre entero antes de representar robots identificables.
+
+Un equilibrio de Nash generalizado incorpora restricciones compartidas. Bajo convexidad y regularidad puede formularse como desigualdad variacional; el equilibrio variacional comparte multiplicadores entre agentes \parencite{yi2019operatorGNE,franci2022stochasticGNE}. Los métodos primal--dual actualizan decisiones y multiplicadores, con garantías condicionadas por monotonicidad, conectividad y ganancias \parencite{cherukuri2016primalDual,koshal2016aggregative}. Ninguna de estas propiedades convierte por sí sola el equilibrio en óptimo social.
+
+La pasividad y Lyapunov permiten estudiar la interconexión con la planta. Una prueba requiere variable de almacenamiento, suministro, dominio y signo de la derivada o diferencia \parencite{vanderschaf2017passivity,ortega2002passivity}. La etiqueta \emph{pasivo} no basta si las variables de puerto o los modelos de contacto cambian entre bloques.
+
+\subsection{Contacto, formación y \emph{wrench}}
+\label{subsec:tf-rigidity-wrench}
+
+La conectividad de una formación no implica rigidez. La rigidez geométrica determina si las restricciones relativas fijan localmente la forma, salvo traslación y rotación \parencite{desai2001formation,bullo2009distributed}. En Cargo también importan el soporte vertical y los límites de actuador.
+
+Si $\boldsymbol\lambda_C$ agrupa esfuerzos de contacto y $G_C(q)$ es la matriz de agarre, el \emph{wrench} aplicado es
+\begin{equation}
+  W_C=G_C(q)\boldsymbol\lambda_C,
+  \qquad \boldsymbol\lambda_C\in\mathcal U_C.
+  \label{eq:tf-grasp-map}
+\end{equation}
+La literatura distingue movimiento, fuerzas resultantes y fuerzas internas \parencite{nakamura1989dynamics,yoshikawa1993coordinated}. La geometría y el tipo de contacto determinan las propiedades de cierre \parencite{bicchi1995closure}. Por eso una suma escalar de capacidades no sustituye la pertenencia $W_k^{\mathrm{req}}\in\mathcal W_C(q)$, con $\mathcal W_C(q)=\{G_C(q)\boldsymbol\lambda:\boldsymbol\lambda\in\mathcal U_C\}$.
+
+En empuje, $\mathcal U_C$ impone unilateralidad y fricción. El \emph{caging} exige que la configuración de robots confine el objeto; rodearlo no basta \parencite{pereira2004caging,fink2008caging}. Los métodos de transporte restringido pueden repartir fuerzas y seguir la pose para un equipo dado \parencite{alonsomora2017transport}. El problema adicional consiste en seleccionar ese equipo con información local.
+
+\subsection{Seguridad, fallos y red imperfecta}
+\label{subsec:tf-industrial-constraints}
+
+ORCA construye velocidades recíprocamente admisibles bajo un modelo geométrico \parencite{vandenberg2011orca}. Las funciones de barrera restringen el control para mantener un conjunto seguro cuando el estado inicial, el modelo y el problema de control satisfacen sus supuestos \parencite{ames2017cbf,wang2017barrier}. Ambos enfoques pueden detenerse en congestión. Seguridad y vivacidad son propiedades distintas.
+
+Los fallos exigen revisar la coalición y el contacto. ALLIANCE usa impaciencia y aquiescencia para activar conductas alternativas, mientras las subastas dinámicas reasignan tareas después de eventos \parencite{parker1998alliance,nanjanath2006dynamicAuctions}. En una carga rígida, retirar un robot cambia además el soporte y el conjunto de \emph{wrench}; la reparación lógica necesita un nuevo certificado físico.
+
+Retardo, pérdida y topología alteran la información disponible. El consenso con enlaces imperfectos depende del modelo estadístico y de la conectividad \parencite{kar2009imperfectConsensus,nedic2010constrainedConsensus}; ACBBA también se ha estudiado con pérdida de mensajes \parencite{rantanen2018lossyAcbba}. Estas garantías no cubren particiones persistentes ni demuestran que un equilibrio visible sea globalmente consistente.
+
+\subsection{Comparación y brecha de investigación}
+\label{subsec:tf-synthesis-gap}
+
+El contrato básico de cada familia se compara en la Tabla~\ref{tab:tf-comparison}. ``Parcial'' indica que la propiedad depende de un módulo adicional o de supuestos ajenos al problema tratado.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Cobertura de las familias metodológicas relevantes.}
+  \label{tab:tf-comparison}
+  \scriptsize
+  \setlength{\tabcolsep}{2.4pt}
+  \begin{tabularx}{\textwidth}{@{}p{2.0cm}p{1.25cm}p{1.35cm}p{1.45cm}X p{2.2cm}@{}}
+    \toprule
+    Familia & Coalición & Física & Información local & Garantía típica & Límite para este problema \\
+    \midrule
+    Asignación/MILP & Sí & Parcial & No & óptimo o cota del optimizador & coste global y combinatorio \\
+    Subasta/CBBA & Parcial & No & Sí & asignación bajo supuestos de puntuación y red & no certifica contacto \\
+    Juego de coalición & Sí & Parcial & Sí & estabilidad o mejora local & no implica óptimo social \\
+    Juego poblacional & Relajada & No & Parcial & convergencia bajo estructura del juego & exige cierre entero \\
+    Formación/\emph{wrench} & Equipo dado & Sí & Parcial & rigidez, reparto o seguimiento & no selecciona el equipo \\
+    ORCA/CBF & No & Parcial & Sí & evitación o invariancia condicionada & puede bloquearse \\
+    MARL/GNN & Aprendida & Parcial & Sí & rendimiento empírico & interpretación y garantías limitadas \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+La brecha no es la falta de métodos aislados. MRTA cierra asignaciones; el consenso alinea estimaciones; un juego regula incentivos; el control mueve un equipo dado. Falta comprobar que las interfaces entre esos resultados conservan exclusividad, factibilidad mecánica, seguridad, recuperación y calidad bajo red imperfecta. En el corpus revisado no se identificó una solución única que cubra esas condiciones con un mecanismo distribuido y explicable. La afirmación se limita a las fuentes verificadas y no pretende demostrar inexistencia universal.
+
+La evaluación añade las condiciones una a una y conserva los fallos que impiden extender cada conclusión al sistema completo.

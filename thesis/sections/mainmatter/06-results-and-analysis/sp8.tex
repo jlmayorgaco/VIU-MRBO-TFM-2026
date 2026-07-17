@@ -13,32 +13,32 @@ El grafo nominal, los mensajes degradados y la partición definen los tres regí
   \centering
   \begin{spdiagram}
     \spdrawarena{SP8 \textbar\ escala, vecindad y pérdida de información}
-    \node[sprobot] (c1) at (1.25,3.55) {$C_1$};
-    \node[sprobotgreen] (c2) at (3.65,3.55) {$C_2$};
-    \node[sprobotpurple] (c3) at (2.45,1.65) {$C_3$};
+    \node[sprobot] (c1) at (1.25, 3.55) {$C_1$};
+    \node[sprobotgreen] (c2) at (3.65, 3.55) {$C_2$};
+    \node[sprobotpurple] (c3) at (2.45, 1.65) {$C_3$};
     \draw[spcomm] (c1)--(c2)--(c3)--(c1);
-    \node[spannotation] at (2.45,4.35) {grafo nominal};
+    \node[spannotation] at (2.45, 4.35) {grafo nominal};
 
-    \node[sprobot] (d1) at (6.20,3.55) {$C_1$};
-    \node[sprobotgreen] (d2) at (8.60,3.55) {$C_2$};
-    \node[sprobotpurple] (d3) at (7.40,1.65) {$C_3$};
+    \node[sprobot] (d1) at (6.20, 3.55) {$C_1$};
+    \node[sprobotgreen] (d2) at (8.60, 3.55) {$C_2$};
+    \node[sprobotpurple] (d3) at (7.40, 1.65) {$C_3$};
     \draw[spcommdelayed] (d1)--(d2);
     \draw[draw=SPRed,densely dotted,line width=0.9pt] (d2)--(d3);
-    \node[spannotation,text=SPRed] at (7.95,2.55) {pérdida};
-    \node[spannotation] at (7.40,4.35) {retardo y paquetes};
+    \node[spannotation,text=SPRed] at (7.95, 2.55) {pérdida};
+    \node[spannotation] at (7.40, 4.35) {retardo y paquetes};
 
-    \node[sprobot] (p1) at (10.40,3.55) {$C_1$};
-    \node[sprobotgreen] (p2) at (12.55,1.65) {$C_2$};
+    \node[sprobot] (p1) at (10.40, 3.55) {$C_1$};
+    \node[sprobotgreen] (p2) at (12.55, 1.65) {$C_2$};
     \draw[draw=SPRed,dashed,line width=0.9pt] (p1)--(p2);
-    \node[spannotation] at (11.48,4.35) {partición};
-    \node[spannotation,text=SPRed] at (11.48,2.55) {conflicto no visible};
+    \node[spannotation] at (11.48, 4.35) {partición};
+    \node[spannotation,text=SPRed] at (11.48, 2.55) {conflicto no visible};
 
-    \draw[spcomm] (0.40,0.42)--(1.20,0.42);
-    \node[splegend,anchor=west] at (1.32,0.42) {mensaje recibido};
-    \draw[spcommdelayed] (4.40,0.42)--(5.20,0.42);
-    \node[splegend,anchor=west] at (5.32,0.42) {mensaje retardado};
-    \draw[draw=SPRed,densely dotted,line width=0.9pt] (8.55,0.42)--(9.35,0.42);
-    \node[splegend,anchor=west] at (9.47,0.42) {información ausente};
+    \draw[spcomm] (0.40, 0.42)--(1.20, 0.42);
+    \node[splegend,anchor=west] at (1.32, 0.42) {mensaje recibido};
+    \draw[spcommdelayed] (4.40, 0.42)--(5.20, 0.42);
+    \node[splegend,anchor=west] at (5.32, 0.42) {mensaje retardado};
+    \draw[draw=SPRed,densely dotted,line width=0.9pt] (8.55, 0.42)--(9.35, 0.42);
+    \node[splegend,anchor=west] at (9.47, 0.42) {información ausente};
   \end{spdiagram}
   \caption{Incremento de SP8: el juego regula conflictos visibles, mientras el retardo, la pérdida y la partición alteran la información disponible.}
   \label{fig:sp8-scenario}
@@ -120,7 +120,7 @@ No se incorpora una planta adicional. Las rutas representan cuerpos compuestos c
 
 \subsubsection{Diseño experimental}
 
-El estudio cruzó $A\in\{4,8,12,16,32,64\}$ coaliciones, equivalentes a $N=2A\in\{8,16,24,32,64,128\}$ robots, con cinco regímenes: nominal, radio reducido, retardo de hasta tres eventos, pérdida independiente de $0.25$ y una combinación adversa con radio reducido, tres eventos de retardo y pérdida de $0.35$. Se usaron 30 semillas por celda, para \SPEightWorlds{} mundos y \SPEightExecutedRuns{} ejecuciones efectivas pareadas. La tabla de auditoría contiene además 450 registros del oráculo fuera de su dominio certificado, marcados como no ejecutados; por ello suma \SPEightRecords{} filas sin confundir registros con ejecuciones.
+El estudio cruzó $A\in\{4, 8, 12, 16, 32, 64\}$ coaliciones, equivalentes a $N=2A\in\{8, 16, 24, 32, 64, 128\}$ robots, con cinco regímenes: nominal, radio reducido, retardo de hasta tres eventos, pérdida independiente de $0.25$ y una combinación adversa con radio reducido, tres eventos de retardo y pérdida de $0.35$. Se usaron 30 semillas por celda, para \SPEightWorlds{} mundos y \SPEightExecutedRuns{} ejecuciones efectivas pareadas. La tabla de auditoría contiene además 450 registros del oráculo fuera de su dominio certificado, marcados como no ejecutados; por ello suma \SPEightRecords{} filas sin confundir registros con ejecuciones.
 
 Tres comparaciones responden preguntas distintas. Periódico frente a evento mide el beneficio y coste de retransmitir; periódico frente a información perfecta aísla la pérdida por observabilidad; el oráculo exhaustivo mide calidad solo en los \SPEightCertified{} mundos con $A\leq12$. El perfil aleatorio fija una referencia inferior. Las métricas son tasa libre de conflictos, pares globales, mensajes, bytes y CPU. Los tres contrastes contienen 720 pares de régimen degradado, pero proceden de 180 instancias estratégicas independientes observadas bajo cuatro regímenes. La inferencia promedia primero por instancia y aplica \emph{bootstrap} y Wilcoxon a esas 180 unidades, con corrección de Holm.
 

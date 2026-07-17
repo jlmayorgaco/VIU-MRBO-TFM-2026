@@ -1,0 +1,89 @@
+\input{../results/processed/integrated/CARGO_E2E_CONFIRMATORY_v1/tables/cargo_e2e_numbers.tex}
+
+\clearpage
+\subsection{Simulación integrada de la cadena Cargo}
+\label{subsec:cargo-e2e}
+
+Una misión reúne reclutamiento, acoplamiento, transporte y recuperación. La carga parte con los robots desacoplados; la coalición se forma con la visibilidad permitida por el grafo; los uniciclos alcanzan los contactos y la planta planar evita un obstáculo. Si falla un integrante, la carga se detiene hasta que llega el reemplazo y se restablece cinemáticamente el contacto fijo. Esta composición mide compatibilidad funcional dentro de un simulador reducido. Una garantía de estabilidad híbrida global exigiría un análisis adicional.
+
+\subsubsection{Ejecución común}
+
+El protocolo propaga por el grafo identificadores y números de versión, con retardo entero acotado y pérdida Bernoulli. Un líder temporal, elegido por proximidad a la carga, cierra la coalición con los identificadores recibidos; después consulta en el registro global del simulador la posición, la capacidad y el límite de fuerza correspondientes. El alcance de los mensajes está restringido, pero su contenido no es autosuficiente y los robots no mantienen memorias locales completas. Las referencias con información perfecta y central acceden a toda la flota. La Figura~\ref{fig:cargo-e2e-chain} recoge la secuencia.
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{tikzpicture}[node distance=6mm and 7mm,>=Latex]
+    \tikzset{e2e/.style={draw=VIUOrange,rounded corners=2pt,fill=VIUOrange!7,
+      minimum height=15mm,text width=2.25cm,align=center,font=\small}}
+    \node[e2e] (rec) {reclutamiento\\vecinal};
+    \node[e2e,right=of rec] (dock) {acoplamiento\\uniciclo dinámico};
+    \node[e2e,right=of dock] (guard) {certificado y\\guardia física};
+    \node[e2e,below=of guard] (move) {transporte\\planar};
+    \node[e2e,left=of move] (fail) {fallo y\\re-reclutamiento};
+    \node[e2e,left=of fail] (resume) {reemplazo\\y reanudación};
+    \draw[->,thick,SPBlue] (rec)--(dock);
+    \draw[->,thick,SPBlue] (dock)--(guard);
+    \draw[->,thick,SPBlue] (guard)--(move);
+    \draw[->,thick,SPBlue] (move)--(fail);
+    \draw[->,thick,SPBlue] (fail)--(resume);
+    \draw[->,thick,SPBlue] (resume.south) -- ++(0,-0.45) -| (move.south);
+  \end{tikzpicture}
+  \caption{Cadena ejecutada en la simulación Cargo integrada. El fallo se activa solo en el régimen correspondiente.}
+  \label{fig:cargo-e2e-chain}
+  \viuownsource
+\end{figure}
+
+La aproximación y el reemplazo integran el uniciclo dinámico de la Sección~\ref{subsec:methodology-common-model}; los pares equivalentes de rueda se saturan antes de actualizar velocidad y pose. Tras el acoplamiento, los robots dejan de evolucionar como uniciclos independientes: la carga se mueve como cuerpo planar y las poses robóticas se reconstruyen con desplazamientos rígidos. El \emph{wrench} aplicado procede de un reparto vectorial acotado, mientras el certificado inicial usa una condición agregada de carga útil y fuerza. Ambas interfaces aún no comparten el QP geométrico de SP3. La carga permanece inmóvil mientras exista déficit.
+
+\subsubsection{Protocolo confirmatorio}
+
+El protocolo se congeló después de un piloto de tres semillas, cuatro regímenes y tres tamaños, es decir, 36 instancias. El estudio confirmatorio cruzó los mismos cuatro regímenes con $N\in\{4, 8, 12\}$ y 30 semillas nuevas: \CargoEtwoEWorlds{} instancias y \CargoEtwoERuns{} ejecuciones. La Tabla~\ref{tab:cargo-e2e-regimes} explicita los factores activos. La red degradada usa diez eventos de propagación, pérdida $0.25$ y retardo de hasta dos eventos. Se compararon el método con visibilidad vecinal, su gemelo con información perfecta, una ablación sin coste espacial, otra sin las guardias mecánica y de seguridad, otra sin reparación y una referencia central que enumera coaliciones factibles.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Factores activos en los cuatro regímenes de la simulación integrada.}
+  \label{tab:cargo-e2e-regimes}
+  \small
+  \begin{tabular}{lccc}
+    \toprule
+    Régimen & Obstáculo & Red degradada & Fallo \\
+    \midrule
+    Abierto nominal & No & No & No \\
+    Obstáculo estático & Sí & No & No \\
+    Red degradada & Sí & Sí & No \\
+    Fallo durante transporte & Sí & No & Sí \\
+    \bottomrule
+  \end{tabular}
+  \viuownsource
+\end{table}
+
+Las variables principales son éxito de misión, intersección de la huella compuesta con el obstáculo durante el transporte, tiempo total y recuperación. También se registraron error final, residual interno de \emph{wrench}, saturación, energía de rueda durante aproximación y reemplazo, trabajo planar, mensajes, bytes y CPU. Las cuatro comparaciones usan instancias pareadas, intervalos \emph{bootstrap}, McNemar o Wilcoxon, tamaño de efecto y corrección de Holm. Cuando una comparación reúne varios escenarios de la misma combinación tamaño--semilla, la inferencia promedia primero esas medidas repetidas y remuestrea las 90 instancias independientes; los 270 pares de escenario no cuentan como réplicas independientes.
+
+\subsubsection{Resultados}
+
+El método con visibilidad vecinal completó 359 de 360 misiones ($0.997$) sin intersección entre la huella compuesta y el obstáculo durante el transporte. La única pérdida fue un reemplazo que no restableció el certificado antes del horizonte. La métrica no cubre colisión continua durante aproximación, robot--robot ni contacto tridimensional. La referencia central completó las 360. Bajo red degradada, el método vecinal y la variante con información perfecta obtuvieron 90/90 éxitos; esta igualdad no demuestra equivalencia general. El coste comunicativo fue \CargoEtwoEMessages{} mensajes y aproximadamente $90$~kB por instancia (Tabla~\ref{tab:cargo-e2e-results}).
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Misión Cargo integrada: resultados agregados de los seis tratamientos.}
+  \label{tab:cargo-e2e-results}
+  \small
+  \resizebox{\textwidth}{!}{\input{../results/processed/integrated/CARGO_E2E_CONFIRMATORY_v1/tables/cargo_e2e_results.tex}}
+  \viuownsource
+\end{table}
+
+Las columnas de tiempo son medias incondicionales sobre las 360 instancias de cada tratamiento. ``Tiempo'' mide el instante de terminación, tanto por éxito como por colisión, fallo u horizonte; por eso una ablación que colisiona pronto puede presentar una media menor. ``Recuperación'' asigna cero a las ejecuciones sin reparación y no debe leerse como duración condicionada al subconjunto recuperado.
+
+La ablación conjunta retiró el certificado mecánico, el punto de rodeo y el filtro de seguridad. Su éxito fue $0.996$ menor en las 270 instancias con obstáculo (IC del 95\,\% $[0.989;1.000]$, $p_{\mathrm{Holm}}=4.22\times10^{-81}$) y hubo intersección en $0.75$ del total. El contraste prueba la necesidad del bloque combinado, pero no separa los efectos del certificado, la ruta y el filtro. En el régimen de fallo, la reparación elevó el éxito en $0.989$ frente a desactivarla (IC $[0.967;1.000]$, $p_{\mathrm{Holm}}=4.85\times10^{-27}$).
+
+La penalización espacial redujo el tiempo medio en $0.086$~s bajo red degradada frente a la selección desacoplada, pero el IC $[-0.178;0.013]$ incluyó cero y Holm dejó $p=0.068$. H3 no queda sustentada. Selección con visibilidad restringida, acoplamiento, transporte y recuperación sí coexistieron dentro de la misma planta planar reducida.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.82\textwidth]{../results/processed/integrated/CARGO_E2E_CONFIRMATORY_v1/figures/fig-cargo-e2e-success.pdf}
+  \caption{Éxito extremo a extremo por método y régimen. Cada celda resume 90 instancias, salvo que la lectura por método agregue los cuatro regímenes.}
+  \label{fig:cargo-e2e-success}
+  \viuownsource
+\end{figure}
+
+El modelo conserva pose exacta, contacto fijo impuesto después del acoplamiento y un grafo estático durante cada intercambio. El líder es temporal, pero consulta el registro global de los robots cuyos identificadores recibió y sigue siendo un punto de coordinación por carga. La contabilidad asigna 16~B de cabecera y 32~B por registro anunciado; excluye el coste de consultar ese registro global y, por tanto, es una cota inferior para una implementación autocontenida. Los identificadores transmitidos carecen de muestras temporales de estado: mensajes y bytes miden propagación, en vez de telemetría, y no permiten definir una edad de información con significado físico. Tampoco se modelan soporte vertical, fricción, percepción, una capa real de comunicaciones, tracción de ruedas durante el transporte ni hardware. Los resultados pertenecen a la lógica de misión y a la planta planar reducida; su alcance excluye transporte cooperativo con AMR actuados, convergencia global y transferencia industrial.

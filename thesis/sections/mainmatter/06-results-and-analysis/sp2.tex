@@ -13,34 +13,34 @@ Las dos coaliciones de la Figura~\ref{fig:sp2-scenario} tienen igual cardinalida
   \centering
   \begin{spdiagram}
     \spdrawarena{SP2 \textbar\ misma cardinalidad, distinto servicio}
-    \node[spload,minimum width=1.55cm,minimum height=0.88cm] (load) at (6.65,2.75) {$L_k$};
-    \node[spannotation] at (6.65,1.78) {$d_k^{\mathrm{srv}}=10$};
-    \node[sprobot] (r1) at (1.35,4.10) {$R_1$};
-    \node[sprobot] (r2) at (2.85,3.00) {$R_2$};
-    \node[spannotation,anchor=west] at (0.55,3.45) {$c_1^{\mathrm{pay}}=8$, $b_1=0.60$, $\delta_{1k}=14\,\mathrm m$};
-    \node[spannotation,anchor=west] at (0.55,2.30) {$c_2^{\mathrm{pay}}=7$, $b_2=0.55$, $\delta_{2k}=11\,\mathrm m$};
+    \node[spload,minimum width=1.55cm,minimum height=0.88cm] (load) at (6.65, 2.75) {$L_k$};
+    \node[spannotation] at (6.65, 1.78) {$d_k^{\mathrm{srv}}=10$};
+    \node[sprobot] (r1) at (1.35, 4.10) {$R_1$};
+    \node[sprobot] (r2) at (2.85, 3.00) {$R_2$};
+    \node[spannotation,anchor=west] at (0.55, 3.45) {$c_1^{\mathrm{pay}}=8$, $b_1=0.60$, $\delta_{1k}=14\,\mathrm m$};
+    \node[spannotation,anchor=west] at (0.55, 2.30) {$c_2^{\mathrm{pay}}=7$, $b_2=0.55$, $\delta_{2k}=11\,\mathrm m$};
     \draw[spcandidate] (r1) -- (load);
     \draw[spcandidate] (r2) -- (load);
-    \node[spannotation,text=SPRed] at (3.10,1.25) {$C_k^A:\ 4+4=8<10$};
-    \node[sprobotgreen] (r3) at (10.45,4.10) {$R_3$};
-    \node[sprobotgreen] (r4) at (11.95,3.00) {$R_4$};
-    \node[spannotation,anchor=east] at (12.75,3.45) {$c_3^{\mathrm{pay}}=10$, $b_3=0.90$, $\delta_{3k}=6\,\mathrm m$};
-    \node[spannotation,anchor=east] at (12.75,2.30) {$c_4^{\mathrm{pay}}=8$, $b_4=0.85$, $\delta_{4k}=5\,\mathrm m$};
+    \node[spannotation,text=SPRed] at (3.10, 1.25) {$C_k^A:\ 4+4=8<10$};
+    \node[sprobotgreen] (r3) at (10.45, 4.10) {$R_3$};
+    \node[sprobotgreen] (r4) at (11.95, 3.00) {$R_4$};
+    \node[spannotation,anchor=east] at (12.75, 3.45) {$c_3^{\mathrm{pay}}=10$, $b_3=0.90$, $\delta_{3k}=6\,\mathrm m$};
+    \node[spannotation,anchor=east] at (12.75, 2.30) {$c_4^{\mathrm{pay}}=8$, $b_4=0.85$, $\delta_{4k}=5\,\mathrm m$};
     \draw[spassign] (r3) -- (load);
     \draw[spassign] (r4) -- (load);
-    \node[spannotation,text=SPGreen!70!black] at (10.40,1.25) {$C_k^B:\ 7+5=12\geq10$};
-    \draw[spcandidate] (0.60,0.42) -- (1.45,0.42);
-    \node[splegend,anchor=west] at (1.58,0.42) {alternativa insuficiente};
-    \draw[spassign] (4.48,0.42) -- (5.33,0.42);
-    \node[splegend,anchor=west] at (5.46,0.42) {asignación que completa};
-    \node[splegend,anchor=west] at (9.00,0.42) {$e_{ik}$ en unidades de servicio};
+    \node[spannotation,text=SPGreen!70!black] at (10.40, 1.25) {$C_k^B:\ 7+5=12\geq10$};
+    \draw[spcandidate] (0.60, 0.42) -- (1.45, 0.42);
+    \node[splegend,anchor=west] at (1.58, 0.42) {alternativa insuficiente};
+    \draw[spassign] (4.48, 0.42) -- (5.33, 0.42);
+    \node[splegend,anchor=west] at (5.46, 0.42) {asignación que completa};
+    \node[splegend,anchor=west] at (9.00, 0.42) {$e_{ik}$ en unidades de servicio};
   \end{spdiagram}
   \caption{Vista conceptual de SP2: dos coaliciones con cardinalidad dos y distinto servicio operacional.}
   \label{fig:sp2-scenario}
   \viuownsource
 \end{figure}
 
-Sea $c_i^{\mathrm{pay}}$ la carga útil nominal del robot $i$ en kilogramos, $b_i\in[0,1]$ su fracción de batería y $b_i^{\mathrm{res}}\in[0,1)$ la reserva mínima. La distancia inicial robot--carga es $\delta_{ik}$ y $\ell_d>0$ es la escala operacional de distancia. Se definen los factores adimensionales
+Sea $c_i^{\mathrm{pay}}$ la carga útil nominal del robot $i$ en kilogramos, $b_i\in[0, 1]$ su fracción de batería y $b_i^{\mathrm{res}}\in[0, 1)$ la reserva mínima. La distancia inicial robot--carga es $\delta_{ik}$ y $\ell_d>0$ es la escala operacional de distancia. Se definen los factores adimensionales
 
 \begin{equation}
 \label{eq:sp2-discounts}
@@ -67,7 +67,7 @@ $a_{ik}$ representa disponibilidad operacional y $e_{ik}$, unidades normalizadas
 
 \subsubsection{Problemas formales de referencia}
 
-La cobertura parcial y la completitud son estimandos distintos. Para hacer visible esa diferencia se usan dos MILP centrales con información global. En ambos, $x_{ik}\in\{0,1\}$ asigna el robot $i$ a la carga $k$, $s_k\in[0,d_k^{\mathrm{srv}}]$ registra servicio cubierto y cada robot atiende como máximo una carga.
+La cobertura parcial y la completitud son estimandos distintos. Para hacer visible esa diferencia se usan dos MILP centrales con información global. En ambos, $x_{ik}\in\{0, 1\}$ asigna el robot $i$ a la carga $k$, $s_k\in[0,d_k^{\mathrm{srv}}]$ registra servicio cubierto y cada robot atiende como máximo una carga.
 
 La referencia de cobertura normalizada es
 
@@ -80,13 +80,13 @@ La referencia de cobertura normalizada es
   \text{sujeto a}\quad
   & \sum_k x_{ik}\leq1, && \forall i,\\
   & 0\leq s_k\leq d_k^{\mathrm{srv}},\quad s_k\leq\sum_i e_{ik}x_{ik}, && \forall k,\\
-  & x_{ik}\in\{0,1\}. &&
+  & x_{ik}\in\{0, 1\}. &&
 \end{aligned}
 \end{equation}
 
 El término $10^{-5}$ tiene unidades de puntuación por metro y solo desempata coberturas. La ecuación~\eqref{eq:sp2-capacity-oracle} maximiza la suma de razones por carga, no los kilogramos totales ni el número de cargas completas. La diferencia respecto a esta referencia se denomina \emph{diferencia de cobertura}; no es una cota universal para otras métricas agregadas.
 
-La referencia de puntuación añade $z_k\in\{0,1\}$, activo solo si se cumplen demanda y cardinalidad $n_k$, y usa los pesos del experimento:
+La referencia de puntuación añade $z_k\in\{0, 1\}$, activo solo si se cumplen demanda y cardinalidad $n_k$, y usa los pesos del experimento:
 
 \begin{equation}
 \label{eq:sp2-score-oracle}
@@ -101,7 +101,7 @@ La referencia de puntuación añade $z_k\in\{0,1\}$, activo solo si se cumplen d
   & \sum_i e_{ik}x_{ik}\geq d_k^{\mathrm{srv}}z_k, && \forall k,\\
   & \sum_i x_{ik}\geq n_kz_k, && \forall k,\\
   & 0\leq s_k\leq d_k^{\mathrm{srv}},\quad s_k\leq\sum_i e_{ik}x_{ik}, && \forall k,\\
-  & x_{ik},z_k\in\{0,1\}. &&
+  & x_{ik},z_k\in\{0, 1\}. &&
 \end{aligned}
 \end{equation}
 
@@ -138,7 +138,7 @@ Dos MILP fijan referencias distintas: uno maximiza cobertura y otro premia carga
 \subsubsection{Juego de capacidad y alineación marginal}
 
 \begin{contribucion}{puntuación de servicio y potencial marginal de SP2}
-Para aislar la propiedad estratégica, sea $\rho_{ik}\in[0,1]$ la preferencia continua del robot $i$ por la carga $k$, con $\sum_k\rho_{ik}\leq1$, y manténgase fija la matriz $E=[e_{ik}]$ durante el instante de decisión. Se usa la presión de déficit lineal saturada $\sigma(r)=[1-r]_+$ sobre la razón $r_k=S_k(\rho)/d_k^{\mathrm{srv}}$. Si $g_{ik}$ es un coste normalizado, las puntuaciones plana y marginal son
+Para aislar la propiedad estratégica, sea $\rho_{ik}\in[0, 1]$ la preferencia continua del robot $i$ por la carga $k$, con $\sum_k\rho_{ik}\leq1$, y manténgase fija la matriz $E=[e_{ik}]$ durante el instante de decisión. Se usa la presión de déficit lineal saturada $\sigma(r)=[1-r]_+$ sobre la razón $r_k=S_k(\rho)/d_k^{\mathrm{srv}}$. Si $g_{ik}$ es un coste normalizado, las puntuaciones plana y marginal son
 
 \begin{equation}
 \label{eq:sp2-payoffs}

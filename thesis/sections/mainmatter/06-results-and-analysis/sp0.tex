@@ -13,19 +13,19 @@ El grafo de la Figura~\ref{fig:sp0-scenario} distingue asociaciones admisibles, 
   \centering
   \begin{spdiagram}
     \spdrawarena{SP0 \textbar\ ejemplo bipartito: $N=4$, $K=3$}
-    \node[spannotation] at (1.55,4.37) {$\mathcal R$: robots homogéneos};
-    \node[spannotation] at (6.75,4.37) {$\kappa_{ik}=\bar\delta_{ik}$};
-    \node[spannotation] at (11.90,4.37) {$\mathcal L$: cargas unitarias};
+    \node[spannotation] at (1.55, 4.37) {$\mathcal R$: robots homogéneos};
+    \node[spannotation] at (6.75, 4.37) {$\kappa_{ik}=\bar\delta_{ik}$};
+    \node[spannotation] at (11.90, 4.37) {$\mathcal L$: cargas unitarias};
 
-    \node[sprobot] (r1) at (1.45,3.60) {$R_1$};
-    \node[sprobot] (r2) at (1.45,2.65) {$R_2$};
-    \node[sprobot] (r3) at (1.45,1.85) {$R_3$};
-    \node[sprobotfree,scale=0.82] (r4) at (1.45,1.08) {$R_4$};
-    \node[spmuted,anchor=west] at (1.78,1.08) {$a_4=0$};
+    \node[sprobot] (r1) at (1.45, 3.60) {$R_1$};
+    \node[sprobot] (r2) at (1.45, 2.65) {$R_2$};
+    \node[sprobot] (r3) at (1.45, 1.85) {$R_3$};
+    \node[sprobotfree,scale=0.82] (r4) at (1.45, 1.08) {$R_4$};
+    \node[spmuted,anchor=west] at (1.78, 1.08) {$a_4=0$};
 
-    \node[spload] (l1) at (12.00,3.60) {$L_1$};
-    \node[spload] (l2) at (12.00,2.65) {$L_2$};
-    \node[spload] (l3) at (12.00,1.85) {$L_3$};
+    \node[spload] (l1) at (12.00, 3.60) {$L_1$};
+    \node[spload] (l2) at (12.00, 2.65) {$L_2$};
+    \node[spload] (l3) at (12.00, 1.85) {$L_3$};
 
     \draw[spcandidate,-,opacity=0.72] (r1) -- (l2);
     \draw[spcandidate,-,opacity=0.72] (r2) -- (l1);
@@ -36,12 +36,12 @@ El grafo de la Figura~\ref{fig:sp0-scenario} distingue asociaciones admisibles, 
     \draw[spassign,solid,-,line width=1.25pt] (r2) -- node[spannotation,pos=0.53] {$x_{22}=1$} (l2);
     \draw[spassign,solid,-,line width=1.25pt] (r3) -- node[spannotation,pos=0.53] {$x_{33}=1$} (l3);
 
-    \draw[spassign,solid,-,line width=1.25pt] (0.75,0.34) -- (1.45,0.34);
-    \node[splegend,anchor=west] at (1.58,0.34) {seleccionada: $x_{ik}=1$};
-    \draw[spcandidate,-] (4.70,0.34) -- (5.40,0.34);
-    \node[splegend,anchor=west] at (5.53,0.34) {alternativa: $x_{ik}=0$};
-    \node[sprobotfree,scale=0.45] at (9.65,0.34) {};
-    \node[splegend,anchor=west] at (9.90,0.34) {robot libre: $a_i=0$};
+    \draw[spassign,solid,-,line width=1.25pt] (0.75, 0.34) -- (1.45, 0.34);
+    \node[splegend,anchor=west] at (1.58, 0.34) {seleccionada: $x_{ik}=1$};
+    \draw[spcandidate,-] (4.70, 0.34) -- (5.40, 0.34);
+    \node[splegend,anchor=west] at (5.53, 0.34) {alternativa: $x_{ik}=0$};
+    \node[sprobotfree,scale=0.45] at (9.65, 0.34) {};
+    \node[splegend,anchor=west] at (9.90, 0.34) {robot libre: $a_i=0$};
   \end{spdiagram}
   \caption{Caso base SP0: asignación uno-a-uno entre robots homogéneos y cargas unitarias. Las aristas grises son asociaciones admisibles y las azules la selección final; $R_4$ queda libre porque $N>K$. La figura representa decisiones lógicas; las trayectorias y los enlaces de comunicación quedan fuera de SP0.}
   \label{fig:sp0-scenario}
@@ -52,14 +52,14 @@ Sean $p_i,p_k^L\in\mathbb R^2$ las posiciones del robot $i$ y de la carga $k$. C
 \begin{equation}
  \delta_{ik}=\lVert p_i-p_k^L\rVert_2\ [\mathrm m],\qquad
  \bar\delta_{ik}=\frac{\delta_{ik}}{\delta_{\max}},\qquad
- \kappa_{ik}=\bar\delta_{ik}\in[0,1].
+ \kappa_{ik}=\bar\delta_{ik}\in[0, 1].
     \label{eq:sp0-distance-cost}
 \end{equation}
 La salida es una asociación lógica robot--carga. No se genera una trayectoria ni una señal de control y la factibilidad es exclusivamente combinatoria; el contacto se introduce en SP3 y el transporte origen--destino en SP4.
 
 \subsubsection{Formulación exacta y oráculo de asignación}
 
-Con $\Robots=\{1,\ldots,N\}$, $\Loads=\{1,\ldots,K\}$ y $x_{ik}\in\{0,1\}$, el oráculo central resuelve
+Con $\Robots=\{1,\ldots,N\}$, $\Loads=\{1,\ldots,K\}$ y $x_{ik}\in\{0, 1\}$, el oráculo central resuelve
 \begin{equation}
 \label{eq:sp0-oracle}
 \begin{aligned}
@@ -223,7 +223,7 @@ donde $\mathcal M_\eta$ cuenta escalares transmitidos. Así, $\lambda_2(L)$ afec
 La conectividad es necesaria para una garantía uniforme: existen dos instancias indistinguibles para un robot dentro de su componente que exigen asignaciones globales distintas. Por tanto, una red permanentemente desconectada no puede garantizar el óptimo para toda matriz de costes mediante información intracomponente.
 \subsubsection{Diseño experimental}
 
-Se generaron 200 instancias pareadas mediante posiciones uniformes en el cuadrado unidad: $N\in\{4,8,16,32,64\}$, $K/N\in\{0.5,1\}$ y 20 semillas por combinación. Los métodos recibieron las mismas matrices de coste; se fijaron $\lambda=\kappa_{\max}+0.05$ y $\varepsilon=10^{-3}$. Además, 21 instancias pequeñas se enumeraron exhaustivamente. Se registraron factibilidad, déficit, exceso, coste, brecha por carga, bienestar relativo, operaciones y CPU. Los intervalos se calcularon mediante 2000 remuestras pareadas de instancias independientes. Los contratos de información no son equivalentes y no se evaluó una red.
+Se generaron 200 instancias pareadas mediante posiciones uniformes en el cuadrado unidad: $N\in\{4, 8, 16, 32, 64\}$, $K/N\in\{0.5, 1\}$ y 20 semillas por combinación. Los métodos recibieron las mismas matrices de coste; se fijaron $\lambda=\kappa_{\max}+0.05$ y $\varepsilon=10^{-3}$. Además, 21 instancias pequeñas se enumeraron exhaustivamente. Se registraron factibilidad, déficit, exceso, coste, brecha por carga, bienestar relativo, operaciones y CPU. Los intervalos se calcularon mediante 2000 remuestras pareadas de instancias independientes. Los contratos de información no son equivalentes y no se evaluó una red.
 
 \subsubsection{Resultados}
 
@@ -254,7 +254,7 @@ El algoritmo húngaro, la subasta-$\varepsilon$, el método voraz, la mejor resp
  \viuownsource
 \end{table}
 
-Los valores no forman una clasificación arquitectónica porque los métodos reciben información distinta. Bajo ocupación coherente, mejor respuesta alcanzó siempre factibilidad, pero presentó una brecha mediana de $0.0560$ por carga y bienestar mediano del $93.65\%$. La diferencia pareada $r_{\mathrm{2-int}}-r_{\mathrm{BR}}$ fue $-0.07318$ (IC del $95\%$: $[-0.08201,-0.06508]$). El intercambio redujo la pérdida y obtuvo mediana cero, pero su cuartil superior fue $0.00065$; no se declara optimalidad global. La subasta-$\varepsilon$ quedó prácticamente superpuesta al oráculo: diferencia media $5.74\times10^{-6}$ por carga (IC del $95\%$: $[3.37,8.64]\times10^{-6}$), dentro de la cota aditiva.
+Los valores no forman una clasificación arquitectónica porque los métodos reciben información distinta. Bajo ocupación coherente, mejor respuesta alcanzó siempre factibilidad, pero presentó una brecha mediana de $0.0560$ por carga y bienestar mediano del $93.65\%$. La diferencia pareada $r_{\mathrm{2-int}}-r_{\mathrm{BR}}$ fue $-0.07318$ (IC del $95\%$: $[-0.08201,-0.06508]$). El intercambio redujo la pérdida y obtuvo mediana cero, pero su cuartil superior fue $0.00065$; no se declara optimalidad global. La subasta-$\varepsilon$ quedó prácticamente superpuesta al oráculo: diferencia media $5.74\times10^{-6}$ por carga (IC del $95\%$: $[3.37, 8.64]\times10^{-6}$), dentro de la cota aditiva.
 
 \paragraph{Ablación de la penalización.}
 La formulación con $\lambda>\kappa_{\max}$ produjo 200 asignaciones factibles de 200, mientras $\lambda=0$ no produjo ninguna; las 200 discordancias favorecieron al mecanismo completo y McNemar exacto rechazó la igualdad de factibilidad ($p=1.24\times10^{-60}$). Sin recompensa de cobertura ni penalización de duplicidad, la inactividad domina frente a asociaciones de coste positivo. La ablación verifica la respuesta a los términos de déficit y exceso, pero no demuestra cardinalidad variable ni comunicación vecinal. Los tiempos observados hasta $N=64$ tampoco demuestran escalabilidad asintótica.

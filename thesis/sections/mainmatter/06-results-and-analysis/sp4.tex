@@ -1,0 +1,224 @@
+\input{../results/processed/sp4/SP4_TRANSPORT_EVIDENCE_v1/tables/sp4_numbers.tex}
+
+\subsection{SP4: acoplamiento y transporte cooperativo entre poses}
+\label{subsec:sp4}
+
+SP4 añade tiempo y planta al certificado estático de SP3. Los robots alcanzan sus puestos de contacto y la carga sigue una referencia de pose con límites de entrada. Una coalición admisible en reposo puede colisionar durante el acoplamiento; una fuerza saturada puede corregir posición y dejar error angular.
+
+El acoplamiento y el transporte se simulan por separado. El primero aplica pares de rueda a uniciclos dinámicos; el segundo mueve una carga planar con contactos fijos. La reproducción en CoppeliaSim comprueba geometría, no contacto ni hardware. La rama de empuje no se ejecuta.
+
+\subsubsection{Aproximación y transporte}
+
+La aproximación individual precede a la trayectoria de la carga (Figura~\ref{fig:sp4-scenario}); el \emph{wrench} de transporte se aplica después del acoplamiento.
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{spdiagram}
+    \spdrawarena{SP4 \textbar\ acoplamiento y transporte entre poses}
+    \draw[spfootprint] (2.35, 2.72) ellipse (1.80 and 1.55);
+    \node[spload] (load) at (2.35, 2.72) {$L_k$};
+    \node[sprobot] (r1) at (1.15, 3.52) {$R_1$};
+    \node[sprobot] (r2) at (1.15, 1.82) {$R_2$};
+    \node[sprobot] (r3) at (3.65, 2.72) {$R_3$};
+    \node[spannotation] at (2.35, 4.30) {$q_k^L(0)=l_k$};
+    \draw[spmotion] (load.east) .. controls (4.90, 4.32) and (7.75, 1.20) .. (10.35, 3.00);
+    \node[spload,opacity=0.26,rotate=-8] at (5.20, 3.62) {$L_k$};
+    \node[spload,opacity=0.26,rotate=7] at (7.85, 2.05) {$L_k$};
+    \draw[spcoalitiongreen] (9.55, 1.42) rectangle (13.05, 4.48);
+    \node[sptarget,rotate=12] (target) at (11.20, 3.00) {$L_k$};
+    \node[sprobotgreen] (t1) at (10.15, 3.82) {$R_1$};
+    \node[sprobotgreen] (t2) at (10.10, 2.05) {$R_2$};
+    \node[sprobotgreen] (t3) at (12.45, 3.28) {$R_3$};
+    \draw[draw=SPBlue!70,dashed,line width=0.65pt,-{Latex[length=1.8mm]}] (r1.east) .. controls (4.40, 4.62) and (7.55, 3.20) .. (t1.west);
+    \draw[draw=SPBlue!70,dashed,line width=0.65pt,-{Latex[length=1.8mm]}] (r2.east) .. controls (4.30, 0.82) and (7.55, 2.18) .. (t2.west);
+    \draw[draw=SPBlue!70,dashed,line width=0.65pt,-{Latex[length=1.8mm]}] (r3.east) .. controls (5.20, 3.12) and (9.20, 2.72) .. (t3.west);
+    \draw[draw=VIUGray,densely dotted,line width=0.55pt] (r1) -- (load);
+    \draw[draw=VIUGray,densely dotted,line width=0.55pt] (r2) -- (load);
+    \node[spannotation,text=VIUGray] at (1.68, 2.72) {puesto/contacto};
+    \node[spannotation] at (11.35, 4.30) {$q_k^L(T)\in\mathcal B_\epsilon(d_k)$};
+    \node[spannotation] at (6.72, 4.30) {referencia de pose y \emph{wrench}};
+    \draw[draw=VIUOrange,fill=VIUOrange!12,line width=0.7pt,rounded corners=0.5pt] (0.25, 0.21) rectangle (0.72, 0.47);
+    \node[splegend,anchor=west] at (0.85, 0.34) {pose inicial};
+    \draw[draw=VIUOrange,fill=VIUOrange!5,opacity=0.35,line width=0.7pt,rounded corners=0.5pt] (3.05, 0.21) rectangle (3.52, 0.47);
+    \node[splegend,anchor=west] at (3.65, 0.34) {pose intermedia};
+    \draw[draw=SPGreen,fill=SPGreen!5,dashed,line width=0.7pt,rounded corners=0.5pt] (6.25, 0.21) rectangle (6.72, 0.47);
+    \node[splegend,anchor=west] at (6.85, 0.34) {pose objetivo};
+    \draw[spmotion] (9.30, 0.34) -- (10.15, 0.34);
+    \node[splegend,anchor=west] at (10.28, 0.34) {trayectoria de carga};
+  \end{spdiagram}
+  \caption{Vista conceptual de SP4: aproximación a contactos y transporte de la carga entre poses.}
+  \label{fig:sp4-scenario}
+  \viuownsource
+\end{figure}
+
+\subsubsection{Problema formal de referencia}
+
+Sea $q_k^L=(p_{x,k}^L,p_{y,k}^L,\theta_k^L)\in SE(2)$ la pose real de la carga, $e_k^L=(p_k^L-p_k^d,\operatorname{wrap}(\theta_k^L-\theta_k^d))$ su error en metros y radianes, $\eta_i=(\eta_i^v,\eta_i^\omega)$ la aceleración lineal/angular del robot y $x(t)$ la decisión híbrida de puesto y admisión. Con matrices de normalización $Q\succeq0$ y $R\succ0$, la referencia central es
+
+\begin{equation}
+\label{eq:sp4-control}
+\begin{aligned}
+  \min_{\eta(\cdot),x(\cdot),\boldsymbol\lambda(\cdot)}\quad
+  & \int_{0}^{T}\!\left(\|e_k^L(t)\|_{Q}^{2}
+    +\|\eta(t)\|_{R}^{2}\right)\dd t \\
+  \text{sujeto a}\quad
+  & \dot\xi_i=F_i(\xi_i,\eta_i),\qquad
+    M_k\ddot q_k^L+D_k\dot q_k^L=G_{C_k}(q_k^L)\boldsymbol\lambda_k,\\
+  & x(t)\in\mathcal X_{\mathrm{mech}}(q_k^L),\quad
+    \eta_i(t)\in\mathcal U_i,\quad
+    \boldsymbol\lambda_k(t)\in\mathcal U_{C_k},\\
+  & q_k^L(0)=l_k,\qquad q_k^L(T)\in\mathcal B_{\epsilon}(d_k).
+\end{aligned}
+\end{equation}
+
+La ecuación~\eqref{eq:sp4-control} define un oráculo híbrido central con estado global y difiere del algoritmo ejecutado. La dependencia no lineal de la dinámica y la decisión discreta impide transferir una clase o garantía global sin una reducción específica; por ello se declara ``clase no establecida'' en lugar de NP-difícil. El problema se descompone en juego de admisión, cierre local, guardia de seguridad, dinámica de acoplamiento y control de pose con proyección acotada de \emph{wrench}.
+
+\subsubsection{Métodos de comparación}
+
+La comparación separa aproximación y transporte. Durante el acoplamiento, el control directo y la proyección CBF se enfrentan al planificador central y al juego de vivacidad. Durante el transporte, PD y el control hamiltoniano generan el \emph{wrench} repartido entre contactos. El SCP coordinado actúa como referencia de planificación global \parencite{alonsomora2017transport}. En la Tabla~\ref{tab:sp4-methods}, $d_i$ es el grado local, $n_o$ los obstáculos percibidos, $I_G$ e $I_B$ las iteraciones del juego y del filtro, y $C_{\mathrm{LS}}(s)$ el coste de repartir fuerzas entre $s$ contactos.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Métodos y literatura comparada para SP4.}
+  \label{tab:sp4-methods}
+  \scriptsize
+  \setlength{\tabcolsep}{1.05pt}
+  \renewcommand{\arraystretch}{1.03}
+  \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.02cm} >{\raggedright\arraybackslash}p{1.34cm} >{\raggedright\arraybackslash}p{2.18cm} >{\raggedright\arraybackslash}p{2.05cm} >{\raggedright\arraybackslash}p{1.82cm} Y}
+    \toprule
+    Fuente/método & Clase & Tiempo; mensajes & Arquitectura/información & Parámetros & Resultado aplicable y límite \\
+    \midrule
+    SCP restringido \parencite{alonsomora2017transport} & NLP no convexo & Iteraciones de QP; global & Central/coordinado; predicción global & Horizonte, pesos & Solución local bajo su modelo; no forma parte del comparativo numérico. \\
+    Directo/CBF (referencia) & No aplica: realimentación & $O(I_B(d_i+n_o))$; $O(d_i)$ & Descentralizado; estado y geometría local & $\Delta t$, margen, ganancias & Guardia sin mecanismo de vivacidad; ejecución verificada. \\
+    Planificador central + HOCBF & N/A: búsqueda/control & búsqueda global $+O(I_BN^2)$ & Central; mapa y estados globales & Malla, margen, horizonte & Referencia coordinada, no oráculo óptimo; evaluada en el estudio complementario. \\
+    Juego PD/replicator + HOCBF (TFM) & QP convexo por instantánea & $O(I_Gd_i+I_B(d_i+n_o))$; $O(I_Gd_i)$ & Distribuido por conflicto; estado vecinal & pasos, $\beta_4$, $\alpha_4$, margen & VE único de la relajación congelada; ejecución verificada, sin teorema global móvil. \\
+    Control de pose + proyección de wrench & QP convexo para $C_k$ fijo & $C_{\mathrm{LS}}(s)$; sin mensajes en el piloto & Centralizado en el agregado; pose exacta simulada & $K_P,K_D$, límites & Estabilidad local si el wrench se realiza exactamente; piloto planar, contacto fijo. \\
+    \bottomrule
+  \end{tabularx}
+  \viusource{elaboración propia a partir de las referencias citadas y de los métodos evaluados}
+\end{table}
+
+\subsubsection{Juego de vivacidad}
+
+En cada instantánea congelada, el robot $i$ elige una mezcla $\rho_i\in\Delta_3$ entre avanzar, ceder y esperar. Cada conflicto par a par define un recurso $\ell\in\mathcal R_4$ de capacidad unitaria; $b_{ia\ell}\in[0, 1]$ es la ocupación normalizada producida por la acción $a$, e $y_\ell(\rho)=\sum_{i,a}b_{ia\ell}\rho_{ia}$. El coste $c_{ia}^{(4)}$ combina progreso, prioridad mecánica y edad de espera, todos normalizados. Para $\beta_4\geq0$ y $\alpha_4>0$ se propone
+
+\begin{align}
+ J_G(\rho)
+ &=\sum_{i,a}c_{ia}^{(4)}\rho_{ia}
+ +\frac{\beta_4}{2}\sum_{\ell\in\mathcal R_4}y_\ell(\rho)^2
+ +\frac{\alpha_4}{2}\sum_i\|\rho_i\|_2^2,
+ \label{eq:sp4-game-potential}\\
+ J_i(\rho_i,\rho_{-i})
+ &=\sum_a c_{ia}^{(4)}\rho_{ia}
+ +\frac{\beta_4}{2}\sum_{\ell\in\mathcal R_4}y_\ell(\rho)^2
+ +\frac{\alpha_4}{2}\|\rho_i\|_2^2,
+ \label{eq:sp4-player-cost}\\
+ f_{ia}(\rho,\pi)
+ &=-c_{ia}^{(4)}-\beta_4\sum_\ell b_{ia\ell}y_\ell(\rho)
+   -\alpha_4\rho_{ia}-\sum_\ell b_{ia\ell}\pi_\ell,
+ \label{eq:sp4-payoff}
+\end{align}
+con $y_\ell\leq1$ y precios $\pi_\ell\geq0$. El payoff es utilidad marginal adimensional, no fuerza ni velocidad. Cada robot requiere su coste, los conflictos con $\mathcal N_i$ y los precios de los recursos que comparte.
+
+\begin{contribucion}{juego de vivacidad con recursos de conflicto}
+\begin{proposicion}[Potencial exacto y equilibrio variacional de SP4]
+\label{prop:sp4-potential}
+Para costes y conflictos congelados, $\alpha_4>0$, simplex no vacíos y restricciones lineales $y_\ell\leq1$, los costes individuales de~\eqref{eq:sp4-player-cost} definen un juego continuo de potencial exacto $J_G$. Su convexidad fuerte garantiza un minimizador único. Bajo Slater, ese minimizador y los KKT del problema compartido coinciden con el equilibrio variacional único de la relajación.
+\end{proposicion}
+La prueba completa aparece en el Anexo~\ref{app:sp4-game-proof}. La proposición no cubre el decodificador entero, el cambio temporal del grafo ni la convergencia de un número finito de iteraciones.
+\end{contribucion}
+
+La actualización digital ejecutada adopta la forma
+\begin{equation}
+\label{eq:sp4-pd-update}
+\rho_i^{m+1}=\Pi_{\Delta_3}\!\left[\rho_i^m-h_\rho
+  \left(\nabla_iJ_G(\rho^m)+B_i\pi^m\right)\right],\qquad
+\pi_\ell^{m+1}=\left[\pi_\ell^m+h_\pi(y_\ell(\rho^m)-1)\right]_+,
+\end{equation}
+seguida por un cierre de propiedad par a par. Replicator sustituye el paso euclídeo por una actualización multiplicativa que preserva positividad. Los controles verifican simplex, capacidad y gradiente, pero no prueban convergencia uniforme del sistema recedente.
+
+\subsubsection{Modelos de acoplamiento y transporte}
+
+El lazo estratégico regula
+\begin{equation}
+\label{eq:sp4-strategic-output}
+z_4^S=\left(\max_\ell[y_\ell(\rho)-1]_+,
+\max_i\|\rho_i-\Pi_{\Delta_3}(\rho_i-\nabla_i\mathcal L)\|_2\right)
+\end{equation}
+hacia cero. Cada robot mide pose, velocidad, objetivo y conflictos locales; el juego selecciona avanzar, ceder o esperar, y la guardia proyecta la aceleración nominal. El estado físico evoluciona como
+\begin{equation}
+ \dot\xi_i=
+ \begin{bmatrix}
+ v_i\cos\theta_i & v_i\sin\theta_i & \omega_i & \eta_i^v & \eta_i^\omega
+ \end{bmatrix}^{\mathsf T},
+ \qquad \xi_i=(p_{x,i},p_{y,i},\theta_i,v_i,\omega_i),
+ \label{eq:sp4-dynamic-unicycle}
+\end{equation}
+y $\eta_i$ se convierte en el par limitado de~\eqref{eq:method-wheel-torque}. El estudio complementario usó $\Delta t=0.12$~s, orientación integrada a punto medio y comprobación de la barrera con la aceleración finalmente realizable.
+
+Para la carga, el estado es $(q_k^L,\dot q_k^L)$ y la salida regulada es
+$z_4^L=(e_k^L,\dot q_k^L,\boldsymbol r_k^W)$, donde
+$\boldsymbol r_k^W=G_{C_k}\boldsymbol\lambda_k^\star-W_k^d$. La referencia es cero y
+\begin{equation}
+\label{eq:sp4-pose-law}
+W_k^d=-K_Pe_k^L-K_D\dot q_k^L,\qquad
+\boldsymbol\lambda_k^\star\in\argmin_{0\leq\lambda\leq\bar\lambda}
+\|G_{C_k}(q_k^L)\lambda-W_k^d\|_{Q_W}^2.
+\end{equation}
+El piloto usa la pose real simulada y deja sin ejecutar el estimador por proximidad $\hat q_k^L$. Por ello la interfaz de transporte es centralizada en el agregado de carga aunque la selección de contactos proceda del juego.
+
+El candidato de almacenamiento sigue el enfoque de pasividad para sistemas mecánicos \parencite{vanderschaf2017passivity,ortega2002passivity}, pero la demostración siguiente se realiza para la planta concreta de SP4.
+
+\begin{contribucion}{servorregulación de pose mediante wrench acotado}
+\begin{proposicion}[Disipación y estabilidad local de la pose]
+\label{prop:sp4-pose-stability}
+Supónganse $M_k\succ0$ constante, $D_k\succ0$, $K_P\succ0$, $K_D\succ0$, objetivo fijo, contactos fijos y error angular dentro de una carta de $SE(2)$. Con
+$V=\tfrac12\dot q^{L\mathsf T}M_k\dot q^L+\tfrac12e_k^{L\mathsf T}K_Pe_k^L$, si $\boldsymbol r_k^W=0$ entonces
+$\dot V=-\dot q^{L\mathsf T}(D_k+K_D)\dot q^L\leq0$ y el equilibrio de pose es localmente asintóticamente estable. Si $\boldsymbol r_k^W\neq0$, $\dot V$ incorpora el término $\dot q^{L\mathsf T}\boldsymbol r_k^W$ y satisface una cota de disipación dependiente de $\|\boldsymbol r_k^W\|$.
+\end{proposicion}
+El Anexo~\ref{app:sp4-pose-proof} demuestra el resultado. No se extiende a cambio de contacto, fricción desconocida, saturación persistente ni muestreo arbitrario.
+\end{contribucion}
+
+\subsubsection{Diseño experimental}
+
+El primer experimento de acoplamiento contiene \SPFourDockWorlds{} mundos pareados: seis escenarios, $N\in\{4, 8, 12\}$, seis semillas y once métodos (\SPFourDockRuns{} ejecuciones), con 35~s de uniciclo dinámico. La Tabla~\ref{tab:sp4-docking-results} presenta los cinco tratamientos fijados para la comparación principal. Los otros seis ---APF, aproximación RVO, referencia potencial central, primal--dual sin cierre correctivo, Smith y ERV--BNN--- se conservaron como diagnósticos secundarios y sí forman parte del total de ejecuciones. Un estudio complementario usa dos semillas nuevas, seis escenarios, cinco métodos y $N=4$ para evaluar la coordinación de vivacidad con HOCBF y pares de rueda. El transporte aporta \SPFourTransportWorlds{} mundos por método, seis semillas y tres tamaños, con $\Delta t=0.15$~s, horizonte de 45~s y contactos fijos.
+
+Las métricas de acoplamiento son éxito sin colisión, agotamiento del horizonte, residual KKT y CPU; las de transporte son entrega, tiempo, error final, trabajo y esfuerzo. Los contrastes son pareados, con intervalos bootstrap y corrección de Holm. El transporte se analiza por separado porque comienza con los contactos ya establecidos.
+
+\subsubsection{Resultados}
+
+La guardia CBF eliminó colisiones y dejó abierta la vivacidad. Replicator+CBF obtuvo éxito seguro \SPFourRepSafe{} frente a \SPFourCBFSafe{} de la proyección CBF, diferencia de \SPFourDockEffect{} (IC~95\% [\SPFourDockCILow{},~\SPFourDockCIHigh{}], $p_{\mathrm{Holm}}=\SPFourDockPHolm$). El agotamiento del horizonte alcanzó 0.731. Seguridad instantánea y llegada son objetivos distintos (Tabla~\ref{tab:sp4-docking-results}).
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Resultados pareados del experimento principal de acoplamiento dinámico.}
+  \label{tab:sp4-docking-results}
+  \resizebox{\textwidth}{!}{\input{../results/processed/sp4/SP4_TRANSPORT_EVIDENCE_v1/tables/sp4_docking_results.tex}}
+  \viuownsource
+\end{table}
+
+En los \SPFourVFourWorlds{} mundos del estudio complementario, PD y Replicator con coordinación alcanzaron éxito seguro \SPFourVFourGameSafe{}, frente a \SPFourVFourCentralSafe{} del planificador central y \SPFourVFourDirectSafe{} del control directo. No hubo violaciones de barrera en la acción aplicada ni saturaciones de par. El conjunto es demasiado pequeño para someter los actuadores a su régimen límite.
+
+Los cuatro controles entregaron la carga en los 18 mundos sin obstáculos. PD fue más rápido (\SPFourPoseTime{}~s) que el Hamiltoniano amortiguado (\SPFourHamiltonianTime{}~s), mientras este redujo el trabajo de \SPFourPoseWork{} a \SPFourHamiltonianWork{}~J. La diferencia Hamiltoniano--PD fue \SPFourTimeDiff{}~s (IC~95\% [\SPFourTimeDiffLow{},~\SPFourTimeDiffHigh{}]) y \SPFourWorkDiff{}~J (IC~95\% [\SPFourWorkDiffLow{},~\SPFourWorkDiffHigh{}]). La referencia central empleó \SPFourCentralTime{}~s y \SPFourCentralWork{}~J. Los datos describen un compromiso entre tiempo y esfuerzo, no una superioridad uniforme (Tabla~\ref{tab:sp4-transport-results} y Figura~\ref{fig:sp4-transport-tradeoff}).
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Transporte planar en el estrato abierto nominal de SP4-C.}
+  \label{tab:sp4-transport-results}
+  \resizebox{\textwidth}{!}{\input{../results/processed/sp4/SP4_TRANSPORT_EVIDENCE_v1/tables/sp4_transport_results.tex}}
+  \viuownsource
+\end{table}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.78\textwidth]{../results/processed/sp4/SP4_TRANSPORT_EVIDENCE_v1/figures/fig-sp4-transport-tradeoff.pdf}
+  \caption{Compromiso entre tiempo de entrega y trabajo mecánico en los mundos abiertos de SP4-C; barras: IC bootstrap del 95\%.}
+  \label{fig:sp4-transport-tradeoff}
+  \viuownsource
+\end{figure}
+
+La separación entre experimentos limita la inferencia: el acoplamiento no mueve la carga y el transporte parte de contactos fijos. Cargo reúne aproximación, transporte y recuperación en una planta planar reducida, pero mantiene pose exacta y acoplamiento rígido impuesto. Ninguno de los dos diseños demuestra que la cascada física completa reduzca el tiempo de misión bajo comunicación local.
+
+\subsubsection{Síntesis}
+
+SP4 establece un juego continuo de potencial exacto fuertemente convexo para la decisión instantánea y estabilidad local del servolazo cuando el \emph{wrench} se realiza exactamente. Una barrera sin coordinación puede bloquear el acoplamiento; durante el transporte aparece un compromiso entre tiempo y trabajo. SP5 conserva el cuerpo rígido con contactos fijos y añade obstáculos bajo la misma planta.
