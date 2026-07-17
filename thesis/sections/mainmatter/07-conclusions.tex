@@ -1,0 +1,285 @@
+\section{Conclusiones y recomendaciones}
+\label{sec:conclusions}
+
+La coordinación estudiada combina formación de coaliciones, certificación
+mecánica y transporte de una carga por robots heterogéneos ante obstáculos,
+fallos y comunicación imperfecta. No existe una única ley que resuelva esas
+funciones: el equilibrio estratégico, el cierre entero, la factibilidad de
+\emph{wrench}, el control de pose, la seguridad, la recuperación y la
+observabilidad de red operan bajo supuestos distintos. En consecuencia, ni el
+equilibrio de Nash certifica por sí mismo la viabilidad mecánica ni una
+simulación satisfactoria demuestra estabilidad global.
+
+\subsection{Contribución y resultados principales}
+
+SP0--SP2 caracterizan la formación estratégica. En el caso homogéneo, una
+penalización mayor que el coste individual máximo elimina equilibrios con
+ocupaciones incompletas y garantiza la terminación de las mejoras estrictas.
+Existe un equilibrio socialmente óptimo, pero el peor equilibrio carece de cota
+uniforme; estabilidad estratégica y eficiencia no son equivalentes. El
+certificado de precios locales relaciona conectividad algebraica, desacuerdo,
+brecha y mensajes, y delimita el caso de desconexión permanente, en el que no es
+posible garantizar el óptimo para toda matriz de costes.
+
+Con cardinalidad variable, SP1 muestra que el déficit lineal no decide qué carga
+completar cuando los recursos son escasos. El incentivo de cuórum rompe esa
+indiferencia y el cierre QR evita grupos parciales, aunque el ordenamiento utilizado
+no es plenamente vecinal. SP2 incorpora disponibilidad, distancia y servicio
+heterogéneo. Ponderar cada decisión por su contribución marginal produce un
+campo integrable; una puntuación plana no admite potencial en general. El
+resultado ordena servicio operacional, pero no debe leerse como capacidad de
+soporte, fuerza o torque.
+
+SP3 introduce esa frontera física mediante puestos, geometría de contacto,
+límites de actuador y un conjunto admisible de \emph{wrench}. Con geometría
+fija, el campo marginal deriva de un potencial estrictamente cóncavo
+regularizado y sus condiciones KKT coinciden con el equilibrio variacional de
+la relajación. En 600 instancias, la guardia redujo en $0.333$ la tasa de
+falsos positivos frente al criterio escalar. Aceptó todas las coaliciones
+factibles disponibles (cobertura $1.000$), se abstuvo en $0.500$ de las
+instancias y no produjo falsos positivos entre las coaliciones retenidas. El QP
+que certifica el reparto sigue siendo central por carga y el modelo no incluye
+soporte vertical ni contacto tridimensional.
+
+SP4 añade la dinámica de uniciclo durante el acoplamiento y una carga rígida planar
+para transporte. El servocontrol estabiliza localmente la pose cuando los
+contactos son fijos y el \emph{wrench} solicitado se realiza exactamente. Las
+campañas originales evaluaron aproximación y transporte en estratos separados,
+por lo que no demostraban por sí solas una misión completa. Esa brecha motivó la
+campaña integrada posterior.
+
+SP5--SP8 cuantifican condiciones adversas. La guardia de SP5 eliminó las
+colisiones observadas del control Hamiltoniano sin guardia, pero conservó
+bloqueos y agotamientos del horizonte; seguridad observada y progreso no coincidieron en
+todos los mundos. En SP6, los equilibrios del juego de recuperación corresponden
+a reparaciones factibles mínimas por inclusión bajo la cota de penalización. El
+certificado se restauró en los 360 mundos recuperables, aunque solo una fracción
+cumplió el plazo estrecho. SP7 resolvió los conflictos lógicos de zona en 360
+mundos, sin demostrar distancia continua entre cuerpos. SP8 mostró que
+retransmitir elevó en $0.054$ la tasa libre de conflictos a cambio de
+$261.3$ mensajes adicionales por agente; la calidad estratégica cayó a cero
+en el mayor caso nominal.
+
+La simulación Cargo integrada enlaza reclutamiento heterogéneo, intercambio de
+identificadores entre vecinos, acoplamiento de uniciclos, transporte planar,
+obstáculo, fallo, reemplazo y continuación en una ejecución compartida. El
+protocolo confirmatorio cubrió 360 instancias y 2160 ejecuciones. El método
+vecinal terminó 359/360 misiones sin intersección entre la huella compuesta y el
+obstáculo durante el transporte. Retirar conjuntamente el certificado, el
+desvío por punto intermedio y el filtro de seguridad redujo el éxito en
+$0.996$ en los regímenes con obstáculo; por ello, esta ablación no identifica
+el efecto individual de cada componente. Desactivar la reparación lo redujo en
+$0.989$ bajo fallo. Con pérdida $0.25$ y retardo de hasta dos eventos, las
+variantes vecinal y de información perfecta completaron 90/90 misiones. La
+primera empleó en promedio 328 mensajes y unos 90~kB por instancia.
+
+El alcance de estas cifras es funcional, no industrial: las interfaces
+coexisten en el simulador planar. La
+ablación de reparación aísla el valor operativo de reponer capacidad; la
+ablación de seguridad combina tres mecanismos y solo permite atribuir el efecto
+al bloque completo. La única pérdida del método completo fue una reparación que
+no cerró el certificado antes del horizonte; se conserva en el denominador y
+limita la afirmación sobre recuperación.
+
+La campaña AWS Industrial 2 expone un límite adicional al trasladar la
+coordinación a varias cargas y tráfico continuo. Solo el centro abierto produjo
+entregas; en el cuello, el cruce controlado y el régimen de \emph{backlog}, los
+cuatro métodos agotaron el horizonte. La versión corregida no registró
+solapamientos muestreados, pero Replicator--CBF conservó una fracción de bloqueo
+entre $0.467$ y $0.646$. Por tanto, seguridad geométrica observada, bajo coste de
+CPU y progreso son criterios independientes.
+
+\subsection{Cumplimiento de los objetivos}
+
+En el dominio Cargo declarado, el objetivo general se alcanza como formulación
+matemática y composición funcional en una planta planar reducida.
+La ejecución relaciona decisión vecinal, movimiento, certificado mecánico,
+seguridad y recuperación, pero el intercambio solo transmite identificadores y
+el ejecutor consulta un registro global de atributos. La información es local
+en algunos mecanismos, mientras que el cierre, el líder temporal y el
+optimizador por carga introducen dependencias no vecinales. El resultado no se extiende a una
+descentralización integral, a tracción rueda--suelo ni a una planta
+tridimensional.
+
+Los objetivos específicos presentan el siguiente grado de cumplimiento:
+
+\begin{enumerate}[label=\arabic*.,leftmargin=2em,topsep=0.4em,itemsep=0.65em,parsep=0pt]
+  \item La formación de coaliciones quedó formalizada desde asignación homogénea
+  hasta cuotas y servicio heterogéneo. Se definieron acciones, pagos,
+  potenciales, cierres y fronteras de eficiencia; las dependencias globales del
+  ordenamiento y del cierre quedaron delimitadas.
+
+  \item La modalidad Cargo incorporó matriz de agarre, geometría, límites de
+  contacto, residual de \emph{wrench} y servocontrol de pose. La relación entre
+  certificado y movimiento se evaluó en el modelo planar y se acotó por los
+  supuestos de contacto fijo y realización exacta.
+
+  \item La operación adversa se evaluó mediante obstáculo, fallo simple y
+  tráfico. Los resultados separan aceptación mecánica, ausencia de colisión,
+  progreso, tiempo de recuperación y exclusión lógica, evitando reunirlos en
+  una única métrica de éxito.
+
+  \item El efecto de escala y red se midió mediante calidad, CPU, mensajes,
+  bytes, radio, retardo y pérdida. La información perfecta y el oráculo central
+  se emplearon como referencias con ventajas de información declaradas, no como
+  competidores arquitectónicamente equivalentes.
+
+  \item Los experimentos se implementaron en Python con semillas explícitas,
+  mundos pareados, intervalos y pruebas de invariantes. Los fallos, colisiones y
+  agotamientos del horizonte permanecen en el denominador; las semillas y
+  trazas permiten repetir y examinar cada ejecución de Cargo y de los pilotos
+  AWS. CoppeliaSim añade una auditoría geométrica y un replay cinemático de la
+  nave, no una validación dinámica independiente.
+\end{enumerate}
+
+\subsection{Respuesta a las preguntas de investigación}
+
+\textbf{RQ1 --- Coaliciones y heterogeneidad.} Una instancia factible requiere
+recursos suficientes y una penalización que haga indeseable el déficit. Bajo
+escasez, esa condición no basta: el cuórum debe priorizar qué carga cerrar. Con
+heterogeneidad, la contribución marginal alinea el incentivo continuo con la
+cobertura, pero el cierre entero puede conservar información global y no hereda
+optimalidad social. La disponibilidad de recursos, la estructura del incentivo
+y el mecanismo de cierre constituyen condiciones separadas.
+
+\textbf{RQ2 --- Acoplamiento y comunicación.} La campaña integrada muestra que
+la selección vecinal puede conservar la tasa de éxito de la información
+perfecta en la red degradada ensayada. El coste es comunicativo, no gratuito. No
+se confirmó la ventaja temporal atribuida al término espacial: frente a la
+selección desacoplada, el efecto fue $-0.086$~s, con IC del 95\,\%
+$[-0.178;0.013]$ y $p_{\mathrm{Holm}}=0.068$. El acoplamiento permite una
+ejecución coherente, pero no demostró acelerar la misión.
+
+\textbf{RQ3 --- Factibilidad física.} Cardinalidad y servicio operacional son
+condiciones previas, no certificados de transporte. La coalición debe satisfacer
+$\boldsymbol W_k^{\mathrm{req}}\in\mathcal W_{C_k}$ bajo la geometría y los
+límites de actuación. La guardia de SP3 reduce falsas aceptaciones y el
+servocontrol de SP4 traduce el \emph{wrench} realizado en seguimiento de pose.
+La conclusión se limita a una carga planar con contactos fijos.
+
+\textbf{RQ4 --- Degradación y resiliencia.} La degradación no admite una sola
+escala. Los obstáculos producen colisión o bloqueo; un fallo abre el certificado
+y exige capacidad de reserva; el tráfico introduce conflictos por recursos; y
+la red oculta incompatibilidades mediante retardo, pérdida o radio insuficiente.
+La arquitectura recuperó casi todas las misiones integradas, pero una reparación
+agotó el horizonte, la calidad estratégica colapsó en el mayor régimen de SP8 y
+los tres escenarios AWS congestionados no produjeron entregas. El bloqueo
+persiste incluso sin solapamientos muestreados.
+
+\textbf{RQ5 --- Coste de la descentralización.} Las capas vecinales reducen la
+información intercambiada a estados e identificadores, pero consumen mensajes,
+bytes, memoria de vistas y tiempo de propagación. En la campaña integrada, el
+ejecutor aún resuelve esos identificadores mediante un registro global de
+atributos y no constituye una implementación distribuida autónoma.
+Los oráculos centrales pueden certificar soluciones en catálogos pequeños y
+crecen combinatoriamente cuando enumeran coaliciones o rutas. La ventaja local
+es un compromiso entre información, coste y calidad, no una dominancia
+uniforme.
+
+\subsection{Estado de las hipótesis}
+
+Los estados de la Tabla~\ref{tab:conclusion-hypotheses} se restringen a los
+dominios y métricas ensayados.
+
+\begin{table}[H]
+  \centering
+  \caption{Estado final de las hipótesis y principal límite de interpretación.}
+  \label{tab:conclusion-hypotheses}
+  \small
+  \setlength{\tabcolsep}{3.2pt}
+  \begin{tabularx}{\textwidth}{@{}p{0.65cm}p{2.0cm}p{5.0cm}X@{}}
+    \toprule
+    ID & Estado & Evidencia principal & Límite \\
+    \midrule
+    H1 & Apoyo condicionado & Factibilidad bajo penalización y mejora del cuórum en los regímenes realizables. & El cierre entero y varios agregados conservan información global. \\
+    H2 & Apoyo parcial & Reducción de $0.333$ en falsos positivos, cobertura $1.000$ y abstención $0.500$ en SP3. & La ablación integrada combina certificado, desvío y filtro; solo Cargo planar. \\
+    H3 & No sustentada & Efecto $-0.086$~s, IC $[-0.178;0.013]$ y $p_{\mathrm{Holm}}=0.068$. & La composición vecinal fue operativa, pero no se demostró ventaja temporal ni equivalencia. \\
+    H4 & Apoyo parcial & Reparación superior a la ablación en 89 de 90 pares favorables. & Una misión recuperable no cerró el certificado antes del horizonte. \\
+    H5 & Mixta & Menor dependencia de enumeración global y coste comunicativo cuantificado. & En $K=64$ nominal, la tasa global libre de conflicto fue cero. \\
+    HP & Apoyo delimitado & 359/360 misiones integradas sin intersección carga--obstáculo en la métrica implementada. & Planta reducida, registro global y ablación de seguridad combinada; no validación industrial. \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+La hipótesis principal recibe apoyo existencial y experimental: bajo los
+supuestos declarados, una arquitectura interpretable y parcialmente distribuida
+puede formar una coalición y ejecutar la misión Cargo. El resultado no es
+uniforme para cualquier flota, red, geometría de contacto o número de cargas.
+
+\subsection{Limitaciones}
+
+Las limitaciones formales proceden de la composición. Cada teorema conserva sus
+propios supuestos y no existe una función de Lyapunov común para el sistema
+híbrido completo. La relación potencial cubre decisiones o juegos concretos; la
+estabilidad de pose exige contactos fijos y realización exacta; y los resultados
+de tráfico se formulan sobre un grafo discreto. Ninguna de estas propiedades se
+propaga automáticamente a las demás capas.
+
+El modelo físico utiliza una carga planar, geometría y pose conocidas y fuerzas
+acotadas en contactos fijados después del acoplamiento. No representa soporte
+vertical, fricción tridimensional, deslizamiento, flexibilidad, incertidumbre de
+masa, percepción ni estimación de pose. Los uniciclos se integran durante la
+aproximación y el reemplazo. Una vez acoplados, sus poses se reconstruyen desde
+la pose de la carga y desplazamientos rígidos: las ruedas y los contactos no
+generan directamente su movimiento. Falta contrastar esta reducción en un
+motor físico independiente.
+
+La campaña integrada considera una carga y un fallo simple. El líder es local y
+temporal, pero sigue siendo un punto de coordinación por carga. El grafo se
+mantiene estático durante cada intercambio y las pérdidas son Bernoulli
+independientes; no se modelan ráfagas, interferencia, congestión del canal,
+topologías móviles ni una capa real de comunicaciones. SP7 usa recursos discretos y
+SP8 mide tráfico de mensajes, no energía de radio ni memoria física.
+
+Los escenarios son sintéticos y los intervalos describen sus generadores. La
+tasa 359/360 no estima una probabilidad de fallo industrial. La referencia
+central dispone de información global y actúa como techo; no constituye una
+comparación justa de arquitectura. La rama empuje/caging no comparte el modelo
+de contacto de Cargo y, por ello, permanece fuera de las pruebas y de las
+conclusiones mecánicas.
+
+Industrial 2 añade solo dos semillas por escenario y compara adaptaciones
+piloto. La subasta, la navegación recíproca y el predictor no reproducen CBBA,
+ORCA o DMPC completos. La referencia central resuelve asignaciones por
+instantánea, no un problema integrado de coaliciones y espacio--tiempo. Los
+discos de sensado y comunicación son visuales; el replay 3D impone el
+acoplamiento y no genera el movimiento mediante contacto, ruedas o fuerzas.
+
+\subsection{Recomendaciones y trabajo futuro}
+
+El siguiente contraste debe trasladar la misma campaña, con variables de
+respuesta y ablaciones fijadas de antemano, a una planta física independiente.
+La escena CoppeliaSim existente debe sustituir su replay por modelos de fricción,
+soporte vertical, contacto rueda--suelo, agarre y actuadores; Gazebo o hardware
+pueden servir como contraste independiente. La planta resultante debe incorporar
+masa incierta, saturación persistente, ruido de pose y contacto imperfecto. La
+comparación debe conservar guardia, reparación, información perfecta y mundos
+pareados para distinguir una mejora real de un cambio de escenario.
+
+La comunicación requiere un experimento específico. La topología debe evolucionar con el
+movimiento y las pérdidas deben incluir ráfagas y retardos correlacionados. Un
+prototipo ROS~2 permitiría medir edad de información, bytes efectivos, memoria,
+energía de radio y tiempo de CPU en la plataforma. El líder temporal podría
+sustituirse por un cierre tolerante a fallos o por consenso distribuido, y el
+beneficio de resiliencia tendría que compararse con el tráfico adicional.
+
+Para SP6, una línea directa consiste en sustituir la calibración exponencial de
+$\delta_{\mathrm{mín}}$ por una cota inferior conservadora calculable en línea a partir de las
+contribuciones positivas mínimas de la reserva, y en medir cuánta penalización adicional exige
+esa relajación.
+
+La extensión a múltiples misiones introduce competencia por
+robots, zonas y energía, y obliga a acoplar formación de coaliciones con tráfico
+continuo. La referencia central debería formularse como particionamiento de
+conjuntos o MILP espacio--temporal con rutas. El comparador distribuido debe
+reproducir una subasta de coaliciones y un controlador publicado, por ejemplo
+ORCA, CBF-QP o DMPC según el nivel físico elegido, en lugar de renombrar los
+proxies del piloto. La calidad debe medirse junto con el
+tiempo de terminación, la productividad, la energía y la equidad entre cargas.
+
+\enlargethispage{1.5\baselineskip}
+La rama de empuje/caging requiere un modelo independiente de contacto
+unilateral, fricción, confinamiento y pérdida de caging. Solo después podrá
+compararse con Cargo. Toda ampliación debe reutilizar la campaña integrada como
+regresión y cuantificar cualquier propiedad perdida.

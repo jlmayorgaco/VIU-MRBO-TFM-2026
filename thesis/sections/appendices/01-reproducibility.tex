@@ -49,6 +49,20 @@ conserva el protocolo congelado, el registro de semillas, los datos de las
 resúmenes SHA-256 de cada resultado derivado. La configuración no se sobrescribe
 si su huella difiere de la ya congelada bajo el mismo identificador.
 
+La campaña AWS Industrial 2 se reconstruye con:
+\begin{verbatim}
+python tmp/scripts/coppelia/run_aws_industrial2_multiscenario.py `
+  --config experiments/configs/aws_industrial2_method_comparison_pilot.yaml
+\end{verbatim}
+El constructor de la escena exporta una copia separada mediante:
+\begin{verbatim}
+python tmp/scripts/coppelia/build_aws_industrial_adversarial_scene.py `
+  --industrial2 --launch-coppelia
+\end{verbatim}
+Los valores de la memoria se regeneran desde los CSV y manifiestos con
+\texttt{export\_aws\_industrial2\_latex.py}; la compilación ejecuta ese paso
+antes de leer las macros numéricas.
+
 \subsection{Datos, resultados y controles}
 
 Los datos y gráficos de SP0--SP1 se almacenan bajo \texttt{results/sp0} y \texttt{results/sp1}; los de SP2--SP8, bajo \texttt{results/processed/spN}. Cada estudio conserva tablas agregadas, números usados por LaTeX y figuras derivadas. Los manifiestos registran versiones, parámetros y resúmenes SHA-256 cuando están disponibles. En SP2, los nombres internos de columnas conservan el término histórico «capacity» para mantener la compatibilidad con los CSV archivados.
@@ -65,9 +79,10 @@ satisfactorio antes de emplear las tablas en el análisis.
 
 \subsection{Disponibilidad, autoría e integridad}
 
+% TODO(autor): sustituir <TAG> por la etiqueta del release y añadir el DOI de Zenodo cuando exista.
 El código, las configuraciones, los resultados procesados y los manifiestos
-disponibles se entregan en \url{https://github.com/jlmayorgaco/VIU-MRBO-TFM-2026}. SP0, SP1, SP4--SP8 y la campaña
-Cargo pueden reconstruirse desde sus configuraciones versionadas. En SP2 y
+disponibles se entregan en \url{https://github.com/jlmayorgaco/VIU-MRBO-TFM-2026} (versión etiquetada \texttt{<TAG>}). SP0, SP1, SP4--SP8 y la campaña
+Cargo, junto con los pilotos AWS, pueden reconstruirse desde sus configuraciones versionadas. En SP2 y
 SP3 se conservan las observaciones y el postproceso que regenera estadísticas,
 tablas y figuras, pero no todos los generadores históricos; esos dos estudios
 son reanálisis reproducibles de datos archivados, no simulaciones íntegramente
