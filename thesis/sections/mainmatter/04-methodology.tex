@@ -1,0 +1,136 @@
+\section{Metodología}
+\label{sec:methodology}
+
+La investigación combina análisis formal y experimentos pareados. El primero establece propiedades bajo supuestos explícitos; los experimentos miden su alcance y sus fallos en modelos simulados. Cargo soportado es la modalidad física principal. El empuje y el \emph{caging} solo se discuten cuando existe un modelo de contacto específico.
+
+\subsection{Diseño y unidad de análisis}
+\label{subsec:methodology-design}
+
+Las preguntas RQ1--RQ5 se descomponen en SP0--SP8. Cada SP añade una restricción al anterior y fija un estimando, una métrica primaria y una condición que contradice la hipótesis local. La simulación no sustituye las pruebas de convergencia, estabilidad o seguridad.
+
+La unidad independiente es el mundo experimental $w$, definido por escenario, factores y semilla. Todos los métodos reciben el mismo mundo. Robots, cargas, contactos y muestras temporales están anidados en una ejecución y no aumentan el tamaño muestral. Esta definición evita tratar miles de instantes correlacionados como observaciones independientes.
+
+Los SP forman cuatro bloques. SP0--SP2 estudian asignación, cuotas y heterogeneidad sin planta física. SP3--SP4 introducen contacto, \emph{wrench} y transporte de pose. SP5--SP7 añaden seguridad, fallos y tráfico. SP8 mide escala y comunicación sobre un juego de rutas. El cambio entre bloques es deliberado: una propiedad estratégica no se hereda como propiedad mecánica y una barrera geométrica no garantiza progreso.
+
+\subsection{Modelos y escalas de abstracción}
+\label{subsec:methodology-common-model}
+
+Sean $\Robots=\{1,\ldots,N\}$ los robots y $\Loads=\{1,\ldots,K\}$ las cargas. La aproximación individual se representa mediante un uniciclo. Para $q_i=(p_{x,i},p_{y,i},\theta_i)$ y $\nu_i=(v_i,\omega_i)$,
+\begin{equation}
+  \dot q_i =
+  \begin{bmatrix}
+    \cos\theta_i & 0\\
+    \sin\theta_i & 0\\
+    0 & 1
+  \end{bmatrix}\nu_i,
+  \qquad |v_i|\leq v_i^{\max},\quad |\omega_i|\leq\omega_i^{\max},
+  \label{eq:method-unicycle}
+\end{equation}
+La campaña de acoplamiento de SP4 añade la dinámica de velocidad, $\xi_i=(q_i,v_i,\omega_i)$ y $\eta_i=(\eta_i^v,\eta_i^\omega)$, con $\dot v_i=\eta_i^v$ y $\dot\omega_i=\eta_i^\omega$. Para una rueda de radio $r_i^w$, semivía $\ell_i^w$, masa $m_i$ e inercia $I_i$, la acción realizable se obtiene al limitar los pares
+\begin{equation}
+ \tau_{i,R}=\frac{r_i^w}{2}\left(m_i\eta_i^v+\frac{I_i}{\ell_i^w}\eta_i^\omega\right),
+ \qquad
+ \tau_{i,L}=\frac{r_i^w}{2}\left(m_i\eta_i^v-\frac{I_i}{\ell_i^w}\eta_i^\omega\right),
+ \qquad |\tau_{i,R/L}|\leq\tau_i^{\max}.
+ \label{eq:method-wheel-torque}
+\end{equation}
+El control se evalúa en $t_m$ y se integra con paso $\Delta t$; por tanto, \emph{asíncrono} designa la ausencia de rondas globales de decisión. La ejecución conserva un reloj digital.
+
+La preferencia continua $\rho_{ik}\in[0, 1]$ y la asignación $x_{ik}\in\{0, 1\}$ son objetos distintos. La coalición $C_k=\{i:x_{ik}=1\}$ satisface el cierre lógico si
+\begin{equation}
+  \sum_{k=1}^{K}x_{ik}\leq 1,
+  \qquad |C_k|\geq n_k,
+  \qquad \sum_{i\in\Robots}\boldsymbol c_i x_{ik}\succeq\boldsymbol r_k.
+  \label{eq:method-logical-feasibility}
+\end{equation}
+Estas desigualdades certifican exclusivamente recursos y pertenencia. El contacto exige además que, en Cargo, una coalición fija produzca el \emph{wrench} requerido: existe $\lambda_k\in\mathcal U_{C_k}$ tal que $G_{C_k}(q_k^L)\lambda_k=W_k^{\mathrm{req}}$. Una vez acoplados los robots, la simulación sustituye sus movimientos individuales por la dinámica planar del cuerpo compuesto,
+\begin{equation}
+ M_k\ddot q_k^L+D_k\dot q_k^L
+ =G_{C_k}(q_k^L)\lambda_k+W_k^{\mathrm{ext}},
+ \label{eq:method-payload-dynamics}
+\end{equation}
+con límites de contacto aplicados antes de integrar. El modelo de empuje exigiría fuerzas unilaterales y fricción; el \emph{caging}, además, un conjunto geométrico de confinamiento. Esa rama no participa en los resultados cuantitativos.
+
+Los modelos se usan con distinta resolución. SP0--SP2 mantienen las poses fijas y solo producen decisiones de asignación. SP3 evalúa contactos y \emph{wrench} con la carga inmóvil. SP4 integra el uniciclo durante el acoplamiento y la ecuación~\eqref{eq:method-payload-dynamics} durante el transporte; SP5 conserva esta última y añade obstáculos, perturbaciones y saturación. SP6 aproxima el viaje del reemplazo mediante distancia y velocidad acotada. SP7--SP8 sustituyen la planta por un cuerpo compuesto inflado que ocupa celdas de una ruta. Esta reducción permite estudiar tráfico y red; las garantías del control continuo quedan circunscritas a sus estratos originales.
+
+La red de comunicación es $\mathcal G(t)=(\Robots,\mathcal E(t))$. Cada robot usa estado propio, percepción y mensajes de $\Neighbors_i(t)$. Radio $R$, retardo $\tau_d$, pérdida $p_{\mathrm{loss}}$, caducidad y bytes transmitidos son factores medidos. Un método solo se denomina distribuido cuando la estimación, la actualización y el cierre respetan esa información. Las etapas que consultan todos los candidatos se identifican como globales.
+
+\subsection{Métodos y comparadores}
+\label{subsec:methodology-methods}
+
+La información disponible determina el papel de cada método. Los optimizadores globales sirven como oráculos o cotas en instancias pequeñas y quedan fuera de la operación bajo comunicación vecinal.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Familias de métodos y función experimental.}
+  \label{tab:method-taxonomy}
+  \small
+  \setlength{\tabcolsep}{3.5pt}
+  \begin{tabularx}{\textwidth}{@{}p{3.1cm}p{3.7cm}p{4.2cm}X@{}}
+    \toprule
+    Familia & Información & Ejemplos & Función \\
+    \midrule
+    Optimización global & Estado y modelo completos & Húngaro, MILP, QP de \emph{wrench}, CBS/ECBS & Óptimo certificado, cota o referencia. \\
+    Método local basado en modelo & Estado propio y mensajes vecinales & Subasta, CBBA, mejor respuesta, Smith, primal--dual & Mecanismo propuesto o comparador homogéneo. \\
+    Heurística global o local & Información declarada por método & Método voraz, priorización, aproximación VO/CBF & Comparador de coste y ablación estructural. \\
+    Método basado en datos & Observación y entrenamiento declarados & Imitación, GNN o MARL & Comparador secundario; no es el método principal. \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+Smith, replicator, BNN y logit son protocolos distintos sobre preferencias poblacionales \parencite{sandholm2010population}. El cierre QR convierte preferencias en cuotas enteras, pero solo es vecinal si la ordenación usa mensajes locales. Las variantes primal--dual introducen multiplicadores para restricciones acopladas bajo convexidad o monotonicidad \parencite{cherukuri2016primalDual,yi2019operatorGNE}. El húngaro se limita al caso uno a uno; CBBA se usa como referencia de subasta \parencite{choiBrunetHow2009CBBA}; ORCA, CBF-QP, planificación priorizada y CBS se comparan únicamente con modelos compatibles.
+
+Cuando el tamaño lo permite, la comparación incluye un oráculo, un método de referencia y una ablación del componente asociado con la hipótesis. Todos parten del mismo estado y comparten límites, horizonte y criterio de éxito. Una solución del optimizador solo se considera óptima si la cota se cerró; en otro caso se informa su brecha.
+
+\subsection{Protocolo y análisis estadístico}
+\label{subsec:methodology-experimental-protocol}
+
+El protocolo separa las pruebas deterministas, el ajuste y la evaluación confirmatoria. Las semillas de esta última no intervienen en la selección de parámetros. Solo se excluyen réplicas corruptas, duplicadas o afectadas por un fallo de infraestructura ajeno al tratamiento. Las colisiones, las excepciones causadas por el algoritmo, la falta de convergencia y el agotamiento del horizonte permanecen en el denominador.
+
+El emparejamiento se conserva en todo el análisis. Para dos métodos se calcula $d_w=y_{w,a}-y_{w,b}$ sobre cada mundo; con tres o más métodos, el mundo es el bloque. Se informan número de mundos, fallos, estimación puntual, intervalo del 95\,\% y tamaño de efecto. Las diferencias binarias usan diferencia de riesgos pareada y McNemar exacto. Las variables continuas u ordinales usan Friedman, Wilcoxon y Kendall $W$ cuando sus supuestos corresponden \parencite{demsar2006Statistical,kerby2014SimpleDifference}. El remuestreo opera sobre mundos, nunca sobre robots o instantes. Para mantener consistencia con las tablas y figuras generadas automáticamente, los resultados numéricos usan punto como separador decimal.
+
+Holm corrige cada familia de contrastes preespecificada \parencite{holm1979Sequential}. Un valor $p$ no reemplaza la magnitud ni el intervalo. El agotamiento del horizonte se trata como censura o tiempo truncado; no se calculan razones de riesgo si el protocolo no las fijó antes del análisis.
+
+Tras un piloto de tres semillas, la campaña Cargo empleó 30 semillas nuevas por combinación. Cruzó cuatro regímenes, tres tamaños de flota y seis tratamientos pareados. El método completo propagó entre vecinos tablas con número de versión, pérdida y retardo. Las referencias globales usaron el mismo mundo y la misma planta, pero no contabilizaron mensajes. Las comparaciones se definieron antes de calcular los resultados confirmatorios.
+
+La serie AWS se mantuvo como evidencia piloto complementaria. Sus cuatro etapas
+pasaron de asignación uno a uno a coaliciones heterogéneas, compararon A* con
+movimiento continuo y culminaron en cuatro escenarios industriales. El último
+estudio cruzó cuatro métodos y dos semillas pareadas por escenario durante
+$60$~s. Su objetivo fue localizar bloqueos, coste computacional y fallos de
+interfaz; ese tamaño no permite una clasificación confirmatoria. La referencia
+central optimiza la asignación de cada instantánea, no la trayectoria conjunta,
+y los tratamientos inspirados en subasta, reciprocidad y predicción se
+identifican como \emph{proxies}.
+
+\subsection{Métricas, reproducibilidad y validez}
+\label{subsec:methodology-metrics}
+
+El éxito de misión exige cierre lógico, factibilidad de la modalidad, ausencia de colisión y entrega dentro del horizonte. Las métricas por capa localizan dónde se pierde esa condición conjunta.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Métricas empleadas en SP0--SP8.}
+  \label{tab:method-metrics}
+  \scriptsize
+  \setlength{\tabcolsep}{2.8pt}
+  \begin{tabularx}{\textwidth}{@{}p{2.3cm}p{5.1cm}p{2.2cm}X@{}}
+    \toprule
+    Grupo & Métricas & Unidad & Lectura \\
+    \midrule
+    Asignación & factibilidad, déficit, exceso, valor y brecha & proporción; puntuación & calidad lógica y coste social \\
+    Tiempo y movimiento & reclutamiento, entrega, terminación, recuperación, distancia & s; m & progreso, bloqueo y coste cinemático \\
+    Física y seguridad & error de pose, residual de \emph{wrench}, colisión, distancia mínima & m; rad; N; N\,m & realización mecánica y separación \\
+    Comunicación & mensajes, bytes, edad de información & conteo; B; s & coste y degradación de la red \\
+    Cómputo & CPU, memoria, iteraciones y evaluaciones & s; MB; conteo & coste computacional \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+Las configuraciones fijan escenario, semilla, parámetros y límites. Los datos crudos permanecen intactos y un mismo procedimiento calcula resúmenes, tablas y figuras. El simulador separa decisión, comunicación, cierre, planta, contacto, seguridad y métricas; esa separación permite detectar lecturas globales impropias. Python constituye el entorno experimental principal porque permite congelar mundos pareados, registrar estados internos de todas las capas y regenerar cada métrica desde semillas versionadas. CoppeliaSim se empleó para auditar la geometría y reproducir cinemáticamente el guion de la nave Industrial 2. La asignación, la navegación y las métricas multiescenario se calcularon en Python; el replay 3D no reprodujo actuadores Pioneer, contacto rueda--suelo ni agarre cooperativo. Por ello sus salidas se presentan como comprobación geométrica y funcional del guion, no como evidencia dinámica ni de hardware.
+
+Las reconstrucciones actuales de SP0, SP1, SP6--SP8 y Cargo se ejecutaron en Windows~11 con Python~3.13.9, NumPy~2.3.5, pandas~2.3.3 y SciPy~1.16.3. \texttt{requirements-reproducible.txt} fija las dependencias. En PowerShell se define \texttt{\$env:PYTHONPATH='src'}; en Bash, \texttt{export PYTHONPATH=src}; después se ejecutan \texttt{python -m pytest tests} y \texttt{pwsh -File thesis/build.ps1}. Los datos, configuraciones y manifiestos están disponibles en \url{https://github.com/jlmayorgaco/VIU-MRBO-TFM-2026}. SP2--SP3 permiten reanálisis desde observaciones archivadas, aunque sus generadores históricos completos no se conservan; la entrega final deberá identificar una etiqueta y un commit, y preferiblemente una instantánea con DOI.
+
+La validez interna depende del emparejamiento, la separación de semillas y la equivalencia de información y límites. La validez externa se restringe a los tamaños, geometrías, sensores y regímenes de red ensayados. El uniciclo y el modelo planar omiten contacto tridimensional, desgaste e incertidumbre completa de percepción. Los resultados se interpretan dentro de esas condiciones; fuera de ellas no se afirma convergencia, estabilidad, seguridad u optimalidad.

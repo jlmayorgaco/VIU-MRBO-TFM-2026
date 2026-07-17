@@ -1,0 +1,126 @@
+\section{Demostraciones complementarias de SP6}
+\label{app:sp6-proofs}
+\begingroup\footnotesize
+
+Los cuatro resultados formales de SP6-C suponen un fallo simple, una carga afectada, recursos aditivos no negativos, costes positivos y una reserva finita. Quedan fuera los contactos friccionales, las cargas que compiten por la misma reserva, los fallos simultáneos y la convergencia de la planta física después del reacoplamiento.
+
+\subsection{Potencial exacto y propiedad de mejora finita}
+\label{app:sp6-exact-potential-proof}
+
+Fíjese el perfil de los demás robots $\boldsymbol x_{-i}$ y considérese una desviación de $x_i$ a $x_i'$. Por la definición~\eqref{eq:sp6-payoff},
+\begin{align*}
+ &U_i(x_i',\boldsymbol x_{-i})-U_i(x_i,\boldsymbol x_{-i})\\
+ &\quad=\left[\Phi_6(x_i',\boldsymbol x_{-i})-\Phi_6(0,\boldsymbol x_{-i})\right]
+ -\left[\Phi_6(x_i,\boldsymbol x_{-i})-\Phi_6(0,\boldsymbol x_{-i})\right]\\
+ &\quad=\Phi_6(x_i',\boldsymbol x_{-i})-\Phi_6(x_i,\boldsymbol x_{-i}).
+\end{align*}
+La variación unilateral de utilidad coincide exactamente con la variación del potencial, de acuerdo con la definición de juego potencial exacto \parencite{monderer1996potential}.
+
+El conjunto de perfiles $\{0, 1\}^{n_R}$ es finito y no vacío. Por tanto, $\Phi_6$ alcanza un máximo global; en ese perfil ninguna desviación unilateral puede aumentar la utilidad, luego existe al menos un Nash puro. En una trayectoria de mejoras estrictas, cada cambio aumenta estrictamente $\Phi_6$, de modo que un perfil no puede repetirse. Como existen $2^{n_R}$ perfiles, la trayectoria contiene a lo sumo $2^{n_R}-1$ cambios aceptados. Al terminar, ninguna desviación estrictamente rentable permanece y el perfil final es Nash. Esto demuestra el Teorema~\ref{thm:sp6-exact-potential}.
+
+\subsection{Caracterización de los equilibrios}
+\label{app:sp6-nash-characterization}
+
+Sea $\boldsymbol e_i$ el vector canónico del robot $i$. Si $x_i=0$, la ganancia potencial de unirse es
+\[
+ \Phi_6(\boldsymbol x+\boldsymbol e_i)-\Phi_6(\boldsymbol x)
+ =\lambda_6\left[D_6(\boldsymbol x)-D_6(\boldsymbol x+\boldsymbol e_i)\right]-\kappa_i^6.
+\]
+No existe entrada rentable si y solo si
+\begin{equation}
+\label{eq:sp6-ne-entry}
+ \lambda_6\left[D_6(\boldsymbol x)-D_6(\boldsymbol x+\boldsymbol e_i)\right]\leq\kappa_i^6
+ \qquad\forall i:x_i=0.
+\end{equation}
+Si $x_i=1$, abandonar cambia el potencial en
+\[
+ \Phi_6(\boldsymbol x-\boldsymbol e_i)-\Phi_6(\boldsymbol x)
+ =-\lambda_6\left[D_6(\boldsymbol x-\boldsymbol e_i)-D_6(\boldsymbol x)\right]+\kappa_i^6.
+\]
+No existe salida rentable si y solo si
+\begin{equation}
+\label{eq:sp6-ne-exit}
+ \lambda_6\left[D_6(\boldsymbol x-\boldsymbol e_i)-D_6(\boldsymbol x)\right]\geq\kappa_i^6
+ \qquad\forall i:x_i=1.
+\end{equation}
+Las desigualdades~\eqref{eq:sp6-ne-entry}--\eqref{eq:sp6-ne-exit} son necesarias y suficientes porque el conjunto de acciones de cada robot es binario. Constituyen la caracterización completa de los Nash puros anunciada en el texto principal.
+
+\subsection{Factibilidad y minimalidad bajo el umbral}
+\label{app:sp6-feasible-nash-proof}
+
+Supóngase que la reserva completa es factible. Tome un perfil $\boldsymbol x$ con $D_6(\boldsymbol x)>0$. Existe al menos una componente $a$ con
+\[
+ d_{ka}^6-\sum_i c_{ia}^6x_i>0.
+\]
+Como $\sum_i c_{ia}^6\geq d_{ka}^6$, la capacidad no seleccionada en esa componente es positiva. Por tanto, existe $j$ con $x_j=0$, $c_{ja}^6>0$ y
+\[
+ D_6(\boldsymbol x)-D_6(\boldsymbol x+\boldsymbol e_j)>0.
+\]
+El máximo interior de~\eqref{eq:sp6-delta-min} es positivo para cada perfil deficitario. Hay un número finito de esos perfiles, así que su mínimo $\delta_{\min}$ también es positivo.
+
+Si $\lambda_6>\kappa_{\max}^6/\delta_{\min}$, en todo perfil deficitario existe un robot libre $j$ tal que
+\begin{align*}
+ \Phi_6(\boldsymbol x+\boldsymbol e_j)-\Phi_6(\boldsymbol x)
+ &\geq\lambda_6\delta_{\min}-\kappa_j^6\\
+ &\geq\lambda_6\delta_{\min}-\kappa_{\max}^6>0.
+\end{align*}
+Ese perfil no puede ser Nash. En consecuencia, todo Nash satisface $D_6(\boldsymbol x)=0$.
+
+Resta demostrar minimalidad. Sea $\boldsymbol x$ un Nash factible y supóngase que un miembro $i$ puede salir conservando factibilidad. Entonces
+$D_6(\boldsymbol x-\boldsymbol e_i)=D_6(\boldsymbol x)=0$ y
+\[
+ \Phi_6(\boldsymbol x-\boldsymbol e_i)-\Phi_6(\boldsymbol x)=\kappa_i^6>0,
+\]
+lo que contradice Nash. Cada miembro es, pues, crítico para al menos una componente. Esto completa el Teorema~\ref{thm:sp6-feasible-nash}.
+
+Para probar la inclusión inversa, sea ahora $\boldsymbol x$ factible y mínima por inclusión. Si $x_j=0$, entonces $D_6(\boldsymbol x+\boldsymbol e_j)=D_6(\boldsymbol x)=0$ y entrar cambia el potencial en $-\kappa_j^6<0$; ningún robot externo desea incorporarse.
+
+Si $x_i=1$, la minimalidad implica $D_6(\boldsymbol x-\boldsymbol e_i)>0$. En el perfil deficitario $\boldsymbol y=\boldsymbol x-\boldsymbol e_i$, volver a añadir $i$ lleva el déficit a cero. Ninguna incorporación puede reducir más que todo el déficit presente, por lo que
+\[
+ \max_{j:y_j=0}\left[D_6(\boldsymbol y)-D_6(\boldsymbol y+\boldsymbol e_j)\right]
+ =D_6(\boldsymbol y)\geq\delta_{\min}.
+\]
+La ganancia potencial de abandonar es entonces
+\[
+ \Phi_6(\boldsymbol x-\boldsymbol e_i)-\Phi_6(\boldsymbol x)
+ =\kappa_i^6-\lambda_6D_6(\boldsymbol x-\boldsymbol e_i)
+ \leq\kappa_{\max}^6-\lambda_6\delta_{\min}<0.
+\]
+Ningún miembro desea salir. Como las acciones son binarias, $\boldsymbol x$ es Nash. Junto con la primera inclusión, esto prueba la igualdad de conjuntos del Teorema~\ref{thm:sp6-feasible-nash}.
+
+Finalmente, una solución factible de coste mínimo es mínima por inclusión porque todos los costes son positivos. Por la igualdad anterior pertenece al conjunto de Nash, de modo que $\operatorname{PoS}_6=1$. El contraejemplo de la Sección~\ref{app:sp6-poa-proof} muestra que el cociente del peor Nash diverge y, por tanto, $\operatorname{PoA}_6=+\infty$.
+
+\subsection{Cota temporal condicionada}
+\label{app:sp6-time-proof}
+
+El Teorema~\ref{thm:sp6-exact-potential} limita a $2^{n_R}-1$ los cambios estrictos. Si la detección termina antes de $\bar\tau_d$ y el intervalo entre cambios aceptados está acotado por $\bar\tau_a$, la fase estratégica dura como máximo
+\[
+ \bar\tau_d+(2^{n_R}-1)\bar\tau_a.
+\]
+Una vez fijado el perfil, el reemplazo $i$ recorre como máximo $\ell_i$ a velocidad no menor que $v_i^{\min}$; todos los reemplazos pueden desplazarse en paralelo, por lo que el último llega antes de
+$\max_{i:x_i=1}\ell_i/v_i^{\min}$. Añadir el tiempo de asentamiento $\tau_s$ produce~\eqref{eq:sp6-time-bound}. Si esa suma no supera $T_{\mathrm{safe}}$, la restauración ocurre antes del plazo bajo los supuestos de trayectoria libre y velocidad garantizada. Esta suma no prueba seguridad ante obstáculos ni estabilidad posterior al contacto.
+
+\subsection{Ausencia de una cota uniforme de eficiencia}
+\label{app:sp6-poa-proof}
+
+Considérese un único recurso con demanda uno y tres reservas:
+\[
+ \boldsymbol c_1^6=1,
+ \qquad \boldsymbol c_2^6=\boldsymbol c_3^6=\tfrac12,
+ \qquad
+ \kappa_1^6=M,
+ \qquad \kappa_2^6=\kappa_3^6=1,
+\]
+donde $M>2$, y tómese $\lambda_6=\tfrac52M$. En esta instancia $\delta_{\min}=1/2$, por lo que $\lambda_6>\kappa_{\max}^6/\delta_{\min}=2M$: se cumple incluso la condición suficiente del Teorema~\ref{thm:sp6-feasible-nash}.
+
+El perfil $\boldsymbol x^A=(1, 0, 0)$ es factible y cuesta $M$. El robot 1 no abandona porque hacerlo cambia el coste penalizado de $M$ a $\lambda_6>M$; los robots 2 y 3 no entran porque serían redundantes y añadirían coste. Así, $\boldsymbol x^A$ es Nash.
+
+El perfil $\boldsymbol x^B=(0, 1, 1)$ también es factible y cuesta dos. Si uno de sus miembros abandona, queda déficit $1/2$ y el coste penalizado pasa de $2$ a $1+\lambda_6/2>2$; el robot 1 tampoco entra por redundancia. Por tanto, $\boldsymbol x^B$ es Nash y coincide con el oráculo para $M>2$.
+
+El cociente entre el peor Nash y el óptimo es $M/2$, que diverge cuando $M\to\infty$. No existe una cota uniforme de eficiencia para el peor Nash, aun bajo el umbral de factibilidad. Esto demuestra la Proposición~\ref{prop:sp6-unbounded-poa}.
+
+\subsection{Comprobación automática}
+
+El módulo \texttt{src/viu\_mrob\_tfm/sp6/theory.py} enumera los perfiles binarios y comprueba, para cada mundo confirmatorio: la identidad de potencial por toda desviación unilateral; las condiciones de Nash; factibilidad y minimalidad; ascenso estricto; y el límite de $2^{n_R}-1$ cambios. Estas comprobaciones reproducen los enunciados finitos, pero no sustituyen las demostraciones anteriores ni añaden garantías físicas fuera del modelo.
+
+\endgroup
