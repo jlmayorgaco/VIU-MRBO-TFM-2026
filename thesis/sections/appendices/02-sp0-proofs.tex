@@ -1,0 +1,56 @@
+\section{Demostraciones complementarias de SP0}
+\label{app:sp0-proofs}
+
+Las pruebas reúnen la frontera de complejidad, la caracterización del juego y los certificados de eficiencia usados en SP0. Todos los resultados suponen costes normalizados, un espacio de acciones finito y, cuando se indica, $\lambda>\kappa_{\max}$.
+
+\subsection{Integralidad y complejidad}
+\label{app:proof-sp0-complexity}
+
+La matriz de restricciones de~\eqref{eq:sp0-oracle} es, salvo signos, la matriz de incidencia nodo--arista del grafo bipartito robot--tarea y es totalmente unimodular. Como el lado derecho es entero, los vértices de la relajación lineal son enteros. Añadir $N-K$ tareas ficticias convierte cada solución rectangular en una permutación cuadrada sin cambiar el coste real. Para $N\geq K$, $P(N,K)=N!/(N-K)!$ denota el número de permutaciones parciales de $K$ robots tomados de una flota de $N$. El algoritmo húngaro resuelve el problema denso en $O(N^3)$ \parencite{kuhn1955Hungarian}; una enumeración directa cuesta $\Theta(KP(N,K))$.
+
+La selección opcional de cargas introduce una frontera distinta. Sea $y_k\in\{0,1\}$ la decisión de servir la carga $k$, con $\sum_i x_{ik}=n_ky_k$ y $\sum_kx_{ik}\leq1$. Si los robots son intercambiables y los costes nulos, $y$ es factible si y solo si $\sum_kn_ky_k\leq N$. Maximizar $\sum_kv_ky_k$ coincide con mochila 0--1: $n_k$ es el peso, $v_k$ el valor y $N$ la capacidad. La reducción es polinómica y establece NP-dificultad \parencite{karp1972reducibility}.
+
+\subsection{Potencial, Nash y terminación}
+
+\paragraph{Potencial exacto.}
+Para una desviación unilateral $a_i\rightarrow b_i$, el perfil que retira al robot $i$ es idéntico antes y después. Por la utilidad marginal,
+\[
+u_i(b_i,a_{-i})-u_i(a_i,a_{-i})
+=\Phi_\lambda(b_i,a_{-i})-\Phi_\lambda(a_i,a_{-i}),
+\]
+que satisface la definición de potencial exacto \parencite{monderer1996potential}.
+
+\paragraph{Caracterización del equilibrio.}
+Sea $a$ infactible. Si falta una tarea y existe un robot inactivo, asignarlo reduce $D$ en uno y aumenta $C$ a lo sumo en $\kappa_{\max}<\lambda$. Si no hay robots inactivos, $N\geq K$ y una tarea está vacía, otra está duplicada; trasladar un robot reduce simultáneamente $D$ y $E$, con variación de coste no mayor que $\kappa_{\max}$. Si solo existe exceso, retirar un robot redundante reduce $E$ y no aumenta $C$. Todo perfil infactible admite así una mejora estricta.
+
+En un perfil factible, retirar un robot crea déficit; trasladarlo a una tarea ocupada crea déficit y exceso; y activar un robot sobre una tarea ocupada crea exceso. El ahorro de coste no supera $\kappa_{\max}<\lambda$, por lo que ninguna desviación mejora la utilidad. Los Nash son exactamente las $P(N,K)=N!/(N-K)!$ asignaciones factibles. Como $D=E=0$ en ese conjunto, los máximos globales del potencial coinciden con las asignaciones de coste mínimo.
+
+Cada revisión rentable aumenta estrictamente $\Phi_\lambda$. El espacio contiene $(K+1)^N$ perfiles, no puede repetirse ninguno y la trayectoria termina tras, como máximo, $(K+1)^N-1$ cambios. Bajo activación justa y ocupación coherente, el estado final es Nash y satisface $\boldsymbol z_0=\boldsymbol0$. El argumento no cubre retardos, errores de estimación ni dinámica física.
+
+\subsection{Eficiencia y precios}
+\label{app:proof-sp0-poa}
+
+Todo óptimo social es factible y, por tanto, Nash; el precio de estabilidad es uno. No existe una cota uniforme para el peor Nash. En la instancia
+\[
+\boldsymbol\kappa_\epsilon=
+\begin{bmatrix}0&\epsilon\\ \epsilon&1\end{bmatrix},
+\qquad 0<\epsilon<\tfrac12,
+\]
+el perfil diagonal es Nash y cuesta $1$, mientras el cruzado cuesta $2\epsilon$. La razón $1/(2\epsilon)$ diverge cuando $\epsilon\downarrow0$.
+
+\paragraph{Complementariedad $\varepsilon$.}
+Defínase $v_i=\max_j(\beta_{ij}-p_j)$. Para cualquier asignación $\pi$ y una permutación $\sigma$ que satisface complementariedad $\varepsilon$ con precios compartidos,
+\begin{align*}
+ \sum_i\beta_{i,\pi(i)}&\leq\sum_iv_i+\sum_jp_j,\\
+ \sum_i\beta_{i,\sigma(i)}&\geq\sum_iv_i+\sum_jp_j-N\varepsilon.
+\end{align*}
+Con $\beta=-\kappa$, se obtiene $C(\sigma)\leq C^\star+N\varepsilon$. Para costes enteros y $N\varepsilon<1$, la brecha debe ser cero.
+
+\subsection{Precios locales, contracción espectral e imposibilidad}
+\label{app:proof-sp0-local-prices}
+
+La desigualdad $|\widehat\pi_{ij}-\bar\pi_j|\leq e_\pi^t$ convierte~\eqref{eq:sp0-local-epsilon-cs} en complementariedad $(\varepsilon+2e_\pi^t)$ respecto al precio promedio. Al sumar sobre robots, los precios se cancelan porque $\sigma_t$ y una permutación óptima recorren una vez cada tarea. Se obtiene así la cota~\eqref{eq:sp0-local-price-gap}.
+
+La desigualdad~\eqref{eq:sp0-spectral-consensus} resulta de restringir $W$ al subespacio ortogonal a $\mathbf1$. Sustituir $e_\pi^t\leq q^t\mathcal D_0$ y resolver $q^t\mathcal D_0\leq\eta$ produce~\eqref{eq:sp0-message-cost}. La cota es suficiente y puede ser conservadora; $\mathcal M_\eta$ cuenta valores escalares, no paquetes con cabeceras.
+
+Para la imposibilidad, considérense dos robots desconectados y dos tareas. El robot 1 observa la misma fila $(0,a)$, $0<a<1$, en dos instancias. Si la fila remota es $(0,1)$, el óptimo le asigna la tarea 2; si es $(1,0)$, le asigna la tarea 1. Como su información local es idéntica, una decisión determinista coincide en ambos casos y falla en uno. Una red desconectada no puede garantizar optimalidad global para toda matriz de costes.
