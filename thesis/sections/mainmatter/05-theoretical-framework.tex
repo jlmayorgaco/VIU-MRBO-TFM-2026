@@ -120,64 +120,64 @@ donde $[z]_+=\max\{z,0\}$. La Figura~\ref{fig:tf-population-simplex} representa 
     note/.style={font=\fontsize{7.2}{8.0}\selectfont,align=center,text=VIUGray}
   ]
     % Replicator
-    \begin{scope}[shift={(0,4.05)}]
-      \node[panel,minimum width=7.15cm,minimum height=3.72cm,anchor=south west] at (0,0) {};
-      \node[title,anchor=west] at (0.28,3.42) {Dinámica replicadora: crecimiento relativo};
-      \draw[VIUGray,line width=0.7pt] (0.75,0.62)--(6.35,0.62)--(3.55,2.88)--cycle;
-      \node[vertex] at (0.75,0.62) {}; \node[vertex] at (6.35,0.62) {}; \node[vertex] at (3.55,2.88) {};
-      \node[note,anchor=north east] at (0.68,0.54) {$a_2$};
-      \node[note,anchor=north west] at (6.42,0.54) {$a_3$};
-      \node[note,anchor=south] at (3.55,2.94) {$a_1$};
-      \draw[flow] (2.25,0.88)--(2.82,1.48);
-      \draw[flow] (4.85,0.88)--(4.22,1.48);
-      \draw[flow] (3.52,1.30)--(3.54,2.12);
-      \draw[flow] (1.55,0.62)--(2.25,0.62);
-      \node[note] at (5.42,2.48) {si $x_k=0$,\\permanece en cero};
+    \begin{scope}[shift={(0, 4.05)}]
+      \node[panel,minimum width=7.15cm,minimum height=3.72cm,anchor=south west] at (0, 0) {};
+      \node[title,anchor=west] at (0.28, 3.42) {Dinámica replicadora: crecimiento relativo};
+      \draw[VIUGray,line width=0.7pt] (0.75, 0.62)--(6.35, 0.62)--(3.55, 2.88)--cycle;
+      \node[vertex] at (0.75, 0.62) {}; \node[vertex] at (6.35, 0.62) {}; \node[vertex] at (3.55, 2.88) {};
+      \node[note,anchor=north east] at (0.68, 0.54) {$a_2$};
+      \node[note,anchor=north west] at (6.42, 0.54) {$a_3$};
+      \node[note,anchor=south] at (3.55, 2.94) {$a_1$};
+      \draw[flow] (2.25, 0.88)--(2.82, 1.48);
+      \draw[flow] (4.85, 0.88)--(4.22, 1.48);
+      \draw[flow] (3.52, 1.30)--(3.54, 2.12);
+      \draw[flow] (1.55, 0.62)--(2.25, 0.62);
+      \node[note] at (5.42, 2.48) {si $x_k=0$,\\permanece en cero};
     \end{scope}
     % Smith
-    \begin{scope}[shift={(7.45,4.05)}]
-      \node[panel,minimum width=7.15cm,minimum height=3.72cm,anchor=south west] at (0,0) {};
-      \node[title,anchor=west] at (0.28,3.42) {Smith: comparación por pares};
-      \draw[VIUGray,line width=0.7pt] (0.75,0.62)--(6.35,0.62)--(3.55,2.88)--cycle;
-      \node[vertex] at (0.75,0.62) {}; \node[vertex] at (6.35,0.62) {}; \node[vertex] at (3.55,2.88) {};
-      \node[note,anchor=north east] at (0.68,0.54) {$a_2$};
-      \node[note,anchor=north west] at (6.42,0.54) {$a_3$};
-      \node[note,anchor=south] at (3.55,2.94) {$a_1$};
-      \draw[influx] (1.30,0.72) to[bend left=12] (3.18,2.32);
-      \draw[influx] (5.80,0.72) to[bend right=12] (3.92,2.32);
-      \draw[influx] (5.08,0.62)--(2.08,0.62);
-      \node[note] at (5.45,2.48) {flujo $j\to k$ si\\$f_k>f_j$};
+    \begin{scope}[shift={(7.45, 4.05)}]
+      \node[panel,minimum width=7.15cm,minimum height=3.72cm,anchor=south west] at (0, 0) {};
+      \node[title,anchor=west] at (0.28, 3.42) {Smith: comparación por pares};
+      \draw[VIUGray,line width=0.7pt] (0.75, 0.62)--(6.35, 0.62)--(3.55, 2.88)--cycle;
+      \node[vertex] at (0.75, 0.62) {}; \node[vertex] at (6.35, 0.62) {}; \node[vertex] at (3.55, 2.88) {};
+      \node[note,anchor=north east] at (0.68, 0.54) {$a_2$};
+      \node[note,anchor=north west] at (6.42, 0.54) {$a_3$};
+      \node[note,anchor=south] at (3.55, 2.94) {$a_1$};
+      \draw[influx] (1.30, 0.72) to[bend left=12] (3.18, 2.32);
+      \draw[influx] (5.80, 0.72) to[bend right=12] (3.92, 2.32);
+      \draw[influx] (5.08, 0.62)--(2.08, 0.62);
+      \node[note] at (5.45, 2.48) {flujo $j\to k$ si\\$f_k>f_j$};
     \end{scope}
     % BNN
-    \begin{scope}[shift={(0,0)}]
-      \node[panel,minimum width=7.15cm,minimum height=3.72cm,anchor=south west] at (0,0) {};
-      \node[title,anchor=west] at (0.28,3.42) {BNN: exceso sobre la media};
-      \draw[VIUGray,line width=0.7pt] (0.75,0.62)--(6.35,0.62)--(3.55,2.88)--cycle;
-      \node[vertex] at (0.75,0.62) {}; \node[vertex] at (6.35,0.62) {}; \node[vertex] at (3.55,2.88) {};
-      \node[note,anchor=north east] at (0.68,0.54) {$a_2$};
-      \node[note,anchor=north west] at (6.42,0.54) {$a_3$};
-      \node[note,anchor=south] at (3.55,2.94) {$a_1$};
-      \draw[influx] (1.72,0.82)--(2.82,1.70);
-      \draw[influx] (5.38,0.82)--(4.28,1.70);
-      \fill[VIUOrange] (3.55,1.65) circle (1.7pt);
-      \draw[influx] (3.55,1.68)--(3.55,2.38);
-      \node[note] at (5.42,2.48) {entran estrategias\\con $f_k>\bar f$};
+    \begin{scope}[shift={(0, 0)}]
+      \node[panel,minimum width=7.15cm,minimum height=3.72cm,anchor=south west] at (0, 0) {};
+      \node[title,anchor=west] at (0.28, 3.42) {BNN: exceso sobre la media};
+      \draw[VIUGray,line width=0.7pt] (0.75, 0.62)--(6.35, 0.62)--(3.55, 2.88)--cycle;
+      \node[vertex] at (0.75, 0.62) {}; \node[vertex] at (6.35, 0.62) {}; \node[vertex] at (3.55, 2.88) {};
+      \node[note,anchor=north east] at (0.68, 0.54) {$a_2$};
+      \node[note,anchor=north west] at (6.42, 0.54) {$a_3$};
+      \node[note,anchor=south] at (3.55, 2.94) {$a_1$};
+      \draw[influx] (1.72, 0.82)--(2.82, 1.70);
+      \draw[influx] (5.38, 0.82)--(4.28, 1.70);
+      \fill[VIUOrange] (3.55, 1.65) circle (1.7pt);
+      \draw[influx] (3.55, 1.68)--(3.55, 2.38);
+      \node[note] at (5.42, 2.48) {entran estrategias\\con $f_k>\bar f$};
     \end{scope}
     % Logit
-    \begin{scope}[shift={(7.45,0)}]
-      \node[panel,minimum width=7.15cm,minimum height=3.72cm,anchor=south west] at (0,0) {};
-      \node[title,anchor=west] at (0.28,3.42) {Logit: mejor respuesta suavizada};
-      \draw[VIUGray,line width=0.7pt] (0.75,0.62)--(6.35,0.62)--(3.55,2.88)--cycle;
-      \node[vertex] at (0.75,0.62) {}; \node[vertex] at (6.35,0.62) {}; \node[vertex] at (3.55,2.88) {};
-      \node[note,anchor=north east] at (0.68,0.54) {$a_2$};
-      \node[note,anchor=north west] at (6.42,0.54) {$a_3$};
-      \node[note,anchor=south] at (3.55,2.94) {$a_1$};
-      \fill[SPPurple] (3.42,1.82) circle (2.2pt);
-      \node[note,anchor=west,text=SPPurple] at (3.53,1.82) {$x^\eta$};
-      \draw[soft] (1.35,0.76)--(3.03,1.61);
-      \draw[soft] (5.75,0.76)--(3.82,1.61);
-      \draw[soft] (3.55,2.58)--(3.45,2.06);
-      \node[note] at (5.43,2.48) {$\eta>0$ mantiene\\masa interior};
+    \begin{scope}[shift={(7.45, 0)}]
+      \node[panel,minimum width=7.15cm,minimum height=3.72cm,anchor=south west] at (0, 0) {};
+      \node[title,anchor=west] at (0.28, 3.42) {Logit: mejor respuesta suavizada};
+      \draw[VIUGray,line width=0.7pt] (0.75, 0.62)--(6.35, 0.62)--(3.55, 2.88)--cycle;
+      \node[vertex] at (0.75, 0.62) {}; \node[vertex] at (6.35, 0.62) {}; \node[vertex] at (3.55, 2.88) {};
+      \node[note,anchor=north east] at (0.68, 0.54) {$a_2$};
+      \node[note,anchor=north west] at (6.42, 0.54) {$a_3$};
+      \node[note,anchor=south] at (3.55, 2.94) {$a_1$};
+      \fill[SPPurple] (3.42, 1.82) circle (2.2pt);
+      \node[note,anchor=west,text=SPPurple] at (3.53, 1.82) {$x^\eta$};
+      \draw[soft] (1.35, 0.76)--(3.03, 1.61);
+      \draw[soft] (5.75, 0.76)--(3.82, 1.61);
+      \draw[soft] (3.55, 2.58)--(3.45, 2.06);
+      \node[note] at (5.43, 2.48) {$\eta>0$ mantiene\\masa interior};
     \end{scope}
   \end{tikzpicture}
   \caption{Mecanismos de revisión de cuatro dinámicas poblacionales sobre un símplex de tres estrategias.}
