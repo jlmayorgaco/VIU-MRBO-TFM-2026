@@ -59,12 +59,15 @@ def test_repository_ledger_renders_all_canonical_rows() -> None:
     assert "Ledger SHA-256:" in fragment
 
 
-def test_theoretical_framework_keeps_architecture_and_comparison_sources() -> None:
+def test_theoretical_framework_keeps_restored_literature_figures() -> None:
     chapter_source = Path(
         "thesis/sections/mainmatter/05-theoretical-framework.tex"
     ).read_text(encoding="utf-8")
 
     assert r"\label{fig:tf-problem-gap}" in chapter_source
     assert r"\label{tab:tf-comparison}" in chapter_source
-    assert r"\LiteraturePeriods" not in chapter_source
-    assert r"\coveragegeneratedrow" not in chapter_source
+    assert r"\label{fig:tf-literature-timeline}" in chapter_source
+    assert r"\input{generated/literature-coverage.tex}" in chapter_source
+    assert r"\label{fig:tf-methodological-map}" in chapter_source
+    assert chapter_source.count(r"\label{fig:tf-literature-timeline}") == 1
+    assert chapter_source.count(r"\label{fig:tf-methodological-map}") == 1

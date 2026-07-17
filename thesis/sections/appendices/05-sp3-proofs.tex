@@ -12,7 +12,7 @@ Cuando ninguna desigualdad está activa, el objetivo de~\eqref{eq:sp3-wrench} se
  Q_W(G_k\boldsymbol\lambda_k-\boldsymbol W_k^{\mathrm{dem}})
  +\varepsilon_\lambda\boldsymbol\lambda_k^{\mathsf T}\boldsymbol\lambda_k.
 \]
-Su Hessiano es $2(G_k^{\mathsf T}Q_WG_k+\varepsilon_\lambda I)\succ0$. Igualar el gradiente a cero produce~\eqref{eq:sp3-interior-wrench-solution}, que es por ello el minimizador único. Si este punto pertenece al interior del conjunto admisible, también resuelve el problema restringido; de lo contrario, la estricta convexidad conserva unicidad y las KKT determinan el conjunto activo.
+Su Hessiano es $2(G_k^{\mathsf T}Q_WG_k+\varepsilon_\lambda I)\succ0$. Igualar el gradiente a cero produce~\eqref{eq:sp3-interior-wrench-solution}, que es por ello el minimizador único. Si este punto pertenece al interior del conjunto admisible, también resuelve el problema restringido. De lo contrario, la estricta convexidad conserva unicidad y las KKT determinan el conjunto activo.
 
 \subsection{Potencial de wrench y equilibrio variacional}
 \label{app:sp3-wrench-proof}
@@ -31,7 +31,7 @@ porque $\partial\boldsymbol y_k/\partial\rho_{ia}=\boldsymbol g_{ia}$. Los otros
    \bigl(\boldsymbol d_k-\boldsymbol y_k(\rho)\bigr)
    -c_{ia}-\alpha\rho_{ia},
 \]
-que coincide con el payoff de~\eqref{eq:sp3-payoff} antes de restar el multiplicador compartido $\pi_a$.
+que coincide con el pago de~\eqref{eq:sp3-payoff} antes de restar el multiplicador compartido $\pi_a$.
 
 El Hessiano de $\Phi_W$ es el negativo de una matriz Gram de las columnas de wrench, menos $\alpha I$. Por tanto, $\Phi_W$ es estrictamente cóncavo para $\alpha>0$. El conjunto factible es la intersección de productos de simplex y semiespacios lineales $h_a(\rho)\leq0$, luego es convexo y compacto. Bajo Slater, las condiciones KKT son necesarias y suficientes para maximizar $\Phi_W$:
 \[
@@ -41,4 +41,4 @@ El Hessiano de $\Phi_W$ es el negativo de una matriz Gram de las columnas de wre
   \qquad
   0\leq\pi_a^\star\perp-h_a(\rho^\star)\geq0.
 \]
-Sustituir $\nabla\Phi_W-\sum_a\pi_a\nabla h_a$ por el vector de payoffs~\eqref{eq:sp3-payoff} produce la desigualdad variacional del juego con restricciones compartidas. De este modo, los maximizadores de la relajación y sus equilibrios variacionales coinciden. La equivalencia termina antes de decodificar $\rho^\star$ en decisiones binarias, lo que completa la Proposición~\ref{prop:sp3-wrench-potential} sin extenderla al cierre entero.
+Sustituir $\nabla\Phi_W-\sum_a\pi_a\nabla h_a$ por el vector de pagos~\eqref{eq:sp3-payoff} produce la desigualdad variacional del juego con restricciones compartidas. De este modo, los maximizadores de la relajación y sus equilibrios variacionales coinciden. La equivalencia termina antes de decodificar $\rho^\star$ en decisiones binarias, lo que completa la Proposición~\ref{prop:sp3-wrench-potential} sin extenderla al cierre entero.

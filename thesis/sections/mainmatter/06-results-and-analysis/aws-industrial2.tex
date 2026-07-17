@@ -1,146 +1,16 @@
-\subsection{Pilotos AWS en CoppeliaSim}
+\subsection{Piloto AWS Industrial 2}
 \label{subsec:aws-industrial2}
 
-La serie AWS trasladó gradualmente la asignación y el transporte cooperativo a
-una nave con múltiples cargas, baterías, radios locales y tráfico. Su función es
-examinar interfaces y modos de fallo que los experimentos aislados no muestran
-en conjunto. No constituye una nueva campaña confirmatoria ni sustituye la
-planta Cargo: la asignación y el movimiento se ejecutan en un simulador
-cinemático muestreado, mientras CoppeliaSim reproduce la geometría y el guion
-operativo sin contacto cooperativo resuelto por dinámica.
+Industrial~2 somete la arquitectura a modos de fallo que la campaña Cargo, con una sola carga, no expone. La escena modificada toma como procedencia el almacén de AWS RoboMaker, cuyo repositorio oficial se distribuye bajo licencia MIT-0 \parencite{awsRobomakerWarehouse2021}. Contiene \AwsSceneRobots{} AMR, \AwsSceneActiveLoads{} cargas activas, \AwsSceneQueuedLoads{} en cola y tráfico controlado (Figura~\ref{fig:aws-industrial2-scene}). Sensado y comunicación usan radios \AwsSceneSensingRadius{} y \AwsSceneCommunicationRadius{}~m. El acoplamiento cinemático omite agarre, fricción, tracción, \emph{wrench} y dinámica 3D.
 
-\subsubsection{Escena Industrial 2 y frontera de validación}
-
-La Figura~\ref{fig:aws-industrial2-scene} presenta la copia \emph{Industrial 2}
-de la nave AWS. El área de $24\times18$~m contiene \AwsSceneRobots{} AMR,
-\AwsSceneActiveLoads{} cargas activas y \AwsSceneQueuedLoads{} en cola, cuatro
-zonas de despacho y destino, estaciones de carga, estanterías, transportadores
-con \emph{buffer} y tope, señalización, barreras, una carretilla y dos operarios
-con rutas controladas. Los discos cian y magenta representan, respectivamente,
-radios de sensado de \AwsSceneSensingRadius{}~m y de comunicación de
-\AwsSceneCommunicationRadius{}~m; son ayudas de observación y no volúmenes
-físicos.
-
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \centering
-  \includegraphics[width=0.94\textwidth]{../results/coppeliasim_validation/aws_industrial_adversarial_industrial2/aws_industrial_oblique_camera.png}
-  \caption{Vista oblicua del demostrador AWS Industrial 2. La infraestructura
-  añadida densifica el entorno visual sin introducir obstáculos ocultos en el
-  corredor modelado.}
+  \includegraphics[width=0.72\textwidth]{../results/coppeliasim_validation/aws_industrial_adversarial_industrial2/aws_industrial_oblique_camera.png}
+  \caption{Vista depurada de AWS Industrial 2 usada como piloto geométrico y cinemático. La limpieza visual no altera las huellas operacionales auditadas.}
   \label{fig:aws-industrial2-scene}
-  \viuownsource
+  \viusource{elaboración propia sobre la escena AWS RoboMaker Small Warehouse World, modificada para este TFM \parencite{awsRobomakerWarehouse2021}}
 \end{figure}
 
-La exportación contiene \AwsSceneObjects{} objetos. La auditoría declarativa de
-huellas registró \AwsSceneLayoutCollisions{} colisiones de \emph{layout} y
-\AwsSceneSupportViolations{} elementos sin soporte entre los objetos
-operacionales comprobados. Un replay de \AwsDemoSimulationSeconds{}~s simulados
-recorrió los cuatro estados de prioridad, observó el fallo programado y registró
-\AwsDemoDeliveries{} entregas. Estas comprobaciones validan encaje geométrico,
-orientación, soporte y secuencia del guion; no validan fricción, tracción,
-agarre, reparto de \emph{wrench}, sensores reales ni estabilidad tridimensional.
+Se cruzaron cuatro métodos, cuatro escenarios y dos semillas: \AwsPilotRuns{} ejecuciones de \AwsPilotHorizon{}~s. La referencia central usa un MILP instantáneo global sin planificación espacio--temporal. Subasta, reciprocidad y predictor son \emph{proxies} que no reproducen CBBA, ORCA o DMPC. Solo el centro abierto produjo entregas. Central MILP + preview obtuvo \AwsOpenCentralDeliveries{}, Auction + reciprocal proxy \AwsOpenAuctionDeliveries{}, Auction + predictive CBF proxy \AwsOpenPredictiveDeliveries{} y Replicator + CBF (TFM) \AwsOpenTfmDeliveries{} cargas por ejecución. Los otros tres escenarios obtuvieron cero. La referencia central optimiza la asignación de cada instantánea, pero no anticipa las reservas espacio--temporales. Su valor \AwsOpenCentralDeliveries{} documenta un bloqueo del ejecutor integrado y no un fallo del MILP de asignación.
 
-\subsubsection{Evolución de los pilotos cinemáticos}
-
-La Tabla~\ref{tab:aws-pilot-evolution} resume los cuatro pilotos anteriores a
-Industrial 2. C15 reduce cada tarea a una correspondencia uno a uno y, por
-tanto, admite el húngaro como referencia exacta. C16 introduce cargas de
-$5$, $14$, $28$ y $18$~kg con cuotas nominales de uno, dos, tres y dos robots;
-desde ese punto el oráculo es un MILP de coaliciones por instantánea. C17 retira
-los sólidos centrales, y C18 sustituye A* ortogonal por un campo continuo con
-preferencias izquierda--derecha--espera y proyección CBF. Los resultados no son
-comparables como una única prueba estadística porque cambian planta, muestreo y
-controlador; la tabla muestra la progresión experimental y sus cambios de
-alcance.
-
-\begin{table}[H]
-  \centering
-  \caption{Evolución de los pilotos AWS anteriores a Industrial 2. Las cuatro
-  cifras de la última columna siguen el orden indicado en cada fila.}
-  \label{tab:aws-pilot-evolution}
-  \scriptsize
-  \setlength{\tabcolsep}{3.0pt}
-  \begin{tabularx}{\textwidth}{@{}p{0.9cm}p{2.3cm}p{2.7cm}p{1.1cm}X@{}}
-    \toprule
-    ID & Decisión & Movimiento y escenario & $n$ & Entregas medias por ejecución \\
-    \midrule
-    C15 & uno a uno & nave AWS, cinemática básica & 8 &
-      Húngaro/voraz/Replicator/aleatorio: \AwsCFifteenCentral{}/\AwsCFifteenGreedy{}/\AwsCFifteenReplicator{}/\AwsCFifteenRandom{} \\
-    C16 & coaliciones heterogéneas & A* y reservas, centro ocupado & 8 &
-      MILP/voraz/Replicator/aleatorio: \AwsCSixteenCentral{}/\AwsCSixteenGreedy{}/\AwsCSixteenReplicator{}/\AwsCSixteenRandom{} \\
-    C17 & coaliciones heterogéneas & A* y reservas, centro abierto & 8 &
-      MILP/voraz/Replicator/aleatorio: \AwsCSeventeenCentral{}/\AwsCSeventeenGreedy{}/\AwsCSeventeenReplicator{}/\AwsCSeventeenRandom{} \\
-    C18 & coaliciones heterogéneas & campo continuo Replicator--CBF & 8 &
-      MILP/voraz/Replicator/aleatorio: \AwsCEighteenCentral{}/\AwsCEighteenGreedy{}/\AwsCEighteenReplicator{}/\AwsCEighteenRandom{} \\
-    \bottomrule
-  \end{tabularx}
-  \viuownsource
-\end{table}
-
-La secuencia descarta una lectura basada solo en asignación. En C16, por
-ejemplo, el voraz y el MILP instantáneo entregaron \AwsCSixteenGreedy{} y
-\AwsCSixteenCentral{} cargas, pero abrir el centro redujo esos valores a
-\AwsCSeventeenGreedy{} y \AwsCSeventeenCentral{}. La geometría aparentemente más libre elevó
-la competencia por las mismas reservas. En C18, la ejecución continua recuperó
-\AwsCEighteenGreedy{} entregas para el voraz y \AwsCEighteenReplicator{} para Replicator,
-sin producir una diferencia concluyente entre políticas. La asignación por
-instantánea no optimiza por sí sola el \emph{throughput} temporal.
-
-\subsubsection{Comparación multiescenario Industrial 2}
-
-El último piloto cruzó \AwsPilotMethods{} métodos, \AwsPilotScenarios{}
-escenarios y \AwsPilotSeeds{} semillas pareadas, para \AwsPilotRuns{}
-ejecuciones de \AwsPilotHorizon{}~s. La referencia central combina el MILP de
-coaliciones por instantánea con observación global y muestreo predictivo de
-velocidades; no es un oráculo conjunto de asignación y espacio--tiempo. Dos
-tratamientos distribuidos usan una subasta local de coaliciones con navegación
-recíproca o predictiva, y el tratamiento TFM combina consenso Replicator con
-CBF. La subasta, la reciprocidad y el predictor se rotulan como \emph{proxies}:
-no reproducen CBBA, ORCA o DMPC completos y no heredan sus garantías.
-
-La Figura~\ref{fig:aws-industrial2-performance} reúne entregas, fracción de
-\emph{deadlock}, energía y CPU. En el centro abierto, la referencia central
-entregó \AwsOpenCentralDeliveries{} cargas por ejecución y los tres métodos
-distribuidos \AwsOpenAuctionDeliveries{}, \AwsOpenPredictiveDeliveries{} y
-\AwsOpenTfmDeliveries{}. En el cuello industrial, el tráfico cruzado y el
-\emph{backlog} con batería limitada, ningún método completó una entrega dentro
-del horizonte. Con solo dos semillas, este resultado localiza una región de
-fallo, pero no establece una clasificación de métodos.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.99\textwidth]{../results/coppeliasim_validation/aws_industrial2_method_comparison_pilot/multiscenario_performance.pdf}
-  \caption{Comparación piloto en cuatro escenarios AWS Industrial 2. Menor
-  \emph{deadlock}, energía o CPU no implica éxito si la entrega permanece en
-  cero. Las medias proceden de dos semillas pareadas por escenario.}
-  \label{fig:aws-industrial2-performance}
-  \viuownsource
-\end{figure}
-
-La fracción de \emph{deadlock} cuenta muestras activas con velocidad ejecutada
-menor que $0.02$~m/s a más de $0.25$~m del objetivo. El predictor distribuido
-obtuvo entre \AwsPredictiveDeadlockMin{} y \AwsPredictiveDeadlockMax{}, frente
-a \AwsTfmDeadlockMin{}--\AwsTfmDeadlockMax{} de Replicator--CBF. Esa diferencia
-no basta para acreditar vivacidad: ambos alcanzaron cero entregas en los tres
-escenarios congestionados. El coste CPU medio de la referencia global estuvo
-entre \AwsCentralCpuMin{} y \AwsCentralCpuMax{}~s por ejecución; el predictor
-distribuido, entre \AwsPredictiveCpuMin{} y \AwsPredictiveCpuMax{}~s.
-
-Las \AwsPilotRuns{} ejecuciones corregidas registraron
-\AwsSampledStaticCollisions{} solapamientos estáticos,
-\AwsSampledDynamicCollisions{} dinámicos y \AwsSampledGuardInterventions{}
-activaciones del guard final. Este resultado tampoco prueba invariancia: hubo
-\AwsSafeBarrierViolations{} muestras SAFE por encima de la tolerancia, con
-residual máximo $\AwsMaxSafeBarrierResidual{}$, y el límite de aceleración elevó
-el residual EXEC máximo a $\AwsMaxExecBarrierResidual{}$. La versión inicial con
-actores no reactivos produjo solapamientos y se conservó como resultado
-negativo; la versión principal detiene al actor antes de que su huella invada
-una región ocupada.
-
-El piloto Industrial 2 refuerza así la conclusión de SP5 y SP7: evitar
-solapamientos muestreados no equivale a mantener progreso. También muestra que
-un MILP de asignación, aun con información global, no constituye el comparador
-central más fuerte para cargas cooperativas en tráfico. La comparación
-confirmatoria futura necesita un oráculo integrado de coalición y
-espacio--tiempo, junto con reproducciones completas de una subasta distribuida
-y de un controlador de tráfico compatible con la huella de la coalición.
+Las 32 ejecuciones no registraron solapamientos muestreados, pero Replicator--CBF permaneció bloqueado durante una fracción \AwsTfmDeadlockMin{}--\AwsTfmDeadlockMax{} del tiempo simulado, según el clasificador operacional del piloto. La separación geométrica no implica vivacidad. Dos semillas no permiten establecer un ranking ni estimar fiabilidad industrial.

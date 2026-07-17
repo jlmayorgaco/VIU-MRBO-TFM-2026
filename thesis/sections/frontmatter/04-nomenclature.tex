@@ -3,7 +3,6 @@
 \addcontentsline{toc}{section}{Nomenclatura}
 \section*{Nomenclatura}
 
-\small
 \begin{description}[style=multiline,leftmargin=8.2em,labelwidth=7.2em,itemsep=0.15em,parsep=0pt]
   \item[$N, K$] Número de robots y número de cargas o tareas, respectivamente.
   \item[$i, k$] Índices de robot y de carga o tarea.
@@ -18,7 +17,7 @@
   \item[$n_k$] Cardinalidad mínima de la coalición requerida por la carga $k$.
   \item[$C_k$] Coalición asignada a la carga $k$.
   \item[$\rho_{ik},x_{ik}$] Preferencia continua y asignación binaria cerrada de $i$ a $k$.
-  \item[$f_{ik}$] \emph{Payoff} del robot $i$ asociado a la carga $k$.
+  \item[$f_{ik}$] Pago (\emph{payoff}) del robot $i$ asociado a la carga $k$.
   \item[$\Phi$] Función potencial global del juego.
   \item[$\delta_{ik}$] Distancia entre el robot $i$ y la carga $k$, en metros.
   \item[$\bar\delta_{ik},w_k$] Distancia normalizada y peso adimensional de prioridad de la carga $k$.
@@ -37,7 +36,8 @@
   \item[$e_\pi^t,q,R^\star$] Desacuerdo de precios, contracción espectral y radio crítico de conectividad.
   \item[Brecha] Diferencia de rendimiento respecto al oráculo central.
   \item[$c_i^{\mathrm{pay}},c^{\mathrm{ref}}$] Carga útil nominal, en kg, y escala de referencia de SP2, en kg.
-  \item[$a_{ik},e_{ik}$] Disponibilidad operacional y contribución normalizada de servicio de SP2; ambas adimensionales.
+  \item[$\delta_C^{\mathrm{ref}},c_C^{\mathrm{ref}},f_C^{\mathrm{ref}}$] Escalas de distancia, carga útil y fuerza de la regla Cargo, en m, kg y N.
+  \item[$a_{ik},e_{ik}$] Disponibilidad operacional y contribución normalizada de servicio de SP2. Ambas adimensionales.
   \item[$d_k^{\mathrm{srv}}$] Umbral adimensional de servicio operacional de la carga $k$ en SP2.
   \item[$G_C(q),\boldsymbol\lambda_C$] Matriz de agarre y esfuerzos de contacto de la coalición $C$.
   \item[$Q_W,\rho_k^W$] Normalización dimensional y residual adimensional del certificado de \emph{wrench}.
@@ -47,12 +47,26 @@
   \item[$D_6,\lambda_6,\delta_{\min}$] Déficit, penalización y menor mejora unilateral positiva del juego de recuperación.
   \item[$\mathcal R_i^7,P_7,\theta_7$] Catálogo de rutas, pares en conflicto y umbral suficiente de penalización de SP7.
   \item[$\mathcal E_{ir}^8,G_C^8$] Recursos ocupados por una ruta y grafo de comunicación entre coaliciones de SP8.
-  \item[AGV] \emph{Automated Guided Vehicle}.
   \item[AMR] \emph{Autonomous Mobile Robot}.
+  \item[AWS] \emph{Amazon Web Services}. La escena usa como procedencia el almacén de AWS RoboMaker.
+  \item[BNN] Dinámica de Brown--von Neumann--Nash.
+  \item[CBBA] \emph{Consensus-Based Bundle Algorithm}.
   \item[CBF] \emph{Control Barrier Function}.
+  \item[CBS/ECBS] \emph{Conflict-Based Search} y su variante acotadamente subóptima.
+  \item[CPU] \emph{Central Processing Unit}.
+  \item[HOCBF] \emph{High-Order Control Barrier Function}.
+  \item[IC] Intervalo de confianza.
+  \item[KKT] Condiciones de Karush--Kuhn--Tucker.
+  \item[LAP] \emph{Linear Assignment Problem}.
+  \item[MAPF] \emph{Multi-Agent Path Finding}.
   \item[MILP] \emph{Mixed-Integer Linear Programming}.
   \item[MRTA] \emph{Multi-Robot Task Allocation}.
+  \item[ORCA] \emph{Optimal Reciprocal Collision Avoidance}.
+  \item[PD] Control proporcional--derivativo.
+  \item[QP] \emph{Quadratic Programming}.
+  \item[QR] Cierre entero por ordenamiento y cuórum.
   \item[SP] Subproblema de la escalera incremental SP0--SP8.
+  \item[VE] Equilibrio variacional.
+  \item[VO/RVO] \emph{Velocity Obstacle} y \emph{Reciprocal Velocity Obstacle}.
 \end{description}
-La barra en $\bar\delta_{ik}$ distingue la distancia normalizada de la distancia física $\delta_{ik}$. Los símbolos $\rho_{ik}$, $\rho$ y $\rho_k^W$ designan, respectivamente, preferencia, parámetro primal--dual y residual de \emph{wrench}; no representan una misma magnitud. Algunos símbolos se reutilizan entre subproblemas con decoraciones distintas ($\rho_{ik}$, $\rho_D$, $\rho_k^W$); el superíndice o subíndice identifica el contexto.
-\normalsize
+La barra en $\bar\delta_{ik}$ distingue la distancia normalizada de la distancia física $\delta_{ik}$. Los símbolos $\rho_{ik}$, $\rho$ y $\rho_k^W$ designan, respectivamente, preferencia, parámetro primal--dual y residual de \emph{wrench}. No representan una misma magnitud. Algunos símbolos se reutilizan entre subproblemas con decoraciones distintas ($\rho_{ik}$, $\rho_D$, $\rho_k^W$). El superíndice o subíndice identifica el contexto.

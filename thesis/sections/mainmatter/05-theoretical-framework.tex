@@ -1,14 +1,14 @@
 \section{Marco teórico y estado del arte}
 \label{sec:theoretical-framework}
 
-El transporte cooperativo enlaza decisiones que suelen estudiarse por separado: selección de robots, formación de la coalición, estimación de recursos, contacto y movimiento de la carga. Cada resultado conserva su dominio. Un Nash puede ser ineficiente y una suma de capacidades puede ocultar un torque irrealizable; del mismo modo, el consenso por sí solo no estabiliza la planta y una trayectoria sin colisiones puede terminar bloqueada.
+El transporte cooperativo enlaza selección, coalición, estimación, contacto y movimiento. Cada resultado conserva su dominio: un Nash puede ser ineficiente, una suma de capacidades ocultar torque irrealizable, el consenso no estabiliza la planta y una trayectoria segura puede bloquearse.
 
 \subsection{Transporte cooperativo y contratos entre capas}
-\label{subsec:tf-agv-transport}
+\label{subsec:tf-amr-transport}
 
-Los AGV surgieron ligados a rutas e infraestructura predefinidas, mientras los AMR incorporaron percepción y planificación a bordo. En instalaciones actuales la diferencia es funcional, no comercial: una plataforma puede navegar con flexibilidad y seguir sometida a corredores, prioridades y recursos compartidos \parencite{leanh2006agv,azadeh2019warehouse}. La coordinación estudiada exige que cada robot revise su decisión con estado propio y mensajes vecinales.
+Los AMR de almacén combinan autonomía local con reglas de circulación, despacho y prioridad propias del sistema logístico \parencite{azadeh2019warehouse}. En este trabajo, cada robot revisa su decisión con estado propio y mensajes vecinales. La infraestructura compartida y los cierres globales se declaran por separado.
 
-Una carga excede a un solo robot por masa, dimensiones, torque o maniobrabilidad. La cooperación exige algo más que llegada simultánea. El equipo debe cerrar su composición, ocupar contactos compatibles, producir el \emph{wrench} requerido y conservar seguridad durante el transporte \parencite{an2023cooperativeReview}. La Figura~\ref{fig:tf-problem-gap} muestra esas dependencias. Las flechas no expresan una garantía conjunta: cada transición necesita un modelo y una prueba propios.
+Una carga puede exceder masa, dimensiones, torque o maniobrabilidad individuales. El equipo debe cerrarse, ocupar contactos, producir el \emph{wrench} y conservar seguridad \parencite{an2023cooperativeReview}. La Figura~\ref{fig:tf-problem-gap} muestra contratos entre capas. Ninguna flecha implica una garantía conjunta.
 
 \begin{figure}[htbp]
   \centering
@@ -48,7 +48,7 @@ Una carga excede a un solo robot por masa, dimensiones, torque o maniobrabilidad
   \viuownsource
 \end{figure}
 
-La modalidad primaria, Cargo, modela la carga y los robots acoplados como un cuerpo planar soportado. El empuje cooperativo usa contactos unilaterales y admite deslizamiento. El \emph{caging} añade una condición geométrica de confinamiento. Estas modalidades comparten la tarea, pero no el modelo de contacto ni la prueba de estabilidad.
+Cargo modela carga y robots como cuerpo planar soportado. Empuje usa contactos unilaterales y \emph{caging} exige confinamiento. No comparten modelo de contacto ni prueba.
 
 \subsection{Asignación y formación de coaliciones}
 \label{subsec:tf-mrta}
@@ -61,43 +61,36 @@ La asignación multi-robot de tareas (MRTA) clasifica relaciones entre robots, t
   \qquad x_{ik}\in\{0, 1\}.
   \label{eq:tf-coalition-resource-feasibility}
 \end{equation}
-La primera restricción impone exclusividad; las otras dos, cuota y recursos. Replicar una tarea en plazas independientes no preserva necesariamente simultaneidad ni compatibilidad. MILP y \emph{set partitioning} son oráculos adecuados para instancias pequeñas, aunque dependen de información global.
+Las restricciones imponen exclusividad, cuota y recursos. Replicar plazas no preserva simultaneidad ni compatibilidad. MILP y \emph{set partitioning} sirven como oráculos globales pequeños.
 
-Las subastas distribuyen la adjudicación mediante precios. El algoritmo de Bertsekas resuelve la asignación clásica \parencite{bertsekas1988Auction}; MURDOCH usa contratos en equipos robóticos \parencite{gerkeyMataric2002MURDOCH}. CBBA construye paquetes locales y resuelve conflictos por consenso, y ACBBA admite mensajes fuera de orden \parencite{choiBrunetHow2009CBBA,johnson2011acbba}. Sus garantías no cubren, sin una extensión explícita, el contacto simultáneo de varios robots con una carga.
+Las subastas adjudican mediante precios: Bertsekas resuelve asignación clásica \parencite{bertsekas1988Auction}, MURDOCH usa contratos robóticos \parencite{gerkeyMataric2002MURDOCH}, CBBA resuelve paquetes por consenso y ACBBA admite desorden \parencite{choiBrunetHow2009CBBA,johnson2011acbba}. Sin extensión, no garantizan contacto simultáneo.
 
-La formación de coaliciones toma al grupo como unidad. Los métodos \emph{anytime} de Shehory y Kraus, las coaliciones basadas en capacidades de Vig y Adams y los juegos hedónicos cubren composición y preferencia colectiva \parencite{shehoryKraus1998Coalition,vigAdams2006Coalition,dutta2021hedonic}. ASyMTRe combina esquemas sensoriales, motores y de comunicación; IQ-ASyMTRe descarta composiciones incompatibles con requisitos funcionales \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}. Estas formulaciones mejoran la selección del equipo, pero una coalición estable o rica en recursos todavía puede ser mecánicamente inviable.
+Coaliciones \emph{anytime}, basadas en capacidades y hedónicas modelan composición y preferencia \parencite{shehoryKraus1998Coalition,vigAdams2006Coalition,dutta2021hedonic}. ASyMTRe combina esquemas e IQ-ASyMTRe descarta composiciones funcionalmente incompatibles \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}. Aun así, una coalición puede ser mecánicamente inviable.
 
-Los antecedentes más próximos de 2024--2025 estrechan la comparación. Shan
-et al. resuelven mediante subasta descentralizada tareas de transporte colectivo
-que llegan dinámicamente, con ventanas temporales y corrección de desviaciones
-de agenda \parencite{shan2024collectiveTransport}. Dai et al. aprenden de forma
-conjunta coaliciones y rutas para tareas de cardinalidad variable
-\parencite{dai2024dynamicCoalition}; Bezerra et al. incorporan mapas espaciales,
-intenciones y revisión local de asignación mediante MAPPO
-\parencite{bezerra2025dynamicCoalition}. Qiu et al. actualizan coaliciones cuando
-el consumo reduce la capacidad disponible \parencite{qiu2024payloadConsumption},
-y Shida et al. aprenden a excluir temporalmente tareas inviables para evitar
-bloqueos \parencite{shida2025infeasibleTasks}. Estos trabajos enlazan asignación
-con tiempo, movimiento o revisión dinámica, pero usan capacidad nominal o
-aprendida y no el certificado explícito de contacto, \emph{wrench}, seguridad y
-recuperación exigido por el problema. Los métodos aprendidos constituyen
-comparadores cercanos, no el método principal, porque su decisión no es
-directamente interpretable.
+Trabajos de 2024--2025 enlazan asignación con tiempo o movimiento: Shan et al.
+usan subasta para llegadas dinámicas \parencite{shan2024collectiveTransport}. Dai
+y Bezerra et al. aprenden coaliciones y rutas o revisiones espaciales
+\parencite{dai2024dynamicCoalition,bezerra2025dynamicCoalition}. Qiu et al.
+actualizan capacidad consumida y Shida et al. excluyen tareas inviables
+\parencite{qiu2024payloadConsumption,shida2025infeasibleTasks}. Emplean capacidad
+nominal o aprendida, no un certificado conjunto de contacto, \emph{wrench},
+seguridad y recuperación. Los métodos aprendidos actúan como comparadores. El método principal sigue siendo interpretable.
 
 \subsection{Información local, juegos y optimización distribuida}
 \label{subsec:tf-games-consensus}
 
-La comunicación se representa mediante $\mathcal G(t)=(\Robots,\mathcal E(t))$. En un grafo no dirigido y conectado, $\lambda_2(L)>0$ mide conectividad algebraica y condiciona la disipación del desacuerdo \parencite{bullo2009distributed}. Los grafos conmutados requieren propiedades temporales, como conectividad conjunta, y cotas sobre retardo y actualización \parencite{olfatiSaber2004switchingConsensus}. El consenso certifica acuerdo sobre una variable; no certifica el juego ni el transporte.
+En $\mathcal G(t)=(\Robots,\mathcal E(t))$, $\lambda_2(L)>0$ mide conectividad algebraica en grafos no dirigidos \parencite{bullo2009distributed}. Grafos conmutados requieren conectividad conjunta y cotas temporales \parencite{olfatiSaber2004switchingConsensus}. El consenso solo acredita acuerdo. Quedan fuera la decisión del juego y el transporte.
 
-Los juegos poblacionales describen preferencias continuas sobre acciones. Sea $x\in\Delta=\{x\in\mathbb R_+^K:\sum_kx_k=1\}$ la masa distribuida entre estrategias, $f_k(x)$ el \emph{payoff} de la estrategia $k$ y $\bar f(x)=\sum_kx_kf_k(x)$ el \emph{payoff} medio. En un Nash poblacional, toda estrategia con masa positiva alcanza el máximo \emph{payoff} bajo el estado agregado \parencite{sandholm2010population}. Los juegos de potencial añaden una función escalar cuya variación coincide con cada desviación unilateral:
+Los juegos poblacionales describen preferencias continuas sobre acciones. Sea $x\in\Delta=\{x\in\mathbb R_+^K:\sum_kx_k=1\}$ la masa distribuida entre estrategias, $f_k(x)$ el pago de la estrategia $k$ y $\bar f(x)=\sum_kx_kf_k(x)$ el pago medio. En un Nash poblacional, toda estrategia con masa positiva alcanza el pago máximo bajo el estado agregado \parencite{sandholm2010population}. Los juegos de potencial añaden una función escalar cuya variación coincide con cada desviación unilateral:
 \begin{equation}
   u_i(a_i',a_{-i})-u_i(a_i,a_{-i})
   =\Phi(a_i',a_{-i})-\Phi(a_i,a_{-i}).
   \label{eq:tf-exact-potential}
 \end{equation}
-Esta igualdad debe probarse para el \emph{payoff} implementado. Descuentos, proyecciones o información obsoleta pueden romperla. Cuatro protocolos de revisión frecuentes son
+Esta igualdad debe probarse para el pago definido. Descuentos, proyecciones o información obsoleta pueden romperla. Cinco protocolos de revisión frecuentes son
 \begin{equation}
 \begin{aligned}
+ \text{mejor respuesta:}\quad &\dot x\in\operatorname{BR}(x)-x,\\
  \text{replicadora:}\quad &\dot x_k=x_k(f_k-\bar f),\\
  \text{Smith:}\quad &\dot x_k=\sum_jx_j[f_k-f_j]_+-x_k\sum_j[f_j-f_k]_+,\\
  \text{BNN:}\quad &\dot x_k=[f_k-\bar f]_+-x_k\sum_j[f_j-\bar f]_+,\\
@@ -105,96 +98,161 @@ Esta igualdad debe probarse para el \emph{payoff} implementado. Descuentos, proy
 \end{aligned}
 \label{eq:tf-population-dynamics}
 \end{equation}
-donde $[z]_+=\max\{z,0\}$. La Figura~\ref{fig:tf-population-simplex} representa su mecanismo sobre $\Delta_3$. No es un retrato de fase de una instancia particular: fija $f_1>f_2>f_3$ para aislar la regla de revisión.
+donde $[z]_+=\max\{z,0\}$ y $\operatorname{BR}(x)$ es la envolvente convexa de las estrategias de pago máximo. Las cinco dinámicas difieren en continuidad, exploración, soporte y estacionariedad, pero ninguna produce por sí sola el cierre discreto.
 
 \begin{figure}[H]
   \centering
   \begin{tikzpicture}[
     x=1cm,y=1cm,font=\sffamily,
-    panel/.style={draw=SPGrid,fill=SPFloor,line width=0.65pt,rounded corners=3pt},
-    flow/.style={-{Stealth[length=1.7mm]},draw=SPBlue,line width=0.8pt},
-    influx/.style={-{Stealth[length=1.7mm]},draw=SPGreen,line width=0.8pt},
-    soft/.style={-{Stealth[length=1.7mm]},draw=SPPurple,line width=0.8pt},
-    vertex/.style={circle,fill=VIUDark,inner sep=1.25pt},
-    title/.style={font=\fontsize{8.4}{9.2}\selectfont\bfseries,text=VIUDark},
-    note/.style={font=\fontsize{7.2}{8.0}\selectfont,align=center,text=VIUGray}
+    simplex/.style={draw=VIUDark,fill=SPFloor,line width=0.72pt,line join=round},
+    guide/.style={draw=SPGrid,densely dashed,line width=0.48pt},
+    rep/.style={-{Stealth[length=1.55mm,width=1.05mm]},draw=SPBlue,line width=0.76pt},
+    best/.style={-{Stealth[length=1.55mm,width=1.05mm]},draw=VIUDark,line width=0.76pt},
+    logit/.style={-{Stealth[length=1.55mm,width=1.05mm]},draw=SPPurple,line width=0.76pt},
+    bnn/.style={-{Stealth[length=1.55mm,width=1.05mm]},draw=SPGreen,line width=0.76pt},
+    smith/.style={-{Stealth[length=1.55mm,width=1.05mm]},draw=VIUOrange!88!black,line width=0.76pt},
+    eq/.style={circle,draw=white,fill=VIUOrange,line width=0.65pt,minimum size=4.0pt,inner sep=0pt},
+    strategy/.style={font=\fontsize{7.4}{8.0}\selectfont,text=VIUDark},
+    paneltitle/.style={font=\fontsize{8.1}{8.8}\selectfont\bfseries,text=VIUDark,align=center}
   ]
-    % Replicator
-    \begin{scope}[shift={(0, 4.05)}]
-      \node[panel,minimum width=7.15cm,minimum height=3.72cm,anchor=south west] at (0, 0) {};
-      \node[title,anchor=west] at (0.28, 3.42) {Dinámica replicadora: crecimiento relativo};
-      \draw[VIUGray,line width=0.7pt] (0.75, 0.62)--(6.35, 0.62)--(3.55, 2.88)--cycle;
-      \node[vertex] at (0.75, 0.62) {}; \node[vertex] at (6.35, 0.62) {}; \node[vertex] at (3.55, 2.88) {};
-      \node[note,anchor=north east] at (0.68, 0.54) {$a_2$};
-      \node[note,anchor=north west] at (6.42, 0.54) {$a_3$};
-      \node[note,anchor=south] at (3.55, 2.94) {$a_1$};
-      \draw[flow] (2.25, 0.88)--(2.82, 1.48);
-      \draw[flow] (4.85, 0.88)--(4.22, 1.48);
-      \draw[flow] (3.52, 1.30)--(3.54, 2.12);
-      \draw[flow] (1.55, 0.62)--(2.25, 0.62);
-      \node[note] at (5.42, 2.48) {si $x_k=0$,\\permanece en cero};
+    \def\SimplexFrame{%
+      \path[simplex] (0,0)--(4.40,0)--(2.20,3.45)--cycle;
+      \node[strategy,anchor=north east] at (-0.06,-0.04) {$a_2$};
+      \node[strategy,anchor=north west] at (4.46,-0.04) {$a_3$};
+      \node[strategy,anchor=south] at (2.20,3.51) {$a_1$};
+    }
+    \def\SimplexClip{\clip (0,0)--(4.40,0)--(2.20,3.45)--cycle;}
+    \def\SimplexBorder{\draw[VIUDark,line width=0.72pt,line join=round]
+      (0,0)--(4.40,0)--(2.20,3.45)--cycle;}
+    \def\Equilibrium#1#2{\node[eq] at (#1,#2) {};}
+
+    % (i) Replicadora: órbitas suaves que preservan las caras del símplex.
+    \begin{scope}[shift={(0,4.80)}]
+    \begin{scope}[scale=0.76]
+      \SimplexFrame
+      \begin{scope}
+      \SimplexClip
+      \draw[rep] (2.20,3.02) .. controls (3.05,2.45) and (3.70,1.40) .. (3.72,0.50);
+      \draw[rep] (3.72,0.50) .. controls (2.82,0.18) and (1.55,0.18) .. (0.70,0.55);
+      \draw[rep] (0.70,0.55) .. controls (0.80,1.48) and (1.40,2.43) .. (2.20,3.02);
+      \draw[rep] (2.20,2.48) .. controls (2.82,2.08) and (3.25,1.39) .. (3.24,0.84);
+      \draw[rep] (3.24,0.84) .. controls (2.58,0.57) and (1.70,0.58) .. (1.17,0.88);
+      \draw[rep] (1.17,0.88) .. controls (1.24,1.50) and (1.65,2.10) .. (2.20,2.48);
+      \draw[rep] (2.20,1.96) .. controls (2.56,1.72) and (2.80,1.38) .. (2.76,1.10);
+      \draw[rep] (2.76,1.10) .. controls (2.42,0.93) and (1.98,0.94) .. (1.70,1.13);
+      \draw[rep] (1.70,1.13) .. controls (1.74,1.46) and (1.94,1.76) .. (2.20,1.96);
+      \end{scope}
+      \SimplexBorder
+      \Equilibrium{2.20}{1.38}
+      \node[paneltitle] at (2.20,-0.32) {(i) Replicadora};
     \end{scope}
-    % Smith
-    \begin{scope}[shift={(7.45, 4.05)}]
-      \node[panel,minimum width=7.15cm,minimum height=3.72cm,anchor=south west] at (0, 0) {};
-      \node[title,anchor=west] at (0.28, 3.42) {Smith: comparación por pares};
-      \draw[VIUGray,line width=0.7pt] (0.75, 0.62)--(6.35, 0.62)--(3.55, 2.88)--cycle;
-      \node[vertex] at (0.75, 0.62) {}; \node[vertex] at (6.35, 0.62) {}; \node[vertex] at (3.55, 2.88) {};
-      \node[note,anchor=north east] at (0.68, 0.54) {$a_2$};
-      \node[note,anchor=north west] at (6.42, 0.54) {$a_3$};
-      \node[note,anchor=south] at (3.55, 2.94) {$a_1$};
-      \draw[influx] (1.30, 0.72) to[bend left=12] (3.18, 2.32);
-      \draw[influx] (5.80, 0.72) to[bend right=12] (3.92, 2.32);
-      \draw[influx] (5.08, 0.62)--(2.08, 0.62);
-      \node[note] at (5.45, 2.48) {flujo $j\to k$ si\\$f_k>f_j$};
     \end{scope}
-    % BNN
-    \begin{scope}[shift={(0, 0)}]
-      \node[panel,minimum width=7.15cm,minimum height=3.72cm,anchor=south west] at (0, 0) {};
-      \node[title,anchor=west] at (0.28, 3.42) {BNN: exceso sobre la media};
-      \draw[VIUGray,line width=0.7pt] (0.75, 0.62)--(6.35, 0.62)--(3.55, 2.88)--cycle;
-      \node[vertex] at (0.75, 0.62) {}; \node[vertex] at (6.35, 0.62) {}; \node[vertex] at (3.55, 2.88) {};
-      \node[note,anchor=north east] at (0.68, 0.54) {$a_2$};
-      \node[note,anchor=north west] at (6.42, 0.54) {$a_3$};
-      \node[note,anchor=south] at (3.55, 2.94) {$a_1$};
-      \draw[influx] (1.72, 0.82)--(2.82, 1.70);
-      \draw[influx] (5.38, 0.82)--(4.28, 1.70);
-      \fill[VIUOrange] (3.55, 1.65) circle (1.7pt);
-      \draw[influx] (3.55, 1.68)--(3.55, 2.38);
-      \node[note] at (5.42, 2.48) {entran estrategias\\con $f_k>\bar f$};
+
+    % (ii) Mejor respuesta: cambios lineales al cruzar regiones de indiferencia.
+    \begin{scope}[shift={(4.45,4.80)}]
+    \begin{scope}[scale=0.76]
+      \SimplexFrame
+      \begin{scope}
+      \SimplexClip
+      \draw[guide] (2.05,1.25)--(0.13,0.05);
+      \draw[guide] (2.05,1.25)--(4.27,0.05);
+      \draw[guide] (2.05,1.25)--(2.20,3.35);
+      \draw[best] (0.35,0.38)--(3.73,0.38);
+      \draw[best] (3.73,0.38)--(2.02,2.82);
+      \draw[best] (2.02,2.82)--(0.75,0.62);
+      \draw[best] (0.75,0.62)--(3.30,0.62);
+      \draw[best] (3.30,0.62)--(2.03,2.30);
+      \draw[best] (2.03,2.30)--(1.14,0.83);
+      \draw[best] (1.14,0.83)--(2.91,0.83);
+      \draw[best] (2.91,0.83)--(2.04,1.88);
+      \draw[best] (2.04,1.88)--(1.48,1.02);
+      \draw[best] (1.48,1.02)--(2.55,1.02);
+      \draw[best] (2.55,1.02)--(2.05,1.48);
+      \end{scope}
+      \SimplexBorder
+      \Equilibrium{2.05}{1.25}
+      \node[paneltitle] at (2.20,-0.32) {(ii) Mejor respuesta};
     \end{scope}
-    % Logit
-    \begin{scope}[shift={(7.45, 0)}]
-      \node[panel,minimum width=7.15cm,minimum height=3.72cm,anchor=south west] at (0, 0) {};
-      \node[title,anchor=west] at (0.28, 3.42) {Logit: mejor respuesta suavizada};
-      \draw[VIUGray,line width=0.7pt] (0.75, 0.62)--(6.35, 0.62)--(3.55, 2.88)--cycle;
-      \node[vertex] at (0.75, 0.62) {}; \node[vertex] at (6.35, 0.62) {}; \node[vertex] at (3.55, 2.88) {};
-      \node[note,anchor=north east] at (0.68, 0.54) {$a_2$};
-      \node[note,anchor=north west] at (6.42, 0.54) {$a_3$};
-      \node[note,anchor=south] at (3.55, 2.94) {$a_1$};
-      \fill[SPPurple] (3.42, 1.82) circle (2.2pt);
-      \node[note,anchor=west,text=SPPurple] at (3.53, 1.82) {$x^\eta$};
-      \draw[soft] (1.35, 0.76)--(3.03, 1.61);
-      \draw[soft] (5.75, 0.76)--(3.82, 1.61);
-      \draw[soft] (3.55, 2.58)--(3.45, 2.06);
-      \node[note] at (5.43, 2.48) {$\eta>0$ mantiene\\masa interior};
+    \end{scope}
+
+    % (iii) Logit: espiral suave hacia un equilibrio interior regularizado.
+    \begin{scope}[shift={(8.90,4.80)}]
+    \begin{scope}[scale=0.76]
+      \SimplexFrame
+      \begin{scope}
+      \SimplexClip
+      \draw[logit] (0.38,0.38) .. controls (1.32,0.16) and (3.18,0.18) .. (3.72,0.68);
+      \draw[logit] (3.72,0.68) .. controls (4.00,1.32) and (3.18,2.63) .. (2.27,2.68);
+      \draw[logit] (2.27,2.68) .. controls (1.38,2.66) and (0.72,1.64) .. (0.96,1.03);
+      \draw[logit] (0.96,1.03) .. controls (1.22,0.48) and (2.62,0.49) .. (3.05,0.91);
+      \draw[logit] (3.05,0.91) .. controls (3.38,1.29) and (2.91,2.02) .. (2.34,2.06);
+      \draw[logit] (2.34,2.06) .. controls (1.77,2.08) and (1.38,1.48) .. (1.55,1.14);
+      \draw[logit] (1.55,1.14) .. controls (1.78,0.83) and (2.45,0.88) .. (2.64,1.15);
+      \draw[logit] (2.64,1.15) .. controls (2.80,1.41) and (2.52,1.70) .. (2.30,1.61);
+      \end{scope}
+      \SimplexBorder
+      \Equilibrium{2.30}{1.39}
+      \node[paneltitle] at (2.20,-0.32) {(iii) Logit};
+    \end{scope}
+    \end{scope}
+
+    % (iv) BNN: activación por exceso de pago y retrato asimétrico.
+    \begin{scope}[shift={(2.23,0)}]
+    \begin{scope}[scale=0.76]
+      \SimplexFrame
+      \begin{scope}
+      \SimplexClip
+      \draw[bnn] (0.32,0.36) .. controls (1.10,0.18) and (2.96,0.25) .. (3.63,0.72);
+      \draw[bnn] (3.63,0.72) .. controls (3.58,1.44) and (2.70,2.64) .. (1.85,2.68);
+      \draw[bnn] (1.85,2.68) .. controls (1.05,2.54) and (0.65,1.72) .. (0.82,1.13);
+      \draw[bnn] (0.82,1.13) .. controls (1.04,0.59) and (2.28,0.51) .. (2.83,0.88);
+      \draw[bnn] (2.83,0.88) .. controls (3.06,1.35) and (2.43,1.98) .. (1.87,1.95);
+      \draw[bnn] (1.87,1.95) .. controls (1.40,1.90) and (1.12,1.45) .. (1.34,1.16);
+      \draw[bnn] (1.34,1.16) .. controls (1.60,0.91) and (2.10,0.99) .. (2.20,1.23);
+      \draw[bnn] (2.20,1.23) .. controls (2.28,1.48) and (1.98,1.60) .. (1.80,1.43);
+      \end{scope}
+      \SimplexBorder
+      \Equilibrium{1.78}{1.30}
+      \node[paneltitle] at (2.20,-0.32) {(iv) BNN};
+    \end{scope}
+    \end{scope}
+
+    % (v) Smith: comparaciones por pares y rotación interior amortiguada.
+    \begin{scope}[shift={(6.68,0)}]
+    \begin{scope}[scale=0.76]
+      \SimplexFrame
+      \begin{scope}
+      \SimplexClip
+      \draw[smith] (0.34,0.38) .. controls (1.15,0.14) and (3.15,0.20) .. (3.75,0.74);
+      \draw[smith] (3.75,0.74) .. controls (3.91,1.62) and (3.05,2.70) .. (2.17,2.72);
+      \draw[smith] (2.17,2.72) .. controls (1.25,2.65) and (0.56,1.55) .. (0.94,0.92);
+      \draw[smith] (0.94,0.92) .. controls (1.32,0.38) and (2.85,0.52) .. (3.12,1.04);
+      \draw[smith] (3.12,1.04) .. controls (3.30,1.60) and (2.72,2.19) .. (2.14,2.18);
+      \draw[smith] (2.14,2.18) .. controls (1.55,2.12) and (1.18,1.43) .. (1.47,1.08);
+      \draw[smith] (1.47,1.08) .. controls (1.77,0.76) and (2.52,0.91) .. (2.66,1.28);
+      \draw[smith] (2.66,1.28) .. controls (2.72,1.62) and (2.35,1.83) .. (2.09,1.62);
+      \end{scope}
+      \SimplexBorder
+      \Equilibrium{2.10}{1.42}
+      \node[paneltitle] at (2.20,-0.32) {(v) Smith};
+    \end{scope}
     \end{scope}
   \end{tikzpicture}
-  \caption{Mecanismos de revisión de cuatro dinámicas poblacionales sobre un símplex de tres estrategias.}
+  \caption[Retratos cualitativos de cinco dinámicas poblacionales sobre un símplex.]{Retratos cualitativos de cinco dinámicas poblacionales sobre un símplex de tres estrategias. Las flechas muestran la geometría característica de revisión y el punto naranja identifica un estado estacionario interior. Los retratos no representan la integración de un mismo campo de pagos.}
   \label{fig:tf-population-simplex}
-  \viusource{elaboración propia a partir de \textcite{sandholm2010population}}
+  \viusource{elaboración propia, inspirada en la representación de \textcite{sandholm2010population}}
 \end{figure}
 
-La dinámica replicadora pondera cada crecimiento por la masa existente y, por ello, no recupera una estrategia ausente. Smith traslada masa mediante comparaciones binarias; BNN solo activa excesos respecto de $\bar f$; logit asigna probabilidad positiva a todas las estrategias y aproxima la mejor respuesta cuando $\eta$ disminuye. Estas diferencias afectan exploración, soporte y estacionariedad, aunque ninguna resuelve el cierre discreto: antes de representar robots identificables, la masa continua debe convertirse en una coalición factible.
+La mejor respuesta cambia de dirección al cruzar regiones de indiferencia, la replicadora no recupera una estrategia ausente, Smith compara pares, BNN activa excesos sobre $\bar f$ y logit mantiene masa positiva y aproxima la mejor respuesta al disminuir $\eta$. La masa continua aún debe cerrarse como coalición factible.
 
-Un equilibrio de Nash generalizado incorpora restricciones compartidas. Bajo convexidad y regularidad puede formularse como desigualdad variacional; el equilibrio variacional comparte multiplicadores entre agentes \parencite{yi2019operatorGNE,franci2022stochasticGNE}. Los métodos primal--dual actualizan decisiones y multiplicadores, con garantías condicionadas por monotonicidad, conectividad y ganancias \parencite{cherukuri2016primalDual,koshal2016aggregative}. Ninguna de estas propiedades convierte por sí sola el equilibrio en óptimo social.
+Un Nash generalizado con restricciones compartidas admite, bajo regularidad, una desigualdad variacional con multiplicadores comunes \parencite{yi2019operatorGNE,franci2022stochasticGNE}. Primal--dual actualiza decisiones y multiplicadores bajo monotonicidad, conectividad y ganancias \parencite{cherukuri2016primalDual,koshal2016aggregative}, sin implicar óptimo social.
 
-La pasividad y Lyapunov permiten estudiar la interconexión con la planta. Una prueba requiere variable de almacenamiento, suministro, dominio y signo de la derivada o diferencia \parencite{vanderschaf2017passivity,ortega2002passivity}. La etiqueta \emph{pasivo} no basta si las variables de puerto o los modelos de contacto cambian entre bloques.
+Pasividad y Lyapunov requieren almacenamiento, suministro, dominio y signo de la derivada \parencite{vanderschaf2017passivity,ortega2002passivity}. La etiqueta no se transfiere si cambian puertos o contacto.
 
 \subsection{Contacto, formación y \emph{wrench}}
 \label{subsec:tf-rigidity-wrench}
 
-La conectividad de una formación no implica rigidez. La rigidez geométrica determina si las restricciones relativas fijan localmente la forma, salvo traslación y rotación \parencite{desai2001formation,bullo2009distributed}. En Cargo también importan el soporte vertical y los límites de actuador.
+Conectividad no implica rigidez: esta fija localmente la forma salvo movimientos rígidos \parencite{desai2001formation,bullo2009distributed}. Cargo añade soporte y actuadores.
 
 Si $\boldsymbol\lambda_C$ agrupa esfuerzos de contacto y $G_C(q)$ es la matriz de agarre, el \emph{wrench} aplicado es
 \begin{equation}
@@ -202,18 +260,18 @@ Si $\boldsymbol\lambda_C$ agrupa esfuerzos de contacto y $G_C(q)$ es la matriz d
   \qquad \boldsymbol\lambda_C\in\mathcal U_C.
   \label{eq:tf-grasp-map}
 \end{equation}
-La literatura distingue movimiento, fuerzas resultantes y fuerzas internas \parencite{nakamura1989dynamics,yoshikawa1993coordinated}. La geometría y el tipo de contacto determinan las propiedades de cierre \parencite{bicchi1995closure}. Por eso una suma escalar de capacidades no sustituye la pertenencia $W_k^{\mathrm{req}}\in\mathcal W_C(q)$, con $\mathcal W_C(q)=\{G_C(q)\boldsymbol\lambda:\boldsymbol\lambda\in\mathcal U_C\}$.
+Movimiento, resultante y fuerzas internas son distintos \parencite{nakamura1989dynamics,yoshikawa1993coordinated}. Geometría y contacto determinan cierre \parencite{bicchi1995closure}. Por ello, la capacidad escalar no sustituye $W_k^{\mathrm{req}}\in\mathcal W_C(q)=\{G_C(q)\boldsymbol\lambda:\boldsymbol\lambda\in\mathcal U_C\}$.
 
-En empuje, $\mathcal U_C$ impone unilateralidad y fricción. El \emph{caging} exige que la configuración de robots confine el objeto; rodearlo no basta \parencite{pereira2004caging,fink2008caging}. Los métodos de transporte restringido pueden repartir fuerzas y seguir la pose para un equipo dado \parencite{alonsomora2017transport}. El problema adicional consiste en seleccionar ese equipo con información local.
+En empuje, $\mathcal U_C$ impone unilateralidad y fricción. El \emph{caging} exige que la configuración de robots confine el objeto. Rodearlo no basta \parencite{pereira2004caging,fink2008caging}. Los métodos de transporte restringido pueden repartir fuerzas y seguir la pose para un equipo dado \parencite{alonsomora2017transport}. El problema adicional consiste en seleccionar ese equipo con información local.
 
 \subsection{Seguridad, fallos y red imperfecta}
 \label{subsec:tf-industrial-constraints}
 
-ORCA construye velocidades recíprocamente admisibles bajo un modelo geométrico \parencite{vandenberg2011orca}. Las funciones de barrera restringen el control para mantener un conjunto seguro cuando el estado inicial, el modelo y el problema de control satisfacen sus supuestos \parencite{ames2017cbf,wang2017barrier}. Ambos enfoques pueden detenerse en congestión. Seguridad y vivacidad son propiedades distintas.
+ORCA construye velocidades recíprocas \parencite{vandenberg2011orca}. Las barreras mantienen conjuntos seguros bajo supuestos de estado, modelo y control \parencite{ames2017cbf,wang2017barrier}. Ambos pueden bloquearse: seguridad no implica vivacidad.
 
-Los fallos exigen revisar la coalición y el contacto. ALLIANCE usa impaciencia y aquiescencia para activar conductas alternativas, mientras las subastas dinámicas reasignan tareas después de eventos \parencite{parker1998alliance,nanjanath2006dynamicAuctions}. En una carga rígida, retirar un robot cambia además el soporte y el conjunto de \emph{wrench}; la reparación lógica necesita un nuevo certificado físico.
+ALLIANCE activa alternativas y las subastas dinámicas reasignan tras eventos \parencite{parker1998alliance,nanjanath2006dynamicAuctions}. En carga rígida, retirar un robot cambia soporte y \emph{wrench}. La reparación lógica exige recertificar.
 
-Retardo, pérdida y topología alteran la información disponible. El consenso con enlaces imperfectos depende del modelo estadístico y de la conectividad \parencite{kar2009imperfectConsensus,nedic2010constrainedConsensus}; ACBBA también se ha estudiado con pérdida de mensajes \parencite{rantanen2018lossyAcbba}. Estas garantías no cubren particiones persistentes ni demuestran que un equilibrio visible sea globalmente consistente.
+Retardo, pérdida y topología alteran la información disponible. El consenso con enlaces imperfectos depende del modelo estadístico y de la conectividad \parencite{kar2009imperfectConsensus,nedic2010constrainedConsensus}. ACBBA también se ha estudiado con pérdida de mensajes \parencite{rantanen2018lossyAcbba}. Estas garantías no cubren particiones persistentes ni demuestran que un equilibrio visible sea globalmente consistente.
 
 \subsection{Comparación y brecha de investigación}
 \label{subsec:tf-synthesis-gap}
@@ -242,6 +300,210 @@ El contrato básico de cada familia se compara en la Tabla~\ref{tab:tf-compariso
   \viuownsource
 \end{table}
 
-La brecha no es la falta de métodos aislados. MRTA cierra asignaciones; el consenso alinea estimaciones; un juego regula incentivos; el control mueve un equipo dado. Falta comprobar que las interfaces entre esos resultados conservan exclusividad, factibilidad mecánica, seguridad, recuperación y calidad bajo red imperfecta. En el corpus revisado no se identificó una solución única que cubra esas condiciones con un mecanismo distribuido y explicable. La afirmación se limita a las fuentes verificadas y no pretende demostrar inexistencia universal.
+La Figura~\ref{fig:tf-literature-timeline} resume la revisión en dos paneles complementarios. El panel~(a) distribuye trabajos ancla verificados en cuatro familias y periodos comunes; no propone una genealogía lineal ni atribuye prioridad universal. El panel~(b) cuenta, para cada SP canónico, las entradas ``VERIFICADA'' del ledger cuyo campo temático incluye ese subproblema. Una fuente puede contribuir a varios SP, de modo que las filas no deben sumarse como publicaciones únicas. En conjunto, ambos paneles muestran cómo se fueron acoplando coordinación móvil, asignación, coaliciones, transporte, seguridad y comunicación \parencite{khatib1986obstacle,nakamura1989dynamics,bicchi1995closure,balch1998behavior,shehoryKraus1998Coalition,kube2000cooperative,gerkeyMataric2004MRTA,pereira2004caging,vigAdams2006Coalition,parkerTang2006ASyMTRe,fink2008caging,vandenberg2008rvo,choiBrunetHow2009CBBA,johnson2011acbba,alonsomora2017transport,ames2017cbf,shibata2023event,paul2023collective,ebel2024cooperative,shan2024collectiveTransport,zhou2026cttapf}.
+
+\begin{figure}[H]
+  \centering
+  \def\LiteraturePeriods{1985--94,1995--04,2005--09,2010--14,2015--19,2020--22,2023--26}
+  \begin{tikzpicture}[
+    font=\sffamily,
+    panel/.style={rounded corners=2pt,draw=VIUGray!72,line width=0.55pt,fill=white},
+    paneltitle/.style={font=\fontsize{8.4}{9.4}\selectfont\bfseries,text=SPBlue,anchor=west},
+    periodhead/.style={draw=VIUGray!44,fill=VIUDark!6,minimum width=1.78cm,minimum height=0.43cm,inner sep=1pt,font=\fontsize{6.0}{6.6}\selectfont\bfseries,text=VIUDark},
+    lanecell/.style={rounded corners=1.5pt,minimum width=2.04cm,text width=1.90cm,align=center,inner sep=2pt,font=\fontsize{6.6}{7.3}\selectfont\bfseries,line width=0.65pt},
+    milestone/.style={text width=1.68cm,align=left,inner xsep=1.5pt,inner ysep=1.3pt,font=\fontsize{6.05}{6.65}\selectfont,text=VIUDark},
+    coveragecell/.style={draw=VIUGray!48,minimum width=1.04cm,minimum height=0.36cm,inner sep=1pt,align=center,font=\fontsize{6.3}{6.8}\selectfont,text=VIUDark},
+    coverlabel/.style={coveragecell,minimum width=3.20cm,text width=3.06cm,align=left,font=\fontsize{6.3}{6.85}\selectfont},
+    coveragehead/.style={coveragecell,fill=VIUDark!7,font=\fontsize{5.8}{6.3}\selectfont\bfseries},
+    scopebadge/.style={rounded corners=1.2pt,minimum width=3.15cm,minimum height=0.31cm,inner sep=1pt,font=\fontsize{6.05}{6.55}\selectfont\bfseries,align=center}
+  ]
+    % Panel (a): periodos comunes evitan tarjetas superpuestas y escalado tipográfico.
+    \begin{scope}[yshift=5.95cm]
+      \draw[panel] (0.10,0.10) rectangle (15.05,6.70);
+      \node[paneltitle] at (0.34,6.43) {(a) Hitos representativos por familia y periodo};
+      \node[periodhead,minimum width=2.04cm] at (1.15,5.86) {Familia};
+      \foreach[count=\j] \period in \LiteraturePeriods{%
+        \pgfmathsetmacro{\periodx}{3.14+1.84*(\j-1)}%
+        \node[periodhead] at (\periodx,5.86) {\period};
+      }
+
+      \node[lanecell,draw=SPBlue!75,fill=SPBlue!9,text=SPBlue!68!black,minimum height=0.96cm] at (1.15,5.00) {Fundamentos de coordinación};
+      \node[lanecell,draw=SPGreen!75,fill=SPGreen!9,text=SPGreen!55!black,minimum height=1.08cm] at (1.15,3.90) {MRTA y\\coaliciones};
+      \node[lanecell,draw=VIUOrange!82,fill=VIUOrange!8,text=VIUOrange!72!black,minimum height=1.92cm] at (1.15,2.28) {Transporte y contacto};
+      \node[lanecell,draw=SPPurple!75,fill=SPPurple!8,text=SPPurple!68!black,minimum height=0.96cm] at (1.15,0.74) {Seguridad, red y operación};
+
+      \foreach \x in {2.22,4.06,5.90,7.74,9.58,11.42,13.26,15.10}{%
+        \draw[VIUGray!25,line width=0.35pt] (\x,0.20) -- (\x,5.57);
+      }
+      \draw[VIUGray!25,line width=0.35pt] (2.22,4.48) -- (15.05,4.48);
+      \draw[VIUGray!25,line width=0.35pt] (2.22,3.30) -- (15.05,3.30);
+      \draw[VIUGray!25,line width=0.35pt] (2.22,1.24) -- (15.05,1.24);
+
+      \node[milestone] at (4.98,5.00) {\textbf{Balch--Arkin}\\[-1pt]\textbf{Gerkey--Matarić}\\[-1pt]\textcolor{SPBlue}{\bfseries SP0--SP2; SP4--SP5}};
+      \node[milestone] at (4.98,3.78) {\textbf{Shehory--Kraus}\\[-1pt]\textcolor{SPGreen!65!black}{\bfseries SP1--SP2}};
+      \node[milestone] at (6.82,3.78) {\textbf{Vig--Adams; Parker--Tang}\\[-1pt]\textbf{Choi et al.}\\[-1pt]\textcolor{SPGreen!65!black}{\bfseries SP0--SP2; SP6}};
+
+      \node[milestone] at (3.14,2.28) {\textbf{Nakamura et al.}\\dinámica coordinada\\[-1pt]\textcolor{VIUOrange}{\bfseries SP3}};
+      \node[milestone] at (4.98,2.28) {\textbf{Bicchi}: cierre\\\textbf{Kube--Bonabeau}: transporte\\\textbf{Pereira et al.}: \emph{caging}\\[-1pt]\textcolor{VIUOrange}{\bfseries SP3--SP4}};
+      \node[milestone] at (6.82,2.28) {\textbf{Fink et al.}\\\emph{caging} con obstáculos\\[-1pt]\textcolor{VIUOrange}{\bfseries SP3--SP5}};
+      \node[milestone] at (10.50,2.28) {\textbf{Alonso--Mora et al.}\\transporte restringido\\[-1pt]\textcolor{VIUOrange}{\bfseries SP4--SP5}};
+      \node[milestone] at (14.18,2.28) {\textbf{Ebel; Shan et al.}\\control y asignación\\[-1pt]\textcolor{VIUOrange}{\bfseries SP1, SP3--SP6}};
+
+      \node[milestone] at (3.14,0.74) {\textbf{Khatib}\\campos de obstáculos\\[-1pt]\textcolor{SPPurple}{\bfseries SP5}};
+      \node[milestone] at (6.82,0.74) {\textbf{van den Berg et al.}\\RVO\\[-1pt]\textcolor{SPPurple}{\bfseries SP5}};
+      \node[milestone] at (8.66,0.74) {\textbf{Johnson et al.}\\ACBBA asíncrona\\[-1pt]\textcolor{SPPurple}{\bfseries SP6, SP8}};
+      \node[milestone] at (10.50,0.74) {\textbf{Ames et al.}\\CBF-QP\\[-1pt]\textcolor{SPPurple}{\bfseries SP5}};
+      \node[milestone] at (14.18,0.74) {\textbf{Shibata; Paul; Zhou}\\[-1pt]\textcolor{SPPurple}{\bfseries SP4, SP6--SP8}};
+    \end{scope}
+
+    % Panel (b): recuentos regenerados desde el ledger y alcance canónico.
+    \draw[panel] (0.10,0.12) rectangle (15.05,5.66);
+    \node[paneltitle] at (0.34,5.38) {(b) Cobertura del corpus y alcance declarado del TFM};
+    \node[coveragehead,minimum width=3.20cm] at (1.72,4.84) {Subproblema canónico};
+    \foreach[count=\j] \period in \LiteraturePeriods{%
+      \pgfmathsetmacro{\periodx}{3.90+1.04*(\j-1)}%
+      \node[coveragehead] at (\periodx,4.84) {\period};
+    }
+    \node[coveragehead,minimum width=0.82cm] at (11.15,4.84) {$\Sigma$};
+    \node[coveragehead,minimum width=3.15cm] at (13.45,4.84) {Alcance 2026};
+
+    \newcount\coveragefigrow
+    \coveragefigrow=0
+    \newcommand{\coveragegeneratedrow}[5]{%
+      \pgfmathsetmacro{\rowy}{4.40-0.39*\the\coveragefigrow}%
+      \node[coverlabel] at (1.72,\rowy) {\textbf{#1}\quad #2};
+      \foreach[count=\j] \val in {#3}{%
+        \pgfmathsetmacro{\cellx}{3.90+1.04*(\j-1)}%
+        \pgfmathtruncatemacro{\shade}{ifthenelse(\val==0,0,min(82,10+8*\val))}%
+        \node[coveragecell,minimum width=1.00cm,fill=SPBlue!\shade] at (\cellx,\rowy) {\val};
+      }
+      \node[coveragecell,minimum width=0.82cm,fill=VIUDark!5,font=\fontsize{6.3}{6.8}\selectfont\bfseries] at (11.15,\rowy) {#4};
+      \ifcase#5
+        \node[scopebadge,draw=SPGreen!72,fill=SPGreen!9,text=SPGreen!52!black] at (13.45,\rowy) {obligatorio};
+      \or
+        \node[scopebadge,draw=VIUOrange!78,fill=VIUOrange!8,text=VIUOrange!72!black] at (13.45,\rowy) {extensión prioritaria};
+      \else
+        \node[scopebadge,draw=SPPurple!70,fill=SPPurple!7,text=SPPurple!72!black] at (13.45,\rowy) {condicionado};
+      \fi
+      \advance\coveragefigrow by 1
+    }
+    \input{generated/literature-coverage.tex}
+
+    \node[font=\fontsize{6.0}{6.6}\selectfont,text=VIUDark,anchor=west] at (0.38,0.54)
+      {Azul: escala común; mayor recuento, mayor intensidad.};
+    \node[font=\fontsize{6.0}{6.6}\selectfont\itshape,text=VIUDark,anchor=east] at (14.88,0.54)
+      {En SP3, ``obligatorio'' se refiere al modo primario Cargo.};
+  \end{tikzpicture}
+  \caption{Evoluci\'on temporal y cobertura del corpus consultado. (a) Hitos verificados por familia y per\'iodo; (b) n\'umero de entradas verificadas por subproblema y per\'iodo, con el alcance declarado para 2026. Una fuente puede contar en varios SP; la figura no constituye una bibliometr\'ia exhaustiva ni acredita resultados del TFM.}
+  \label{fig:tf-literature-timeline}
+  \viuownsource
+\end{figure}
+
+La Figura~\ref{fig:tf-methodological-map} sintetiza la arquitectura de los trabajos del corpus, no su calidad, impacto o rendimiento. El eje horizontal distingue ejecución distribuida con información local de planificación central/global; el vertical distingue mecanismos explícitos de políticas aprendidas. El color identifica la familia primaria del mecanismo y la proximidad visual aproxima similitud arquitectónica, familiar y de alcance SP. Los trabajos MARL permiten distinguir MAPF descentralizado \parencite{sartoretti2019primal,phan2024cactus} de transporte cooperativo con capas locales y globales \parencite{shibata2023localGlobal,naito2025tihdp}.
+
+La escala es ordinal y el corpus concentra muchos métodos explícitos y varias políticas aprendidas, pero pocas formulaciones híbridas. Por ello aparece una franja intermedia poco poblada; no representa una discontinuidad teórica ni ausencia universal de literatura. La auditoría completa de indicadores, cálculos y trabajos se conserva como artefacto reproducible en el repositorio.
+
+\nocite{zlotStentz2006ComplexTasks}
+
+\begin{figure}[H]
+  \centering
+  \newcommand{\paperyear}[1]{\fontsize{4.2}{4.8}\selectfont #1}
+  \newcommand{\paperlabel}[3]{\paperref{#1}{#2}\\[-2pt]\paperref{#1}{\paperyear{#3}}}
+  \resizebox{\textwidth}{!}{%
+  \begin{tikzpicture}[x=6.2cm,y=4.455cm,
+    font=\sffamily,
+    axis/.style={-{Latex[length=2.8mm]},draw=VIUDark,line width=1.05pt},
+    axislabel/.style={font=\scriptsize\bfseries,align=center,text=VIUDark},
+    axisnum/.style={font=\tiny,text=VIUGray},
+    paper/.style={circle,draw=white,line width=0.5pt,minimum size=3.8mm,inner sep=0pt,font=\tiny\bfseries,text=white},
+    pre2019blue/.style={fill=SPBlue!15!VIUGray,fill opacity=0.25,text=VIUDark,text opacity=1},
+    pre2019orange/.style={fill=VIUOrange!15!VIUGray,fill opacity=0.25,text=VIUDark,text opacity=1},
+    pre2019green/.style={fill=SPGreen!15!VIUGray,fill opacity=0.25,text=VIUDark,text opacity=1},
+    tag/.style={font=\fontsize{5.1}{5.7}\selectfont,align=center,text=VIUDark,fill=white,fill opacity=0.78,text opacity=1,rounded corners=0.4pt,inner sep=0.35pt,outer sep=0pt},
+    quad/.style={draw=none,rounded corners=2pt,align=center,font=\scriptsize\bfseries,text=VIUDark},
+    legenddot/.style={circle,draw=none,minimum size=3.4mm,inner sep=0pt},
+    legendtext/.style={font=\scriptsize,text=VIUDark}
+  ]
+    \fill[SPBlue!4,rounded corners=2pt] (-1.15,-1.15) rectangle (0,-0.02);
+    \fill[VIUOrange!4,rounded corners=2pt] (0,-1.15) rectangle (1.15,-0.02);
+    \fill[SPPurple!5,rounded corners=2pt] (-1.15,0.02) rectangle (0,1.15);
+    \fill[SPGreen!4,rounded corners=2pt] (0,0.02) rectangle (1.15,1.15);
+    \draw[spgrid,step=0.5] (-1.15,-1.15) grid (1.15,1.15);
+    \draw[axis] (-1.18,0) -- (1.22,0);
+    \draw[axis] (0,-1.18) -- (0,1.22);
+    \foreach \x in {-1,-0.5,0.5,1} {
+      \draw[draw=VIUDark,line width=0.45pt] (\x,-0.025) -- (\x,0.025);
+    }
+    \foreach \y in {-1,-0.5,0.5,1} {
+      \draw[draw=VIUDark,line width=0.45pt] (-0.025,\y) -- (0.025,\y);
+    }
+    \node[quad] at (-0.58,1.02) {distribuido\\data-driven};
+    \node[quad] at (0.58,1.02) {centralizado\\data-driven};
+    \node[axislabel,rotate=90,anchor=center] at (1.31,0) {centralizado};
+    \node[axislabel,rotate=90,anchor=center] at (-1.31,0) {descentralizado};
+    \node[axislabel,anchor=center] at (0,1.33) {data-driven};
+    \node[axislabel,anchor=center] at (0,-1.30) {white-box};
+
+    % Proyección agrupada auditada en el Anexo~\ref{app:methodological-map-audit}.
+    % El color codifica la familia primaria del mecanismo.
+    \begin{scope}
+    \node[paper,pre2019blue] at (-0.707,-0.821) {C}; \node[tag,anchor=east] at (-0.749,-0.821) {\paperlabel{choiBrunetHow2009CBBA}{CBBA}{2009}};
+    \node[paper,pre2019blue] at (-0.575,-1.100) {A}; \node[tag,anchor=west] at (-0.533,-1.082) {\paperlabel{johnson2011acbba}{ACBBA}{2011}};
+    \node[paper,pre2019orange] at (-0.626,-0.651) {O}; \node[tag,anchor=west] at (-0.584,-0.636) {\paperlabel{vandenberg2011orca}{ORCA}{2011}};
+    \node[paper,pre2019blue] at (-0.602,-0.947) {S}; \node[tag,anchor=west] at (-0.560,-0.931) {\paperlabel{shehoryKraus1998Coalition}{Shehory}{1998}};
+    \node[paper,fill=VIUOrange,draw=VIUOrange!80,line width=0.85pt] at (-0.966,-0.500) {E}; \node[tag,anchor=east] at (-1.008,-0.482) {\paperlabel{ebel2024cooperative}{Ebel}{2024}};
+    \node[paper,fill=SPBlue] at (-0.826,-1.028) {D}; \node[tag,anchor=east] at (-0.868,-1.028) {\paperlabel{dutta2021hedonic}{Dutta}{2021}};
+    \node[paper,pre2019orange] at (-0.951,-0.721) {P}; \node[tag,anchor=east] at (-0.993,-0.721) {\paperlabel{pereira2004caging}{Pereira}{2004}};
+    \node[paper,pre2019orange] at (-0.831,-0.595) {T}; \node[tag,anchor=east] at (-0.873,-0.582) {\paperlabel{tsitsiklis1986asynchronousOptimization}{Tsitsiklis}{1986}};
+    \node[paper,pre2019orange] at (-0.958,-0.883) {M}; \node[tag,anchor=east] at (-1.000,-0.894) {\paperlabel{olfatiSaber2004switchingConsensus}{Olfati}{2004}};
+    \node[paper,pre2019orange] at (-0.782,-0.358) {G}; \node[tag,anchor=east] at (-0.824,-0.340) {\paperlabel{boyd2006randomizedGossip}{Gossip}{2006}};
+    \node[paper,fill=VIUOrange,draw=VIUOrange!80,line width=0.85pt] at (-0.598,-0.482) {R}; \node[tag,anchor=west] at (-0.556,-0.465) {\paperlabel{rosenfelder2024force}{Rosenfelder}{2024}};
+    \node[paper,pre2019blue] at (-0.059,-0.818) {Z}; \node[tag,anchor=east] at (-0.101,-0.818) {\paperlabel{zlotStentz2006ComplexTasks}{Zlot}{2006}};
+    \node[paper,pre2019blue] at (-0.101,-0.641) {V}; \node[tag,anchor=west] at (-0.059,-0.626) {\paperlabel{vigAdams2006Coalition}{Vig}{2006}};
+    \node[paper,pre2019blue] at (-0.049,-1.084) {Q}; \node[tag,anchor=west] at (-0.007,-1.093) {\paperlabel{zhangParker2013IQASyMTRe}{IQ-ASyMTRe}{2013}};
+    \node[paper,pre2019orange] at (-0.027,-0.488) {CBF}; \node[tag,anchor=west] at (0.015,-0.469) {\paperlabel{ames2017cbf}{Ames}{2017}};
+    \node[paper,pre2019blue] at (0.096,-0.734) {B}; \node[tag,anchor=west] at (0.138,-0.734) {\paperlabel{bertsekas1988Auction}{Bertsekas}{1988}};
+    \node[paper,fill=SPBlue,draw=VIUOrange!80,line width=0.85pt] at (0.061,-0.949) {Z}; \node[tag,anchor=west] at (0.103,-0.935) {\paperlabel{zhang2024coalition}{Zhang}{2024}};
+    \node[paper,fill=SPBlue,draw=VIUOrange!80,line width=0.85pt] at (-0.291,-0.908) {Sh}; \node[tag,anchor=west] at (-0.249,-0.890) {\paperlabel{shan2024collectiveTransport}{Shan}{2024}};
+    \node[paper,fill=VIUOrange,draw=SPBlue,line width=0.9pt,star,star points=5,minimum size=5.4mm] at (-0.493,-0.759) {}; \node[tag,anchor=west,font=\scriptsize\bfseries,align=left] at (-0.433,-0.743) {Este TFM\\integración};
+
+    \node[paper,fill=SPGreen] at (0.721,-0.557) {L}; \node[tag,anchor=east] at (0.679,-0.538) {\paperlabel{li2022mapfLns2}{MAPF-LNS2}{2022}};
+    \node[paper,fill=SPGreen] at (0.894,-0.662) {L}; \node[tag,anchor=west] at (0.936,-0.652) {\paperlabel{li2019largeAgentMapf}{LA-MAPF}{2019}};
+    \node[paper,fill=SPGreen,draw=VIUOrange!80,line width=0.85pt] at (0.776,-0.412) {Z}; \node[tag,anchor=east] at (0.734,-0.391) {\paperlabel{zhou2026cttapf}{Zhou}{2026}};
+    \node[paper,pre2019orange] at (0.523,-0.703) {AM}; \node[tag,anchor=east] at (0.481,-0.688) {\paperlabel{alonsomora2017transport}{Alonso--Mora}{2017}};
+    \node[paper,pre2019green] at (0.772,-0.797) {C}; \node[tag,anchor=west] at (0.814,-0.795) {\paperref{sharon2015cbs}{CBS}/\paperref{barer2014ecbs}{ECBS}\\[-2pt]\paperref{sharon2015cbs}{\paperyear{2015}}/\paperref{barer2014ecbs}{\paperyear{2014}}};
+    \node[paper,pre2019orange] at (0.568,-0.990) {Y}; \node[tag,anchor=east] at (0.526,-1.008) {\paperlabel{yoshikawa1993coordinated}{Yoshikawa}{1993}};
+    \node[paper,pre2019green] at (0.877,-0.921) {H}; \node[tag,anchor=west] at (0.919,-0.935) {\paperlabel{kuhn1955Hungarian}{Hungarian}{1955}};
+    \node[paper,fill=SPGreen] at (0.704,0.078) {ML}; \node[tag,anchor=east] at (0.662,0.103) {\paperlabel{huang2022mlLns}{ML-LNS}{2022}};
+    \node[paper,fill=SPGreen,draw=VIUOrange!80,line width=0.85pt] at (0.745,-0.080) {G}; \node[tag,anchor=west] at (0.787,-0.040) {\paperlabel{yu2023graphTransformer}{GraphT}{2023}};
+    \node[paper,fill=SPPurple,draw=VIUOrange!80,line width=0.85pt] at (0.562,0.685) {R}; \node[tag,anchor=east] at (0.520,0.713) {\paperlabel{tang2025railgun}{RAILGUN}{2025}};
+
+    \node[paper,fill=SPPurple,draw=VIUOrange!80,line width=0.85pt] at (0.602,0.519) {P}; \node[tag,anchor=west] at (0.644,0.519) {\paperlabel{paul2023collective}{Paul}{2023}};
+    \node[paper,fill=SPPurple,draw=VIUOrange!80,line width=0.85pt] at (-0.678,0.346) {Sh}; \node[tag,anchor=west] at (-0.636,0.363) {\paperlabel{shibata2023event}{Shibata}{2023}};
+    \node[paper,fill=SPPurple] at (-0.663,0.525) {P}; \node[tag,anchor=east] at (-0.705,0.549) {\paperlabel{sartoretti2019primal}{PRIMAL}{2019}};
+    \node[paper,fill=SPPurple,draw=VIUOrange!80,line width=0.85pt] at (-0.627,0.690) {C}; \node[tag,anchor=west] at (-0.585,0.717) {\paperlabel{phan2024cactus}{CACTUS}{2024}};
+    \node[paper,fill=SPPurple,draw=VIUOrange!80,line width=0.85pt] at (-0.030,0.274) {LG}; \node[tag,anchor=west] at (0.012,0.291) {\paperlabel{shibata2023localGlobal}{Shibata--LG}{2023}};
+    \node[paper,fill=SPPurple,draw=VIUOrange!80,line width=0.85pt] at (-0.040,0.442) {TI}; \node[tag,anchor=east] at (-0.082,0.470) {\paperlabel{naito2025tihdp}{TIHDP}{2025}};
+    \end{scope}
+
+    \node[font=\fontsize{5.0}{5.6}\selectfont\itshape,text=VIUGray,align=center,fill=white,fill opacity=0.82,text opacity=1,inner sep=1pt]
+      at (0.54,-0.22) {franja poco poblada\\de la rúbrica ordinal};
+
+    \node[legenddot,fill=SPBlue] at (-1.12,-1.52) {};
+    \node[legendtext,anchor=west] at (-1.06,-1.52) {juegos/mercados};
+    \node[legenddot,fill=VIUOrange] at (-0.48,-1.52) {};
+    \node[legendtext,anchor=west] at (-0.42,-1.52) {control/consenso};
+    \node[legenddot,fill=SPGreen] at (0.16,-1.52) {};
+    \node[legendtext,anchor=west] at (0.22,-1.52) {búsqueda/heurística};
+    \node[legenddot,fill=SPPurple] at (0.78,-1.52) {};
+    \node[legendtext,anchor=west] at (0.84,-1.52) {política aprendida};
+  \end{tikzpicture}%
+  }
+  \caption{Mapa metodológico agrupado del corpus consultado. Los ejes resumen arquitectura distribuida/centralizada y mecanismo explícito/aprendido; el color identifica la familia primaria, con puntos casi grises y semitransparentes antes de 2019 y color pleno desde 2019, mientras que el contorno naranja resalta 2023--2026. La franja intermedia poco poblada resulta de la escala ordinal y de la composición del corpus, no de una discontinuidad teórica. Las alturas de presentación evitan solapes y no representan calidad ni rendimiento. La rúbrica, las coordenadas y el cálculo completo se conservan como artefactos reproducibles del repositorio.}
+  \label{fig:tf-methodological-map}
+  \viuownsource
+\end{figure}
+
+La brecha está en las interfaces: MRTA cierra, consenso estima, juegos incentivan y control mueve equipos dados, pero su composición debe conservar exclusividad, mecánica, seguridad, recuperación y calidad bajo red imperfecta. El corpus verificado no contiene una solución única distribuida y explicable. La revisión tampoco permite afirmar una inexistencia universal.
 
 La evaluación añade las condiciones una a una y conserva los fallos que impiden extender cada conclusión al sistema completo.

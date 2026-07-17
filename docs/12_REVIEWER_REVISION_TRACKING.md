@@ -10,12 +10,12 @@ Fecha de revisión: 2026-07-17. Este registro aplica la precedencia de `AGENTS.m
 | 2 | Contradicción AGV/AMR y título | **RESUELTA POR PRECEDENCIA** | `docs/00_TFM_CHARTER.md` y `thesis/metadata.tex` fijan el título administrativo con AMR. No se modifica sin aprobación expresa. AGV y AMR se definen en nomenclatura; el cuerpo usa el alcance técnico demostrado. |
 | 3 | Cadena velocidad--aceleración--wrench de SP5 | **CERRADA** | `sp5.tex` define aceleración traslacional por diferencia finita, canal angular, wrench filtrado, reparto y margen aplicado. `payload_transport.py` implementa la transformación y `tests/test_sp5_payload_transport.py` comprueba dimensiones y saturación opcional. |
 | 4 | Capacidad física frente a disponibilidad SP2 | **CERRADA** | SP2 separa carga útil `c_i^pay`, disponibilidad `a_ik` y servicio normalizado `e_ik`; el umbral histórico pasa a `d_k^srv`. SP3 conserva el primer certificado mecánico. Código, configuración, pruebas, notación y matriz de evidencia están sincronizados. |
-| 5 | Restaurar generadores SP2/SP3 | **CERRADA DEFENSIVAMENTE** | Los generadores históricos completos no están en el árbol actual y no se inventan. SP2 y SP3 se clasifican como reanálisis reproducibles de observaciones archivadas; las secciones experimentales y el Anexo A declaran que no pueden reconstruirse íntegramente desde cero. |
+| 5 | Restaurar generadores SP2/SP3 | **CERRADA DEFENSIVAMENTE** | Los generadores históricos completos no están en el árbol actual y no se inventan. SP2--SP4 se clasifican como reanálisis de observaciones archivadas; las secciones experimentales y el Anexo A declaran que no pueden reconstruirse íntegramente desde cero. |
 | 6 | Reconciliar hipótesis y ejecución extremo a extremo | **CERRADA EN EL ALCANCE ACTUAL** | La campaña Cargo integra SP2--SP6 en una planta planar y se presenta como evidencia de composición, no como garantía híbrida ni validación industrial. La tabla transversal declara cada lectura global, cierre, certificado y planta. La transferencia dinámica independiente queda como limitación. |
-| 7 | Preliminares en romanos | **NO APLICADA; contradice la fuente VIU auditada** | `docs/06_VIU_TEMPLATE_FIDELITY.md` registra que la plantilla DOCX oficial usa numeración arábiga continua, portada sin número visible y Resumen en la página 2. Se conserva ese contrato; no se aplica la recomendación romana sin una plantilla oficial posterior. |
+| 7 | Preliminares en romanos | **SUPERADA POR INSTRUCCIÓN POSTERIOR DEL AUTOR** | Aunque la auditoría OOXML de la plantilla DOCX halló numeración arábiga continua, el autor instruyó después usar romanos en preliminares y reiniciar el cuerpo en 1. `docs/06_VIU_TEMPLATE_FIDELITY.md` conserva ambas evidencias y `thesis/main.tex` aplica la instrucción vigente. |
 | 8 | Legibilidad de tablas metodológicas | **CERRADA Y VERIFICADA VISUALMENTE** | Las tablas SP0--SP7 dejaron tamaños manuales de 5,7--7 pt y usan `\scriptsize`. El PDF recompilado se inspeccionó en las páginas críticas; no hay desbordamientos y la tabla transversal es legible a página completa. |
 | 9 | Nomenclatura incompleta | **CERRADA PARA LOS SÍMBOLOS CRÍTICOS** | Se añadieron `Q_W`, `G_C`, servicio SP2, cadena SP5, `D_6`, `lambda_6`, `delta_min`, rutas/conflictos SP7 y recursos/grafo SP8 a `frontmatter/04-nomenclature.tex`; `docs/05_NOTATION.md` conserva el inventario canónico completo. |
-| 10 | Visibilidad de CoppeliaSim | **CERRADA EN EL ALCANCE CINEMÁTICO** | Metodología, resultados y conclusiones incorporan Industrial 2 como auditoría geométrica y piloto cinemático. Se reporta el bloqueo de los tres escenarios congestionados y se mantiene abierta la validación dinámica tridimensional/hardware. El resumen y el abstract omiten este piloto secundario para respetar el límite de 300 palabras. |
+| 10 | Visibilidad de CoppeliaSim | **CERRADA EN EL ALCANCE CINEMÁTICO** | Metodología, resultados y conclusiones incorporan Industrial 2 como auditoría geométrica y piloto cinemático. El resumen y el abstract lo identifican sin atribuirle dinámica física ni rendimiento industrial. Se reporta el bloqueo de los tres escenarios congestionados y se mantiene abierta la validación dinámica tridimensional/hardware. |
 
 ## Prioridad P1
 
@@ -74,13 +74,72 @@ Por instrucción expresa del autor se conserva **AMR**. La recomendación de vol
 | Cota en línea de `lambda_6` y ausencia de CBS/ECBS | **CERRADA COMO TRABAJO FUTURO/DELIMITACIÓN** | Conclusiones proponen una cota conservadora basada en `delta_min`; SP7 explica que el oráculo enumera perfiles y órdenes del catálogo fijo de dos rutas, mientras CBS/ECBS cobraría sentido en un espacio de trayectorias más amplio. |
 | Figura raster de SP3 | **CERRADA** | El generador produce ahora una figura PDF vectorial desde `summary.csv`; el cuerpo la incluye y su legibilidad se verificó sobre el PDF renderizado. |
 | Patrones estilísticos tipo IA | **MITIGADOS** | Se podaron contrastes especulares, conectores y cierres formulaicos en las secciones de mayor visibilidad sin eliminar limitaciones científicas. No se introdujeron frases promocionales ni afirmaciones más fuertes. |
-| Extensión VIU | **ABIERTA: RIESGO ADMINISTRATIVO** | La versión recompilada tiene 134 páginas; el cuerpo ocupa aproximadamente 98 páginas (13--110), por encima de 50--80. Los anexos ocupan 18 páginas (117--134), dentro del máximo de 20. Reducir el cuerpo exige una edición estructural separada para no eliminar evidencia. |
+| Extensión VIU | **ABIERTA: RIESGO ADMINISTRATIVO** | La versión recompilada tiene 139 páginas; el cuerpo ocupa 101 páginas (13--113), por encima de 50--80. Los anexos ocupan 20 páginas (120--139), justo en el máximo permitido. Reducir el cuerpo exige una edición estructural separada para no eliminar evidencia. |
 | Validación dinámica independiente | **ABIERTA** | Industrial 2 sigue siendo un piloto geométrico/cinemático. No hay evidencia de contacto tridimensional, fricción, actuadores, sensores reales ni hardware. |
 
 ## Verificación ejecutada
 
 - `python -m pytest -q`: 74 pruebas superadas.
 - Campañas confirmatorias regeneradas: Cargo, 360 mundos y 2160 ejecuciones; SP8, 900 mundos, 4500 registros y 4050 ejecuciones; SP3, tabla, macros y figura vectorial actualizadas.
-- Compilación limpia: PDF A4 de 134 páginas generado sin errores LaTeX, referencias/citas indefinidas ni cajas `Overfull`.
-- Resumen/abstract: 281/278 palabras, dentro del intervalo VIU de 200--300.
-- Revisión visual rasterizada: preliminares, nomenclatura, figura SP3, SP8, Cargo, AWS, conclusiones y anexos; sin cortes ni desbordamientos críticos.
+- Compilación limpia: PDF A4 de 139 páginas generado sin errores LaTeX, referencias/citas indefinidas ni cajas `Overfull`.
+- Resumen/abstract: 294/293 palabras en el PDF, dentro del intervalo VIU de 200--300.
+- Revisión visual rasterizada: resumen, abstract, introducción, objetivos, hipótesis, metodología, matriz de operacionalización, conclusiones y Anexo A; sin cortes ni desbordamientos críticos.
+
+## Cuarto dictamen integral sobre `main(13)`
+
+Este dictamen desplaza el trabajo desde la ampliación científica hacia el cierre formal. Los estados siguientes distinguen correcciones realizadas, decisiones expresas del autor y dependencias externas que no deben simularse.
+
+| Observación | Estado | Resolución y evidencia |
+|---|---|---|
+| Extensión: cuerpo por encima de 80 páginas | **CERRADA** | Referencias comienza en la página 81: el cuerpo ocupa exactamente 80 páginas. Los gráficos redundantes permanecen como artefactos procesados; cada SP conserva diagrama, formulación, comparación, tabla numérica y cierre. El PDF completo tiene 116 páginas. |
+| Texto principal de anexos menor que Arial 12 | **CERRADA Y VERIFICADA** | Se retiraron los grupos `\footnotesize` de SP4, SP6 y SP7. Las pruebas rutinarias de SP7 y SP8 se condensaron; se preservan integrabilidad SP2, KKT--VE SP3, estabilidad local SP4, Nash/PoS/PoA SP6 e imposibilidad SP8. Los anexos ocupan 18 páginas (87--104) y la muestra rasterizada confirma Arial 12 en el cuerpo. |
+| Título AGV frente a AMR | **DECISIÓN EXPRESA DEL AUTOR: AMR** | El dictamen atribuye AGV al Anexo I, pero `docs/00_TFM_CHARTER.md` y la instrucción expresa registrada por el autor fijan AMR. No se cambia el título sin una orden administrativa posterior; la discrepancia debe resolverse fuera del manuscrito si coordinación aporta un documento de mayor precedencia. |
+| Preliminares romanos y reinicio arábigo | **CERRADA POR INSTRUCCIÓN DEL AUTOR** | `thesis/sections/frontmatter/00-cover.tex` inicia preliminares en romanos y `thesis/main.tex` reinicia la Introducción en 1. `docs/06_VIU_TEMPLATE_FIDELITY.md` declara que esta decisión prima sobre el patrón OOXML auditado. |
+| Encabezado con nombre del estudiante | **OBJECIÓN NO APLICADA** | El DOCX oficial auditado solo contiene el título en encabezado. Se conserva esa fidelidad mientras no exista una instrucción administrativa verificable de mayor precedencia. |
+| Release, etiqueta, SHA y archivo inmutable | **ABIERTA; DEPENDENCIA EXTERNA** | El repositorio aún no está congelado. La memoria no afirma que exista una release. Crear etiqueta, commit final, release o DOI exige la decisión del autor y se ejecutará después de cerrar contenido y pruebas. |
+| H1 atribuye a cuórum el cierre producido por QR | **CERRADA** | H1 se divide en H1a (cuotas realizables), H1b (QR elimina grupos parciales) y H1c (efecto incremental del cuórum con QR fijo). Metodología, SP1, conclusiones y `docs/04_CLAIMS_EVIDENCE.md` conservan la misma atribución. |
+| Potencial SP8 extendido indebidamente a vistas obsoletas | **CERRADA** | Cuerpo y Anexo I exigen `\widehat r_{ij}=r_j` para cada actualización cubierta por la identidad. Con retardo o pérdida no se reclama secuencia global de mejora; terminación y calidad quedan como observaciones empíricas. |
+| Cargo no reconstruible desde la memoria | **CERRADA EN EL MODELO IMPLEMENTADO** | Cargo explicita conjunto visible, diez eventos, líder temporal, consulta al registro, puntuación exacta, desempate por ID, cierre agregado, abstención, reapertura, reparación, complejidad y registros. Un algoritmo numerado y una tabla comparan sus fases con SP2--SP6. |
+| «Colisión» excede la métrica observada | **CERRADA** | La tabla usa «Intersección huella--obstáculo» y el texto limita 359/360 a la fase de transporte y a la huella compuesta. No se extiende a aproximación, robot--robot ni contacto 3D. |
+| Industrial 2 desproporcionado | **CERRADA** | La sección se redujo a una imagen, 32 ejecuciones, resultado principal y alcance piloto. Las matrices completas permanecen en los artefactos procesados. |
+| Nomenclatura incompleta | **CERRADA Y VERIFICADA** | Se añadieron AWS, KKT, QP, PD, BNN, QR, CBBA, HOCBF, VO/RVO/ORCA, MAPF, CBS/ECBS, CPU, IC, VE y LAP; la nomenclatura recompilada se verificó visualmente. |
+| Etiquetas SP2 «Smith/replicator» | **CERRADA DESDE EL GENERADOR** | El generador y los artefactos regenerados usan «Puntuación inspirada en Smith/replicator»; no se atribuye la integración de las EDO a estas puntuaciones estáticas. |
+| Brecha SP8 de 0.497 solo en conclusiones | **CERRADA** | SP8 presenta la media sobre 450 mundos certificados y define la normalización respecto al oráculo antes de reutilizarla en RQ5. |
+| Convención de nombres | **CERRADA EN EL MANUSCRITO** | Se unificaron Greedy/Greedy-Q/Greedy por distancia como etiquetas de método; “método voraz” queda como descriptor genérico en prosa. |
+| Acabado APA | **PARCIAL** | Se corrigieron los DOI espaciados señalados, el título de Chen--Sun y la referencia estable de Holm. Una auditoría bibliográfica completa permanece como control final, sin inventar ni retirar fuentes verificadas. |
+
+### Verificación del cierre técnico
+
+- PDF A4 de 116 páginas: cuerpo 1--80, referencias 81--86 y anexos 87--104 (18 páginas).
+- Resumen/abstract: 300/298 palabras.
+- `python -m pytest -q`: 74 pruebas superadas.
+- Compilación completa con Biber: sin referencias/citas indefinidas ni cajas `Overfull`; Arial y fuentes matemáticas incrustadas.
+- Inspección rasterizada de Resumen, Introducción, Metodología, SP0, SP3, SP8, Cargo, Industrial 2, Conclusiones, Referencias y anexos SP4/SP6/SP7/SP8.
+
+El cierre técnico queda completado. La release inmutable y cualquier resolución administrativa AGV/AMR siguen siendo acciones externas necesarias antes del depósito definitivo; no se simulan en el manuscrito.
+
+## Quinto dictamen integral sobre `main(14)`
+
+Por instrucción expresa del autor y por precedencia de `docs/00_TFM_CHARTER.md`, esta revisión conserva **AMR** y elimina AGV de las fuentes y del PDF. La salida se mantiene en `thesis/build/main.pdf`; no se crea `main(15)` ni otra copia numerada.
+
+| Observación | Estado | Resolución y evidencia |
+|---|---|---|
+| OE5 citado pero no definido | **CERRADA** | OE5 se restaura en Objetivos, se operacionaliza en Metodología y se evalúa en Conclusiones. El Anexo A distingue campañas regenerables, reanálisis y piloto. |
+| Release, etiqueta, SHA y archivo inmutable | **ABIERTA; DEPENDENCIA EXTERNA DECLARADA** | El anexo informa URL, SHA base y árbol no consolidado, sin presentar ese SHA como instantánea final. La etiqueta/DOI solo podrá fijarse tras consolidar y congelar la entrega. |
+| Regla Cargo mezcla m, kg y N | **CERRADA SIN ALTERAR RESULTADOS** | Distancia, carga útil y fuerza se normalizan por 1 m, 1 kg y 1 N; el orden es ascendente, los empates se resuelven por ID y el cierre exige cardinalidad, masa y fuerza. Una prueba verifica equivalencia numérica exacta con el ranking archivado. |
+| Alcance de batería en RQ4 | **CERRADA** | Conclusiones delimitan batería como disponibilidad estática en SP2 y factor conjunto de Industrial 2; no se afirma dinámica de descarga/recarga ni efecto causal aislado. |
+| Procedencia y licencia de la escena AWS | **CERRADA** | Industrial 2 y su figura atribuyen AWS RoboMaker Small Warehouse World, versión 1.0.4, licencia MIT-0; la referencia se registró como verificada en el ledger. |
+| Encabezado sin alumno y folio `i` ambiguo | **CERRADA Y VERIFICADA VISUALMENTE** | El encabezado incluye nombre y título corto AMR. Los romanos minúsculos usan punto explícito y el cuerpo conserva reinicio arábigo en 1. |
+| Tablas 1, 2, 9, 11, 14, 16, 19 y 25 demasiado pequeñas | **CERRADA** | Se fijan a 9 pt, se reajustan columnas y se inspeccionan rasterizadas; no hay cajas `Overfull`. |
+| Párrafos telegráficos y estado «pendiente» en SP1 | **CERRADA** | Se integra la síntesis aislada de SP7 y SP1 formula el límite como fuera del alcance experimental, sin presentar trabajo futuro como deuda de la sección. |
+| APA, DOI espaciados, capitalización y nombre Greedy/voraz | **CERRADA EN EL PDF ACTUAL** | Bibliografía a bandera izquierda, títulos en estilo oración, rangos con raya, arXiv normalizado y etiquetas visibles unificadas como «Voraz». Los DOI se verificaron visualmente sin espacios artificiales. |
+| Metadatos PDF incompletos | **CERRADA** | `pdfinfo` informa título completo AMR, autor, materia y cinco palabras clave. |
+| Cuenta administrativa de referencias dentro de 80 páginas | **ABIERTA; REQUIERE CONFIRMACIÓN VIU/TUTOR** | El cuerpo termina en 80 y Referencias comienza en 81. No se altera esa interpretación sin una regla administrativa verificable. |
+
+### Verificación de `main(14)` corregido
+
+- `python -m pytest -q`: 75 pruebas superadas; `tests/test_cargo_e2e.py`: 8 superadas.
+- PDF A4 de 117 páginas: cuerpo 1--80, referencias 81--86 y anexos 87--105 (19 páginas).
+- Compilación estable en `thesis/build/main.pdf`, sin errores LaTeX, referencias/citas indefinidas ni cajas `Overfull`.
+- Cero apariciones de AGV en las fuentes de tesis y en el texto extraído del PDF; el único PDF de `thesis/build/` es `main.pdf`.
+- Inspección rasterizada de encabezado/folio, tablas críticas, Cargo, AWS, referencias y Anexo A.

@@ -1,14 +1,14 @@
 \section{Resultados y análisis}
 \label{sec:results}
 
-El análisis parte de la asignación discreta y termina en la coordinación con comunicación imperfecta. Cada SP incorpora una condición ausente en el anterior. Los enunciados y sus supuestos acompañan los resultados; las demostraciones completas se reúnen en los anexos.
+El análisis avanza de asignación a red imperfecta. Cada SP añade una condición. Enunciados y supuestos quedan en el cuerpo y pruebas completas en anexos.
 
 \subsection{Formulación general y arquitectura}
 \label{subsec:common-formulation}
 
-Sean $\Robots=\{1,\ldots,N\}$ los robots y $\Loads=\{1,\ldots,K\}$ las cargas. El vector $\boldsymbol c_i$ contiene las capacidades del robot $i$, $\boldsymbol r_k$ los requisitos de la carga $k$, $\rho_{ik}\in[0, 1]$ una preferencia y $x_{ik}\in\{0, 1\}$ una pertenencia efectiva. Los costes estratégicos se normalizan; distancias, fuerzas, pares y tiempos conservan unidades SI.
+Sean $\Robots$ los robots y $\Loads$ las cargas. $\boldsymbol c_i$ y $\boldsymbol r_k$ son capacidades/requisitos, $\rho_{ik}$ preferencia y $x_{ik}$ pertenencia. Costes estratégicos se normalizan. Magnitudes físicas conservan SI.
 
-Los nueve escalones no comparten una única planta ni el mismo régimen de información. La Tabla~\ref{tab:results-model-map} separa el lugar de decisión, el cálculo de agregados, el cierre, el certificado y la planta. Una lectura global o un QP central en cualquiera de esas etapas limita el carácter distribuido del mecanismo completo.
+Los SP no comparten planta ni información. La Tabla~\ref{tab:results-model-map} separa decisión, agregados, cierre, certificado y planta. Cualquier lectura global limita la distribución completa.
 
 \begin{table}[!htbp]
  \centering
@@ -28,7 +28,7 @@ Los nueve escalones no comparten una única planta ni el mismo régimen de infor
   4 & conflicto vecinal congelado & pose exacta de carga & bilateral/global & HOCBF y reparto de \emph{wrench} & uniciclo y carga planar en estratos separados \\
   5 & coalición fija & geometría global filtrada por alcance & no aplica & filtro y reparto central por carga & cuerpo rígido planar \\
   6 & marginal local & déficit publicado & local por carga & cobertura aditiva & viaje reducido \\
-  7 & ruta vecinal & intención local & token local & conflicto lógico visible & grafo discreto \\
+  7 & ruta vecinal & intención local & testigo local & conflicto lógico visible & grafo discreto \\
   8 & ruta vecinal & mensajes imperfectos & local & conflicto visible & grafo discreto \\
   Cargo & líder temporal con vistas vecinales & tablas versionadas con pérdida y retardo & líder por carga & guardia mecánica y geométrica & uniciclo y carga planar en una misión \\
   \bottomrule
@@ -36,15 +36,13 @@ Los nueve escalones no comparten una única planta ni el mismo régimen de infor
  \viuownsource
 \end{table}
 
-Una propiedad solo se transfiere entre capas si se conservan estado, información y modelo. Un equilibrio estratégico no certifica el contacto. Un certificado de \emph{wrench} no garantiza seguimiento. La exclusión de celdas tampoco demuestra separación continua. En Cargo, la propagación y la selección son vecinales; el líder temporal, la consulta al registro global de atributos y las guardias por carga introducen componentes no vecinales. Su arquitectura es híbrida.
-
-En síntesis, las etapas estrictamente vecinales de la campaña integrada son la propagación de identificadores versionados y la revisión de preferencias; el cierre por líder temporal, la consulta al registro global de atributos y los QP de \emph{wrench} y de reparto permanecen centralizados por carga. Toda afirmación de «distribuido» en este trabajo se refiere a las primeras y declara las segundas.
+Las propiedades solo se transfieren si se conservan estado, información y modelo: equilibrio no certifica contacto, \emph{wrench} no garantiza seguimiento y exclusión discreta no prueba separación continua. En Cargo son vecinales la propagación versionada y la revisión. Líder, registro y QP permanecen por carga/globales. La arquitectura es híbrida.
 
 
-\subsection{Protocolo común, métodos de referencia y reproducibilidad}
+\subsection{Protocolo común y métodos de referencia}
 \label{subsec:common-protocol}
 
-Cada comparación usa mundos y semillas pareados, límites idénticos y una definición común de éxito. Las colisiones, la falta de convergencia y el agotamiento del horizonte permanecen en el denominador. Las tablas distinguen el método propuesto, el oráculo, los comparadores y las ablaciones. Las clases P o NP-difícil califican al problema; el coste de cada heurística se informa por separado. Tablas y figuras proceden de los mismos datos procesados.
+Cada comparación usa mundos y semillas pareados, límites idénticos y una definición común de éxito. Las colisiones, la falta de convergencia y el agotamiento del horizonte permanecen en el denominador. Las tablas distinguen el método propuesto, el oráculo, los comparadores y las ablaciones. Las clases P o NP-difícil califican al problema. El coste de cada heurística se informa por separado.
 
 \clearpage
 \input{sections/mainmatter/06-results-and-analysis/sp0}
@@ -74,81 +72,18 @@ Cada comparación usa mundos y semillas pareados, límites idénticos y una defi
 \subsection{Discusión transversal}
 \label{subsec:cross-discussion}
 
-SP0--SP8 producen resultados ligados a interfaces y supuestos distintos. Un equilibrio
-puede ser estable frente a desviaciones unilaterales y, al mismo tiempo, ser
-socialmente ineficiente; una coalición puede cubrir un requisito escalar sin
-generar el \emph{wrench} solicitado; y una reserva libre de conflictos en un
-grafo no implica separación geométrica entre cuerpos rígidos. El análisis hace
-explícitas esas fronteras y comprueba cuáles se conservan cuando las capas
-comparten una ejecución.
+Los resultados dependen de interfaces: estabilidad unilateral no implica eficiencia, cobertura escalar no implica \emph{wrench} y reserva discreta no implica separación geométrica. La ejecución integrada prueba compatibilidad sin transferir automáticamente las garantías de cada capa.
 
-SP0--SP2 describen la transición desde asignación hasta heterogeneidad. En SP0,
-la penalización suficiente elimina equilibrios con cargas vacantes, pero no
-selecciona por sí sola el equilibrio socialmente preferible. El certificado de
-precios locales añade una relación cuantitativa entre conectividad algebraica,
-desacuerdo y mensajes; no convierte una red permanentemente desconectada en un
-optimizador global. SP1 muestra que, bajo escasez, el déficit lineal es incapaz
-de decidir qué cuota completar. El término de cuórum introduce esa prioridad y
-el cierre QR recupera coaliciones enteras, aunque utiliza una ordenación global.
-SP2 generaliza el servicio mediante contribuciones marginales: restaura la
-integrabilidad del campo continuo, pero conserva un cierre secuencial y un
-índice operacional que todavía no representa contacto ni fuerza.
+SP0 elimina vacíos mediante penalización, aunque conserva posibles ineficiencias, y relaciona precios, conectividad y mensajes. SP1 muestra que el déficit no selecciona bajo escasez. Cuórum prioriza y QR cierra usando ordenación global. SP2 restaura integrabilidad marginal, pero mantiene cierre secuencial y servicio sin contacto.
 
-SP3 y SP4 establecen la interfaz mecánica. La guardia de SP3 redujo en $0.333$
-los falsos positivos en 600 mundos porque incorpora puestos de contacto, geometría y límites
-de actuación. El resultado no demuestra manipulación tridimensional: el modelo
-es planar, cuasiestático y usa un QP por carga. SP4 conecta el residual mecánico
-con el error de pose y prueba estabilidad local cuando los contactos permanecen
-fijos y el \emph{wrench} se realiza exactamente. Sus campañas originales,
-sin embargo, separan acoplamiento y transporte. La relación KKT de la
-relajación estratégica no sustituye la dinámica del uniciclo ni el servolazo de
-la carga.
+SP3 redujo falsos positivos en $0.333$ sobre 600 mundos mediante geometría y actuadores, dentro de un QP planar. SP4 enlaza residual y pose con estabilidad local bajo contactos fijos y \emph{wrench} exacto, pero separa acoplamiento y transporte. KKT no sustituye planta ni servolazo.
 
-Los escalones adversos revelan compromisos diferentes. En SP5, la guardia
-eliminó las colisiones observadas del Hamiltoniano sin guardia, pero el éxito
-seguro quedó limitado por bloqueos. SP6 restableció el certificado en los 360
-mundos recuperables, aunque el plazo estrecho solo se cumplió en una fracción de
-ellos. La factibilidad de la reparación y su cumplimiento temporal son variables
-distintas. El juego potencial caracteriza qué conjunto de reemplazos es
-mínimo por inclusión; el viaje reducido no acredita todavía una maniobra física
-completa de reacoplamiento.
+SP5 elimina colisiones observadas del Hamiltoniano, pero conserva bloqueos. SP6 restaura 360 certificados recuperables. Algunos exceden el plazo porque la minimalidad estratégica y el reacoplamiento físico son distintos.
 
-SP7 y SP8 trasladan la coordinación al tráfico y a la red. SP7 certifica
-exclusión sobre recursos visibles del grafo. Los cuellos y pasillos ensayados
-refutan una extensión incondicional del resultado, y la comparación no incluye
-una distancia continua ni un planificador MAPF completo. SP8 muestra el precio
-de compensar pérdida y retardo: retransmitir aumentó en $0.054$ la tasa libre
-de conflictos y añadió $261.3$ mensajes por agente. La calidad estratégica,
-no obstante, cayó en el mayor régimen nominal. Más comunicación recupera
-observabilidad parcial; no corrige automáticamente una radio insuficiente ni un
-número creciente de conflictos.
+SP7 certifica exclusión visible, con MAPF y distancia continua fuera de su alcance. En SP8, retransmitir mejora $0.054$ la tasa y añade $261.3$ mensajes/agente, pero la calidad colapsa a mayor escala: la comunicación recupera observabilidad parcial sin restaurar conectividad.
 
-La campaña Cargo reúne en una ejecución las interfaces antes evaluadas por
-separado: tablas vecinales con número de versión, reclutamiento, acoplamiento de
-uniciclos, carga rígida, obstáculo,
-fallo, reemplazo y continuación. El método completo terminó 359/360 misiones sin
-colisión. Las ablaciones muestran que la guardia y la reparación no son
-accesorios: retirarlas produjo diferencias de $0.996$ y $0.989$ en éxito en
-sus regímenes de contraste. Bajo la red degradada ensayada, la variante vecinal
-y su gemelo con información perfecta completaron 90/90 misiones, aunque la
-primera pagó, en el promedio de los 360 mundos, 328 mensajes y unos 90~kB;
-en el régimen degradado fueron 249.3 mensajes y 58.2~kB por mundo.
+Cargo integra tablas vecinales, reclutamiento, uniciclos, carga, obstáculo, fallo y reemplazo. Completa 359/360 misiones. Retirar seguridad o reparación reduce éxito $0.996/0.989$. Bajo red degradada, vecinal y perfecto completan 90/90. Vecinal usa 249.3 mensajes y 58.2~kB por mundo degradado.
 
-La serie AWS aporta una prueba de estrés distinta. Los pilotos C15--C18 muestran
-que el rendimiento cambia al introducir cuotas, reservas y movimiento continuo.
-Industrial 2 añade cuatro cargas simultáneas, tráfico controlado, batería y
-radios locales. En sus tres escenarios congestionados, los cuatro métodos
-agotaron $60$~s sin entregar; Replicator--CBF permaneció detenido en una fracción
-de muestras mucho mayor que el predictor distribuido. La ausencia de
-solapamientos muestreados después de incorporar la parada de seguridad de los
-actores no corrigió el bloqueo. Este resultado negativo impide usar el replay
-industrial como confirmación adicional de la tasa de éxito de Cargo.
+AWS prueba estrés con cuatro cargas, tráfico, batería y radios. En tres escenarios congestionados, todos agotaron $60$~s. Replicator--CBF se detuvo más que el predictor. Evitar solapamientos no corrigió el bloqueo, por lo que el replay no confirma Cargo.
 
-H3 no quedó sustentada. Incluir el coste espacial redujo el tiempo medio en
-$0.086$~s frente a la selección desacoplada, pero el
-intervalo $[-0.178;0.013]$ incluyó cero y la corrección de Holm dejó
-$p=0.068$. Las capas resultaron operativamente compatibles, pero no se
-confirmó la ventaja temporal postulada. La propagación y la selección son
-distribuidas; el líder temporal y las guardias operan por carga. Esta combinación
-no equivale a descentralización integral y tampoco demuestra convergencia
-híbrida global ni validez industrial fuera del modelo planar estudiado.
+H3 no se sustenta: el efecto temporal fue $-0.086$~s, IC $[-0.178;0.013]$ y $p_{\mathrm{Holm}}=0.068$. Las capas son compatibles, pero carecen de una ventaja temporal demostrada. Propagación y selección son vecinales, mientras que el líder y las guardias operan por carga. La arquitectura no alcanza descentralización integral, convergencia híbrida ni validez industrial.

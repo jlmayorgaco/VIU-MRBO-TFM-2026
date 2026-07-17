@@ -1,11 +1,11 @@
 \subsection{SP7: juego de rutas y reserva local entre coaliciones}
 \label{subsec:sp7}
 
-SP7 coordina varios cuerpos compuestos en cruces y pasillos. Cada coalición se reduce a una huella inflada que avanza una celda por evento; los estados $(v_i,\omega_i)$ de los robots y la dinámica de carga no se integran en este escalón. Dos cargas pueden evitar coincidencias de vértice y, aun así, quedar inmóviles en sentidos opuestos. El método combina selección de ruta y reserva temporal sobre dos a cuatro coaliciones.
+SP7 coordina cuerpos compuestos en cruces y pasillos. Cada huella inflada avanza una celda por evento, sin integrar robots ni carga. Evitar coincidencias de vértice aún permite bloqueos opuestos. Se combinan ruta y reserva para dos a cuatro coaliciones.
 
 \subsubsection{Cruces y pasillos}
 
-La ruta directa, el desvío y el recurso reservado aparecen sobre la huella inflada del cuerpo compuesto (Figura~\ref{fig:sp7-scenario}).
+La Figura~\ref{fig:sp7-scenario} muestra ruta directa, desvío y recurso reservado para la huella inflada.
 
 \begin{figure}[!htbp]
   \centering
@@ -47,24 +47,24 @@ La ruta directa, el desvío y el recurso reservado aparecen sobre la huella infl
     \draw[spconflict] (10.28, 0.21) rectangle (10.75, 0.47);
     \node[splegend,anchor=east] at (13.25, 0.34) {recurso reservado};
   \end{spdiagram}
-  \caption{SP7-C: cada coalición elige ruta; antes de entrar en la zona compartida solicita un testigo de paso con prioridad y envejecimiento.}
+  \caption{SP7-C: cada coalición elige ruta. Antes de entrar en la zona compartida solicita un testigo de paso con prioridad y envejecimiento.}
   \label{fig:sp7-scenario}
   \viuownsource
 \end{figure}
 
 \subsubsection{Problema de optimización de referencia}
 
-Sea $\mathcal A_7=\{1,\ldots,A\}$ el conjunto de coaliciones, $\mathcal R_i^7$ el catálogo finito de rutas de $i$, $H_7$ el horizonte muestreado y $\pi$ un orden total de prioridad. Cada nodo del grafo representa una pose admisible tras inflar obstáculos por el radio compuesto $r_i^C$; $O_i(t;r_i,\pi)$ es la celda ocupada al ejecutar la ruta $r_i$, $T_i$ su llegada y $\mathcal B_7(t)$ los nodos bloqueados por el obstáculo dinámico. El oráculo ejecutado resuelve lexicográficamente
+Sea $\mathcal A_7$ el conjunto de coaliciones, $\mathcal R_i^7$ sus rutas, $H_7$ el horizonte y $\pi$ la prioridad. Los nodos son poses tras inflar obstáculos por $r_i^C$. $O_i(t;r_i,\pi)$ es ocupación, $T_i$ llegada y $\mathcal B_7(t)$ bloqueos dinámicos. El oráculo resuelve
 \begin{equation}
 \label{eq:sp7-restricted-oracle}
  \min_{\boldsymbol r\in\prod_i\mathcal R_i^7,\,\pi\in\Pi_A}^{\mathrm{lex}}
  \left(\max_iT_i,\ \sum_iT_i,\ \sum_i b_{ir_i}^7\right)
 \end{equation}
-sujeto a $O_i(t)\neq O_j(t)$, ausencia de intercambios de arista, exclusión temporal de la zona compartida y $O_i(t)\notin\mathcal B_7(t)$. En los experimentos $|\mathcal R_i^7|=2$ y se enumeran $2^AA!$ combinaciones, como máximo 384. Constituye un óptimo exacto respecto del catálogo y del ejecutor fijados; no debe interpretarse como un óptimo MAPF sobre todas las trayectorias posibles.
+sujeto a exclusión de vértice, arista, zona y $\mathcal B_7(t)$. Con $|\mathcal R_i^7|=2$ enumera $2^AA!\leq384$ combinaciones. Es exacto para ese catálogo, no para todo MAPF.
 
 \subsubsection{Métodos de comparación}
 
-CBS y ECBS resuelven MAPF sobre grafos discretos, LA-MAPF incorpora agentes extensos y ORCA actúa en el espacio continuo de velocidades \parencite{sharon2015cbs,barer2014ecbs,li2019largeAgentMapf,vandenberg2011orca}. Sus garantías no se transfieren al catálogo de dos rutas empleado aquí. La Tabla~\ref{tab:sp7-methods} los sitúa frente al juego con reserva, sus dos ablaciones, la planificación priorizada y el oráculo restringido.
+CBS/ECBS resuelven MAPF, LA-MAPF agentes extensos y ORCA velocidades continuas \parencite{sharon2015cbs,barer2014ecbs,li2019largeAgentMapf,vandenberg2011orca}. Sus garantías no pasan al catálogo. La Tabla~\ref{tab:sp7-methods} separa contexto y tratamientos.
 
 \begin{table}[!htbp]
   \centering
@@ -76,11 +76,11 @@ CBS y ECBS resuelven MAPF sobre grafos discretos, LA-MAPF incorpora agentes exte
     \toprule
     Método & Coste declarado & Arquitectura e información & Resultado aplicable y límite \\
     \midrule
-    CBS/ECBS/LA-MAPF & Exponencial en conflictos; búsquedas de bajo nivel & Central; mapa, inicios, metas y forma & Garantías MAPF bajo sus modelos; no incluidos en el comparativo numérico. \\
-    ORCA & LP local; coste dependiente de vecinos & Descentralizado; estado relativo & Evitación continua bajo su modelo; no planifica ni excluye interbloqueo. \\
+    CBS/ECBS/LA-MAPF & Exponencial en conflictos; búsquedas de bajo nivel & Central; mapa, inicios, metas y forma & Garantías MAPF bajo sus modelos. No se incluyen en el comparativo numérico. \\
+    ORCA & LP local; coste dependiente de vecinos & Descentralizado; estado relativo & Evitación continua bajo su modelo. No planifica ni excluye interbloqueo. \\
     Juego + reserva local & $O(|\mathcal R_i^7|(|\mathcal E_i^7|+n_i))$ por revisión; $O(n_i)$ por petición & Ruta/coste propios y ocupación vecinal del recurso & Potencial exacto y terminación; la entrega es empírica. \\
     Dos ablaciones & Igual juego sin $\lambda_7$ o igual ruta sin testigo & Misma instancia; se retira un componente & Aísla selección anticipativa y reserva de zona. \\
-    Priorizado/oráculo restringido & $O(AH_7)$ por orden; $O(2^AA!AH_7)$ exhaustivo & Prioridad o instancia global & Referencia y techo interno; no equivalen a CBS/ECBS. \\
+    Priorizado/oráculo restringido & $O(AH_7)$ por orden; $O(2^AA!AH_7)$ exhaustivo & Prioridad o instancia global & Referencia y techo interno. No equivalen a CBS/ECBS. \\
     \bottomrule
   \end{tabularx}
   \viusource{elaboración propia a partir de las referencias citadas}
@@ -102,7 +102,7 @@ con $\lambda_7>0$. La utilidad local carga únicamente los pares que involucran 
  U_i(r_i,\boldsymbol r_{-i})=-b_{ir_i}^7
  -\lambda_7\sum_{e\in\mathcal E_{ir_i}^7}\bigl(n_e(\boldsymbol r)-1\bigr).
 \end{equation}
-La coalición necesita su coste y el conteo de intenciones que recibe de vecinas de cada recurso. La ejecución usa activaciones asíncronas barajadas y acepta solo mejoras estrictas; no supone rondas globales de decisión.
+La coalición usa coste y conteos vecinales por recurso. Activaciones asíncronas barajadas aceptan mejoras estrictas, sin rondas globales.
 
 \begin{teorema}[potencial exacto y propiedad de mejora finita]
 \label{thm:sp7-exact-potential}
@@ -124,17 +124,17 @@ donde el mínimo es infinito si ningún desvío unilateral reduce conflictos.
 Si $\theta_7<\infty$ y $\lambda_7>\theta_7$, todo Nash puro satisface $P_7(\boldsymbol r)=0$.
 \end{proposicion}
 
-La condición se verificó en los cruces; el pasillo y el cuello conservaron un par en conflicto. El equilibrio de ruta no sustituye la reserva temporal.
+La condición se cumplió en cruces, no en pasillo y cuello. El equilibrio no sustituye reserva.
 
 \begin{samepage}
 \begin{contribucion}{selección anticipativa de rutas y reserva local separadas}
-El método separa dos escalas: $\Phi_7$ reduce la contención prevista sin prometer seguridad, y un testigo vecinal ordenado por prioridad y espera excluye entradas incompatibles. La Proposición~\ref{prop:sp7-conflict-free} identifica cuándo basta la primera capa; los experimentos incluyen casos donde falla.
+El método separa dos escalas: $\Phi_7$ reduce la contención prevista sin prometer seguridad, y un testigo vecinal ordenado por prioridad y espera excluye entradas incompatibles. La Proposición~\ref{prop:sp7-conflict-free} identifica cuándo basta la primera capa. Los experimentos incluyen casos donde falla.
 \end{contribucion}
 \end{samepage}
 
 \subsubsection{Reserva y avance discreto}
 
-La salida estratégica es $z_7^S=P_7(\boldsymbol r)$ y su referencia cero solo es alcanzable cuando el catálogo cumple la accesibilidad de~\eqref{eq:sp7-threshold}. Cada coalición mide su celda, huella, bloqueo inmediato y tiempo de espera; estima intención, prioridad y ocupación vecinal; valora las rutas y fija $r_i$. Solo avanza si posee el testigo, la celda destino está libre y no existe intercambio de arista.
+La salida $z_7^S=P_7(\boldsymbol r)$ alcanza cero solo bajo~\eqref{eq:sp7-threshold}. Cada coalición mide celda, huella, bloqueo y espera. Estima intención, prioridad y ocupación. Avanza con testigo, destino libre y sin intercambio.
 
 Si varias coaliciones solicitan una zona libre, se autoriza la de mayor terna
 lexicográfica $(w_i,P_i,-i)$, con $w_i$ tiempo acumulado sin avanzar, $P_i$
@@ -150,19 +150,14 @@ Si cada propietario libera el testigo en un número finito y uniformemente acota
 de pasos y, después de atravesar la zona, deja de competir por ella, entonces
 la regla $(w_i,P_i,-i)$ concede el testigo a cada solicitante en tiempo finito.
 \end{proposicion}
-La propiedad es local a una zona y no implica completitud MAPF: puede fallar la
-premisa por bloqueo aguas abajo, horizonte finito o reentrada ilimitada. La ley
-sí garantiza exclusión lógica por construcción dentro del modelo discreto. En
-una planta real, la referencia debería pasar de nuevo por la guardia de SP5, la
-saturación y un CBF u ORCA apropiado; SP7 no aporta una función de Lyapunov ni
-una prueba de invariancia continua.
+La propiedad es local, no completitud MAPF: pueden fallar liberación, horizonte o no reentrada. Garantiza exclusión lógica discreta. Una planta requeriría SP5, saturación y CBF/ORCA. SP7 no prueba invariancia continua.
 
 \subsubsection{Diseño experimental}
 
 \input{../results/processed/sp7/SP7_TRAFFIC_CONFIRMATORY_v1/tables/sp7_numbers.tex}
-El conjunto contiene \SPSevenWorlds{} mundos y \SPSevenRuns{} ejecuciones pareadas: cruce, pasillo bidireccional y cuello de botella bloqueado durante tres pasos; $A\in\{2, 3, 4\}$ y semillas 8700--8739. Cada coalición dispone de una ruta directa y un desvío privado. El radio compuesto se muestrea entre $0.52$ y $0.68$~m sobre celdas de 1~m; esta inflación es conservadora y no representa orientaciones intermedias.
+El diseño comprende \SPSevenWorlds{} mundos y \SPSevenRuns{} ejecuciones: cruce, pasillo y cuello bloqueado tres pasos. $A\in\{2,3,4\}$ y semillas 8700--8739. Cada coalición tiene ruta directa y desvío. Radios $0.52$--$0.68$~m en celdas de 1~m omiten orientaciones intermedias.
 
-Se ejecutaron el método completo, las ablaciones sin penalización y sin reserva, la planificación priorizada y el oráculo~\eqref{eq:sp7-restricted-oracle}. Los contrastes comparan la entrega al retirar el testigo, el tiempo de terminación al retirar $\lambda_7$ y el coste temporal frente al oráculo. Se aplicaron McNemar exacto, Wilcoxon pareado, bootstrap de mundos y Holm. Ocho pasos sin movimiento definen interbloqueo; el paso 48 agota el horizonte.
+Se ejecutan completo, dos ablaciones, priorizado y oráculo. Los contrastes miden reserva, $\lambda_7$ y brecha temporal con McNemar, Wilcoxon, \emph{bootstrap} y Holm. Ocho pasos inmóviles definen bloqueo y 48 agotan horizonte.
 
 \subsubsection{Resultados}
 
@@ -170,31 +165,32 @@ El juego con reserva entregó todas las cargas con tiempo medio de terminación 
 
 \begin{table}[!htbp]
   \centering
-  \caption{Resultados agregados de SP7-C sobre \SPSevenWorlds{} mundos pareados por método.}
+  \caption[Resultados agregados de SP7-C sobre 360 mundos pareados por método.]{Resultados agregados de SP7-C sobre \SPSevenWorlds{} mundos pareados por método.}
   \label{tab:sp7-results}
   \scriptsize
   \resizebox{\textwidth}{!}{\input{../results/processed/sp7/SP7_TRAFFIC_CONFIRMATORY_v1/tables/sp7_results.tex}}
   \viuownsource
 \end{table}
 
-El efecto pareado de la reserva sobre entrega fue \SPSevenHOneEffect{} (IC del 95\,\% \SPSevenHOneCI{}, $p_{\mathrm{Holm}}=\SPSevenHOnePHolm$). A igualdad de reserva, retirar la penalización elevó cuatro pasos el tiempo de terminación: \SPSevenHTwoEffect{} para completo menos ablación, con $p_{\mathrm{Holm}}=\SPSevenHTwoPHolm$. La Figura~\ref{fig:sp7-delivery-matrix} localiza el fallo: el cruce y el cuello dinámico se resolvieron con la guardia puntual, mientras el pasillo opuesto necesitó propiedad temporal del recurso.
+El efecto pareado de la reserva sobre entrega fue \SPSevenHOneEffect{} (IC del 95\,\% \SPSevenHOneCI{}, $p_{\mathrm{Holm}}=\SPSevenHOnePHolm$). A igualdad de reserva, retirar la penalización elevó cuatro pasos el tiempo de terminación: \SPSevenHTwoEffect{} para completo menos ablación, con $p_{\mathrm{Holm}}=\SPSevenHTwoPHolm$. El cruce y el cuello dinámico se resolvieron con la guardia puntual, mientras el pasillo opuesto necesitó propiedad temporal del recurso.
 
+% Matriz gráfica conservada en results/processed/sp7/.
+\iffalse
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.94\textwidth]{../results/processed/sp7/SP7_TRAFFIC_CONFIRMATORY_v1/figures/fig-sp7-delivery-matrix.pdf}
-  \caption{Tasa de entrega por escenario y método en SP7-C; el fallo sin reserva se concentra en el pasillo bidireccional.}
+  \caption{Tasa de entrega por escenario y método en SP7-C. El fallo sin reserva se concentra en el pasillo bidireccional.}
   \label{fig:sp7-delivery-matrix}
   \viuownsource
 \end{figure}
+\fi
 
-El método completo alcanzó un tiempo medio de terminación de \SPSevenProposedMakespan{} y \SPSevenProposedMessages{} mensajes por mundo. Quedó \SPSevenHThreeEffect{} pasos por encima del oráculo restringido ($p_{\mathrm{Holm}}=\SPSevenHThreePHolm$), cuyo promedio fue \SPSevenOracleMakespan{}. La CPU media fue \SPSevenProposedRuntime{}~ms frente a \SPSevenOracleRuntime{}~ms para enumerar el catálogo. Esta diferencia mide el coste combinatorio interno, no la escalabilidad.
+El método completo alcanzó un tiempo medio de terminación de \SPSevenProposedMakespan{} y \SPSevenProposedMessages{} mensajes por mundo. Quedó \SPSevenHThreeEffect{} pasos por encima del oráculo restringido ($p_{\mathrm{Holm}}=\SPSevenHThreePHolm$), cuyo promedio fue \SPSevenOracleMakespan{}. La CPU media fue \SPSevenProposedRuntime{}~ms frente a \SPSevenOracleRuntime{}~ms para enumerar el catálogo. Esta diferencia mide el coste combinatorio interno y carece de interpretación como escalabilidad.
 
-La reserva aporta entrega, la penalización de congestión reduce el tiempo de terminación y el oráculo conserva una ventaja de \SPSevenHThreeEffect{} pasos.
-
-La comparación no incluye CBS, ECBS u ORCA. El oráculo enumera todos los perfiles y órdenes de prioridad del catálogo fijo de dos rutas, de modo que CBS no mejoraría el óptimo dentro de ese mismo catálogo; su aporte exigiría ampliar el espacio de trayectorias y conflictos temporales. Los cero conflictos proceden del ejecutor discreto, no de una distancia euclídea continua. Los mensajes omiten bytes, retardo y pérdida, y el bloqueo dinámico dura tres pasos. El resultado se limita al catálogo y al ejecutor descritos.
+En conjunto, la reserva aporta entrega, la penalización reduce el tiempo y el oráculo conserva \SPSevenHThreeEffect{} pasos de ventaja. No se ejecutan CBS, ECBS ni ORCA: el oráculo agota el catálogo de dos rutas, y ampliarlo permitiría evaluar otros planificadores. Cero conflictos significa exclusión discreta, no distancia continua. Además, el recuento de mensajes omite bytes, retardo y pérdida. El resultado queda limitado a este ejecutor.
 
 \subsubsection{Síntesis}
 
-La selección finita de rutas posee un potencial exacto y termina bajo mejoras estrictas. Solo con accesibilidad y $\lambda_7>\theta_7$ los Nash quedan libres de recursos compartidos; los pasillos y cuellos evaluados impiden extender el resultado sin esas condiciones. La reserva local entregó las \SPSevenWorlds{} instancias. Al retirarla, la tasa perdió \SPSevenHOneEffectPP{} puntos porcentuales y aparecieron interbloqueos en pasillos opuestos.
+La selección finita de rutas posee un potencial exacto y termina bajo mejoras estrictas. Solo con accesibilidad y $\lambda_7>\theta_7$ los Nash quedan libres de recursos compartidos. Los pasillos y cuellos evaluados impiden extender el resultado sin esas condiciones. La reserva local entregó las \SPSevenWorlds{} instancias. Al retirarla, la tasa perdió \SPSevenHOneEffectPP{} puntos porcentuales y aparecieron interbloqueos en pasillos opuestos.
 
 El resultado no implica planificación MAPF completa ni seguridad física. SP8 conserva el juego de rutas y añade escala, retardo y pérdida.

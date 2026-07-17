@@ -29,8 +29,8 @@ Mantener una notación única en código, ecuaciones, figuras y memoria. Esta ta
 | `e_ik` | Contribución operacional normalizada del par robot--carga en SP2, `(c_i^{pay}/c^{ref})a_ik` | unidades adimensionales de servicio | `service_contribution[i,k]`; columnas archivadas: `effective_capacity[i,k]` |
 | `d_k^{srv}` | Umbral escalar de servicio operacional de la carga `k` en SP2 | unidades adimensionales de servicio | `service_demand[k]`; columnas archivadas: `effective_capacity_demand[k]` |
 | `S_k(x)` | Servicio operacional agregado asignado a la carga `k` | unidades adimensionales de servicio | `assigned_service[k]` |
-| `V_k` | Valor/recompensa de completar la carga `k` en SP2 | score adimensional | `load_value[k]` |
-| `g_ik` | Coste normalizado del par robot--carga en el juego SP2 | score adimensional | `normalized_pair_cost[i,k]` |
+| `V_k` | Valor/recompensa de completar la carga `k` en SP2 | puntuación adimensional | `load_value[k]` |
+| `g_ik` | Coste normalizado del par robot--carga en el juego SP2 | puntuación adimensional | `normalized_pair_cost[i,k]` |
 | `z_k` | Indicador de carga completa en los oráculos SP2 | binaria | `load_completed[k]` |
 | `s_k` | Servicio truncado contabilizado por el oráculo SP2 | unidades de servicio, `[0,d_k^{srv}]` | `covered_capacity[k]` (nombre histórico) |
 | `E_ik^{trav}` | Energía estimada de llegada del robot `i` a la carga `k` | Wh | `travel_energy_wh[i,k]` |
@@ -49,6 +49,12 @@ Mantener una notación única en código, ecuaciones, figuras y memoria. Esta ta
 | `n_k` | Cardinalidad mínima | entero | `min_coalition_size[k]` |
 | `\bar m_R^{\mathrm{share}}` | Masa cooperativa nominal asignada por AMR para derivar la cuota visual del piloto; no es capacidad mecánica certificada | kg/AMR, positiva | `cooperative_payload_share_kg_per_amr` |
 | `C_k` | Coalición asignada a la carga `k` | subconjunto de robots | `coalition[k]` |
+| `\mathcal I^{vis}` | Identificadores activos presentes en la vista del líder temporal de Cargo tras la propagación | conjunto finito | `known_indices` |
+| `f_i^{max}` | Límite de fuerza planar almacenado para el robot `i` en Cargo | N | `force_limits_n[i]` |
+| `\delta_C^{ref},c_C^{ref},f_C^{ref}` | Escalas de referencia de distancia, carga útil y fuerza en la puntuación Cargo | m, kg, N; campaña: `1 m`, `1 kg`, `1 N` | `CARGO_DISTANCE_REFERENCE_M`, `CARGO_PAYLOAD_REFERENCE_KG`, `CARGO_FORCE_REFERENCE_N` |
+| `\bar\delta_i,\bar c_i,\bar f_i` | Distancia, carga útil y fuerza normalizadas del candidato Cargo | adimensionales | `normalized_distance`, `normalized_payload`, `normalized_force` |
+| `s_i` | Puntuación empírica adimensional para ordenar candidatos Cargo de forma ascendente | adimensional | `_cargo_spatial_score` |
+| `m_k^{req},F_k^{req}` | Masa soportada y fuerza planar requeridas por la carga en el certificado agregado Cargo | kg, N | `load_mass_kg`, `required_force_n` |
 | `q_k(a)` | Ocupación lógica de la carga `k` bajo el perfil SP1 | entero no negativo | `load_counts[k]` |
 | `rho_D` | Presión global de demanda de SP1, `(sum_k n_k)/N` | razón adimensional | `demand_pressure` |
 | `D_n(a), O_n(a)` | Déficit y exceso totales respecto de las cuotas `n_k` | conteos enteros no negativos | `deficit`, `excess` |
@@ -87,7 +93,7 @@ Mantener una notación única en código, ecuaciones, figuras y memoria. Esta ta
 | `\widehat{\boldsymbol\pi}_i^t` | Copia local del vector de precios de tareas mantenida por el robot `i` | utilidad adimensional, vector de longitud `N` tras padding | `local_prices[i]` |
 | `\bar{\boldsymbol\pi}^t` | Promedio de las copias locales de precios | utilidad adimensional | `mean_prices` |
 | `e_\pi^t` | Máximo desacuerdo local de precios respecto al promedio | utilidad adimensional, norma infinito | `price_disagreement` |
-| `\mathcal D_0` | Desacuerdo inicial de precios en norma de Frobenius | utilidad adimensional | `initial_consensus_error` |
+| `\mathcal D_0` | Desacuerdo inicial apilado de precios, `\|[\widehat{\boldsymbol\pi}_i^0-\bar{\boldsymbol\pi}^0]_{i=1}^N\|_F` | utilidad adimensional | `initial_consensus_error` |
 | `q` | Factor espectral de contracción de consenso para `W=I-alpha L` | adimensional, `[0,1)` bajo los supuestos declarados | `consensus_contraction` |
 | `R^\star` | Radio crítico mínimo que hace conexo el grafo estático de SP0 | m | `critical_communication_radius` |
 | `\Delta_\star` | Separación de coste entre el óptimo único y el segundo mejor matching | utilidad adimensional positiva | `assignment_cost_separation` |
@@ -218,7 +224,7 @@ Mantener una notación única en código, ecuaciones, figuras y memoria. Esta ta
 | `O_i(t;r_i,\pi)` | Nodo ocupado por la coalición `i` al ejecutar una ruta y orden de prioridad | nodo del grafo de configuraciones | `positions[i]` |
 | `H_7` | Horizonte digital de la ejecución de tráfico SP7 | pasos muestreados | `horizon_steps` |
 | `w_i, P_i` | Tiempo de espera y prioridad de misión usados para arbitrar una zona | pasos; prioridad adimensional | `waiting[i]`, `priorities[i]` |
-| `\mathcal A_8, K` | Conjunto y número de coaliciones que seleccionan rutas en SP8; en la campaña cada carga usa dos robots y (N=2K) | conjunto finito, entero positivo | `coalitions`, `n_coalitions` |
+| `\mathcal A_8, A` | Conjunto y número de coaliciones que seleccionan rutas en SP8; en la campaña cada carga usa dos robots y (N=2A) | conjunto finito, entero positivo | `coalitions`, `n_coalitions` |
 | `A^C_{ij}` | Adyacencia estática y no dirigida del grafo de comunicación de SP8 | binaria | `adjacency[i,j]` |
 | `P_8(\boldsymbol r),P_8^G(\boldsymbol r)` | Pares globales de rutas en conflicto y subconjunto visible a través de aristas de comunicación | conteos enteros no negativos | `global_conflict_pairs`, `visible_conflict_pairs` |
 | `\Phi_8^G(\boldsymbol r)` | Potencial exacto del juego de rutas visible por la red | utilidad adimensional | `network_potential` |

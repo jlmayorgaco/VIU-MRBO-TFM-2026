@@ -4,40 +4,67 @@
 \subsection{Simulación integrada de la cadena Cargo}
 \label{subsec:cargo-e2e}
 
-Una misión reúne reclutamiento, acoplamiento, transporte y recuperación. La carga parte con los robots desacoplados; la coalición se forma con la visibilidad permitida por el grafo; los uniciclos alcanzan los contactos y la planta planar evita un obstáculo. Si falla un integrante, la carga se detiene hasta que llega el reemplazo y se restablece cinemáticamente el contacto fijo. Esta composición mide compatibilidad funcional dentro de un simulador reducido. Una garantía de estabilidad híbrida global exigiría un análisis adicional.
+La misión integra reclutamiento, acoplamiento, transporte y recuperación. La coalición se forma con visibilidad del grafo, los uniciclos contactan y la carga evita un obstáculo. Tras fallo, se detiene hasta reemplazar y restablecer contacto. Se mide compatibilidad funcional. La estabilidad híbrida global queda fuera del alcance.
 
 \subsubsection{Ejecución común}
 
-El protocolo propaga por el grafo identificadores y números de versión, con retardo entero acotado y pérdida Bernoulli. Un líder temporal, elegido por proximidad a la carga, cierra la coalición con los identificadores recibidos; después consulta en el registro global del simulador la posición, la capacidad y el límite de fuerza correspondientes. El alcance de los mensajes está restringido, pero su contenido no es autosuficiente y los robots no mantienen memorias locales completas. Las referencias con información perfecta y central acceden a toda la flota. La Figura~\ref{fig:cargo-e2e-chain} recoge la secuencia.
+Durante diez eventos se propagan identificadores con retardo y pérdida Bernoulli. El robot activo más cercano actúa de líder. Si dos están a la misma distancia, se elige el de menor identificador. Su elección y los atributos asociados usan el registro global. Para cada candidato se definen
+\begin{equation}
+ \bar\delta_i=\frac{\delta_{iL}}{\delta_C^{\mathrm{ref}}},\qquad
+ \bar c_i=\frac{c_i^{\mathrm{pay}}}{c_C^{\mathrm{ref}}},\qquad
+ \bar f_i=\frac{f_i^{\max}}{f_C^{\mathrm{ref}}},
+ \label{eq:cargo-ranking-normalization}
+\end{equation}
+con $\delta_C^{\mathrm{ref}}=1\,\mathrm{m}$, $c_C^{\mathrm{ref}}=1\,\mathrm{kg}$ y $f_C^{\mathrm{ref}}=1\,\mathrm{N}$. El líder ordena en sentido ascendente por el par
+\begin{equation}
+ \left(s_i,i\right),\qquad
+ s_i=\bar\delta_i-0.08\,\bar c_i-0.025\,\bar f_i,
+ \label{eq:cargo-ranking}
+\end{equation}
+de modo que el identificador resuelve los empates de puntuación. Las referencias unitarias conservan exactamente el orden numérico de la campaña archivada, mientras los tres términos y sus pesos son adimensionales. Esta regla empírica no es el pago de SP2. Para una carga $k$, el cierre solo se acepta si
+\begin{equation}
+ |C_k|\geq3,\qquad
+ \sum_{i\in C_k}c_i^{\mathrm{pay}}\geq m_k^{\mathrm{req}},\qquad
+ \sum_{i\in C_k}f_i^{\max}\geq F_k^{\mathrm{req}}.
+ \label{eq:cargo-aggregate-certificate}
+\end{equation}
+Si la vista no permite satisfacer las tres desigualdades, el líder se abstiene.
 
-\begin{figure}[!htbp]
+\begin{contribucion}{Algoritmo 1. Misión Cargo integrada}
+\begin{enumerate}
+  \item Propagar identificadores activos diez eventos y formar la vista del líder temporal.
+  \item Resolver sus atributos en el registro global, ordenar de forma ascendente por~\eqref{eq:cargo-ranking} y añadir candidatos hasta satisfacer~\eqref{eq:cargo-aggregate-certificate} o abstenerse.
+  \item Integrar el acoplamiento de uniciclos. Si no termina en 16~s, declarar agotamiento de acoplamiento.
+  \item Transportar la carga planar hacia el destino, mediante punto intermedio y filtro cuando la guardia está activa.
+  \item Al fallar el miembro de menor límite de fuerza, detener la carga, retirar su identificador y repetir propagación y cierre con los miembros restantes fijos.
+  \item Desplazar el primer candidato añadido al puesto liberado durante un máximo de 16~s. Reanudar solo si llega y el certificado agregado vuelve a cumplirse. En otro caso, declarar fallo de recuperación o agotamiento del horizonte.
+\end{enumerate}
+Ordenar cuesta $O(|\mathcal I^{\mathrm{vis}}|\log |\mathcal I^{\mathrm{vis}}|)$ y propagar $O(|\mathcal E_C|)$ mensajes por barrido. Cada fila registra identidad del mundo, miembros, certificados, terminación, tiempos, errores, seguridad, \emph{wrench}, energía, comunicación, CPU y fases.
+\end{contribucion}
+
+\begin{table}[!htbp]
   \centering
-  \begin{tikzpicture}[node distance=6mm and 7mm,>=Latex]
-    \tikzset{e2e/.style={draw=VIUOrange,rounded corners=2pt,fill=VIUOrange!7,
-      minimum height=15mm,text width=2.25cm,align=center,font=\small}}
-    \node[e2e] (rec) {reclutamiento\\vecinal};
-    \node[e2e,right=of rec] (dock) {acoplamiento\\uniciclo dinámico};
-    \node[e2e,right=of dock] (guard) {certificado y\\guardia física};
-    \node[e2e,below=of guard] (move) {transporte\\planar};
-    \node[e2e,left=of move] (fail) {fallo y\\re-reclutamiento};
-    \node[e2e,left=of fail] (resume) {reemplazo\\y reanudación};
-    \draw[->,thick,SPBlue] (rec)--(dock);
-    \draw[->,thick,SPBlue] (dock)--(guard);
-    \draw[->,thick,SPBlue] (guard)--(move);
-    \draw[->,thick,SPBlue] (move)--(fail);
-    \draw[->,thick,SPBlue] (fail)--(resume);
-    \draw[->,thick,SPBlue] (resume.south) -- ++(0,-0.45) -| (move.south);
-  \end{tikzpicture}
-  \caption{Cadena ejecutada en la simulación Cargo integrada. El fallo se activa solo en el régimen correspondiente.}
-  \label{fig:cargo-e2e-chain}
+  \caption{Correspondencia entre la misión Cargo integrada y los subproblemas.}
+  \label{tab:cargo-sp-mapping}
+  \begin{tabularx}{\textwidth}{@{}p{2.5cm}p{2.0cm}X@{}}
+    \toprule
+    Etapa & Relación & Diferencia respecto al SP \\
+    \midrule
+    Reclutamiento & SP2 & cierre por líder y atributos resueltos en un registro global \\
+    Certificación & SP3 & certificado agregado de cardinalidad, carga útil y fuerza, sin QP geométrico \\
+    Acoplamiento & SP4 & uniciclos dinámicos hasta puestos impuestos \\
+    Seguridad & SP5 & punto de rodeo y filtro sobre la planta planar reducida \\
+    Reparación & SP6 & un fallo, reserva finita y contacto restablecido cinemáticamente \\
+    \bottomrule
+  \end{tabularx}
   \viuownsource
-\end{figure}
+\end{table}
 
-La aproximación y el reemplazo integran el uniciclo dinámico de la Sección~\ref{subsec:methodology-common-model}; los pares equivalentes de rueda se saturan antes de actualizar velocidad y pose. Tras el acoplamiento, los robots dejan de evolucionar como uniciclos independientes: la carga se mueve como cuerpo planar y las poses robóticas se reconstruyen con desplazamientos rígidos. El \emph{wrench} aplicado procede de un reparto vectorial acotado, mientras el certificado inicial usa una condición agregada de carga útil y fuerza. Ambas interfaces aún no comparten el QP geométrico de SP3. La carga permanece inmóvil mientras exista déficit.
+Aproximación y reemplazo integran uniciclos con pares saturados. Tras acoplarse, la carga planar fija las poses por desplazamientos rígidos. El \emph{wrench} usa reparto vectorial, pero el certificado inicial agrega carga útil y fuerza sin el QP geométrico de SP3. Con déficit, la carga se detiene.
 
 \subsubsection{Protocolo confirmatorio}
 
-El protocolo se congeló después de un piloto de tres semillas, cuatro regímenes y tres tamaños, es decir, 36 instancias. El estudio confirmatorio cruzó los mismos cuatro regímenes con $N\in\{4, 8, 12\}$ y 30 semillas nuevas: \CargoEtwoEWorlds{} instancias y \CargoEtwoERuns{} ejecuciones. La Tabla~\ref{tab:cargo-e2e-regimes} explicita los factores activos. La red degradada usa diez eventos de propagación, pérdida $0.25$ y retardo de hasta dos eventos. Se compararon el método con visibilidad vecinal, su gemelo con información perfecta, una ablación sin coste espacial, otra sin las guardias mecánica y de seguridad, otra sin reparación y una referencia central que enumera coaliciones factibles.
+Tras un piloto de 36 instancias, el confirmatorio cruzó cuatro regímenes, $N\in\{4,8,12\}$ y 30 semillas: \CargoEtwoEWorlds{} instancias y \CargoEtwoERuns{} ejecuciones. La red usa diez eventos, pérdida $0.25$ y retardo dos. Se comparan vecinal, perfecto, tres ablaciones y referencia central.
 
 \begin{table}[!htbp]
   \centering
@@ -57,11 +84,11 @@ El protocolo se congeló después de un piloto de tres semillas, cuatro regímen
   \viuownsource
 \end{table}
 
-Las variables principales son éxito de misión, intersección de la huella compuesta con el obstáculo durante el transporte, tiempo total y recuperación. También se registraron error final, residual interno de \emph{wrench}, saturación, energía de rueda durante aproximación y reemplazo, trabajo planar, mensajes, bytes y CPU. Las cuatro comparaciones usan instancias pareadas, intervalos \emph{bootstrap}, McNemar o Wilcoxon, tamaño de efecto y corrección de Holm. Cuando una comparación reúne varios escenarios de la misma combinación tamaño--semilla, la inferencia promedia primero esas medidas repetidas y remuestrea las 90 instancias independientes; los 270 pares de escenario no cuentan como réplicas independientes.
+Se miden éxito, intersección, tiempo, recuperación, error, \emph{wrench}, saturación, energía, trabajo, comunicación y CPU. Comparaciones pareadas usan \emph{bootstrap}, McNemar/Wilcoxon, efecto y Holm. Para escenarios repetidos se promedia por tamaño--semilla y remuestrean 90 instancias, no 270 pares.
 
 \subsubsection{Resultados}
 
-El método con visibilidad vecinal completó 359 de 360 misiones ($0.997$) sin intersección entre la huella compuesta y el obstáculo durante el transporte. La única pérdida fue un reemplazo que no restableció el certificado antes del horizonte. La métrica no cubre colisión continua durante aproximación, robot--robot ni contacto tridimensional. La referencia central completó las 360. Bajo red degradada, el método vecinal y la variante con información perfecta obtuvieron 90/90 éxitos; esta igualdad no demuestra equivalencia general. El promedio de toda la campaña vecinal fue \CargoEtwoEMessages{} mensajes y aproximadamente $90$~kB por instancia; en los 90 mundos de red degradada fue 249.3 mensajes y 58.2~kB (Tabla~\ref{tab:cargo-e2e-results}).
+El vecinal completó 359/360 misiones sin intersección durante transporte. Un reemplazo agotó horizonte. No se mide colisión continua de aproximación, robot--robot ni 3D. Central completó 360. En red, vecinal y perfecto 90/90, sin probar equivalencia. Vecinal promedió \CargoEtwoEMessages{} mensajes y $90$~kB. En red, 249.3 y 58.2~kB.
 
 \begin{table}[!htbp]
   \centering
@@ -72,9 +99,9 @@ El método con visibilidad vecinal completó 359 de 360 misiones ($0.997$) sin i
   \viuownsource
 \end{table}
 
-Las columnas de tiempo son medias incondicionales sobre las 360 instancias de cada tratamiento. ``Tiempo'' mide el instante de terminación, tanto por éxito como por colisión, fallo u horizonte; por eso una ablación que colisiona pronto puede presentar una media menor. ``Recuperación'' asigna cero a las ejecuciones sin reparación y no debe leerse como duración condicionada al subconjunto recuperado.
+Los tiempos son medias incondicionales: terminar por colisión puede parecer rápido. ``Recuperación'' vale cero sin reparación y no es duración condicionada.
 
-La ablación conjunta retiró el certificado mecánico, el punto de rodeo y el filtro de seguridad. Su éxito fue $0.996$ menor en las 270 observaciones con obstáculo, agrupadas en 90 instancias independientes (IC del 95\,\% $[0.989;1.000]$, $p_{\mathrm{Holm}}=5.79\times10^{-21}$), y hubo intersección en $0.75$ del total. El contraste prueba la necesidad del bloque combinado, pero no separa los efectos del certificado, la ruta y el filtro. En el régimen de fallo, la reparación elevó el éxito en $0.989$ frente a desactivarla (IC $[0.967;1.000]$, $p_{\mathrm{Holm}}=6.46\times10^{-27}$).
+La ablación conjunta retiró el certificado mecánico, el punto de rodeo y el filtro de seguridad. Su éxito fue $0.996$ menor en las 270 observaciones con obstáculo, agrupadas en 90 instancias independientes (IC del 95\,\% $[0.989;1.000]$, Wilcoxon unilateral sobre la media por instancia, $p_{\mathrm{Holm}}=5.79\times10^{-21}$), y hubo intersección en $0.75$ del total. El contraste prueba la necesidad del bloque combinado, pero no separa los efectos del certificado, la ruta y el filtro. En el régimen de fallo, la reparación elevó el éxito en $0.989$ frente a desactivarla (IC $[0.967;1.000]$, McNemar exacto unilateral, $p_{\mathrm{Holm}}=6.46\times10^{-27}$).
 
 La penalización espacial redujo el tiempo medio en $0.086$~s bajo red degradada frente a la selección desacoplada, pero el IC $[-0.178;0.013]$ incluyó cero y Holm dejó $p=0.068$. H3 no queda sustentada. Selección con visibilidad restringida, acoplamiento, transporte y recuperación sí coexistieron dentro de la misma planta planar reducida.
 
@@ -86,4 +113,4 @@ La penalización espacial redujo el tiempo medio en $0.086$~s bajo red degradada
   \viuownsource
 \end{figure}
 
-El modelo conserva pose exacta, contacto fijo impuesto después del acoplamiento y un grafo estático durante cada intercambio. El líder es temporal, pero consulta el registro global de los robots cuyos identificadores recibió y sigue siendo un punto de coordinación por carga. La contabilidad asigna 16~B de cabecera y 32~B por registro anunciado; excluye el coste de consultar ese registro global y, por tanto, es una cota inferior para una implementación autocontenida. Los identificadores transmitidos carecen de muestras temporales de estado: mensajes y bytes cuantifican la propagación sin constituir telemetría física y no permiten definir una edad de información con significado físico. Tampoco se modelan soporte vertical, fricción, percepción, una capa real de comunicaciones, tracción de ruedas durante el transporte ni hardware. Los resultados pertenecen a la lógica de misión y a la planta planar reducida; su alcance excluye transporte cooperativo con AMR actuados, convergencia global y transferencia industrial.
+El modelo usa pose exacta, contacto fijo y grafo estático por intercambio. Los mensajes cuentan 16~B de cabecera y 32~B por identificador. La contabilidad omite las resoluciones de atributos que el líder realiza en el registro global, por lo que constituye una cota inferior del tráfico real. No se modelan soporte, fricción, percepción, radio real, tracción ni hardware.

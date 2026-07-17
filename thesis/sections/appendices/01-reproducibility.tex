@@ -1,80 +1,50 @@
-\section{Reproducibilidad y declaraciones}
+\section{Reproducibilidad y disponibilidad}
 \label{app:reproducibility}
 
-La trazabilidad distingue reproducción desde una configuración de reanálisis de
-observaciones archivadas. Esta distinción impide presentar como regenerable una
-campaña cuyo generador histórico ya no está disponible. La
-Tabla~\ref{tab:reproducibility-status} resume el estado que acompaña a cada
-resultado.
+La trazabilidad distingue la regeneración completa de una campaña del reanálisis
+de observaciones archivadas. La Tabla~\ref{tab:reproducibility-status} declara
+esa frontera sin reconstruir a posteriori generadores que no están disponibles.
 
 \begin{table}[!htbp]
   \centering
-  \caption{Estado de reproducción de las campañas utilizadas en la memoria.}
-  \label{tab:reproducibility-status}
-  \scriptsize
-  \setlength{\tabcolsep}{2.8pt}
-  \begin{tabularx}{\textwidth}{@{}p{1.3cm}p{2.2cm}p{4.7cm}X@{}}
+  \caption{Identificación de la entrega y disponibilidad de los artefactos.}
+  \label{tab:deposit-identification}
+  \viutablefont
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\textwidth}{@{}p{3.1cm}X@{}}
     \toprule
-    Bloque & Estado & Entrada principal & Evidencia conservada \\
+    Campo & Estado verificable \\
     \midrule
-    SP0 & Regenerable & \path{sp0_theory.yaml} & Código, semillas, tablas, manifiesto y pruebas. \\
-    SP1 & Regenerable & \path{sp1_theory.yaml} & Campaña de desarrollo, datos por mundo, manifiesto y pruebas. \\
-    SP2--SP4 & Reanálisis & Configuraciones y paquetes procesados & Observaciones, postproceso, tablas y auditorías; faltan generadores históricos completos. \\
-    SP5 & Regenerable & \path{sp5_safety_evidence.yaml} & Código de planta/filtro, configuración, resultados y pruebas. \\
-    SP6 & Regenerable & \path{sp6_recovery_confirmatory.yaml} & Código, 480 mundos, manifiesto, hashes y pruebas. \\
-    SP7 & Regenerable & \path{sp7_traffic_confirmatory.yaml} & Código, 360 mundos, manifiesto, hashes y pruebas. \\
-    SP8 & Regenerable & \path{sp8_network_confirmatory.yaml} & Código, 900 mundos, manifiesto, hashes y pruebas. \\
-    Cargo & Regenerable & \path{cargo_e2e_confirmatory.yaml} & Código, 2160 ejecuciones, protocolo congelado, hashes y pruebas. \\
-    Industrial~2 & Piloto regenerable & \path{aws_industrial2_method_comparison_pilot.yaml} & Trazas Python, escena, replay cinemático y auditorías geométricas. \\
+    Repositorio & \url{https://github.com/jlmayorgaco/VIU-MRBO-TFM-2026}. \\
+    Versión de depósito & Sin etiqueta ni DOI al cerrar esta revisión; deben fijarse tras consolidar el árbol. \\
+    SHA de la base Git & \texttt{9278953cb6affebaf2aa96cb8581a6565177e767}; existen cambios posteriores no consolidados, por lo que este SHA no se presenta como instantánea final. \\
+    Entorno de referencia & Windows~11; Python~3.13.9; NumPy~2.3.5; pandas~2.3.3; SciPy~1.16.3. \\
     \bottomrule
   \end{tabularx}
   \viuownsource
 \end{table}
 
-Las reconstrucciones vigentes se ejecutaron en Windows~11 con Python~3.13.9,
-NumPy~2.3.5, pandas~2.3.3 y SciPy~1.16.3. Las dependencias se fijan en el archivo
-\texttt{requirements-\allowbreak reproducible.txt}. Desde la raíz se añade
-\texttt{src} a \texttt{PYTHONPATH}, se ejecutan las pruebas con
-\texttt{python -m pytest tests} y se compila la memoria mediante el guion
-\texttt{thesis/build.ps1}. Cada campaña regenerable dispone de un punto de
-entrada bajo \texttt{viu\_mrob\_tfm.cli}; sus
-configuraciones, datos, fallos y manifiestos se conservan sin eliminar
-agotamientos del horizonte. Las tablas cuantitativas se derivan de esos
-artefactos y no contienen resultados escritos manualmente.
+\begin{table}[!htbp]
+  \centering
+  \caption{Estado de reproducción de las campañas empleadas en la memoria.}
+  \label{tab:reproducibility-status}
+  \viutablefont
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\textwidth}{@{}p{2.3cm}p{2.4cm}X@{}}
+    \toprule
+    Bloque & Estado & Evidencia conservada \\
+    \midrule
+    SP0--SP1 & Regenerable & Configuraciones, semillas, observaciones, tablas, manifiestos y pruebas. \\
+    SP2--SP4 & Reanálisis & Observaciones, postproceso, tablas y auditorías; faltan generadores históricos completos. \\
+    SP5--SP8 & Regenerable & Configuraciones, semillas, datos por mundo, manifiestos, hashes y pruebas. \\
+    Cargo & Regenerable & 360 mundos, 2160 ejecuciones, configuración congelada, fallos, hashes y pruebas. \\
+    Industrial~2 & Piloto regenerable & Dos semillas por escenario, trazas, escena y auditoría geométrica. Sin validación dinámica independiente. \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
 
-En PowerShell, las comprobaciones generales se ejecutan con:
-\begin{verbatim}
-$env:PYTHONPATH='src'
-python -m pytest tests
-powershell -ExecutionPolicy Bypass -File thesis\build.ps1
-\end{verbatim}
-
-En sistemas POSIX, los comandos equivalentes son:
-\begin{verbatim}
-export PYTHONPATH=src
-python -m pytest tests
-\end{verbatim}
-
-\subsection{Disponibilidad e integridad}
-
-% TODO(autor): sustituir <TAG> por la etiqueta del release y añadir el DOI de Zenodo cuando exista.
-El código, las configuraciones y los resultados disponibles se alojan en
-\url{https://github.com/jlmayorgaco/VIU-MRBO-TFM-2026} (versión etiquetada
-\texttt{<TAG>}). El repositorio público es
-mutable; por tanto, la versión de depósito debe acompañarse de una etiqueta y un
-commit inmutables. Hasta que exista esa instantánea, la URL no equivale a un
-archivo permanente con DOI. La ausencia de los generadores históricos de
-SP2--SP4 se declara como limitación y no se suple con código reconstruido a
-posteriori.
-
-El trabajo no emplea participantes humanos, animales ni datos personales y no
-requirió aprobación ética. Jorge Luis Mayorga Taborda es responsable de la
-concepción, implementación, análisis y redacción; la dirección académica
-corresponde a la persona indicada en la portada. No se declara financiación
-externa ni conflicto de interés.
-
-Se utilizaron herramientas generativas como apoyo en programación, revisión
-lingüística y comprobaciones de consistencia. La selección del modelo, la
-ejecución de los experimentos, la verificación de cifras y fuentes y la
-responsabilidad sobre el contenido corresponden al autor. No se aceptaron
-referencias ni resultados sin contraste con los artefactos del repositorio.
+Jorge Luis Mayorga Taborda es responsable de la formulación, implementación,
+ejecución, análisis y redacción. La versión de depósito deberá crear una etiqueta
+inmutable y registrar su SHA después de incorporar las correcciones finales. Hasta
+entonces, la URL pública no equivale a un archivo permanente.
