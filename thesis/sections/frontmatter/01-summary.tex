@@ -1,0 +1,38 @@
+\begin{viuabstract}{Resumen}
+Una arquitectura distribuida y explicable coordina la formación de coaliciones
+heterogéneas y el transporte de una carga planar. El mecanismo combina juegos
+potenciales y cierre entero con certificados de capacidad, \emph{wrench}, pose,
+seguridad, recuperación y comunicación.
+
+Los resultados formales caracterizan los equilibrios homogéneo y de
+cardinalidad variable, prueban la degeneración del déficit lineal bajo escasez
+y establecen una condición de integrabilidad para servicios heterogéneos. El
+campo marginal de \emph{wrench} admite un potencial y una correspondencia
+KKT--equilibrio variacional. El servocontrol de pose es localmente estable con
+contactos fijos y realización exacta. En recuperación, los equilibrios de Nash
+coinciden con las reparaciones factibles mínimas bajo una penalización
+suficiente; el precio de estabilidad es uno y el de anarquía no posee cota
+uniforme.
+
+La evaluación empleó mundos pareados. La guardia mecánica redujo en 0.333 los
+falsos positivos en 600 mundos y el juego de reparación restauró el certificado
+en los 360 casos recuperables. Una campaña integrada combinó visibilidad restringida,
+acoplamiento de uniciclos, transporte planar reducido, obstáculo, fallo y
+reemplazo. El método completo terminó 359 de 360 misiones sin intersección
+carga--obstáculo durante el transporte. Retirar conjuntamente certificado,
+desvío y filtro redujo el éxito en 0.996 con obstáculo; desactivar la reparación
+lo redujo en 0.989 bajo fallo. Con red degradada, las variantes local y de
+información perfecta completaron 90/90 misiones; la primera empleó 328 mensajes
+por instancia.
+
+La composición funcionó para una carga planar y un fallo simple, aunque carece
+de una garantía híbrida global. Los mensajes consultan un registro global de
+atributos y, tras el acoplamiento, las poses se reconstruyen desde la carga. El
+coste espacial no produjo una ventaja temporal concluyente. El modelo excluye
+dinámica tridimensional, topologías móviles, hardware y empuje por
+\emph{caging}.
+
+\keywords{Palabras clave}{coordinación distribuida, robots móviles autónomos, formación de coaliciones, juegos potenciales, transporte cooperativo}
+\end{viuabstract}
+
+\clearpage
