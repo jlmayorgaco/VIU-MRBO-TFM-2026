@@ -1,0 +1,37 @@
+\begin{viuabstract}{Abstract}
+An explainable distributed architecture coordinates heterogeneous robot
+coalitions and the transport of a planar payload. It combines potential games
+and integer closure with certificates for capacity, wrench, pose, safety,
+recovery, and communication.
+
+The formal results characterise equilibria for homogeneous assignment and
+variable coalition sizes, prove the degeneracy of linear deficit under
+scarcity, and establish an integrability condition for heterogeneous services.
+The marginal wrench field admits a potential and a
+KKT--variational-equilibrium correspondence. The pose controller is locally
+stable under fixed contacts and exact wrench realisation. Above a penalty
+threshold, the recovery game's Nash equilibria equal the feasible
+inclusion-minimal repairs; its price of stability is one, whereas its price of
+anarchy has no uniform bound.
+
+Evaluation used paired worlds. The mechanical guard reduced false positives by
+0.333 across 600 worlds, and the repair game restored the certificate in all
+360 recoverable cases. An integrated campaign combined restricted visibility, dynamic-unicycle
+docking, reduced planar transport, an obstacle, a robot failure, and
+replacement. The complete method finished 359 of 360 missions without a
+payload--obstacle intersection during transport. Jointly removing the
+certificate, waypoint detour, and safety filter reduced success by 0.996 in
+obstacle regimes; disabling repair reduced it by 0.989 after failure. Under
+degraded communication, the local and perfect-information variants completed
+90/90 missions; the former used 328 messages per instance.
+
+The mechanisms operated together for one planar payload and one failure; this
+does not establish a global guarantee for the hybrid system. Messages query a global attribute registry,
+and robot poses are reconstructed from the payload after docking. The predicted
+time advantage of spatial cost was inconclusive. Three-dimensional dynamics,
+switching networks, hardware, and pushing by caging remain outside the scope.
+
+\keywords{Keywords}{distributed coordination, autonomous mobile robots, coalition formation, potential games, cooperative transport}
+\end{viuabstract}
+
+\clearpage
