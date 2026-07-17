@@ -1,0 +1,58 @@
+\clearpage
+\phantomsection
+\addcontentsline{toc}{section}{Nomenclatura}
+\section*{Nomenclatura}
+
+\small
+\begin{description}[style=multiline,leftmargin=8.2em,labelwidth=7.2em,itemsep=0.15em,parsep=0pt]
+  \item[$N, K$] Número de robots y número de cargas o tareas, respectivamente.
+  \item[$i, k$] Índices de robot y de carga o tarea.
+  \item[$q_i,q_k^L$] Estados planares del robot $i$ y de la carga $k$.
+  \item[$p_i,\theta_i$] Posición y orientación del robot $i$, en metros y radianes.
+  \item[$u_i$] Entrada de control del robot $i$.
+  \item[$v_i,\omega_i$] Velocidades lineal y angular del robot $i$.
+  \item[$c_i$] Vector de capacidades del robot $i$.
+  \item[$b_i,\sigma_i$] Estado de batería y modo local de misión del robot $i$.
+  \item[$l_k,d_k$] Poses de origen y destino de la carga $k$.
+  \item[$r_k$] Vector de requisitos de la carga $k$.
+  \item[$n_k$] Cardinalidad mínima de la coalición requerida por la carga $k$.
+  \item[$C_k$] Coalición asignada a la carga $k$.
+  \item[$\rho_{ik},x_{ik}$] Preferencia continua y asignación binaria cerrada de $i$ a $k$.
+  \item[$f_{ik}$] \emph{Payoff} del robot $i$ asociado a la carga $k$.
+  \item[$\Phi$] Función potencial global del juego.
+  \item[$\delta_{ik}$] Distancia entre el robot $i$ y la carga $k$, en metros.
+  \item[$\bar\delta_{ik},w_k$] Distancia normalizada y peso adimensional de prioridad de la carga $k$.
+  \item[$\widetilde\kappa_{ik},\kappa_{ik}$] Coste de asignación ponderado antes y después de su normalización.
+  \item[$\Psi(\delta_{ik})$] Descuento espacial adimensional.
+  \item[$\mu_i(t)$] Tasa local de revisión estratégica del robot $i$, en s$^{-1}$.
+  \item[$G(t),t_m,\Delta t$] Grafo de comunicación, instante de muestreo y paso digital.
+  \item[$\mathcal N_i(t)$] Conjunto de vecinos del robot $i$.
+  \item[$R,\tau_d,p_{\mathrm{loss}}$] Radio, retardo y probabilidad de pérdida de la comunicación.
+  \item[$W_k$] \emph{Wrench} requerido o aplicado a la carga $k$.
+  \item[$T_{\mathrm{coal}},T_{\mathrm{rec}}$] Tiempos de formación de coalición y de recuperación.
+  \item[$J$] Coste o función social de referencia.
+  \item[$X,\mathcal B_N$] Asignación relajada y politopo de matrices doblemente estocásticas de SP0.
+  \item[$\pi_k,\rho,\gamma,\tau$] Precio de tarea y parámetros primal--dual/entrópicos candidatos de SP0.
+  \item[$\mathcal G_A,\mathcal G_C$] Grafos de asignación y de comunicación robot--robot de SP0.
+  \item[$e_\pi^t,q,R^\star$] Desacuerdo de precios, contracción espectral y radio crítico de conectividad.
+  \item[Brecha] Diferencia de rendimiento respecto al oráculo central.
+  \item[$c_i^{\mathrm{pay}},c^{\mathrm{ref}}$] Carga útil nominal, en kg, y escala de referencia de SP2, en kg.
+  \item[$a_{ik},e_{ik}$] Disponibilidad operacional y contribución normalizada de servicio de SP2; ambas adimensionales.
+  \item[$d_k^{\mathrm{srv}}$] Umbral adimensional de servicio operacional de la carga $k$ en SP2.
+  \item[$G_C(q),\boldsymbol\lambda_C$] Matriz de agarre y esfuerzos de contacto de la coalición $C$.
+  \item[$Q_W,\rho_k^W$] Normalización dimensional y residual adimensional del certificado de \emph{wrench}.
+  \item[$h_j,v_k^{\mathrm{fil}}$] Holgura de barrera, en m, y velocidad traslacional filtrada, en m/s, de SP5.
+  \item[$\scriptstyle W_k^{\mathrm{nom}},W_k^{\mathrm{fil}},W_k^{\mathrm{apl}}$] \emph{Wrenches} nominal, filtrado y aplicado tras el reparto acotado.
+  \item[$\varepsilon_{\mathrm{act}}$] Error de realización aplicado que reúne discretización, saturación, predicción y reparto.
+  \item[$D_6,\lambda_6,\delta_{\min}$] Déficit, penalización y menor mejora unilateral positiva del juego de recuperación.
+  \item[$\mathcal R_i^7,P_7,\theta_7$] Catálogo de rutas, pares en conflicto y umbral suficiente de penalización de SP7.
+  \item[$\mathcal E_{ir}^8,G_C^8$] Recursos ocupados por una ruta y grafo de comunicación entre coaliciones de SP8.
+  \item[AGV] \emph{Automated Guided Vehicle}.
+  \item[AMR] \emph{Autonomous Mobile Robot}.
+  \item[CBF] \emph{Control Barrier Function}.
+  \item[MILP] \emph{Mixed-Integer Linear Programming}.
+  \item[MRTA] \emph{Multi-Robot Task Allocation}.
+  \item[SP] Subproblema de la escalera incremental SP0--SP8.
+\end{description}
+La barra en $\bar\delta_{ik}$ distingue la distancia normalizada de la distancia física $\delta_{ik}$. Los símbolos $\rho_{ik}$, $\rho$ y $\rho_k^W$ designan, respectivamente, preferencia, parámetro primal--dual y residual de \emph{wrench}; no representan una misma magnitud. Algunos símbolos se reutilizan entre subproblemas con decoraciones distintas ($\rho_{ik}$, $\rho_D$, $\rho_k^W$); el superíndice o subíndice identifica el contexto.
+\normalsize
