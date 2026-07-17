@@ -9,8 +9,16 @@
   sorting=nyt,
   sortcites=true
 ]{biblatex}
+\DeclareSourcemap{
+  \maps[datatype=bibtex]{
+    \map{
+      \step[fieldset=langid, fieldvalue=english]
+    }
+  }
+}
 \addbibresource{references.bib}
-\AtBeginBibliography{\sloppy}
+\AtBeginBibliography{\raggedright\sloppy}
+\renewcommand*{\bibrangedash}{\textendash}
 
 \input{config/metadata}
 \input{config/math-commands}
@@ -25,6 +33,9 @@
 \input{sections/frontmatter/04-nomenclature}
 
 \clearpage
+\viuromanfoliofalse
+\pagenumbering{arabic}
+\setcounter{page}{1}
 \input{sections/mainmatter/01-introduction}
 \clearpage
 \input{sections/mainmatter/02-objectives}

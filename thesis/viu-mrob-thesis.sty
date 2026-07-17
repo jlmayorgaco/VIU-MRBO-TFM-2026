@@ -22,7 +22,14 @@
   BoldItalicFont=Arial Bold Italic,
   Ligatures=TeX
 ]
-
+\RequirePackage{etoolbox}
+\newfontfamily\viutocpagenumberfont{TeX Gyre Heros}
+% Arial pierde visualmente el punto de la i en los romanos pequeños del
+% índice. La fuente alternativa se limita a la columna de folios del ToC.
+\patchcmd{\@dottedtocline}
+  {\normalfont \normalcolor #5}
+  {\normalfont\viutocpagenumberfont \normalcolor #5}
+  {}{\PackageWarning{viu-mrob-thesis}{No se pudo ajustar la fuente de los folios del indice}}
 \RequirePackage[
   a4paper,
   top=2.5cm,
@@ -161,8 +168,6 @@
   urlcolor=VIULinkBlue,
   citecolor=VIUDark,
   linktoc=all,
-  pdftitle={Trabajo Fin de Máster --- VIU MROB},
-  pdfauthor={Jorge Luis Mayorga Taborda},
   bookmarksnumbered=true
 }
 
@@ -198,6 +203,10 @@
 
 \newcommand{\viuheadertitle}{Trabajo Fin de Máster}
 \newcommand{\setviuheadertitle}[1]{\renewcommand{\viuheadertitle}{#1}}
+\newif\ifviuromanfolio
+\viuromanfoliofalse
+% La fuente alternativa conserva visible el punto de la i en los folios
+% romanos pequeños sin reconstruir manualmente la numeración.
 % Geometría destilada del encabezado oficial (OOXML). Las coordenadas
 % siguientes incluyen los márgenes internos de sus cuadros de texto Word.
 \newcommand{\viuheaderoverlay}{%
@@ -211,12 +220,13 @@
         at ($(current page.north west)+(0.508cm,-0.635cm)$) {VIU};%
     }%
     \node[anchor=north west,inner sep=0pt,text=VIUDark,
-      text width=10.372cm,align=left,font=\fontsize{12}{18}\selectfont]
+      text width=10.372cm,align=left,font=\fontsize{6}{7}\selectfont]
       at ($(current page.north west)+(4.783cm,-0.911cm)$)
       {\viuheadertitle};
     \node[anchor=north east,inner sep=0pt,text=VIUDark,
       font=\fontsize{12}{18}\selectfont]
-      at ($(current page.north east)+(-3cm,-1.251cm)$) {\thepage};
+      at ($(current page.north east)+(-3cm,-1.251cm)$)
+      {\ifviuromanfolio{\viutocpagenumberfont\thepage}\else\thepage\fi};
   \end{tikzpicture}%
 }
 \pagestyle{fancy}
@@ -270,6 +280,7 @@
 
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcommand{\viutablefont}{\fontsize{9}{10.5}\selectfont}
 
 \newcommand{\viutitle}{}
 \newcommand{\viustudent}{}

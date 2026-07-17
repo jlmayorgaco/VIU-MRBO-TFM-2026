@@ -3,11 +3,11 @@
 \begingroup
 \setlength{\parskip}{3pt plus 0.5pt}
 
-SP1 sustituye la demanda unitaria por cuotas $n_k\in\{1, 2, 3, 4\}$. Con demanda realizable, déficit y exceso caracterizan el cierre; bajo escasez, el déficit lineal no distingue concentrar robots en una carga de dispersarlos. El beneficio de cuórum rompe esa indiferencia y el operador QR produce grupos enteros. Las poses permanecen fijas y solo determinan el coste de reclutamiento. El movimiento se incorpora a partir de SP4.
+SP1 sustituye demanda unitaria por cuotas $n_k\in\{1,2,3,4\}$. Con recursos suficientes, déficit y exceso caracterizan el cierre. Bajo escasez, el déficit lineal no distingue concentración de dispersión. QR cierra grupos y el cuórum favorece concentrarlos. Las poses solo fijan coste.
 
 \subsubsection{Cuotas y escasez}
 
-La razón $\rho_D=(\sum_k n_k)/N$ distingue abundancia, ocupación crítica y escasez; las flechas de la Figura~\ref{fig:sp1-scenario} indican pertenencia lógica.
+$\rho_D=(\sum_k n_k)/N$ distingue abundancia, ocupación crítica y escasez. La Figura~\ref{fig:sp1-scenario} muestra pertenencia lógica.
 
 \begin{figure}[!htbp]
   \centering
@@ -53,7 +53,7 @@ La razón $\rho_D=(\sum_k n_k)/N$ distingue abundancia, ocupación crítica y es
     \node[sprobotfree,scale=0.42] at (8.65, 0.34) {};
     \node[splegend,anchor=west] at (8.91, 0.34) {robot inactivo};
   \end{spdiagram}
-  \caption{Regímenes lógicos de SP1. En abundancia se cierran todas las cuotas y quedan robots libres; en el régimen crítico se usa exactamente la flota; bajo escasez debe seleccionarse qué cargas completar.}
+  \caption{SP1: cuotas cerradas con robots libres, uso total de flota y selección bajo escasez.}
   \label{fig:sp1-scenario}
   \viuownsource
 \end{figure}
@@ -64,7 +64,7 @@ Sea $a_i\in\{0\}\cup\Loads$ la acción del robot $i$, con $0$ como inactividad. 
  C_k(a)=\{i\in\Robots:a_i=k\}.
  \label{eq:sp1-occupancy}
 \end{equation}
-Una carga cerrada satisface $q_k=|C_k|=n_k$. La cardinalidad no expresa masa, fuerza, torque ni compatibilidad; esas dimensiones aparecen en SP2 y el certificado mecánico en SP3.
+Una carga cerrada cumple $q_k=|C_k|=n_k$. La cuota no expresa masa, fuerza, torque ni compatibilidad. SP2 introduce servicio y SP3 mecánica.
 
 \subsubsection{Problema central de referencia y frontera de complejidad}
 
@@ -80,19 +80,19 @@ El oráculo dispone de la matriz global de costes normalizados $\kappa_{ik}\in[0
  &x_{ik},y_k\in\{0, 1\}.&
 \end{aligned}
 \end{equation}
-La igualdad de activación excluye grupos parciales y sobreasignados. El parámetro $\alpha=0.15$ pondera coste y valor normalizados. El modelo es un oráculo estático central.
+La igualdad excluye grupos parciales y exceso. $\alpha=0.15$ pondera coste y valor. Es un oráculo estático central.
 
-La cardinalidad variable no vuelve NP-difícil todo SP1. Si todas las cargas son obligatorias y $\rho_D\leq1$, se fija $y_k=1$ y cada cuota se expande en $n_k$ plazas: resulta una asignación bipartita con cuotas o un flujo de coste mínimo polinómico. Si las cargas son opcionales, incluso con costes nulos, queda $\sum_kn_ky_k\leq N$ y $\max\sum_kv_ky_k$, que contiene mochila 0--1. La prueba se conserva en el Anexo~\ref{app:sp1-complexity}. La dificultad combinatoria aparece al seleccionar grupos completos bajo escasez, no por la cuota aislada.
+La cuota no vuelve NP-difícil todo SP1. Con cargas obligatorias y $\rho_D\leq1$, expandir $n_k$ plazas produce asignación o flujo polinómico. Con cargas opcionales, $\sum_kn_ky_k\leq N$ y $\max\sum_kv_ky_k$ contiene mochila 0--1 (Anexo~\ref{app:sp1-complexity}). La dificultad está en seleccionar grupos completos bajo escasez.
 
 \subsubsection{Métodos de comparación}
 
-MILP-Q fija el mejor valor alcanzable con información global; Voraz-Q mide la calidad de una selección secuencial simple. Smith genera preferencias continuas y QR las transforma en grupos de tamaño exacto, por lo que la comparación separa el efecto del cuórum del efecto del cierre. El experimento usa ocupación global en ambos pasos. En la Tabla~\ref{tab:sp1-methods}, $T_S$ denota los pasos Smith e $I_Q\leq K$ los cierres de carga.
+MILP-Q fija el techo global, mientras que Greedy-Q aporta una selección secuencial. Smith genera preferencias y QR grupos exactos, separando cuórum y cierre. Ambos usan ocupación global. En la Tabla~\ref{tab:sp1-methods}, $T_S$ son pasos Smith e $I_Q\leq K$ cierres.
 
 \begin{table}[!htbp]
  \centering
   \caption{Comparación computacional de métodos en SP1.}
  \label{tab:sp1-methods}
-  \scriptsize
+  \viutablefont
   \setlength{\tabcolsep}{1.3pt}
   \renewcommand{\arraystretch}{0.92}
   \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.2cm} >{\raggedright\arraybackslash}p{1.6cm} >{\raggedright\arraybackslash}p{2.35cm} >{\raggedright\arraybackslash}p{2.0cm} >{\raggedright\arraybackslash}p{1.75cm} Y}
@@ -100,17 +100,17 @@ MILP-Q fija el mejor valor alcanzable con información global; Voraz-Q mide la c
   Método/fuente & Clase & Coste & Arq./información & Parámetros & Garantía/límite \\
   \midrule
   MILP-Q (reducción desde \textcite{karp1972reducibility}) & Obligatorio: P; selección opcional: NP-difícil & Optimizador exacto: exponencial en peor caso & Central; costes, cuotas y valores globales & $\alpha$, límite temporal/brecha & Óptimo solo con certificado; reducción en Anexo~\ref{app:sp1-complexity}. \\
-  Voraz-Q (familia de recursos \parencite{zhangParker2013Resources}) & Selección opcional NP-difícil; heurística & $O(K^2N\log N)$ & Central; robots libres y todos los costes & $\alpha$, orden & Implementación propia; grupos enteros, sin cota y dependiente del orden. \\
-  Smith continuo \parencite{sandholm2010population} & Relajación continua & $O(T_SN(K+1)^2)$ & Agregado exacto de ocupación; ejecución centralizada & $\Delta t,\allowbreak T_S,\allowbreak\epsilon,\allowbreak\beta,\allowbreak\lambda_O$ & Preferencias en el simplex; no cierra coaliciones ni hereda convergencia continua. \\
-  Smith-QR & Cierre entero del problema NP-difícil & Smith $+\ {\scriptscriptstyle O(I_QKN\log N)}$;\allowbreak peor $O(K^2N\log N)$ & Preferencias, ordenación global y cuotas & Los anteriores, $\alpha$ & Ocupaciones $0$ o $n_k$; no óptimo ni plenamente distribuido. \\
+  Greedy-Q (familia de recursos \parencite{zhangParker2013Resources}) & Selección opcional NP-difícil; heurística & $O(K^2N\log N)$ & Central; robots libres y todos los costes & $\alpha$, orden & Grupos enteros, sin cota y dependientes del orden. \\
+  Smith continuo \parencite{sandholm2010population} & Relajación continua & $O(T_SN(K+1)^2)$ & Agregado exacto de ocupación; ejecución centralizada & $\Delta t,\allowbreak T_S,\allowbreak\epsilon,\allowbreak\beta,\allowbreak\lambda_O$ & Preferencias en el simplex. No cierra coaliciones ni hereda convergencia continua. \\
+  Smith-QR & Cierre entero del problema NP-difícil & Smith $+\ {\scriptscriptstyle O(I_QKN\log N)}$;\allowbreak peor $O(K^2N\log N)$ & Preferencias, ordenación global y cuotas & Los anteriores, $\alpha$ & Ocupaciones $0$ o $n_k$. No es óptimo ni plenamente distribuido. \\
   Smith lineal + QR & Igual que Smith-QR & Igual que Smith-QR & Misma información; ablación del cuórum & $\beta=0$ & Conserva cierre; aísla la no linealidad de cuórum. \\
   Smith sin exceso & Relajación continua & $O(T_SN(K+1)^2)$ & Agregado exacto; sin penalización de exceso & $\lambda_O=0$ & Ablación sin garantía de cuota. \\
   \bottomrule
  \end{tabularx}
- \viusource{elaboración propia; protocolo Smith basado en \textcite{sandholm2010population}}
+ \viusource{elaboración propia. Protocolo Smith basado en \textcite{sandholm2010population}}
 \end{table}
 
-CBBA estándar es mono-ganador y no es equivalente sin una extensión verificada \parencite{choiBrunetHow2009CBBA}; por ello no se ejecuta. \Textcite{shehoryKraus1998Coalition} y \textcite{vigAdams2006Coalition} aportan comparación conceptual, no filas experimentales.
+CBBA es mono-ganador y no se ejecuta sin extensión verificada \parencite{choiBrunetHow2009CBBA}. \textcite{shehoryKraus1998Coalition,vigAdams2006Coalition} son contexto, no tratamientos.
 
 \subsubsection{Juego de cardinalidad y mecanismo de cierre}
 
@@ -131,10 +131,10 @@ Todos los términos son adimensionales. La utilidad es la contribución marginal
 
 \begin{proposicion}[Cierre exacto bajo demanda realizable]
 \label{thm:sp1-feasible-nash}
-Si $\sum_kn_k\leq N$, $\kappa_{ik}\in[0,\kappa_{\max}]$ y $\lambda_D=\lambda_O=\lambda>\kappa_{\max}$, el juego de \eqref{eq:sp1-linear-game} es de potencial exacto y sus Nash puros son exactamente los perfiles con $q_k=n_k$ para toda carga. Toda secuencia de mejoras estrictas termina; los máximos globales de $\Phi_Q$ son las asignaciones exactas de coste mínimo.
+Si $\sum_kn_k\leq N$, $\kappa_{ik}\in[0,\kappa_{\max}]$ y $\lambda_D=\lambda_O=\lambda>\kappa_{\max}$, el juego de \eqref{eq:sp1-linear-game} es de potencial exacto y sus Nash puros son exactamente los perfiles con $q_k=n_k$ para toda carga. Toda secuencia de mejoras estrictas termina. Los máximos globales de $\Phi_Q$ son las asignaciones exactas de coste mínimo.
 \end{proposicion}
 \end{contribucion}
-Si existe déficit y un robot libre, incorporarlo mejora el potencial; si no hay robot libre, la realizabilidad obliga a que exista exceso y un traslado reduce ambas penalizaciones. Retirar exceso también mejora. En sentido inverso, toda desviación desde una asignación exacta crea déficit, exceso o ambos por un coste superior al posible ahorro espacial. La demostración completa está en el Anexo~\ref{app:sp1-feasible-proof}.
+Un robot libre cubre déficit. Sin libres, la realizabilidad implica exceso y un traslado mejora. Toda desviación desde cuota exacta crea déficit o exceso por encima del ahorro espacial (Anexo~\ref{app:sp1-feasible-proof}).
 
 La conclusión cambia bajo escasez.
 \begin{contribucion}{límite formal del déficit lineal bajo escasez}
@@ -149,7 +149,9 @@ independientemente de la distribución de los robots. El potencial lineal no dis
 \end{contribucion}
 La demostración completa está en el Anexo~\ref{app:sp1-scarcity-proof}.
 
-El caso mínimo contiene dos cargas de cuota dos y dos robots (Figura~\ref{fig:sp1-scarcity-counterexample}). Ambos perfiles tienen déficit total dos, pero solo uno completa una carga.
+El caso mínimo tiene dos cargas de cuota dos y dos robots: $(2,0)$ y $(1,1)$ presentan déficit dos, pero solo el primero completa una carga.
+% El contraejemplo queda definido algebraicamente; su diagrama redundante se
+\iffalse
 \begin{figure}[!htbp]
  \centering
  \begin{spdiagram}
@@ -182,6 +184,7 @@ El caso mínimo contiene dos cargas de cuota dos y dos robots (Figura~\ref{fig:s
  \label{fig:sp1-scarcity-counterexample}
  \viuownsource
 \end{figure}
+\fi
 
 \begin{contribucion}{formulación del incentivo de cuórum bajo escasez}
 Para romper esa indiferencia se usa el beneficio exponencial normalizado y saturado
@@ -200,7 +203,7 @@ Para $\beta>0$, los incrementos discretos antes de $n_k$ son crecientes y despu�
 \end{contribucion}
 La derivación del incremento discreto y del contraejemplo se conserva en el Anexo~\ref{app:sp1-scarcity-proof}.
 
-La relajación mantiene preferencias $\rho_{ik}\in[0, 1]$ sobre inactividad y cargas. Con $\widehat q_k=\sum_i\rho_{ik}$, la fitness implementada usa el incremento marginal de \eqref{eq:sp1-quorum-benefit}, el coste espacial y la penalización de exceso. La dinámica Smith intercambia masa entre acciones con mejor fitness; su ejecución digital aplica Euler proyectado con $\Delta t=0.15$, hasta 250 pasos y tolerancia $10^{-6}$. La acción preferida $a_i^{\mathrm{cont}}=\argmax_k\rho_{ik}$ no se interpreta como coalición ejecutable.
+La relajación usa $\rho_{ik}\in[0,1]$ y $\widehat q_k=\sum_i\rho_{ik}$. La fitness combina incremento marginal, coste y exceso. Smith aplica Euler proyectado con $\Delta t=0.15$, 250 pasos y tolerancia $10^{-6}$. $\argmax_k\rho_{ik}$ no es una coalición ejecutable.
 
 \begin{contribucion}{operador de cierre entero por ordenamiento y cuórum}
 El operador $x=\mathcal Q_{\mathrm{QR}}(\rho)$ compara grupos completos entre los robots todavía libres, compromete el grupo de mayor puntuación positiva y repite hasta no poder cerrar otra cuota. Por construcción,
@@ -208,7 +211,7 @@ El operador $x=\mathcal Q_{\mathrm{QR}}(\rho)$ compara grupos completos entre lo
  \sum_kx_{ik}\leq1,\qquad \sum_ix_{ik}\in\{0,n_k\}.
  \label{eq:sp1-qr-invariants}
 \end{equation}
-QR agrega de forma determinista la matriz completa para aislar el efecto del cierre. Los resultados verifican \eqref{eq:sp1-qr-invariants}; la realización vecinal y su coste de consenso permanecen pendientes.
+QR agrega de forma determinista la matriz completa para aislar el efecto del cierre. Los resultados verifican \eqref{eq:sp1-qr-invariants}. La realización vecinal y su coste de consenso quedan fuera del alcance experimental de SP1.
 \end{contribucion}
 
 \subsubsection{Dinámica y cierre entero}
@@ -219,7 +222,7 @@ SP1 regula cardinalidad, aunque todavía no regula movimiento. Para una selecci�
  \qquad \boldsymbol z_1^{\mathrm{ref}}=\boldsymbol0.
  \label{eq:sp1-strategic-regulation}
 \end{equation}
-En demanda realizable y con cargas obligatorias se fija $y_k=1$, de modo que $z_{1,k}=0$ significa cuota exacta. Bajo escasez no es alcanzable imponer $q_k=n_k$ para todas las cargas; la referencia debe incluir la selección todo-o-nada: $y_k=1$ para cargas cerradas y $y_k=0$ para las abandonadas. Así, el objetivo de regulación ejecutable es $q_k\in\{0,n_k\}$, no llenar simultáneamente todas las cuotas.
+Con cargas obligatorias realizables, $y_k=1$ y $z_{1,k}=0$ indica cuota exacta. Bajo escasez, $y$ selecciona todo-o-nada y el objetivo es $q_k\in\{0,n_k\}$.
 
 Cada robot realimenta su coste $\kappa_{ik}$, los parámetros públicos $(n_k,v_k)$ y una estimación $\widehat q_{ik}$ de la ocupación. La entrada estratégica es el flujo de preferencia entre acciones. Para fitness $f_{ik}$, el campo Smith utilizado antes del muestreo es
 \begin{equation}
@@ -230,31 +233,31 @@ Cada robot realimenta su coste $\kappa_{ik}$, los parámetros públicos $(n_k,v_
  \rho_i^{m+1}=P_{\Delta_i}\!\left(\rho_i^m+\Delta t\,\dot\rho_i^m\right).
  \label{eq:sp1-smith-feedback}
 \end{equation}
-QR convierte las preferencias en la acción discreta de~\eqref{eq:sp1-strategic-regulation}. Se usó $\widehat q_{ik}=q_k$ y la matriz completa; ambos son datos globales y no un observador vecinal.
+QR convierte las preferencias en la acción discreta de~\eqref{eq:sp1-strategic-regulation}. Se usó $\widehat q_{ik}=q_k$ y la matriz completa. Ambos son datos globales y no un observador vecinal.
 
 \begin{corolario}[Regulación exacta en el juego finito realizable]
 \label{cor:sp1-strategic-regulation}
 Bajo los supuestos de la Proposición~\ref{thm:sp1-feasible-nash}, una secuencia asíncrona de mejoras estrictas del juego finito alcanza en un número finito de revisiones $\boldsymbol z_1=\boldsymbol0$ para las cargas obligatorias.
 \end{corolario}
-El corolario se deriva de la propiedad de mejora finita y de la caracterización de Nash demostradas en el Anexo~\ref{app:sp1-feasible-proof}. No se transfiere automáticamente a Euler proyectado, a Smith-QR ni al caso escaso: para esos mecanismos no se ha demostrado estabilidad del lazo muestreado ni optimalidad de la selección $y$. Las posiciones siguen siendo datos estáticos usados en $\kappa_{ik}$; no hay todavía sensores de pose, entrada física $u_i$, saturación de actuador, contacto o seguridad. SP2 cambia la salida regulada de conteo a capacidad, SP3 añade wrench y SP4 introduce el transporte entre poses.
+La mejora finita se prueba en el Anexo~\ref{app:sp1-feasible-proof}. El resultado no se transfiere a Euler, Smith-QR ni escasez, sin estabilidad muestreada u optimalidad de $y$. Las poses siguen estáticas. SP2 cambia conteo por servicio, SP3 añade \emph{wrench} y SP4 movimiento.
 \subsubsection{Diseño experimental}
 
-El experimento usó 30 semillas por celda, $N\in\{8, 16\}$, seis presiones entre $0.50$ y $1.50$, cuotas homogéneas o mixtas 1--4 y geometría uniforme o agrupada: 1440 mundos pareados y 8640 ejecuciones. MILP-Q se resolvió con HiGHS; se fijaron $\beta=2$, $\lambda_O=1.05$ y $\alpha=0.15$, y se barrió $\beta\in\{0, 0.5, 1, 2, 4, 8\}$. Las métricas fueron cierre, valor respecto al MILP, déficit, exceso, grupos parciales, brecha y CPU. Las comparaciones usaron Wilcoxon bilateral e intervalos bootstrap del 95\% con 2000 remuestras de mundos.
+El experimento usó 30 semillas por celda, $N\in\{8, 16\}$, seis presiones entre $0.50$ y $1.50$, cuotas homogéneas o mixtas 1--4 y geometría uniforme o agrupada: 1440 mundos pareados y 8640 ejecuciones. MILP-Q se resolvió con HiGHS. Se fijaron $\beta=2$, $\lambda_O=1.05$ y $\alpha=0.15$, y se barrió $\beta\in\{0, 0.5, 1, 2, 4, 8\}$. Las métricas fueron cierre, valor respecto al MILP, déficit, exceso, grupos parciales, brecha y CPU. Las comparaciones usaron Wilcoxon bilateral e intervalos bootstrap del 95\% con 2000 remuestras de mundos.
 
 \subsubsection{Resultados}
 
 \noindent\textbf{Verificación analítica.}
-Las 12 enumeraciones pequeñas reprodujeron la Proposición~\ref{thm:sp1-feasible-nash}; también se verificaron el contraejemplo y el beneficio del cuórum. Los 14 controles formales comparan el código con enunciados finitos, pero no prueban la convergencia del sistema Smith muestreado.
+Doce enumeraciones reprodujeron la Proposición~\ref{thm:sp1-feasible-nash} y 14 controles verificaron contraejemplo y cuórum. Estas comprobaciones no prueban convergencia Smith muestreada.
 
 \noindent\textbf{Cierre entero.}
-En los 720 mundos de escasez, Smith continuo dejó en promedio el $10.95\%$ de la flota en grupos parciales y solo el $7.92\%$ de sus salidas cumplió el cierre lógico. Smith-QR produjo ocupaciones cero o exactas en todos los mundos. La diferencia Smith-QR menos Smith continuo en $R_{\mathrm{partial}}$ fue $-10.95$ puntos porcentuales (IC del 95\%: $[-12.07,-9.83]$; $p=5.59\times10^{-55}$). El efecto pertenece al operador QR: no demuestra que la preferencia continua converja a una asignación entera.
+En los 720 mundos de escasez, Smith continuo dejó en promedio el $10.95\%$ de la flota en grupos parciales y solo el $7.92\%$ de sus salidas cumplió el cierre lógico. Smith-QR produjo ocupaciones cero o exactas en todos los mundos. La diferencia Smith-QR menos Smith continuo en $R_{\mathrm{partial}}$ fue $-10.95$ puntos porcentuales (IC del 95\%: $[-12.07,-9.83]$, $p=5.59\times10^{-55}$). El efecto pertenece al operador QR: no demuestra que la preferencia continua converja a una asignación entera.
 
 \noindent\textbf{Cuórum, calidad y resultado negativo.}
-Con $\beta=2$, Smith-QR alcanzó el $95.17\%$ del valor del MILP en escasez. La diferencia pareada frente a Smith lineal + QR fue $+0.74$ puntos porcentuales (IC del 95\%: $[+0.21,+1.27]$; $p=0.0055$). Voraz-Q llegó al $98.71\%$ y superó a Smith-QR en $3.55$ puntos (IC del 95\%: $[2.99, 4.14]$; $p=3.00\times10^{-40}$). El contraste con la ablación de $\lambda_O$ tampoco mostró una reducción concluyente del exceso continuo: IC $[-2.27,+0.37]$ puntos y $p=0.390$. El cierre es necesario y el cuórum aporta una ventaja pequeña frente a su ablación, pero Smith-QR no supera al método voraz ni se confirma la hipótesis de exceso. Los seis tratamientos de la Tabla~\ref{tab:sp1-results} comparten los mismos mundos de escasez.
+Con $\beta=2$, Smith-QR alcanzó el $95.17\%$ del valor del MILP en escasez. La diferencia pareada frente a Smith lineal + QR fue $+0.74$ puntos porcentuales (IC del 95\%: $[+0.21,+1.27]$, $p=0.0055$). Greedy-Q llegó al $98.71\%$ y superó a Smith-QR en $3.55$ puntos (IC del 95\%: $[2.99, 4.14]$, $p=3.00\times10^{-40}$). El contraste con la ablación de $\lambda_O$ tampoco mostró una reducción concluyente del exceso continuo: IC $[-2.27,+0.37]$ puntos y $p=0.390$. El cierre es necesario y el cuórum aporta una ventaja pequeña frente a su ablación, pero Smith-QR no supera al método voraz ni se confirma la hipótesis de exceso. Los seis tratamientos de la Tabla~\ref{tab:sp1-results} comparten los mismos mundos de escasez.
 
 \begin{table}[!htbp]
  \centering
- \caption{Resultados agregados en los 720 mundos de escasez. CPU incluye la dinámica continua cuando el método usa Smith; los tiempos describen esta implementación y no una cota asintótica.}
+ \caption{Resultados en 720 mundos de escasez. CPU es una medida empírica, no una cota.}
  \label{tab:sp1-results}
  \scriptsize
  \setlength{\tabcolsep}{3.0pt}
@@ -267,14 +270,14 @@ La preferencia continua y la asignación cerrada difieren: el cierre completa la
 \begin{figure}[!htbp]
  \centering
  \includegraphics[width=0.65\textwidth]{../results/sp1/SP1_QUORUM_v1/figures/fig-sp1-regime-results.pdf}
- \caption{Resultados de desarrollo por presión de demanda, promediados sobre 240 mundos por nivel; la línea vertical separa realizabilidad y escasez.}
+ \caption{Resultados de desarrollo por presión de demanda, promediados sobre 240 mundos por nivel. La línea vertical separa realizabilidad y escasez.}
  \label{fig:sp1-regime-results}
  \viuownsource
 \end{figure}
 
-El mapa del Anexo~\ref{app:sp1-beta-map} muestra la sensibilidad a $\beta$; el valor $\beta=2$ no se interpreta como óptimo. Limitan la generalización la flota pequeña, el coste sintético, el cierre central y la ausencia de un comparador CBBA multi-ganador. La métrica de valor no incorpora transporte, seguridad ni mecánica.
+El mapa del Anexo~\ref{app:sp1-beta-map} muestra la sensibilidad a $\beta$. El valor $\beta=2$ no se interpreta como óptimo. Limitan la generalización la flota pequeña, el coste sintético, el cierre central y la ausencia de un comparador CBBA multi-ganador. La métrica de valor no incorpora transporte, seguridad ni mecánica.
 
 \subsubsection{Síntesis}
 
-En demanda realizable, los Nash puros cumplen las cuotas bajo la cota demostrada. Bajo escasez, el cuórum rompe la indiferencia del déficit lineal y QR elimina grupos parciales, pero Voraz-Q conserva mayor valor. El resultado distingue preferencia continua de asignación ejecutable; SP2 sustituye la cuota por capacidad efectiva.
+En demanda realizable, los Nash puros cumplen las cuotas bajo la cota demostrada. Bajo escasez, QR elimina grupos parciales y, con ese cierre fijo, el cuórum mejora el valor en $0.74$ puntos porcentuales frente al beneficio lineal. Greedy-Q conserva mayor valor. SP2 sustituye la cuota por servicio operacional heterogéneo.
 \endgroup

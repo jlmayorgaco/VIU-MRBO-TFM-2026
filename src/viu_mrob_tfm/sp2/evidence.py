@@ -19,8 +19,8 @@ METHOD_LABELS = {
     "neural_capacity_scorer": "Puntuación neuronal",
     "imitation_capacity": "Imitación lineal",
     "greedy_capacity_nearest": "Voraz de servicio",
-    "replicator_capacity": "Puntuación replicator",
-    "smith_capacity": "Puntuación Smith",
+    "replicator_capacity": "Puntuación inspirada en replicator",
+    "smith_capacity": "Puntuación inspirada en Smith",
     "smith_capacity_plain": "Puntuación plana",
     "smith_capacity_marginal": "Puntuación marginal",
 }

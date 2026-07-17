@@ -1,0 +1,1462 @@
+scenario: aws_industrial_adversarial_coop_transport_pioneer_p3dx_industrial2
+description: Industrial adversarial AWS warehouse demonstrator with heterogeneous
+  queues, shared bottleneck, cross traffic and local robot replacement with an Industrial
+  2 infrastructure layer.
+base_scene: C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\scenes\awsRobomaker\aws_robomaker_warehouse.ttt
+dimensions_m:
+  width: 24.0
+  depth: 18.0
+model_paths:
+  pioneer_p3dx: C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\robots\mobile\pioneer
+    p3dx.ttm
+  conveyor: C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\equipment\conveyors\generic
+    conveyor (rollers).ttm
+  table: C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\furniture\tables\high
+    table.ttm
+  manipulator: C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\robots\non-mobile\ABB
+    IRB 140.ttm
+  rack: C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\furniture\shelves-cupboards-racks\rack.ttm
+  walking_bill: C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\models\people\Walking
+    Bill.ttm
+zones:
+- name: zona_amr_noroeste
+  center:
+  - -10.15
+  - 7.35
+  - 0.018
+  size:
+  - 3.0
+  - 2.3
+  - 0.018
+  color:
+  - 0.16
+  - 0.34
+  - 0.54
+  kind: amr_home
+- name: zona_amr_noreste
+  center:
+  - 10.15
+  - 7.35
+  - 0.018
+  size:
+  - 3.0
+  - 2.3
+  - 0.018
+  color:
+  - 0.16
+  - 0.34
+  - 0.54
+  kind: amr_home
+- name: zona_amr_suroeste
+  center:
+  - -10.15
+  - -7.35
+  - 0.018
+  size:
+  - 3.0
+  - 2.3
+  - 0.018
+  color:
+  - 0.16
+  - 0.34
+  - 0.54
+  kind: amr_home
+- name: zona_amr_sureste
+  center:
+  - 10.15
+  - -7.35
+  - 0.018
+  size:
+  - 3.0
+  - 2.3
+  - 0.018
+  color:
+  - 0.16
+  - 0.34
+  - 0.54
+  kind: amr_home
+- name: zona_despacho_1
+  center:
+  - -6.0
+  - 7.15
+  - 0.018
+  size:
+  - 2.45
+  - 1.75
+  - 0.018
+  color:
+  - 0.86
+  - 0.62
+  - 0.12
+  kind: dispatch
+- name: zona_destino_1
+  center:
+  - -6.0
+  - -7.15
+  - 0.018
+  size:
+  - 2.45
+  - 1.75
+  - 0.018
+  color:
+  - 0.16
+  - 0.46
+  - 0.26
+  kind: destination
+- name: zona_despacho_2
+  center:
+  - -2.0
+  - 7.15
+  - 0.018
+  size:
+  - 2.45
+  - 1.75
+  - 0.018
+  color:
+  - 0.86
+  - 0.62
+  - 0.12
+  kind: dispatch
+- name: zona_destino_2
+  center:
+  - -2.0
+  - -7.15
+  - 0.018
+  size:
+  - 2.45
+  - 1.75
+  - 0.018
+  color:
+  - 0.16
+  - 0.46
+  - 0.26
+  kind: destination
+- name: zona_despacho_3
+  center:
+  - 2.0
+  - 7.15
+  - 0.018
+  size:
+  - 2.45
+  - 1.75
+  - 0.018
+  color:
+  - 0.86
+  - 0.62
+  - 0.12
+  kind: dispatch
+- name: zona_destino_3
+  center:
+  - 2.0
+  - -7.15
+  - 0.018
+  size:
+  - 2.45
+  - 1.75
+  - 0.018
+  color:
+  - 0.16
+  - 0.46
+  - 0.26
+  kind: destination
+- name: zona_despacho_4
+  center:
+  - 6.0
+  - 7.15
+  - 0.018
+  size:
+  - 2.45
+  - 1.75
+  - 0.018
+  color:
+  - 0.86
+  - 0.62
+  - 0.12
+  kind: dispatch
+- name: zona_destino_4
+  center:
+  - 6.0
+  - -7.15
+  - 0.018
+  size:
+  - 2.45
+  - 1.75
+  - 0.018
+  color:
+  - 0.16
+  - 0.46
+  - 0.26
+  kind: destination
+- name: cruce_seguro_norte
+  center:
+  - 0.0
+  - 3.25
+  - 0.018
+  size:
+  - 22.0
+  - 1.55
+  - 0.018
+  color:
+  - 0.88
+  - 0.68
+  - 0.12
+  kind: cross_aisle
+- name: cruce_seguro_central
+  center:
+  - 0.0
+  - 0.0
+  - 0.018
+  size:
+  - 22.0
+  - 1.55
+  - 0.018
+  color:
+  - 0.88
+  - 0.68
+  - 0.12
+  kind: cross_aisle
+- name: cruce_seguro_sur
+  center:
+  - 0.0
+  - -3.25
+  - 0.018
+  size:
+  - 22.0
+  - 1.55
+  - 0.018
+  color:
+  - 0.88
+  - 0.68
+  - 0.12
+  kind: cross_aisle
+racks:
+- name: rack_f01_c01
+  position:
+  - -8.0
+  - 5.0
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f01_c02
+  position:
+  - -4.0
+  - 5.0
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f01_c03
+  position:
+  - 0.0
+  - 5.0
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f01_c04
+  position:
+  - 4.0
+  - 5.0
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f01_c05
+  position:
+  - 8.0
+  - 5.0
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f02_c01
+  position:
+  - -8.0
+  - 1.65
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f02_c02
+  position:
+  - -4.0
+  - 1.65
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f02_c03
+  position:
+  - 0.0
+  - 1.65
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f02_c04
+  position:
+  - 4.0
+  - 1.65
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f02_c05
+  position:
+  - 8.0
+  - 1.65
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f03_c01
+  position:
+  - -8.0
+  - -1.65
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f03_c02
+  position:
+  - -4.0
+  - -1.65
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f03_c03
+  position:
+  - 0.0
+  - -1.65
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f03_c04
+  position:
+  - 4.0
+  - -1.65
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f03_c05
+  position:
+  - 8.0
+  - -1.65
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f04_c01
+  position:
+  - -8.0
+  - -5.0
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f04_c02
+  position:
+  - -4.0
+  - -5.0
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f04_c03
+  position:
+  - 0.0
+  - -5.0
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f04_c04
+  position:
+  - 4.0
+  - -5.0
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+- name: rack_f04_c05
+  position:
+  - 8.0
+  - -5.0
+  - 0.0
+  size:
+  - 2.35
+  - 0.75
+  - 1.95
+  yaw_rad: 0.0
+robots:
+- name: Pioneer_01_ligero
+  position:
+  - -10.75
+  - 7.65
+  - 0.139
+  heading_rad: -1.5707963267948966
+  class: ligero
+  home_zone: zona_amr_noroeste
+- name: Pioneer_02_medio
+  position:
+  - -10.15
+  - 7.65
+  - 0.139
+  heading_rad: -1.5707963267948966
+  class: medio
+  home_zone: zona_amr_noroeste
+- name: Pioneer_03_alta_capacidad
+  position:
+  - -9.55
+  - 7.65
+  - 0.139
+  heading_rad: -1.5707963267948966
+  class: alta_capacidad
+  home_zone: zona_amr_noroeste
+- name: Pioneer_04_ligero
+  position:
+  - 9.55
+  - 7.65
+  - 0.139
+  heading_rad: -1.5707963267948966
+  class: ligero
+  home_zone: zona_amr_noreste
+- name: Pioneer_05_medio
+  position:
+  - 10.15
+  - 7.65
+  - 0.139
+  heading_rad: -1.5707963267948966
+  class: medio
+  home_zone: zona_amr_noreste
+- name: Pioneer_06_alta_capacidad
+  position:
+  - 10.75
+  - 7.65
+  - 0.139
+  heading_rad: -1.5707963267948966
+  class: alta_capacidad
+  home_zone: zona_amr_noreste
+- name: Pioneer_07_ligero
+  position:
+  - -10.75
+  - -7.65
+  - 0.139
+  heading_rad: 1.5707963267948966
+  class: ligero
+  home_zone: zona_amr_suroeste
+- name: Pioneer_08_medio
+  position:
+  - -10.15
+  - -7.65
+  - 0.139
+  heading_rad: 1.5707963267948966
+  class: medio
+  home_zone: zona_amr_suroeste
+- name: Pioneer_09_alta_capacidad
+  position:
+  - -9.55
+  - -7.65
+  - 0.139
+  heading_rad: 1.5707963267948966
+  class: alta_capacidad
+  home_zone: zona_amr_suroeste
+- name: Pioneer_10_ligero
+  position:
+  - 9.55
+  - -7.65
+  - 0.139
+  heading_rad: 1.5707963267948966
+  class: ligero
+  home_zone: zona_amr_sureste
+- name: Pioneer_11_medio
+  position:
+  - 10.15
+  - -7.65
+  - 0.139
+  heading_rad: 1.5707963267948966
+  class: medio
+  home_zone: zona_amr_sureste
+- name: Pioneer_12_alta_capacidad
+  position:
+  - 10.75
+  - -7.65
+  - 0.139
+  heading_rad: 1.5707963267948966
+  class: alta_capacidad
+  home_zone: zona_amr_sureste
+loads:
+- name: carga_activa_D1_5kg_R1
+  position:
+  - -6.0
+  - 7.14
+  - 0.44
+  size:
+  - 0.46
+  - 0.36
+  - 0.26
+  weight_kg: 5.0
+  required_agvs: 1
+  dispatch: dispatch_1
+  destination: zona_destino_1
+  coalition:
+  - Pioneer_01_ligero
+  assigned_amr: Pioneer_01_ligero
+  phase_offset_s: 0.0
+  workflow_load: true
+  delay_s: 0.0
+- name: carga_activa_D2_14kg_R2
+  position:
+  - -2.0
+  - 7.14
+  - 0.44
+  size:
+  - 0.62
+  - 0.46
+  - 0.32
+  weight_kg: 14.0
+  required_agvs: 2
+  dispatch: dispatch_2
+  destination: zona_destino_2
+  coalition:
+  - Pioneer_07_ligero
+  - Pioneer_08_medio
+  assigned_amr: Pioneer_07_ligero
+  phase_offset_s: 0.0
+  workflow_load: true
+  delay_s: 7.0
+- name: carga_activa_D3_28kg_R3
+  position:
+  - 2.0
+  - 7.14
+  - 0.44
+  size:
+  - 0.92
+  - 0.62
+  - 0.38
+  weight_kg: 28.0
+  required_agvs: 3
+  dispatch: dispatch_3
+  destination: zona_destino_3
+  coalition:
+  - Pioneer_10_ligero
+  - Pioneer_11_medio
+  - Pioneer_12_alta_capacidad
+  assigned_amr: Pioneer_10_ligero
+  phase_offset_s: 0.0
+  workflow_load: true
+  delay_s: 14.0
+- name: carga_activa_D4_18kg_R2
+  position:
+  - 6.0
+  - 7.14
+  - 0.44
+  size:
+  - 0.72
+  - 0.52
+  - 0.34
+  weight_kg: 18.0
+  required_agvs: 2
+  dispatch: dispatch_4
+  destination: zona_destino_4
+  coalition:
+  - Pioneer_04_ligero
+  - Pioneer_05_medio
+  assigned_amr: Pioneer_04_ligero
+  phase_offset_s: 0.0
+  workflow_load: true
+  delay_s: 21.0
+  failed_amr: Pioneer_05_medio
+  replacement_amr: Pioneer_06_alta_capacidad
+  failure_fraction: 0.52
+central_obstacle:
+  name: puesto_control_lateral
+  position:
+  - -11.15
+  - 0.0
+  - 0.18
+  size:
+  - 0.7
+  - 0.7
+  - 0.36
+  enabled: true
+routes:
+- name: ruta_adversarial_D1_gate_destino_1
+  points:
+  - - -6.0
+    - 6.15
+  - - -6.0
+    - 3.25
+  - - 0.0
+    - 1.05
+  - - 0.0
+    - -1.05
+  - - -6.0
+    - -3.25
+  - - -6.0
+    - -6.15
+- name: ruta_adversarial_D2_gate_destino_2
+  points:
+  - - -2.0
+    - 6.15
+  - - -2.0
+    - 3.25
+  - - 0.0
+    - 1.05
+  - - 0.0
+    - -1.05
+  - - -2.0
+    - -3.25
+  - - -2.0
+    - -6.15
+- name: ruta_adversarial_D3_gate_destino_3
+  points:
+  - - 2.0
+    - 6.15
+  - - 2.0
+    - 3.25
+  - - 0.0
+    - 1.05
+  - - 0.0
+    - -1.05
+  - - 2.0
+    - -3.25
+  - - 2.0
+    - -6.15
+- name: ruta_adversarial_D4_gate_destino_4
+  points:
+  - - 6.0
+    - 6.15
+  - - 6.0
+    - 3.25
+  - - 0.0
+    - 1.05
+  - - 0.0
+    - -1.05
+  - - 6.0
+    - -3.25
+  - - 6.0
+    - -6.15
+stations:
+  footprints:
+    catch_platform:
+    - 1.2
+    - 1.0
+    chute:
+    - 0.85
+    - 0.85
+  dispatch_1:
+    zone: zona_despacho_1
+    destination_zone: zona_destino_1
+    catch_platform_position:
+    - -6.0
+    - 7.15
+    - 0.08
+    chute_position:
+    - -6.0
+    - 7.15
+    - 3.45
+    spawn_position:
+    - -6.0
+    - 7.15
+    - 4.2
+    catch_position:
+    - -6.0
+    - 7.15
+    - 0.34
+    handoff_position:
+    - -6.0
+    - 6.15
+    - 0.48
+    destination_position:
+    - -6.0
+    - -7.15
+    - 0.34
+  dispatch_2:
+    zone: zona_despacho_2
+    destination_zone: zona_destino_2
+    catch_platform_position:
+    - -2.0
+    - 7.15
+    - 0.08
+    chute_position:
+    - -2.0
+    - 7.15
+    - 3.45
+    spawn_position:
+    - -2.0
+    - 7.15
+    - 4.2
+    catch_position:
+    - -2.0
+    - 7.15
+    - 0.34
+    handoff_position:
+    - -2.0
+    - 6.15
+    - 0.48
+    destination_position:
+    - -2.0
+    - -7.15
+    - 0.34
+  dispatch_3:
+    zone: zona_despacho_3
+    destination_zone: zona_destino_3
+    catch_platform_position:
+    - 2.0
+    - 7.15
+    - 0.08
+    chute_position:
+    - 2.0
+    - 7.15
+    - 3.45
+    spawn_position:
+    - 2.0
+    - 7.15
+    - 4.2
+    catch_position:
+    - 2.0
+    - 7.15
+    - 0.34
+    handoff_position:
+    - 2.0
+    - 6.15
+    - 0.48
+    destination_position:
+    - 2.0
+    - -7.15
+    - 0.34
+  dispatch_4:
+    zone: zona_despacho_4
+    destination_zone: zona_destino_4
+    catch_platform_position:
+    - 6.0
+    - 7.15
+    - 0.08
+    chute_position:
+    - 6.0
+    - 7.15
+    - 3.45
+    spawn_position:
+    - 6.0
+    - 7.15
+    - 4.2
+    catch_position:
+    - 6.0
+    - 7.15
+    - 0.34
+    handoff_position:
+    - 6.0
+    - 6.15
+    - 0.48
+    destination_position:
+    - 6.0
+    - -7.15
+    - 0.34
+metadata:
+  communication: local radio; heterogeneous transport requests by weight
+  real_scale_assumptions:
+    abb_irb_140:
+      payload_kg: 6.0
+      reach_m: 0.81
+    pioneer_p3dx:
+      length_m: 0.455
+      width_m: 0.381
+      height_m: 0.237
+      payload_kg: 17.0
+    klt_box:
+      length_m: 0.5
+      width_m: 0.4
+      height_m: 0.3
+      mass_range_kg:
+      - 6.0
+      - 15.0
+  robot_classes:
+    ligero:
+      capacity_kg: 17
+      radius_m: 0.27
+      max_speed_mps: 1.0
+    medio:
+      capacity_kg: 17
+      radius_m: 0.27
+      max_speed_mps: 1.0
+    alta_capacidad:
+      capacity_kg: 17
+      radius_m: 0.27
+      max_speed_mps: 0.8
+  cross_aisle_width_m: 1.55
+  longitudinal_aisle_width_m: 1.8
+  base_scene_policy: AWS /warehouse is loaded as provenance but hidden and made non-collidable;
+    the MRBO overlay provides the visible AWS-like warehouse finish on the canonical
+    layout.
+  animation_scope: Deterministic visual workflow preview; it is not evidence of physical
+    grasping, collision-free control or stability.
+  visual_quality: industrial palette, supported procedural racks, floor markings,
+    overhead chutes, safety hardware and animated drop-pick-transport-delivery workflow
+  rendering_profile:
+    name: CoppeliaSim Edu native new-scene environment
+    background_color_1:
+    - 0.05
+    - 0.05
+    - 0.1
+    background_color_2:
+    - 0.804
+    - 0.867
+    - 0.916
+    ambient_light:
+    - 0.4
+    - 0.4
+    - 0.4
+    scope: visual presentation only; no effect on experimental metrics
+  variant: industrial_adversarial_industrial2
+  primary_transport_mode: cargo deck / rigid visual support
+  traffic_policy: deterministic phase-separated visual traffic through one shared
+    gate
+  failure_case: Pioneer_05 stops near the gate; Pioneer_06 joins the coalition
+  evidence_scope: Kinematic scenario illustration only. It does not prove collision
+    avoidance, wrench feasibility, controller stability, perception performance or
+    distributed optimality.
+  local_information_policy: Each AMR sees targets inside its sensing radius and exchanges
+    its complete local state only with AMRs inside its communication radius.
+animation:
+  cycle_s: 42.0
+  feed_fraction: 0.16
+  wait_fraction: 0.26
+  carry_fraction: 0.76
+  delivery_fraction: 0.88
+  failure_fraction: 0.52
+  robot_paths:
+    Pioneer_01_ligero:
+    - &id001
+      - -10.75
+      - 7.65
+      - 0.139
+    - - -10.75
+      - 6.15
+      - 0.139
+    - - -6.0
+      - 6.15
+      - 0.139
+    - - -6.0
+      - 6.15
+      - 0.139
+    - - -6.0
+      - 3.25
+      - 0.139
+    - - 0.0
+      - 1.05
+      - 0.139
+    - - 0.0
+      - -1.05
+      - 0.139
+    - - -6.0
+      - -3.25
+      - 0.139
+    - - -6.0
+      - -6.15
+      - 0.139
+    - - -6.0
+      - -6.15
+      - 0.139
+    - - 0.0
+      - -1.05
+      - 0.139
+    - - 0.0
+      - 1.05
+      - 0.139
+    - - -10.75
+      - 6.15
+      - 0.139
+    - *id001
+    Pioneer_07_ligero:
+    - &id002
+      - -10.75
+      - -7.65
+      - 0.139
+    - - -10.75
+      - 6.15
+      - 0.139
+    - - -2.34
+      - 6.15
+      - 0.139
+    - - -2.34
+      - 6.15
+      - 0.139
+    - - -2.34
+      - 3.25
+      - 0.139
+    - - -0.34
+      - 1.05
+      - 0.139
+    - - -0.34
+      - -1.05
+      - 0.139
+    - - -2.34
+      - -3.25
+      - 0.139
+    - - -2.34
+      - -6.15
+      - 0.139
+    - - -2.34
+      - -6.15
+      - 0.139
+    - - -0.34
+      - -1.05
+      - 0.139
+    - - -0.34
+      - 1.05
+      - 0.139
+    - - -10.75
+      - -6.15
+      - 0.139
+    - *id002
+    Pioneer_08_medio:
+    - &id003
+      - -10.15
+      - -7.65
+      - 0.139
+    - - -10.15
+      - 6.15
+      - 0.139
+    - - -1.66
+      - 6.15
+      - 0.139
+    - - -1.66
+      - 6.15
+      - 0.139
+    - - -1.66
+      - 3.25
+      - 0.139
+    - - 0.34
+      - 1.05
+      - 0.139
+    - - 0.34
+      - -1.05
+      - 0.139
+    - - -1.66
+      - -3.25
+      - 0.139
+    - - -1.66
+      - -6.15
+      - 0.139
+    - - -1.66
+      - -6.15
+      - 0.139
+    - - 0.34
+      - -1.05
+      - 0.139
+    - - 0.34
+      - 1.05
+      - 0.139
+    - - -10.15
+      - -6.15
+      - 0.139
+    - *id003
+    Pioneer_10_ligero:
+    - &id004
+      - 9.55
+      - -7.65
+      - 0.139
+    - - 9.55
+      - 6.15
+      - 0.139
+    - - 1.48
+      - 6.15
+      - 0.139
+    - - 1.48
+      - 6.15
+      - 0.139
+    - - 1.48
+      - 3.25
+      - 0.139
+    - - -0.52
+      - 1.05
+      - 0.139
+    - - -0.52
+      - -1.05
+      - 0.139
+    - - 1.48
+      - -3.25
+      - 0.139
+    - - 1.48
+      - -6.15
+      - 0.139
+    - - 1.48
+      - -6.15
+      - 0.139
+    - - -0.52
+      - -1.05
+      - 0.139
+    - - -0.52
+      - 1.05
+      - 0.139
+    - - 9.55
+      - -6.15
+      - 0.139
+    - *id004
+    Pioneer_11_medio:
+    - &id005
+      - 10.15
+      - -7.65
+      - 0.139
+    - - 10.15
+      - 6.15
+      - 0.139
+    - - 2.0
+      - 6.15
+      - 0.139
+    - - 2.0
+      - 6.15
+      - 0.139
+    - - 2.0
+      - 3.25
+      - 0.139
+    - - 0.0
+      - 1.05
+      - 0.139
+    - - 0.0
+      - -1.05
+      - 0.139
+    - - 2.0
+      - -3.25
+      - 0.139
+    - - 2.0
+      - -6.15
+      - 0.139
+    - - 2.0
+      - -6.15
+      - 0.139
+    - - 0.0
+      - -1.05
+      - 0.139
+    - - 0.0
+      - 1.05
+      - 0.139
+    - - 10.15
+      - -6.15
+      - 0.139
+    - *id005
+    Pioneer_12_alta_capacidad:
+    - &id006
+      - 10.75
+      - -7.65
+      - 0.139
+    - - 10.75
+      - 6.15
+      - 0.139
+    - - 2.52
+      - 6.15
+      - 0.139
+    - - 2.52
+      - 6.15
+      - 0.139
+    - - 2.52
+      - 3.25
+      - 0.139
+    - - 0.52
+      - 1.05
+      - 0.139
+    - - 0.52
+      - -1.05
+      - 0.139
+    - - 2.52
+      - -3.25
+      - 0.139
+    - - 2.52
+      - -6.15
+      - 0.139
+    - - 2.52
+      - -6.15
+      - 0.139
+    - - 0.52
+      - -1.05
+      - 0.139
+    - - 0.52
+      - 1.05
+      - 0.139
+    - - 10.75
+      - -6.15
+      - 0.139
+    - *id006
+    Pioneer_04_ligero:
+    - &id007
+      - 9.55
+      - 7.65
+      - 0.139
+    - - 9.55
+      - 6.15
+      - 0.139
+    - - 5.66
+      - 6.15
+      - 0.139
+    - - 5.66
+      - 6.15
+      - 0.139
+    - - 5.66
+      - 3.25
+      - 0.139
+    - - -0.34
+      - 1.05
+      - 0.139
+    - - -0.34
+      - -1.05
+      - 0.139
+    - - 5.66
+      - -3.25
+      - 0.139
+    - - 5.66
+      - -6.15
+      - 0.139
+    - - 5.66
+      - -6.15
+      - 0.139
+    - - -0.34
+      - -1.05
+      - 0.139
+    - - -0.34
+      - 1.05
+      - 0.139
+    - - 9.55
+      - 6.15
+      - 0.139
+    - *id007
+    Pioneer_05_medio:
+    - &id008
+      - 10.15
+      - 7.65
+      - 0.139
+    - - 10.15
+      - 6.15
+      - 0.139
+    - - 6.34
+      - 6.15
+      - 0.139
+    - - 6.34
+      - 6.15
+      - 0.139
+    - - 6.34
+      - 3.25
+      - 0.139
+    - - 0.34
+      - 1.05
+      - 0.139
+    - - 0.34
+      - -1.05
+      - 0.139
+    - - 6.34
+      - -3.25
+      - 0.139
+    - - 6.34
+      - -6.15
+      - 0.139
+    - - 6.34
+      - -6.15
+      - 0.139
+    - - 0.34
+      - -1.05
+      - 0.139
+    - - 0.34
+      - 1.05
+      - 0.139
+    - - 10.15
+      - 6.15
+      - 0.139
+    - *id008
+  traffic:
+    forklift:
+    - - -10.4
+      - 0.0
+      - 0.2
+    - - 10.4
+      - 0.0
+      - 0.2
+    bill_1:
+    - - -1.05
+      - -2.7
+      - 0.0
+    - - -1.05
+      - 2.7
+      - 0.0
+    bill_2:
+    - - -8.6
+      - 3.25
+      - 0.0
+    - - -3.2
+      - 3.25
+      - 0.0
+    free_amr:
+    - - 10.2
+      - -3.25
+      - 0.18
+    - - -10.2
+      - -3.25
+      - 0.18
+queued_loads:
+- name: cola_D1_Q1_10kg_R2
+  position:
+  - -6.0
+  - 6.55
+  - 0.44
+  size:
+  - 0.64
+  - 0.44000000000000006
+  - 0.28
+  weight_kg: 10.0
+  required_agvs: 2
+  dispatch: dispatch_1
+  color: &id009
+  - 0.64
+  - 0.48
+  - 0.27
+  queue_slot: 1
+- name: cola_D1_Q2_18kg_R1
+  position:
+  - -6.0
+  - 6.98
+  - 0.44
+  size:
+  - 0.5599999999999999
+  - 0.39
+  - 0.28
+  weight_kg: 18.0
+  required_agvs: 1
+  dispatch: dispatch_1
+  color: &id010
+  - 0.76
+  - 0.6
+  - 0.34
+  queue_slot: 2
+- name: cola_D2_Q1_12kg_R1
+  position:
+  - -2.0
+  - 6.55
+  - 0.44
+  size:
+  - 0.5599999999999999
+  - 0.39
+  - 0.28
+  weight_kg: 12.0
+  required_agvs: 1
+  dispatch: dispatch_2
+  color: *id009
+  queue_slot: 1
+- name: cola_D2_Q2_21kg_R2
+  position:
+  - -2.0
+  - 6.98
+  - 0.44
+  size:
+  - 0.64
+  - 0.44000000000000006
+  - 0.28
+  weight_kg: 21.0
+  required_agvs: 2
+  dispatch: dispatch_2
+  color: *id010
+  queue_slot: 2
+- name: cola_D3_Q1_14kg_R2
+  position:
+  - 2.0
+  - 6.55
+  - 0.44
+  size:
+  - 0.64
+  - 0.44000000000000006
+  - 0.28
+  weight_kg: 14.0
+  required_agvs: 2
+  dispatch: dispatch_3
+  color: *id009
+  queue_slot: 1
+- name: cola_D3_Q2_24kg_R2
+  position:
+  - 2.0
+  - 6.98
+  - 0.44
+  size:
+  - 0.64
+  - 0.44000000000000006
+  - 0.28
+  weight_kg: 24.0
+  required_agvs: 2
+  dispatch: dispatch_3
+  color: *id010
+  queue_slot: 2
+- name: cola_D4_Q1_16kg_R1
+  position:
+  - 6.0
+  - 6.55
+  - 0.44
+  size:
+  - 0.5599999999999999
+  - 0.39
+  - 0.28
+  weight_kg: 16.0
+  required_agvs: 1
+  dispatch: dispatch_4
+  color: *id009
+  queue_slot: 1
+- name: cola_D4_Q2_27kg_R3
+  position:
+  - 6.0
+  - 6.98
+  - 0.44
+  size:
+  - 0.72
+  - 0.49000000000000005
+  - 0.28
+  weight_kg: 27.0
+  required_agvs: 3
+  dispatch: dispatch_4
+  color: *id010
+  queue_slot: 2
+industrial_features:
+  bottleneck:
+    enabled: true
+    gate_width_m: 2.6
+    barrier_y_m: 0.0
+    left_segment:
+      center:
+      - -6.15
+      - 0.0
+      - 0.36
+      size:
+      - 9.7
+      - 0.12
+      - 0.72
+    right_segment:
+      center:
+      - 6.15
+      - 0.0
+      - 0.36
+      size:
+      - 9.7
+      - 0.12
+      - 0.72
+  cross_traffic:
+  - carretilla_dinamica
+  - humano_bill_1
+  - humano_bill_2
+  - amr_libre_dinamico
+  safety:
+  - paso_cebra_central
+  - limite_velocidad_05
+  - zona_exclusion_peatonal
+  - paradas_emergencia
+  priority_negotiation_zone:
+    name: zona_negociacion_prioridad_central
+    policy: deterministic visual right-of-way arbitration
+    actors:
+    - coalitions
+    - forklift
+    - pedestrians
+  telemetry:
+  - deliveries
+  - queue_remaining
+  - failure_state
+  - bottleneck_occupied
+  - priority_owner
+  industrial2:
+    enabled: true
+    corridor_safe: true
+    overview_visual_profile:
+      show_range_overlays: false
+      show_metric_board: false
+      use_canonical_light_rig: false
+      beam_rows_y_m: []
+      show_service_pipes: false
+      scope: presentation-only decluttering; operational footprints, routes and metrics
+        are unchanged
+    systems:
+    - electrical_cabinets
+    - dock_doors_and_warning_beacons
+    - pallet_and_drum_storage
+    - perimeter_safety_fencing
+aws_native_assets:
+  enabled: true
+  floor:
+    enabled: true
+    texture_path: C:\Program Files\CoppeliaRobotics\CoppeliaSimEdu\qml\QtQuick3D\Materials\maps\concrete_plain.png
+    target_size_m:
+    - 24.0
+    - 18.0
+    tile_size_m:
+    - 1.2
+    - 1.2
+  carton_texture_source_alias: /warehouse/floor/shippingBoxes_C/visible
+  dense_rack_inventory: true
+  rack_slots_per_level: 4
+  inventory_copies: []
+  top_rack_stacks_enabled: false
+  scope: visual-only AWS materials and inventory; no operational footprint or collision
+    geometry is added
+network_and_sensing:
+  sensing_radius_m: 1.8
+  communication_radius_m: 3.2
+  communication_model: perfect lossless exchange inside radius; no link outside radius
+  shared_payload: pose, battery, task, coalition, neighbor list and locally visible
+    objects
+  visualization:
+    show_range_overlays: false
+    sensing_ring_color: cyan
+    communication_ring_color: magenta
+    sensing_area_alpha: 0.055
+    communication_area_alpha: 0.018
+    sensing_ray_color: cyan
+    communication_link_color: green
+battery_system:
+  initial_percent: 100.0
+  return_threshold_percent: 25.0
+  charged_percent: 100.0
+  led_policy: green at 100%, yellow at 50%, red at 0%
+  pilot_robot: Pioneer_03_alta_capacidad
+  pilot_cycle_s: 42.0
+  pilot_return_interval_s:
+  - 22.0
+  - 28.0
+  pilot_charge_interval_s:
+  - 28.0
+  - 38.0
+  scope: accelerated battery-management pilot for visual and integration testing

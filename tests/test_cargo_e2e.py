@@ -7,6 +7,7 @@ import pandas as pd
 
 from viu_mrob_tfm.integrated.experiment import (
     METHODS,
+    _cargo_spatial_score,
     build_audit,
     build_world,
     evaluate_hypotheses,
@@ -20,6 +21,18 @@ def test_world_generation_is_reproducible() -> None:
     assert first.world_hash == second.world_hash
     assert np.array_equal(first.communication_adjacency, second.communication_adjacency)
     assert first.packet_loss == 0.25
+
+
+def test_normalized_cargo_score_preserves_archived_ranking() -> None:
+    world = build_world("open_nominal", 9600, 8)
+    distances = np.linalg.norm(world.robot_positions - world.load_initial_pose[:2], axis=1)
+    normalized = np.asarray([
+        _cargo_spatial_score(world, index, float(distances[index]))
+        for index in range(world.n_robots)
+    ])
+    archived = distances - 0.08 * world.capacities_kg - 0.025 * world.force_limits_n
+    np.testing.assert_allclose(normalized, archived, rtol=0.0, atol=1e-12)
+    assert np.array_equal(np.argsort(normalized, kind="stable"), np.argsort(archived, kind="stable"))
 
 
 def test_open_mission_uses_unicycle_and_reaches_target() -> None:

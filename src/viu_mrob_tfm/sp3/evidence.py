@@ -97,7 +97,7 @@ def _format_table(summary: pd.DataFrame, abstention: pd.Series) -> str:
         )
     return (
         "\\begin{tabular}{lrrrrrrr}\n\\toprule\n"
-        "Método & Precisión & Cobertura & Abstención & Falsos positivos & Gap wrench & Residual KKT & CPU [ms] \\\\\n"
+        "Método & Precisión & Cobertura & Abstención & Falsos positivos & Brecha wrench & Residual KKT & CPU [ms] \\\\\n"
         "\\midrule\n"
         + "\n".join(rows)
         + "\n\\bottomrule\n\\end{tabular}\n"

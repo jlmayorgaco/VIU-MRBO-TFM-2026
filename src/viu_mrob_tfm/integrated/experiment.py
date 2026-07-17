@@ -65,6 +65,12 @@ SCENARIO_LABELS = {
     "failure_during_transport": "Fallo durante transporte",
 }
 
+# Unit reference scales keep the archived Cargo ranking numerically unchanged
+# while making every term in the empirical score dimensionless.
+CARGO_DISTANCE_REFERENCE_M = 1.0
+CARGO_PAYLOAD_REFERENCE_KG = 1.0
+CARGO_FORCE_REFERENCE_N = 1.0
+
 
 @dataclass(frozen=True, slots=True)
 class CargoWorld:
@@ -260,6 +266,7 @@ def _gossip_snapshot(
     """Exchange versioned robot records using delayed lossy neighbor messages."""
 
     n = world.n_robots
+    # np.argmin resolves equal distances with the lowest robot identifier.
     leader = int(np.argmin(np.where(active, np.linalg.norm(world.robot_positions - world.load_initial_pose[:2], axis=1), np.inf)))
     views = [set([i]) if active[i] else set() for i in range(n)]
     queue: list[tuple[int, int, frozenset[int]]] = []
@@ -314,6 +321,15 @@ def _capacity_only(world: CargoWorld, members: tuple[int, ...]) -> bool:
     return bool(len(members) >= 3 and np.sum(world.capacities_kg[np.asarray(members, dtype=int)]) >= world.load_mass_kg)
 
 
+def _cargo_spatial_score(world: CargoWorld, index: int, distance_m: float) -> float:
+    """Return the dimensionless empirical Cargo recruitment score."""
+
+    normalized_distance = float(distance_m) / CARGO_DISTANCE_REFERENCE_M
+    normalized_payload = float(world.capacities_kg[index]) / CARGO_PAYLOAD_REFERENCE_KG
+    normalized_force = float(world.force_limits_n[index]) / CARGO_FORCE_REFERENCE_N
+    return normalized_distance - 0.08 * normalized_payload - 0.025 * normalized_force
+
+
 def _greedy_select(
     world: CargoWorld,
     candidates: tuple[int, ...],
@@ -326,7 +342,7 @@ def _greedy_select(
     candidates = tuple(index for index in candidates if index not in members)
     distance = np.linalg.norm(world.robot_positions - world.load_initial_pose[:2], axis=1)
     if spatial:
-        key = lambda i: (distance[i] - 0.08 * world.capacities_kg[i] - 0.025 * world.force_limits_n[i], i)
+        key = lambda i: (_cargo_spatial_score(world, i, float(distance[i])), i)
     else:
         key = lambda i: (-world.capacities_kg[i], i)
     predicate = _certificate if mechanical_guard else _capacity_only
@@ -1042,7 +1058,7 @@ def _write_tables(output: Path, runs: pd.DataFrame, summary: pd.DataFrame, hypot
     result_lines = [
         "\\begin{tabular}{lrrrrrr}",
         "\\toprule",
-        "Método & $n$ & Misión & Colisión & Tiempo [s] & Recuperación [s] & Mensajes \\\\",
+        "Método & $n$ & Misión & \\shortstack{Intersección\\\\huella--obstáculo} & Tiempo [s] & Recuperación [s] & Mensajes \\\\",
         "\\midrule",
     ]
     for method in METHODS:

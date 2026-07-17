@@ -19,11 +19,11 @@ La auditoría enlaza cada objetivo específico con preguntas RQ, hipótesis cont
 No se ejecutan campañas nuevas. Se verifican tamaños de muestra, tratamientos, baselines, estadística, criterios de éxito y resultados mediante configuraciones versionadas, tablas procesadas y manifiestos ya existentes. Se emplean pruebas de regresión de texto/trazabilidad y compilación LaTeX.
 
 ## Hitos
-- [ ] Hito 1 — Inventario del contenido actual y matriz de coherencia con brechas clasificadas.
-- [ ] Hito 2 — Resumen/abstract, introducción, objetivos e hipótesis alineados con evidencia real.
-- [ ] Hito 3 — Metodología y conclusiones sincronizadas con objetivos e hipótesis.
-- [ ] Hito 4 — Matriz de trazabilidad y registro de revisión actualizados.
-- [ ] Hito 5 — Pruebas, compilación, revisión visual y diff final completados.
+- [x] Hito 1 — Inventario del contenido actual y matriz de coherencia con brechas clasificadas.
+- [x] Hito 2 — Resumen/abstract, introducción, objetivos e hipótesis alineados con evidencia real.
+- [x] Hito 3 — Metodología y conclusiones sincronizadas con objetivos e hipótesis.
+- [x] Hito 4 — Matriz de trazabilidad y registro de revisión actualizados.
+- [x] Hito 5 — Pruebas, compilación, revisión visual y diff final completados.
 
 ## Validación
 Ejecutar búsquedas de términos fuertes y estados pendientes; verificar referencias cruzadas y etiquetas; compilar con `thesis/build.ps1`; ejecutar las pruebas pertinentes existentes; revisar el PDF renderizado, el log de LaTeX y el diff limitado a los archivos de esta tarea.
@@ -34,6 +34,11 @@ El árbol de trabajo contiene numerosos cambios previos: se editarán solo archi
 ## Registro de decisiones
 - 2026-07-17 — Adoptar una revisión de coherencia completa y no una corrección aislada del resumen, porque el usuario solicita resistencia a una evaluación metodológica de tesis.
 - 2026-07-17 — Mantener Cargo como único modo físico validado y empuje/caging como trabajo pendiente.
+- 2026-07-17 — Clasificar la arquitectura como híbrida: las decisiones vecinales coexisten con cierres, registro y optimizadores que consultan estado global.
+- 2026-07-17 — Separar H5 en H5a (coste) y H5b (calidad), porque la evidencia sustenta el crecimiento del coste pero refuta la ausencia de colapso de calidad a 128 robots.
+- 2026-07-17 — Operacionalizar H3 con tiempo como estimando primario; igualdad de éxitos no se interpreta como equivalencia sin margen predefinido.
+- 2026-07-17 — Declarar OE5 parcialmente cumplido: SP2--SP4 permiten reanálisis archivado, no regeneración histórica completa.
+- 2026-07-17 — Mantener abierta la extensión VIU: el cuerpo tiene 101 páginas frente al máximo de 80 y los anexos alcanzan exactamente 20.
 
 ## Progreso
-Leídas las fuentes de verdad y el protocolo de revisión académica. Pendiente inventariar la memoria, construir la matriz de alineación, editar y validar.
+Revisión completada. Resumen y abstract quedan en 294/293 palabras; se añadió la matriz RQ--OE--H--evidencia, se sincronizaron conclusiones y trazabilidad, pasaron 74 pruebas y se generó un PDF de 139 páginas sin cajas `Overfull`, referencias indefinidas ni defectos visuales en las páginas auditadas. Permanece abierto el riesgo administrativo de extensión del cuerpo (101 páginas frente a 80).

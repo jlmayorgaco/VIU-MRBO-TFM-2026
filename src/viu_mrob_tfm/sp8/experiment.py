@@ -956,7 +956,7 @@ def _write_latex_tables(
     result_lines = [
         "\\begin{tabular}{lrrrr}",
         "\\toprule",
-        "Método & Libre de conflicto & Pares & Mens./agente & CPU (ms) \\\\",
+        "Método & Libre de conflicto & Pares & Mens./agente & CPU [ms] \\\\",
         "\\midrule",
     ]
     for method in METHODS[:4]:

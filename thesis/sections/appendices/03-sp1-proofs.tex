@@ -10,7 +10,7 @@ Las afirmaciones formales de la Sección~\ref{subsec:sp1} se demuestran para una
 Con cargas obligatorias y demanda realizable, expandir cada cuota en plazas produce una asignación bipartita con cuotas resoluble en tiempo polinómico. Permitir la selección opcional todo-o-nada bajo presupuesto de robots contiene mochila 0--1 y es NP-difícil.
 \end{contribucion}
 
-Si todas las cargas son obligatorias y $\sum_kn_k\leq N$, fije $y_k=1$ en \eqref{eq:sp1-oracle}. Expanda la carga $k$ en $n_k$ plazas indistinguibles y conecte cada robot con cada plaza usando el coste $\kappa_{ik}$. La exclusividad del robot y la ocupación unitaria de cada plaza forman un problema de asignación rectangular o, equivalentemente, una asignación bipartita con cuotas. La matriz de incidencia bipartita es totalmente unimodular; por ello la relajación lineal tiene un óptimo entero y el problema se resuelve mediante flujo de coste mínimo en tiempo polinómico.
+Si todas las cargas son obligatorias y $\sum_kn_k\leq N$, fije $y_k=1$ en \eqref{eq:sp1-oracle}. Expanda la carga $k$ en $n_k$ plazas indistinguibles y conecte cada robot con cada plaza usando el coste $\kappa_{ik}$. La exclusividad del robot y la ocupación unitaria de cada plaza forman un problema de asignación rectangular o, equivalentemente, una asignación bipartita con cuotas. La matriz de incidencia bipartita es totalmente unimodular. Por ello la relajación lineal tiene un óptimo entero y el problema se resuelve mediante flujo de coste mínimo en tiempo polinómico.
 
 Cuando las cargas son opcionales, tome $\kappa_{ik}=0$ y robots intercambiables. Existe una asignación compatible con un vector $y$ si y solo si $\sum_kn_ky_k\leq N$. El objetivo se reduce a $\max\sum_kv_ky_k$. Identificar $n_k$ con el peso de un objeto, $v_k$ con su valor y $N$ con la capacidad produce exactamente mochila 0--1, que es NP-difícil \parencite{karp1972reducibility}. La transformación es polinómica. Así, la selección todo-o-nada bajo presupuesto es NP-difícil, mientras las cuotas obligatorias aditivas permanecen en la clase polinómica.
 
@@ -28,14 +28,14 @@ Sea ahora un perfil que no satisface todas las cuotas. Si existe una carga defic
 \[
  \sum_kq_k=N\geq\sum_kn_k
 \]
-implica que un déficit en alguna carga debe coexistir con exceso en otra. Trasladar un robot desde la carga excedida a la deficitaria reduce $D_n+O_n$ en dos; la variación del coste pertenece a $[-\kappa_{\max},\kappa_{\max}]$ y la mejora vuelve a ser estricta. Si existe exceso sin déficit, retirar un robot redundante reduce $O_n$ y no aumenta $C$. Ningún perfil inexacto es Nash.
+implica que un déficit en alguna carga debe coexistir con exceso en otra. Trasladar un robot desde la carga excedida a la deficitaria reduce $D_n+O_n$ en dos. La variación del coste pertenece a $[-\kappa_{\max},\kappa_{\max}]$ y la mejora vuelve a ser estricta. Si existe exceso sin déficit, retirar un robot redundante reduce $O_n$ y no aumenta $C$. Ningún perfil inexacto es Nash.
 
-Recíprocamente, en un perfil con $q_k=n_k$ para toda carga, un robot asignado que pasa a inactividad crea una unidad de déficit y ahorra como máximo $\kappa_{\max}$; trasladarlo a otra carga crea una unidad de déficit y una de exceso; y un robot inactivo que entra crea exceso. Como $\lambda>\kappa_{\max}$, ninguna desviación es rentable. Los Nash puros coinciden exactamente con los perfiles de cuotas correctas.
+Recíprocamente, en un perfil con $q_k=n_k$ para toda carga, un robot asignado que pasa a inactividad crea una unidad de déficit y ahorra como máximo $\kappa_{\max}$. Trasladarlo a otra carga crea una unidad de déficit y una de exceso, mientras que la entrada de un robot inactivo crea exceso. Como $\lambda>\kappa_{\max}$, ninguna desviación es rentable. Los Nash puros coinciden exactamente con los perfiles de cuotas correctas.
 
 Cada mejora estricta aumenta $\Phi_Q$ y el espacio contiene $(K+1)^N$ perfiles, de modo que toda trayectoria de mejora termina. Finalmente, desde cualquier perfil inexacto existe una mejora, por lo cual ningún máximo global puede ser inexacto. Sobre el conjunto exacto se cumple $D_n=O_n=0$ y maximizar $\Phi_Q=-C$ equivale a minimizar el coste espacial. Esto completa la Proposición~\ref{thm:sp1-feasible-nash}.
 
 \paragraph{Corolario de regulación estratégica realizable.}
-Con cargas obligatorias, $z_{1,k}=q_k-n_k$. Mientras $\boldsymbol z_1\neq\boldsymbol0$, el perfil no satisface todas las cuotas y, por la proposición anterior, no es Nash; por tanto, existe una mejora estricta. Bajo una activación que no omite indefinidamente a robots con mejora, cada evento aceptado aumenta $\Phi_Q$ y el espacio finito impide una sucesión infinita. La trayectoria alcanza así $\boldsymbol z_1=\boldsymbol0$ en un número finito de revisiones, lo que demuestra el Corolario~\ref{cor:sp1-strategic-regulation}. El argumento se refiere al juego finito de mejora estricta y no prueba convergencia de Smith muestreado ni del cierre QR bajo escasez.
+Con cargas obligatorias, $z_{1,k}=q_k-n_k$. Mientras $\boldsymbol z_1\neq\boldsymbol0$, el perfil no satisface todas las cuotas y, por la proposición anterior, no es Nash. Por tanto, existe una mejora estricta. Bajo una activación que no omite indefinidamente a robots con mejora, cada evento aceptado aumenta $\Phi_Q$ y el espacio finito impide una sucesión infinita. La trayectoria alcanza así $\boldsymbol z_1=\boldsymbol0$ en un número finito de revisiones, lo que demuestra el Corolario~\ref{cor:sp1-strategic-regulation}. El argumento se refiere al juego finito de mejora estricta y no prueba convergencia de Smith muestreado ni del cierre QR bajo escasez.
 
 \subsection{Escasez e incentivo de cuórum}
 \label{app:sp1-scarcity-proof}
@@ -51,7 +51,7 @@ Para $\beta>0$ y $0\leq q<n_k$, el incremento discreto del beneficio de \eqref{e
  \Delta B_{\beta,k}(q+1)
  =\frac{\exp(\beta q/n_k)\{\exp(\beta/n_k)-1\}}{\exp(\beta)-1}.
 \]
-Todos los factores salvo $\exp(\beta q/n_k)$ son positivos y constantes respecto de $q$; los incrementos son, por tanto, estrictamente crecientes antes del cuórum. La saturación mediante $\min\{q,n_k\}$ hace nulo todo incremento posterior.
+Todos los factores salvo $\exp(\beta q/n_k)$ son positivos y constantes respecto de $q$. Los incrementos son, por tanto, estrictamente crecientes antes del cuórum. La saturación mediante $\min\{q,n_k\}$ hace nulo todo incremento posterior.
 
 En el caso $n_1=n_2=N=2$, valores unitarios y costes nulos, la concentración $(2, 0)$ produce beneficio uno. La dispersión $(1, 1)$ produce
 \[

@@ -1,42 +1,37 @@
 \section{Metodología}
 \label{sec:methodology}
 
-La investigación combina análisis formal y experimentos pareados. El primero establece propiedades bajo supuestos explícitos; los experimentos miden su alcance y sus fallos en modelos simulados. Cargo soportado es la modalidad física principal. El empuje y el \emph{caging} solo se discuten cuando existe un modelo de contacto específico.
+La investigación combina análisis formal y experimentos pareados: el primero establece propiedades bajo supuestos explícitos y los segundos miden alcance y fallos. Cargo soportado es la modalidad principal. Empuje y \emph{caging} requieren otro modelo de contacto.
 
 \subsection{Diseño y unidad de análisis}
 \label{subsec:methodology-design}
 
-Las preguntas RQ1--RQ5 se descomponen en SP0--SP8. Cada SP añade una restricción al anterior y fija un estimando, una métrica primaria y una condición que contradice la hipótesis local. La simulación no sustituye las pruebas de convergencia, estabilidad o seguridad.
+RQ1--RQ5 se descomponen en SP0--SP8. Cada SP añade una restricción y fija estimando, métrica y criterio contrario. La simulación no prueba convergencia, estabilidad ni seguridad.
 
-La unidad independiente es el mundo experimental $w$, definido por escenario, factores y semilla. Todos los métodos reciben el mismo mundo. Robots, cargas, contactos y muestras temporales están anidados en una ejecución y no aumentan el tamaño muestral. Esta definición evita tratar miles de instantes correlacionados como observaciones independientes.
+La unidad independiente es el mundo $w$ (escenario, factores y semilla), compartido por todos los métodos. Robots, cargas, contactos e instantes están anidados y no aumentan el tamaño muestral.
 
-Los SP forman cuatro bloques. SP0--SP2 estudian asignación, cuotas y heterogeneidad sin planta física. SP3--SP4 introducen contacto, \emph{wrench} y transporte de pose. SP5--SP7 añaden seguridad, fallos y tráfico. SP8 mide escala y comunicación sobre un juego de rutas. El cambio entre bloques es deliberado: una propiedad estratégica no se hereda como propiedad mecánica y una barrera geométrica no garantiza progreso.
+SP0--SP2 estudian asignación sin planta. SP3--SP4 incorporan contacto y transporte. SP5--SP7 cubren seguridad, fallos y tráfico, y SP8 trata escala y red. Las propiedades estratégicas no se heredan como mecánicas ni una barrera garantiza progreso.
 
-La Tabla~\ref{tab:method-operationalization} evita dos omisiones frecuentes:
-declarar un objetivo sin evidencia y evaluar una hipótesis con una variable elegida
-después del experimento. Los estimandos principales se fijan por contraste; las
-medidas restantes describen mecanismo, coste o límites. SP5 y SP7 mantienen
-hipótesis locales en sus protocolos, pero no se usan para crear una nueva
-subhipótesis global después de observar los resultados.
+La Tabla~\ref{tab:method-operationalization} enlaza objetivos, evidencia y estimandos preespecificados. Las demás medidas describen mecanismo, coste o límites. SP5 y SP7 conservan hipótesis locales.
 
 \begin{table}[!htbp]
   \centering
   \caption{Matriz de operacionalización entre preguntas, objetivos, hipótesis y evidencia.}
   \label{tab:method-operationalization}
-  \scriptsize
+  \viutablefont
   \setlength{\tabcolsep}{2.3pt}
-  \begin{tabularx}{\textwidth}{@{}p{1.1cm}p{0.75cm}p{1.35cm}p{4.65cm}X@{}}
+  \begin{tabularx}{\textwidth}{@{}p{1.4cm}p{0.75cm}p{1.35cm}p{4.10cm}X@{}}
     \toprule
     Pregunta y objetivo & Hipótesis & Evidencia & Estimando o criterio principal & Comparación y nivel \\
     \midrule
-    \shortstack[l]{RQ1\\OE1} & H1 & SP0--SP1 & Nash factible bajo los supuestos formales; diferencia pareada en factibilidad o fracción de coaliciones parciales & Oráculo, referencia y ablación; evidencia formal y de desarrollo. \\
-    \shortstack[l]{RQ1\\OE1} & Local & SP2 & Diferencia pareada de gap, completitud y servicio incompleto entre score marginal y score plano & Dos referencias centrales y ablación; reanálisis histórico, sin extender H1 a capacidad mecánica. \\
-    \shortstack[l]{RQ3\\OE2} & H2 & SP3--SP4 & Diferencia pareada de falsos positivos; residual de \emph{wrench} y error de pose como apoyo & Criterio escalar, QP de \emph{wrench} y controles de pose; formal parcial y reanálisis. \\
+    \shortstack[l]{RQ1\\OE1} & H1a--H1c & SP0--SP1 & Nash de cuota bajo realizabilidad; efecto de QR sobre fracción parcial; efecto incremental del cuórum sobre valor & Oráculo, Smith continuo y ablación lineal con el mismo QR; evidencia formal y de desarrollo. \\
+    \shortstack[l]{RQ1\\OE1} & Local & SP2 & Diferencia pareada de brecha, completitud y servicio incompleto entre puntuación marginal y puntuación plana & Dos referencias centrales y ablación; evidencia experimental, sin extender H1 a capacidad mecánica. \\
+    \shortstack[l]{RQ3\\OE2} & H2 & SP3--SP4 & Diferencia pareada de falsos positivos; residual de \emph{wrench} y error de pose como apoyo & Criterio escalar, QP de \emph{wrench} y controles de pose; evidencia formal parcial y experimental. \\
     \shortstack[l]{RQ2\\OE3} & H3 & Cargo & Diferencia pareada del tiempo de terminación entre coste espacial y selección desacoplada & Ablación confirmatoria; éxito y mensajes son secundarios y no constituyen una prueba de equivalencia. \\
     \shortstack[l]{RQ4\\OE3} & H4 & SP6 y Cargo & Restauración del certificado en mundos recuperables y diferencia pareada de éxito con/sin reparación & Oráculo exhaustivo, referencias y ablación; formal, confirmatoria e integrada. \\
     \shortstack[l]{RQ4\\OE3} & Local & SP5 y SP7 & Colisión/éxito seguro en SP5; entrega y conflicto lógico en SP7 & Ablaciones y oráculos de alcance acotado; evidencia empírica por capa, sin seguridad continua para SP7. \\
     \shortstack[l]{RQ5\\OE4} & H5a--b & SP8 & Complejidad local frente a enumeración y tasa global libre de conflictos al crecer la escala & Evento, periódico, información perfecta y oráculo certificado; formal y confirmatoria sobre rutas discretas. \\
-    \shortstack[l]{Todas\\OE5} & HP & Todos & Integridad de configuraciones, semillas, hashes, invariantes y cadena dato--tabla--afirmación & Reproducción desde cero o reanálisis archivado, declarado por campaña. \\
+    OE5 (transversal) & N/A & SP0--SP8 & Correspondencia entre formulación, configuración, semillas, datos, métricas y resultados & Regeneración cuando existe generador; reanálisis declarado para observaciones archivadas. \\
     \bottomrule
   \end{tabularx}
   \viuownsource
@@ -69,8 +64,10 @@ El uniciclo procede de una base diferencial con rodadura ideal y sin velocidad l
  \begin{bmatrix}-\sin\theta_i&\cos\theta_i\end{bmatrix}\dot p_i=0.
  \label{eq:method-differential-drive}
 \end{equation}
-La Figura~\ref{fig:method-differential-drive} fija la geometría y separa el mapa cinemático de la actuación. El signo de $\omega_i$ es positivo en sentido antihorario; pares iguales producen movimiento longitudinal y su diferencia produce momento de guiñada.
+El signo de $\omega_i$ es positivo en sentido antihorario. Pares iguales producen movimiento longitudinal y su diferencia produce guiñada.
 
+% Ilustración redundante con las ecuaciones cinemáticas; se conserva en la
+\iffalse
 \begin{figure}[!htbp]
   \centering
   \begin{tikzpicture}[x=1cm,y=1cm,font=\sffamily,
@@ -125,6 +122,7 @@ La Figura~\ref{fig:method-differential-drive} fija la geometría y separa el map
   \label{fig:method-differential-drive}
   \viuownsource
 \end{figure}
+\fi
 
 La campaña de acoplamiento de SP4 añade la dinámica de velocidad, $\xi_i=(q_i,v_i,\omega_i)$ y $\eta_i=(\eta_i^v,\eta_i^\omega)$, con $\dot v_i=\eta_i^v$ y $\dot\omega_i=\eta_i^\omega$. Para masa $m_i$ e inercia $I_i$, la acción realizable se obtiene al limitar los pares
 \begin{equation}
@@ -134,7 +132,7 @@ La campaña de acoplamiento de SP4 añade la dinámica de velocidad, $\xi_i=(q_i
  \qquad |\tau_{i,R/L}|\leq\tau_i^{\max}.
  \label{eq:method-wheel-torque}
 \end{equation}
-El control se evalúa en $t_m$ y se integra con paso $\Delta t$; por tanto, \emph{asíncrono} designa la ausencia de rondas globales de decisión. La ejecución conserva un reloj digital.
+El control se evalúa en $t_m$ e integra con $\Delta t$. \emph{Asíncrono} indica ausencia de rondas globales y conserva un reloj digital.
 
 La preferencia continua $\rho_{ik}\in[0, 1]$ y la asignación $x_{ik}\in\{0, 1\}$ son objetos distintos. La coalición $C_k=\{i:x_{ik}=1\}$ satisface el cierre lógico si
 \begin{equation}
@@ -143,22 +141,22 @@ La preferencia continua $\rho_{ik}\in[0, 1]$ y la asignación $x_{ik}\in\{0, 1\}
   \qquad \sum_{i\in\Robots}\boldsymbol c_i x_{ik}\succeq\boldsymbol r_k.
   \label{eq:method-logical-feasibility}
 \end{equation}
-Estas desigualdades certifican exclusivamente recursos y pertenencia. El contacto exige además que, en Cargo, una coalición fija produzca el \emph{wrench} requerido: existe $\lambda_k\in\mathcal U_{C_k}$ tal que $G_{C_k}(q_k^L)\lambda_k=W_k^{\mathrm{req}}$. Una vez acoplados los robots, la simulación sustituye sus movimientos individuales por la dinámica planar del cuerpo compuesto,
+Estas desigualdades solo certifican recursos y pertenencia. En Cargo también debe existir $\lambda_k\in\mathcal U_{C_k}$ tal que $G_{C_k}(q_k^L)\lambda_k=W_k^{\mathrm{req}}$. Tras el acoplamiento, la simulación usa la dinámica planar compuesta,
 \begin{equation}
  M_k\ddot q_k^L+D_k\dot q_k^L
  =G_{C_k}(q_k^L)\lambda_k+W_k^{\mathrm{ext}},
  \label{eq:method-payload-dynamics}
 \end{equation}
-con límites de contacto aplicados antes de integrar. El modelo de empuje exigiría fuerzas unilaterales y fricción; el \emph{caging}, además, un conjunto geométrico de confinamiento. Esa rama no participa en los resultados cuantitativos.
+con límites de contacto antes de integrar. El empuje exigiría unilateralidad y fricción, mientras que el \emph{caging} requeriría además confinamiento. Esa rama no se evalúa.
 
-Los modelos se usan con distinta resolución. SP0--SP2 mantienen las poses fijas y solo producen decisiones de asignación. SP3 evalúa contactos y \emph{wrench} con la carga inmóvil. SP4 integra el uniciclo durante el acoplamiento y la ecuación~\eqref{eq:method-payload-dynamics} durante el transporte; SP5 conserva esta última y añade obstáculos, perturbaciones y saturación. SP6 aproxima el viaje del reemplazo mediante distancia y velocidad acotada. SP7--SP8 sustituyen la planta por un cuerpo compuesto inflado que ocupa celdas de una ruta. Esta reducción permite estudiar tráfico y red; las garantías del control continuo quedan circunscritas a sus estratos originales.
+La resolución cambia por SP. SP0--SP2 fijan poses, SP3 evalúa \emph{wrench} estático, SP4 integra uniciclos y la ecuación~\eqref{eq:method-payload-dynamics}, SP5 añade obstáculos, SP6 aproxima el viaje del reemplazo y SP7--SP8 usan rutas de cuerpos inflados. Las garantías continuas quedan en sus estratos.
 
-La red de comunicación es $\mathcal G(t)=(\Robots,\mathcal E(t))$. Cada robot usa estado propio, percepción y mensajes de $\Neighbors_i(t)$. Radio $R$, retardo $\tau_d$, pérdida $p_{\mathrm{loss}}$, caducidad y bytes transmitidos son factores medidos. Un método solo se denomina distribuido cuando la estimación, la actualización y el cierre respetan esa información. Las etapas que consultan todos los candidatos se identifican como globales.
+En $\mathcal G(t)=(\Robots,\mathcal E(t))$, cada robot usa estado propio, percepción y mensajes de $\Neighbors_i(t)$. Se miden $R$, $\tau_d$, $p_{\mathrm{loss}}$, caducidad y bytes. Solo se denomina distribuido al método cuyas estimación, actualización y cierre respetan esa información.
 
 \subsection{Métodos y comparadores}
 \label{subsec:methodology-methods}
 
-La información disponible determina el papel de cada método. Los optimizadores globales sirven como oráculos o cotas en instancias pequeñas y quedan fuera de la operación bajo comunicación vecinal.
+La información determina cada papel: los optimizadores globales son oráculos o cotas en instancias pequeñas y quedan fuera de la operación vecinal.
 
 \begin{table}[!htbp]
   \centering
@@ -173,38 +171,34 @@ La información disponible determina el papel de cada método. Los optimizadores
     Optimización global & Estado y modelo completos & Húngaro, MILP, QP de \emph{wrench}, CBS/ECBS & Óptimo certificado, cota o referencia. \\
     Método local basado en modelo & Estado propio y mensajes vecinales & Subasta, CBBA, mejor respuesta, Smith, primal--dual & Mecanismo propuesto o comparador homogéneo. \\
     Heurística global o local & Información declarada por método & Método voraz, priorización, aproximación VO/CBF & Comparador de coste y ablación estructural. \\
-    Proxy o adaptación piloto & Información declarada por tratamiento & Subasta, VO o predictor simplificados de Industrial~2 & Prueba funcional exploratoria; no hereda la garantía del método publicado. \\
+    Proxy o adaptación piloto & Información declarada por tratamiento & Subasta, VO o predictor simplificados de Industrial~2 & Prueba funcional exploratoria. No hereda la garantía del método publicado. \\
     \bottomrule
   \end{tabularx}
   \viuownsource
 \end{table}
 
-Smith, replicator, BNN y logit son protocolos distintos sobre preferencias poblacionales \parencite{sandholm2010population}. El cierre QR convierte preferencias en cuotas enteras, pero solo es vecinal si la ordenación usa mensajes locales. Las variantes primal--dual introducen multiplicadores para restricciones acopladas bajo convexidad o monotonicidad \parencite{cherukuri2016primalDual,yi2019operatorGNE}. El húngaro se limita al caso uno a uno; CBBA se usa como referencia de subasta \parencite{choiBrunetHow2009CBBA}; ORCA, CBF-QP, planificación priorizada y CBS se comparan únicamente con modelos compatibles.
+Smith, replicator, BNN y logit son protocolos distintos \parencite{sandholm2010population}. QR cierra cuotas, pero solo es vecinal con ordenación local. Primal--dual usa multiplicadores bajo convexidad o monotonicidad \parencite{cherukuri2016primalDual,yi2019operatorGNE}. El húngaro se limita a uno-a-uno, CBBA sirve de subasta \parencite{choiBrunetHow2009CBBA}, y ORCA, CBF-QP, priorización o CBS solo se comparan con modelos compatibles.
 
-Cuando el tamaño lo permite, la comparación incluye un oráculo, un método de referencia y una ablación del componente asociado con la hipótesis. Todos parten del mismo estado y comparten límites, horizonte y criterio de éxito. Una solución del optimizador solo se considera óptima si la cota se cerró; en otro caso se informa su brecha.
+Cuando el tamaño lo permite, la comparación incluye un oráculo, un método de referencia y una ablación del componente asociado con la hipótesis. Todos parten del mismo estado y comparten límites, horizonte y criterio de éxito. Una solución del optimizador solo se considera óptima si la cota se cerró. En otro caso se informa su brecha.
 
 \subsection{Protocolo y análisis estadístico}
 \label{subsec:methodology-experimental-protocol}
 
-El protocolo separa las pruebas deterministas, el ajuste y la evaluación confirmatoria. Las semillas de esta última no intervienen en la selección de parámetros. Solo se excluyen réplicas corruptas, duplicadas o afectadas por un fallo de infraestructura ajeno al tratamiento. Las colisiones, las excepciones causadas por el algoritmo, la falta de convergencia y el agotamiento del horizonte permanecen en el denominador.
+El protocolo separa pruebas, ajuste y confirmación. Sus semillas no seleccionan parámetros. Solo se excluyen réplicas corruptas, duplicadas o con fallos externos. Colisiones, excepciones algorítmicas, fallos de convergencia y agotamiento permanecen en el denominador.
 
-El emparejamiento se conserva en todo el análisis. Para dos métodos se calcula $d_w=y_{w,a}-y_{w,b}$ sobre cada mundo; con tres o más métodos, el mundo es el bloque. Se informan número de mundos, fallos, estimación puntual, intervalo del 95\,\% y tamaño de efecto. Las diferencias binarias usan diferencia de riesgos pareada y McNemar exacto. Las variables continuas u ordinales usan Friedman, Wilcoxon y Kendall $W$ cuando sus supuestos corresponden \parencite{demsar2006Statistical,kerby2014SimpleDifference}. El remuestreo opera sobre mundos, nunca sobre robots o instantes. Para mantener consistencia con las tablas y figuras generadas automáticamente, los resultados numéricos usan punto como separador decimal.
+El análisis conserva el emparejamiento: $d_w=y_{w,a}-y_{w,b}$ para dos métodos y el mundo como bloque para tres o más. Se informan muestra, fallos, estimación, IC del 95\,\% y efecto. Las variables binarias usan riesgo pareado y McNemar. Las continuas u ordinales, Friedman, Wilcoxon y Kendall $W$ cuando proceda \parencite{demsar2006Statistical,kerby2014SimpleDifference}. El remuestreo opera sobre mundos y los resultados usan punto decimal.
 
-Holm corrige cada familia de contrastes preespecificada \parencite{holm1979Sequential}. Un valor $p$ no reemplaza la magnitud ni el intervalo. El agotamiento del horizonte se trata como censura o tiempo truncado; no se calculan razones de riesgo si el protocolo no las fijó antes del análisis.
+Holm corrige familias preespecificadas \parencite{holm1979Sequential}. $p$ no reemplaza magnitud ni intervalo. El agotamiento es censura o tiempo truncado, sin razones de riesgo no previstas.
 
-Tras un piloto de tres semillas, la campaña Cargo empleó 30 semillas nuevas por combinación. Cruzó cuatro regímenes, tres tamaños de flota y seis tratamientos pareados. El método completo propagó entre vecinos tablas con número de versión, pérdida y retardo. Las referencias globales usaron el mismo mundo y la misma planta, pero no contabilizaron mensajes. Las comparaciones se definieron antes de calcular los resultados confirmatorios. El número 30 fue una regla presupuestaria fijada por el protocolo, no el resultado de un cálculo de potencia. Por ello, la resolución efectiva se juzga mediante la anchura de los intervalos obtenidos; un contraste no significativo no se convierte en evidencia de equivalencia.
+Tras un piloto de tres semillas, la campaña Cargo empleó 30 semillas nuevas por combinación. Cruzó cuatro regímenes, tres tamaños de flota y seis tratamientos pareados. El método completo propagó entre vecinos tablas con número de versión, pérdida y retardo. Las referencias globales usaron el mismo mundo y la misma planta, pero no contabilizaron mensajes. Las comparaciones se definieron antes de calcular los resultados confirmatorios. El protocolo fijó 30 semillas por razones presupuestarias, sin un cálculo de potencia. Por ello, la resolución efectiva se juzga mediante la anchura de los intervalos obtenidos. Un contraste no significativo no se convierte en evidencia de equivalencia.
 
-La serie AWS se mantuvo como evidencia piloto complementaria. Sus cuatro etapas
-pasaron de asignación uno a uno a coaliciones heterogéneas, compararon A* con
-movimiento continuo y culminaron en cuatro escenarios industriales. El último
-estudio cruzó cuatro métodos y dos semillas pareadas por escenario durante
-$60$~s. Su objetivo fue localizar bloqueos, coste computacional y fallos de
-interfaz; ese tamaño no permite una clasificación confirmatoria. La referencia
-central optimiza la asignación de cada instantánea, no la trayectoria conjunta,
-y los tratamientos inspirados en subasta, reciprocidad y predicción se
-identifican como \emph{proxies}.
+La serie AWS es piloto: progresó de asignación a coaliciones y comparó A* con
+movimiento continuo en cuatro escenarios. Industrial~2 cruzó cuatro métodos y
+dos semillas por escenario durante $60$~s, insuficientes para ranking
+confirmatorio. La referencia central optimiza cada instantánea y deja fuera las trayectorias,
+y subasta, reciprocidad y predicción se rotulan \emph{proxies}.
 
-\subsection{Métricas, reproducibilidad y validez}
+\subsection{Métricas y validez}
 \label{subsec:methodology-metrics}
 
 El éxito de misión exige cierre lógico, factibilidad de la modalidad, ausencia de colisión y entrega dentro del horizonte. Las métricas por capa localizan dónde se pierde esa condición conjunta.
@@ -229,10 +223,4 @@ El éxito de misión exige cierre lógico, factibilidad de la modalidad, ausenci
   \viuownsource
 \end{table}
 
-Las configuraciones fijan escenario, semilla, parámetros y límites. Cuando se conserva el generador, los datos crudos permanecen intactos y un mismo procedimiento calcula resúmenes, tablas y figuras. Cuando solo se conservan observaciones archivadas, la reproducibilidad se limita al reanálisis y así se rotula. El simulador separa decisión, comunicación, cierre, planta, contacto, seguridad y métricas; esa separación permite detectar lecturas globales impropias. Python constituye el entorno experimental principal porque permite congelar mundos pareados, registrar estados internos de las capas implementadas y regenerar las métricas de las campañas vigentes desde semillas versionadas. CoppeliaSim se empleó para auditar la geometría y reproducir cinemáticamente el guion de la nave Industrial 2. La asignación, la navegación y las métricas multiescenario se calcularon en Python; el replay 3D no reprodujo actuadores Pioneer, contacto rueda--suelo ni agarre cooperativo. Por ello sus salidas se presentan como comprobación geométrica y funcional del guion, no como evidencia dinámica ni de hardware.
-
-Esta función es más restringida que la implementación completa en CoppeliaSim prevista en la propuesta inicial: la evidencia cuantitativa procede del simulador propio en Python, cuya separación de capas permite las ablaciones e invariantes descritas, mientras CoppeliaSim se reserva para la verificación geométrica de las trayectorias exportadas.
-
-Las reconstrucciones actuales de SP0, SP1, SP6--SP8 y Cargo se ejecutaron en Windows~11 con Python~3.13.9, NumPy~2.3.5, pandas~2.3.3 y SciPy~1.16.3. \texttt{requirements-reproducible.txt} fija las dependencias. En PowerShell se define \texttt{\$env:PYTHONPATH='src'} y después se ejecutan \texttt{python -m pytest tests} y \texttt{powershell -ExecutionPolicy Bypass -File thesis/build.ps1}. Los datos, configuraciones y manifiestos están disponibles en \url{https://github.com/jlmayorgaco/VIU-MRBO-TFM-2026}. SP2--SP4 permiten reanálisis desde observaciones archivadas, pero sus generadores históricos completos no se conservan y no pueden reconstruirse desde cero con el árbol actual. Esta excepción implica cumplimiento parcial del OE5. La versión de depósito deberá identificar una etiqueta y un commit inmutables y, si el repositorio se archiva, su identificador persistente.
-
-La validez interna depende del emparejamiento, la separación de semillas y la equivalencia de información y límites. La validez externa se restringe a los tamaños, geometrías, sensores y regímenes de red ensayados. El uniciclo y el modelo planar omiten contacto tridimensional, desgaste e incertidumbre completa de percepción. Los resultados se interpretan dentro de esas condiciones; fuera de ellas no se afirma convergencia, estabilidad, seguridad u optimalidad.
+El estudio se implementó en Python y CoppeliaSim. La validez interna depende del emparejamiento, la separación de semillas y la equivalencia de información y límites. La validez externa se restringe a los tamaños, geometrías, sensores y regímenes de red ensayados. El uniciclo y el modelo planar omiten contacto tridimensional, desgaste e incertidumbre completa de percepción. Los resultados se interpretan dentro de esas condiciones. Fuera de ellas no se afirma convergencia, estabilidad, seguridad u optimalidad.

@@ -3,7 +3,8 @@
 \hypersetup{pageanchor=true}
 
 \clearpage
-% La plantilla oficial cuenta la portada como página 1 (sin folio visible)
-% y muestra numeración arábiga continua desde el Resumen, que comienza en 2.
-\pagenumbering{arabic}
-\setcounter{page}{2}
+% Los preliminares conservan folios romanos en el encabezado. La numeración
+% arábiga del cuerpo se reinicia en 1 al comenzar la Introducción.
+\pagenumbering{roman}
+\spanishlcroman
+\viuromanfoliotrue
