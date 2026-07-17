@@ -17,34 +17,50 @@ resultado.
     \toprule
     Bloque & Estado & Entrada principal & Evidencia conservada \\
     \midrule
-    SP0 & Regenerable & \texttt{sp0\_theory.yaml} & Código, semillas, tablas, manifiesto y pruebas. \\
-    SP1 & Regenerable & \texttt{sp1\_theory.yaml} & Campaña de desarrollo, datos por mundo, manifiesto y pruebas. \\
+    SP0 & Regenerable & \path{sp0_theory.yaml} & Código, semillas, tablas, manifiesto y pruebas. \\
+    SP1 & Regenerable & \path{sp1_theory.yaml} & Campaña de desarrollo, datos por mundo, manifiesto y pruebas. \\
     SP2--SP4 & Reanálisis & Configuraciones y paquetes procesados & Observaciones, postproceso, tablas y auditorías; faltan generadores históricos completos. \\
-    SP5 & Regenerable & \texttt{sp5\_safety\_evidence.yaml} & Código de planta/filtro, configuración, resultados y pruebas. \\
-    SP6 & Regenerable & \texttt{sp6\_recovery\_confirmatory.yaml} & Código, 480 mundos, manifiesto, hashes y pruebas. \\
-    SP7 & Regenerable & \texttt{sp7\_traffic\_confirmatory.yaml} & Código, 360 mundos, manifiesto, hashes y pruebas. \\
-    SP8 & Regenerable & \texttt{sp8\_network\_confirmatory.yaml} & Código, 900 mundos, manifiesto, hashes y pruebas. \\
-    Cargo & Regenerable & \texttt{cargo\_e2e\_confirmatory.yaml} & Código, 2160 ejecuciones, protocolo congelado, hashes y pruebas. \\
-    Industrial~2 & Piloto regenerable & \texttt{aws\_industrial2\_method\_comparison\_pilot.yaml} & Trazas Python, escena, replay cinemático y auditorías geométricas. \\
+    SP5 & Regenerable & \path{sp5_safety_evidence.yaml} & Código de planta/filtro, configuración, resultados y pruebas. \\
+    SP6 & Regenerable & \path{sp6_recovery_confirmatory.yaml} & Código, 480 mundos, manifiesto, hashes y pruebas. \\
+    SP7 & Regenerable & \path{sp7_traffic_confirmatory.yaml} & Código, 360 mundos, manifiesto, hashes y pruebas. \\
+    SP8 & Regenerable & \path{sp8_network_confirmatory.yaml} & Código, 900 mundos, manifiesto, hashes y pruebas. \\
+    Cargo & Regenerable & \path{cargo_e2e_confirmatory.yaml} & Código, 2160 ejecuciones, protocolo congelado, hashes y pruebas. \\
+    Industrial~2 & Piloto regenerable & \path{aws_industrial2_method_comparison_pilot.yaml} & Trazas Python, escena, replay cinemático y auditorías geométricas. \\
     \bottomrule
   \end{tabularx}
   \viuownsource
 \end{table}
 
 Las reconstrucciones vigentes se ejecutaron en Windows~11 con Python~3.13.9,
-NumPy~2.3.5, pandas~2.3.3 y SciPy~1.16.3; las dependencias se fijan en
-\texttt{requirements-reproducible.txt}. Desde la raíz se define
-\texttt{PYTHONPATH=src}, se ejecuta \texttt{python -m pytest tests} y se compila
-la memoria con \texttt{pwsh -File thesis/build.ps1}. Cada campaña regenerable
-dispone de un punto de entrada bajo \texttt{viu\_mrob\_tfm.cli}; sus
+NumPy~2.3.5, pandas~2.3.3 y SciPy~1.16.3. Las dependencias se fijan en el archivo
+\texttt{requirements-\allowbreak reproducible.txt}. Desde la raíz se añade
+\texttt{src} a \texttt{PYTHONPATH}, se ejecutan las pruebas con
+\texttt{python -m pytest tests} y se compila la memoria mediante el guion
+\texttt{thesis/build.ps1}. Cada campaña regenerable dispone de un punto de
+entrada bajo \texttt{viu\_mrob\_tfm.cli}; sus
 configuraciones, datos, fallos y manifiestos se conservan sin eliminar
 agotamientos del horizonte. Las tablas cuantitativas se derivan de esos
 artefactos y no contienen resultados escritos manualmente.
 
+En PowerShell, las comprobaciones generales se ejecutan con:
+\begin{verbatim}
+$env:PYTHONPATH='src'
+python -m pytest tests
+powershell -ExecutionPolicy Bypass -File thesis\build.ps1
+\end{verbatim}
+
+En sistemas POSIX, los comandos equivalentes son:
+\begin{verbatim}
+export PYTHONPATH=src
+python -m pytest tests
+\end{verbatim}
+
 \subsection{Disponibilidad e integridad}
 
+% TODO(autor): sustituir <TAG> por la etiqueta del release y añadir el DOI de Zenodo cuando exista.
 El código, las configuraciones y los resultados disponibles se alojan en
-\url{https://github.com/jlmayorgaco/VIU-MRBO-TFM-2026}. El repositorio público es
+\url{https://github.com/jlmayorgaco/VIU-MRBO-TFM-2026} (versión etiquetada
+\texttt{<TAG>}). El repositorio público es
 mutable; por tanto, la versión de depósito debe acompañarse de una etiqueta y un
 commit inmutables. Hasta que exista esa instantánea, la URL no equivale a un
 archivo permanente con DOI. La ausencia de los generadores históricos de

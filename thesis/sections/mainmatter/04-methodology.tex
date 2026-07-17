@@ -29,14 +29,14 @@ subhipótesis global después de observar los resultados.
     \toprule
     Pregunta y objetivo & Hipótesis & Evidencia & Estimando o criterio principal & Comparación y nivel \\
     \midrule
-    RQ1--OE1 & H1 & SP0--SP1 & Nash factible bajo los supuestos formales; diferencia pareada en factibilidad o fracción de coaliciones parciales & Oráculo, referencia y ablación; evidencia formal y de desarrollo. \\
-    RQ1--OE1 & Local & SP2 & Diferencia pareada de gap, completitud y servicio incompleto entre score marginal y score plano & Dos referencias centrales y ablación; reanálisis histórico, sin extender H1 a capacidad mecánica. \\
-    RQ3--OE2 & H2 & SP3--SP4 & Diferencia pareada de falsos positivos; residual de \emph{wrench} y error de pose como apoyo & Criterio escalar, QP de \emph{wrench} y controles de pose; formal parcial y reanálisis. \\
-    RQ2--OE3 & H3 & Cargo & Diferencia pareada del tiempo de terminación entre coste espacial y selección desacoplada & Ablación confirmatoria; éxito y mensajes son secundarios y no constituyen una prueba de equivalencia. \\
-    RQ4--OE3 & H4 & SP6 y Cargo & Restauración del certificado en mundos recuperables y diferencia pareada de éxito con/sin reparación & Oráculo exhaustivo, referencias y ablación; formal, confirmatoria e integrada. \\
-    RQ4--OE3 & Local & SP5 y SP7 & Colisión/éxito seguro en SP5; entrega y conflicto lógico en SP7 & Ablaciones y oráculos de alcance acotado; evidencia empírica por capa, sin seguridad continua para SP7. \\
-    RQ5--OE4 & H5a--b & SP8 & Complejidad local frente a enumeración y tasa global libre de conflictos al crecer la escala & Evento, periódico, información perfecta y oráculo certificado; formal y confirmatoria sobre rutas discretas. \\
-    Todas--OE5 & HP & Todos & Integridad de configuraciones, semillas, hashes, invariantes y cadena dato--tabla--afirmación & Reproducción desde cero o reanálisis archivado, declarado por campaña. \\
+    \shortstack[l]{RQ1\\OE1} & H1 & SP0--SP1 & Nash factible bajo los supuestos formales; diferencia pareada en factibilidad o fracción de coaliciones parciales & Oráculo, referencia y ablación; evidencia formal y de desarrollo. \\
+    \shortstack[l]{RQ1\\OE1} & Local & SP2 & Diferencia pareada de gap, completitud y servicio incompleto entre score marginal y score plano & Dos referencias centrales y ablación; reanálisis histórico, sin extender H1 a capacidad mecánica. \\
+    \shortstack[l]{RQ3\\OE2} & H2 & SP3--SP4 & Diferencia pareada de falsos positivos; residual de \emph{wrench} y error de pose como apoyo & Criterio escalar, QP de \emph{wrench} y controles de pose; formal parcial y reanálisis. \\
+    \shortstack[l]{RQ2\\OE3} & H3 & Cargo & Diferencia pareada del tiempo de terminación entre coste espacial y selección desacoplada & Ablación confirmatoria; éxito y mensajes son secundarios y no constituyen una prueba de equivalencia. \\
+    \shortstack[l]{RQ4\\OE3} & H4 & SP6 y Cargo & Restauración del certificado en mundos recuperables y diferencia pareada de éxito con/sin reparación & Oráculo exhaustivo, referencias y ablación; formal, confirmatoria e integrada. \\
+    \shortstack[l]{RQ4\\OE3} & Local & SP5 y SP7 & Colisión/éxito seguro en SP5; entrega y conflicto lógico en SP7 & Ablaciones y oráculos de alcance acotado; evidencia empírica por capa, sin seguridad continua para SP7. \\
+    \shortstack[l]{RQ5\\OE4} & H5a--b & SP8 & Complejidad local frente a enumeración y tasa global libre de conflictos al crecer la escala & Evento, periódico, información perfecta y oráculo certificado; formal y confirmatoria sobre rutas discretas. \\
+    \shortstack[l]{Todas\\OE5} & HP & Todos & Integridad de configuraciones, semillas, hashes, invariantes y cadena dato--tabla--afirmación & Reproducción desde cero o reanálisis archivado, declarado por campaña. \\
     \bottomrule
   \end{tabularx}
   \viuownsource
@@ -80,46 +80,46 @@ La Figura~\ref{fig:method-differential-drive} fija la geometría y separa el map
     map/.style={draw=SPGrid,fill=SPFloor,rounded corners=3pt,line width=0.7pt,align=center},
     small/.style={font=\fontsize{7.4}{8.2}\selectfont,text=VIUDark,align=center}
   ]
-    \node[map,minimum width=14.55cm,minimum height=5.55cm,anchor=south west] at (0,0) {};
-    \node[font=\fontsize{8.5}{9.2}\selectfont\bfseries,anchor=west] at (0.30,5.18) {Base diferencial de dos ruedas: geometría, cinemática y actuación};
+    \node[map,minimum width=14.55cm,minimum height=5.55cm,anchor=south west] at (0, 0) {};
+    \node[font=\fontsize{8.5}{9.2}\selectfont\bfseries,anchor=west] at (0.30, 5.18) {Base diferencial de dos ruedas: geometría, cinemática y actuación};
 
     % Marco inercial y robot en vista superior
-    \draw[axis] (0.75,0.70)--(1.85,0.70) node[below,small] {$x$};
-    \draw[axis] (0.75,0.70)--(0.75,1.80) node[left,small] {$y$};
-    \node[small,anchor=north east] at (0.70,0.66) {$\mathcal F_W$};
-    \begin{scope}[shift={(4.25,2.70)},rotate=18]
-      \fill[SPBlue!9,draw=SPBlue,line width=0.9pt,rounded corners=4pt] (-1.35,-0.92) rectangle (1.35,0.92);
-      \fill[VIUDark] (-0.80,0.92) rectangle (0.80,1.20);
+    \draw[axis] (0.75, 0.70)--(1.85, 0.70) node[below,small] {$x$};
+    \draw[axis] (0.75, 0.70)--(0.75, 1.80) node[left,small] {$y$};
+    \node[small,anchor=north east] at (0.70, 0.66) {$\mathcal F_W$};
+    \begin{scope}[shift={(4.25, 2.70)},rotate=18]
+      \fill[SPBlue!9,draw=SPBlue,line width=0.9pt,rounded corners=4pt] (-1.35,-0.92) rectangle (1.35, 0.92);
+      \fill[VIUDark] (-0.80, 0.92) rectangle (0.80, 1.20);
       \fill[VIUDark] (-0.80,-1.20) rectangle (0.80,-0.92);
-      \draw[axis,draw=SPBlue,line width=1.1pt] (0,0)--(2.05,0) node[right,small] {$v_i\,\boldsymbol t_i$};
-      \draw[act] (0.92,1.40) arc[start angle=25,end angle=155,radius=0.43] node[pos=0.52,above,small,text=SPRed] {$\tau_{i,L}$};
+      \draw[axis,draw=SPBlue,line width=1.1pt] (0, 0)--(2.05, 0) node[right,small] {$v_i\,\boldsymbol t_i$};
+      \draw[act] (0.92, 1.40) arc[start angle=25,end angle=155,radius=0.43] node[pos=0.52,above,small,text=SPRed] {$\tau_{i,L}$};
       \draw[act] (0.92,-1.40) arc[start angle=-25,end angle=-155,radius=0.43] node[pos=0.52,below,small,text=SPRed] {$\tau_{i,R}$};
-      \draw[dim] (-1.12,0)--(-1.12,0.92) node[midway,left,small] {$\ell_i^w$};
-      \draw[dim] (-1.12,0)--(-1.12,-0.92) node[midway,left,small] {$\ell_i^w$};
-      \fill[VIUOrange] (0,0) circle (2pt);
-      \node[small,anchor=south west] at (0.08,0.07) {$q_i$};
+      \draw[dim] (-1.12, 0)--(-1.12, 0.92) node[midway,left,small] {$\ell_i^w$};
+      \draw[dim] (-1.12, 0)--(-1.12,-0.92) node[midway,left,small] {$\ell_i^w$};
+      \fill[VIUOrange] (0, 0) circle (2pt);
+      \node[small,anchor=south west] at (0.08, 0.07) {$q_i$};
     \end{scope}
-    \draw[axis,draw=SPGreen] (4.25,2.70) ++(0.65,0.12) arc[start angle=10,end angle=92,radius=0.70];
-    \node[small,text=SPGreen] at (5.18,3.60) {$\omega_i$};
-    \draw[VIUGray,densely dashed] (1.35,2.70)--(4.25,2.70);
-    \draw[SPPurple,line width=0.65pt] (2.12,2.70) arc[start angle=0,end angle=18,radius=0.78];
-    \node[small,text=SPPurple] at (2.72,2.88) {$\theta_i$};
+    \draw[axis,draw=SPGreen] (4.25, 2.70) ++(0.65, 0.12) arc[start angle=10,end angle=92,radius=0.70];
+    \node[small,text=SPGreen] at (5.18, 3.60) {$\omega_i$};
+    \draw[VIUGray,densely dashed] (1.35, 2.70)--(4.25, 2.70);
+    \draw[SPPurple,line width=0.65pt] (2.12, 2.70) arc[start angle=0,end angle=18,radius=0.78];
+    \node[small,text=SPPurple] at (2.72, 2.88) {$\theta_i$};
 
     % Rueda en vista lateral
-    \draw[SPGrid,line width=0.65pt] (6.75,1.05)--(6.75,4.50);
-    \draw[VIUDark,line width=1.2pt] (7.70,2.05) circle (0.62);
-    \fill[VIUDark] (7.70,2.05) circle (1.5pt);
-    \draw[dim] (7.70,2.05)--(7.70,2.67) node[midway,right,small] {$r_i^w$};
-    \node[small] at (7.70,1.12) {rueda en vista lateral};
+    \draw[SPGrid,line width=0.65pt] (6.75, 1.05)--(6.75, 4.50);
+    \draw[VIUDark,line width=1.2pt] (7.70, 2.05) circle (0.62);
+    \fill[VIUDark] (7.70, 2.05) circle (1.5pt);
+    \draw[dim] (7.70, 2.05)--(7.70, 2.67) node[midway,right,small] {$r_i^w$};
+    \node[small] at (7.70, 1.12) {rueda en vista lateral};
 
     % Cadena de modelo
-    \node[map,minimum width=2.45cm,minimum height=0.82cm,small] (wheel) at (10.05,4.13) {$\dot\varphi_{i,L},\dot\varphi_{i,R}$\\giros de rueda};
-    \node[map,minimum width=2.45cm,minimum height=0.82cm,small] (twist) at (13.00,4.13) {$v_i,\omega_i$\\velocidad del chasis};
+    \node[map,minimum width=2.45cm,minimum height=0.82cm,small] (wheel) at (10.05, 4.13) {$\dot\varphi_{i,L},\dot\varphi_{i,R}$\\giros de rueda};
+    \node[map,minimum width=2.45cm,minimum height=0.82cm,small] (twist) at (13.00, 4.13) {$v_i,\omega_i$\\velocidad del chasis};
     \draw[axis,draw=SPBlue] (wheel)--(twist) node[midway,above,small] {$r_i^w,\ell_i^w$};
-    \node[map,minimum width=2.45cm,minimum height=0.82cm,small] (torque) at (10.05,2.58) {$\tau_{i,L},\tau_{i,R}$\\pares de rueda};
-    \node[map,minimum width=2.45cm,minimum height=0.82cm,small] (accel) at (13.00,2.58) {$\eta_i^v,\eta_i^\omega$\\aceleración realizable};
+    \node[map,minimum width=2.45cm,minimum height=0.82cm,small] (torque) at (10.05, 2.58) {$\tau_{i,L},\tau_{i,R}$\\pares de rueda};
+    \node[map,minimum width=2.45cm,minimum height=0.82cm,small] (accel) at (13.00, 2.58) {$\eta_i^v,\eta_i^\omega$\\aceleración realizable};
     \draw[axis,draw=SPRed] (torque)--(accel) node[midway,above,small] {$m_i,I_i$};
-    \node[small,text width=5.35cm] at (11.52,1.16) {La saturación $|\tau_{i,L/R}|\leq\tau_i^{\max}$ se aplica antes de integrar el estado.};
+    \node[small,text width=5.35cm] at (11.52, 1.16) {La saturación $|\tau_{i,L/R}|\leq\tau_i^{\max}$ se aplica antes de integrar el estado.};
   \end{tikzpicture}
   \caption{Modelo de la base diferencial empleado durante la aproximación y el acoplamiento de cada robot.}
   \label{fig:method-differential-drive}
@@ -233,6 +233,6 @@ Las configuraciones fijan escenario, semilla, parámetros y límites. Cuando se 
 
 Esta función es más restringida que la implementación completa en CoppeliaSim prevista en la propuesta inicial: la evidencia cuantitativa procede del simulador propio en Python, cuya separación de capas permite las ablaciones e invariantes descritas, mientras CoppeliaSim se reserva para la verificación geométrica de las trayectorias exportadas.
 
-Las reconstrucciones actuales de SP0, SP1, SP6--SP8 y Cargo se ejecutaron en Windows~11 con Python~3.13.9, NumPy~2.3.5, pandas~2.3.3 y SciPy~1.16.3. \texttt{requirements-reproducible.txt} fija las dependencias. En PowerShell se define \texttt{\$env:PYTHONPATH='src'}; en Bash, \texttt{export PYTHONPATH=src}; después se ejecutan \texttt{python -m pytest tests} y \texttt{pwsh -File thesis/build.ps1}. Los datos, configuraciones y manifiestos están disponibles en \url{https://github.com/jlmayorgaco/VIU-MRBO-TFM-2026}. SP2--SP4 permiten reanálisis desde observaciones archivadas, pero sus generadores históricos completos no se conservan y no pueden reconstruirse desde cero con el árbol actual. Esta excepción implica cumplimiento parcial del OE5. La versión de depósito deberá identificar una etiqueta y un commit inmutables y, si el repositorio se archiva, su identificador persistente.
+Las reconstrucciones actuales de SP0, SP1, SP6--SP8 y Cargo se ejecutaron en Windows~11 con Python~3.13.9, NumPy~2.3.5, pandas~2.3.3 y SciPy~1.16.3. \texttt{requirements-reproducible.txt} fija las dependencias. En PowerShell se define \texttt{\$env:PYTHONPATH='src'} y después se ejecutan \texttt{python -m pytest tests} y \texttt{powershell -ExecutionPolicy Bypass -File thesis/build.ps1}. Los datos, configuraciones y manifiestos están disponibles en \url{https://github.com/jlmayorgaco/VIU-MRBO-TFM-2026}. SP2--SP4 permiten reanálisis desde observaciones archivadas, pero sus generadores históricos completos no se conservan y no pueden reconstruirse desde cero con el árbol actual. Esta excepción implica cumplimiento parcial del OE5. La versión de depósito deberá identificar una etiqueta y un commit inmutables y, si el repositorio se archiva, su identificador persistente.
 
 La validez interna depende del emparejamiento, la separación de semillas y la equivalencia de información y límites. La validez externa se restringe a los tamaños, geometrías, sensores y regímenes de red ensayados. El uniciclo y el modelo planar omiten contacto tridimensional, desgaste e incertidumbre completa de percepción. Los resultados se interpretan dentro de esas condiciones; fuera de ellas no se afirma convergencia, estabilidad, seguridad u optimalidad.

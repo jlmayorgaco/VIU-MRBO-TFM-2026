@@ -1,36 +1,36 @@
 \begin{viuabstract}{Abstract}
-This master's thesis designs and evaluates an interpretable hybrid architecture
-for forming coalitions of heterogeneous mobile robots and transporting one
-payload in the Cargo mode. The approach combines potential games, integer
+This master's thesis evaluates an interpretable hybrid
+architecture for forming coalitions of heterogeneous mobile robots and
+transporting one payload in Cargo mode. It combines potential games, integer
 closure, service thresholds, a planar wrench guard, pose control, safety
-filtering, failure repair, discrete route reservation, and versioned neighbour
-messaging. It is not presented as fully distributed: several closures,
-aggregates, per-payload optimisers, and the simulator's attribute registry retain
-explicit global dependencies.
+filtering, failure repair, route reservation, and neighbour messaging. It is not
+presented as fully distributed: several closures, aggregates, per-payload
+optimisers, and the simulator registry retain explicit global dependencies.
 
-The study decomposes the problem into SP0--SP8 and combines proofs, paired
-worlds, size-limited oracles, baselines, ablations, and 95\% confidence
-intervals. The formal results characterise assignment and quota equilibria, the
-integrability of heterogeneous service, the KKT--equilibrium correspondence of
-the wrench game, local stability of pose control under fixed contacts, and
-finite termination of the repair and route games.
+The study decomposes the problem into SP0--SP8 and uses proofs, paired worlds,
+bounded oracles, baselines, ablations, and 95\% confidence intervals. Formal
+results delimit assignment, quota, and wrench equilibria, local stability under
+fixed contacts, and finite termination of the repair and route games.
 
 Across 600 worlds, the mechanical guard reduced false positives by 0.333. The
 repair game restored the additive certificate in all 360 recoverable cases. The
-integrated Cargo campaign combined recruitment, dynamic-unicycle docking,
-reduced planar transport, an obstacle, one failure, and replacement; it
-completed 359 of 360 missions without a payload--obstacle intersection during
-transport. The predicted time advantage of the spatial cost was not supported.
-In SP8, 900 worlds with up to 128 robots showed that periodic retransmission
-increased the conflict-free rate by 0.054 at the cost of 261.3 additional
-messages per agent, while quality collapsed at the largest nominal size. A
-kinematic CoppeliaSim pilot checked script geometry and exposed deadlocks; it did
-not validate physical dynamics or industrial performance.
+Cargo campaign integrated recruitment, dynamic-unicycle docking, reduced planar
+transport, an obstacle, one failure, and replacement, completing 359 of 360
+missions without payload--obstacle intersection during transport. The predicted
+time advantage of the spatial cost was not supported. Removing safety reduced
+success by 0.996 under obstacles; disabling repair reduced it by 0.989 under
+failure. With 0.25 packet loss and delays of up to two events, the neighbour and
+perfect-information variants completed 90/90 missions. In SP8, 900 worlds with
+up to 128 robots showed that retransmission increased the conflict-free rate by
+0.054 at the cost of 261.3 additional messages per agent, while quality
+collapsed at the largest nominal size. A kinematic CoppeliaSim pilot checked
+geometry and exposed deadlocks, but did not validate physical dynamics or
+industrial performance.
 
-The architecture therefore operates as a planar composition within the tested
-regimes. A global hybrid guarantee, three-dimensional support, wheel--ground
-contact during transport, switching networks, hardware, and pushing through
-caging remain outside the validated scope.
+The evidence supports a planar composition in the tested regimes, not a global
+hybrid guarantee. Three-dimensional support, wheel--ground contact during
+transport, switching networks, hardware, and caging remain
+outside the validated scope.
 
 \keywords{Keywords}{multi-robot coordination, autonomous mobile robots, coalition formation, potential games, cooperative transport}
 \end{viuabstract}
