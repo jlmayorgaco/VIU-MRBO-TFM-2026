@@ -1,0 +1,40 @@
+\section{Introducción}
+\label{sec:introduction}
+
+El transporte de una carga que excede a un solo robot obliga a decidir quién participa y si el equipo puede ejecutar la tarea. Ambas preguntas están acopladas: una asignación válida puede fallar por geometría, torque, saturación, colisión o pérdida de un integrante.
+
+\subsection{Contexto}
+
+La asignación multi-robot está bien delimitada cuando cada tarea corresponde a un robot \parencite{gerkeyMataric2004MRTA}. Las cargas voluminosas, frágiles o pesadas rompen esa estructura. Requieren varios robots al mismo tiempo, combinan capacidades y crean dependencias entre ganadores \parencite{korsahStentzDias2013iTax}. Las coaliciones temporales permiten adaptar la flota a cada carga sin dimensionar todos los robots para el peor caso \parencite{shehoryKraus1998Coalition,vigAdams2006Coalition}.
+
+Contar integrantes no basta. El equipo debe cerrar su composición, ocupar contactos compatibles y producir la fuerza y el torque requeridos. ASyMTRe e IQ-ASyMTRe relacionan capacidades funcionales con composiciones ejecutables \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}; la teoría de agarre muestra que la geometría y el contacto determinan el cierre y la distribución de esfuerzos \parencite{bicchi1995closure,nakamura1989dynamics}. La asignación y la ejecución física necesitan certificados distintos.
+
+\subsection{Problema de investigación}
+
+Se considera una flota heterogénea y un conjunto de cargas con requisitos de capacidad, contacto y pose. Cada robot decide con estado propio, percepción local y mensajes vecinales. La misión comprende reclutamiento, aproximación, contacto, transporte y recuperación tras fallos. Los optimizadores globales se reservan como oráculos experimentales; la arquitectura operativa se apoya en información local y vecinal.
+
+El problema contiene cinco objetos que no deben confundirse. La estrategia determina preferencias y pertenencia. La estimación aproxima ocupación y recursos no observados. La planta describe robots y cargas. El contacto convierte esfuerzos individuales en \emph{wrench}. La seguridad restringe el movimiento y la recuperación. Cada capa responde solo de su propia pregunta: el equilibrio pertenece a la estrategia, la formación geométrica no acredita por sí misma la fuerza requerida y la ausencia de colisiones en simulación no constituye una prueba general de seguridad.
+
+Las subastas resuelven conflictos de adjudicación \parencite{gerkeyMataric2002MURDOCH,choiBrunetHow2009CBBA}; los juegos de coalición modelan el valor del grupo \parencite{vigAdams2006Coalition,chenSun2012Coalition}; el control cooperativo mueve equipos ya constituidos \parencite{alonsomora2017transport}. Ninguno de esos resultados resuelve por sí solo las transiciones entre preferencia, decisión entera, factibilidad mecánica y movimiento bajo información incompleta.
+
+Los juegos potenciales modelan los incentivos; el cierre entero asigna robots identificables; los certificados físicos descartan coaliciones que no pueden ejecutar la tarea. La implementación es digital y muestreada. \emph{Asíncrono} significa que no hay rondas globales de decisión, aunque cada robot actualiza su estado con un reloj digital.
+
+\subsection{Contribución y alcance}
+
+La arquitectura separa los certificados por función. SP0--SP2 caracterizan asignación, cuotas y capacidad heterogénea. SP3 sustituye la capacidad nominal por factibilidad de \emph{wrench}, y SP4 relaciona el residual mecánico con el transporte de pose. SP5 restringe la huella compuesta ante obstáculos; SP6 recompone la coalición tras un fallo; SP7 coordina el tráfico y SP8 mide los efectos de escala y comunicación imperfecta.
+
+La modalidad física desarrollada es Cargo: varios robots soportan una carga modelada como cuerpo planar. El empuje y el \emph{caging} quedan fuera del estudio principal porque cambian las restricciones de contacto. Tampoco se demuestra convergencia del sistema completo, estabilidad tridimensional, robustez ante cualquier perturbación ni escalabilidad ilimitada. La evidencia es formal o experimental según el SP y no se suma como una garantía extremo a extremo.
+
+La separación localiza el origen de los fallos. Una coalición cerrada puede ser mecánicamente inviable. Un control que evita colisiones puede bloquearse. Una red local puede estabilizar decisiones construidas con información incompleta. Cada fenómeno conserva así su propia medida: factibilidad, error de pose, residual de \emph{wrench}, colisión, recuperación, comunicación o coste computacional.
+
+\subsection{Preguntas de investigación}
+
+La pregunta principal es si una coordinación basada en juegos y control local puede formar coaliciones factibles y transportar cargas heterogéneas con garantías delimitadas y calidad medible frente a referencias centralizadas y distribuidas.
+
+\begin{enumerate}[label=\textbf{RQ\arabic*.},leftmargin=3.2em,topsep=0.35em,itemsep=0.25em,parsep=0pt]
+  \item \parbox[t]{\linewidth}{¿Bajo qué condiciones de demanda, heterogeneidad y parámetros emergen coaliciones sin déficit ni sobrerreclutamiento persistente?}
+  \item \parbox[t]{\linewidth}{¿Cómo afectan el acoplamiento entre decisión y movimiento y la comunicación local al equilibrio, al tiempo y a la calidad de la misión?}
+  \item \parbox[t]{\linewidth}{¿Qué restricciones de fuerza, torque y contacto separan capacidad nominal de ejecución física?}
+  \item \parbox[t]{\linewidth}{¿Cómo se degrada la operación ante congestión, batería limitada, retardo, pérdida de paquetes y fallos parciales?}
+  \item \parbox[t]{\linewidth}{¿Qué coste computacional, comunicativo y operacional introduce la descentralización?}
+\end{enumerate}
