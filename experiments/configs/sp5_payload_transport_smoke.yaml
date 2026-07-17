@@ -1,0 +1,29 @@
+experiment_id: SP5_SMOKE_20260716
+protocol_family: payload_transport_v2
+mode: smoke
+description: "Non-evidentiary smoke for the canonical SP5-C RAW/SAFE/EXEC pipeline."
+output_dir: results/sp5/SP5_SMOKE_20260716
+
+seeds:
+  start: 576000
+  count: 1
+
+scenarios:
+  - id: open_nominal
+  - id: mobile_crossing
+
+robot_counts: [4]
+
+methods:
+  - id: damped_hamiltonian_raw
+  - id: damped_hamiltonian_cbf
+  - id: velocity_obstacle_proxy
+  - id: distributed_preview_cbf
+
+simulation:
+  dt_s: 0.15
+  horizon_s: 6.0
+  stable_steps: 3
+
+representative_scenario: mobile_crossing
+hypotheses: []

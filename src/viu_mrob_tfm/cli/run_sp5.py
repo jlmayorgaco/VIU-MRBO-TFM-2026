@@ -8,7 +8,7 @@ from pathlib import Path
 
 import yaml
 
-from viu_mrob_tfm.sp5 import run_payload_transport_config, run_sp5_config
+from viu_mrob_tfm.sp5 import run_payload_transport_config
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -16,10 +16,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("config", type=Path, help="SP5 YAML config path.")
     args = parser.parse_args(argv)
     config = yaml.safe_load(args.config.read_text(encoding="utf-8"))
-    if str(config.get("protocol_family", "")) == "payload_transport_v2":
-        result = run_payload_transport_config(args.config)
-    else:
-        result = run_sp5_config(args.config)
+    if str(config.get("protocol_family", "")) != "payload_transport_v2":
+        parser.error("Only the canonical payload_transport_v2 protocol is supported.")
+    result = run_payload_transport_config(args.config)
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0
 

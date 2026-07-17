@@ -1,0 +1,25 @@
+{
+  "experiment_id": "AWS_DYNAMIC_ASSIGNMENT_SP0_PILOT_v1",
+  "generated_at_utc": "2026-07-17T10:59:06.366755+00:00",
+  "config": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\experiments\\configs\\aws_dynamic_assignment_pilot.yaml",
+  "config_sha256": "f228d1360431bf20f34c1ef0d6ac226b75cede37e55e8c0d83318f7e96f30633",
+  "output": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\results\\coppeliasim_validation\\aws_dynamic_assignment_sp0",
+  "policies": [
+    "hungarian_centralized",
+    "distributed_greedy",
+    "random_feasible",
+    "replicator_distributed"
+  ],
+  "seeds": 8,
+  "target_invariance_passed": true,
+  "target_invariance_groups": 128,
+  "video_generated": true,
+  "video_sha256": "c5e27d7fe5a8dc0c286cd37e24ef35082863731caca55691a3833ec02eeba241",
+  "evidence_scope": "kinematic_one_to_one_pilot",
+  "limitations": [
+    "Each active load is reduced to one indivisible task served by one AMR.",
+    "Original required_agvs values are retained as metadata but not enforced by this SP0 pilot.",
+    "Motion is kinematic and does not prove collision-free path planning or physical transport feasibility.",
+    "Replicator consensus is component-wise; a disconnected communication graph does not provide global consensus."
+  ]
+}

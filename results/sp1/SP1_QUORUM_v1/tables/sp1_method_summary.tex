@@ -1,0 +1,12 @@
+\begin{tabular}{lrrrrrr}
+\toprule
+Método & $n$ & Cierre [\%] & Valor/MILP [\%] & Parciales [\%] & Exceso [\%] & CPU [ms] \\
+\midrule
+MILP-Q & 720 & 100.0 & 100.0 & 0.0 & 0.0 & 2.73 \\
+Greedy-Q & 720 & 100.0 & 98.7 & 0.0 & 0.0 & 0.33 \\
+Smith-QR & 720 & 100.0 & 95.2 & 0.0 & 0.0 & 63.00 \\
+Smith lineal + QR & 720 & 100.0 & 94.4 & 0.0 & 0.0 & 59.40 \\
+Smith continuo sin cierre ni exceso & 720 & 6.7 & 24.5 & 11.7 & 36.0 & 63.39 \\
+Smith continuo (sin cierre) & 720 & 7.9 & 22.4 & 10.9 & 35.1 & 62.82 \\
+\bottomrule
+\end{tabular}

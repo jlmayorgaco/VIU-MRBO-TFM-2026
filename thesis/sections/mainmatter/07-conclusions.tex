@@ -1,14 +1,14 @@
 \section{Conclusiones y recomendaciones}
 \label{sec:conclusions}
 
-La coordinación estudiada combina formación de coaliciones, certificación
-mecánica y transporte de una carga por robots heterogéneos ante obstáculos,
-fallos y comunicación imperfecta. No existe una única ley que resuelva esas
-funciones: el equilibrio estratégico, el cierre entero, la factibilidad de
-\emph{wrench}, el control de pose, la seguridad, la recuperación y la
-observabilidad de red operan bajo supuestos distintos. En consecuencia, ni el
-equilibrio de Nash certifica por sí mismo la viabilidad mecánica ni una
-simulación satisfactoria demuestra estabilidad global.
+La pregunta principal admite una respuesta condicionada. Sí fue posible formar
+coaliciones y completar una misión Cargo dentro de una planta planar reducida,
+pero mediante una arquitectura híbrida, no mediante un sistema autónomo y
+completamente distribuido. El equilibrio estratégico, el cierre entero, la
+factibilidad de \emph{wrench}, el control de pose, la seguridad, la recuperación
+y la observabilidad de red operan bajo supuestos distintos. En consecuencia, ni
+el equilibrio de Nash certifica por sí mismo la viabilidad mecánica ni una
+simulación satisfactoria demuestra estabilidad global o validez industrial.
 
 \subsection{Contribución y resultados principales}
 
@@ -24,11 +24,14 @@ posible garantizar el óptimo para toda matriz de costes.
 Con cardinalidad variable, SP1 muestra que el déficit lineal no decide qué carga
 completar cuando los recursos son escasos. El incentivo de cuórum rompe esa
 indiferencia y el cierre QR evita grupos parciales, aunque el ordenamiento utilizado
-no es plenamente vecinal. SP2 incorpora disponibilidad, distancia y servicio
+no es plenamente vecinal. En la campaña de desarrollo, Smith--QR no superó a
+Greedy--Q en valor completado y la penalización de exceso aislada no produjo una
+reducción concluyente; ambos negativos se conservan. SP2 incorpora disponibilidad, distancia y servicio
 heterogéneo. Ponderar cada decisión por su contribución marginal produce un
 campo integrable; una puntuación plana no admite potencial en general. El
-resultado ordena servicio operacional, pero no debe leerse como capacidad de
-soporte, fuerza o torque.
+resultado ordena servicio operacional, pero la variante primal--dual ensayada no
+superó al método voraz en completitud y el índice no debe leerse como capacidad
+de soporte, fuerza o torque.
 
 SP3 introduce esa frontera física mediante puestos, geometría de contacto,
 límites de actuador y un conjunto admisible de \emph{wrench}. Con geometría
@@ -71,7 +74,8 @@ $0.996$ en los regímenes con obstáculo; por ello, esta ablación no identifica
 el efecto individual de cada componente. Desactivar la reparación lo redujo en
 $0.989$ bajo fallo. Con pérdida $0.25$ y retardo de hasta dos eventos, las
 variantes vecinal y de información perfecta completaron 90/90 misiones. La
-primera empleó en promedio 328 mensajes y unos 90~kB por instancia.
+  primera empleó en promedio 328 mensajes y unos 90~kB sobre los 360 mundos;
+  en los 90 mundos degradados empleó 249.3 mensajes y 58.2~kB por instancia.
 
 El alcance de estas cifras es funcional, no industrial: las interfaces
 coexisten en el simulador planar. La
@@ -91,8 +95,9 @@ CPU y progreso son criterios independientes.
 
 \subsection{Cumplimiento de los objetivos}
 
-En el dominio Cargo declarado, el objetivo general se alcanza como formulación
-matemática y composición funcional en una planta planar reducida.
+En el dominio Cargo declarado, el objetivo general alcanza su componente
+matemático y de composición funcional en una planta planar reducida, pero solo
+cumple parcialmente la descentralización pretendida.
 La ejecución relaciona decisión vecinal, movimiento, certificado mecánico,
 seguridad y recuperación, pero el intercambio solo transmite identificadores y
 el ejecutor consulta un registro global de atributos. La información es local
@@ -104,32 +109,41 @@ tridimensional.
 Los objetivos específicos presentan el siguiente grado de cumplimiento:
 
 \begin{enumerate}[label=\arabic*.,leftmargin=2em,topsep=0.4em,itemsep=0.65em,parsep=0pt]
-  \item La formación de coaliciones quedó formalizada desde asignación homogénea
+  \item[\textbf{OE1.}] La formación de coaliciones quedó formalizada desde asignación homogénea
   hasta cuotas y servicio heterogéneo. Se definieron acciones, pagos,
   potenciales, cierres y fronteras de eficiencia; las dependencias globales del
-  ordenamiento y del cierre quedaron delimitadas.
+  ordenamiento y del cierre quedaron delimitadas. El objetivo se cumple en
+  formulación, con evidencia confirmatoria desigual entre SP0--SP2.
 
-  \item La modalidad Cargo incorporó matriz de agarre, geometría, límites de
+  \item[\textbf{OE2.}] La modalidad Cargo incorporó matriz de agarre, geometría, límites de
   contacto, residual de \emph{wrench} y servocontrol de pose. La relación entre
   certificado y movimiento se evaluó en el modelo planar y se acotó por los
-  supuestos de contacto fijo y realización exacta.
+  supuestos de contacto fijo y realización exacta. El objetivo queda cumplido de
+  forma parcial porque el QP de SP3 y la guardia simplificada de Cargo no forman
+  un único reparto físico distribuido.
 
-  \item La operación adversa se evaluó mediante obstáculo, fallo simple y
+  \item[\textbf{OE3.}] La operación adversa se evaluó mediante obstáculo, fallo simple y
   tráfico. Los resultados separan aceptación mecánica, ausencia de colisión,
   progreso, tiempo de recuperación y exclusión lógica, evitando reunirlos en
-  una única métrica de éxito.
+  una única métrica de éxito. El objetivo se cumple para los modelos ensayados;
+  la seguridad continua de SP7 y el reacoplamiento físico completo permanecen
+  fuera del resultado.
 
-  \item El efecto de escala y red se midió mediante calidad, CPU, mensajes,
+  \item[\textbf{OE4.}] El efecto de escala y red se midió mediante calidad, CPU, mensajes,
   bytes, radio, retardo y pérdida. La información perfecta y el oráculo central
   se emplearon como referencias con ventajas de información declaradas, no como
-  competidores arquitectónicamente equivalentes.
+  competidores arquitectónicamente equivalentes. El objetivo se cumple como
+  caracterización de una frontera de fallo, no como demostración de
+  escalabilidad operacional.
 
-  \item Los experimentos se implementaron en Python con semillas explícitas,
-  mundos pareados, intervalos y pruebas de invariantes. Los fallos, colisiones y
-  agotamientos del horizonte permanecen en el denominador; las semillas y
-  trazas permiten repetir y examinar cada ejecución de Cargo y de los pilotos
-  AWS. CoppeliaSim añade una auditoría geométrica y un replay cinemático de la
-  nave, no una validación dinámica independiente.
+  \item[\textbf{OE5.}] SP0, SP1, SP6--SP8 y Cargo conservan código,
+  configuraciones, semillas, manifiestos y pruebas para reconstrucción. SP2 y
+  SP3, junto con las campañas históricas de SP4, permiten reanalizar
+  observaciones archivadas, pero sus generadores
+  históricos completos no están disponibles en el árbol actual. Por ello, el
+  objetivo de reproducibilidad se cumple parcialmente. Los fallos y agotamientos
+  permanecen en el denominador, y CoppeliaSim aporta una auditoría geométrica y
+  un replay cinemático, no una validación dinámica independiente.
 \end{enumerate}
 
 \subsection{Respuesta a las preguntas de investigación}
@@ -164,7 +178,9 @@ la red oculta incompatibilidades mediante retardo, pérdida o radio insuficiente
 La arquitectura recuperó casi todas las misiones integradas, pero una reparación
 agotó el horizonte, la calidad estratégica colapsó en el mayor régimen de SP8 y
 los tres escenarios AWS congestionados no produjeron entregas. El bloqueo
-persiste incluso sin solapamientos muestreados.
+persiste incluso sin solapamientos muestreados. La batería se varió únicamente
+en el piloto AWS de dos semillas por escenario y no se aisló su efecto causal;
+su influencia requiere evidencia confirmatoria.
 
 \textbf{RQ5 --- Coste de la descentralización.} Las capas vecinales reducen la
 información intercambiada a estados e identificadores, pero consumen mensajes,
@@ -172,9 +188,12 @@ bytes, memoria de vistas y tiempo de propagación. En la campaña integrada, el
 ejecutor aún resuelve esos identificadores mediante un registro global de
 atributos y no constituye una implementación distribuida autónoma.
 Los oráculos centrales pueden certificar soluciones en catálogos pequeños y
-crecen combinatoriamente cuando enumeran coaliciones o rutas. La ventaja local
-es un compromiso entre información, coste y calidad, no una dominancia
-uniforme.
+crecen combinatoriamente cuando enumeran coaliciones o rutas. En SP8, el método
+periódico obtuvo una tasa libre de conflictos de $0.331$ y una brecha media de
+$0.497$ en los 450 mundos con oráculo certificado; retransmitir añadió $261.3$
+mensajes por agente y mejoró la tasa en $0.054$ frente a la política por evento.
+La ventaja local es un compromiso entre información, coste y calidad, no una
+dominancia uniforme.
 
 \subsection{Estado de las hipótesis}
 
@@ -191,21 +210,24 @@ dominios y métricas ensayados.
     \toprule
     ID & Estado & Evidencia principal & Límite \\
     \midrule
-    H1 & Apoyo condicionado & Factibilidad bajo penalización y mejora del cuórum en los regímenes realizables. & El cierre entero y varios agregados conservan información global. \\
+    H1 & Apoyo parcial & Caracterización exacta bajo recursos suficientes y reducción de grupos parciales mediante cuórum bajo escasez. & La campaña de SP1 es de desarrollo; la ablación de exceso no fue concluyente y el cierre conserva información global. \\
     H2 & Apoyo parcial & Reducción de $0.333$ en falsos positivos, cobertura $1.000$ y abstención $0.500$ en SP3. & La ablación integrada combina certificado, desvío y filtro; solo Cargo planar. \\
     H3 & No sustentada & Efecto $-0.086$~s, IC $[-0.178;0.013]$ y $p_{\mathrm{Holm}}=0.068$. & La composición vecinal fue operativa, pero no se demostró ventaja temporal ni equivalencia. \\
-    H4 & Apoyo parcial & Reparación superior a la ablación en 89 de 90 pares favorables. & Una misión recuperable no cerró el certificado antes del horizonte. \\
-    H5 & Mixta & Menor dependencia de enumeración global y coste comunicativo cuantificado. & En $K=64$ nominal, la tasa global libre de conflicto fue cero. \\
+    H4 & Apoyo parcial & Restauración en 360/360 mundos estáticos recuperables y mejora de éxito frente a la ablación en 89/90 mundos integrados con fallo. & Una misión no cerró el certificado antes del horizonte; no se simuló un nuevo contacto físico. \\
+    H5a & Sustentada & Activación local $O(d_i)$ frente al oráculo exhaustivo implementado $O(2^K K^2)$, con CPU y comunicación medidas. & El oráculo es enumerativo y no representa todo optimizador central posible. \\
+    H5b & Refutada & La tasa global libre de conflictos alcanzó cero en el mayor tamaño nominal. & El resultado pertenece al juego discreto de rutas, no al transporte físico de 128 robots. \\
     HP & Apoyo delimitado & 359/360 misiones integradas sin intersección carga--obstáculo en la métrica implementada. & Planta reducida, registro global y ablación de seguridad combinada; no validación industrial. \\
     \bottomrule
   \end{tabularx}
   \viuownsource
 \end{table}
 
-La hipótesis principal recibe apoyo existencial y experimental: bajo los
-supuestos declarados, una arquitectura interpretable y parcialmente distribuida
-puede formar una coalición y ejecutar la misión Cargo. El resultado no es
-uniforme para cualquier flota, red, geometría de contacto o número de cargas.
+La hipótesis principal recibe apoyo delimitado: bajo los supuestos declarados,
+una arquitectura interpretable con componentes vecinales puede formar una
+coalición y ejecutar la misión Cargo. H3 no quedó sustentada y H5b fue refutada;
+por tanto, el apoyo a HP no implica que el acoplamiento acelere la misión ni que
+la calidad se conserve con la escala. El resultado tampoco es uniforme para
+cualquier flota, red, geometría de contacto o número de cargas.
 
 \subsection{Limitaciones}
 

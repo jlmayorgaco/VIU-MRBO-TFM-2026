@@ -1,0 +1,31 @@
+\section{Demostraciones complementarias de SP2}
+\label{app:sp2-proofs}
+
+La propiedad de alineación marginal de la Sección~\ref{subsec:sp2} se limita a preferencias continuas, una matriz fija de contribuciones de servicio durante la decisión, umbrales positivos y parámetros adimensionales fijos. La prueba no establece cierre entero, optimalidad combinatoria, consenso vecinal, capacidad mecánica ni convergencia de una discretización concreta.
+
+\subsection{Potencial de la puntuación marginal y frontera de integrabilidad}
+\label{app:sp2-marginal-proof}
+
+La regla de la cadena aplicada al potencial de~\eqref{eq:sp2-potential} da
+\[
+  \frac{\partial\Phi}{\partial\rho_{ik}}
+  =\frac{e_{ik}}{d_k^{\mathrm{srv}}}V_k
+   \left[1-\frac{S_k(\rho)}{d_k^{\mathrm{srv}}}\right]_+-g_{ik}
+  =f_{ik}^{\mathrm{marg}}.
+\]
+La puntuación marginal coincide componente a componente con el gradiente de $\Phi$ en cada región diferenciable.
+
+En el interior no saturado, las derivadas cruzadas de la puntuación plana son
+\[
+  \frac{\partial f_{ik}^{\mathrm{plain}}}{\partial\rho_{jk}}
+  =-\frac{V_ke_{jk}}{d_k^{\mathrm{srv}}},
+  \qquad
+  \frac{\partial f_{jk}^{\mathrm{plain}}}{\partial\rho_{ik}}
+  =-\frac{V_ke_{ik}}{d_k^{\mathrm{srv}}}.
+\]
+Si $e_{ik}\neq e_{jk}$, estas expresiones difieren y violan la condición de simetría necesaria para que el campo plano sea el gradiente de un potencial escalar dos veces diferenciable en esa región. Para la puntuación marginal, en cambio, ambas derivadas cruzadas valen
+\[
+  -\frac{V_ke_{ik}e_{jk}}{(d_k^{\mathrm{srv}})^2}.
+\]
+
+La función $[1-s]_+$ es continua en $s=1$. Su integral también es continua y diferenciable, aunque su segunda derivada cambie por tramos. En consecuencia, el potencial de~\eqref{eq:sp2-potential} enlaza de forma continua las regiones $S_k<d_k^{\mathrm{srv}}$ y $S_k\geq d_k^{\mathrm{srv}}$, y su gradiente coincide con la puntuación marginal en ambas, con la derivada correspondiente en la frontera. Esto completa la Proposición~\ref{prop:sp2-marginal-alignment} dentro del alcance declarado.

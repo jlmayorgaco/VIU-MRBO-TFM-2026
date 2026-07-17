@@ -1,3 +1,0 @@
-id,metric,test,n_pairs,p_value,p_value_raw,p_value_holm,effect,effect_name,ci95_low,ci95_high,effect_size,effect_size_name,rank_biserial,alpha,reject_raw,reject_holm,reject,status,methods
-H01_methods_differ_capacity_gap,optimality_gap_vs_oracle,friedman_chi_square,2,0.11041932979564442,0.11041932979564442,0.22083865959128884,0.9411764705882362,kendall_w,nan,nan,0.9411764705882362,kendall_w,nan,0.05,False,False,False,ok,greedy_capacity_nearest centralized_capacity_milp smith_capacity primal_dual_capacity neural_capacity_scorer
-H02_primal_dual_capacity_higher_success_than_greedy,capacity_success_rate,wilcoxon_signed_rank,2,1.0,1.0,1.0,0.0,mean_paired_difference,0.0,0.0,0.0,cohens_dz,0.0,0.05,False,False,False,ok,primal_dual_capacity greedy_capacity_nearest

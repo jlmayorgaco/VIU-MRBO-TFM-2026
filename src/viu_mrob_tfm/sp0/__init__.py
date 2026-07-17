@@ -1,5 +1,25 @@
-"""SP0 homogeneous one-to-one assignment pipeline."""
+"""SP0: homogeneous one-to-one allocation."""
 
-from viu_mrob_tfm.sp0.runner import run_sp0_config
+from .theory import (
+    AllocationResult,
+    action_fitness,
+    auction_assignment,
+    enumerate_pure_nash,
+    greedy_assignment,
+    hungarian_assignment,
+    pairwise_exchange,
+    potential_best_response,
+    profile_metrics,
+)
 
-__all__ = ["run_sp0_config"]
+__all__ = [
+    "AllocationResult",
+    "action_fitness",
+    "auction_assignment",
+    "enumerate_pure_nash",
+    "greedy_assignment",
+    "hungarian_assignment",
+    "pairwise_exchange",
+    "potential_best_response",
+    "profile_metrics",
+]

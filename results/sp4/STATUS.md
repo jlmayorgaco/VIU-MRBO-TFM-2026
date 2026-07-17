@@ -1,5 +1,14 @@
 # SP4 result status
 
+Submit-ready synthesis: `results/processed/sp4/SP4_TRANSPORT_EVIDENCE_v1/`.
+
+SP4 is reported as two explicitly separate layers:
+
+- docking/recruitment to fixed contact poses: canonical v3, with v4 as a smaller liveness repair campaign;
+- origin--destination payload pose transport: secondary analysis of the `open_nominal` stratum in the frozen reduced-order rigid-payload campaign.
+
+The synthesis does not claim that the two layers were executed end to end. Push/caging, proximity-based pose estimation, frictional contact, hardware validation and independent CoppeliaSim dynamics remain outside the accredited scope.
+
 Canonical evidence: SP4_DOCKING_GAME_CONFIRMATORY_v3.
 
 - Config: configs/experiments/sp4/SP4_DOCKING_GAME_CONFIRMATORY_v3.yaml

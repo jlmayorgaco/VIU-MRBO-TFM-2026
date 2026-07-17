@@ -1,0 +1,30 @@
+experiment_id: CARGO_E2E_CONFIRMATORY_v1
+protocol_family: cargo_e2e_v1
+mode: confirmatory
+output_dir: results/processed/integrated/CARGO_E2E_CONFIRMATORY_v1
+pilot_evidence: results/processed/integrated/CARGO_E2E_SMOKE_v1
+scenarios:
+  - open_nominal
+  - static_obstacle
+  - degraded_network
+  - failure_during_transport
+robot_counts: [4, 8, 12]
+seeds:
+  start: 9700
+  count: 30
+methods:
+  - distributed_full
+  - perfect_information
+  - decoupled_local
+  - no_physical_guard
+  - no_repair
+  - central_reference
+simulation:
+  dt_s: 0.10
+  docking_horizon_s: 16.0
+  transport_horizon_s: 50.0
+confirmatory_hypotheses:
+  - E2E-H1: spatial coupling reduces mission time under degraded communication
+  - E2E-H2: the physical guard improves mission success in obstacle regimes
+  - E2E-H3: local repair improves mission success after a robot failure
+  - E2E-H4: local information has a measurable success gap versus perfect information

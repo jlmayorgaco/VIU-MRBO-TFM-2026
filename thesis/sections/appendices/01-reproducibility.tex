@@ -1,102 +1,64 @@
-\section{Reproducibilidad}
+\section{Reproducibilidad y declaraciones}
 \label{app:reproducibility}
 
-La reproducción se apoya en configuraciones con identificador y huella estable,
-semillas explícitas, datos por ejecución y postprocesos que generan las tablas
-y figuras incluidas. Los resultados de SP0--SP8 conservan los fallos y
-agotamientos del horizonte; las muestras descartadas no se eliminan del denominador.
+La trazabilidad distingue reproducción desde una configuración de reanálisis de
+observaciones archivadas. Esta distinción impide presentar como regenerable una
+campaña cuyo generador histórico ya no está disponible. La
+Tabla~\ref{tab:reproducibility-status} resume el estado que acompaña a cada
+resultado.
 
-\subsection{Entorno y configuraciones}
+\begin{table}[!htbp]
+  \centering
+  \caption{Estado de reproducción de las campañas utilizadas en la memoria.}
+  \label{tab:reproducibility-status}
+  \scriptsize
+  \setlength{\tabcolsep}{2.8pt}
+  \begin{tabularx}{\textwidth}{@{}p{1.3cm}p{2.2cm}p{4.7cm}X@{}}
+    \toprule
+    Bloque & Estado & Entrada principal & Evidencia conservada \\
+    \midrule
+    SP0 & Regenerable & \texttt{sp0\_theory.yaml} & Código, semillas, tablas, manifiesto y pruebas. \\
+    SP1 & Regenerable & \texttt{sp1\_theory.yaml} & Campaña de desarrollo, datos por mundo, manifiesto y pruebas. \\
+    SP2--SP4 & Reanálisis & Configuraciones y paquetes procesados & Observaciones, postproceso, tablas y auditorías; faltan generadores históricos completos. \\
+    SP5 & Regenerable & \texttt{sp5\_safety\_evidence.yaml} & Código de planta/filtro, configuración, resultados y pruebas. \\
+    SP6 & Regenerable & \texttt{sp6\_recovery\_confirmatory.yaml} & Código, 480 mundos, manifiesto, hashes y pruebas. \\
+    SP7 & Regenerable & \texttt{sp7\_traffic\_confirmatory.yaml} & Código, 360 mundos, manifiesto, hashes y pruebas. \\
+    SP8 & Regenerable & \texttt{sp8\_network\_confirmatory.yaml} & Código, 900 mundos, manifiesto, hashes y pruebas. \\
+    Cargo & Regenerable & \texttt{cargo\_e2e\_confirmatory.yaml} & Código, 2160 ejecuciones, protocolo congelado, hashes y pruebas. \\
+    Industrial~2 & Piloto regenerable & \texttt{aws\_industrial2\_method\_comparison\_pilot.yaml} & Trazas Python, escena, replay cinemático y auditorías geométricas. \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
 
-Las reconstrucciones actuales de SP0, SP1, SP6--SP8 y la campaña integrada se ejecutaron en Windows 11 con Python
-3.13.9, NumPy 2.3.5, pandas 2.3.3 y SciPy 1.16.3. Sus manifiestos registran
-versión y plataforma; \texttt{requirements-reproducible.txt} fija las seis
-dependencias necesarias para las campañas y la suite de pruebas. Los paquetes procesados de SP2--SP5 no conservan todos un entorno histórico completo: el entorno bloqueado reproduce su postproceso actual, pero no restituye los generadores ausentes de SP2--SP3. Las
-configuraciones canónicas se encuentran en \texttt{experiments/configs}; desde
-\texttt{sp0\_theory.yaml} hasta \texttt{sp8\_network\_confirmatory.yaml}, cada
-archivo declara factores, semillas y umbrales.
+Las reconstrucciones vigentes se ejecutaron en Windows~11 con Python~3.13.9,
+NumPy~2.3.5, pandas~2.3.3 y SciPy~1.16.3; las dependencias se fijan en
+\texttt{requirements-reproducible.txt}. Desde la raíz se define
+\texttt{PYTHONPATH=src}, se ejecuta \texttt{python -m pytest tests} y se compila
+la memoria con \texttt{pwsh -File thesis/build.ps1}. Cada campaña regenerable
+dispone de un punto de entrada bajo \texttt{viu\_mrob\_tfm.cli}; sus
+configuraciones, datos, fallos y manifiestos se conservan sin eliminar
+agotamientos del horizonte. Las tablas cuantitativas se derivan de esos
+artefactos y no contienen resultados escritos manualmente.
 
-Desde la raíz del repositorio, las comprobaciones generales se ejecutan con:
-\begin{verbatim}
-$env:PYTHONPATH='src'
-python -m pytest tests
-powershell -ExecutionPolicy Bypass -File thesis\build.ps1
-\end{verbatim}
+\subsection{Disponibilidad e integridad}
 
-En Bash, los comandos equivalentes son:
-\begin{verbatim}
-export PYTHONPATH=src
-python -m pytest tests
-pwsh -ExecutionPolicy Bypass -File thesis/build.ps1
-\end{verbatim}
+El código, las configuraciones y los resultados disponibles se alojan en
+\url{https://github.com/jlmayorgaco/VIU-MRBO-TFM-2026}. El repositorio público es
+mutable; por tanto, la versión de depósito debe acompañarse de una etiqueta y un
+commit inmutables. Hasta que exista esa instantánea, la URL no equivale a un
+archivo permanente con DOI. La ausencia de los generadores históricos de
+SP2--SP4 se declara como limitación y no se suple con código reconstruido a
+posteriori.
 
-SP0 puede reconstruirse de forma independiente mediante:
-\begin{verbatim}
-python -m viu_mrob_tfm.cli.run_sp0_theory `
-  --config experiments/configs/sp0_theory.yaml
-\end{verbatim}
-
-La campaña integrada Cargo de SP2--SP6 se reconstruye con:
-\begin{verbatim}
-python -m viu_mrob_tfm.cli.run_cargo_e2e `
-  experiments/configs/cargo_e2e_confirmatory.yaml
-\end{verbatim}
-Su protocolo confirmatorio se congeló antes de ejecutar las semillas
-9700--9729. El directorio
-\texttt{results/processed/integrated/CARGO\_E2E\_CONFIRMATORY\_v1}
-conserva el protocolo congelado, el registro de semillas, los datos de las
-2160 ejecuciones, el informe de auditoría, las trazas representativas y los
-resúmenes SHA-256 de cada resultado derivado. La configuración no se sobrescribe
-si su huella difiere de la ya congelada bajo el mismo identificador.
-
-La campaña AWS Industrial 2 se reconstruye con:
-\begin{verbatim}
-python tmp/scripts/coppelia/run_aws_industrial2_multiscenario.py `
-  --config experiments/configs/aws_industrial2_method_comparison_pilot.yaml
-\end{verbatim}
-El constructor de la escena exporta una copia separada mediante:
-\begin{verbatim}
-python tmp/scripts/coppelia/build_aws_industrial_adversarial_scene.py `
-  --industrial2 --launch-coppelia
-\end{verbatim}
-Los valores de la memoria se regeneran desde los CSV y manifiestos con
-\texttt{export\_aws\_industrial2\_latex.py}; la compilación ejecuta ese paso
-antes de leer las macros numéricas.
-
-\subsection{Datos, resultados y controles}
-
-Los datos y gráficos de SP0--SP1 se almacenan bajo \texttt{results/sp0} y \texttt{results/sp1}; los de SP2--SP8, bajo \texttt{results/processed/spN}. Cada estudio conserva tablas agregadas, números usados por LaTeX y figuras derivadas. Los manifiestos registran versiones, parámetros y resúmenes SHA-256 cuando están disponibles. En SP2, los nombres internos de columnas conservan el término histórico «capacity» para mantener la compatibilidad con los CSV archivados.
-
-Los controles automáticos cubren finitud, invariantes del simplex, factibilidad de asignación, identidad de potencial, ausencia de NaN/Inf y consistencia de mundos pareados según el SP. Estos controles comparan la implementación con propiedades finitas; no sustituyen las demostraciones ni extienden el modelo físico.
-
-En la campaña Cargo, la auditoría exige una ejecución única para cada
-combinación de escenario, tamaño, semilla y método. También comprueba la
-igualdad del mundo entre métodos, la pose inicial común de la carga, los límites
-de par de rueda, la contabilidad no negativa de mensajes y la clasificación
-explícita de todos los fallos. El
-resultado de la auditoría forma parte del manifiesto y debe constar como
-satisfactorio antes de emplear las tablas en el análisis.
-
-\subsection{Disponibilidad, autoría e integridad}
-
-% TODO(autor): sustituir <TAG> por la etiqueta del release y añadir el DOI de Zenodo cuando exista.
-El código, las configuraciones, los resultados procesados y los manifiestos
-disponibles se entregan en \url{https://github.com/jlmayorgaco/VIU-MRBO-TFM-2026} (versión etiquetada \texttt{<TAG>}). SP0, SP1, SP4--SP8 y la campaña
-Cargo, junto con los pilotos AWS, pueden reconstruirse desde sus configuraciones versionadas. En SP2 y
-SP3 se conservan las observaciones y el postproceso que regenera estadísticas,
-tablas y figuras, pero no todos los generadores históricos; esos dos estudios
-son reanálisis reproducibles de datos archivados, no simulaciones íntegramente
-reconstruibles desde cero.
-La dirección anterior facilita el acceso, pero todavía no sustituye una instantánea inmutable. La entrega final deberá identificar una etiqueta de versión y un commit, y preferiblemente archivar esa versión con DOI.
-El trabajo no emplea participantes humanos, animales ni datos personales, por
-lo que no requirió aprobación ética. Jorge Luis Mayorga Taborda es responsable
-de la concepción, implementación, análisis y redacción; la dirección académica
-corresponde a la persona identificada en la portada. No se declara financiación
+El trabajo no emplea participantes humanos, animales ni datos personales y no
+requirió aprobación ética. Jorge Luis Mayorga Taborda es responsable de la
+concepción, implementación, análisis y redacción; la dirección académica
+corresponde a la persona indicada en la portada. No se declara financiación
 externa ni conflicto de interés.
 
-Se utilizaron herramientas generativas como apoyo en tareas de programación,
-revisión lingüística y comprobación de consistencia. La selección del modelo,
-la ejecución de los experimentos, la verificación de resultados, la revisión
-de las fuentes y la responsabilidad sobre el contenido corresponden al autor.
-No se aceptaron referencias ni resultados numéricos sin comprobación contra
-los datos, las trazas y las salidas del repositorio.
+Se utilizaron herramientas generativas como apoyo en programación, revisión
+lingüística y comprobaciones de consistencia. La selección del modelo, la
+ejecución de los experimentos, la verificación de cifras y fuentes y la
+responsabilidad sobre el contenido corresponden al autor. No se aceptaron
+referencias ni resultados sin contraste con los artefactos del repositorio.

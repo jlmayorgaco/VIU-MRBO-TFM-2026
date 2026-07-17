@@ -127,3 +127,9 @@ The frozen run must create `00_manifest/`, `01_raw/`, `02_tables/`, `03_figures/
 `BLOCKED`
 
 Do not open SP1 confirmatory seeds or start final training/campaign execution.
+
+## Development addendum — 2026-07-16
+
+The new `SP1_QUORUM_v1` pipeline replaces the deleted legacy SP1 implementation for the delimited logical-quorum study. It stores Smith-RAW and QR-CLOSED outcomes as different method/stage rows, uses an exact binary MILP-Q oracle, generates 1,440 paired development worlds and 8,640 method rows, and passes 14/14 formal checks. The campaign is explicitly marked `confirmatory: false`; its observed seeds cannot be promoted to a sealed holdout.
+
+This addendum resolves the narrow absence of a reproducible SP1 theory/development path, but it does not reverse the `BLOCKED` decision. The current QR implementation aggregates the preference matrix to isolate the logical closure effect; a neighbor-only implementation, a frozen confirmatory registry, event-level failure artifacts, and the full promotion gates remain pending.

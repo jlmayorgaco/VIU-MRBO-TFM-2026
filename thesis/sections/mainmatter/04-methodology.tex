@@ -12,6 +12,35 @@ La unidad independiente es el mundo experimental $w$, definido por escenario, fa
 
 Los SP forman cuatro bloques. SP0--SP2 estudian asignación, cuotas y heterogeneidad sin planta física. SP3--SP4 introducen contacto, \emph{wrench} y transporte de pose. SP5--SP7 añaden seguridad, fallos y tráfico. SP8 mide escala y comunicación sobre un juego de rutas. El cambio entre bloques es deliberado: una propiedad estratégica no se hereda como propiedad mecánica y una barrera geométrica no garantiza progreso.
 
+La Tabla~\ref{tab:method-operationalization} evita dos omisiones frecuentes:
+declarar un objetivo sin evidencia y evaluar una hipótesis con una variable elegida
+después del experimento. Los estimandos principales se fijan por contraste; las
+medidas restantes describen mecanismo, coste o límites. SP5 y SP7 mantienen
+hipótesis locales en sus protocolos, pero no se usan para crear una nueva
+subhipótesis global después de observar los resultados.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Matriz de operacionalización entre preguntas, objetivos, hipótesis y evidencia.}
+  \label{tab:method-operationalization}
+  \scriptsize
+  \setlength{\tabcolsep}{2.3pt}
+  \begin{tabularx}{\textwidth}{@{}p{1.1cm}p{0.75cm}p{1.35cm}p{4.65cm}X@{}}
+    \toprule
+    Pregunta y objetivo & Hipótesis & Evidencia & Estimando o criterio principal & Comparación y nivel \\
+    \midrule
+    RQ1--OE1 & H1 & SP0--SP2 & Nash factible bajo los supuestos formales; diferencia pareada en factibilidad o fracción de coaliciones parciales & Oráculo, referencia y ablación; formal, desarrollo y reanálisis histórico según el SP. \\
+    RQ3--OE2 & H2 & SP3--SP4 & Diferencia pareada de falsos positivos; residual de \emph{wrench} y error de pose como apoyo & Criterio escalar, QP de \emph{wrench} y controles de pose; formal parcial y reanálisis. \\
+    RQ2--OE3 & H3 & Cargo & Diferencia pareada del tiempo de terminación entre coste espacial y selección desacoplada & Ablación confirmatoria; éxito y mensajes son secundarios y no constituyen una prueba de equivalencia. \\
+    RQ4--OE3 & H4 & SP6 y Cargo & Restauración del certificado en mundos recuperables y diferencia pareada de éxito con/sin reparación & Oráculo exhaustivo, referencias y ablación; formal, confirmatoria e integrada. \\
+    RQ4--OE3 & Local & SP5 y SP7 & Colisión/éxito seguro en SP5; entrega y conflicto lógico en SP7 & Ablaciones y oráculos de alcance acotado; evidencia empírica por capa, sin seguridad continua para SP7. \\
+    RQ5--OE4 & H5a--b & SP8 & Complejidad local frente a enumeración y tasa global libre de conflictos al crecer la escala & Evento, periódico, información perfecta y oráculo certificado; formal y confirmatoria sobre rutas discretas. \\
+    Todas--OE5 & HP & Todos & Integridad de configuraciones, semillas, hashes, invariantes y cadena dato--tabla--afirmación & Reproducción desde cero o reanálisis archivado, declarado por campaña. \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
 \subsection{Modelos y escalas de abstracción}
 \label{subsec:methodology-common-model}
 
@@ -26,7 +55,77 @@ Sean $\Robots=\{1,\ldots,N\}$ los robots y $\Loads=\{1,\ldots,K\}$ las cargas. L
   \qquad |v_i|\leq v_i^{\max},\quad |\omega_i|\leq\omega_i^{\max},
   \label{eq:method-unicycle}
 \end{equation}
-La campaña de acoplamiento de SP4 añade la dinámica de velocidad, $\xi_i=(q_i,v_i,\omega_i)$ y $\eta_i=(\eta_i^v,\eta_i^\omega)$, con $\dot v_i=\eta_i^v$ y $\dot\omega_i=\eta_i^\omega$. Para una rueda de radio $r_i^w$, semivía $\ell_i^w$, masa $m_i$ e inercia $I_i$, la acción realizable se obtiene al limitar los pares
+El uniciclo procede de una base diferencial con rodadura ideal y sin velocidad lateral. Si $\varphi_{i,L}$ y $\varphi_{i,R}$ son los ángulos de las ruedas izquierda y derecha, ambas de radio $r_i^w$ y separadas por la vía $2\ell_i^w$, entonces
+\begin{equation}
+ \begin{bmatrix}v_i\\ \omega_i\end{bmatrix}
+ =\frac{r_i^w}{2}
+ \begin{bmatrix}
+  1 & 1\\[-1mm]
+  -1/\ell_i^w & 1/\ell_i^w
+ \end{bmatrix}
+ \begin{bmatrix}\dot\varphi_{i,L}\\ \dot\varphi_{i,R}\end{bmatrix},
+ \qquad
+ \begin{bmatrix}-\sin\theta_i&\cos\theta_i\end{bmatrix}\dot p_i=0.
+ \label{eq:method-differential-drive}
+\end{equation}
+La Figura~\ref{fig:method-differential-drive} fija la geometría y separa el mapa cinemático de la actuación. El signo de $\omega_i$ es positivo en sentido antihorario; pares iguales producen movimiento longitudinal y su diferencia produce momento de guiñada.
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{tikzpicture}[x=1cm,y=1cm,font=\sffamily,
+    dim/.style={{Stealth[length=1.4mm]}-{Stealth[length=1.4mm]},draw=VIUGray,line width=0.6pt},
+    axis/.style={-{Stealth[length=1.8mm]},draw=VIUDark,line width=0.7pt},
+    act/.style={-{Stealth[length=2mm]},draw=SPRed,line width=1pt},
+    map/.style={draw=SPGrid,fill=SPFloor,rounded corners=3pt,line width=0.7pt,align=center},
+    small/.style={font=\fontsize{7.4}{8.2}\selectfont,text=VIUDark,align=center}
+  ]
+    \node[map,minimum width=14.55cm,minimum height=5.55cm,anchor=south west] at (0,0) {};
+    \node[font=\fontsize{8.5}{9.2}\selectfont\bfseries,anchor=west] at (0.30,5.18) {Base diferencial de dos ruedas: geometría, cinemática y actuación};
+
+    % Marco inercial y robot en vista superior
+    \draw[axis] (0.75,0.70)--(1.85,0.70) node[below,small] {$x$};
+    \draw[axis] (0.75,0.70)--(0.75,1.80) node[left,small] {$y$};
+    \node[small,anchor=north east] at (0.70,0.66) {$\mathcal F_W$};
+    \begin{scope}[shift={(4.25,2.70)},rotate=18]
+      \fill[SPBlue!9,draw=SPBlue,line width=0.9pt,rounded corners=4pt] (-1.35,-0.92) rectangle (1.35,0.92);
+      \fill[VIUDark] (-0.80,0.92) rectangle (0.80,1.20);
+      \fill[VIUDark] (-0.80,-1.20) rectangle (0.80,-0.92);
+      \draw[axis,draw=SPBlue,line width=1.1pt] (0,0)--(2.05,0) node[right,small] {$v_i\,\boldsymbol t_i$};
+      \draw[act] (0.92,1.40) arc[start angle=25,end angle=155,radius=0.43] node[pos=0.52,above,small,text=SPRed] {$\tau_{i,L}$};
+      \draw[act] (0.92,-1.40) arc[start angle=-25,end angle=-155,radius=0.43] node[pos=0.52,below,small,text=SPRed] {$\tau_{i,R}$};
+      \draw[dim] (-1.12,0)--(-1.12,0.92) node[midway,left,small] {$\ell_i^w$};
+      \draw[dim] (-1.12,0)--(-1.12,-0.92) node[midway,left,small] {$\ell_i^w$};
+      \fill[VIUOrange] (0,0) circle (2pt);
+      \node[small,anchor=south west] at (0.08,0.07) {$q_i$};
+    \end{scope}
+    \draw[axis,draw=SPGreen] (4.25,2.70) ++(0.65,0.12) arc[start angle=10,end angle=92,radius=0.70];
+    \node[small,text=SPGreen] at (5.18,3.60) {$\omega_i$};
+    \draw[VIUGray,densely dashed] (1.35,2.70)--(4.25,2.70);
+    \draw[SPPurple,line width=0.65pt] (2.12,2.70) arc[start angle=0,end angle=18,radius=0.78];
+    \node[small,text=SPPurple] at (2.72,2.88) {$\theta_i$};
+
+    % Rueda en vista lateral
+    \draw[SPGrid,line width=0.65pt] (6.75,1.05)--(6.75,4.50);
+    \draw[VIUDark,line width=1.2pt] (7.70,2.05) circle (0.62);
+    \fill[VIUDark] (7.70,2.05) circle (1.5pt);
+    \draw[dim] (7.70,2.05)--(7.70,2.67) node[midway,right,small] {$r_i^w$};
+    \node[small] at (7.70,1.12) {rueda en vista lateral};
+
+    % Cadena de modelo
+    \node[map,minimum width=2.45cm,minimum height=0.82cm,small] (wheel) at (10.05,4.13) {$\dot\varphi_{i,L},\dot\varphi_{i,R}$\\giros de rueda};
+    \node[map,minimum width=2.45cm,minimum height=0.82cm,small] (twist) at (13.00,4.13) {$v_i,\omega_i$\\velocidad del chasis};
+    \draw[axis,draw=SPBlue] (wheel)--(twist) node[midway,above,small] {$r_i^w,\ell_i^w$};
+    \node[map,minimum width=2.45cm,minimum height=0.82cm,small] (torque) at (10.05,2.58) {$\tau_{i,L},\tau_{i,R}$\\pares de rueda};
+    \node[map,minimum width=2.45cm,minimum height=0.82cm,small] (accel) at (13.00,2.58) {$\eta_i^v,\eta_i^\omega$\\aceleración realizable};
+    \draw[axis,draw=SPRed] (torque)--(accel) node[midway,above,small] {$m_i,I_i$};
+    \node[small,text width=5.35cm] at (11.52,1.16) {La saturación $|\tau_{i,L/R}|\leq\tau_i^{\max}$ se aplica antes de integrar el estado.};
+  \end{tikzpicture}
+  \caption{Modelo de la base diferencial empleado durante la aproximación y el acoplamiento de cada robot.}
+  \label{fig:method-differential-drive}
+  \viuownsource
+\end{figure}
+
+La campaña de acoplamiento de SP4 añade la dinámica de velocidad, $\xi_i=(q_i,v_i,\omega_i)$ y $\eta_i=(\eta_i^v,\eta_i^\omega)$, con $\dot v_i=\eta_i^v$ y $\dot\omega_i=\eta_i^\omega$. Para masa $m_i$ e inercia $I_i$, la acción realizable se obtiene al limitar los pares
 \begin{equation}
  \tau_{i,R}=\frac{r_i^w}{2}\left(m_i\eta_i^v+\frac{I_i}{\ell_i^w}\eta_i^\omega\right),
  \qquad
@@ -73,7 +172,7 @@ La información disponible determina el papel de cada método. Los optimizadores
     Optimización global & Estado y modelo completos & Húngaro, MILP, QP de \emph{wrench}, CBS/ECBS & Óptimo certificado, cota o referencia. \\
     Método local basado en modelo & Estado propio y mensajes vecinales & Subasta, CBBA, mejor respuesta, Smith, primal--dual & Mecanismo propuesto o comparador homogéneo. \\
     Heurística global o local & Información declarada por método & Método voraz, priorización, aproximación VO/CBF & Comparador de coste y ablación estructural. \\
-    Método basado en datos & Observación y entrenamiento declarados & Imitación, GNN o MARL & Comparador secundario; no es el método principal. \\
+    Proxy o adaptación piloto & Información declarada por tratamiento & Subasta, VO o predictor simplificados de Industrial~2 & Prueba funcional exploratoria; no hereda la garantía del método publicado. \\
     \bottomrule
   \end{tabularx}
   \viuownsource
@@ -92,7 +191,7 @@ El emparejamiento se conserva en todo el análisis. Para dos métodos se calcula
 
 Holm corrige cada familia de contrastes preespecificada \parencite{holm1979Sequential}. Un valor $p$ no reemplaza la magnitud ni el intervalo. El agotamiento del horizonte se trata como censura o tiempo truncado; no se calculan razones de riesgo si el protocolo no las fijó antes del análisis.
 
-Tras un piloto de tres semillas, la campaña Cargo empleó 30 semillas nuevas por combinación. Cruzó cuatro regímenes, tres tamaños de flota y seis tratamientos pareados. El método completo propagó entre vecinos tablas con número de versión, pérdida y retardo. Las referencias globales usaron el mismo mundo y la misma planta, pero no contabilizaron mensajes. Las comparaciones se definieron antes de calcular los resultados confirmatorios.
+Tras un piloto de tres semillas, la campaña Cargo empleó 30 semillas nuevas por combinación. Cruzó cuatro regímenes, tres tamaños de flota y seis tratamientos pareados. El método completo propagó entre vecinos tablas con número de versión, pérdida y retardo. Las referencias globales usaron el mismo mundo y la misma planta, pero no contabilizaron mensajes. Las comparaciones se definieron antes de calcular los resultados confirmatorios. El número 30 fue una regla presupuestaria fijada por el protocolo, no el resultado de un cálculo de potencia. Por ello, la resolución efectiva se juzga mediante la anchura de los intervalos obtenidos; un contraste no significativo no se convierte en evidencia de equivalencia.
 
 La serie AWS se mantuvo como evidencia piloto complementaria. Sus cuatro etapas
 pasaron de asignación uno a uno a coaliciones heterogéneas, compararon A* con
@@ -129,10 +228,10 @@ El éxito de misión exige cierre lógico, factibilidad de la modalidad, ausenci
   \viuownsource
 \end{table}
 
-Las configuraciones fijan escenario, semilla, parámetros y límites. Los datos crudos permanecen intactos y un mismo procedimiento calcula resúmenes, tablas y figuras. El simulador separa decisión, comunicación, cierre, planta, contacto, seguridad y métricas; esa separación permite detectar lecturas globales impropias. Python constituye el entorno experimental principal porque permite congelar mundos pareados, registrar estados internos de todas las capas y regenerar cada métrica desde semillas versionadas. CoppeliaSim se empleó para auditar la geometría y reproducir cinemáticamente el guion de la nave Industrial 2. La asignación, la navegación y las métricas multiescenario se calcularon en Python; el replay 3D no reprodujo actuadores Pioneer, contacto rueda--suelo ni agarre cooperativo. Por ello sus salidas se presentan como comprobación geométrica y funcional del guion, no como evidencia dinámica ni de hardware.
+Las configuraciones fijan escenario, semilla, parámetros y límites. Cuando se conserva el generador, los datos crudos permanecen intactos y un mismo procedimiento calcula resúmenes, tablas y figuras. Cuando solo se conservan observaciones archivadas, la reproducibilidad se limita al reanálisis y así se rotula. El simulador separa decisión, comunicación, cierre, planta, contacto, seguridad y métricas; esa separación permite detectar lecturas globales impropias. Python constituye el entorno experimental principal porque permite congelar mundos pareados, registrar estados internos de las capas implementadas y regenerar las métricas de las campañas vigentes desde semillas versionadas. CoppeliaSim se empleó para auditar la geometría y reproducir cinemáticamente el guion de la nave Industrial 2. La asignación, la navegación y las métricas multiescenario se calcularon en Python; el replay 3D no reprodujo actuadores Pioneer, contacto rueda--suelo ni agarre cooperativo. Por ello sus salidas se presentan como comprobación geométrica y funcional del guion, no como evidencia dinámica ni de hardware.
 
 Esta función es más restringida que la implementación completa en CoppeliaSim prevista en la propuesta inicial: la evidencia cuantitativa procede del simulador propio en Python, cuya separación de capas permite las ablaciones e invariantes descritas, mientras CoppeliaSim se reserva para la verificación geométrica de las trayectorias exportadas.
 
-Las reconstrucciones actuales de SP0, SP1, SP6--SP8 y Cargo se ejecutaron en Windows~11 con Python~3.13.9, NumPy~2.3.5, pandas~2.3.3 y SciPy~1.16.3. \texttt{requirements-reproducible.txt} fija las dependencias. En PowerShell se define \texttt{\$env:PYTHONPATH='src'}; en Bash, \texttt{export PYTHONPATH=src}; después se ejecutan \texttt{python -m pytest tests} y \texttt{pwsh -File thesis/build.ps1}. Los datos, configuraciones y manifiestos están disponibles en \url{https://github.com/jlmayorgaco/VIU-MRBO-TFM-2026}. SP2--SP3 permiten reanálisis desde observaciones archivadas, aunque sus generadores históricos completos no se conservan; la entrega final deberá identificar una etiqueta y un commit, y preferiblemente una instantánea con DOI.
+Las reconstrucciones actuales de SP0, SP1, SP6--SP8 y Cargo se ejecutaron en Windows~11 con Python~3.13.9, NumPy~2.3.5, pandas~2.3.3 y SciPy~1.16.3. \texttt{requirements-reproducible.txt} fija las dependencias. En PowerShell se define \texttt{\$env:PYTHONPATH='src'}; en Bash, \texttt{export PYTHONPATH=src}; después se ejecutan \texttt{python -m pytest tests} y \texttt{pwsh -File thesis/build.ps1}. Los datos, configuraciones y manifiestos están disponibles en \url{https://github.com/jlmayorgaco/VIU-MRBO-TFM-2026}. SP2--SP4 permiten reanálisis desde observaciones archivadas, pero sus generadores históricos completos no se conservan y no pueden reconstruirse desde cero con el árbol actual. Esta excepción implica cumplimiento parcial del OE5. La versión de depósito deberá identificar una etiqueta y un commit inmutables y, si el repositorio se archiva, su identificador persistente.
 
 La validez interna depende del emparejamiento, la separación de semillas y la equivalencia de información y límites. La validez externa se restringe a los tamaños, geometrías, sensores y regímenes de red ensayados. El uniciclo y el modelo planar omiten contacto tridimensional, desgaste e incertidumbre completa de percepción. Los resultados se interpretan dentro de esas condiciones; fuera de ellas no se afirma convergencia, estabilidad, seguridad u optimalidad.

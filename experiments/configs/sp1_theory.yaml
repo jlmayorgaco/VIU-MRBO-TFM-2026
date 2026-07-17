@@ -1,0 +1,20 @@
+experiment_id: SP1_QUORUM_v1
+output_dir: results/sp1/SP1_QUORUM_v1
+seed_base: 2026071600
+number_seeds: 30
+fleet_sizes: [8, 16]
+demand_pressure: [0.50, 0.75, 1.00, 1.10, 1.25, 1.50]
+quota_mixes: [homogeneous, mixed]
+geometries: [uniform, clustered]
+quorum_beta: 2.0
+beta_sweep: [0.0, 0.5, 1.0, 2.0, 4.0, 8.0]
+regime_map_seeds: 10
+regime_map_fleet_size: 16
+cost_weight: 0.15
+excess_penalty: 1.05
+oracle_time_limit_s: 5.0
+bootstrap_resamples: 2000
+smith:
+  time_step: 0.15
+  max_steps: 250
+  tolerance: 0.000001

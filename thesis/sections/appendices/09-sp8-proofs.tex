@@ -1,0 +1,29 @@
+\section{Demostraciones complementarias de SP8}
+\label{app:sp8-proofs}
+
+Las propiedades del juego de rutas visible por la red suponen un grafo de comunicación no dirigido y fijo durante cada ejecución, con catálogos y costes constantes.
+
+\subsection{Potencial exacto y terminación finita}
+
+Considérese una desviación unilateral de la coalición $i$, desde $r_i$ hasta $r_i'$. Los costes base de las demás coaliciones no cambian. En $P_8^G$ solo pueden variar los términos asociados a aristas $\{i,j\}\in\mathcal E_C^8$. Por ello,
+\begin{align*}
+ \Phi_8^G(r_i',\boldsymbol r_{-i})-\Phi_8^G(r_i,\boldsymbol r_{-i})
+ &= -b_{i r_i'}^8+b_{i r_i}^8 \\
+ &\quad-\lambda_8\sum_{j\in\mathcal N_i^8}
+ \left(
+ |\mathcal E_{i r_i'}^8\cap\mathcal E_{j r_j}^8|
+ -|\mathcal E_{i r_i}^8\cap\mathcal E_{j r_j}^8|
+ \right) \\
+ &=U_i^8(r_i',\boldsymbol r_{-i})-U_i^8(r_i,\boldsymbol r_{-i}).
+\end{align*}
+Así, $\Phi_8^G$ es un potencial exacto. Una mejora estricta aumenta su valor y no puede repetir un perfil. Como existen $\prod_i|\mathcal R_i^8|$ perfiles, cualquier trayectoria de mejoras estrictas acepta a lo sumo $\prod_i|\mathcal R_i^8|-1$ cambios antes de alcanzar un Nash visible.
+
+\subsection{Imposibilidad bajo partición permanente}
+
+Sean $i$ y $j$ coaliciones situadas en componentes distintas de $G_C^8$. La coalición $i$ dispone de dos rutas locales, $a$ y $b$, con el mismo coste base. Fíjese el historial intracomponente de $i$, incluido su catálogo, y considérese una variable de instancia $\vartheta$ que solo modifica un término de interacción global $\Gamma_\vartheta(r_i,r_j)$ no observable desde esa componente. En la instancia $\vartheta=0$, defínase $\Gamma_0(a,r_j)=0$ y $\Gamma_0(b,r_j)=1$; en la instancia $\vartheta=1$, inviértanse esos dos valores. Los costes y mensajes observados por $i$ son idénticos, pero el óptimo global exige $a$ en la primera instancia y $b$ en la segunda.
+
+Un algoritmo determinista basado exclusivamente en el historial intracomponente de $i$ produce la misma decisión en ambas instancias. Esa decisión no puede ser óptima en las dos. El mismo argumento se aplica a la detección de una interacción remota: una instancia puede tener $\Gamma_\vartheta\equiv0$ y otra un acoplamiento no nulo sin alterar el historial local. Por tanto, ninguna regla con información estrictamente intracomponente garantiza, para toda la familia acoplada, optimalidad global ni detección de todas las interacciones remotas. Esto prueba la Proposición~\ref{prop:sp8-partition-limit}. El resultado no excluye garantías para familias restringidas que compartan mapa global, identificadores o una regla de prioridad común.
+
+\subsection{Efecto elemental de la retransmisión}
+
+Con pérdidas independientes, cada uno de los $s$ intentos falla con probabilidad $p_{\mathrm{loss}}$. La probabilidad conjunta de que fallen todos es el producto $p_{\mathrm{loss}}^s$. Esta cota no se conserva bajo pérdidas correlacionadas y no resuelve una partición en la que la probabilidad efectiva de entrega es cero.

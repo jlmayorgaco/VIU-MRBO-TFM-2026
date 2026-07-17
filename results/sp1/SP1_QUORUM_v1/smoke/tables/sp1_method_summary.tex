@@ -1,0 +1,12 @@
+\begin{tabular}{lrrrrrr}
+\toprule
+Método & $n$ & Cierre [\%] & Valor/MILP [\%] & Parciales [\%] & Exceso [\%] & CPU [ms] \\
+\midrule
+Greedy-Q & 2 & 100.0 & 100.0 & 0.0 & 0.0 & 0.27 \\
+MILP-Q & 2 & 100.0 & 100.0 & 0.0 & 0.0 & 6.39 \\
+Smith lineal + QR & 2 & 100.0 & 89.2 & 0.0 & 0.0 & 0.14 \\
+Smith-QR & 2 & 100.0 & 89.2 & 0.0 & 0.0 & 0.16 \\
+Smith-RAW & 2 & 0.0 & 0.0 & 0.0 & 56.2 & 53.28 \\
+Smith-RAW sin exceso & 2 & 0.0 & 0.0 & 0.0 & 56.2 & 49.36 \\
+\bottomrule
+\end{tabular}

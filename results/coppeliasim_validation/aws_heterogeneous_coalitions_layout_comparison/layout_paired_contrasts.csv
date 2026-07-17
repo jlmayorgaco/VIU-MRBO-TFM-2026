@@ -1,0 +1,9 @@
+metric,higher_is_better,policy,n_paired,open_minus_bottleneck,ci95_low,ci95_high,open_wins,ties,bottleneck_wins,p_value_raw,p_value_holm,reject_holm_005
+delivered,1,milp_coalition_oracle,8,-2.375,-3.25,-1.5,0,0,8,0.0078125,0.03125,1
+delivered,1,greedy_coalition,8,-2.0,-2.875,-1.0,1,0,7,0.0234375,0.0703125,0
+delivered,1,random_coalition,8,0.375,-0.125,1.0,3,4,1,0.5,1.0,0
+delivered,1,replicator_coalition_distributed,8,0.0,-1.125,1.125,3,2,3,0.9375,1.0,0
+reservation_waits,0,milp_coalition_oracle,8,1408.625,958.353125,1863.51875,0,0,8,0.0078125,0.03125,1
+reservation_waits,0,greedy_coalition,8,1104.75,675.625,1557.375,0,0,8,0.0078125,0.03125,1
+reservation_waits,0,random_coalition,8,-339.125,-712.25625,11.375,6,0,2,0.1484375,0.296875,0
+reservation_waits,0,replicator_coalition_distributed,8,287.25,-574.1625,944.625,3,0,5,0.3828125,0.3828125,0

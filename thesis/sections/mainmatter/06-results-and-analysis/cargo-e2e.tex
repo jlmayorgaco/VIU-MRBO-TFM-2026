@@ -61,7 +61,7 @@ Las variables principales son éxito de misión, intersección de la huella comp
 
 \subsubsection{Resultados}
 
-El método con visibilidad vecinal completó 359 de 360 misiones ($0.997$) sin intersección entre la huella compuesta y el obstáculo durante el transporte. La única pérdida fue un reemplazo que no restableció el certificado antes del horizonte. La métrica no cubre colisión continua durante aproximación, robot--robot ni contacto tridimensional. La referencia central completó las 360. Bajo red degradada, el método vecinal y la variante con información perfecta obtuvieron 90/90 éxitos; esta igualdad no demuestra equivalencia general. El coste comunicativo fue \CargoEtwoEMessages{} mensajes y aproximadamente $90$~kB por instancia (Tabla~\ref{tab:cargo-e2e-results}).
+El método con visibilidad vecinal completó 359 de 360 misiones ($0.997$) sin intersección entre la huella compuesta y el obstáculo durante el transporte. La única pérdida fue un reemplazo que no restableció el certificado antes del horizonte. La métrica no cubre colisión continua durante aproximación, robot--robot ni contacto tridimensional. La referencia central completó las 360. Bajo red degradada, el método vecinal y la variante con información perfecta obtuvieron 90/90 éxitos; esta igualdad no demuestra equivalencia general. El promedio de toda la campaña vecinal fue \CargoEtwoEMessages{} mensajes y aproximadamente $90$~kB por instancia; en los 90 mundos de red degradada fue 249.3 mensajes y 58.2~kB (Tabla~\ref{tab:cargo-e2e-results}).
 
 \begin{table}[!htbp]
   \centering
@@ -74,7 +74,7 @@ El método con visibilidad vecinal completó 359 de 360 misiones ($0.997$) sin i
 
 Las columnas de tiempo son medias incondicionales sobre las 360 instancias de cada tratamiento. ``Tiempo'' mide el instante de terminación, tanto por éxito como por colisión, fallo u horizonte; por eso una ablación que colisiona pronto puede presentar una media menor. ``Recuperación'' asigna cero a las ejecuciones sin reparación y no debe leerse como duración condicionada al subconjunto recuperado.
 
-La ablación conjunta retiró el certificado mecánico, el punto de rodeo y el filtro de seguridad. Su éxito fue $0.996$ menor en las 270 instancias con obstáculo (IC del 95\,\% $[0.989;1.000]$, $p_{\mathrm{Holm}}=4.22\times10^{-81}$) y hubo intersección en $0.75$ del total. El contraste prueba la necesidad del bloque combinado, pero no separa los efectos del certificado, la ruta y el filtro. En el régimen de fallo, la reparación elevó el éxito en $0.989$ frente a desactivarla (IC $[0.967;1.000]$, $p_{\mathrm{Holm}}=4.85\times10^{-27}$).
+La ablación conjunta retiró el certificado mecánico, el punto de rodeo y el filtro de seguridad. Su éxito fue $0.996$ menor en las 270 observaciones con obstáculo, agrupadas en 90 instancias independientes (IC del 95\,\% $[0.989;1.000]$, $p_{\mathrm{Holm}}=5.79\times10^{-21}$), y hubo intersección en $0.75$ del total. El contraste prueba la necesidad del bloque combinado, pero no separa los efectos del certificado, la ruta y el filtro. En el régimen de fallo, la reparación elevó el éxito en $0.989$ frente a desactivarla (IC $[0.967;1.000]$, $p_{\mathrm{Holm}}=6.46\times10^{-27}$).
 
 La penalización espacial redujo el tiempo medio en $0.086$~s bajo red degradada frente a la selección desacoplada, pero el IC $[-0.178;0.013]$ incluyó cero y Holm dejó $p=0.068$. H3 no queda sustentada. Selección con visibilidad restringida, acoplamiento, transporte y recuperación sí coexistieron dentro de la misma planta planar reducida.
 

@@ -1,0 +1,312 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{viu-mrob-thesis}[2026/07/14 VIU MROB TFM scaffold]
+
+\RequirePackage{iftex}
+\ifLuaTeX\else
+  \PackageError{viu-mrob-thesis}{Este documento requiere LuaLaTeX}{Compile con latexmk -lualatex.}
+\fi
+
+\RequirePackage[spanish,es-noshorthands,shorthands=off]{babel}
+\RequirePackage[no-math]{fontspec}
+\setmainfont{Arial}[
+  UprightFont=*,
+  BoldFont=Arial Bold,
+  ItalicFont=Arial Italic,
+  BoldItalicFont=Arial Bold Italic,
+  Ligatures=TeX
+]
+\setsansfont{Arial}[
+  UprightFont=*,
+  BoldFont=Arial Bold,
+  ItalicFont=Arial Italic,
+  BoldItalicFont=Arial Bold Italic,
+  Ligatures=TeX
+]
+
+\RequirePackage[
+  a4paper,
+  top=2.5cm,
+  bottom=2.5cm,
+  left=3cm,
+  right=3cm,
+  headheight=42pt,
+  headsep=8pt
+]{geometry}
+\RequirePackage{setspace}
+\RequirePackage{microtype}
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 1pt}
+
+\RequirePackage{graphicx}
+\RequirePackage[table,dvipsnames]{xcolor}
+\definecolor{VIUOrange}{HTML}{E65113}
+\definecolor{VIULinkBlue}{HTML}{0563C1}
+\definecolor{VIUDark}{HTML}{1F1F24}
+\definecolor{VIUGray}{HTML}{6B7280}
+\definecolor{SPBlue}{HTML}{2369BD}
+\definecolor{SPGreen}{HTML}{2D8A57}
+\definecolor{SPRed}{HTML}{C63C32}
+\definecolor{SPPurple}{HTML}{7A58A6}
+\definecolor{SPFloor}{HTML}{F8FAFC}
+\definecolor{SPGrid}{HTML}{D7DEE8}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta,calc,decorations.pathreplacing,fit,patterns,positioning,shapes.geometric}
+\tikzset{
+  sparena/.style={draw=VIUGray,line width=0.75pt,rounded corners=2pt},
+  spgrid/.style={draw=SPGrid,line width=0.18pt},
+  splegendbox/.style={draw=SPGrid,fill=white,line width=0.55pt,rounded corners=1.5pt},
+  sprobot/.style={circle,draw=SPBlue,fill=SPBlue!10,line width=0.95pt,minimum size=7.8mm,inner sep=0pt,font=\scriptsize\bfseries,text=VIUDark},
+  sprobotgreen/.style={sprobot,draw=SPGreen,fill=SPGreen!11},
+  sprobotpurple/.style={sprobot,draw=SPPurple,fill=SPPurple!11},
+  sprobotfree/.style={sprobot,draw=VIUGray,fill=white,dashed,text=VIUGray},
+  sprobotinactive/.style={sprobot,draw=SPRed,fill=SPRed!7,text=SPRed},
+  spload/.style={rectangle,draw=VIUOrange,fill=VIUOrange!12,line width=1.05pt,rounded corners=1.5pt,minimum width=1.20cm,minimum height=0.72cm,inner sep=2pt,font=\scriptsize\bfseries,align=center,text=VIUDark},
+  sptarget/.style={spload,draw=SPGreen,fill=SPGreen!5,dashed},
+  spobstacle/.style={rectangle,draw=VIUDark,fill=VIUDark!18,line width=0.75pt,rounded corners=1pt,font=\scriptsize,text=VIUDark,align=center},
+  spconflict/.style={draw=SPRed,fill=SPRed!8,dashed,line width=0.8pt,rounded corners=2pt},
+  sppanel/.style={draw=SPGrid,fill=white,line width=0.65pt,rounded corners=3pt},
+  spcoalition/.style={draw=SPBlue,fill=SPBlue!5,dashed,line width=0.75pt,rounded corners=4pt,fill opacity=0.55},
+  spcoalitiongreen/.style={spcoalition,draw=SPGreen,fill=SPGreen!5},
+  spfootprint/.style={draw=VIUOrange,dashed,line width=0.75pt,rounded corners=3pt},
+  spassign/.style={-{Latex[length=2.0mm]},draw=SPBlue,dashed,line width=0.85pt,shorten >=1pt,shorten <=1pt},
+  spcandidate/.style={-{Latex[length=1.8mm]},draw=VIUGray,densely dotted,line width=0.65pt,shorten >=1pt,shorten <=1pt},
+  spmotion/.style={-{Latex[length=2.2mm]},draw=SPGreen,line width=1.15pt,shorten >=1pt},
+  spnominal/.style={-{Latex[length=2.0mm]},draw=SPRed,densely dotted,line width=0.85pt},
+  spcomm/.style={draw=SPBlue!72,densely dashed,line width=0.55pt},
+  spcommdelayed/.style={draw=SPPurple,dash pattern=on 3pt off 1.4pt,line width=0.75pt},
+  spforce/.style={-{Stealth[length=2.0mm]},draw=SPRed,line width=1.05pt,shorten >=1pt},
+  spheading/.style={-{Stealth[length=1.5mm]},draw=VIUDark,line width=0.55pt},
+  spsafety/.style={draw=SPRed,dashed,line width=0.75pt},
+  spmeasure/.style={{Stealth[length=1.5mm]}-{Stealth[length=1.5mm]},draw=VIUDark,line width=0.55pt},
+  sptitle/.style={font=\scriptsize\bfseries,align=left,text=VIUDark,fill=white,inner xsep=3pt,inner ysep=1.5pt,rounded corners=1pt},
+  splabel/.style={font=\scriptsize,align=center,text=VIUDark},
+  spannotation/.style={splabel,fill=white,fill opacity=0.92,text opacity=1,inner xsep=2pt,inner ysep=1pt,rounded corners=1pt},
+  spmuted/.style={font=\scriptsize,align=center,text=VIUGray},
+  splegend/.style={font=\scriptsize,align=left,text=VIUDark}
+}
+% Los diagramas SP usan exactamente los 15 cm del cuerpo VIU. El marco se
+% dibuja medio trazo hacia dentro para que su borde exterior coincida con
+% \linewidth, y la escala vertical aporta espacio real entre elementos.
+\newenvironment{spdiagram}{%
+  \pgfmathsetlengthmacro{\spxunit}{\linewidth/13.5}%
+  \begin{tikzpicture}[x=\spxunit,y=1.00cm]%
+}{%
+  \end{tikzpicture}%
+}
+\newcommand{\spdrawarena}[1]{%
+  \fill[SPFloor] (0.012,0.75) rectangle (13.488,5.25);%
+  \draw[spgrid,step=0.5] (0.012,0.75) grid (13.488,4.65);%
+  \fill[white] (0.012,4.65) rectangle (13.488,5.25);%
+  \draw[draw=SPGrid,line width=0.55pt] (0.012,4.65) -- (13.488,4.65);%
+  \draw[sparena] (0.012,0.75) rectangle (13.488,5.25);%
+  \node[sptitle,anchor=west] at (0.20,4.95) {#1};%
+  \draw[splegendbox] (0.012,0.08) rectangle (13.488,0.60);%
+}
+
+\RequirePackage{titlesec}
+\RequirePackage{tocloft}
+\RequirePackage{fancyhdr}
+
+\RequirePackage{array}
+\RequirePackage{booktabs}
+\RequirePackage{longtable}
+\RequirePackage{tabularx}
+\RequirePackage{multirow}
+\RequirePackage{enumitem}
+
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{amsthm}
+\RequirePackage[noOT1]{newtxmath}
+\RequirePackage{mathtools}
+\RequirePackage{bm}
+
+\RequirePackage{caption}
+\RequirePackage{float}
+\RequirePackage{hyperref}
+
+% Enlaces compactos desde las etiquetas de los diagramas al listado
+% bibliográfico generado por biblatex. El texto visible permanece abreviado
+% para no alterar la composición de las figuras.
+\newcommand{\paperref}[2]{\hyperlink{cite.0@#1}{\textcolor{VIULinkBlue}{#2}}}
+
+\addto\captionsspanish{%
+  \renewcommand{\tablename}{Tabla}%
+  \renewcommand{\listtablename}{Índice de tablas}%
+  \renewcommand{\figurename}{Figura}%
+  \renewcommand{\listfigurename}{Índice de figuras}%
+  \renewcommand{\refname}{Referencias bibliográficas}%
+  \renewcommand{\contentsname}{Contenido}%
+}
+
+\captionsetup{
+  font=small,
+  labelfont={bf,color=VIUOrange},
+  labelsep=period,
+  justification=centering,
+  skip=6pt
+}
+\newcommand{\viusource}[1]{\par\smallskip{\centering\footnotesize\itshape Fuente: #1.\par}}
+\newcommand{\viuownsource}{\par\smallskip{\centering\footnotesize\itshape Elaboración propia.\par}}
+
+\setlist[itemize]{leftmargin=1.4em,itemsep=0.2em,topsep=0.3em,parsep=0pt}
+\setlist[enumerate]{leftmargin=1.6em,itemsep=0.2em,topsep=0.3em,parsep=0pt}
+\setlist[description]{leftmargin=1.6em,itemsep=0.2em,topsep=0.3em}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=VIUDark,
+  urlcolor=VIULinkBlue,
+  citecolor=VIUDark,
+  linktoc=all,
+  pdftitle={Trabajo Fin de Máster --- VIU MROB},
+  pdfauthor={Jorge Luis Mayorga Taborda},
+  bookmarksnumbered=true
+}
+
+\titleformat{\section}[hang]
+  {\sffamily\bfseries\color{VIUOrange}\fontsize{18}{22}\selectfont}
+  {\thesection.}{0.45em}{}
+\titleformat{\subsection}[hang]
+  {\sffamily\bfseries\color{VIUOrange}\fontsize{16}{20}\selectfont}
+  {\thesubsection.}{0.4em}{}
+\titleformat{\subsubsection}[hang]
+  {\sffamily\color{VIUOrange}\fontsize{14}{18}\selectfont}
+  {\thesubsubsection.}{0.35em}{}
+\titlespacing*{\section}{0pt}{0pt}{6pt}
+\titlespacing*{\subsection}{0pt}{0pt}{6pt}
+\titlespacing*{\subsubsection}{0pt}{0pt}{6pt}
+
+\renewcommand{\cfttoctitlefont}{\sffamily\bfseries\fontsize{18}{22}\selectfont\color{VIUOrange}}
+\renewcommand{\cftloftitlefont}{\sffamily\bfseries\fontsize{18}{22}\selectfont\color{VIUOrange}}
+\renewcommand{\cftlottitlefont}{\sffamily\bfseries\fontsize{18}{22}\selectfont\color{VIUOrange}}
+\renewcommand{\cftsecfont}{\sffamily\color{VIUDark}}
+\renewcommand{\cftsecpagefont}{\sffamily\color{VIUDark}}
+\renewcommand{\cftsubsecfont}{\sffamily\color{VIUDark}}
+\renewcommand{\cftsubsecpagefont}{\sffamily\color{VIUDark}}
+\setlength{\cftsecindent}{0pt}
+\setlength{\cftsubsecindent}{1.6em}
+\setlength{\cftsubsubsecindent}{3.6em}
+\setlength{\cftsecnumwidth}{1.8em}
+\setlength{\cftsubsecnumwidth}{2.8em}
+\setlength{\cftsubsubsecnumwidth}{4.2em}
+\renewcommand{\cftsecaftersnum}{.}
+\renewcommand{\cftsubsecaftersnum}{.}
+\renewcommand{\cftsubsubsecaftersnum}{.}
+
+\newcommand{\viuheadertitle}{Trabajo Fin de Máster}
+\newcommand{\setviuheadertitle}[1]{\renewcommand{\viuheadertitle}{#1}}
+% Geometría destilada del encabezado oficial (OOXML). Las coordenadas
+% siguientes incluyen los márgenes internos de sus cuadros de texto Word.
+\newcommand{\viuheaderoverlay}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \IfFileExists{images/viu_header_logo.png}{%
+      \node[anchor=north west,inner sep=0pt]
+        at ($(current page.north west)+(0.508cm,-0.635cm)$)
+        {\includegraphics[width=3.171cm,height=1.422cm]{images/viu_header_logo.png}};%
+    }{%
+      \node[anchor=north west,text=VIUOrange,font=\bfseries]
+        at ($(current page.north west)+(0.508cm,-0.635cm)$) {VIU};%
+    }%
+    \node[anchor=north west,inner sep=0pt,text=VIUDark,
+      text width=10.372cm,align=left,font=\fontsize{12}{18}\selectfont]
+      at ($(current page.north west)+(4.783cm,-0.911cm)$)
+      {\viuheadertitle};
+    \node[anchor=north east,inner sep=0pt,text=VIUDark,
+      font=\fontsize{12}{18}\selectfont]
+      at ($(current page.north east)+(-3cm,-1.251cm)$) {\thepage};
+  \end{tikzpicture}%
+}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\viuheaderoverlay}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{frontmatter}{\fancyhf{}\fancyhead[C]{\viuheaderoverlay}\renewcommand{\headrulewidth}{0pt}}
+\fancypagestyle{viucover}{\fancyhf{}\renewcommand{\headrulewidth}{0pt}}
+\fancypagestyle{plain}{\fancyhf{}\fancyhead[C]{\viuheaderoverlay}\renewcommand{\headrulewidth}{0pt}}
+
+\theoremstyle{plain}
+\newtheorem{proposicion}{Proposición}[section]
+\newtheorem{teorema}{Teorema}[section]
+\newtheorem{lema}{Lema}[section]
+\newtheorem{corolario}{Corolario}[section]
+\theoremstyle{definition}
+\newtheorem{definicion}{Definición}[section]
+\theoremstyle{remark}
+\newtheorem{observacion}{Observación}[section]
+
+% Convención visual de originalidad. Esta caja identifica una formulación o
+% resultado producido en el TFM; no implica por sí sola prioridad universal,
+% validez fuera de los supuestos declarados ni un nivel de evidencia superior
+% al registrado en la matriz de afirmaciones.
+\newtcolorbox{contribucion}[1]{%
+  enhanced,
+  breakable,
+  colback=VIUOrange!4,
+  colframe=VIUOrange,
+  colbacktitle=VIUOrange!13,
+  coltitle=VIUDark,
+  title={#1},
+  fonttitle=\bfseries,
+  boxrule=0.45pt,
+  leftrule=2.8pt,
+  arc=1.2mm,
+  outer arc=1.2mm,
+  left=2.5mm,
+  right=2.5mm,
+  top=1.5mm,
+  bottom=1.5mm,
+  before skip=8pt plus 2pt,
+  after skip=8pt plus 2pt
+}
+
+% Toda caja de aporte debe declarar la fuerza real de la evidencia. La marca
+% visual identifica autoría dentro del TFM, no prioridad universal.
+\newcommand{\estadoaporte}[1]{%
+  \textbf{Resultado y alcance:} #1\par\smallskip
+}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+
+\newcommand{\viutitle}{}
+\newcommand{\viustudent}{}
+\newcommand{\viututor}{}
+\newcommand{\viuedition}{}
+\newcommand{\viudate}{}
+\newcommand{\setviutitle}[1]{\renewcommand{\viutitle}{#1}}
+\newcommand{\setviustudent}[1]{\renewcommand{\viustudent}{#1}}
+\newcommand{\setviututor}[1]{\renewcommand{\viututor}{#1}}
+\newcommand{\setviuedition}[1]{\renewcommand{\viuedition}{#1}}
+\newcommand{\setviudate}[1]{\renewcommand{\viudate}{#1}}
+
+\newcommand{\makeviucover}{%
+  \begin{titlepage}
+    \thispagestyle{viucover}
+    \null
+    \begin{tikzpicture}[remember picture,overlay]
+      \node[anchor=center,inner sep=0pt] at (current page.center) {\includegraphics[width=\paperwidth,height=\paperheight]{images/viu_cover_bg.jpg}};
+      \node[anchor=base east,text=black,font={\fontsize{18}{18}\selectfont}] at ($(current page.north east)+(-4.4cm,-7.5cm)$) {MÁSTER UNIVERSITARIO EN};
+      \node[anchor=base east,text=black,font={\fontsize{18}{18}\selectfont}] at ($(current page.north east)+(-4.4cm,-8.4cm)$) {ROBÓTICA Y AUTOMATIZACIÓN DE};
+      \node[anchor=base east,text=black,font={\fontsize{18}{18}\selectfont}] at ($(current page.north east)+(-4.4cm,-9.3cm)$) {PROCESOS};
+      \node[anchor=north west,text=white,font={\fontsize{18}{22}\selectfont}] at ($(current page.north west)+(3cm,-18.5cm)$) {TÍTULO:};
+      \node[anchor=north west,text=white,align=left,text width=15cm,font={\bfseries\fontsize{10.5}{13}\selectfont}] at ($(current page.north west)+(3cm,-21.5cm)$) {\viutitle};
+      \node[anchor=north west,text=white,font={\fontsize{18}{22}\selectfont}] at ($(current page.north west)+(3cm,-23.4cm)$) {Alumno/a:};
+      \node[anchor=north west,text=white,text width=15cm,font={\fontsize{12}{15}\selectfont}] at ($(current page.north west)+(3cm,-24.5cm)$) {\viustudent};
+      \node[anchor=north west,text=white,font={\fontsize{18}{22}\selectfont}] at ($(current page.north west)+(3cm,-25.9cm)$) {Director/a:};
+      \node[anchor=north west,text=white,text width=15cm,font={\fontsize{12}{15}\selectfont}] at ($(current page.north west)+(3cm,-27cm)$) {\viututor};
+      \node[anchor=north west,text=white,font={\fontsize{18}{22}\selectfont}] at ($(current page.north west)+(3cm,-28.2cm)$) {Edición: \viuedition};
+    \end{tikzpicture}
+  \end{titlepage}
+}
+
+\newenvironment{viuabstract}[1]{%
+  \thispagestyle{frontmatter}
+  \phantomsection
+  \addcontentsline{toc}{section}{#1}
+  \noindent{\sffamily\bfseries\color{VIUOrange}\fontsize{18}{22}\selectfont #1}\par
+  \vspace{6pt}
+}{}
+\newcommand{\keywords}[2]{\noindent{\bfseries\color{VIUOrange}#1:}\enspace #2\par}

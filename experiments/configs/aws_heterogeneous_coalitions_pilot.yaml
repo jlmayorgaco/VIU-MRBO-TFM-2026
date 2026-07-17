@@ -1,0 +1,65 @@
+experiment_id: AWS_HETEROGENEOUS_COALITIONS_SP1_SP2_PILOT_v2
+evidence_scope: kinematic_quorum_coalition_pilot
+scenario: aws_industrial_heterogeneous_cooperative_loads_random_targets_astar
+policies:
+  - milp_coalition_oracle
+  - greedy_coalition
+  - random_coalition
+  - replicator_coalition_distributed
+seeds: 8
+seed_base: 18100
+horizon_s: 100.0
+dt_s: 0.10
+assignment_period_s: 0.50
+trace_interval_s: 0.50
+respawn_s: 5.0
+animation_seed: 0
+animation_fps: 12
+animation_dpi: 120
+cooperative_payload_share_kg_per_amr: 10.0
+task_completion_reward: 1000.0
+cost_weight: 0.02
+missed_complete_load_penalty: 1000.0
+amr:
+  max_empty_speed_mps: 1.10
+  max_loaded_speed_mps: 0.78
+  arrival_radius_m: 0.16
+  battery_low_pct: 25.0
+  battery_resume_pct: 88.0
+  battery_move_drain_pct_per_m: 0.68
+  battery_load_extra_pct_per_m: 0.30
+  battery_idle_drain_pct_per_s: 0.004
+  battery_charge_pct_per_s: 4.0
+  hard_clearance_m: 0.42
+paired_perturbations:
+  position_jitter_m: 0.12
+  battery_min_pct: 76.0
+  battery_max_pct: 100.0
+replicator_consensus:
+  communication_radius_m: 3.20
+  iterations: 48
+  replicator_step: 0.18
+  consensus_gain: 0.24
+  quorum_gain: 1.80
+  excess_penalty: 1.50
+  mutation_rate: 0.02
+  idle_payoff: 0.05
+  initial_temperature: 0.36
+target_assignment:
+  policy: deterministic_random_per_load_cycle
+  exclude_previous_target: true
+  exclude_same_lane_target: true
+path_planning:
+  grid_resolution_m: 0.25
+  warehouse_margin_m: 0.30
+  robot_half_extent_m: 0.22
+  dynamic_robot_clearance_m: 0.46
+  dynamic_load_margin_m: 0.12
+  formation_staging_offset_m: 1.25
+  waypoint_tolerance_m: 0.08
+  max_astar_expansions: 50000
+limitations:
+  - Cardinality and nominal mass sharing do not certify support, rigidity, force or torque feasibility.
+  - Loads are kinematically coupled to complete coalitions; no contact physics or wrench distribution is simulated.
+  - Grid A* and sampled reservations prevent modeled overlaps but do not prove continuous-time physical safety.
+  - Replicator consensus is component-wise when the communication graph is disconnected.

@@ -1,0 +1,38 @@
+experiment_id: SP8_NETWORK_CONFIRMATORY_v1
+protocol_family: sp8_visible_route_network_v1
+output_dir: results/processed/sp8/SP8_NETWORK_CONFIRMATORY_v1
+coalition_counts: [4, 8, 12, 16, 32, 64]
+seeds:
+  start: 8800
+  count: 30
+penalty: 2.0
+horizon_sweeps: 20
+message_bytes: 32
+oracle_max_profiles: 4096
+network_regimes:
+  nominal:
+    radius: 2.0
+    max_delay_events: 0
+    packet_loss: 0.0
+  sparse_radio:
+    radius: 0.32
+    max_delay_events: 0
+    packet_loss: 0.0
+  bounded_delay:
+    radius: 2.0
+    max_delay_events: 3
+    packet_loss: 0.0
+  independent_loss:
+    radius: 2.0
+    max_delay_events: 0
+    packet_loss: 0.25
+  harsh_combined:
+    radius: 0.32
+    max_delay_events: 3
+    packet_loss: 0.35
+methods:
+  - periodic_versioned_local
+  - event_driven_local
+  - perfect_information_response
+  - random_static
+  - central_exhaustive_oracle

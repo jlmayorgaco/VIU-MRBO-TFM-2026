@@ -1,0 +1,66 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{viu-mrob-thesis}
+\usepackage{csquotes}
+\usepackage[
+  backend=biber,
+  style=apa,
+  natbib=true,
+  sorting=nyt,
+  sortcites=true
+]{biblatex}
+\addbibresource{references.bib}
+\AtBeginBibliography{\sloppy}
+
+\input{config/metadata}
+\input{config/math-commands}
+\input{generated/aws-industrial2-results}
+
+\begin{document}
+
+\input{sections/frontmatter/00-cover}
+\input{sections/frontmatter/01-summary}
+\input{sections/frontmatter/02-abstract}
+\input{sections/frontmatter/03-contents}
+\input{sections/frontmatter/04-nomenclature}
+
+\clearpage
+\input{sections/mainmatter/01-introduction}
+\clearpage
+\input{sections/mainmatter/02-objectives}
+\clearpage
+\input{sections/mainmatter/03-hypotheses}
+\clearpage
+\input{sections/mainmatter/04-methodology}
+\clearpage
+\input{sections/mainmatter/05-theoretical-framework}
+\clearpage
+\input{sections/mainmatter/06-results-and-analysis/index}
+\clearpage
+\input{sections/mainmatter/07-conclusions}
+
+\clearpage
+\section{Referencias bibliográficas}
+\label{sec:references}
+\printbibliography[heading=none]
+
+\clearpage
+\appendix
+\input{sections/appendices/01-reproducibility}
+\clearpage
+\input{sections/appendices/02-sp0-proofs}
+\clearpage
+\input{sections/appendices/03-sp1-proofs}
+\clearpage
+\input{sections/appendices/04-sp2-proofs}
+\clearpage
+\input{sections/appendices/05-sp3-proofs}
+\input{sections/appendices/06-sp4-proofs}
+\clearpage
+\input{sections/appendices/07-sp6-proofs}
+\clearpage
+\input{sections/appendices/08-sp7-proofs}
+\clearpage
+\input{sections/appendices/09-sp8-proofs}
+
+\end{document}

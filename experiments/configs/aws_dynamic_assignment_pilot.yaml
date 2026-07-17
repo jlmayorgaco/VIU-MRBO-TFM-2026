@@ -1,0 +1,54 @@
+experiment_id: AWS_DYNAMIC_ASSIGNMENT_SP0_PILOT_v1
+evidence_scope: kinematic_one_to_one_pilot
+scenario: aws_industrial_adversarial_fixed_targets
+policies:
+  - hungarian_centralized
+  - distributed_greedy
+  - random_feasible
+  - replicator_distributed
+seeds: 8
+seed_base: 17600
+horizon_s: 80.0
+dt_s: 0.10
+assignment_period_s: 0.50
+trace_interval_s: 0.50
+animation_seed: 0
+animation_fps: 12
+animation_dpi: 120
+amr:
+  max_speed_mps: 1.10
+  arrival_radius_m: 0.22
+  drop_alignment_radius_m: 0.20
+  battery_low_pct: 25.0
+  battery_resume_pct: 88.0
+  battery_move_drain_pct_per_m: 0.72
+  battery_load_extra_pct_per_m: 0.34
+  battery_idle_drain_pct_per_s: 0.004
+  battery_charge_pct_per_s: 4.0
+  box_respawn_s: 5.0
+  hard_clearance_m: 0.42
+  sim_speed_multiplier: 1.0
+paired_perturbations:
+  position_jitter_m: 0.12
+  battery_min_pct: 72.0
+  battery_max_pct: 100.0
+cost:
+  empty_distance_weight: 1.0
+  loaded_distance_weight: 1.0
+  return_distance_weight: 0.35
+  depleted_battery_weight: 0.035
+replicator_consensus:
+  communication_radius_m: 3.20
+  iterations: 42
+  replicator_step: 0.20
+  consensus_gain: 0.24
+  congestion_penalty: 1.40
+  mutation_rate: 0.015
+  idle_payoff: 0.06
+  initial_temperature: 0.32
+  closure: task_local_single_acceptance
+limitations:
+  - Each active load is reduced to one indivisible task served by one AMR.
+  - Original required_agvs values are retained as metadata but not enforced by this SP0 pilot.
+  - Motion is kinematic and does not prove collision-free path planning or physical transport feasibility.
+  - Replicator consensus is component-wise; a disconnected communication graph does not provide global consensus.

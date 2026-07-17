@@ -1,0 +1,13 @@
+metric,higher_is_better,policy_a,policy_b,n_paired,mean_a,mean_b,difference_a_minus_b,ci95_low,ci95_high,wins_a,ties,wins_b,p_value_raw,p_value_holm,reject_holm_005
+delivered,1,milp_coalition_oracle,greedy_coalition,1,1.0,1.0,0.0,0.0,0.0,0,1,0,1.0,1.0,0
+delivered,1,milp_coalition_oracle,random_coalition,1,1.0,0.0,1.0,1.0,1.0,1,0,0,1.0,1.0,0
+delivered,1,milp_coalition_oracle,replicator_coalition_distributed,1,1.0,0.0,1.0,1.0,1.0,1,0,0,1.0,1.0,0
+delivered,1,greedy_coalition,random_coalition,1,1.0,0.0,1.0,1.0,1.0,1,0,0,1.0,1.0,0
+delivered,1,greedy_coalition,replicator_coalition_distributed,1,1.0,0.0,1.0,1.0,1.0,1,0,0,1.0,1.0,0
+delivered,1,random_coalition,replicator_coalition_distributed,1,0.0,0.0,0.0,0.0,0.0,0,1,0,1.0,1.0,0
+mean_regret,0,milp_coalition_oracle,greedy_coalition,1,0.0,0.041657,-0.041657,-0.041657,-0.041657,1,0,0,1.0,1.0,0
+mean_regret,0,milp_coalition_oracle,random_coalition,1,0.0,59.41833,-59.41833,-59.41833,-59.41833,1,0,0,1.0,1.0,0
+mean_regret,0,milp_coalition_oracle,replicator_coalition_distributed,1,0.0,500.46168,-500.46168,-500.46168,-500.46168,1,0,0,1.0,1.0,0
+mean_regret,0,greedy_coalition,random_coalition,1,0.041657,59.41833,-59.376673,-59.376673,-59.376673,1,0,0,1.0,1.0,0
+mean_regret,0,greedy_coalition,replicator_coalition_distributed,1,0.041657,500.46168,-500.420023,-500.420023,-500.420023,1,0,0,1.0,1.0,0
+mean_regret,0,random_coalition,replicator_coalition_distributed,1,59.41833,500.46168,-441.04335,-441.04335,-441.04335,1,0,0,1.0,1.0,0

@@ -1,0 +1,145 @@
+{
+  "experiment_id": "AWS_HETEROGENEOUS_COALITIONS_CONTINUOUS_TFM_v1",
+  "generated_at_utc": "2026-07-17T16:35:42.042822+00:00",
+  "config": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\experiments\\configs\\aws_heterogeneous_coalitions_continuous_tfm.yaml",
+  "config_sha256": "5a6a59a0247335979b6b39ad1cae717c1ac04ccf770590cc5f18f8af363f15a7",
+  "policies": [
+    "milp_coalition_oracle",
+    "greedy_coalition",
+    "random_coalition",
+    "replicator_coalition_distributed"
+  ],
+  "seeds": 1,
+  "open_center": true,
+  "path_planner": "tfm_replicator_cbf_continuous",
+  "trajectory_visualization": {
+    "enabled": true,
+    "history_s": 20.0
+  },
+  "loads": [
+    {
+      "name": "carga_activa_D1_5kg_R1",
+      "source": [
+        -6.0,
+        6.15
+      ],
+      "target": [
+        -6.0,
+        -7.15
+      ],
+      "target_name": "zona_destino_1",
+      "mass_kg": 5.0,
+      "size_m": [
+        0.46,
+        0.36
+      ],
+      "required_robots": 1
+    },
+    {
+      "name": "carga_activa_D2_14kg_R2",
+      "source": [
+        -2.0,
+        6.15
+      ],
+      "target": [
+        -2.0,
+        -7.15
+      ],
+      "target_name": "zona_destino_2",
+      "mass_kg": 14.0,
+      "size_m": [
+        0.62,
+        0.46
+      ],
+      "required_robots": 2
+    },
+    {
+      "name": "carga_activa_D3_28kg_R3",
+      "source": [
+        2.0,
+        6.15
+      ],
+      "target": [
+        2.0,
+        -7.15
+      ],
+      "target_name": "zona_destino_3",
+      "mass_kg": 28.0,
+      "size_m": [
+        0.92,
+        0.62
+      ],
+      "required_robots": 3
+    },
+    {
+      "name": "carga_activa_D4_18kg_R2",
+      "source": [
+        6.0,
+        6.15
+      ],
+      "target": [
+        6.0,
+        -7.15
+      ],
+      "target_name": "zona_destino_4",
+      "mass_kg": 18.0,
+      "size_m": [
+        0.72,
+        0.52
+      ],
+      "required_robots": 2
+    }
+  ],
+  "quota_invariant_passed": true,
+  "target_fixed_during_task_passed": true,
+  "random_target_diversity_passed": false,
+  "paired_targets_across_policies_passed": true,
+  "static_collision_free_sampled_passed": true,
+  "dynamic_collision_free_sampled_passed": true,
+  "astar_route_available_passed": true,
+  "continuous_navigation": {
+    "mathematical_model": "continuous_goal_field_replicator_primitives_cbf",
+    "digital_integrator": "forward_euler",
+    "goal_gain": 1.35,
+    "max_accel_mps2": 2.4,
+    "barrier_gamma": 1.6,
+    "projection_sweeps": 16,
+    "replicator_gain": 2.2,
+    "mutation_rate": 0.04,
+    "tangent_gain": 0.72,
+    "activation_clearance_m": 0.75,
+    "preview_s": 0.65,
+    "static_clearance_m": 0.04,
+    "dynamic_clearance_m": 0.03,
+    "residual_tolerance": 1e-06
+  },
+  "safe_barrier_projection_passed": true,
+  "sampled_guard_free_passed": false,
+  "network_radii_consistent_passed": true,
+  "network_and_sensing": {
+    "sensing_radius_m": 1.8,
+    "communication_radius_m": 3.2,
+    "communication_model": "perfect lossless exchange inside radius; no link outside radius",
+    "shared_payload": "pose, battery, task, coalition, neighbor list and locally visible objects",
+    "visualization": {
+      "sensing_ring_color": "cyan",
+      "communication_ring_color": "magenta",
+      "sensing_area_alpha": 0.055,
+      "communication_area_alpha": 0.018,
+      "sensing_ray_color": "cyan",
+      "communication_link_color": "green"
+    }
+  },
+  "video_generated": false,
+  "video_sha256": "",
+  "evidence_scope": "sampled_continuous_replicator_cbf_open_center_pilot",
+  "limitations": [
+    "The navigation law is continuous, but its implementation is sampled with forward Euler at dt=0.05 s.",
+    "Cyclic CBF projection and sampled collision audits do not prove continuous-time invariance.",
+    "The local motion game uses left, right and wait primitives observed within the sensing radius; it is not a global shortest-path optimizer.",
+    "Dynamic obstacles are treated through their sampled positions without a velocity predictor in this pilot.",
+    "Cardinality and nominal mass sharing do not certify support, rigidity, force or torque feasibility.",
+    "Loads are kinematically coupled to complete coalitions; no contact physics or wrench distribution is simulated.",
+    "A sampled fallback guard is logged separately and must not be interpreted as part of the continuous controller."
+  ]
+}

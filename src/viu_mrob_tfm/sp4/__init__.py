@@ -1,5 +1,17 @@
-"""SP4 post-allocation motion and arrival experiment package."""
+"""Audited theory and evidence utilities for SP4."""
 
-from viu_mrob_tfm.sp4.runner import run_sp4_config
+from .theory import (
+    closed_loop_energy_derivative,
+    dissipation_upper_bound,
+    pairwise_game_gradient,
+    pairwise_game_hessian,
+    pairwise_game_potential,
+)
 
-__all__ = ["run_sp4_config"]
+__all__ = [
+    "closed_loop_energy_derivative",
+    "dissipation_upper_bound",
+    "pairwise_game_gradient",
+    "pairwise_game_hessian",
+    "pairwise_game_potential",
+]

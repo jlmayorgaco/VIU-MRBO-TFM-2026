@@ -98,7 +98,7 @@ Los juegos poblacionales describen preferencias continuas sobre acciones. Sea $x
 Esta igualdad debe probarse para el \emph{payoff} implementado. Descuentos, proyecciones o información obsoleta pueden romperla. Cuatro protocolos de revisión frecuentes son
 \begin{equation}
 \begin{aligned}
- \text{replicator:}\quad &\dot x_k=x_k(f_k-\bar f),\\
+ \text{replicadora:}\quad &\dot x_k=x_k(f_k-\bar f),\\
  \text{Smith:}\quad &\dot x_k=\sum_jx_j[f_k-f_j]_+-x_k\sum_j[f_j-f_k]_+,\\
  \text{BNN:}\quad &\dot x_k=[f_k-\bar f]_+-x_k\sum_j[f_j-\bar f]_+,\\
  \text{logit:}\quad &\dot x_k=\frac{\exp(f_k/\eta)}{\sum_j\exp(f_j/\eta)}-x_k,\qquad \eta>0,
@@ -107,7 +107,7 @@ Esta igualdad debe probarse para el \emph{payoff} implementado. Descuentos, proy
 \end{equation}
 donde $[z]_+=\max\{z,0\}$. La Figura~\ref{fig:tf-population-simplex} representa su mecanismo sobre $\Delta_3$. No es un retrato de fase de una instancia particular: fija $f_1>f_2>f_3$ para aislar la regla de revisión.
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
   \centering
   \begin{tikzpicture}[
     x=1cm,y=1cm,font=\sffamily,
@@ -122,7 +122,7 @@ donde $[z]_+=\max\{z,0\}$. La Figura~\ref{fig:tf-population-simplex} representa 
     % Replicator
     \begin{scope}[shift={(0,4.05)}]
       \node[panel,minimum width=7.15cm,minimum height=3.72cm,anchor=south west] at (0,0) {};
-      \node[title,anchor=west] at (0.28,3.42) {Replicator: crecimiento relativo};
+      \node[title,anchor=west] at (0.28,3.42) {Dinámica replicadora: crecimiento relativo};
       \draw[VIUGray,line width=0.7pt] (0.75,0.62)--(6.35,0.62)--(3.55,2.88)--cycle;
       \node[vertex] at (0.75,0.62) {}; \node[vertex] at (6.35,0.62) {}; \node[vertex] at (3.55,2.88) {};
       \node[note,anchor=north east] at (0.68,0.54) {$a_2$};
@@ -185,7 +185,7 @@ donde $[z]_+=\max\{z,0\}$. La Figura~\ref{fig:tf-population-simplex} representa 
   \viusource{elaboración propia a partir de \textcite{sandholm2010population}}
 \end{figure}
 
-Replicator pondera cada crecimiento por la masa existente y, por ello, no recupera una estrategia ausente. Smith traslada masa mediante comparaciones binarias; BNN solo activa excesos respecto de $\bar f$; logit asigna probabilidad positiva a todas las estrategias y aproxima la mejor respuesta cuando $\eta$ disminuye. Estas diferencias afectan exploración, soporte y estacionariedad, aunque ninguna resuelve el cierre discreto: antes de representar robots identificables, la masa continua debe convertirse en una coalición factible.
+La dinámica replicadora pondera cada crecimiento por la masa existente y, por ello, no recupera una estrategia ausente. Smith traslada masa mediante comparaciones binarias; BNN solo activa excesos respecto de $\bar f$; logit asigna probabilidad positiva a todas las estrategias y aproxima la mejor respuesta cuando $\eta$ disminuye. Estas diferencias afectan exploración, soporte y estacionariedad, aunque ninguna resuelve el cierre discreto: antes de representar robots identificables, la masa continua debe convertirse en una coalición factible.
 
 Un equilibrio de Nash generalizado incorpora restricciones compartidas. Bajo convexidad y regularidad puede formularse como desigualdad variacional; el equilibrio variacional comparte multiplicadores entre agentes \parencite{yi2019operatorGNE,franci2022stochasticGNE}. Los métodos primal--dual actualizan decisiones y multiplicadores, con garantías condicionadas por monotonicidad, conectividad y ganancias \parencite{cherukuri2016primalDual,koshal2016aggregative}. Ninguna de estas propiedades convierte por sí sola el equilibrio en óptimo social.
 

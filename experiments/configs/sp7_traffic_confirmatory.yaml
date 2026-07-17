@@ -1,0 +1,17 @@
+experiment_id: SP7_TRAFFIC_CONFIRMATORY_v1
+protocol_family: sp7_route_reservation_v1
+output_dir: results/processed/sp7/SP7_TRAFFIC_CONFIRMATORY_v1
+scenarios:
+  - crossing
+  - bidirectional_corridor
+  - dynamic_bottleneck
+coalition_counts: [2, 3, 4]
+seeds:
+  start: 8700
+  count: 40
+methods:
+  - local_potential_reservation
+  - no_congestion_penalty
+  - no_zone_reservation
+  - prioritized_planning
+  - central_restricted_oracle

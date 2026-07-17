@@ -1,136 +1,104 @@
-# VIU-MROB-TFM-2026
+# Coordinación distribuida de múltiples AMR
 
-Repositorio organizado de la version V6 del TFM de Jorge Luis Mayorga Taborda para el
-Master Universitario en Robotica y Automatizacion de Procesos (VIU).
+Código, configuraciones, evidencia y memoria del Trabajo Fin de Máster de Jorge Luis Mayorga Taborda.
 
-El eje tecnico actual es **coordinacion distribuida de coaliciones multi-AMR con cargas
-heterogeneas**, usando una familia de dinamicas y controladores: Smith-QR, replicator,
-logit/BNN, primal-dual, tensor/quorum flow, wrench-market y referencias centralizadas.
-La memoria final se concentra en una idea: los robots siguen una arquitectura distribuida
-basada en deficit fisico-economico, cierre entero de quorum, formacion rigida de carga,
-capacidad efectiva en espacio `wrench`, comunicacion limitada y escalabilidad warehouse.
-La capa de control incluye ahora una ley explicita AMR cerrada para punto de mano,
-wrench requerido, reparto vGNE, HOCBF e inversion uniciclo; ver
-`docs/EXPLICIT_AMR_CONTROL_LAW.md`.
+**Título oficial:** *Coordinación distribuida local de múltiples AMR para el transporte cooperativo de cargas heterogéneas en entornos industriales*.
 
-## Estado V6
+El repositorio estudia la formación distribuida de coaliciones de robots heterogéneos y su acoplamiento con el transporte cooperativo de cargas. La implementación principal es explicable, usa información local y separa asignación estratégica, factibilidad mecánica, movimiento, seguridad, recuperación y comunicación.
 
-- Rama de organizacion: `v6-organization`.
-- Reporte final canonico: `docs/doc-05-final-report/main.tex` y `main.pdf`.
-- Certificado integrado CPU A0--FULL: `results/physical_coalition/PHYSICAL_COALITION_CERTIFICATE_v1_1_FIXEDN/` (400 mundos, 2.400 ejecuciones, $n=100$ fijo por familia, sin GPU).
-- SP0 canonico: `results/sp0/SP0_PROTOCOL_v1_2_CPU/`; el intento v1.1 detenido no es evidencia confirmatoria.
-- Codigo principal: `src/viu_mrob_tfm`.
-- Registro actual de resultados SP1-SP8: `results/README.md` y `docs/CANONICAL_RESULTS.md`.
-- Suite compacta de validacion: `results/validation_suite_v1` (`39/39` gates en el snapshot actual).
-- Artefactos pesados y borradores previos: `C:\tmp\VIU-MRBO-TFM-2026-v6-organization-20260620`.
-- Manifiesto de cuarentena: `cleanup_manifest.csv` y `cleanup_manifest.json`.
-
-## Estructura
+## Qué contiene
 
 ```text
-.
-|-- configs/              # parametros canonicos conservados
-|-- coppeliasim/          # escenas de smoke/plausibilidad
-|-- docs/doc-04-advanced-report/ # informe avanzado VIU
-|-- docs/doc-05-final-report/    # memoria final LaTeX canonica
-|-- docs/doc-06-explanatory-report/ # version explicativa extendida
-|-- experiments/          # configuraciones reproducibles
-|-- results/              # snapshots compactos de evidencia
-|-- scripts/              # CLI de ejecucion y validacion
-|-- src/viu_mrob_tfm/     # paquete Python
-`-- tests/                # pruebas de dominio, simulacion y OOP V6
+src/viu_mrob_tfm/       Implementación Python organizada por SP0--SP8
+experiments/configs/    Configuraciones YAML versionadas
+tests/                  Pruebas de modelos, invariantes y experimentos
+results/                Evidencia cruda, procesada, tablas y figuras
+thesis/                 Memoria VIU en LaTeX
+docs/                   Alcance, protocolo y trazabilidad científica
+references/             Registro bibliográfico y rúbrica metodológica
+plans/                  Registro de decisiones y trabajos complejos
+resources/              Plantilla oficial de la memoria
+scripts/                Generadores auxiliares de artefactos
 ```
 
-## Instalacion
+Los subproblemas forman una escalera de capacidades:
+
+- `SP0--SP2`: asignación, cardinalidad y capacidades heterogéneas.
+- `SP3--SP4`: factibilidad mecánica y transporte de la carga.
+- `SP5--SP7`: seguridad, recuperación y tráfico entre coaliciones.
+- `SP8`: escalabilidad y degradación de la comunicación.
+
+## Instalación
+
+Se requiere Python 3.11 o posterior.
 
 ```powershell
 python -m venv .venv
-.venv\Scripts\Activate.ps1
-python -m pip install -e .
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
 ```
 
-## Comandos principales
+Para reproducir el entorno usado por la campaña confirmatoria puede instalarse `requirements-reproducible.txt` antes del paquete:
+
+```powershell
+python -m pip install -r requirements-reproducible.txt
+python -m pip install -e . --no-deps
+```
+
+## Comprobación rápida
 
 ```powershell
 python -m pytest -q
-$env:PYTHONPATH='src'; python -m viu_mrob_tfm.validation.suite
-python scripts/run_experiment.py experiments/exp-001-baseline-nominal/config.yaml
-make report-pdf
+python -m compileall -q src tests
 ```
 
-Atajos equivalentes:
+El experimento de humo más corto del transporte cooperativo se ejecuta con:
 
 ```powershell
-make test
-make validate-suite
-make smoke-exp
-make run-canonical
-make method-matrix
-make theory-validation
-make stats-annex
-make figures-paper
-make thesis
-make submit-ready
-make submit-check
+viu-run-sp5 experiments/configs/sp5_payload_transport_smoke.yaml
 ```
 
-## Cierre submit-ready
+Los resultados se escriben en la ruta `output_dir` declarada por cada YAML. Las semillas están fijadas en las configuraciones y todos los métodos de una comparación reciben instancias pareadas.
 
-La rama de cierre usa `ROADMAP.md` como plan operativo y `docs/THESIS_NARRATIVE_LOCK.md`
-como candado narrativo. El entregable academico principal es
-`docs/doc-05-final-report/main.tex` y su PDF. `TFM.md` se conserva como fuente/borrador
-auxiliar.
+## Entradas de consola
 
-SP1-SP8 se consideran evidencia canonica congelada segun `docs/CANONICAL_RESULTS.md`.
-Los scripts nuevos generan artefactos derivados en `docs/generated/` y
-`results/theory_validation/`; no reejecutan campanas high-power. SP9 queda preparado como
-protocolo CoppeliaSim/Pioneer y, si el runtime externo no esta disponible, genera un
-reporte bloqueado en `results/sp9/SP9_BLOCKED_EXECUTION/` sin inventar datos.
+| Comando | Función | Configuración de ejemplo |
+|---|---|---|
+| `viu-run-sp0-theory` | Auditoría formal y numérica de SP0 | `experiments/configs/sp0_theory.yaml` |
+| `viu-run-sp1` | Cuotas y cierre entero de SP1 | `experiments/configs/sp1_theory.yaml` |
+| `viu-run-sp2` | Evidencia de capacidad efectiva | `experiments/configs/sp2_effective_capacity.yaml` |
+| `viu-run-sp3-evidence` | Evidencia de factibilidad de wrench | `experiments/configs/sp3_wrench_evidence.yaml` |
+| `viu-run-sp4-evidence` | Evidencia de docking y transporte | `experiments/configs/sp4_transport_evidence.yaml` |
+| `viu-run-sp5` | Transporte rígido y seguridad | `experiments/configs/sp5_payload_transport_smoke.yaml` |
+| `viu-run-sp5-evidence` | Postproceso auditado de SP5 | `experiments/configs/sp5_safety_evidence.yaml` |
+| `viu-run-sp6` | Fallo y re-reclutamiento | `experiments/configs/sp6_recovery_smoke.yaml` |
+| `viu-run-sp7` | Tráfico entre coaliciones | `experiments/configs/sp7_traffic_confirmatory.yaml` |
+| `viu-run-sp8` | Escalabilidad y red | `experiments/configs/sp8_network_confirmatory.yaml` |
+| `viu-run-cargo-e2e` | Campaña integrada SP2--SP6 | `experiments/configs/cargo_e2e_smoke.yaml` |
 
-Tras `pip install -e .`, los entry points equivalentes son:
+Los experimentos confirmatorios pueden ser costosos. Antes de ejecutarlos, compruebe `mode`, semillas, número de escenarios y directorio de salida en el YAML correspondiente.
+
+## Memoria
+
+La fuente principal es `thesis/main.tex`. En Windows con MiKTeX:
 
 ```powershell
-viu-run-experiment experiments/exp-001-baseline-nominal/config.yaml
-viu-run-sp8 configs/experiments/sp8/SP8_MC_fleet_ladder_high_power.yaml
-viu-validate-suite
+powershell -ExecutionPolicy Bypass -File thesis/build.ps1
 ```
 
-### Gate documental submit-ready
+El PDF resultante queda en `thesis/build/main.pdf`. Las afirmaciones de la memoria están vinculadas con su nivel de evidencia en `docs/04_CLAIMS_EVIDENCE.md`; las referencias se controlan en `references/LITERATURE_LEDGER.md`.
 
-El gate local para una memoria concreta es:
+## Reglas de reproducibilidad
 
-```powershell
-make submit-ready FILE=docs/doc-05-final-report/main.tex
-```
+- No editar manualmente cifras o tablas derivadas.
+- Conservar semillas y parámetros en YAML.
+- Separar resultados crudos, procesados, figuras y tablas.
+- Ejecutar la suite de pruebas después de modificar modelos, métricas o integradores.
+- Actualizar la matriz de evidencia antes de redactar conclusiones nuevas.
 
-Genera reportes en `docs/generated/submit_ready/` y falla ante bloqueos de plantilla
-VIU, secciones obligatorias, bibliografia, claims peligrosos, placeholders,
-declaracion de IA ausente o texto no extraible. Para el cierre final con reporte
-externo de similitud:
+Consulte `docs/00_TFM_CHARTER.md` para el alcance científico y `docs/03_EXPERIMENT_PROTOCOL.md` para el protocolo completo.
 
-```powershell
-make submit-ready FILE=docs/doc-05-final-report/main.tex SIMILARITY_REPORT=path/to/report.pdf REQUIRE_SIMILARITY=1
-```
+## Licencia
 
-## Arquitectura OOP nueva
-
-La version V6 agrega contratos explicitos sin romper los imports historicos:
-
-- `domain.robot`: `RobotSpec`, `RobotRuntimeState`, bateria y capacidad.
-- `domain.load`: `LoadSpec`, `WrenchDemand`, masa y geometria rectangular de carga.
-- `domain.world`: `WorldState`, `WarehouseMap`, `Obstacle`.
-- `scenarios`: escenarios reproducibles.
-- `allocation`: `BaseAllocator`, `SmithQRAllocator`.
-- `control`: `SingleFieldController`, `RigidFormation`, `VectorialWrenchGame` y ley explicita AMR en `explicit_law.py`.
-- `simulation`: `SimulationEngine`, `PolicyStack`, `SimulationResult`.
-- `simulations`: benchmark historico de almacen usado por validacion y comparativas.
-- `validation`: `HypothesisSuite`.
-
-La configuracion de experimentos queda separada de los metodos: `experiments/*/config.yaml`
-para escenarios reproducibles, `configs/` para parametros transversales, y
-`scripts/campaigns/` o `scripts/coppelia/` para campanas que generan multiples artefactos.
-
-## Restaurar artefactos movidos
-
-Nada fue borrado directamente. Para restaurar un archivo, buscarlo en
-`cleanup_manifest.csv` y copiar `destination_path` de vuelta a `original_path`.
+El código se distribuye bajo la licencia MIT incluida en `LICENSE`. La memoria, los recursos institucionales y los resultados conservan la autoría y condiciones que les correspondan.

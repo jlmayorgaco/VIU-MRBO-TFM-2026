@@ -1,2 +1,1 @@
-"""Command-line entry points for the thesis package."""
-
+"""Command-line entry points."""

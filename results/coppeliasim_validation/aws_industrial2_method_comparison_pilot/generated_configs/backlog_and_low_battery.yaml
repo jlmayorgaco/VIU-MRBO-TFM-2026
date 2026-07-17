@@ -1,0 +1,135 @@
+experiment_id: AWS_INDUSTRIAL2_METHOD_COMPARISON_PILOT_v1__backlog_and_low_battery
+evidence_scope: multi_scenario_proxy_integration_pilot_not_confirmatory
+scenario: backlog_and_low_battery
+layout:
+  open_center: false
+  industrial2: true
+policies:
+- central_milp_global_preview
+- cbba_reciprocal_proxy
+- distributed_predictive_cbf_proxy
+- replicator_cbf_tfm
+method_stacks:
+  central_milp_global_preview:
+    assignment: centralized_exact_snapshot_milp
+    motion: velocity_sampling_predictive_proxy
+    global_observation: true
+    preview_s: 1.8
+    heading_samples: 21
+  cbba_reciprocal_proxy:
+    assignment: local_coalition_auction_proxy
+    motion: reciprocal_velocity_sampling_proxy
+    global_observation: false
+    preview_s: 0.8
+    heading_samples: 11
+    lateral_bias: 0.1
+  distributed_predictive_cbf_proxy:
+    assignment: local_coalition_auction_proxy
+    motion: distributed_predictive_cbf_proxy
+    global_observation: false
+    preview_s: 1.35
+    heading_samples: 17
+    lateral_bias: 0.04
+  replicator_cbf_tfm:
+    assignment: replicator_consensus_quota
+    motion: replicator_cbf
+    global_observation: false
+seeds: 2
+seed_base: 23100
+horizon_s: 60.0
+dt_s: 0.05
+assignment_period_s: 0.25
+trace_interval_s: 0.25
+respawn_s: 1.5
+animation_seed: 0
+animation_fps: 16
+animation_dpi: 104
+trajectory_visualization:
+  enabled: true
+  history_s: 16.0
+cooperative_payload_share_kg_per_amr: 10.0
+task_completion_reward: 1000.0
+cost_weight: 0.02
+missed_complete_load_penalty: 1000.0
+amr:
+  max_empty_speed_mps: 1.1
+  max_loaded_speed_mps: 0.78
+  arrival_radius_m: 0.16
+  battery_low_pct: 25.0
+  battery_resume_pct: 88.0
+  battery_move_drain_pct_per_m: 0.68
+  battery_load_extra_pct_per_m: 0.3
+  battery_idle_drain_pct_per_s: 0.004
+  battery_charge_pct_per_s: 4.0
+  hard_clearance_m: 0.42
+paired_perturbations:
+  position_jitter_m: 0.12
+  battery_min_pct: 48.0
+  battery_max_pct: 76.0
+replicator_consensus:
+  communication_radius_m: 3.2
+  iterations: 48
+  replicator_step: 0.18
+  consensus_gain: 0.24
+  quorum_gain: 1.8
+  excess_penalty: 1.5
+  mutation_rate: 0.02
+  idle_payoff: 0.05
+  initial_temperature: 0.36
+target_assignment:
+  policy: deterministic_random_per_load_cycle
+  exclude_previous_target: true
+  exclude_same_lane_target: true
+path_planning:
+  planner: tfm_replicator_cbf_continuous
+  grid_resolution_m: 0.25
+  warehouse_margin_m: 0.3
+  robot_half_extent_m: 0.22
+  dynamic_robot_clearance_m: 0.46
+  dynamic_load_margin_m: 0.06
+  formation_staging_offset_m: 1.25
+  waypoint_tolerance_m: 0.08
+  max_astar_expansions: 50000
+continuous_navigation:
+  mathematical_model: continuous_goal_field_replicator_primitives_cbf
+  digital_integrator: forward_euler
+  goal_gain: 1.35
+  max_accel_mps2: 2.4
+  barrier_gamma: 1.6
+  projection_sweeps: 16
+  replicator_gain: 2.2
+  mutation_rate: 0.12
+  tangent_gain: 0.72
+  activation_clearance_m: 0.75
+  preview_s: 0.65
+  static_clearance_m: 0.04
+  dynamic_clearance_m: 0.08
+  residual_tolerance: 1.0e-06
+predictive_navigation:
+  preview_s: 1.1
+  heading_samples: 13
+  clearance_weight: 3.2
+  effort_weight: 0.03
+  wait_cost: 0.8
+statistics:
+  paired_bootstrap_resamples: 2000
+  confidence_level: 0.95
+  seed: 73191
+limitations:
+- This is an integration pilot with only two paired seeds per scenario; it cannot
+  establish a method ranking.
+- The local auction is CBBA-like but is not a complete reproduction of CBBA bundle
+  construction and convergence.
+- Velocity sampling is neither exact ORCA nor nonlinear DMPC; names and plots retain
+  the proxy qualifier.
+- The central method optimizes each assignment snapshot and uses global obstacle observation,
+  but it is not a certified joint space-time optimum.
+- Navigation laws are sampled with forward Euler at dt=0.05 s; sampled collision audits
+  do not prove continuous-time invariance.
+- Controlled forklift and humans follow deterministic routes and apply a sampled safety
+  stop before entering an occupied footprint.
+- Loads are coupled kinematically to complete coalitions; contact, rigidity and wrench
+  distribution are not simulated here.
+scenario_factors:
+  controlled_actors: []
+  virtual_static_obstacles: []
