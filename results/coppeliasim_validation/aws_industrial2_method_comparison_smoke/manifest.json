@@ -1,0 +1,29 @@
+{
+  "experiment_id": "AWS_INDUSTRIAL2_METHOD_COMPARISON_PILOT_v1",
+  "config": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\experiments\\configs\\aws_industrial2_method_comparison_pilot.yaml",
+  "scenarios": [
+    "open_center",
+    "industrial_bottleneck",
+    "controlled_cross_traffic",
+    "backlog_and_low_battery"
+  ],
+  "policies": [
+    "central_milp_global_preview",
+    "cbba_reciprocal_proxy",
+    "distributed_predictive_cbf_proxy",
+    "replicator_cbf_tfm"
+  ],
+  "seeds_per_scenario": 1,
+  "horizon_s": 15.0,
+  "sampled_collision_free": true,
+  "evidence_scope": "multi_scenario_proxy_integration_pilot_not_confirmatory",
+  "limitations": [
+    "This is an integration pilot with only two paired seeds per scenario; it cannot establish a method ranking.",
+    "The local auction is CBBA-like but is not a complete reproduction of CBBA bundle construction and convergence.",
+    "Velocity sampling is neither exact ORCA nor nonlinear DMPC; names and plots retain the proxy qualifier.",
+    "The central method optimizes each assignment snapshot and uses global obstacle observation, but it is not a certified joint space-time optimum.",
+    "Navigation laws are sampled with forward Euler at dt=0.05 s; sampled collision audits do not prove continuous-time invariance.",
+    "Controlled forklift and humans follow deterministic routes and do not react to robots.",
+    "Loads are coupled kinematically to complete coalitions; contact, rigidity and wrench distribution are not simulated here."
+  ]
+}

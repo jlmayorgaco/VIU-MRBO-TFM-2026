@@ -1,38 +1,39 @@
 \begin{viuabstract}{Resumen}
-Una arquitectura distribuida y explicable coordina la formación de coaliciones
-heterogéneas y el transporte de una carga planar. El mecanismo combina juegos
-potenciales y cierre entero con certificados de capacidad, \emph{wrench}, pose,
-seguridad, recuperación y comunicación.
+Este TFM diseña y evalúa una arquitectura híbrida e interpretable para formar
+coaliciones de robots móviles heterogéneos y transportar una carga mediante la
+modalidad Cargo. La propuesta combina juegos potenciales, cierre entero,
+umbrales de servicio, una guardia planar de \emph{wrench}, servocontrol de pose,
+filtrado de seguridad, reparación tras fallos, reserva discreta de rutas y
+mensajería vecinal versionada. No se presenta como un sistema completamente
+distribuido: varios cierres, agregados, optimizadores por carga y el registro de
+atributos del simulador conservan dependencias globales declaradas.
 
-Los resultados formales caracterizan los equilibrios homogéneo y de
-cardinalidad variable, prueban la degeneración del déficit lineal bajo escasez
-y establecen una condición de integrabilidad para servicios heterogéneos. El
-campo marginal de \emph{wrench} admite un potencial y una correspondencia
-KKT--equilibrio variacional. El servocontrol de pose es localmente estable con
-contactos fijos y realización exacta. En recuperación, los equilibrios de Nash
-coinciden con las reparaciones factibles mínimas bajo una penalización
-suficiente; el precio de estabilidad es uno y el de anarquía no posee cota
-uniforme.
+La investigación descompone el problema en SP0--SP8 y combina demostraciones,
+mundos pareados, oráculos de tamaño acotado, baselines, ablaciones e intervalos
+del 95\,\%. Los resultados formales caracterizan los equilibrios de asignación y
+cuota, la integrabilidad del servicio heterogéneo, la correspondencia
+KKT--equilibrio del juego de \emph{wrench}, la estabilidad local del control de
+pose con contactos fijos y la terminación finita de los juegos de reparación y
+rutas.
 
-La evaluación empleó mundos pareados. La guardia mecánica redujo en 0.333 los
-falsos positivos en 600 mundos y el juego de reparación restauró el certificado
-en los 360 casos recuperables. Una campaña integrada combinó visibilidad restringida,
-acoplamiento de uniciclos, transporte planar reducido, obstáculo, fallo y
-reemplazo. El método completo terminó 359 de 360 misiones sin intersección
-carga--obstáculo durante el transporte. Retirar conjuntamente certificado,
-desvío y filtro redujo el éxito en 0.996 con obstáculo; desactivar la reparación
-lo redujo en 0.989 bajo fallo. Con red degradada, las variantes local y de
-información perfecta completaron 90/90 misiones; la primera empleó 328 mensajes
-por instancia.
+En 600 mundos, la guardia mecánica redujo en 0.333 los falsos positivos. El
+juego de reparación restauró el certificado aditivo en los 360 casos
+recuperables. La campaña Cargo integró reclutamiento, acoplamiento de uniciclos,
+transporte planar reducido, obstáculo, fallo y reemplazo: completó 359 de 360
+misiones sin intersección carga--obstáculo durante el transporte. La ventaja
+temporal atribuida al coste espacial no quedó sustentada. En SP8, 900 mundos
+hasta 128 robots mostraron que retransmitir elevó en 0.054 la tasa libre de
+conflictos a cambio de 261.3 mensajes adicionales por agente, pero la calidad
+colapsó en el mayor tamaño nominal. Un piloto cinemático en CoppeliaSim confirmó
+la geometría del guion y localizó bloqueos, no dinámica física ni rendimiento
+industrial.
 
-La composición funcionó para una carga planar y un fallo simple, aunque carece
-de una garantía híbrida global. Los mensajes consultan un registro global de
-atributos y, tras el acoplamiento, las poses se reconstruyen desde la carga. El
-coste espacial no produjo una ventaja temporal concluyente. El modelo excluye
-dinámica tridimensional, topologías móviles, hardware y empuje por
-\emph{caging}.
+La arquitectura funciona como composición planar dentro de los regímenes
+ensayados. Quedan fuera una garantía híbrida global, soporte tridimensional,
+contacto rueda--suelo durante el transporte, red móvil, hardware y
+empuje mediante \emph{caging}.
 
-\keywords{Palabras clave}{coordinación distribuida, robots móviles autónomos, formación de coaliciones, juegos potenciales, transporte cooperativo}
+\keywords{Palabras clave}{coordinación multi-robot, robots móviles autónomos, formación de coaliciones, juegos potenciales, transporte cooperativo}
 \end{viuabstract}
 
 \clearpage

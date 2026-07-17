@@ -1,43 +1,52 @@
-# Results Index
+# Índice de resultados
 
-This folder is intentionally kept clean. Smoke/debug/diagnostic outputs were moved to `_archive/results_noncanonical_20260708_sp_cleanup/`.
+Este directorio conserva la evidencia numérica utilizada por la memoria. La fuente de verdad para determinar si una afirmación está soportada es `docs/04_CLAIMS_EVIDENCE.md`; este archivo solo facilita la navegación.
 
-## Canonical Monte Carlo Evidence
+## Organización
 
-| SP | Result directory | Runs/checks | Notes |
-|---|---|---:|---|
-| SP1 | `sp1/SP1_MC_recruitment_comparison` | 27,300 | recruitment, MAPPO/model-based/classic/SOTA/ours |
-| SP2 | `sp2/SP2_MC_capacity_comparison` | 20,280 | heterogeneous effective capacity |
-| SP3 | `sp3/SP3_MC_wrench_comparison_high_power` | 20,040 runs / 38,076 checks | wrench feasibility and scalar false positives; 0 failed checks |
-| SP4 | `sp4/SP4_MC_motion_comparison_high_power` | 20,070 rollouts / 21,408 checks | motion, safety and arrival; 0 failed checks |
-| SP5 | `sp5/SP5_MC_cooperative_transport_high_power` | 20,040 rollouts / 20,040 checks | rigid payload transport with solid-load clearance; 0 failed checks |
-| SP6 | `sp6/SP6_MC_robustness_comparison_high_power` | 20,000 rollouts / 20,000 checks | failures, battery, replacement and recovery; 0 failed checks |
-| SP7 | `sp7/SP7_MC_communication_robustness_high_power` | 20,176 runs / 20,176 checks | communication/sensing degradation, no video rendering in statistical run; 0 failed checks |
-| SP8 | `sp8/SP8_MC_fleet_ladder_high_power` | 20,000 runs / 20,000 checks | 5-50,000 AMR scale ladder, 100 seeds per scale; 0 failed checks |
-
-## Supplementary Evidence Kept In Results
-
-| Directory | Purpose |
-|---|---|
-| `sp2/SP2_MC_marginal_payoff_ablation` | Theory ablation for marginal payoff / vector potential alignment. |
-| `sp3/SP3_MC_wrench_comparison_methodology_v3` | Earlier compact SP3 wrench run retained for representative videos and traceability. |
-| `sp3/SP3_POSE_suite_euler_lagrange_transport` | Euler-Lagrange/Hamiltonian pose-control videos and standardized pose metrics. |
-| `sp4/SP4_MC_motion_comparison` | Earlier compact SP4 motion run retained for representative videos and traceability. |
-| `sp4/SP4_MC_explicit_control_law` | Explicit AMR hand-point/HOCBF motion supplement: 432 rollouts, 504 checks, 0 failed checks; includes manual explicit-method MP4. |
-| `sp5/SP5_MC_explicit_control_law` | Explicit AMR vGNE-CBF transport supplement: 432 rollouts, 0 failed checks; explicit cargo reaches targets in all paired worlds; includes manual explicit cargo MP4. |
-| `sp6/SP6_MC_explicit_control_law` | Explicit required-wrench recovery supplement: 360 rollouts, 0 failed checks; includes manual ours-recovery MP4. |
-| `sp5/SP5_MC_cooperative_transport` | Earlier 3,000-run SP5 canonical with long MP4 videos retained for qualitative review. |
-| `sp6/SP6_MC_robustness_comparison` | Earlier 4,000-run SP6 canonical with long MP4 recovery videos retained for qualitative review. |
-| `sp7/SP7_MC_communication_robustness_paper` | Earlier 832-run SP7 statistical run retained for traceability. |
-| `sp8/SP8_MC_fleet_ladder_extended` | Earlier 600-run SP8 fleet ladder retained for traceability. |
-| `sp8/SP8_MC_scalability_warehouse` | Compact SP8 run with representative MP4 videos. |
-
-## Paper Figures
-
-Run:
-
-```powershell
-python scripts/generate_paper_figures.py
+```text
+results/
+├── sp0/ ... sp8/       Salidas de campañas por subproblema
+├── processed/          Síntesis auditadas usadas por tablas y figuras
+├── coppeliasim_validation/
+│                       Validaciones complementarias en simulador
+├── physical_coalition/ Certificados físicos complementarios
+├── theory_validation/  Comprobaciones numéricas de resultados formales
+├── raw/                Datos crudos compartidos
+├── figures/            Figuras globales generadas
+└── tables/             Tablas globales generadas
 ```
 
-Each canonical SP directory receives a `paper_figures/` folder with PDF and PNG figures. The global index is `results/PAPER_FIGURES_INDEX.md`.
+Cada campaña conserva, cuando aplica, el YAML o manifiesto efectivo, semillas, tablas por ejecución, resúmenes, contrastes, auditorías y figuras. Los nombres `smoke`, `pilot` y `confirmatory` indican su función experimental; una ejecución de humo no constituye evidencia científica.
+
+## Evidencia canónica actual
+
+| Bloque | Directorio principal | Contenido |
+|---|---|---|
+| SP0 | `sp0/SP0_THEORY_v1/` | Juego potencial, auditoría exacta y comparación pareada. |
+| SP1 | `sp1/SP1_QUORUM_v1/` | Cuotas variables, escasez y cierre entero. |
+| SP2 | `processed/sp2/SP2_EFFECTIVE_CAPACITY_EVIDENCE_v1/` | Capacidad efectiva, cobertura y ablación. |
+| SP3 | `processed/sp3/SP3_WRENCH_EVIDENCE_v1/` | Factibilidad de wrench y falsos positivos escalares. |
+| SP4 | `processed/sp4/SP4_TRANSPORT_EVIDENCE_v1/` | Docking dinámico y transporte rígido como capas separadas. |
+| SP5 | `processed/sp5/SP5_SAFETY_EVIDENCE_v1/` | Seguridad, progreso y separación RAW--SAFE--EXEC. |
+| SP6 | `processed/sp6/SP6_RECOVERY_CONFIRMATORY_v1/` | Fallo, re-reclutamiento y recuperación. |
+| SP7 | `processed/sp7/SP7_TRAFFIC_CONFIRMATORY_v1/` | Tráfico, reservas y conflictos entre coaliciones. |
+| SP8 | `processed/sp8/SP8_NETWORK_CONFIRMATORY_v1/` | Escala, mensajes, retardos y pérdidas. |
+| Integrada | `processed/integrated/CARGO_E2E_CONFIRMATORY_v1/` | Composición experimental de SP2--SP6. |
+
+Las campañas originales que alimentan un postproceso se mantienen en su carpeta `spX/`. Los directorios históricos o complementarios no sustituyen la evidencia señalada en la matriz de afirmaciones.
+
+## Reproducción
+
+Las configuraciones versionadas viven en `experiments/configs/`. Por ejemplo:
+
+```powershell
+viu-run-sp0-theory --config experiments/configs/sp0_theory.yaml
+viu-run-sp5 experiments/configs/sp5_payload_transport_confirmatory.yaml
+viu-run-sp6 experiments/configs/sp6_recovery_confirmatory.yaml
+viu-run-sp7 experiments/configs/sp7_traffic_confirmatory.yaml
+viu-run-sp8 experiments/configs/sp8_network_confirmatory.yaml
+viu-run-cargo-e2e experiments/configs/cargo_e2e_confirmatory.yaml
+```
+
+Antes de repetir una campaña confirmatoria, revise su coste y cambie `output_dir` si desea conservar intacta la evidencia existente. Las tablas y figuras de la memoria no deben editarse manualmente.

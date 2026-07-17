@@ -1,0 +1,17 @@
+scenario,policy,n,delivered_mean,delivered_ci95,avg_formation_s_mean,avg_formation_s_ci95,energy_used_pct_mean,energy_used_pct_ci95,deadlock_fraction_mean,deadlock_fraction_ci95,max_stuck_s_mean,max_stuck_s_ci95,cpu_time_s_mean,cpu_time_s_ci95,scalar_messages_mean,scalar_messages_ci95
+open_center,central_milp_global_preview,2,0.0,0.0,10.45,0.0,79.187738,9.981814,0.316651,0.011719,51.225,0.539,70.410144,7.430727,0.0,0.0
+open_center,cbba_reciprocal_proxy,2,1.0,0.0,8.529167,6.574166,125.621162,5.603263,0.114488,0.005598,35.875,0.441,13.259654,0.032868,222.0,0.0
+open_center,distributed_predictive_cbf_proxy,2,1.0,0.0,9.833334,0.163334,144.317004,9.671992,0.008386,0.00554,0.05,0.0,13.631645,1.201979,219.0,5.88
+open_center,replicator_cbf_tfm,2,1.0,0.0,19.233334,0.522666,85.520464,17.500189,0.467063,0.052659,43.7,18.326,6.489695,0.049787,5328.0,94.08
+industrial_bottleneck,central_milp_global_preview,2,0.0,0.0,10.45,0.0,78.121291,7.891577,0.316727,0.011569,51.225,0.539,80.79601,7.089394,0.0,0.0
+industrial_bottleneck,cbba_reciprocal_proxy,2,0.0,0.0,5.225,0.098,108.869076,0.265306,0.010749,0.004049,0.05,0.0,14.689102,1.002432,216.0,0.0
+industrial_bottleneck,distributed_predictive_cbf_proxy,2,0.0,0.0,9.833334,0.163334,137.748501,2.555714,0.010278,0.004443,0.05,0.0,16.273203,0.593139,216.0,0.0
+industrial_bottleneck,replicator_cbf_tfm,2,0.0,0.0,2.175,4.263,52.305044,13.643321,0.632643,0.063927,49.9,6.174,7.801787,1.281783,5280.0,188.16
+controlled_cross_traffic,central_milp_global_preview,2,0.0,0.0,10.45,0.0,81.093086,0.674658,0.316036,0.009312,51.225,0.539,83.012092,5.233877,0.0,0.0
+controlled_cross_traffic,cbba_reciprocal_proxy,2,0.0,0.0,5.225,0.098,118.91785,0.648698,0.020777,0.031373,3.525,6.811,16.967878,4.491029,216.0,0.0
+controlled_cross_traffic,distributed_predictive_cbf_proxy,2,0.0,0.0,9.833334,0.163334,139.779637,4.069099,0.00901,0.001174,0.05,0.0,15.841269,0.543792,216.0,0.0
+controlled_cross_traffic,replicator_cbf_tfm,2,0.0,0.0,2.175,4.263,51.173868,11.395901,0.645898,0.036106,49.9,6.174,7.448635,0.279006,5280.0,188.16
+backlog_and_low_battery,central_milp_global_preview,2,0.0,0.0,10.45,0.0,78.121291,7.891577,0.316727,0.011569,51.225,0.539,67.621703,1.039394,0.0,0.0
+backlog_and_low_battery,cbba_reciprocal_proxy,2,0.0,0.0,5.225,0.098,108.869076,0.265306,0.010749,0.004049,0.05,0.0,12.982246,1.587974,192.0,47.04
+backlog_and_low_battery,distributed_predictive_cbf_proxy,2,0.0,0.0,9.833334,0.163334,137.748501,2.555714,0.010278,0.004443,0.05,0.0,15.073465,1.308469,192.0,47.04
+backlog_and_low_battery,replicator_cbf_tfm,2,0.0,0.0,4.325,0.049,60.521542,7.584436,0.611004,0.091394,45.5,15.19,6.691435,0.215477,5184.0,376.32

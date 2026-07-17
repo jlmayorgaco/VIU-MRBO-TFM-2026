@@ -50,6 +50,8 @@ Thumbs.db
 
 docs/**/build/*
 !docs/**/build/.gitkeep
+thesis/build-master/
+thesis/generated/
 
 # MS Office lock files
 ~$*
@@ -67,6 +69,7 @@ tmp/
 output/pdf-check/
 output/pdf/doc06-review/
 _comparacion_visual/
+_thesis_coppelia_snapshot_*/
 
 # Generated results
 results/raw/*
@@ -86,14 +89,22 @@ results/batch/*
 # not live in the canonical result set.
 results/sp7/SP7_DEBUG_smoke/
 results/sp8/SP8_DEBUG_smoke/
+results/sp5/SP5_SMOKE_20260716/
+
+# High-frequency simulator traces are local artifacts. Summaries, manifests,
+# sampled figures and paired contrasts remain versioned.
+results/coppeliasim_validation/**/coalition_motion_trace.csv
+results/coppeliasim_validation/**/coalition_robot_trace.csv
+results/coppeliasim_validation/**/coalition_load_trace.csv
+results/coppeliasim_validation/**/aws_robot_state_trace.csv
+results/coppeliasim_validation/**/aws_load_state_trace.csv
 
 # Campaign artifacts: keep summaries, manifests, data and final plots; ignore
 # bulky generated frame folders unless explicitly force-added.
 results/campaigns/**/frames/*
 !results/campaigns/**/frames/.gitkeep
 
-# V6 organization quarantine / regenerated local artifacts
-.claude/
+# Organization quarantine / regenerated local artifacts
 archive/
 guidelines/
 output/

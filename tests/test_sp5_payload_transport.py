@@ -9,6 +9,7 @@ import yaml
 
 from viu_mrob_tfm.sp5.payload_transport import (
     build_transport_world,
+    filtered_acceleration_from_velocity,
     run_payload_transport_config,
     simulate_payload_transport,
 )
@@ -30,6 +31,25 @@ def test_raw_safe_exec_are_separate_and_mechanics_identity_holds() -> None:
     assert result.raw_wrench.shape == result.safe_wrench.shape == result.exec_wrench.shape
     assert np.max(result.mechanics_residual, initial=0.0) <= 1e-8
     assert np.any(np.linalg.norm(result.raw_wrench - result.safe_wrench, axis=1) > 1e-9) or result.guard_intervention_norm <= 1e-9
+
+
+def test_filtered_velocity_maps_to_dimensionally_consistent_planar_acceleration() -> None:
+    acceleration = filtered_acceleration_from_velocity(
+        current_velocity=np.array([1.0, -1.0, 0.3]),
+        filtered_translational_velocity=np.array([1.2, -0.7]),
+        nominal_acceleration=np.array([9.0, 8.0, 0.4]),
+        dt_s=0.1,
+    )
+    assert np.allclose(acceleration, np.array([2.0, 3.0, 0.4]))
+    bounded = filtered_acceleration_from_velocity(
+        current_velocity=np.zeros(3),
+        filtered_translational_velocity=np.array([3.0, 4.0]),
+        nominal_acceleration=np.array([0.0, 0.0, 0.25]),
+        dt_s=1.0,
+        max_translational_accel_mps2=2.0,
+    )
+    assert np.isclose(np.linalg.norm(bounded[:2]), 2.0)
+    assert bounded[2] == 0.25
 
 
 def test_failures_are_not_converted_to_missing_rows() -> None:

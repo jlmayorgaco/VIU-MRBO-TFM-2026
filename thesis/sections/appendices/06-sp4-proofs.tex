@@ -1,0 +1,78 @@
+\section{Demostraciones complementarias de SP4}
+\label{app:sp4-proofs}
+\begingroup\footnotesize
+
+Las pruebas de SP4 cubren la convexidad fuerte del juego de vivacidad para una instantánea congelada y la disipación del servolazo planar de pose. No cubren convergencia global del sistema híbrido recedente, estabilidad con contacto conmutado ni validez de la reproducción cinemática como dinámica física.
+
+\subsection{Potencial y equilibrio variacional del juego de vivacidad}
+\label{app:sp4-game-proof}
+
+Apílese $\rho=(\rho_1,\ldots,\rho_N)$ y sea $B$ la matriz cuyas filas recogen $b_{ia\ell}$, de modo que $y(\rho)=B\rho$. Para costes congelados $c^{(4)}$, la función~\eqref{eq:sp4-game-potential} se escribe
+\[
+ J_G(\rho)=c^{(4)\mathsf T}\rho
+ +\frac{\beta_4}{2}\rho^{\mathsf T}B^{\mathsf T}B\rho
+ +\frac{\alpha_4}{2}\rho^{\mathsf T}\rho.
+\]
+El coste escalar del robot $i$ en~\eqref{eq:sp4-player-cost} conserva el término de congestión completo, pero solo incluye el coste lineal y la regularización propios. Para cualquier desviación unilateral factible $\rho_i\mapsto\rho_i'$, los términos lineales y cuadráticos de los demás robots permanecen constantes. Por tanto,
+\[
+ J_i(\rho_i',\rho_{-i})-J_i(\rho_i,\rho_{-i})
+ =J_G(\rho_i',\rho_{-i})-J_G(\rho_i,\rho_{-i}).
+\]
+Esta identidad de diferencias finitas demuestra que $J_G$ es un potencial exacto del juego continuo. Su gradiente por componente es
+\[
+ \frac{\partial J_G}{\partial\rho_{ia}}
+ =c_{ia}^{(4)}+\beta_4\sum_\ell b_{ia\ell}y_\ell(\rho)+\alpha_4\rho_{ia},
+\]
+por lo que el negativo del gradiente, más el precio compartido, coincide con~\eqref{eq:sp4-payoff}. El precio es el multiplicador común de la restricción compartida y no altera la identidad del juego sin restricciones.
+
+Además,
+\[
+ \nabla^2J_G=\beta_4 B^{\mathsf T}B+\alpha_4 I\succeq\alpha_4 I\succ0.
+\]
+Por tanto, $J_G$ es $\alpha_4$-fuertemente convexo. El conjunto factible es la intersección del producto de simplex con $B\rho\leq\boldsymbol1$, luego es convexo y compacto; la acción esperar tiene ocupación nula y proporciona un punto de Slater. Existe un único minimizador $\rho^\star$.
+
+Las condiciones KKT necesarias y suficientes son
+\[
+ 0\in\nabla J_G(\rho^\star)+B^{\mathsf T}\pi^\star
+ +N_{\Delta}(\rho^\star),
+ \qquad
+ 0\leq\pi^\star\perp\boldsymbol1-B\rho^\star\geq0.
+\]
+Al sustituir $-(\nabla_iJ_G+B_i^{\mathsf T}\pi)$ por el vector de payoffs de cada robot se obtiene la desigualdad variacional del juego con restricciones compartidas. Así, el minimizador y el equilibrio variacional coinciden y son únicos, lo que completa la Proposición~\ref{prop:sp4-potential}. El resultado termina antes del cierre entero y antes de actualizar costes o conflictos.
+
+\subsection{Disipación del servolazo de pose}
+\label{app:sp4-pose-proof}
+
+En una carta local de $SE(2)$, $\dot e_k^L=\dot q_k^L$. Sustituir~\eqref{eq:sp4-pose-law} en la dinámica produce
+\[
+ M_k\ddot q_k^L+(D_k+K_D)\dot q_k^L+K_Pe_k^L=\boldsymbol r_k^W.
+\]
+Para
+\[
+ V(e_k^L,\dot q_k^L)=
+ \frac12\dot q_k^{L\mathsf T}M_k\dot q_k^L
+ +\frac12e_k^{L\mathsf T}K_Pe_k^L,
+\]
+con $M_k$ constante, se obtiene
+\begin{align*}
+ \dot V
+ &=\dot q_k^{L\mathsf T}M_k\ddot q_k^L
+   +e_k^{L\mathsf T}K_P\dot q_k^L\\
+ &=-\dot q_k^{L\mathsf T}(D_k+K_D)\dot q_k^L
+   +\dot q_k^{L\mathsf T}\boldsymbol r_k^W.
+\end{align*}
+Si $\boldsymbol r_k^W=0$, $\dot V\leq0$. En el mayor conjunto invariante contenido en $\dot V=0$ se cumple $\dot q_k^L=0$ y, por la dinámica, $K_Pe_k^L=0$; como $K_P\succ0$, $e_k^L=0$. El principio de invariancia de LaSalle da estabilidad asintótica local en la carta angular considerada.
+
+Para $\boldsymbol r_k^W\neq0$, sea $\lambda_D=\lambda_{\min}(D_k+K_D)>0$. La desigualdad de Young implica
+\[
+ \dot q_k^{L\mathsf T}\boldsymbol r_k^W
+ \leq\frac{\lambda_D}{2}\|\dot q_k^L\|_2^2
+ +\frac{1}{2\lambda_D}\|\boldsymbol r_k^W\|_2^2,
+\]
+y, por tanto,
+\[
+ \dot V\leq-\frac{\lambda_D}{2}\|\dot q_k^L\|_2^2
+ +\frac{1}{2\lambda_D}\|\boldsymbol r_k^W\|_2^2.
+\]
+Esta cota demuestra disipación perturbada, no convergencia exacta cuando el residual persiste. Con ello queda probada la Proposición~\ref{prop:sp4-pose-stability} dentro de sus supuestos.
+\endgroup

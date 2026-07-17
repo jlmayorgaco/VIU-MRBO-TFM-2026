@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "viu-mrob-tfm"
-version = "0.2.0"
-description = "Smith-QR distributed coordination for heterogeneous multi-AMR cooperative transport."
+version = "0.3.0"
+description = "Distributed coalition formation and cooperative transport for heterogeneous AMRs."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
@@ -13,32 +13,33 @@ authors = [
   { name = "Jorge Luis Mayorga Taborda" }
 ]
 dependencies = [
-  "imageio>=2.34,<3.0",
   "matplotlib>=3.8,<4.0",
   "numpy>=1.26,<3.0",
   "pandas>=2.1,<3.0",
-  "pyarrow>=14,<22",
   "PyYAML>=6.0,<7.0",
-  "pytest>=8.0,<9.0",
   "scipy>=1.11,<2.0",
-  "statsmodels>=0.14,<1.0",
-  "torch>=2.0,<3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0,<9.0",
 ]
 
 [project.urls]
-Repository = "https://github.com/example/VIU-MROB-TFM-2026"
+Repository = "https://github.com/jlmayorgaco/VIU-MRBO-TFM-2026"
 
 [project.scripts]
-viu-run-experiment = "viu_mrob_tfm.cli.run_experiment:main"
-viu-run-sp1 = "viu_mrob_tfm.cli.run_sp1:main"
-viu-run-sp2 = "viu_mrob_tfm.cli.run_sp2:main"
-viu-run-sp3 = "viu_mrob_tfm.cli.run_sp3:main"
-viu-run-sp4 = "viu_mrob_tfm.cli.run_sp4:main"
+viu-run-sp0-theory = "viu_mrob_tfm.cli.run_sp0_theory:main"
+viu-run-sp1 = "viu_mrob_tfm.cli.run_sp1_theory:main"
+viu-run-sp2 = "viu_mrob_tfm.cli.run_sp2_evidence:main"
+viu-run-sp3-evidence = "viu_mrob_tfm.cli.run_sp3_evidence:main"
+viu-run-sp4-evidence = "viu_mrob_tfm.cli.run_sp4_evidence:main"
 viu-run-sp5 = "viu_mrob_tfm.cli.run_sp5:main"
+viu-run-sp5-evidence = "viu_mrob_tfm.cli.run_sp5_evidence:main"
 viu-run-sp6 = "viu_mrob_tfm.cli.run_sp6:main"
 viu-run-sp7 = "viu_mrob_tfm.cli.run_sp7:main"
 viu-run-sp8 = "viu_mrob_tfm.cli.run_sp8:main"
-viu-validate-suite = "viu_mrob_tfm.validation.suite:main"
+viu-run-cargo-e2e = "viu_mrob_tfm.cli.run_cargo_e2e:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }

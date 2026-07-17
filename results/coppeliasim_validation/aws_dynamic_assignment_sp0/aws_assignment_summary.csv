@@ -1,0 +1,5 @@
+policy,n,delivered_mean,delivered_std,delivered_ci95,total_distance_m_mean,total_distance_m_std,total_distance_m_ci95,energy_used_pct_mean,energy_used_pct_std,energy_used_pct_ci95,avg_wait_s_mean,avg_wait_s_std,avg_wait_s_ci95,assignment_cost_mean,assignment_cost_std,assignment_cost_ci95,mean_instant_regret_mean,mean_instant_regret_std,mean_instant_regret_ci95
+hungarian_centralized,8,10.0,0.0,0.0,378.206881,0.289424,0.200561,328.107079,0.235019,0.16286,6.902679,0.029804,0.020653,374.205969,0.781981,0.541885,0.0,0.0,0.0
+distributed_greedy,8,10.0,0.0,0.0,378.324717,0.425383,0.294775,327.948871,0.380836,0.263906,6.885715,0.025612,0.017748,374.225966,0.785013,0.543987,0.000121,9.8e-05,6.8e-05
+random_feasible,8,8.0,0.0,0.0,374.262918,11.00221,7.624143,314.503628,7.281564,5.045866,12.871881,1.313869,0.910465,396.605937,17.108568,11.855633,0.542048,0.126212,0.087461
+replicator_distributed,8,9.75,0.46291,0.32078,381.145234,4.191796,2.904766,329.049,2.882615,1.99755,7.550561,0.537851,0.372712,379.593794,10.818652,7.496944,1.706287,3.07314,2.129577

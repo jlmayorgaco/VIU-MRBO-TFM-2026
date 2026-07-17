@@ -1,0 +1,22 @@
+experiment_id: SP0_THEORY_v1
+output_dir: results/sp0/SP0_THEORY_v1
+seed_base: 20260715
+number_seeds: 20
+fleet_sizes: [4, 8, 16, 32, 64]
+task_ratios: [0.5, 1.0]
+penalty_margin: 0.05
+auction_epsilon: 0.001
+max_best_response_sweeps: 100
+max_exchange_events: 100000
+bootstrap_resamples: 2000
+trace_n_robots: 4
+trace_n_tasks: 4
+exact_seeds: 3
+exact_pairs:
+  - [2, 2]
+  - [3, 2]
+  - [3, 3]
+  - [4, 3]
+  - [4, 4]
+  - [5, 4]
+  - [5, 5]

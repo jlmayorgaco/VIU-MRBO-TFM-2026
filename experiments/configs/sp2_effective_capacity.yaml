@@ -1,0 +1,23 @@
+experiment_id: SP2_EFFECTIVE_CAPACITY_EVIDENCE_v1
+semantics:
+  campaign_column_name: effective_capacity
+  interpretation: dimensionless_operational_service_contribution
+  service_reference_kg: 1.0
+  mechanical_payload_claimed: false
+  energy_feasibility_claimed: false
+comparison_dir: results/sp2/SP2_MC_capacity_comparison
+ablation_dir: results/sp2/SP2_MC_marginal_payoff_ablation
+output_dir: results/processed/sp2/SP2_EFFECTIVE_CAPACITY_EVIDENCE_v1
+expected:
+  seed_start: 3100
+  seed_end: 3139
+  scenario_generators:
+    - light_mixed
+    - balanced_capacity
+    - heavy_capacity
+    - battery_constrained
+    - monte_carlo
+  comparison_rows: 20280
+  ablation_rows: 9360
+  comparison_videos: 40
+  ablation_videos: 20

@@ -1,0 +1,88 @@
+{
+  "experiment_id": "SP0_THEORY_v1",
+  "config": {
+    "experiment_id": "SP0_THEORY_v1",
+    "output_dir": "results/sp0/SP0_THEORY_v1",
+    "seed_base": 20260715,
+    "number_seeds": 20,
+    "fleet_sizes": [
+      4,
+      8,
+      16,
+      32,
+      64
+    ],
+    "task_ratios": [
+      0.5,
+      1.0
+    ],
+    "penalty_margin": 0.05,
+    "auction_epsilon": 0.001,
+    "max_best_response_sweeps": 100,
+    "max_exchange_events": 100000,
+    "bootstrap_resamples": 2000,
+    "trace_n_robots": 4,
+    "trace_n_tasks": 4,
+    "exact_seeds": 3,
+    "exact_pairs": [
+      [
+        2,
+        2
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        3,
+        3
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        4
+      ],
+      [
+        5,
+        4
+      ],
+      [
+        5,
+        5
+      ]
+    ]
+  },
+  "python": "3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:09:58) [MSC v.1929 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "numpy": "2.3.5",
+  "pandas": "2.3.3",
+  "scipy": "1.16.3",
+  "theory_gate_passed": true,
+  "artifacts": {
+    "figures/fig-sp0-equilibrium-efficiency.pdf": "7e512e1118c8ffe5d5f96e2c7aa24f5dfb6d703ae51762636008bbc0a947060c",
+    "figures/fig-sp0-equilibrium-efficiency.png": "04ceef951b469f357cfd828264e224961c47fb231a26a852fcb1ed0cc4311bc3",
+    "figures/fig-sp0-scaling-welfare.pdf": "d2a9948a903f88d6d1e122604424794c8311e14e099d6371fd2c2953892a6113",
+    "figures/fig-sp0-scaling-welfare.png": "519f8a7669a90e5bccbc1c72fff0b9120be283d34e345c1ddb05c6d0738626d9",
+    "figures/fig-sp0-temporal-performance-4x4.pdf": "99352a82aa433b946d9631c5970245a0fe5a854dd9ecc98e3d645bcbaff7639e",
+    "figures/fig-sp0-temporal-performance-4x4.png": "23c3d117f6672c04326fa80b2e508c743837cb1b87552be223f77d43aa60cd2b",
+    "figures/fig-sp0-top-view-assignments.pdf": "3f5d3e0f4d93309487ef68960846c29c3b61ddf55eb51c3ab4074709c78dfe04",
+    "figures/fig-sp0-top-view-assignments.png": "5fbfd245bfcc4627816f02c0132a5c8c7a6b6edaa5f17f355c6c7be548059ea7",
+    "manifest.json": "cf3c2781b25046306dab307d8b124fb992e72539cd6dbb157724b2129f643499",
+    "report.md": "b19c014d6f81289738b181739f837360d08b1b1281326b3ab0cd489dab8d4e04",
+    "tables/exact_nash_audit.csv": "4a42901026bdbc40c0f4d03496f5d1b417350e5d1a002c0bb970e03de2cff68f",
+    "tables/method_summary.csv": "d590fd99c13fd39ef2fd40f864ba8f6f9a81b63f793b732f15e67b66e11df7fa",
+    "tables/paired_bootstrap_contrasts.csv": "ba1d1b1bfbbf153e2e7f23233af3cff79ad2eb91301863e60833de5ac9eed3fd",
+    "tables/runs.csv": "b2226e9469670178b816571d051c9a3a73e18a43540c8d393f444f81ded31f67",
+    "tables/sp0_exact_summary.tex": "1a622e159af8c7d2f01ebc1a1f361d6f4efdb7098cc37077733b6e62094d2dfa",
+    "tables/sp0_hypothesis_summary.tex": "fa8d731617d1051f274d9b97ccee1a0f82b213643582c0555948d932f65e9201",
+    "tables/sp0_hypothesis_test.csv": "be0e94ed41f94cf4fb8e788835b2821dc89cb22f9c5732d7d41d54a7ff69be14",
+    "tables/sp0_method_summary.tex": "d375b9363d01fddd5443da2e93fe801d6b19e6f9e70cac25cd79cc6d5f9d82e3",
+    "tables/sp0_representative_instance.csv": "9b9e0659542aff53c7d192e269d25f78707f4066eddc8fa316ed6fb4855bad96",
+    "tables/sp0_temporal_metrics.csv": "ddf7299be32500093d453ca15889d865b5553192f68af6b42b7b633eab70173c",
+    "tables/summary_by_scale.csv": "0633618c108534540f092383c14b75ee51c5369630a5aeeeba9d395ecb6d2ade",
+    "tables/theorem_checks.csv": "47532b40d1c2bd336a1cc97afcb61092bbd6201a1f1cef40e459f32ed8c1573d"
+  }
+}

@@ -1,4 +1,4 @@
-"""CLI entrypoint for SP8 scalability experiments."""
+"""Command-line entry point for the canonical SP8 network experiment."""
 
 from __future__ import annotations
 
@@ -11,10 +11,10 @@ from viu_mrob_tfm.sp8 import run_sp8_config
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("config", type=Path, help="SP8 YAML config path.")
+    parser.add_argument("config", type=Path, help="SP8 YAML configuration path")
     args = parser.parse_args(argv)
     result = run_sp8_config(args.config)
-    print(json.dumps(result, indent=2, sort_keys=True))
+    print(json.dumps(result, indent=2, ensure_ascii=False))
     return 0
 
 

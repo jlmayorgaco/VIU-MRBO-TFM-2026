@@ -1,0 +1,13 @@
+metric,higher_is_better,policy_a,policy_b,n_paired,mean_a,mean_b,difference_a_minus_b,ci95_low,ci95_high,wins_a,ties,wins_b,p_value_raw,p_value_holm,reject_holm_005
+delivered,1,central_milp_global_preview,cbba_reciprocal_proxy,1,0.0,0.0,0.0,0.0,0.0,0,1,0,1.0,1.0,0
+delivered,1,central_milp_global_preview,distributed_predictive_cbf_proxy,1,0.0,0.0,0.0,0.0,0.0,0,1,0,1.0,1.0,0
+delivered,1,central_milp_global_preview,replicator_cbf_tfm,1,0.0,0.0,0.0,0.0,0.0,0,1,0,1.0,1.0,0
+delivered,1,cbba_reciprocal_proxy,distributed_predictive_cbf_proxy,1,0.0,0.0,0.0,0.0,0.0,0,1,0,1.0,1.0,0
+delivered,1,cbba_reciprocal_proxy,replicator_cbf_tfm,1,0.0,0.0,0.0,0.0,0.0,0,1,0,1.0,1.0,0
+delivered,1,distributed_predictive_cbf_proxy,replicator_cbf_tfm,1,0.0,0.0,0.0,0.0,0.0,0,1,0,1.0,1.0,0
+mean_regret,0,central_milp_global_preview,cbba_reciprocal_proxy,1,0.0,13.860444,-13.860444,-13.860444,-13.860444,1,0,0,1.0,1.0,0
+mean_regret,0,central_milp_global_preview,distributed_predictive_cbf_proxy,1,0.0,13.860444,-13.860444,-13.860444,-13.860444,1,0,0,1.0,1.0,0
+mean_regret,0,central_milp_global_preview,replicator_cbf_tfm,1,0.0,500.0,-500.0,-500.0,-500.0,1,0,0,1.0,1.0,0
+mean_regret,0,cbba_reciprocal_proxy,distributed_predictive_cbf_proxy,1,13.860444,13.860444,0.0,0.0,0.0,0,1,0,1.0,1.0,0
+mean_regret,0,cbba_reciprocal_proxy,replicator_cbf_tfm,1,13.860444,500.0,-486.139556,-486.139556,-486.139556,1,0,0,1.0,1.0,0
+mean_regret,0,distributed_predictive_cbf_proxy,replicator_cbf_tfm,1,13.860444,500.0,-486.139556,-486.139556,-486.139556,1,0,0,1.0,1.0,0

@@ -1,0 +1,67 @@
+{
+  "experiment_id": "SP1_QUORUM_v1_SMOKE",
+  "status": "development_completed",
+  "confirmatory": false,
+  "config": {
+    "experiment_id": "SP1_QUORUM_v1_SMOKE",
+    "output_dir": "results\\sp1\\SP1_QUORUM_v1\\smoke",
+    "seed_base": 2026071600,
+    "number_seeds": 2,
+    "fleet_sizes": [
+      8
+    ],
+    "demand_pressure": [
+      0.75,
+      1.0,
+      1.25
+    ],
+    "quota_mixes": [
+      "mixed"
+    ],
+    "geometries": [
+      "uniform"
+    ],
+    "quorum_beta": 2.0,
+    "beta_sweep": [
+      0.0,
+      0.5,
+      1.0,
+      2.0,
+      4.0,
+      8.0
+    ],
+    "regime_map_seeds": 2,
+    "regime_map_fleet_size": 16,
+    "cost_weight": 0.15,
+    "excess_penalty": 1.05,
+    "oracle_time_limit_s": 5.0,
+    "bootstrap_resamples": 100,
+    "smith": {
+      "time_step": 0.15,
+      "max_steps": 250,
+      "tolerance": 1e-06
+    }
+  },
+  "python": "3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:09:58) [MSC v.1929 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "numpy": "2.3.5",
+  "pandas": "2.3.3",
+  "scipy": "1.16.3",
+  "worlds": 6,
+  "method_rows": 36,
+  "theory_gate_passed": true,
+  "artifacts": {
+    "figures/fig-sp1-beta-regime-map.pdf": "fce76c71d1babb01c773f4a4229d3971d1af6224d927e9a3b4eb9cfecdf83427",
+    "figures/fig-sp1-beta-regime-map.png": "5b56fe79ef2a6a9d4c6978ff9ce782e0b61d2b6ac2f0e4cd88be7f7cc7e9f9dc",
+    "figures/fig-sp1-regime-results.pdf": "dbc90cea3bfe793bb6fe99b94653a1a797d980ece1fad8254ecf69f4d1869279",
+    "figures/fig-sp1-regime-results.png": "958512493d8185a1290de2cb7f810d1b22218571b67362169c921ce1d24b0983",
+    "report.md": "416049ee35518c63fa04e51d58f6c8ed272958148fff8dc37bf3fe6ac7641fa5",
+    "tables/beta_regime_map.csv": "8d94a03457fa03a83a700fb3f0f393bb9f5e00fd80780ca3e0e84bc609e9f57c",
+    "tables/method_summary_scarcity.csv": "db59e5d32a6d03f1360c6d58f81ba7dc3fe472fbf167015a4247050868c0c026",
+    "tables/paired_contrasts_scarcity.csv": "64b7bfe6536beb121c50025f78f5034218cba9d0b128e52af687f830e57cd86c",
+    "tables/runs.csv": "5257bd165a377f8328b1436c7aa1932cb6988068f14055629570b78b634f059f",
+    "tables/sp1_method_summary.tex": "459f00f7450351c617b81ee1389b13569fb02e381dddba888eff8b2317dd2b17",
+    "tables/summary_by_pressure.csv": "2765c14417a68f7df8b373a3fb8b9717f535c228f153e186fc18bb392135b784",
+    "tables/theory_checks.csv": "762f92fcba980b3998664dddee52fa57caca84f2ac8e927594c38077852caabb"
+  }
+}

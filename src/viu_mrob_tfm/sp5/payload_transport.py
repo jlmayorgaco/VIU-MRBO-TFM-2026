@@ -379,6 +379,43 @@ def _barrier_residual(constraints: Iterable[tuple[np.ndarray, float, float]], ve
     return max([0.0, *values])
 
 
+def filtered_acceleration_from_velocity(
+    current_velocity: np.ndarray,
+    filtered_translational_velocity: np.ndarray,
+    nominal_acceleration: np.ndarray,
+    dt_s: float,
+    max_translational_accel_mps2: float | None = None,
+) -> np.ndarray:
+    """Map the 2-D filtered velocity back to a planar acceleration.
+
+    The translational channel is a finite difference over the controller
+    sample.  The angular channel remains nominal because the SP5 barrier is
+    translational.  An optional norm bound implements ``sat_A``; the archived
+    campaign used ``None`` and relied on the subsequent contact-force
+    allocation for physical saturation.
+    """
+
+    velocity = np.asarray(current_velocity, dtype=float)
+    filtered = np.asarray(filtered_translational_velocity, dtype=float)
+    nominal = np.asarray(nominal_acceleration, dtype=float)
+    if velocity.shape != (3,) or filtered.shape != (2,) or nominal.shape != (3,):
+        raise ValueError("planar velocity/acceleration shapes must be (3,), (2,), (3,)")
+    if not np.isfinite(dt_s) or dt_s <= 0.0:
+        raise ValueError("dt_s must be finite and positive")
+    if not np.isfinite(velocity).all() or not np.isfinite(filtered).all() or not np.isfinite(nominal).all():
+        raise ValueError("velocity and acceleration inputs must be finite")
+    acceleration = nominal.copy()
+    acceleration[:2] = (filtered - velocity[:2]) / float(dt_s)
+    if max_translational_accel_mps2 is not None:
+        limit = float(max_translational_accel_mps2)
+        if not np.isfinite(limit) or limit <= 0.0:
+            raise ValueError("max_translational_accel_mps2 must be finite and positive")
+        norm = float(np.linalg.norm(acceleration[:2]))
+        if norm > limit:
+            acceleration[:2] *= limit / norm
+    return acceleration
+
+
 def _safety_filter(world: TransportWorld, spec: ControllerSpec, q: np.ndarray, velocity: np.ndarray, raw: np.ndarray, t_s: float) -> tuple[np.ndarray, float, float, float]:
     constraints = _barrier_constraints(world, spec, q, t_s)
     raw_accel = np.linalg.solve(world.mass_matrix, raw - world.damping_matrix @ velocity)
@@ -397,8 +434,12 @@ def _safety_filter(world: TransportWorld, spec: ControllerSpec, q: np.ndarray, v
                 changed = True
         if not changed:
             break
-    safe_accel = raw_accel.copy()
-    safe_accel[:2] = (safe_velocity - velocity[:2]) / world.problem.dt_s
+    safe_accel = filtered_acceleration_from_velocity(
+        current_velocity=velocity,
+        filtered_translational_velocity=safe_velocity,
+        nominal_acceleration=raw_accel,
+        dt_s=world.problem.dt_s,
+    )
     safe = world.mass_matrix @ safe_accel + world.damping_matrix @ velocity
     safe_residual = _barrier_residual(constraints, safe_velocity)
     return safe, raw_residual, safe_residual, float(np.linalg.norm(safe - raw))

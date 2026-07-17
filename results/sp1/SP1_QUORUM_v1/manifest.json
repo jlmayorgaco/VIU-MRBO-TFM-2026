@@ -1,0 +1,87 @@
+{
+  "experiment_id": "SP1_QUORUM_v1",
+  "status": "development_completed",
+  "confirmatory": false,
+  "config": {
+    "experiment_id": "SP1_QUORUM_v1",
+    "output_dir": "results/sp1/SP1_QUORUM_v1",
+    "seed_base": 2026071600,
+    "number_seeds": 30,
+    "fleet_sizes": [
+      8,
+      16
+    ],
+    "demand_pressure": [
+      0.5,
+      0.75,
+      1.0,
+      1.1,
+      1.25,
+      1.5
+    ],
+    "quota_mixes": [
+      "homogeneous",
+      "mixed"
+    ],
+    "geometries": [
+      "uniform",
+      "clustered"
+    ],
+    "quorum_beta": 2.0,
+    "beta_sweep": [
+      0.0,
+      0.5,
+      1.0,
+      2.0,
+      4.0,
+      8.0
+    ],
+    "regime_map_seeds": 10,
+    "regime_map_fleet_size": 16,
+    "cost_weight": 0.15,
+    "excess_penalty": 1.05,
+    "oracle_time_limit_s": 5.0,
+    "bootstrap_resamples": 2000,
+    "smith": {
+      "time_step": 0.15,
+      "max_steps": 250,
+      "tolerance": 1e-06
+    }
+  },
+  "python": "3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:09:58) [MSC v.1929 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "numpy": "2.3.5",
+  "pandas": "2.3.3",
+  "scipy": "1.16.3",
+  "worlds": 1440,
+  "method_rows": 8640,
+  "theory_gate_passed": true,
+  "artifacts": {
+    "figures/fig-sp1-beta-regime-map.pdf": "b6ad2a45d7ed6bc885d47a10a7e51f54a9450c6bc59e39f847544d7ad899fcbe",
+    "figures/fig-sp1-beta-regime-map.png": "ba08d32206ff26a5e36463a8b5369d8d54b7de8d56422ce418caef1553738c83",
+    "figures/fig-sp1-regime-results.pdf": "95231b2ada7aac49f8f47bcf64222d1c90da857f500685e2440e0c991a04528e",
+    "figures/fig-sp1-regime-results.png": "a606ee60de31de044324ff0f7b69eff4ff668ff0cf2fce552e7c795b810e2b1e",
+    "manifest.json": "79e87a7f9383d5f9ff00338814104576534154ed42e79bbe8646bed076afc5f5",
+    "report.md": "ece3f64e7d034f552959c2ee1d5186139218d44ec1d96526112122adec1964f6",
+    "smoke/figures/fig-sp1-beta-regime-map.pdf": "fce76c71d1babb01c773f4a4229d3971d1af6224d927e9a3b4eb9cfecdf83427",
+    "smoke/figures/fig-sp1-beta-regime-map.png": "5b56fe79ef2a6a9d4c6978ff9ce782e0b61d2b6ac2f0e4cd88be7f7cc7e9f9dc",
+    "smoke/figures/fig-sp1-regime-results.pdf": "dbc90cea3bfe793bb6fe99b94653a1a797d980ece1fad8254ecf69f4d1869279",
+    "smoke/figures/fig-sp1-regime-results.png": "958512493d8185a1290de2cb7f810d1b22218571b67362169c921ce1d24b0983",
+    "smoke/manifest.json": "c8a7a68e0ca3936a61ff288a16200b032b0876a284531e8afa07e28f00eeaa2b",
+    "smoke/report.md": "416049ee35518c63fa04e51d58f6c8ed272958148fff8dc37bf3fe6ac7641fa5",
+    "smoke/tables/beta_regime_map.csv": "8d94a03457fa03a83a700fb3f0f393bb9f5e00fd80780ca3e0e84bc609e9f57c",
+    "smoke/tables/method_summary_scarcity.csv": "db59e5d32a6d03f1360c6d58f81ba7dc3fe472fbf167015a4247050868c0c026",
+    "smoke/tables/paired_contrasts_scarcity.csv": "64b7bfe6536beb121c50025f78f5034218cba9d0b128e52af687f830e57cd86c",
+    "smoke/tables/runs.csv": "5257bd165a377f8328b1436c7aa1932cb6988068f14055629570b78b634f059f",
+    "smoke/tables/sp1_method_summary.tex": "459f00f7450351c617b81ee1389b13569fb02e381dddba888eff8b2317dd2b17",
+    "smoke/tables/summary_by_pressure.csv": "2765c14417a68f7df8b373a3fb8b9717f535c228f153e186fc18bb392135b784",
+    "smoke/tables/theory_checks.csv": "762f92fcba980b3998664dddee52fa57caca84f2ac8e927594c38077852caabb",
+    "tables/beta_regime_map.csv": "2dec63fed551eb75180f924ba6398d47345cfa670c189d958a79efd6317af716",
+    "tables/method_summary_scarcity.csv": "c400e475ecffe7aa044a86c54a5770da116a166102945fe42982e1f6e2d1be6d",
+    "tables/paired_contrasts_scarcity.csv": "0d734fadc8fc62243f4e11ebf47b4343ab70ab48563a2b60f2eca138fd2b6fe2",
+    "tables/runs.csv": "b21f90020841523baa67da0748c0aa531278f1f58597994f03b54b7bbc7f24fc",
+    "tables/sp1_method_summary.tex": "5bf14be069b19b18abaea470a3b9515c14cfa57443f0050e5fa7d5c5ac686725",
+    "tables/summary_by_pressure.csv": "bb269cc014bdccf8670299377bd6a8eaf75f8f98ad679a5452d83cdcfa681ca2",
+    "tables/theory_checks.csv": "762f92fcba980b3998664dddee52fa57caca84f2ac8e927594c38077852caabb"
+  }
+}

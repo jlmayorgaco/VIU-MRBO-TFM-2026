@@ -1,8 +1,0 @@
-scenario_id: SP1_recruitment
-param_generator: monte_carlo
-description: "Randomized SP1 Monte Carlo generator for rho_D, positions, masses, rewards, payloads, and communication radius."
-params:
-  n_robots_choices: [6, 8, 10, 12]
-  demand_ratio_range: [0.5, 1.7]
-  communication_radius_choices: [.inf, 10.0, 6.0, 4.0]
-  heterogeneous_robots_choices: [false, true]

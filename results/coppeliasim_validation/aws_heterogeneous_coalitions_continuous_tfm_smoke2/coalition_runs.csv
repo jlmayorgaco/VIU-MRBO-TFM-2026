@@ -1,0 +1,5 @@
+policy,seed_index,seed,delivered,assignments,avg_wait_s,avg_formation_s,total_distance_m,energy_used_pct,assignment_cost,mean_regret,quota_violations,static_collision_violations,dynamic_collision_violations,reservation_waits,planning_deferrals,astar_failures,raw_barrier_violations,safe_barrier_violations,exec_barrier_violations,max_raw_barrier_residual,max_safe_barrier_residual,max_exec_barrier_residual,barrier_projection_interventions,sampled_guard_interventions,mean_communication_degree,mean_sensed_objects,scalar_messages
+milp_coalition_oracle,0,18100,0,4,8.35,8.35,55.799855,39.936216,201.336712,0.0,0,0,0,0,0,0,1266,0,1,0.526791656,0.0,0.019188593,1799,0,1.424242,2.424931,0
+greedy_coalition,0,18100,0,4,4.975,4.975,57.224135,41.236038,201.420026,0.083314,0,0,0,0,0,0,1425,0,1,0.526791656,0.0,0.019188593,1995,0,1.578512,2.422176,0
+random_coalition,0,18100,0,4,0.0,0.0,46.816297,31.835082,260.755042,59.41833,0,0,0,362,0,0,2702,0,1,0.598770158,0.0,0.0085493,3522,362,0.993113,1.40978,0
+replicator_coalition_distributed,0,18100,0,4,0.0,0.0,47.124492,32.044654,215.840526,500.46168,0,0,0,0,0,0,2352,0,1,0.566032865,0.0,0.007367661,3572,0,1.404959,1.788567,4800

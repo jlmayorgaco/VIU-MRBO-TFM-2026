@@ -1,0 +1,59 @@
+\section{Hipótesis de partida}
+\label{sec:hypotheses}
+
+Las hipótesis se formulan sobre variables y modelos observables. El contraste
+combina análisis formal, experimentos por capa y una simulación Cargo que enlaza
+las interfaces principales. La aceptación de una propiedad en un SP no la
+transfiere a los demás, y una comparación cuyo intervalo contiene cero no se
+interpreta como equivalencia.
+
+\subsection{Hipótesis principal}
+\label{subsec:main-hypothesis}
+
+\begin{quote}
+\textbf{HP.} Una arquitectura híbrida que combine actualizaciones estratégicas
+locales, intercambio vecinal, cierres enteros y guardias físicas explícitas puede
+formar coaliciones y completar una misión Cargo dentro de regiones de operación
+medibles; la pérdida de calidad y el coste de información frente a referencias
+globales pueden cuantificarse sin atribuir descentralización a las etapas que
+consultan estado global.
+\end{quote}
+
+HP presupone recursos suficientes, una coalición realizable en el modelo Cargo
+planar y un horizonte compatible con la aproximación y la recuperación. Su
+contradicción empírica se produce si el método completo no supera sus ablaciones
+críticas o no completa misiones realizables en el dominio fijado. La hipótesis no
+afirma estabilidad global de Lyapunov, autonomía distribuida integral ni
+transferencia a hardware.
+
+\subsection{Subhipótesis y criterios de contraste}
+\label{subsec:operational-hypotheses}
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Subhipótesis, variables de respuesta y condiciones que las contradicen.}
+  \label{tab:hypotheses-contrast}
+  \scriptsize
+  \setlength{\tabcolsep}{2.6pt}
+  \begin{tabularx}{\textwidth}{@{}p{0.7cm}p{4.0cm}p{3.45cm}X@{}}
+    \toprule
+    ID & Hipótesis operacional & Evidencia y variable primaria & Condición contraria \\
+    \midrule
+    H1 & En SP0--SP1 realizables, una penalización superior al coste unilateral máximo hace coincidir los Nash con asignaciones que satisfacen cobertura o cuota; bajo escasez, el término de cuórum reduce coaliciones parciales frente al déficit lineal. & Prueba de potencial y caracterización; factibilidad, déficit, exceso y fracción parcial en ablaciones pareadas. & Aparición de Nash deficitarios bajo los supuestos del teorema o ausencia de reducción de grupos parciales en la campaña de escasez. \\
+    H2 & La guardia vectorial de \emph{wrench} planar reduce falsas aceptaciones frente al criterio escalar sin perder sistemáticamente las coaliciones realizables del conjunto ensayado. & Tasa de falsos positivos como variable primaria; cobertura, abstención y residual como variables de apoyo. & Diferencia de falsos positivos no favorable o cobertura incompatible con un filtro útil en los mundos evaluados. \\
+    H3 & Bajo la red degradada fijada, incorporar el coste espacial reduce el tiempo de terminación frente a la variante desacoplada. & Diferencia pareada de tiempo, IC del 95\,\% y corrección de Holm; éxito y mensajes se informan de forma secundaria. & Intervalo que incluye cero o efecto temporal no favorable. La coincidencia de éxitos no acredita equivalencia sin margen de no inferioridad. \\
+    H4 & Tras un fallo simple, el juego restaura el certificado aditivo cuando la reserva completa cubre el déficit; en la misión integrada, activar la reparación aumenta el éxito frente a desactivarla. & Restauración del certificado en mundos recuperables y diferencia pareada de éxito de misión; tiempo de recuperación como apoyo. & Perfil recuperable sin restauración estratégica o diferencia de éxito no favorable frente a la ablación. El agotamiento del horizonte limita la recuperación física. \\
+    H5a & En el catálogo binario de SP8, una activación local crece con el grado vecinal, mientras el oráculo exhaustivo implementado crece con el número de perfiles. & Complejidad analítica, CPU, mensajes, bytes y estado protocolario. & Ausencia de la separación de coste prevista dentro del dominio certificado. \\
+    H5b & La calidad estratégica del método periódico no colapsa al aumentar la escala dentro del dominio ensayado. & Tasa global libre de conflictos y brecha frente al oráculo donde existe certificado. & Tasa libre de conflictos igual a cero en algún tamaño o deterioro incompatible con la conservación postulada. \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+H5a y H5b son las dos componentes operacionales de H5 del planteamiento: coste y
+calidad se juzgan por separado para evitar declarar apoyo ``mixto'' a una
+proposición conjuntiva. SP5 y SP7 responden al OE3 mediante hipótesis locales,
+ablaciones y resultados formales de alcance propio; no se utilizan para aceptar
+una subhipótesis global adicional. Todos los contrastes usan mundos pareados y
+mantienen en el denominador las colisiones, la falta de convergencia y el
+agotamiento del horizonte.

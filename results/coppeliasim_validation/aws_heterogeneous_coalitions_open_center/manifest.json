@@ -1,0 +1,125 @@
+{
+  "experiment_id": "AWS_HETEROGENEOUS_COALITIONS_OPEN_CENTER_v1",
+  "generated_at_utc": "2026-07-17T16:13:43.277614+00:00",
+  "config": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\experiments\\configs\\aws_heterogeneous_coalitions_open_center.yaml",
+  "config_sha256": "2278939c6a7dea4f9a9a2c07e4fd94ca261d5761b27f91de0012ec4ea6eae92f",
+  "policies": [
+    "milp_coalition_oracle",
+    "greedy_coalition",
+    "random_coalition",
+    "replicator_coalition_distributed"
+  ],
+  "seeds": 8,
+  "open_center": true,
+  "path_planner": "astar_4_connected",
+  "trajectory_visualization": {
+    "enabled": true,
+    "history_s": 20.0
+  },
+  "loads": [
+    {
+      "name": "carga_activa_D1_5kg_R1",
+      "source": [
+        -6.0,
+        6.15
+      ],
+      "target": [
+        -6.0,
+        -7.15
+      ],
+      "target_name": "zona_destino_1",
+      "mass_kg": 5.0,
+      "size_m": [
+        0.46,
+        0.36
+      ],
+      "required_robots": 1
+    },
+    {
+      "name": "carga_activa_D2_14kg_R2",
+      "source": [
+        -2.0,
+        6.15
+      ],
+      "target": [
+        -2.0,
+        -7.15
+      ],
+      "target_name": "zona_destino_2",
+      "mass_kg": 14.0,
+      "size_m": [
+        0.62,
+        0.46
+      ],
+      "required_robots": 2
+    },
+    {
+      "name": "carga_activa_D3_28kg_R3",
+      "source": [
+        2.0,
+        6.15
+      ],
+      "target": [
+        2.0,
+        -7.15
+      ],
+      "target_name": "zona_destino_3",
+      "mass_kg": 28.0,
+      "size_m": [
+        0.92,
+        0.62
+      ],
+      "required_robots": 3
+    },
+    {
+      "name": "carga_activa_D4_18kg_R2",
+      "source": [
+        6.0,
+        6.15
+      ],
+      "target": [
+        6.0,
+        -7.15
+      ],
+      "target_name": "zona_destino_4",
+      "mass_kg": 18.0,
+      "size_m": [
+        0.72,
+        0.52
+      ],
+      "required_robots": 2
+    }
+  ],
+  "quota_invariant_passed": true,
+  "target_fixed_during_task_passed": true,
+  "random_target_diversity_passed": true,
+  "paired_targets_across_policies_passed": true,
+  "static_collision_free_sampled_passed": true,
+  "dynamic_collision_free_sampled_passed": true,
+  "astar_route_available_passed": true,
+  "network_radii_consistent_passed": true,
+  "network_and_sensing": {
+    "sensing_radius_m": 1.8,
+    "communication_radius_m": 3.2,
+    "communication_model": "perfect lossless exchange inside radius; no link outside radius",
+    "shared_payload": "pose, battery, task, coalition, neighbor list and locally visible objects",
+    "visualization": {
+      "sensing_ring_color": "cyan",
+      "communication_ring_color": "magenta",
+      "sensing_area_alpha": 0.055,
+      "communication_area_alpha": 0.018,
+      "sensing_ray_color": "cyan",
+      "communication_link_color": "green"
+    }
+  },
+  "video_generated": true,
+  "video_sha256": "0f7f1c985fe289a1cfbcc5bd6b4cd692068e33a7a16a94b1a1ebe2daea2af6dc",
+  "evidence_scope": "kinematic_quorum_coalition_open_center_pilot",
+  "limitations": [
+    "Cardinality and nominal mass sharing do not certify support, rigidity, force or torque feasibility.",
+    "Loads are kinematically coupled to complete coalitions; no contact physics or wrench distribution is simulated.",
+    "Four-connected grid A* produces piecewise-linear axis-aligned interiors with short endpoint connectors; it is not a continuous-curvature planner.",
+    "Sampled reservations prevent modeled overlaps but do not prove continuous-time physical safety.",
+    "Replicator consensus is component-wise when the communication graph is disconnected."
+  ]
+}

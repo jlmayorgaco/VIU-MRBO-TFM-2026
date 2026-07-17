@@ -1,0 +1,14 @@
+experiment_id: SP6_RECOVERY_SMOKE_v1
+protocol_family: sp6_potential_recovery_v1
+output_dir: results/processed/sp6/SP6_RECOVERY_SMOKE_v1
+scenarios:
+  - balanced_recoverable
+  - infeasible_reserve
+reserve_sizes: [4]
+seeds: [8600, 8601]
+methods:
+  - guarded_potential
+  - marginal_auction
+  - distance_greedy
+  - no_repair
+  - central_exact
