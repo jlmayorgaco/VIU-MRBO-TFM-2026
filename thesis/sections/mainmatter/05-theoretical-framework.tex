@@ -1,7 +1,7 @@
 \section{Marco teórico y estado del arte}
 \label{sec:theoretical-framework}
 
-El transporte cooperativo enlaza decisiones que suelen estudiarse por separado: selección de robots, formación de la coalición, estimación de recursos, contacto y movimiento de la carga. Cada resultado conserva su dominio. Un Nash puede ser ineficiente; una suma de capacidades puede ocultar un torque irrealizable; el consenso no estabiliza la planta; una trayectoria sin colisión puede terminar bloqueada.
+El transporte cooperativo enlaza decisiones que suelen estudiarse por separado: selección de robots, formación de la coalición, estimación de recursos, contacto y movimiento de la carga. Cada resultado conserva su dominio. Un Nash puede ser ineficiente y una suma de capacidades puede ocultar un torque irrealizable; del mismo modo, el consenso por sí solo no estabiliza la planta y una trayectoria sin colisiones puede terminar bloqueada.
 
 \subsection{Transporte cooperativo y contratos entre capas}
 \label{subsec:tf-agv-transport}
@@ -89,13 +89,103 @@ directamente interpretable.
 
 La comunicación se representa mediante $\mathcal G(t)=(\Robots,\mathcal E(t))$. En un grafo no dirigido y conectado, $\lambda_2(L)>0$ mide conectividad algebraica y condiciona la disipación del desacuerdo \parencite{bullo2009distributed}. Los grafos conmutados requieren propiedades temporales, como conectividad conjunta, y cotas sobre retardo y actualización \parencite{olfatiSaber2004switchingConsensus}. El consenso certifica acuerdo sobre una variable; no certifica el juego ni el transporte.
 
-Los juegos poblacionales describen preferencias continuas sobre acciones. En un Nash poblacional, toda estrategia con masa positiva maximiza el \emph{payoff} bajo el estado agregado \parencite{sandholm2010population}. Los juegos de potencial añaden una función escalar cuya variación coincide con cada desviación unilateral:
+Los juegos poblacionales describen preferencias continuas sobre acciones. Sea $x\in\Delta=\{x\in\mathbb R_+^K:\sum_kx_k=1\}$ la masa distribuida entre estrategias, $f_k(x)$ el \emph{payoff} de la estrategia $k$ y $\bar f(x)=\sum_kx_kf_k(x)$ el \emph{payoff} medio. En un Nash poblacional, toda estrategia con masa positiva alcanza el máximo \emph{payoff} bajo el estado agregado \parencite{sandholm2010population}. Los juegos de potencial añaden una función escalar cuya variación coincide con cada desviación unilateral:
 \begin{equation}
   u_i(a_i',a_{-i})-u_i(a_i,a_{-i})
   =\Phi(a_i',a_{-i})-\Phi(a_i,a_{-i}).
   \label{eq:tf-exact-potential}
 \end{equation}
-Esta igualdad debe probarse para el \emph{payoff} implementado. Descuentos, proyecciones o información obsoleta pueden romperla. Replicator, Smith, BNN y logit tampoco son nombres intercambiables: cambian la comparación de incentivos, el soporte y los estados estacionarios \parencite{sandholm2010population}. La masa continua necesita un cierre entero antes de representar robots identificables.
+Esta igualdad debe probarse para el \emph{payoff} implementado. Descuentos, proyecciones o información obsoleta pueden romperla. Cuatro protocolos de revisión frecuentes son
+\begin{equation}
+\begin{aligned}
+ \text{replicator:}\quad &\dot x_k=x_k(f_k-\bar f),\\
+ \text{Smith:}\quad &\dot x_k=\sum_jx_j[f_k-f_j]_+-x_k\sum_j[f_j-f_k]_+,\\
+ \text{BNN:}\quad &\dot x_k=[f_k-\bar f]_+-x_k\sum_j[f_j-\bar f]_+,\\
+ \text{logit:}\quad &\dot x_k=\frac{\exp(f_k/\eta)}{\sum_j\exp(f_j/\eta)}-x_k,\qquad \eta>0,
+\end{aligned}
+\label{eq:tf-population-dynamics}
+\end{equation}
+donde $[z]_+=\max\{z,0\}$. La Figura~\ref{fig:tf-population-simplex} representa su mecanismo sobre $\Delta_3$. No es un retrato de fase de una instancia particular: fija $f_1>f_2>f_3$ para aislar la regla de revisión.
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{tikzpicture}[
+    x=1cm,y=1cm,font=\sffamily,
+    panel/.style={draw=SPGrid,fill=SPFloor,line width=0.65pt,rounded corners=3pt},
+    flow/.style={-{Stealth[length=1.7mm]},draw=SPBlue,line width=0.8pt},
+    influx/.style={-{Stealth[length=1.7mm]},draw=SPGreen,line width=0.8pt},
+    soft/.style={-{Stealth[length=1.7mm]},draw=SPPurple,line width=0.8pt},
+    vertex/.style={circle,fill=VIUDark,inner sep=1.25pt},
+    title/.style={font=\fontsize{8.4}{9.2}\selectfont\bfseries,text=VIUDark},
+    note/.style={font=\fontsize{7.2}{8.0}\selectfont,align=center,text=VIUGray}
+  ]
+    % Replicator
+    \begin{scope}[shift={(0,4.05)}]
+      \node[panel,minimum width=7.15cm,minimum height=3.72cm,anchor=south west] at (0,0) {};
+      \node[title,anchor=west] at (0.28,3.42) {Replicator: crecimiento relativo};
+      \draw[VIUGray,line width=0.7pt] (0.75,0.62)--(6.35,0.62)--(3.55,2.88)--cycle;
+      \node[vertex] at (0.75,0.62) {}; \node[vertex] at (6.35,0.62) {}; \node[vertex] at (3.55,2.88) {};
+      \node[note,anchor=north east] at (0.68,0.54) {$a_2$};
+      \node[note,anchor=north west] at (6.42,0.54) {$a_3$};
+      \node[note,anchor=south] at (3.55,2.94) {$a_1$};
+      \draw[flow] (2.25,0.88)--(2.82,1.48);
+      \draw[flow] (4.85,0.88)--(4.22,1.48);
+      \draw[flow] (3.52,1.30)--(3.54,2.12);
+      \draw[flow] (1.55,0.62)--(2.25,0.62);
+      \node[note] at (5.42,2.48) {si $x_k=0$,\\permanece en cero};
+    \end{scope}
+    % Smith
+    \begin{scope}[shift={(7.45,4.05)}]
+      \node[panel,minimum width=7.15cm,minimum height=3.72cm,anchor=south west] at (0,0) {};
+      \node[title,anchor=west] at (0.28,3.42) {Smith: comparación por pares};
+      \draw[VIUGray,line width=0.7pt] (0.75,0.62)--(6.35,0.62)--(3.55,2.88)--cycle;
+      \node[vertex] at (0.75,0.62) {}; \node[vertex] at (6.35,0.62) {}; \node[vertex] at (3.55,2.88) {};
+      \node[note,anchor=north east] at (0.68,0.54) {$a_2$};
+      \node[note,anchor=north west] at (6.42,0.54) {$a_3$};
+      \node[note,anchor=south] at (3.55,2.94) {$a_1$};
+      \draw[influx] (1.30,0.72) to[bend left=12] (3.18,2.32);
+      \draw[influx] (5.80,0.72) to[bend right=12] (3.92,2.32);
+      \draw[influx] (5.08,0.62)--(2.08,0.62);
+      \node[note] at (5.45,2.48) {flujo $j\to k$ si\\$f_k>f_j$};
+    \end{scope}
+    % BNN
+    \begin{scope}[shift={(0,0)}]
+      \node[panel,minimum width=7.15cm,minimum height=3.72cm,anchor=south west] at (0,0) {};
+      \node[title,anchor=west] at (0.28,3.42) {BNN: exceso sobre la media};
+      \draw[VIUGray,line width=0.7pt] (0.75,0.62)--(6.35,0.62)--(3.55,2.88)--cycle;
+      \node[vertex] at (0.75,0.62) {}; \node[vertex] at (6.35,0.62) {}; \node[vertex] at (3.55,2.88) {};
+      \node[note,anchor=north east] at (0.68,0.54) {$a_2$};
+      \node[note,anchor=north west] at (6.42,0.54) {$a_3$};
+      \node[note,anchor=south] at (3.55,2.94) {$a_1$};
+      \draw[influx] (1.72,0.82)--(2.82,1.70);
+      \draw[influx] (5.38,0.82)--(4.28,1.70);
+      \fill[VIUOrange] (3.55,1.65) circle (1.7pt);
+      \draw[influx] (3.55,1.68)--(3.55,2.38);
+      \node[note] at (5.42,2.48) {entran estrategias\\con $f_k>\bar f$};
+    \end{scope}
+    % Logit
+    \begin{scope}[shift={(7.45,0)}]
+      \node[panel,minimum width=7.15cm,minimum height=3.72cm,anchor=south west] at (0,0) {};
+      \node[title,anchor=west] at (0.28,3.42) {Logit: mejor respuesta suavizada};
+      \draw[VIUGray,line width=0.7pt] (0.75,0.62)--(6.35,0.62)--(3.55,2.88)--cycle;
+      \node[vertex] at (0.75,0.62) {}; \node[vertex] at (6.35,0.62) {}; \node[vertex] at (3.55,2.88) {};
+      \node[note,anchor=north east] at (0.68,0.54) {$a_2$};
+      \node[note,anchor=north west] at (6.42,0.54) {$a_3$};
+      \node[note,anchor=south] at (3.55,2.94) {$a_1$};
+      \fill[SPPurple] (3.42,1.82) circle (2.2pt);
+      \node[note,anchor=west,text=SPPurple] at (3.53,1.82) {$x^\eta$};
+      \draw[soft] (1.35,0.76)--(3.03,1.61);
+      \draw[soft] (5.75,0.76)--(3.82,1.61);
+      \draw[soft] (3.55,2.58)--(3.45,2.06);
+      \node[note] at (5.43,2.48) {$\eta>0$ mantiene\\masa interior};
+    \end{scope}
+  \end{tikzpicture}
+  \caption{Mecanismos de revisión de cuatro dinámicas poblacionales sobre un símplex de tres estrategias.}
+  \label{fig:tf-population-simplex}
+  \viusource{elaboración propia a partir de \textcite{sandholm2010population}}
+\end{figure}
+
+Replicator pondera cada crecimiento por la masa existente y, por ello, no recupera una estrategia ausente. Smith traslada masa mediante comparaciones binarias; BNN solo activa excesos respecto de $\bar f$; logit asigna probabilidad positiva a todas las estrategias y aproxima la mejor respuesta cuando $\eta$ disminuye. Estas diferencias afectan exploración, soporte y estacionariedad, aunque ninguna resuelve el cierre discreto: antes de representar robots identificables, la masa continua debe convertirse en una coalición factible.
 
 Un equilibrio de Nash generalizado incorpora restricciones compartidas. Bajo convexidad y regularidad puede formularse como desigualdad variacional; el equilibrio variacional comparte multiplicadores entre agentes \parencite{yi2019operatorGNE,franci2022stochasticGNE}. Los métodos primal--dual actualizan decisiones y multiplicadores, con garantías condicionadas por monotonicidad, conectividad y ganancias \parencite{cherukuri2016primalDual,koshal2016aggregative}. Ninguna de estas propiedades convierte por sí sola el equilibrio en óptimo social.
 

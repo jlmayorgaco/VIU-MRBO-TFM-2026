@@ -7,7 +7,7 @@ Bajo una penalización explícita, los Nash puros coinciden con las asignaciones
 
 \subsubsection{Caso base}
 
-El grafo de la Figura~\ref{fig:sp0-scenario} distingue asociaciones admisibles, selección y robot inactivo. Las aristas no son trayectorias ni enlaces de comunicación.
+El grafo de la Figura~\ref{fig:sp0-scenario} distingue asociaciones admisibles, selección y robot inactivo. Las aristas representan decisiones lógicas y no deben leerse como trayectorias ni como enlaces de comunicación.
 
 \begin{figure}[!htbp]
   \centering
@@ -186,7 +186,7 @@ La optimización~\eqref{eq:sp0-oracle} fija cuál de las asignaciones factibles 
 \label{cor:sp0-strategic-regulation}
 Si $N\geq K$, $\lambda>\kappa_{\max}$, la ocupación realimentada es coherente y la activación no deja indefinidamente sin revisar a un robot con mejora estricta, la ley~\eqref{eq:sp0-feedback-law} alcanza en un número finito de revisiones el conjunto $\{a:\boldsymbol z_0(a)=\boldsymbol0\}$.
 \end{corolario}
-Es una consecuencia directa de la Proposición~\ref{thm:sp0-nash-characterization}: cada actualización aceptada reduce estrictamente $F_\lambda$, el espacio de perfiles es finito y todo Nash satisface $D=E=0$; la demostración base está en el Anexo~\ref{app:sp0-proofs}. El resultado se limita a la estabilización de un conjunto lógico sobre eventos de revisión. No establece estabilidad física ni propiedades de tiempo continuo.
+Es una consecuencia directa de la Proposición~\ref{thm:sp0-nash-characterization}: cada actualización aceptada reduce estrictamente $F_\lambda$, el espacio de perfiles es finito y todo Nash satisface $D=E=0$; la demostración base está en el Anexo~\ref{app:sp0-proofs}. El resultado establece la estabilización de un conjunto lógico sobre eventos de revisión y no debe extenderse a estabilidad física ni a tiempo continuo.
 
 \paragraph{Certificado con copias locales de precios.}
 El experimento anterior usa ocupación global, pero la optimalidad puede auditarse con precios no idénticos. Para trabajar con una matriz cuadrada, los costes se completan con $N-K$ tareas ficticias de coste nulo: $\kappa^{\mathrm{pad}}_{ij}$ denota esa matriz aumentada, que coincide con $\kappa_{ij}$ en los pares reales. Sea $\widehat{\boldsymbol\pi}_i^t$ la copia del robot $i$, $\bar{\boldsymbol\pi}^t=N^{-1}\sum_i\widehat{\boldsymbol\pi}_i^t$ y $e_\pi^t=\max_i\lVert\widehat{\boldsymbol\pi}_i^t-\bar{\boldsymbol\pi}^t\rVert_\infty$. Para una asignación factible $\sigma_t$, supóngase la complementariedad local
