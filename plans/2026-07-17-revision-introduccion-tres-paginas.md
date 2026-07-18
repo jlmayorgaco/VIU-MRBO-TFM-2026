@@ -54,7 +54,7 @@ No se generan experimentos nuevos. La validación consiste en compilación compl
 - Riesgo de exceder tres páginas: eliminar duplicación con Objetivos/Hipótesis antes de reducir tipografía o espaciado.
 - Riesgo de sobreafirmación: usar la matriz de evidencia y declarar los límites junto a la contribución.
 - Riesgo de citas rotas: comprobar clave en `.bib`, estado `VERIFICADA` y log de Biber.
-- Riesgo de mezclar cambios: preservar el ajuste pendiente del encabezado y revisar el diff por archivo.
+- Riesgo de mezclar cambios: preservar la edición concurrente de Objetivos y revisar el diff por archivo.
 
 ## Registro de decisiones
 
@@ -79,4 +79,4 @@ No se incorporaron cifras experimentales ni afirmaciones de optimalidad, estabil
 
 ## Progreso
 
-Revisión textual y bibliográfica completada. La Introducción quedó en ocho párrafos continuos; las dieciséis claves citadas existen en `thesis/references.bib`. Catorce figuran como `VERIFICADA` y las dos páginas corporativas sin año como `PARCIAL`, con uso limitado. Pendiente de actualizar aquí el conteo definitivo de páginas y enlaces después de recompilar la versión concurrente más reciente.
+Trabajo completado. La Introducción quedó en ocho párrafos continuos y ocupa dos páginas físicas del PDF (14--15, numeradas 1--2); Objetivos comienza en la página física 16. Las dieciséis claves citadas existen en `thesis/references.bib`: catorce figuran como `VERIFICADA` y las dos páginas corporativas sin año como `PARCIAL`, con uso limitado. Las páginas de la Introducción contienen diecinueve anotaciones de enlace activas. Tras incorporar la edición concurrente de Objetivos, el PDF canónico contiene 120 páginas y mantiene la Introducción en la misma extensión, sin citas o referencias indefinidas, errores de LaTeX ni cajas desbordadas.

@@ -1,53 +1,74 @@
 \section{Hipótesis de partida}
 \label{sec:hypotheses}
 
-Las hipótesis usan variables observables y se contrastan mediante análisis,
-experimentos por capa y una simulación Cargo integrada. Una propiedad no se
-transfiere entre SP y un intervalo que contiene cero no demuestra equivalencia.
+Las hipótesis se formulan como afirmaciones refutables y se contrastan mediante
+análisis formal, experimentos por capa y una simulación Cargo integrada. La
+evidencia, las variables de respuesta y los estimandos se operacionalizan en la
+Tabla~\ref{tab:operationalization}. Ninguna propiedad se transfiere
+automáticamente entre subproblemas, y un intervalo que contiene cero no acredita
+equivalencia.
 
 \subsection{Hipótesis principal}
-\label{subsec:main-hypothesis}
 
-\begin{quote}
-\textbf{HP.} Una arquitectura híbrida que combine actualizaciones estratégicas
+\noindent\textbf{HP.}
+En condiciones de recursos suficientes, factibilidad Cargo planar y horizonte
+compatible, una arquitectura híbrida que combine actualizaciones estratégicas
 locales, intercambio vecinal, cierres enteros y guardias físicas explícitas puede
 formar coaliciones y completar una misión Cargo dentro de regiones de operación
-medibles. La pérdida de calidad y el coste de información frente a referencias
-globales pueden cuantificarse sin atribuir descentralización a las etapas que
-consultan estado global.
-\end{quote}
+medibles. Además, permite cuantificar la pérdida de calidad y el coste de
+información frente a referencias globales sin atribuir descentralización a las
+etapas que consultan estado global. No se considera sustentada si falla en
+misiones realizables o si sus bloques críticos no mejoran frente a sus ablaciones.
+No afirma estabilidad híbrida global, distribución integral ni validación en
+hardware.
 
-HP presupone recursos suficientes, factibilidad Cargo planar y horizonte
-compatible. Se contradice si el método no supera sus ablaciones críticas o falla
-en misiones realizables. No afirma estabilidad global, autonomía distribuida ni hardware.
+\subsection{Subhipótesis}
 
-\subsection{Subhipótesis y criterios de contraste}
-\label{subsec:operational-hypotheses}
+\noindent\textbf{H1a. Realizabilidad estratégica.}
+En SP0--SP1 realizables, una penalización superior al coste unilateral máximo hace
+que los Nash puros coincidan con asignaciones de cobertura o cuota exacta. Se
+refuta si aparece un Nash deficitario bajo los supuestos del resultado formal.
 
-\begin{table}[!htbp]
-  \centering
-  \caption{Subhipótesis, variables de respuesta y condiciones que las contradicen.}
-  \label{tab:hypotheses-contrast}
-  \viutablefont
-  \setlength{\tabcolsep}{2.6pt}
-  \begin{tabularx}{\textwidth}{@{}p{0.7cm}p{4.0cm}p{3.45cm}X@{}}
-    \toprule
-    ID & Hipótesis operacional & Evidencia y variable primaria & Condición contraria \\
-    \midrule
-    H1a & En SP0--SP1 realizables, una penalización superior al coste unilateral máximo hace coincidir los Nash con asignaciones que satisfacen cobertura o cuota exacta. & Prueba de potencial y caracterización; factibilidad, déficit y exceso. & Aparición de Nash deficitarios bajo los supuestos del teorema. \\
-    H1b & Bajo escasez, el cierre QR elimina coaliciones parciales respecto a la relajación continua Smith. & Diferencia pareada de fracción parcial entre Smith--QR y Smith continuo. & Efecto nulo o adverso del cierre QR. \\
-    H1c & Con el mismo cierre QR, el beneficio de cuórum mejora el valor completado frente al beneficio lineal. & Diferencia pareada de valor entre Smith--QR y Smith lineal+QR. & Efecto nulo o adverso del cuórum. \\
-    H2 & La guardia vectorial de \emph{wrench} planar reduce falsas aceptaciones frente al criterio escalar sin perder sistemáticamente las coaliciones realizables del conjunto ensayado. & Tasa de falsos positivos como variable primaria; cobertura, abstención y residual como variables de apoyo. & Diferencia de falsos positivos no favorable o cobertura incompatible con un filtro útil en los mundos evaluados. \\
-    H3 & Bajo la red degradada fijada, incorporar el coste espacial reduce el tiempo de terminación frente a la variante desacoplada. & Diferencia pareada de tiempo, IC del 95\,\% y corrección de Holm; éxito y mensajes se informan de forma secundaria. & Intervalo que incluye cero o efecto temporal no favorable. La coincidencia de éxitos no acredita equivalencia sin margen de no inferioridad. \\
-    H4 & Tras un fallo simple, el juego restaura el certificado aditivo cuando la reserva completa cubre el déficit; en la misión integrada, activar la reparación aumenta el éxito frente a desactivarla. & Restauración del certificado en mundos recuperables y diferencia pareada de éxito de misión; tiempo de recuperación como apoyo. & Perfil recuperable sin restauración estratégica o diferencia de éxito no favorable frente a la ablación. El agotamiento del horizonte limita la recuperación física. \\
-    H5a & En el catálogo binario de SP8, una activación local crece con el grado vecinal, mientras el oráculo exhaustivo evaluado crece con el número de perfiles. & Complejidad analítica, CPU, mensajes, bytes y estado protocolario. & Ausencia de la separación de coste prevista dentro del dominio certificado. \\
-    H5b & La calidad estratégica del método periódico no colapsa al aumentar la escala dentro del dominio ensayado. & Tasa global libre de conflictos y brecha frente al oráculo donde existe certificado. & Tasa libre de conflictos igual a cero en algún tamaño o deterioro incompatible con la conservación postulada. \\
-    \bottomrule
-  \end{tabularx}
-  \viuownsource
-\end{table}
+\noindent\textbf{H1b. Cierre entero.}
+Bajo escasez, aplicar QR a la relajación Smith reduce la fracción de robots en
+coaliciones parciales. No se considera sustentada si la diferencia pareada frente
+a Smith continuo contiene cero o resulta adversa.
 
-H1a--H1c separan realizabilidad, cierre e incentivo: QR, no el cuórum, impone
-ocupaciones enteras. H5a y H5b juzgan coste y calidad por separado. SP5 y SP7
-usan hipótesis locales, sin crear otra subhipótesis global. Todos los contrastes
-emparejan mundos y conservan colisiones, no convergencia y agotamiento del horizonte.
+\noindent\textbf{H1c. Incentivo de cuórum.}
+Con el mismo cierre QR, el beneficio de cuórum aumenta el valor completado frente
+al beneficio lineal. No se considera sustentada si el efecto pareado contiene cero
+o resulta adverso.
+
+\noindent\textbf{H2. Factibilidad mecánica.}
+La guardia vectorial de \emph{wrench} planar reduce las falsas aceptaciones frente
+al criterio escalar sin una pérdida sistemática de cobertura útil en los mundos
+evaluados. No se considera sustentada si no reduce los falsos positivos o si su
+abstención vuelve inoperante el filtro.
+
+\noindent\textbf{H3. Acoplamiento espacial.}
+Bajo la red degradada fijada, incorporar el coste espacial reduce el tiempo de
+terminación frente a la selección desacoplada. No se considera sustentada si el
+intervalo de confianza del 95\,\% contiene cero o el efecto temporal no es
+favorable; la coincidencia de éxitos no acredita equivalencia.
+
+\noindent\textbf{H4. Reparación.}
+Tras un fallo simple, el juego restaura el certificado aditivo cuando la reserva
+completa cubre el déficit y, en la misión integrada, aumenta el éxito frente a
+desactivar la reparación. No se considera sustentada si existe un perfil
+recuperable sin restauración o si la diferencia de éxito no es favorable. El
+agotamiento del horizonte limita la recuperación física.
+
+\noindent\textbf{H5a. Coste de escala.}
+En el catálogo binario de SP8, el coste de una activación local crece con el grado
+vecinal, mientras el oráculo exhaustivo implementado crece con el número de
+perfiles. Se refuta si no aparece esta separación dentro del dominio certificado.
+
+\noindent\textbf{H5b. Calidad bajo escala.}
+La tasa global libre de conflictos del método periódico no colapsa al aumentar la
+escala dentro del dominio ensayado. Se refuta si alcanza cero en algún tamaño o
+presenta un deterioro incompatible con la conservación postulada.
+
+Todos los contrastes conservan el emparejamiento por mundo y mantienen en el
+denominador las colisiones, los fallos de convergencia y el agotamiento del
+horizonte. SP5 y SP7 se evalúan mediante hipótesis locales de seguridad y tráfico,
+sin añadir una afirmación global sobre el sistema híbrido.
