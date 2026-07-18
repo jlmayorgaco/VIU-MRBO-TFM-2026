@@ -1,90 +1,86 @@
 \section{Introducción}
 \label{sec:introduction}
 
-Los robots móviles autónomos (AMR) permiten automatizar el flujo de materiales
-entre almacenes, estaciones de trabajo y líneas de producción. Su relevancia
-industrial continúa creciendo: la muestra anual de la IFR registró en 2024
-102\,900 robots de servicio profesional destinados al transporte y la logística,
-un 14\,\% más que el año anterior y más de la mitad de las unidades de servicio
-profesional observadas
-\parencite{internationalFederationRobotics2025}. Desde el sistema Kiva hasta
-plataformas comerciales de Geek+ y MiR, estas soluciones se han
-extendido al almacenamiento, la preparación de pedidos y el abastecimiento interno
+La intralogística concentra buena parte del uso profesional de los robots móviles
+autónomos (AMR). En su muestra anual de 2024, la IFR contabilizó 102\,900 robots
+de servicio destinados al transporte y la logística. La cifra creció un
+14\,\% respecto del año anterior y superó la mitad de las unidades profesionales
+observadas \parencite{internationalFederationRobotics2025}. El sistema Kiva y las
+plataformas comerciales de Geek+ y MiR ilustran su aplicación en almacenamiento,
+preparación de pedidos y abastecimiento interno
 \parencite{wurman2008coordinating,geekplusWarehouseSolutions,mirInternalTransport}.
-Su despliegue resulta especialmente eficaz cuando cargas, interfaces y recorridos
-están normalizados.
+Estas operaciones suelen partir de cargas, interfaces y recorridos normalizados.
 
-Este TFM estudia un escenario menos regular. Bastidores voluminosos, subconjuntos
-pesados, piezas frágiles o cargas con requisitos de pose pueden exceder la
-capacidad, la superficie de apoyo o la maniobrabilidad de un solo AMR. En tales
-casos, constituir coaliciones temporales permitiría ampliar el flujo automatizado
-sin dimensionar toda la flota para la carga máxima
-\parencite{an2023cooperativeReview}. La relevancia industrial del problema reside,
-por tanto, en conservar la modularidad de los robots ante materiales y operaciones
-que todavía requieren equipos sobredimensionados o manipulación específica.
+Este TFM se ocupa de las cargas que rompen esa regularidad. Un bastidor voluminoso,
+un subconjunto pesado, una pieza frágil o un objeto con una pose de entrega precisa
+puede rebasar la capacidad, la superficie de apoyo o la maniobrabilidad de un AMR.
+Una coalición temporal permite repartir la tarea sin dimensionar toda la flota para
+la carga máxima \parencite{an2023cooperativeReview}. El interés industrial está en
+conservar una flota modular cuando el material exige más de un robot o una forma de
+manipulación específica.
 
-El problema no se reduce a reunir suficientes robots. Las taxonomías de asignación
-multi-robot distinguen tareas que requieren varios agentes simultáneos, recursos
-heterogéneos y decisiones interdependientes
-\parencite{gerkeyMataric2004MRTA,korsahStentzDias2013iTax}; los métodos de
+Formar la coalición exige decidir quién participa y comprobar qué puede hacer el
+equipo seleccionado. Las taxonomías de asignación multi-robot distinguen las tareas
+simultáneas, la heterogeneidad de recursos y la dependencia entre decisiones
+\parencite{gerkeyMataric2004MRTA,korsahStentzDias2013iTax}. Los modelos de
 coalición representan la composición y el valor de los equipos
-\parencite{shehoryKraus1998Coalition,vigAdams2006Coalition}. Sin embargo, cubrir
-una cuota o un vector de recursos solo constituye una condición necesaria. Los
-miembros seleccionados deben además ocupar contactos compatibles, realizar las
-fuerzas y momentos (\emph{wrench}) exigidos, regular la pose, respetar los
-actuadores y mantener la seguridad durante el acoplamiento y el movimiento
+\parencite{shehoryKraus1998Coalition,vigAdams2006Coalition}. Cubrir una cuota o un
+vector de recursos todavía no acredita la ejecución física: los robots han de
+ocupar contactos compatibles, producir las fuerzas y momentos requeridos, regular
+la pose y respetar los límites de actuación durante el movimiento
 \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe,alonsomora2017transport}.
-Una asignación lógicamente válida puede ser
-mecánicamente irrealizable, bloquearse ante un obstáculo o dejar de ser viable
-tras un fallo.
+Una asignación válida en términos lógicos puede fallar al acoplarse, bloquearse
+ante un obstáculo o perder su viabilidad cuando se retira un robot.
 
-La literatura resuelve segmentos de esta cadena bajo contratos distintos. Las
-subastas distribuidas asignan tareas
-\parencite{gerkeyMataric2002MURDOCH,choiBrunetHow2009CBBA}; los juegos y métodos
-de coalición modelan preferencias, recursos y composición
-\parencite{chenSun2012Coalition,dutta2021hedonic}; ASyMTRe filtra composiciones
+Los trabajos revisados suelen comenzar y terminar en capas distintas. Las subastas
+distribuidas asignan tareas \parencite{gerkeyMataric2002MURDOCH,choiBrunetHow2009CBBA}.
+Los juegos de coalición describen preferencias y recursos
+\parencite{chenSun2012Coalition,dutta2021hedonic}; ASyMTRe comprueba composiciones
 funcionalmente ejecutables
 \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}; y el control
-cooperativo mueve grupos previamente constituidos
-\parencite{alonsomora2017transport}. Sus variables, supuestos y garantías no se
-transfieren automáticamente entre capas. En el corpus verificado no se identificó
-un método único que integre decisión de coalición, factibilidad mecánica,
-movimiento, seguridad, reparación y comunicación imperfecta; esta observación
-delimita la revisión realizada, sin afirmar una inexistencia universal.
+cooperativo mueve grupos ya constituidos \parencite{alonsomora2017transport}.
+Cada familia parte de variables y supuestos propios, de modo que sus garantías no
+pasan sin más a las demás capas. En el corpus verificado no se encontró un método
+que reuniera la decisión de coalición con la factibilidad mecánica, el movimiento,
+la seguridad, la reparación y la comunicación imperfecta. Esta conclusión se
+limita a la revisión documentada y no afirma la inexistencia universal de ese
+método.
 
-Para abordar esa brecha se diseña y evalúa una arquitectura híbrida, interpretable
-y explícita respecto de la información utilizada. Cada robot actualiza su decisión
-a partir de estado propio, percepción local y mensajes vecinales; los cierres
-enteros, agregados por carga, guardias físicas, repartos de esfuerzo y registros
-que consultan información global se declaran como tales. Los optimizadores
-centralizados se emplean únicamente como oráculos, certificados o referencias en
-instancias acotadas. La pregunta principal es si esta composición puede formar
-coaliciones y completar el transporte de cargas heterogéneas con garantías
-delimitadas, haciendo medibles la pérdida de calidad y el coste de sustituir
+Este trabajo hace explícitas las interfaces entre esas capas. Cada robot revisa su
+decisión con estado propio, percepción local y mensajes de sus vecinos. Cuando el
+cierre entero, un agregado por carga, una guardia física, el reparto de esfuerzo o
+un registro consultan información global, esa dependencia permanece visible. Los
+optimizadores
+centralizados actúan como oráculos, certificados o referencias en instancias
+acotadas, no como coordinadores de la operación. La arquitectura es, por ello,
+híbrida. Su evaluación determina hasta dónde puede formar coaliciones y completar
+el transporte, qué garantías conserva cada componente y cuánto cuesta sustituir
 información global por coordinación vecinal.
 
-El método articula preferencia, cierre, guardia y ejecución. SP0--SP2 estudian
-asignación, cuotas y servicio heterogéneo; SP3--SP4 incorporan factibilidad planar
-de \emph{wrench}, acoplamiento y control de pose; SP5--SP8 añaden obstáculos,
-fallos, tráfico y comunicación imperfecta. Cada escalón fija modelo, información,
-métrica y nivel de evidencia. Las propiedades formales se contrastan con
-demostraciones y enumeraciones; el rendimiento, con oráculos acotados,
-comparadores, ablaciones y experimentos pareados. La misión integrada enlaza
-reclutamiento, acoplamiento, transporte, seguridad y recuperación; el piloto
-industrial tridimensional expone bloqueos geométricos y cinemáticos ausentes en
-los escenarios sintéticos.
+La evaluación introduce una dificultad nueva en cada SP. SP0, SP1 y SP2 tratan la
+asignación uno a uno,
+las cuotas variables y el servicio heterogéneo. SP3 y SP4 añaden el certificado
+planar de \emph{wrench}, el acoplamiento y el control de pose; de SP5 a SP8 se
+estudian obstáculos, fallos, tráfico y comunicación imperfecta. En cada paso se
+declaran el modelo, la información disponible, la métrica y el nivel de evidencia.
+Las propiedades formales se apoyan en demostraciones y enumeraciones. La calidad
+se mide con oráculos acotados, comparadores, ablaciones y experimentos pareados.
+Una misión integrada recorre la cadena completa, mientras que un piloto industrial
+tridimensional revela bloqueos geométricos y cinemáticos que los escenarios
+sintéticos no representan.
 
-El alcance físico principal es el transporte Cargo soportado. Tras el acoplamiento,
-la carga y los robots se modelan como un cuerpo planar reducido con contactos
-fijos y \emph{wrench} acotado. No se validan soporte tridimensional, contacto
-rueda--suelo, percepción completa, agarre físico ni empuje mediante confinamiento
-geométrico. Tampoco se transfieren las garantías de cada capa a una garantía de
-convergencia, estabilidad o seguridad del sistema híbrido completo. Las
-conclusiones quedan restringidas a los modelos, tamaños, geometrías y regímenes
-de comunicación evaluados.
+La validación física se concentra en la modalidad Cargo soportada. Después del
+acoplamiento, la carga y los robots forman un cuerpo planar reducido con contactos
+fijos y \emph{wrench} acotado. El modelo no incluye soporte tridimensional,
+interacción entre rueda y suelo ni percepción completa; tampoco valida agarre
+físico o empuje por confinamiento geométrico. Las garantías obtenidas pertenecen a
+componentes concretos y no constituyen una prueba de convergencia, estabilidad o
+seguridad para todo el sistema híbrido. Los resultados solo se extienden a los
+modelos, tamaños, geometrías y regímenes de comunicación evaluados.
 
-Los Capítulos~2--5 presentan los objetivos, las hipótesis, la metodología y el
-marco teórico con el estado del arte. El Capítulo~6 reúne formulación, resultados
-y validaciones integrada e industrial. El Capítulo~7 responde a los objetivos e
-hipótesis, expone las limitaciones y propone trabajo futuro; los anexos contienen
-demostraciones y material de reproducibilidad.
+Los capítulos siguientes separan objetivos, hipótesis, metodología y fundamentos
+teóricos antes de presentar la evidencia. Los Capítulos~2 a~5 cubren esos cuatro
+elementos. El Capítulo~6 contiene la formulación, los resultados y las validaciones
+integrada e industrial. El Capítulo~7 contrasta los objetivos y las hipótesis con
+la evidencia, fija las limitaciones y plantea trabajo futuro. Las demostraciones y
+el material de reproducibilidad quedan en los anexos.

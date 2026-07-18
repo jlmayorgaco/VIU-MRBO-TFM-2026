@@ -1,679 +1,360 @@
 \section{Metodología}
 \label{sec:methodology}
 
-El estudio adopta un enfoque cuantitativo, analítico-experimental y computacional.
-Su lógica es hipotético-deductiva: se formulan modelos y propiedades bajo
-supuestos explícitos, se derivan predicciones contrastables y se evalúan mediante
-demostraciones, enumeraciones exhaustivas y experimentos pareados de simulación.
-El análisis formal determina qué puede garantizarse dentro de cada modelo; la
-experimentación cuantifica rendimiento, robustez y fallos cuando la complejidad
-impide obtener una caracterización cerrada.
+Se estudia una flota de AMR heterogéneos que forma coaliciones y transporta
+cargas entre una pose inicial y una pose objetivo. El modo principal es Cargo
+planar soportado. Caging se define como extensión secundaria y no hereda la
+validación de Cargo. El trabajo cubre decisión estratégica, factibilidad física,
+movimiento, obstáculos, fallo de un robot, tráfico y comunicación imperfecta.
+Quedan fuera el contacto tridimensional, la percepción real y la validación en
+hardware.
 
-La investigación no trata la coordinación multi-robot como un único bloque. Una
-misión de transporte cooperativo enlaza decisiones de asignación, cierre de
-coaliciones, compatibilidad de recursos, factibilidad mecánica, movimiento,
-seguridad, reparación y comunicación. Evaluar toda la cadena desde el inicio
-impediría atribuir un fallo a una causa concreta. Por ello, el problema se descompone
-en los subproblemas SP0--SP8. Cada escalón conserva lo ya validado y añade una
-condición nueva. La misión Cargo integra después las capas principales y el piloto
-Industrial 2 comprueba su transferencia geométrica y cinemática a un escenario
-más congestionado.
+\subsection{Alcance, modelo y control}
+\label{sec:method_model_scope}
 
-La modalidad física principal es Cargo planar soportado. Tras el acoplamiento, los
-robots y la carga se representan mediante un cuerpo compuesto con contactos
-fijos y esfuerzos acotados. El empuje unilateral y el \emph{caging} requieren
-modelos distintos de contacto, fricción y confinamiento, por lo que quedan fuera
-del diseño confirmatorio.
-
-\subsection{Diseño de investigación y lógica incremental}
-\label{subsec:research_design}
-
-El diseño combina dos tipos de evidencia. La evidencia formal comprende
-demostraciones de potencial, caracterizaciones de equilibrio, condiciones de
-factibilidad, cotas y propiedades de terminación. Sus conclusiones son deductivas,
-pero solo dentro de los supuestos enunciados. La evidencia experimental procede
-de comparaciones controladas entre métodos que reciben el mismo escenario.
-Permite estimar efectos y observar fallos, pero no sustituye una demostración de
-convergencia, estabilidad o seguridad.
-
-La unidad experimental independiente se denomina \emph{mundo}. Un mundo
-\(w\) queda determinado por un escenario \(s_w\), un vector de factores
-\(\zeta_w\) y una semilla pseudoaleatoria \(\sigma_w\):
-%
+El robot \(i\) es un uniciclo con estado
+\(q_i=(p_{x,i},p_{y,i},\theta_i)\) y entradas acotadas
+\((v_i,\omega_i)\). La carga \(k\) tiene pose planar
+\(q_k^L=(p_{x,k}^L,p_{y,k}^L,\theta_k^L)\). La variable
+\(x_{ik}\in\{0,1\}\) indica pertenencia a una coalición:
 \begin{equation}
-    w = \left(s_w,\zeta_w,\sigma_w\right).
-    \label{eq:world_definition}
+    \mathcal C_k=\{i:x_{ik}=1\},\qquad
+    \sum_{k\in\mathcal L}x_{ik}\leq1,\qquad
+    \dot q_i=
+    \begin{bmatrix}
+        v_i\cos\theta_i & v_i\sin\theta_i & \omega_i
+    \end{bmatrix}^{\!\top}.
+    \label{eq:method_common_model}
 \end{equation}
-%
-Todos los métodos de una comparación se ejecutan sobre el mismo mundo. Los
-robots, cargas, contactos, mensajes e instantes de simulación están anidados
-dentro de él y no se consideran réplicas independientes. Esta definición evita
-aumentar artificialmente el tamaño muestral y conserva el emparejamiento entre
-tratamientos.
 
-La escalera incremental cumple cuatro funciones. Primero, separa propiedades que
-no son equivalentes: una asignación factible puede ser mecánicamente irrealizable,
-y una trayectoria segura puede bloquearse. Segundo, permite atribuir el efecto de
-cada mecanismo mediante una ablación compatible. Tercero, mantiene oráculos y
-comparadores dentro de tamaños en los que su solución puede certificarse.
-Cuarto, impide transferir una garantía obtenida con poses fijas, contactos conocidos
-o información global a una planta móvil con comunicación imperfecta.
+La Figura~\ref{fig:method-unicycle-fleet} muestra la interpretación geométrica
+del modelo: la orientación fija la dirección de avance de cada AMR, mientras
+que \(v_i\) y \(\omega_i\) gobiernan su traslación y giro, respectivamente.
+El radio \(R_c\) determina qué robots pueden intercambiar mensajes vecinales.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \begin{tikzpicture}[
-        stage/.style={
-            draw,
-            rounded corners,
-            align=center,
-            minimum height=1.55cm,
-            text width=0.205\textwidth,
-            inner sep=4pt
-        },
-        integration/.style={
-            draw,
-            rounded corners,
-            align=center,
-            minimum height=1.35cm,
-            text width=0.43\textwidth,
-            inner sep=5pt
-        },
-        arrow/.style={-{Latex[length=2.5mm]}, thick}
+        x=1cm,
+        y=1cm,
+        amrbody/.style={draw=SPBlue, fill=SPBlue!12, line width=0.9pt,
+            rounded corners=1.5pt},
+        amrwheel/.style={draw=VIUDark, fill=VIUDark!75, line width=0.45pt},
+        velocity/.style={-{Latex[length=2.1mm]}, draw=SPGreen,
+            line width=1.05pt},
+        rotation/.style={-{Latex[length=1.8mm]}, draw=SPPurple,
+            line width=0.85pt},
+        headingref/.style={draw=VIUGray, densely dotted, line width=0.55pt},
+        statelabel/.style={font=\scriptsize, fill=white, inner sep=1.2pt,
+            text=VIUDark}
     ]
-        \node[stage] (decision) {
-            \textbf{Decisión lógica}\\
-            SP0--SP2\\
-            asignación, cuotas\\
-            y heterogeneidad
-        };
+        \fill[SPFloor] (0,0) rectangle (14.5,5.35);
+        \draw[sparena] (0,0) rectangle (14.5,5.35);
+        \node[sptitle, anchor=west] at (0.25,5.02)
+            {Flota de tres AMR con cinemática de uniciclo};
 
-        \node[stage, right=0.65cm of decision] (physics) {
-            \textbf{Realización física}\\
-            SP3--SP4\\
-            wrench, acoplamiento\\
-            y transporte
-        };
+        \coordinate (r1) at (3.15,2.05);
+        \coordinate (r2) at (7.45,3.45);
+        \coordinate (r3) at (11.35,1.85);
 
-        \node[stage, right=0.65cm of physics] (operation) {
-            \textbf{Operación robusta}\\
-            SP5--SP7\\
-            obstáculos, fallos\\
-            y tráfico
-        };
+        \draw[spcomm] (r1) -- (r2);
+        \draw[spcomm] (r2) -- (r3);
+        \draw[spcomm] (r1) -- (r3);
+        \draw[SPBlue!55, dashed, line width=0.55pt] (r2) circle (1.65cm);
+        \node[spannotation, text=SPBlue!80!black] at (7.45,1.55)
+            {radio \(R_c\)};
+        \foreach \cx/\cy/\ang/\idx in {
+            3.15/2.05/25/1,
+            7.45/3.45/125/2,
+            11.35/1.85/-25/3
+        }{
+            \draw[headingref] (\cx,\cy) -- ++(0.92,0);
+            \draw[rotation] ($ (\cx,\cy)+(0.58,0) $)
+                arc[start angle=0,end angle=\ang,radius=0.58];
+            \begin{scope}[shift={(\cx,\cy)}, rotate=\ang]
+                \draw[amrbody] (-0.82,-0.48) rectangle (0.82,0.48);
+                \draw[amrwheel] (-0.52,0.48) rectangle (0.28,0.61);
+                \draw[amrwheel] (-0.52,-0.61) rectangle (0.28,-0.48);
+                \fill[SPBlue] (0,0) circle (1.4pt);
+                \node[font=\scriptsize\bfseries, text=VIUDark]
+                    at (-0.10,0) {\(R_{\idx}\)};
+                \draw[velocity] (0.15,0) -- (1.55,0)
+                    node[above,statelabel] {\(v_{\idx}\)};
+                \draw[rotation] (-0.08,-0.20)
+                    arc[start angle=-35,end angle=245,radius=0.30]
+                    node[pos=0.45,below,statelabel] {\(\omega_{\idx}\)};
+            \end{scope}
+            \node[statelabel, anchor=north] at (\cx,\cy-0.78)
+                {\(q_{\idx}=(p_{x,\idx},p_{y,\idx},\theta_{\idx})\)};
+        }
 
-        \node[stage, right=0.65cm of operation] (network) {
-            \textbf{Información y escala}\\
-            SP8\\
-            radio, retardo, pérdida\\
-            y tamaño de flota
-        };
+        \node[statelabel] at (3.88,2.38) {\(\theta_1\)};
+        \node[statelabel] at (6.98,4.08) {\(\theta_2\)};
+        \node[statelabel] at (12.02,1.55) {\(\theta_3\)};
 
-        \draw[arrow] (decision) -- (physics);
-        \draw[arrow] (physics) -- (operation);
-        \draw[arrow] (operation) -- (network);
-
-        \node[integration, below=0.85cm of physics, xshift=2.25cm] (cargo) {
-            \textbf{Integración Cargo}\\
-            reclutamiento, acoplamiento, transporte,
-            seguridad, fallo y reemplazo
-        };
-
-        \node[integration, below=0.55cm of cargo] (pilot) {
-            \textbf{Piloto Industrial 2}\\
-            prueba exploratoria de geometría, tráfico y bloqueo
-        };
-
-        \draw[arrow] (decision.south) |- (cargo.west);
-        \draw[arrow] (physics.south) -- (cargo.north west);
-        \draw[arrow] (operation.south) -- (cargo.north east);
-        \draw[arrow] (network.south) |- (cargo.east);
-        \draw[arrow] (cargo) -- (pilot);
+        \draw[spheading] (0.65,0.65) -- (1.65,0.65)
+            node[right, font=\scriptsize] {\(x\)};
+        \draw[spheading] (0.65,0.65) -- (0.65,1.65)
+            node[above, font=\scriptsize] {\(y\)};
     \end{tikzpicture}
-    \caption{Lógica incremental de la validación. Cada bloque añade una
-    condición que no puede inferirse del bloque anterior. La misión Cargo
-    comprueba compatibilidad funcional, no una garantía híbrida global.}
-    \label{fig:methodological_staircase}
+    \caption{Modelo de la flota en vista cenital. Cada AMR tiene pose planar,
+    velocidad longitudinal y velocidad angular. Las líneas discontinuas indican
+    los enlaces vecinales disponibles dentro del radio de comunicación.}
+    \label{fig:method-unicycle-fleet}
+    \viuownsource
 \end{figure}
 
-La Tabla~\ref{tab:sp_methodological_ladder} precisa la pregunta aislada en cada
-escalón. La columna ``razón de separación'' identifica el error metodológico que
-se produciría al omitirlo.
+Cada robot usa estado propio, percepción local y mensajes de los vecinos dentro
+del radio de comunicación. El cierre entero, algunos agregados por carga y los
+certificados físicos conservan información global en varias campañas; por ello,
+la implementación evaluada es híbrida. La simulación es digital, con paso
+\(\Delta t\) declarado y actualizaciones locales asíncronas, sin rondas globales
+obligatorias.
 
-\begin{table}[htbp]
+\subsection{Cargo y caging}
+\label{sec:method_physical_modes}
+
+En Cargo, los robots se acoplan a puestos conocidos y la carga se mueve como un
+cuerpo compuesto. Para una coalición fija, \(G_{\mathcal C_k}(q)\) transforma los
+esfuerzos de contacto en fuerza y momento. La coalición se acepta cuando el
+residual normalizado es menor que la tolerancia:
+\begin{equation}
+    \rho_k^W=
+    \min_{\boldsymbol\lambda_k\in\mathcal U_{\mathcal C_k}}
+    \left\|
+        Q_W^{1/2}
+        \left(G_{\mathcal C_k}(q)\boldsymbol\lambda_k-W_k^d\right)
+    \right\|_2
+    \leq\epsilon_W,
+    \qquad
+    W_k^d=-K_Pe_k^L-K_D\dot q_k^L.
+    \label{eq:method_cargo_certificate_control}
+\end{equation}
+El primer término certifica el \emph{wrench}; el segundo regula la pose. El modelo
+supone contactos fijos, límites de actuación y dinámica planar reducida.
+
+En caging, cada contacto es unilateral: el robot puede empujar, pero no tirar de
+la carga. La configuración solo se considera caging si pertenece a
+\(\mathcal C_k^{\mathrm{cage}}\), es decir, si la carga no tiene una ruta continua
+de escape con los robots fijados. Esta condición depende de la geometría y de la
+resolución usada para construir el espacio libre. No se usa el certificado de
+\emph{wrench} de Cargo ni su prueba de estabilidad; la
+Figura~\ref{fig:method-cargo-caging} contrasta las dos interfaces.
+
+\begin{figure}[H]
     \centering
-    \caption{Escalera metodológica SP0--SP8 e integración final.}
-    \label{tab:sp_methodological_ladder}
-    \renewcommand{\arraystretch}{1.12}
-    \begin{tabularx}{\textwidth}{
-        >{\raggedright\arraybackslash}p{0.08\textwidth}
-        >{\raggedright\arraybackslash}p{0.21\textwidth}
-        >{\raggedright\arraybackslash}X
-        >{\raggedright\arraybackslash}p{0.25\textwidth}
-    }
+    \begin{tikzpicture}[
+        x=1cm,
+        y=1cm,
+        panel/.style={draw=black!45, rounded corners=2pt, fill=black!1},
+        load/.style={draw=BurntOrange!80!black, fill=BurntOrange!20,
+            rounded corners=2pt, minimum width=2.5cm, minimum height=1.25cm,
+            font=\small\bfseries},
+        robot/.style={draw=RoyalBlue!85!black, fill=RoyalBlue!18,
+            rounded corners=1.5pt, minimum width=0.82cm, minimum height=0.58cm,
+            font=\scriptsize\bfseries},
+        fixed/.style={-{Latex[length=1.8mm]}, line width=0.8pt,
+            ForestGreen!70!black},
+        unilateral/.style={-{Latex[length=1.8mm]}, line width=0.8pt,
+            Purple!75!black}
+    ]
+        \begin{scope}
+            \draw[panel] (0,0) rectangle (7.1,5.25);
+            \node[font=\small\bfseries] at (3.55,4.92)
+                {(a) Cargo soportado, vista lateral};
+            \draw[dashed, RoyalBlue!65, rounded corners=8pt]
+                (0.55,0.72) rectangle (6.55,4.42);
+            \node[load, minimum width=5.0cm] (lc) at (3.55,3.35)
+                {Carga \(k\)};
+            \node[robot] (c1) at (1.70,1.58) {AMR};
+            \node[robot] (c2) at (2.93,1.58) {AMR};
+            \node[robot] (c3) at (4.17,1.58) {AMR};
+            \node[robot] (c4) at (5.40,1.58) {AMR};
+            \foreach \x in {1.52,1.88,2.75,3.11,3.99,4.35,5.22,5.58}
+                \fill[RoyalBlue!85!black] (\x,1.17) circle (1.6pt);
+            \draw[black!55, line width=0.6pt] (0.85,1.05) -- (6.25,1.05);
+            \draw[fixed] (c1.north) -- (1.70,2.70);
+            \draw[fixed] (c2.north) -- (2.93,2.70);
+            \draw[fixed] (c3.north) -- (4.17,2.70);
+            \draw[fixed] (c4.north) -- (5.40,2.70);
+            \fill (1.70,2.72) circle (1.4pt);
+            \fill (2.93,2.72) circle (1.4pt);
+            \fill (4.17,2.72) circle (1.4pt);
+            \fill (5.40,2.72) circle (1.4pt);
+            \draw[-{Latex[length=2mm]}, BrickRed, thick]
+                (3.55,3.35) -- (4.50,4.05)
+                node[right, font=\scriptsize] {\(W_k^d\)};
+            \node[font=\scriptsize, align=center] at (3.55,0.27)
+                {AMR bajo la carga; contactos fijos\\
+                 \(\rho_k^W\leq\epsilon_W\)};
+        \end{scope}
+
+        \begin{scope}[xshift=7.55cm]
+            \draw[panel] (0,0) rectangle (7.1,5.25);
+            \node[font=\small\bfseries] at (3.55,4.92)
+                {(b) Caging, vista cenital};
+            \begin{scope}[rotate around={25:(3.55,2.65)}]
+                \draw[draw=BurntOrange!80!black, fill=BurntOrange!20,
+                    rounded corners=2pt, line width=0.6pt]
+                    (2.25,1.95) rectangle (4.85,3.35);
+            \end{scope}
+            \node[font=\small\bfseries] at (3.55,2.65) {Carga \(k\)};
+            \node[robot] (g1) at (1.53,2.77) {AMR};
+            \node[robot] (g2) at (4.76,4.27) {AMR};
+            \node[robot] (g3) at (5.57,2.53) {AMR};
+            \node[robot] (g4) at (2.34,1.03) {AMR};
+            \draw[Purple!70, dashed, rounded corners=6pt, thick]
+                (g1.north east) -- (g2.south west) --
+                (g3.north west) -- (g4.north east) --
+                (g1.south east);
+            \draw[unilateral] (g1.east) -- (2.08,2.74);
+            \draw[unilateral] (g2.south west) -- (4.43,3.83);
+            \draw[unilateral] (g3.west) -- (5.02,2.56);
+            \draw[unilateral] (g4.north east) -- (2.67,1.47);
+            \node[Purple!80!black, font=\scriptsize] at (5.72,3.62)
+                {\(f_n\geq0\)};
+            \node[font=\scriptsize, align=center] at (3.55,0.27)
+                {AMR en las esquinas; empuje unilateral\\
+                 configuración \(\in\mathcal C_k^{\mathrm{cage}}\)};
+        \end{scope}
+    \end{tikzpicture}
+    \caption{Interfaces físicas. En Cargo, visto de lado, los AMR sostienen la
+    carga desde abajo. En caging, visto desde arriba, la carga rectangular está
+    girada y cuatro AMR empujan desde sus esquinas.}
+    \label{fig:method-cargo-caging}
+    \viuownsource
+\end{figure}
+
+\subsection{Aporte y validación por subproblema}
+\label{sec:method_sp_validation}
+
+El problema se divide en nueve subproblemas, SP0--SP8, porque reúne cuestiones
+que suelen formularse y validarse por separado: asignación básica, coaliciones de
+tamaño variable, heterogeneidad de capacidades, factibilidad mecánica,
+acoplamiento y transporte, seguridad ante obstáculos, recuperación tras fallos,
+tráfico entre coaliciones y efecto de la escala y la comunicación imperfecta.
+Cada cuestión requiere un modelo, métricas y comparadores propios. La secuencia
+comienza con el caso mínimo de SP0 y añade una condición en cada escalón, de modo
+que pueda identificarse qué componente explica un fallo antes de evaluar la
+misión integrada.
+
+\begin{table}[H]
+    \centering
+    \caption{Aporte y validación previstos para SP0--SP8.}
+    \label{tab:method_sp_contribution_validation}
+    \footnotesize
+    \renewcommand{\arraystretch}{1.08}
+    \begin{tabularx}{\textwidth}{@{}p{0.7cm}p{5.5cm}X@{}}
         \toprule
-        \textbf{Bloque} &
-        \textbf{Condición añadida} &
-        \textbf{Pregunta aislada} &
-        \textbf{Razón de separación} \\
+        \textbf{SP} & \textbf{Aporte} & \textbf{Validación} \\
         \midrule
-
-        SP0 &
-        Asignación homogénea uno a uno &
-        ¿El mecanismo alcanza cobertura y qué eficiencia pierde frente al
-        problema de asignación exacta? &
-        Fija oráculos, métricas y criterios de factibilidad antes de introducir
-        coaliciones. \\
-
-        SP1 &
-        Cuotas y cardinalidad variable &
-        ¿Cómo se forman grupos enteros y qué ocurre cuando la demanda supera
-        la flota disponible? &
-        Una preferencia continua no constituye una coalición ejecutable y el
-        déficit lineal no selecciona grupos completos bajo escasez. \\
-
-        SP2 &
-        Capacidades y servicio heterogéneos &
-        ¿Cómo cambia la selección cuando cada robot aporta una cantidad distinta
-        a cada carga? &
-        Cumplir una cardinalidad no garantiza que se cubra el servicio requerido. \\
-
-        SP3 &
-        Geometría, contactos y wrench &
-        ¿La coalición seleccionada puede producir la fuerza y el momento
-        exigidos? &
-        La suma escalar de capacidades no representa direcciones de fuerza,
-        brazos de palanca ni saturación. \\
-
-        SP4 &
-        Acoplamiento y dinámica de pose &
-        ¿Los robots alcanzan los contactos y la carga sigue una referencia con
-        entradas limitadas? &
-        Un certificado estático no prueba aproximación, seguimiento ni
-        estabilidad de la planta. \\
-
-        SP5 &
-        Obstáculos y huella compuesta &
-        ¿La acción aplicada conserva separación sin impedir sistemáticamente el
-        progreso? &
-        El control de pose no garantiza seguridad y una guardia segura puede
-        producir bloqueo. \\
-
-        SP6 &
-        Fallo simple y reserva &
-        ¿Puede restaurarse el certificado y completarse el reemplazo antes del
-        plazo disponible? &
-        Reasignar recursos no implica que el reemplazo llegue ni que el contacto
-        se restablezca a tiempo. \\
-
-        SP7 &
-        Tráfico entre coaliciones &
-        ¿Cómo se excluyen conflictos y bloqueos entre cuerpos compuestos? &
-        La seguridad frente a obstáculos estáticos no resuelve cruces, pasillos
-        opuestos ni reserva de recursos compartidos. \\
-
-        SP8 &
-        Escala y comunicación imperfecta &
-        ¿Qué calidad y coste conserva la coordinación con radio, retardo y
-        pérdidas? &
-        Un equilibrio calculado con información completa no representa lo que
-        puede observar una red fragmentada u obsoleta. \\
-
-        Cargo &
-        Composición de las capas &
-        ¿Pueden coexistir reclutamiento, acoplamiento, transporte, seguridad,
-        fallo y reparación en una misión? &
-        Verifica compatibilidad funcional, pero no convierte las garantías
-        parciales en una garantía global. \\
-
-        Industrial 2 &
-        Geometría y tráfico más complejos &
-        ¿Qué bloqueos aparecen fuera de los escenarios sintéticos simples? &
-        Actúa como prueba exploratoria de transferencia, no como validación
-        dinámica o industrial. \\
-
+        SP0 & Juego de asignación homogénea uno a uno y caso formal mínimo. &
+        Prueba de potencial, enumeración y comparación con Hungarian. \\
+        SP1 & Cuotas variables y cierre de coaliciones completas. &
+        Casos de abundancia y escasez; MILP y ablación sin cierre. \\
+        SP2 & Servicio heterogéneo dependiente del par robot--carga. &
+        Casos donde la cardinalidad no basta; dos oráculos MILP y ablación de la contribución marginal. \\
+        SP3 & Guardia Cargo de fuerza y momento; definición secundaria de caging. &
+        QP de esfuerzos, falsos positivos y cobertura; caging queda pendiente de campaña propia. \\
+        SP4 & Acoplamiento y control de pose del cuerpo compuesto. &
+        Poses objetivo pareadas, saturación activa y comparación de controles. \\
+        SP5 & Filtrado de seguridad con obstáculos. &
+        Obstáculo aislado, pasillo y cuello de botella; colisión, distancia mínima, bloqueo y ablación del filtro. \\
+        SP6 & Re-reclutamiento tras un fallo simple. &
+        Fallo antes y durante el transporte; oráculo restringido y ablación sin reparación. \\
+        SP7 & Juego de rutas y reserva de recursos entre coaliciones. &
+        Cruces y pasillos; entrega, conflicto, espera, interbloqueo y referencia central restringida. \\
+        SP8 & Coste de escala y degradación de la red. &
+        Barridos en flota, radio, retardo y pérdida; mensajes, CPU, memoria y gap cuando el oráculo termina. \\
         \bottomrule
     \end{tabularx}
+    \viuownsource
 \end{table}
 
-\subsection{Modelos y escalas de abstracción}
-\label{subsec:models_abstraction}
+\subsection{Escenarios, variables y métricas}
+\label{sec:method_scenarios_metrics}
 
-Sean \(\mathcal{R}=\{1,\ldots,N\}\) el conjunto de robots y
-\(\mathcal{L}=\{1,\ldots,K\}\) el conjunto de cargas. No todos los SP utilizan la
-misma planta. SP0--SP2 fijan las poses para estudiar únicamente la decisión;
-SP3 evalúa una carga estática y sus contactos; SP4--SP6 integran movimiento
-planar; SP7--SP8 sustituyen la dinámica continua por rutas y recursos discretos.
-La comparación dentro de cada SP conserva la misma escala de abstracción.
+Los escenarios se generan por mundo y se reutilizan entre tratamientos. La tabla
+siguiente resume qué se varía y qué se mide.
 
-\paragraph{Robot diferencial.}
-Durante la aproximación, cada robot se representa mediante el modelo de uniciclo.
-Su pose es \(q_i=(p_i^x,p_i^y,\theta_i)\) y su entrada cinemática es
-\(u_i=(v_i,\omega_i)\):
-%
+\begin{table}[H]
+    \centering
+    \caption{Escenarios, factores y métricas de evaluación.}
+    \label{tab:method_scenarios_metrics}
+    \footnotesize
+    \renewcommand{\arraystretch}{1.08}
+    \begin{tabularx}{\textwidth}{@{}p{2.5cm}p{4.6cm}X@{}}
+        \toprule
+        \textbf{Escenario} & \textbf{Factores} & \textbf{Métricas principales} \\
+        \midrule
+        Asignación y coalición &
+        \(N\), \(K\), cuotas, demanda total, capacidades, batería y distancia. &
+        Factibilidad, déficit, exceso, cargas completas, utilidad y gap. \\
+        Mecánica y transporte &
+        Geometría de contacto, límites de fuerza, \emph{wrench}, pose objetivo y saturación. &
+        Residual de \emph{wrench}, error de formación, acoplamiento, error de pose, tiempo y energía estimada. \\
+        Seguridad y recuperación &
+        Obstáculos, ancho de pasillo, instante de fallo y reserva disponible. &
+        Colisión, distancia mínima, bloqueo, restauración, entrega y tiempo de recuperación. \\
+        Tráfico y red &
+        Número de coaliciones, rutas, radio, retardo y pérdida de paquetes. &
+        Conflictos, interbloqueo, makespan, mensajes, bytes, CPU y memoria. \\
+        \bottomrule
+    \end{tabularx}
+    \viuownsource
+\end{table}
+
+En cada comparación se fijan las poses iniciales, la semilla, el mapa, el
+horizonte, el integrador, los límites de actuación y la definición de éxito. Los
+robots y las muestras temporales están anidados en el mundo; no cuentan como
+réplicas. Colisiones, bloqueos, errores numéricos y agotamientos del horizonte
+permanecen en el denominador.
+
+\subsection{Validación estadística y CoppeliaSim}
+\label{sec:method_statistics_coppelia}
+
+Cada mundo \(w=(s_w,\boldsymbol\zeta_w,\sigma_w)\) reúne escenario, factores y
+semilla, y se ejecuta con todos los métodos. El efecto pareado es
 \begin{equation}
-    \dot q_i =
-    \begin{bmatrix}
-        \cos\theta_i & 0 \\
-        \sin\theta_i & 0 \\
-        0            & 1
-    \end{bmatrix}
-    \begin{bmatrix}
-        v_i\\
-        \omega_i
-    \end{bmatrix},
-    \qquad
-    |v_i|\leq v_i^{\max},
-    \quad
-    |\omega_i|\leq \omega_i^{\max}.
-    \label{eq:unicycle_methodology}
+    \Delta_w^{A,B}=Y_w^A-Y_w^B.
+    \label{eq:method_paired_effect}
 \end{equation}
-%
-Para ruedas de radio \(r_w\) y semivía \(\ell_w\), las velocidades del uniciclo
-se relacionan con las velocidades angulares izquierda y derecha mediante
-%
-\begin{equation}
-    \begin{bmatrix}
-        v_i\\
-        \omega_i
-    \end{bmatrix}
-    =
-    \frac{r_w}{2}
-    \begin{bmatrix}
-        1 & 1\\
-        -1/\ell_w & 1/\ell_w
-    \end{bmatrix}
-    \begin{bmatrix}
-        \dot\varphi_{i,L}\\
-        \dot\varphi_{i,R}
-    \end{bmatrix}.
-    \label{eq:differential_drive_methodology}
-\end{equation}
-%
-SP4 y Cargo incorporan dinámica de velocidad. Con
-\(x_i=(q_i,v_i,\omega_i)\) y aceleraciones
-\(a_i=(a_i^v,a_i^\omega)\),
-%
-\begin{equation}
-    \dot x_i =
-    \begin{bmatrix}
-        v_i\cos\theta_i\\
-        v_i\sin\theta_i\\
-        \omega_i\\
-        a_i^v\\
-        a_i^\omega
-    \end{bmatrix},
-    \qquad
-    a_i\in\mathcal{A}_i,
-    \label{eq:dynamic_unicycle_methodology}
-\end{equation}
-%
-donde \(\mathcal{A}_i\) recoge las cotas de aceleración y las limitaciones
-derivadas de los actuadores. El modelo supone rodadura ideal y velocidad lateral
-nula. No reproduce deslizamiento, deformación del neumático ni contacto
-tridimensional rueda--suelo.
 
-\paragraph{Asignación y cierre de coaliciones.}
-La variable binaria \(x_{ik}\) indica si el robot \(i\) pertenece a la coalición de
-la carga \(k\). La preferencia continua empleada por algunas dinámicas se denota
-\(p_{ik}\in[0,1]\) y no se identifica con \(x_{ik}\). La coalición cerrada es
-\(\mathcal{C}_k=\{i\in\mathcal{R}:x_{ik}=1\}\). Las restricciones lógicas comunes
-son
-%
-\begin{equation}
-    \sum_{k\in\mathcal{L}}x_{ik}\leq 1,
-    \qquad
-    |\mathcal{C}_k|\geq n_k,
-    \qquad
-    \sum_{i\in\mathcal{R}}c_i x_{ik}\succeq r_k,
-    \qquad
-    x_{ik}\in\{0,1\}.
-    \label{eq:coalition_closure_methodology}
-\end{equation}
-%
-La primera desigualdad impone exclusividad, \(n_k\) es la cardinalidad mínima y
-\(c_i\succeq 0\), \(r_k\succeq 0\) son vectores de capacidad y requisito.
-SP0 utiliza demanda unitaria; SP1 introduce \(n_k>1\); SP2 reemplaza la
-equivalencia entre robots por contribuciones dependientes del par robot--carga.
+Las instancias pequeñas se verifican por enumeración u oráculo con gap. Las
+campañas usan al menos 30 semillas cuando el coste lo permite. McNemar exacto se
+aplica a respuestas binarias; Wilcoxon, a continuas u ordinales; Friedman, a tres
+o más métodos. Se reportan efecto, intervalo por \emph{bootstrap} pareado de 2000
+remuestreos y \(p\) corregido con Holm.
 
-\paragraph{Servicio operacional heterogéneo.}
-La contribución usada en SP2 combina carga útil nominal, disponibilidad de
-batería y distancia inicial. Para una reserva \(b^{\mathrm{res}}\), una escala de
-distancia \(\ell_d\) y una referencia \(c^{\mathrm{ref}}>0\), se define
-%
-\begin{align}
-    \psi_i^{b}
-    &=
-    \max\left\{
-        0,
-        \frac{b_i-b^{\mathrm{res}}}{1-b^{\mathrm{res}}}
-    \right\},
-    &
-    \psi_{ik}^{d}
-    &=
-    \exp\left(-\frac{d_{ik}}{\ell_d}\right),
-    \label{eq:availability_factors_methodology}\\
-    a_{ik}
-    &=
-    \frac{c_i^{\mathrm{pay}}}{c^{\mathrm{ref}}}
-    \psi_i^{b}\psi_{ik}^{d},
-    &
-    S_k(x)
-    &=
-    \sum_{i\in\mathcal{R}}a_{ik}x_{ik}.
-    \label{eq:operational_service_methodology}
-\end{align}
-%
-La carga \(k\) cubre su umbral operacional si
-\(S_k(x)\geq d_k^{\mathrm{srv}}\). Esta condición mide servicio disponible; no
-certifica fuerza, torque, soporte ni energía suficiente para toda la misión.
+El modelo de CoppeliaSim representa un almacén de \(24\times18\)~m construido
+sobre la escena de AWS RoboMaker \parencite{awsRobomakerWarehouse2021}. Incluye
+estanterías, cuatro zonas de despacho y destino, un paso central compartido y
+cuatro bases para una flota de \AwsSceneRobots{} Pioneer P3-DX. La escena contiene
+\AwsSceneActiveLoads{} cargas activas y \AwsSceneQueuedLoads{} en cola, con
+requisitos de uno, dos o tres robots por carga. El sensado se limita a
+\AwsSceneSensingRadius{}~m y la comunicación a
+\AwsSceneCommunicationRadius{}~m.
 
-\paragraph{Factibilidad de wrench.}
-Para una coalición y un conjunto de contactos fijos, \(\lambda_k\) agrupa los
-esfuerzos admisibles y \(G_k(\mathcal{C}_k)\) es la matriz de agarre. El wrench
-planar realizado es
-%
-\begin{equation}
-    W_k = G_k(\mathcal{C}_k)\lambda_k,
-    \qquad
-    \lambda_k\in\mathcal{U}_k(\mathcal{C}_k).
-    \label{eq:wrench_map_methodology}
-\end{equation}
-%
-La factibilidad se evalúa mediante el residual normalizado
-%
-\begin{equation}
-    \rho_k^{W}(\mathcal{C}_k)
-    =
-    \min_{\lambda_k\in\mathcal{U}_k(\mathcal{C}_k)}
-    \left\|
-        Q_W
-        \left(
-            G_k(\mathcal{C}_k)\lambda_k
-            -W_k^{\mathrm{req}}
-        \right)
-    \right\|_2,
-    \label{eq:wrench_residual_methodology}
-\end{equation}
-%
-donde \(Q_W\) hace comparables fuerza y momento. Una coalición se acepta si
-\(\rho_k^{W}\leq\varepsilon_W\). El problema es planar y cuasiestático; una
-aceptación no demuestra estabilidad durante el transporte.
+Cada ejecución reproduce la secuencia despacho, reclutamiento, aproximación,
+transporte y entrega. Las rutas atraviesan el paso central, donde coinciden las
+coaliciones con una carretilla, dos peatones controlados y un AMR libre. También
+se incluyen el fallo de un miembro, la incorporación de un reemplazo y un ciclo
+acelerado de retorno por batería. Se registran poses, enlaces de comunicación,
+detecciones, entregas, cola pendiente y estado del fallo. La
+Figura~\ref{fig:method-coppeliasim-warehouse} muestra el montaje durante una
+ejecución.
 
-\paragraph{Carga planar compuesta.}
-Después del acoplamiento, la pose de la carga es
-\(q_k^L=(p_k^{L,x},p_k^{L,y},\theta_k^L)\) y su velocidad generalizada es
-\(\nu_k=(v_k^x,v_k^y,\omega_k)\). La planta reducida satisface
-%
-\begin{equation}
-    M_k\dot\nu_k+D_k\nu_k
-    =
-    G_k(\mathcal{C}_k)\lambda_k+W_k^{\mathrm{ext}},
-    \qquad
-    \dot q_k^L=T(\theta_k^L)\nu_k,
-    \label{eq:payload_dynamics_methodology}
-\end{equation}
-%
-con \(M_k\succ0\), \(D_k\succeq0\) y contactos fijos respecto del cuerpo. Los
-esfuerzos se limitan antes de integrar. La reconstrucción rígida de los robots
-alrededor de la carga no modela agarre, flexibilidad estructural ni pérdida de
-contacto.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.76\textwidth]{../results/coppeliasim_validation/aws_industrial_adversarial_industrial2/aws_industrial_oblique_live.png}
+    \caption{Montaje del almacén en CoppeliaSim. La vista oblicua muestra las
+    estanterías, las zonas de operación, el paso central y la flota de AMR durante
+    la ejecución del piloto.}
+    \label{fig:method-coppeliasim-warehouse}
+    \viusource{elaboración propia sobre la escena AWS RoboMaker Small Warehouse
+    World, modificada para este TFM \parencite{awsRobomakerWarehouse2021}}
+\end{figure}
 
-\paragraph{Seguridad geométrica.}
-Sea \(\mathcal{F}_k(q_k^L)\) la huella compuesta de carga y robots y
-\(\mathcal{O}_o\) un obstáculo. La holgura mínima se expresa como
-%
-\begin{equation}
-    h_{ko}(q_k^L)
-    =
-    \operatorname{dist}
-    \left(
-        \mathcal{F}_k(q_k^L),\mathcal{O}_o
-    \right)
-    -d_{\mathrm{safe}}.
-    \label{eq:safety_margin_methodology}
-\end{equation}
-%
-El conjunto seguro nominal satisface \(h_{ko}\geq0\). SP5 filtra la referencia de
-movimiento y vuelve a comprobar la acción después del reparto de wrench, la
-saturación y la integración. Esta comprobación es necesaria porque una acción
-segura antes de limitar actuadores puede dejar de serlo al aplicarse.
-
-\paragraph{Comunicación local.}
-La comunicación se representa mediante el grafo
-\(\mathcal{G}_c(t)=(\mathcal{R},\mathcal{E}_c(t))\), con
-%
-\begin{equation}
-    \mathcal{E}_c(t)
-    =
-    \left\{
-        \{i,j\}:
-        i\neq j,\;
-        \|p_i(t)-p_j(t)\|_2\leq R_c
-    \right\}.
-    \label{eq:communication_graph_methodology}
-\end{equation}
-%
-El robot \(i\) emplea estado propio, percepción disponible y mensajes de
-\(\mathcal{N}_i(t)\). Los experimentos modifican el radio \(R_c\), el retardo
-entero \(\tau\), la probabilidad de pérdida \(p_{\mathrm{loss}}\), la caducidad de
-las copias y la política de retransmisión. Se denomina vecinal a una etapa solo
-cuando su estimación, actualización y cierre respetan esa información. Los
-registros globales, optimizadores por carga y cierres que consultan toda la
-instancia se declaran como dependencias globales.
-
-\paragraph{Rutas y recursos discretos.}
-SP7--SP8 utilizan un nivel mesoscópico. Cada coalición selecciona una ruta
-\(r_k\) de un catálogo finito y cada ruta ocupa un conjunto
-\(\mathcal{E}(r_k)\) de recursos. Para
-%
-\begin{equation}
-    q_e(r)
-    =
-    \sum_k
-    \mathbf{1}\!\left\{e\in\mathcal{E}(r_k)\right\},
-    \qquad
-    P(r)
-    =
-    \sum_e
-    \binom{q_e(r)}{2},
-    \label{eq:route_conflict_methodology}
-\end{equation}
-%
-\(P(r)\) cuenta pares de coaliciones que comparten recursos. Esta abstracción
-permite estudiar tráfico, observabilidad y mensajes a mayor escala, pero no
-representa interpolación continua, orientación intermedia ni contacto físico.
-
-\subsection{Variables, tratamientos y comparadores}
-\label{subsec:variables_comparators}
-
-Los factores independientes cambian por subproblema. Los principales son el
-método de coordinación, \(N\), \(K\), la relación entre demanda y flota, la
-heterogeneidad de capacidades, la distribución espacial, la geometría de los
-contactos, la demanda de wrench, la presencia de obstáculos, el fallo de un
-robot, el catálogo de rutas y las condiciones de comunicación. Cada campaña
-modifica solo los factores necesarios para responder a su pregunta y mantiene
-los restantes bajo una configuración común.
-
-Las variables de respuesta se agrupan en cinco familias. La calidad estratégica
-incluye factibilidad, déficit, exceso, completitud, valor y brecha frente a una
-referencia. Las variables temporales comprenden formación de coalición,
-acoplamiento, entrega, terminación, recuperación y distancia recorrida. Las
-variables físicas incluyen error de pose, residual de wrench, saturación, colisión,
-holgura y trabajo. La comunicación se mide mediante mensajes, bytes, versiones,
-edad de información y conflictos no observados. El coste computacional se
-caracteriza mediante CPU, memoria, iteraciones y evaluaciones propias de cada
-algoritmo. Las definiciones exactas y sus unidades se fijan en el SP correspondiente.
-
-Los métodos cumplen papeles diferentes. Los optimizadores globales se utilizan
-como oráculos, cotas o certificados en instancias acotadas. No representan la
-arquitectura operacional propuesta. Los comparadores de referencia pertenecen a
-familias compatibles con el modelo del SP. Las heurísticas permiten medir el
-coste de una regla más simple. Las ablaciones retiran el cierre, el término de
-cuórum, la guardia, la reparación, la reserva o la retransmisión para aislar el
-mecanismo asociado con una hipótesis. Los métodos del piloto que adaptan una
-idea publicada sin reproducir su algoritmo completo se rotulan como
-\emph{proxies} y no heredan sus garantías.
-
-Una solución de optimización solo se denomina óptima cuando la cota se ha
-cerrado o la enumeración ha agotado el espacio considerado. Si el tiempo de
-resolución termina antes, se informa la mejor solución y su brecha. Del mismo
-modo, un método local no se presenta como distribuido si necesita ocupaciones,
-ordenamientos, registros o certificados globales.
-
-La relación entre objetivos y evidencia es la siguiente. OE1 se estudia en
-SP0--SP2 mediante cierre, equilibrio, completitud y brecha. OE2 se aborda en
-SP3--SP4 mediante wrench, contacto, acoplamiento y pose. OE3 se contrasta en
-SP5--SP7 y Cargo mediante colisión, bloqueo, reparación y tráfico. OE4 se estudia
-en SP8 mediante observabilidad, mensajes, CPU y calidad bajo red imperfecta.
-OE5 se evalúa mediante la integración Cargo, la conservación de artefactos y el
-piloto Industrial 2.
-
-\subsection{Fases y protocolo experimental}
-\label{subsec:experimental_protocol}
-
-El trabajo se desarrolló en cuatro fases. La primera fue la formalización. En cada
-SP se definieron el espacio de estados, la información disponible, la acción, las
-restricciones, el criterio de éxito y el resultado que contradiría la hipótesis. Las
-propiedades de potencial, equilibrio, factibilidad o terminación se demostraron
-analíticamente y, cuando el espacio lo permitió, se comprobaron mediante
-enumeración de todos los perfiles.
-
-La segunda fase fue de desarrollo. Se implementaron generadores de mundos,
-métodos, oráculos, registros e invariantes automáticos. Las semillas de esta fase
-se utilizaron para detectar errores, seleccionar rangos de parámetros y comprobar
-finitud, restricciones, consistencia dimensional y correspondencia entre
-configuraciones y resultados. Estas observaciones no se incorporaron a los
-contrastes confirmatorios.
-
-La tercera fase comprendió las campañas por SP. Cada comparación usó mundos
-compartidos y parámetros congelados. Los tratamientos partieron del mismo
-estado, recibieron los mismos eventos exógenos y conservaron límites, horizonte y
-criterio de éxito cuando sus modelos eran compatibles. Las diferencias de
-información propias de cada arquitectura se mantuvieron y se documentaron; no se
-dio información global a un método vecinal para igualarlo artificialmente con el
-oráculo.
-
-La cuarta fase integró la misión Cargo y ejecutó el piloto Industrial 2. Cargo cruzó
-cuatro regímenes, tres tamaños de flota y seis tratamientos con treinta semillas
-confirmatorias por combinación de régimen y tamaño. Cada mundo incluyó
-reclutamiento, acoplamiento, transporte y, según el régimen, obstáculo, red
-degradada o fallo. Industrial 2 utilizó cuatro escenarios, cuatro métodos y dos
-semillas por escenario durante 60~s. Este tamaño solo permite identificar modos de
-fallo y comprobar ejecución funcional.
-
-Solo se excluyen réplicas corruptas, duplicadas o afectadas por un fallo externo al
-algoritmo. Las colisiones, excepciones internas, no convergencia, bloqueo y
-agotamiento del horizonte permanecen en el denominador. El éxito de misión exige
-cierre lógico, factibilidad de la modalidad, ausencia de la colisión definida para la
-campaña y entrega dentro del horizonte.
-
-\subsection{Procesamiento estadístico}
-\label{subsec:statistical_analysis}
-
-El análisis conserva el emparejamiento. Para dos tratamientos \(A\) y \(B\), la
-diferencia del mundo \(w\) es
-%
-\begin{equation}
-    \Delta_w
-    =
-    Y_A(w)-Y_B(w),
-    \qquad
-    \widehat{\Delta}
-    =
-    \frac{1}{n}
-    \sum_{w=1}^{n}\Delta_w.
-    \label{eq:paired_estimand_methodology}
-\end{equation}
-%
-El signo favorable se fija antes del análisis según la variable. Para tres o más
-tratamientos, el mundo actúa como bloque. El remuestreo se realiza sobre mundos
-completos, no sobre robots, cargas o muestras temporales.
-
-Cada contraste informa el número de mundos, los fallos, la estimación del efecto,
-un intervalo de confianza del 95\,\% y, cuando procede, el valor de \(p\). Los
-intervalos \emph{bootstrap} emplean 2000 remuestras pareadas. Las variables
-binarias, como éxito, colisión o restauración, se analizan mediante diferencias
-pareadas de proporciones y la prueba exacta de McNemar. Las variables continuas
-u ordinales se comparan mediante Wilcoxon pareado. Cuando intervienen varios
-métodos sobre los mismos mundos se emplean Friedman y un tamaño de efecto
-basado en concordancia.
-
-El procedimiento de Holm corrige las familias de contrastes preespecificadas. El
-valor de \(p\) no reemplaza la magnitud ni el intervalo del efecto. Un intervalo que
-contiene cero se interpreta como ausencia de apoyo concluyente a la diferencia,
-no como demostración de equivalencia. Una afirmación de no inferioridad habría
-requerido definir previamente un margen clínico o ingenieril, lo que no se hizo en
-estas campañas.
-
-Los tiempos de ejecuciones que agotan el horizonte se conservan como valores
-truncados o se analizan mediante la regla definida por la campaña. No se sustituyen
-por tiempos de entrega. Las medias temporales incondicionales se acompañan de
-éxito y causa de terminación para evitar que una colisión temprana parezca una
-mejora de velocidad.
-
-El número de semillas se fijó por presupuesto computacional y no mediante un
-cálculo de potencia previo. Por ello, la resolución estadística se juzga mediante la
-anchura de los intervalos observados. Las conclusiones se restringen a la población
-de mundos inducida por los generadores, factores y rangos ensayados.
-
-\subsection{Instrumentos y trazabilidad}
-\label{subsec:tools_reproducibility}
-
-Los instrumentos de investigación comprenden los modelos matemáticos, los
-simuladores, los solucionadores de optimización, los generadores de mundos, los
-registros por ejecución, las pruebas automáticas y los scripts estadísticos. Las
-campañas principales se implementaron en Python. Los problemas lineales,
-mixtos y cuadráticos se resolvieron con solucionadores numéricos adecuados a
-cada formulación. CoppeliaSim se utilizó para el piloto geométrico y cinemático
-Industrial 2.
-
-Cada registro conserva, cuando corresponde, identificador del mundo, semilla,
-factores, método, parámetros, miembros de las coaliciones, estados de cierre,
-certificados, tiempos, errores, eventos de seguridad, mensajes, CPU y causa de
-terminación. Las tablas y figuras se generan a partir de esos registros y no de
-valores transcritos manualmente.
-
-La reproducibilidad se declara por campaña. SP0--SP1, SP5--SP8, Cargo e
-Industrial 2 conservan generadores, configuraciones, semillas y resultados
-suficientes para regeneración. SP2--SP4 conservan observaciones, scripts de
-postproceso, tablas y auditorías, pero no todos sus generadores históricos. En
-estos casos se habla de reanálisis reproducible y no de regeneración completa.
-El anexo de reproducibilidad identifica versiones, manifiestos, hashes y
-disponibilidad de los artefactos.
-
-\subsection{Validez y límites de inferencia}
-\label{subsec:validity}
-
-La validez interna se apoya en mundos pareados, separación entre desarrollo y
-confirmación, parámetros congelados y conservación de los fallos en el
-denominador. Las ablaciones permiten atribuir efectos a componentes concretos,
-aunque una ablación conjunta, como retirar simultáneamente certificado, ruta y
-filtro, solo identifica el efecto del bloque completo.
-
-La validez de constructo depende de no confundir variables de capas distintas. La
-cardinalidad mide pertenencia, el servicio operacional mide una contribución
-normalizada, el residual de wrench mide capacidad mecánica planar, la holgura
-mide separación geométrica y el conflicto de rutas mide exclusión lógica. Ninguna
-de estas variables sustituye a las restantes. Un residual KKT pequeño tampoco
-certifica una asignación entera ni una trayectoria físicamente segura.
-
-La validez de conclusión se protege mediante el emparejamiento, los intervalos de
-confianza, la corrección de multiplicidad y la declaración de resultados negativos.
-Los contrastes exploratorios y confirmatorios se distinguen. Industrial 2 no se
-utiliza para establecer superioridad estadística debido a sus dos semillas por
-escenario.
-
-La validez externa queda limitada a los tamaños, distribuciones, geometrías,
-contactos y regímenes de comunicación evaluados. El modelo principal es planar,
-usa pose conocida, contactos fijos y esfuerzos acotados. No incluye soporte
-tridimensional, fricción completa, deformación, percepción real, desgaste,
-tracción rueda--suelo ni hardware. Cargo considera una carga activa, un fallo
-simple, un líder temporal y dependencias globales declaradas. SP7--SP8 emplean
-rutas discretas y no una planta continua.
-
-Por tanto, la integración Cargo demuestra que las capas pueden coexistir dentro
-de la planta reducida y los regímenes ensayados. No demuestra estabilidad híbrida
-global, seguridad universal, descentralización integral ni rendimiento industrial.
-Cada conclusión se mantiene en el estrato donde fue obtenida y solo se transfiere
-cuando se conservan su modelo, información, restricciones y criterio de
-validación.
+CoppeliaSim comprueba la integración geométrica y el replay cinemático de estas
+interfaces. No modela el agarre, la fricción rueda--suelo ni la dinámica de
+contacto, y tampoco sustituye una validación en hardware.

@@ -6,6 +6,10 @@ Mantener una notación única en código, ecuaciones, figuras y memoria. Esta ta
 |---|---|---|---|
 | `N` | Número de robots | entero positivo | `n_robots` |
 | `K` | Número de cargas/tareas | entero positivo | `n_loads` |
+| `w=(s_w,\boldsymbol\zeta_w,\sigma_w)` | Mundo o bloque experimental: escenario, factores y semilla pseudoaleatoria | tupla de configuración; índice de unidad independiente | `world`, `scenario`, `factors`, `seed` |
+| `Y_w^m` | Respuesta del método `m` en el mundo `w` | según la métrica | `response[world,method]` |
+| `\Delta_w^{A,B}` | Diferencia pareada entre los métodos `A` y `B` dentro del mundo `w` | misma unidad que `Y` | `paired_difference` |
+| `\widehat{\Delta}_{RD}^{A,B}` | Diferencia de riesgos pareada estimada entre los métodos `A` y `B` | adimensional, `[-1,1]` | `paired_risk_difference` |
 | `i` | Índice de robot | `{1,…,N}` | `robot_id` |
 | `k` | Índice de carga/tarea | `{1,…,K}` | `load_id` |
 | `q_i` | Estado del robot | posición/orientación o estado dinámico | `robot_state[i]` |

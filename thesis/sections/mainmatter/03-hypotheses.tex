@@ -1,74 +1,79 @@
 \section{Hipótesis de partida}
 \label{sec:hypotheses}
 
-Las hipótesis se formulan como afirmaciones refutables y se contrastan mediante
-análisis formal, experimentos por capa y una simulación Cargo integrada. La
-evidencia, las variables de respuesta y los estimandos se operacionalizan en la
-Tabla~\ref{tab:operationalization}. Ninguna propiedad se transfiere
-automáticamente entre subproblemas, y un intervalo que contiene cero no acredita
-equivalencia.
+Este trabajo parte de una hipótesis principal sobre la arquitectura completa y
+la descompone en afirmaciones contrastables para las capas estratégica, mecánica,
+operacional y de red. Cada una se evalúa dentro de los supuestos del subproblema
+correspondiente, mediante análisis formal, experimentos pareados o ablaciones. Por
+tanto, una propiedad verificada en una capa no se extiende automáticamente al
+sistema integrado.
 
 \subsection{Hipótesis principal}
 
 \noindent\textbf{HP.}
-En condiciones de recursos suficientes, factibilidad Cargo planar y horizonte
-compatible, una arquitectura híbrida que combine actualizaciones estratégicas
-locales, intercambio vecinal, cierres enteros y guardias físicas explícitas puede
-formar coaliciones y completar una misión Cargo dentro de regiones de operación
-medibles. Además, permite cuantificar la pérdida de calidad y el coste de
-información frente a referencias globales sin atribuir descentralización a las
-etapas que consultan estado global. No se considera sustentada si falla en
-misiones realizables o si sus bloques críticos no mejoran frente a sus ablaciones.
-No afirma estabilidad híbrida global, distribución integral ni validación en
-hardware.
+Cuando la flota disponga de recursos suficientes, la configuración Cargo sea
+factible en el plano y el horizonte sea compatible con la duración de la tarea,
+una arquitectura híbrida que combine decisiones estratégicas locales,
+comunicación vecinal, cierres enteros y guardias físicas explícitas formará
+coaliciones factibles y completará la misión de transporte dentro de una región
+de operación medible. La comparación con referencias globales cuantificará la
+pérdida de calidad y el coste de la información. El apoyo a HP exige identificar
+una región reproducible de éxito y confirmar, mediante ablaciones, la contribución
+de sus bloques críticos. El enunciado no presupone estabilidad global del sistema
+híbrido, una ejecución enteramente distribuida ni validez en hardware.
 
-\subsection{Subhipótesis}
+\subsection{Hipótesis específicas}
 
 \noindent\textbf{H1a. Realizabilidad estratégica.}
-En SP0--SP1 realizables, una penalización superior al coste unilateral máximo hace
-que los Nash puros coincidan con asignaciones de cobertura o cuota exacta. Se
-refuta si aparece un Nash deficitario bajo los supuestos del resultado formal.
+En instancias realizables de SP0 y SP1, una penalización mayor que el coste
+unilateral máximo hará coincidir los equilibrios de Nash puros con asignaciones
+de cobertura o cuota exacta. Un equilibrio deficitario que satisfaga los
+supuestos formales constituirá un contraejemplo.
 
 \noindent\textbf{H1b. Cierre entero.}
-Bajo escasez, aplicar QR a la relajación Smith reduce la fracción de robots en
-coaliciones parciales. No se considera sustentada si la diferencia pareada frente
-a Smith continuo contiene cero o resulta adversa.
+En condiciones de escasez, el cierre por ranking y cuórum (QR) aplicado a la
+relajación de Smith reducirá la fracción de robots que permanece en coaliciones
+parciales. La evidencia no apoyará esta afirmación si el efecto pareado frente a
+Smith continuo es nulo o adverso.
 
 \noindent\textbf{H1c. Incentivo de cuórum.}
-Con el mismo cierre QR, el beneficio de cuórum aumenta el valor completado frente
-al beneficio lineal. No se considera sustentada si el efecto pareado contiene cero
-o resulta adverso.
+Con el cierre QR fijado, el beneficio de cuórum aumentará el valor de las cargas
+completadas frente al beneficio lineal. Solo recibirá apoyo si la comparación
+pareada favorece al incentivo de cuórum.
 
 \noindent\textbf{H2. Factibilidad mecánica.}
-La guardia vectorial de \emph{wrench} planar reduce las falsas aceptaciones frente
-al criterio escalar sin una pérdida sistemática de cobertura útil en los mundos
-evaluados. No se considera sustentada si no reduce los falsos positivos o si su
-abstención vuelve inoperante el filtro.
+La guardia vectorial de \emph{wrench} planar reducirá las falsas aceptaciones
+respecto al criterio escalar, sin una pérdida sistemática de cobertura útil en los
+mundos evaluados. La afirmación quedará sin apoyo si los falsos positivos no
+disminuyen o si la abstención del filtro impide su uso operativo.
 
 \noindent\textbf{H3. Acoplamiento espacial.}
-Bajo la red degradada fijada, incorporar el coste espacial reduce el tiempo de
-terminación frente a la selección desacoplada. No se considera sustentada si el
-intervalo de confianza del 95\,\% contiene cero o el efecto temporal no es
-favorable; la coincidencia de éxitos no acredita equivalencia.
+Bajo el régimen de red degradada fijado, incorporar el coste espacial a la
+decisión estratégica reducirá el tiempo de terminación frente a la variante
+desacoplada. Para sustentar esta ventaja, el intervalo de confianza del efecto
+temporal deberá excluir cero en la dirección favorable. Una tasa de éxito
+coincidente, por sí sola, no demostrará equivalencia.
 
 \noindent\textbf{H4. Reparación.}
-Tras un fallo simple, el juego restaura el certificado aditivo cuando la reserva
-completa cubre el déficit y, en la misión integrada, aumenta el éxito frente a
-desactivar la reparación. No se considera sustentada si existe un perfil
-recuperable sin restauración o si la diferencia de éxito no es favorable. El
-agotamiento del horizonte limita la recuperación física.
+Tras un fallo simple, el juego restaurará el certificado aditivo cuando la reserva
+completa cubra el déficit. En la misión integrada, activar la reparación aumentará
+el éxito frente a desactivarla. La hipótesis perderá apoyo si alguna instancia
+recuperable no restaura el certificado o si la diferencia de éxito no es
+favorable; el agotamiento del horizonte se registrará como fallo de recuperación.
 
 \noindent\textbf{H5a. Coste de escala.}
-En el catálogo binario de SP8, el coste de una activación local crece con el grado
-vecinal, mientras el oráculo exhaustivo implementado crece con el número de
-perfiles. Se refuta si no aparece esta separación dentro del dominio certificado.
+En el catálogo binario de SP8, el coste de una activación local crecerá con el
+grado vecinal, mientras que el del oráculo exhaustivo implementado crecerá con el
+número de perfiles. La separación deberá observarse dentro del dominio en el que
+el oráculo certifica su solución.
 
 \noindent\textbf{H5b. Calidad bajo escala.}
-La tasa global libre de conflictos del método periódico no colapsa al aumentar la
-escala dentro del dominio ensayado. Se refuta si alcanza cero en algún tamaño o
-presenta un deterioro incompatible con la conservación postulada.
+La tasa global de perfiles libres de conflicto del método con retransmisión
+periódica no colapsará al aumentar la escala en el dominio ensayado. La hipótesis
+se refutará si la tasa alcanza cero en algún tamaño o si su deterioro contradice
+la conservación postulada.
 
-Todos los contrastes conservan el emparejamiento por mundo y mantienen en el
-denominador las colisiones, los fallos de convergencia y el agotamiento del
-horizonte. SP5 y SP7 se evalúan mediante hipótesis locales de seguridad y tráfico,
-sin añadir una afirmación global sobre el sistema híbrido.
+Los contrastes estocásticos emplearán mundos y semillas pareados. El análisis
+conservará las colisiones, los fallos de convergencia y los agotamientos del
+horizonte. Las pruebas de SP5 y SP7 se interpretarán como evidencia local sobre
+seguridad y tráfico, no como una garantía global del sistema integrado.
