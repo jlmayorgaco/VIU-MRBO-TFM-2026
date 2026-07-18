@@ -198,7 +198,7 @@ El juego decide qué robot ocupa cada puesto, pero SP3 no simula la aproximació
   =\boldsymbol p_i-
    \left(\boldsymbol p_k^L+R(\theta_k^L)\boldsymbol r_{ks}\right)
 \end{equation}
-en metros. Ejecutar la decisión requiere odometría, una estimación de $q_k^L$, proximidad al puesto y una medida de esfuerzo. El contacto solo se acepta si $\|\boldsymbol e_{iks}^{\mathrm{form}}\|\leq\epsilon_p$, el error angular satisface $\epsilon_\theta$ y el QP~\eqref{eq:sp3-wrench} es factible. Entonces $\boldsymbol\lambda_k^\star$ define el esfuerzo deseado. La carga y las poses permanecen fijas, por lo que no se evalúan este error ni el uniciclo de~\eqref{eq:method-unicycle}. SP4 incorpora ambos en el acoplamiento y el transporte.
+en metros. Ejecutar la decisión requiere odometría, una estimación de $q_k^L$, proximidad al puesto y una medida de esfuerzo. El contacto solo se acepta si $\|\boldsymbol e_{iks}^{\mathrm{form}}\|\leq\epsilon_p$, el error angular satisface $\epsilon_\theta$ y el QP~\eqref{eq:sp3-wrench} es factible. Entonces $\boldsymbol\lambda_k^\star$ define el esfuerzo deseado. La carga y las poses permanecen fijas, por lo que no se evalúan este error ni el uniciclo dinámico de~\eqref{eq:sp4-dynamic-unicycle}. SP4 incorpora ambos en el acoplamiento y el transporte.
 
 En empuje, $\Lambda_{ik}$ sería unilateral y $\rho_k^{W\star}\leq\epsilon_W$ solo capacidad instantánea. \emph{Caging} requiere $q\in\mathcal C_k^{\mathrm{cage}}$. Este modo no se evaluó.
 \subsubsection{Diseño experimental}

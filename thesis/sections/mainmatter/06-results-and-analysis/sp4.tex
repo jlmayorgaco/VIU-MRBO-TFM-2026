@@ -154,7 +154,7 @@ hacia cero. Cada robot mide pose, velocidad, objetivo y conflictos. El juego eli
  \qquad \xi_i=(p_{x,i},p_{y,i},\theta_i,v_i,\omega_i),
  \label{eq:sp4-dynamic-unicycle}
 \end{equation}
-y $\eta_i$ se convierte en el par limitado de~\eqref{eq:method-wheel-torque}. El estudio complementario usó $\Delta t=0.12$~s, orientación integrada a punto medio y comprobación de la barrera con la aceleración finalmente realizable.
+y $\eta_i$ se proyecta sobre el conjunto de actuación limitada $\mathcal U_i$ de~\eqref{eq:sp4-control}. El estudio complementario usó $\Delta t=0.12$~s, orientación integrada a punto medio y comprobación de la barrera con la aceleración finalmente realizable.
 
 Para la carga, el estado es $(q_k^L,\dot q_k^L)$ y la salida regulada es
 $z_4^L=(e_k^L,\dot q_k^L,\boldsymbol r_k^W)$, donde
