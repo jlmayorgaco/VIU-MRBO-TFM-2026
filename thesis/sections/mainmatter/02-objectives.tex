@@ -3,49 +3,52 @@
 
 \subsection{Objetivo general}
 
-Diseñar y evaluar una arquitectura interpretable para
-coordinar robots moviles de transporte ante cargas heterogéneas, relacionando reclutamiento, servicio,
-factibilidad, movimiento, seguridad, recuperación y comunicación.
-
-La condición básica de recursos exige
-$\sum_{i\in C_k}\boldsymbol c_i\succeq\boldsymbol r_k$. El caso homogéneo se
-reduce a una cuota $|C_k|\geq n_k$. Esta desigualdad es necesaria, pero no
-suficiente para transportar. En el modelo Cargo planar, la coalición también
-debe realizar el \emph{wrench} requerido, regular la pose y respetar las
-restricciones de seguridad definidas para la huella compuesta.
+Diseñar, formalizar y evaluar una arquitectura híbrida e interpretable, basada
+en actualizaciones estratégicas locales, comunicación vecinal, cierres enteros y
+guardias físicas explícitas, para coordinar múltiples robots móviles autónomos
+en la formación de coaliciones y el transporte cooperativo de cargas
+heterogéneas, cuantificando su factibilidad, desempeño, robustez y coste de
+información frente a referencias globales.
 
 \subsection{Objetivos específicos}
 
-\begin{enumerate}[label=\textbf{OE\arabic*.},leftmargin=3.4em,topsep=0.4em,itemsep=0.55em,parsep=0pt]
-  \item Formalizar y evaluar la formación de coaliciones desde la asignación
-  homogénea uno a uno hasta las cuotas variables y el servicio heterogéneo. Para
-  cada escalón, definir juego, información, cierre, equilibrio y eficiencia, y
-  contrastarlo con oráculo, referencia y ablación cuando proceda.
+\begin{enumerate}[
+  label=\textbf{OE\arabic*.},
+  leftmargin=3.4em,
+  topsep=0.4em,
+  itemsep=0.55em,
+  parsep=0pt
+]
 
-  \item Formular y evaluar la factibilidad física de Cargo mediante geometría de
-  contacto, matriz de agarre, límites de actuador y residual planar de
-  \emph{wrench}. Relacionar este certificado con el acoplamiento de uniciclos y
-  el servocontrol de pose, declarando las condiciones de estabilidad local.
+  \item Formalizar y evaluar la formación de coaliciones desde el caso
+  homogéneo uno a uno hasta las cuotas variables y el servicio operacional
+  heterogéneo, caracterizando las condiciones de realizabilidad, cierre entero
+  y equilibrio, así como la pérdida de calidad frente a referencias globales
+  en situaciones de abundancia y escasez.
 
-  \item Evaluar la operación fuera del caso nominal mediante seguridad ante
-  obstáculos, reparación tras un fallo simple y tráfico lógico entre
-  coaliciones. Medir factibilidad, colisión, progreso, recuperación y exclusión
-  sin interpretar el tráfico discreto como seguridad física continua.
+  \item Formular y evaluar la factibilidad mecánica de la modalidad Cargo
+  planar soportada mediante geometría de contacto, matriz de agarre, límites
+  de actuación y residual normalizado de \emph{wrench}, y conectar dicho
+  certificado con el acoplamiento de robots diferenciales y el servocontrol
+  de pose bajo condiciones explícitas de estabilidad local.
 
-  \item Cuantificar, en el juego de rutas estudiado, el efecto del número de
-  robots, el radio, el retardo y la pérdida de paquetes sobre calidad
-  estratégica, CPU y tráfico de mensajes. Comparar información vecinal,
-  retransmisión, información perfecta y un oráculo exhaustivo solo dentro del
-  tamaño en que este certifique su solución.
+  \item Evaluar la robustez operacional de las coaliciones ante obstáculos,
+  un fallo simple y conflictos de circulación entre coaliciones, midiendo por
+  separado colisión, progreso, bloqueo, restauración del certificado, tiempo
+  de recuperación y exclusión lógica, sin transferir las garantías del tráfico
+  discreto a la seguridad física continua.
 
-  \item Mantener la trazabilidad entre formulación, configuración, semillas,
-  datos, métricas y resultados, distinguiendo las campañas regenerables de los
-  reanálisis sobre observaciones archivadas.
+  \item Cuantificar el efecto de la escala y de la comunicación imperfecta
+  ---radio limitado, retardo y pérdida de paquetes--- sobre la observabilidad,
+  la calidad estratégica, el coste computacional y el tráfico de comunicación,
+  comparando coordinación vecinal por eventos, retransmisión periódica,
+  información perfecta y un oráculo exhaustivo dentro del dominio en el que
+  este certifique su solución.
+
+  \item Integrar y validar funcionalmente la cadena Cargo compuesta por
+  reclutamiento, cierre de coalición, acoplamiento, transporte, seguridad,
+  fallo y reemplazo, determinando mediante ablaciones qué componentes
+  resultan necesarios para completar la misión y delimitando su transferencia
+  a un piloto industrial geométrico y cinemático.
 
 \end{enumerate}
-
-Los objetivos se evalúan dentro de los modelos estudiados: SP0--SP2 no
-incluyen planta, SP3 usa una carga planar estática, SP4--SP6 emplean estratos
-reducidos y SP7--SP8 operan sobre rutas discretas. No se presupone
-descentralización integral, optimalidad global, estabilidad del sistema acoplado
-completo, seguridad continua del tráfico discreto ni escalabilidad ilimitada.
