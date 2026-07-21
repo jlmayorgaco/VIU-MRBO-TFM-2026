@@ -1,7 +1,7 @@
 \section{Demostraciones complementarias de SP3}
 \label{app:sp3-proofs}
 
-La propiedad de potencial y la equivalencia KKT del juego continuo de SP3 suponen demanda, geometría, costes y límites fijos, preferencias continuas sobre simplex y restricciones lineales de ocupación de puestos. Quedan fuera el cierre entero, la guardia mecánica distribuida y la estabilidad física de la carga.
+El juego continuo de SP3 fija la demanda, la geometría, los costes y los límites mientras evoluciona la preferencia sobre el símplex. Las restricciones lineales de ocupación definen el conjunto factible usado en la equivalencia KKT. El cierre entero, la guardia distribuida y la estabilidad de la carga corresponden a contratos posteriores.
 
 \subsection{Solución interior del reparto regularizado}
 \label{app:sp3-interior-wrench-proof}
@@ -33,7 +33,7 @@ porque $\partial\boldsymbol y_k/\partial\rho_{ia}=\boldsymbol g_{ia}$. Los otros
 \]
 que coincide con el pago de~\eqref{eq:sp3-payoff} antes de restar el multiplicador compartido $\pi_a$.
 
-El Hessiano de $\Phi_W$ es el negativo de una matriz Gram de las columnas de wrench, menos $\alpha I$. Por tanto, $\Phi_W$ es estrictamente cóncavo para $\alpha>0$. El conjunto factible es la intersección de productos de simplex y semiespacios lineales $h_a(\rho)\leq0$, luego es convexo y compacto. Bajo Slater, las condiciones KKT son necesarias y suficientes para maximizar $\Phi_W$:
+El Hessiano de $\Phi_W$, igual al negativo de una matriz Gram menos $\alpha I$, es definido negativo para $\alpha>0$. El conjunto factible es convexo y compacto porque intersecta productos de símplex con los semiespacios $h_a(\rho)\leq0$. Bajo Slater, las condiciones KKT son necesarias y suficientes para maximizar $\Phi_W$:
 \[
   0\in-\nabla\Phi_W(\rho^\star)
   +\sum_a\pi_a^\star\nabla h_a(\rho^\star)
@@ -41,4 +41,4 @@ El Hessiano de $\Phi_W$ es el negativo de una matriz Gram de las columnas de wre
   \qquad
   0\leq\pi_a^\star\perp-h_a(\rho^\star)\geq0.
 \]
-Sustituir $\nabla\Phi_W-\sum_a\pi_a\nabla h_a$ por el vector de pagos~\eqref{eq:sp3-payoff} produce la desigualdad variacional del juego con restricciones compartidas. De este modo, los maximizadores de la relajación y sus equilibrios variacionales coinciden. La equivalencia termina antes de decodificar $\rho^\star$ en decisiones binarias, lo que completa la Proposición~\ref{prop:sp3-wrench-potential} sin extenderla al cierre entero.
+La sustitución de $\nabla\Phi_W-\sum_a\pi_a\nabla h_a$ por el vector de pagos~\eqref{eq:sp3-payoff} satisface la desigualdad variacional del juego con restricciones compartidas. Los maximizadores de la relajación coinciden con sus equilibrios variacionales. La Proposición~\ref{prop:sp3-wrench-potential} se restringe a este dominio continuo, antes de decodificar \(\rho^\star\) en decisiones binarias.

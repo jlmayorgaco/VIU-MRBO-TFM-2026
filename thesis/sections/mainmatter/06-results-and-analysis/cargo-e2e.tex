@@ -1,14 +1,14 @@
 \input{../results/processed/integrated/CARGO_E2E_CONFIRMATORY_v1/tables/cargo_e2e_numbers.tex}
 
 \clearpage
-\subsection{Simulación integrada de la cadena Cargo}
+\subsection{Demostrador híbrido de la cadena Cargo}
 \label{subsec:cargo-e2e}
 
-La misión integra reclutamiento, acoplamiento, transporte y recuperación. La coalición se forma con visibilidad del grafo, los uniciclos contactan y la carga evita un obstáculo. Tras fallo, se detiene hasta reemplazar y restablecer contacto. Se mide compatibilidad funcional. La estabilidad híbrida global queda fuera del alcance.
+El demostrador ejecuta reclutamiento, acoplamiento, transporte y recuperación sobre una misma planta planar. Su selección mediante líder, su criterio agregado y su reemplazo voraz difieren del pago de SP2, el QP de SP3 y el juego de SP6. La campaña evalúa la compatibilidad funcional de esta arquitectura híbrida; las garantías de los SP no se componen automáticamente en ella.
 
 \subsubsection{Ejecución común}
 
-Durante diez eventos se propagan identificadores con retardo y pérdida Bernoulli. El robot activo más cercano actúa de líder. Si dos están a la misma distancia, se elige el de menor identificador. Su elección y los atributos asociados usan el registro global. Para cada candidato se definen
+Durante diez eventos se propagan identificadores con retardo y pérdida Bernoulli. El ejecutor determina con el estado global qué robot activo está más cerca de la carga y lo designa líder; el menor identificador resuelve empates. No se implementa una elección distribuida. Los mensajes contienen identificadores, mientras posición, carga útil y fuerza se resuelven después en el registro global. Para cada candidato se definen
 \begin{equation}
  \bar\delta_i=\frac{\delta_{iL}}{\delta_C^{\mathrm{ref}}},\qquad
  \bar c_i=\frac{c_i^{\mathrm{pay}}}{c_C^{\mathrm{ref}}},\qquad
@@ -21,37 +21,38 @@ con $\delta_C^{\mathrm{ref}}=1\,\mathrm{m}$, $c_C^{\mathrm{ref}}=1\,\mathrm{kg}$
  s_i=\bar\delta_i-0.08\,\bar c_i-0.025\,\bar f_i,
  \label{eq:cargo-ranking}
 \end{equation}
-de modo que el identificador resuelve los empates de puntuación. Las referencias unitarias conservan exactamente el orden numérico de la campaña archivada, mientras los tres términos y sus pesos son adimensionales. Esta regla empírica no es el pago de SP2. Para una carga $k$, el cierre solo se acepta si
+de modo que el identificador resuelve los empates de puntuación. Las referencias unitarias conservan exactamente el orden numérico de la campaña archivada, mientras los tres términos y sus pesos son adimensionales. Esta regla empírica no es el pago de SP2. Para una carga $k$, el criterio agregado de elegibilidad exige
 \begin{equation}
  |C_k|\geq3,\qquad
  \sum_{i\in C_k}c_i^{\mathrm{pay}}\geq m_k^{\mathrm{req}},\qquad
  \sum_{i\in C_k}f_i^{\max}\geq F_k^{\mathrm{req}}.
  \label{eq:cargo-aggregate-certificate}
 \end{equation}
-Si la vista no permite satisfacer las tres desigualdades, el líder se abstiene.
+Si la vista no permite satisfacer las tres desigualdades, el líder se abstiene. Este criterio no usa geometría, torque ni el QP de SP3 y, por tanto, no constituye su certificado de \emph{wrench}.
 
-\begin{contribucion}{Algoritmo 1. Misión Cargo integrada}
+\begin{contribucion}{Algoritmo 1. Demostrador Cargo híbrido}
 \begin{enumerate}
-  \item Propagar identificadores activos diez eventos y formar la vista del líder temporal.
-  \item Resolver sus atributos en el registro global, ordenar de forma ascendente por~\eqref{eq:cargo-ranking} y añadir candidatos hasta satisfacer~\eqref{eq:cargo-aggregate-certificate} o abstenerse.
+  \item Propagar identificadores activos durante diez eventos y formar la vista del líder designado globalmente.
+  \item Resolver los atributos en el registro global, ordenar de forma ascendente por~\eqref{eq:cargo-ranking} y añadir candidatos hasta satisfacer~\eqref{eq:cargo-aggregate-certificate} o abstenerse.
   \item Integrar el acoplamiento de uniciclos. Si no termina en 16~s, declarar agotamiento de acoplamiento.
   \item Transportar la carga planar hacia el destino, mediante punto intermedio y filtro cuando la guardia está activa.
-  \item Al fallar el miembro de menor límite de fuerza, detener la carga, retirar su identificador y repetir propagación y cierre con los miembros restantes fijos.
+  \item Al fallar el miembro de menor límite de fuerza, detener la carga, retirar su identificador y repetir propagación y selección con los miembros restantes fijos.
   \item Desplazar el primer candidato añadido al puesto liberado durante un máximo de 16~s. Reanudar solo si llega y el certificado agregado vuelve a cumplirse. En otro caso, declarar fallo de recuperación o agotamiento del horizonte.
 \end{enumerate}
 Ordenar cuesta $O(|\mathcal I^{\mathrm{vis}}|\log |\mathcal I^{\mathrm{vis}}|)$ y propagar $O(|\mathcal E_C|)$ mensajes por barrido. Cada fila registra identidad del mundo, miembros, certificados, terminación, tiempos, errores, seguridad, \emph{wrench}, energía, comunicación, CPU y fases.
 \end{contribucion}
 
+\iffalse
 \begin{table}[!htbp]
   \centering
-  \caption{Correspondencia entre la misión Cargo integrada y los subproblemas.}
+  \caption{Correspondencia funcional entre el demostrador Cargo y los subproblemas.}
   \label{tab:cargo-sp-mapping}
   \begin{tabularx}{\textwidth}{@{}p{2.5cm}p{2.0cm}X@{}}
     \toprule
-    Etapa & Relación & Diferencia respecto al SP \\
+    Etapa & Función análoga & Diferencia respecto al SP \\
     \midrule
     Reclutamiento & SP2 & cierre por líder y atributos resueltos en un registro global \\
-    Certificación & SP3 & certificado agregado de cardinalidad, carga útil y fuerza, sin QP geométrico \\
+    Elegibilidad & SP3 & criterio agregado de cardinalidad, carga útil y fuerza, sin QP geométrico \\
     Acoplamiento & SP4 & uniciclos dinámicos hasta puestos impuestos \\
     Seguridad & SP5 & punto de rodeo y filtro sobre la planta planar reducida \\
     Reparación & SP6 & un fallo, reserva finita y contacto restablecido cinemáticamente \\
@@ -59,12 +60,19 @@ Ordenar cuesta $O(|\mathcal I^{\mathrm{vis}}|\log |\mathcal I^{\mathrm{vis}}|)$ 
   \end{tabularx}
   \viuownsource
 \end{table}
+\fi
 
-Aproximación y reemplazo integran uniciclos con pares saturados. Tras acoplarse, la carga planar fija las poses por desplazamientos rígidos. El \emph{wrench} usa reparto vectorial, pero el certificado inicial agrega carga útil y fuerza sin el QP geométrico de SP3. Con déficit, la carga se detiene.
+Aproximación y reemplazo integran uniciclos con pares saturados. Tras acoplarse, la carga planar fija las poses por desplazamientos rígidos. El \emph{wrench} usa reparto vectorial, pero la admisión inicial agrega carga útil y fuerza sin el QP geométrico de SP3. Con déficit, la carga se detiene.
+
+\subsubsection{Contrato de información y ablaciones}
+
+El grafo se construye por radio y, si queda desconectado, se añaden las aristas de anillo necesarias antes de aplicar pérdida y retardo. La campaña estudia así una red conectada con mensajes imperfectos, no particiones permanentes. El tratamiento llamado ``vecinal'' abrevia \emph{gossip} de identificadores más selección por líder y registro global; la vista perfecta elimina la incertidumbre de identificadores y la referencia central enumera coaliciones, pero las tres comparten docking, planta y control.
+
+La contabilidad asigna 16~B de cabecera y 32~B por identificador. No incluye elección de líder, atributos, pose de carga ni consultas al registro, por lo que no estima el tráfico de una realización completamente distribuida. La ablación ``sin guardia física'' retira a la vez el criterio de fuerza, el punto intermedio y el filtro de velocidad; identifica el bloque conjunto, no cada componente. ``Sin reparación'' detiene la misión cuando aparece el fallo, de modo que su contraste mide continuar con reemplazo frente a detenerse y no compara el juego SP6 con otro reasignador.
 
 \subsubsection{Protocolo confirmatorio}
 
-Tras un piloto de 36 instancias, el confirmatorio cruzó cuatro regímenes, $N\in\{4,8,12\}$ y 30 semillas: \CargoEtwoEWorlds{} instancias y \CargoEtwoERuns{} ejecuciones. La red usa diez eventos, pérdida $0.25$ y retardo dos. Se comparan vecinal, perfecto, tres ablaciones y referencia central.
+Tras un piloto de 36 instancias, el confirmatorio cruzó cuatro regímenes, $N\in\{4,8,12\}$ y 30 semillas: \CargoEtwoEWorlds{} instancias y \CargoEtwoERuns{} ejecuciones. La red usa diez eventos, pérdida $0.25$ y retardo de hasta dos eventos. Se comparan el demostrador híbrido, su vista perfecta, tres ablaciones y la referencia central.
 
 \begin{table}[!htbp]
   \centering
@@ -88,11 +96,11 @@ Se miden éxito, intersección, tiempo, recuperación, error, \emph{wrench}, sat
 
 \subsubsection{Resultados}
 
-El vecinal completó 359/360 misiones sin intersección durante transporte. Un reemplazo agotó horizonte. No se mide colisión continua de aproximación, robot--robot ni 3D. Central completó 360. En red, vecinal y perfecto 90/90, sin probar equivalencia. Vecinal promedió \CargoEtwoEMessages{} mensajes y $90$~kB. En red, 249.3 y 58.2~kB.
+El demostrador completó 359/360 misiones sin intersección durante transporte. Un reemplazo agotó el horizonte. No se mide colisión continua de aproximación, robot--robot ni 3D. La referencia central completó 360. El demostrador y la vista perfecta eligieron la misma coalición inicial en 360/360 mundos; bajo red degradada ambos completaron 90/90. Esta coincidencia describe un benchmark poco discriminante para calidad de selección y no prueba equivalencia. El demostrador promedió \CargoEtwoEMessages{} mensajes; en red fueron 249.3 y 58.2~kB, sin los datos del registro.
 
 \begin{table}[!htbp]
   \centering
-  \caption{Misión Cargo integrada: resultados agregados de los seis tratamientos.}
+  \caption{Demostrador Cargo híbrido: resultados agregados de los seis tratamientos.}
   \label{tab:cargo-e2e-results}
   \small
   \resizebox{\textwidth}{!}{\input{../results/processed/integrated/CARGO_E2E_CONFIRMATORY_v1/tables/cargo_e2e_results.tex}}
@@ -101,10 +109,11 @@ El vecinal completó 359/360 misiones sin intersección durante transporte. Un r
 
 Los tiempos son medias incondicionales: terminar por colisión puede parecer rápido. ``Recuperación'' vale cero sin reparación y no es duración condicionada.
 
-La ablación conjunta retiró el certificado mecánico, el punto de rodeo y el filtro de seguridad. Su éxito fue $0.996$ menor en las 270 observaciones con obstáculo, agrupadas en 90 instancias independientes (IC del 95\,\% $[0.989;1.000]$, Wilcoxon unilateral sobre la media por instancia, $p_{\mathrm{Holm}}=5.79\times10^{-21}$), y hubo intersección en $0.75$ del total. El contraste prueba la necesidad del bloque combinado, pero no separa los efectos del certificado, la ruta y el filtro. En el régimen de fallo, la reparación elevó el éxito en $0.989$ frente a desactivarla (IC $[0.967;1.000]$, McNemar exacto unilateral, $p_{\mathrm{Holm}}=6.46\times10^{-27}$).
+La ablación conjunta retiró el criterio agregado de fuerza, el punto de rodeo y el filtro de seguridad. Su éxito fue $0.996$ menor en las 270 observaciones con obstáculo, agrupadas en 90 instancias independientes (IC del 95\,\% $[0.989;1.000]$, Wilcoxon unilateral sobre la media por instancia, $p_{\mathrm{Holm}}=5.79\times10^{-21}$), y hubo intersección en $0.75$ del total. La variante sin ese bloque conservó el criterio agregado completo en 356/360 mundos, mientras el reparto del método completo registró residual numérico y saturación nula; el contraste discrimina principalmente rodeo y filtrado, no certificación mecánica. En el régimen de fallo, continuar con reemplazo elevó el éxito en $0.989$ frente a detenerse (IC $[0.967;1.000]$, McNemar exacto unilateral, $p_{\mathrm{Holm}}=6.46\times10^{-27}$); no compara el juego SP6 con otro método de reparación.
 
 La penalización espacial redujo el tiempo medio en $0.086$~s bajo red degradada frente a la selección desacoplada, pero el IC $[-0.178;0.013]$ incluyó cero y Holm dejó $p=0.068$. H3 no queda sustentada. Selección con visibilidad restringida, acoplamiento, transporte y recuperación sí coexistieron dentro de la misma planta planar reducida.
 
+\iffalse
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.82\textwidth]{../results/processed/integrated/CARGO_E2E_CONFIRMATORY_v1/figures/fig-cargo-e2e-success.pdf}
@@ -112,5 +121,6 @@ La penalización espacial redujo el tiempo medio en $0.086$~s bajo red degradada
   \label{fig:cargo-e2e-success}
   \viuownsource
 \end{figure}
+\fi
 
-El modelo usa pose exacta, contacto fijo y grafo estático por intercambio. Los mensajes cuentan 16~B de cabecera y 32~B por identificador. La contabilidad omite las resoluciones de atributos que el líder realiza en el registro global, por lo que constituye una cota inferior del tráfico real. No se modelan soporte, fricción, percepción, radio real, tracción ni hardware.
+El modelo usa pose exacta, contacto fijo y grafo estático conectado por intercambio. La evidencia confirma coexistencia funcional bajo ese contrato, pero no un juego distribuido acoplado ni el coste completo de descentralizarlo. No se modelan soporte, fricción, percepción, radio real, tracción ni hardware.

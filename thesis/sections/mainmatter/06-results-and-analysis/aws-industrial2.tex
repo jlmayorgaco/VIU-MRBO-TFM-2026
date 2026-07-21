@@ -1,11 +1,11 @@
-\subsection{Piloto AWS Industrial 2}
+\subsection{Piloto AWS Industrial}
 \label{subsec:aws-industrial2}
 
-Industrial~2 somete la arquitectura a modos de fallo que la campaña Cargo, con una sola carga, no expone. La escena modificada toma como procedencia el almacén de AWS RoboMaker, cuyo repositorio oficial se distribuye bajo licencia MIT-0 \parencite{awsRobomakerWarehouse2021}. Contiene \AwsSceneRobots{} AMR, \AwsSceneActiveLoads{} cargas activas, \AwsSceneQueuedLoads{} en cola y tráfico controlado (Figura~\ref{fig:aws-industrial2-scene}). Sensado y comunicación usan radios \AwsSceneSensingRadius{} y \AwsSceneCommunicationRadius{}~m. El acoplamiento cinemático omite agarre, fricción, tracción, \emph{wrench} y dinámica 3D.
+Industrial somete la arquitectura a modos de fallo que la campaña Cargo, con una sola carga, no expone. La escena modificada toma como procedencia el almacén de AWS RoboMaker, cuyo repositorio oficial se distribuye bajo licencia MIT-0 \parencite{awsRobomakerWarehouse2021}. Contiene \AwsSceneRobots{} AMR, \AwsSceneActiveLoads{} cargas activas, \AwsSceneQueuedLoads{} en cola y tráfico controlado (Figura~\ref{fig:aws-industrial2-scene}). Sensado y comunicación usan radios \AwsSceneSensingRadius{} y \AwsSceneCommunicationRadius{}~m. El acoplamiento cinemático omite agarre, fricción, tracción, \emph{wrench} y dinámica 3D.
 
 \begin{figure}[!htbp]
   \centering
-  \includegraphics[width=0.72\textwidth]{../results/coppeliasim_validation/aws_industrial_adversarial_industrial2/aws_industrial_oblique_camera.png}
+  \includegraphics[width=0.50\textwidth]{../results/coppeliasim_validation/aws_industrial_adversarial_industrial2/aws_industrial_oblique_camera.png}
   \caption{Vista depurada de AWS Industrial 2 usada como piloto geométrico y cinemático. La limpieza visual no altera las huellas operacionales auditadas.}
   \label{fig:aws-industrial2-scene}
   \viusource{elaboración propia sobre la escena AWS RoboMaker Small Warehouse World, modificada para este TFM \parencite{awsRobomakerWarehouse2021}}

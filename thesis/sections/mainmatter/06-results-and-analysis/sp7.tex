@@ -1,11 +1,11 @@
 \subsection{SP7: juego de rutas y reserva local entre coaliciones}
 \label{subsec:sp7}
 
-SP7 coordina cuerpos compuestos en cruces y pasillos. Cada huella inflada avanza una celda por evento, sin integrar robots ni carga. Evitar coincidencias de vértice aún permite bloqueos opuestos. Se combinan ruta y reserva para dos a cuatro coaliciones.
+Dos coaliciones que cumplen sus restricciones individuales pueden quedar enfrentadas en un pasillo sin compartir celda. SP7 representa cada cuerpo compuesto mediante una huella inflada que avanza una celda por evento, elige entre dos rutas y solicita una reserva local antes de ocupar una zona común. Esta abstracción evalúa exclusión lógica y progreso para dos a cuatro coaliciones; no integra la dinámica de robots y carga.
 
 \subsubsection{Cruces y pasillos}
 
-La Figura~\ref{fig:sp7-scenario} muestra ruta directa, desvío y recurso reservado para la huella inflada.
+Una coalición puede aceptar el desvío para reducir la contención prevista, mientras la reserva decide qué huella entra primero en el recurso compartido (Figura~\ref{fig:sp7-scenario}).
 
 \begin{figure}[!htbp]
   \centering
@@ -60,11 +60,11 @@ Sea $\mathcal A_7$ el conjunto de coaliciones, $\mathcal R_i^7$ sus rutas, $H_7$
  \min_{\boldsymbol r\in\prod_i\mathcal R_i^7,\,\pi\in\Pi_A}^{\mathrm{lex}}
  \left(\max_iT_i,\ \sum_iT_i,\ \sum_i b_{ir_i}^7\right)
 \end{equation}
-sujeto a exclusión de vértice, arista, zona y $\mathcal B_7(t)$. Con $|\mathcal R_i^7|=2$ enumera $2^AA!\leq384$ combinaciones. Es exacto para ese catálogo, no para todo MAPF.
+sujeto a exclusión de vértice, arista, zona y $\mathcal B_7(t)$. Con $|\mathcal R_i^7|=2$, la enumeración de $2^AA!\leq384$ combinaciones certifica el óptimo dentro del catálogo restringido. MAPF con un conjunto general de rutas constituye un problema distinto.
 
 \subsubsection{Métodos de comparación}
 
-CBS/ECBS resuelven MAPF, LA-MAPF agentes extensos y ORCA velocidades continuas \parencite{sharon2015cbs,barer2014ecbs,li2019largeAgentMapf,vandenberg2011orca}. Sus garantías no pasan al catálogo. La Tabla~\ref{tab:sp7-methods} separa contexto y tratamientos.
+CBS/ECBS proporcionan el contexto de MAPF, LA-MAPF trata agentes extensos y ORCA opera en velocidades continuas \parencite{sharon2015cbs,barer2014ecbs,li2019largeAgentMapf,vandenberg2011orca}. La campaña ejecuta un catálogo discreto propio, por lo que la Tabla~\ref{tab:sp7-methods} distingue esas referencias de los tratamientos comparados.
 
 \begin{table}[!htbp]
   \centering
@@ -124,17 +124,17 @@ donde el mínimo es infinito si ningún desvío unilateral reduce conflictos.
 Si $\theta_7<\infty$ y $\lambda_7>\theta_7$, todo Nash puro satisface $P_7(\boldsymbol r)=0$.
 \end{proposicion}
 
-La condición se cumplió en cruces, no en pasillo y cuello. El equilibrio no sustituye reserva.
+La accesibilidad exigida por la Proposición~\ref{prop:sp7-conflict-free} se cumplió en los cruces y falló en el pasillo y el cuello; en estos dos escenarios, el testigo temporal es necesario para ordenar el avance.
 
 \begin{samepage}
 \begin{contribucion}{selección anticipativa de rutas y reserva local separadas}
-El método separa dos escalas: $\Phi_7$ reduce la contención prevista sin prometer seguridad, y un testigo vecinal ordenado por prioridad y espera excluye entradas incompatibles. La Proposición~\ref{prop:sp7-conflict-free} identifica cuándo basta la primera capa. Los experimentos incluyen casos donde falla.
+$\Phi_7$ reduce la contención prevista durante la elección de ruta. Después, un testigo vecinal ordenado por prioridad y espera excluye entradas incompatibles. La Proposición~\ref{prop:sp7-conflict-free} especifica cuándo la primera capa alcanza $P_7=0$; los pasillos de la campaña violan su supuesto de accesibilidad.
 \end{contribucion}
 \end{samepage}
 
 \subsubsection{Reserva y avance discreto}
 
-La salida $z_7^S=P_7(\boldsymbol r)$ alcanza cero solo bajo~\eqref{eq:sp7-threshold}. Cada coalición mide celda, huella, bloqueo y espera. Estima intención, prioridad y ocupación. Avanza con testigo, destino libre y sin intercambio.
+La salida $z_7^S=P_7(\boldsymbol r)$ alcanza cero bajo~\eqref{eq:sp7-threshold}. Cada coalición combina su celda, huella y tiempo de espera con estimaciones vecinales de intención, prioridad y ocupación; avanza si posee el testigo, la celda destino está libre y no se produce un intercambio de arista.
 
 Si varias coaliciones solicitan una zona libre, se autoriza la de mayor terna
 lexicográfica $(w_i,P_i,-i)$, con $w_i$ tiempo acumulado sin avanzar, $P_i$
@@ -150,18 +150,34 @@ Si cada propietario libera el testigo en un número finito y uniformemente acota
 de pasos y, después de atravesar la zona, deja de competir por ella, entonces
 la regla $(w_i,P_i,-i)$ concede el testigo a cada solicitante en tiempo finito.
 \end{proposicion}
-La propiedad es local, no completitud MAPF: pueden fallar liberación, horizonte o no reentrada. Garantiza exclusión lógica discreta. Una planta requeriría SP5, saturación y CBF/ORCA. SP7 no prueba invariancia continua.
+La proposición garantiza concesión finita para una zona cuyos propietarios liberan el testigo y no vuelven a competir. La completitud del problema completo depende además del horizonte y de la interacción entre zonas. La exclusión se verifica sobre celdas discretas; una planta continua requeriría recuperar la saturación y la guardia geométrica de SP5.
 
 \subsubsection{Diseño experimental}
 
 \input{../results/processed/sp7/SP7_TRAFFIC_CONFIRMATORY_v1/tables/sp7_numbers.tex}
-El diseño comprende \SPSevenWorlds{} mundos y \SPSevenRuns{} ejecuciones: cruce, pasillo y cuello bloqueado tres pasos. $A\in\{2,3,4\}$ y semillas 8700--8739. Cada coalición tiene ruta directa y desvío. Radios $0.52$--$0.68$~m en celdas de 1~m omiten orientaciones intermedias.
+La campaña contiene \SPSevenWorlds{} mundos pareados y \SPSevenRuns{} ejecuciones. El endpoint principal es la entrega dentro de 48 pasos; ocho pasos consecutivos sin movimiento definen un bloqueo.
 
-Se ejecutan completo, dos ablaciones, priorizado y oráculo. Los contrastes miden reserva, $\lambda_7$ y brecha temporal con McNemar, Wilcoxon, \emph{bootstrap} y Holm. Ocho pasos inmóviles definen bloqueo y 48 agotan horizonte.
+\begin{table}[!htbp]
+  \centering
+  \caption{Diseño experimental de SP7-C.}
+  \label{tab:sp7-design}
+  \viutablefont
+  \begin{tabularx}{0.94\textwidth}{>{\raggedright\arraybackslash}p{2.4cm} Y}
+    \toprule
+    Elemento & Especificación \\
+    \midrule
+    Factores & Cruce, pasillo y cuello bloqueado durante tres pasos; $A\in\{2,3,4\}$; semillas 8700--8739; ruta directa y desvío por coalición. \\
+    Geometría & Radios $0.52$--$0.68$~m sobre celdas de 1~m, sin orientaciones intermedias. \\
+    Métodos & Juego completo, dos ablaciones, planificación priorizada y oráculo restringido. \\
+    Contrastes & Efecto de la reserva, efecto de $\lambda_7$ y brecha temporal mediante McNemar, Wilcoxon, IC \mbox{bootstrap} y Holm. \\
+    \bottomrule
+  \end{tabularx}
+  \viusource{elaboración propia a partir del protocolo experimental de SP7}
+\end{table}
 
 \subsubsection{Resultados}
 
-El juego con reserva entregó todas las cargas con tiempo medio de terminación \SPSevenProposedMakespan{}. Sin reserva, la tasa cayó a \SPSevenNoReservationSuccess{} y solo \SPSevenCorridorNoReservationSuccess{} de los pasillos se completó: las ejecuciones restantes quedaron bloqueadas sin compartir celda. La Tabla~\ref{tab:sp7-results} separa exclusión lógica de progreso.
+El juego con reserva entregó todas las cargas con tiempo medio de terminación \SPSevenProposedMakespan{}. Al retirar el testigo, la tasa cayó a \SPSevenNoReservationSuccess{} y únicamente \SPSevenCorridorNoReservationSuccess{} de los pasillos se completó; las demás ejecuciones quedaron bloqueadas pese a mantener la exclusión de celda (Tabla~\ref{tab:sp7-results}).
 
 \begin{table}[!htbp]
   \centering
@@ -174,23 +190,13 @@ El juego con reserva entregó todas las cargas con tiempo medio de terminación 
 
 El efecto pareado de la reserva sobre entrega fue \SPSevenHOneEffect{} (IC del 95\,\% \SPSevenHOneCI{}, $p_{\mathrm{Holm}}=\SPSevenHOnePHolm$). A igualdad de reserva, retirar la penalización elevó cuatro pasos el tiempo de terminación: \SPSevenHTwoEffect{} para completo menos ablación, con $p_{\mathrm{Holm}}=\SPSevenHTwoPHolm$. El cruce y el cuello dinámico se resolvieron con la guardia puntual, mientras el pasillo opuesto necesitó propiedad temporal del recurso.
 
-% Matriz gráfica conservada en results/processed/sp7/.
-\iffalse
-\begin{figure}[!htbp]
-  \centering
-  \includegraphics[width=0.94\textwidth]{../results/processed/sp7/SP7_TRAFFIC_CONFIRMATORY_v1/figures/fig-sp7-delivery-matrix.pdf}
-  \caption{Tasa de entrega por escenario y método en SP7-C. El fallo sin reserva se concentra en el pasillo bidireccional.}
-  \label{fig:sp7-delivery-matrix}
-  \viuownsource
-\end{figure}
-\fi
 
-El método completo alcanzó un tiempo medio de terminación de \SPSevenProposedMakespan{} y \SPSevenProposedMessages{} mensajes por mundo. Quedó \SPSevenHThreeEffect{} pasos por encima del oráculo restringido ($p_{\mathrm{Holm}}=\SPSevenHThreePHolm$), cuyo promedio fue \SPSevenOracleMakespan{}. La CPU media fue \SPSevenProposedRuntime{}~ms frente a \SPSevenOracleRuntime{}~ms para enumerar el catálogo. Esta diferencia mide el coste combinatorio interno y carece de interpretación como escalabilidad.
+El método completo alcanzó un tiempo medio de terminación de \SPSevenProposedMakespan{} y contabilizó \SPSevenProposedMessages{} mensajes por mundo. El oráculo restringido redujo el tiempo en \SPSevenHThreeEffect{} pasos ($p_{\mathrm{Holm}}=\SPSevenHThreePHolm$) hasta \SPSevenOracleMakespan{}. La CPU media fue \SPSevenProposedRuntime{}~ms para el juego y \SPSevenOracleRuntime{}~ms para enumerar el catálogo; esta comparación caracteriza el coste interno de esas implementaciones.
 
-En conjunto, la reserva aporta entrega, la penalización reduce el tiempo y el oráculo conserva \SPSevenHThreeEffect{} pasos de ventaja. No se ejecutan CBS, ECBS ni ORCA: el oráculo agota el catálogo de dos rutas, y ampliarlo permitiría evaluar otros planificadores. Cero conflictos significa exclusión discreta, no distancia continua. Además, el recuento de mensajes omite bytes, retardo y pérdida. El resultado queda limitado a este ejecutor.
+La reserva recuperó la entrega en los pasillos opuestos y la penalización redujo cuatro pasos el tiempo medio respecto de su ablación. El oráculo mantiene \SPSevenHThreeEffect{} pasos de ventaja dentro del catálogo de dos rutas. La comparación no incluye CBS, ECBS u ORCA, y el recuento de comunicación registra mensajes sin modelar bytes, retardo o pérdida.
 
 \subsubsection{Síntesis}
 
-La selección finita de rutas posee un potencial exacto y termina bajo mejoras estrictas. Solo con accesibilidad y $\lambda_7>\theta_7$ los Nash quedan libres de recursos compartidos. Los pasillos y cuellos evaluados impiden extender el resultado sin esas condiciones. La reserva local entregó las \SPSevenWorlds{} instancias. Al retirarla, la tasa perdió \SPSevenHOneEffectPP{} puntos porcentuales y aparecieron interbloqueos en pasillos opuestos.
+El potencial exacto garantiza terminación de las mejoras de ruta. Alcanzar $P_7=0$ exige además accesibilidad unilateral y $\lambda_7>\theta_7$, condiciones que fallan en algunos pasillos. La reserva local entregó las \SPSevenWorlds{} instancias; al retirarla, la tasa perdió \SPSevenHOneEffectPP{} puntos porcentuales por interbloqueos entre huellas opuestas.
 
-El resultado no implica planificación MAPF completa ni seguridad física. SP8 conserva el juego de rutas y añade escala, retardo y pérdida.
+La evidencia cubre exclusión y progreso en el ejecutor discreto descrito. SP8 reutiliza ese juego de rutas y degrada las vistas vecinales con escala, retardo y pérdida.

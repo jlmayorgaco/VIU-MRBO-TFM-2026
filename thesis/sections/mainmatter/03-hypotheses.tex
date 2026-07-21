@@ -1,79 +1,102 @@
 \section{Hipótesis de partida}
 \label{sec:hypotheses}
 
-Este trabajo parte de una hipótesis principal sobre la arquitectura completa y
-la descompone en afirmaciones contrastables para las capas estratégica, mecánica,
-operacional y de red. Cada una se evalúa dentro de los supuestos del subproblema
-correspondiente, mediante análisis formal, experimentos pareados o ablaciones. Por
-tanto, una propiedad verificada en una capa no se extiende automáticamente al
-sistema integrado.
+La hipótesis principal se contrasta mediante resultados parciales cuyos dominios
+no son intercambiables. Las hipótesis específicas fijan la propiedad esperada;
+la Tabla~\ref{tab:hypothesis-decision-rules} separa después el estimando y la regla
+de decisión.
 
 \subsection{Hipótesis principal}
 
 \noindent\textbf{HP.}
-Cuando la flota disponga de recursos suficientes, la configuración Cargo sea
-factible en el plano y el horizonte sea compatible con la duración de la tarea,
-una arquitectura híbrida que combine decisiones estratégicas locales,
-comunicación vecinal, cierres enteros y guardias físicas explícitas formará
-coaliciones factibles y completará la misión de transporte dentro de una región
-de operación medible. La comparación con referencias globales cuantificará la
-pérdida de calidad y el coste de la información. El apoyo a HP exige identificar
-una región reproducible de éxito y confirmar, mediante ablaciones, la contribución
-de sus bloques críticos. El enunciado no presupone estabilidad global del sistema
-híbrido, una ejecución enteramente distribuida ni validez en hardware.
+En una región donde la flota cubra la demanda, el certificado Cargo planar sea
+factible y el horizonte alcance para ejecutar la tarea, la arquitectura híbrida
+formará coaliciones factibles y completará el transporte. Las referencias
+globales medirán la brecha de calidad y el coste de usar información vecinal. El
+demostrador solo contrasta la compatibilidad funcional de su cadena concreta,
+pues sustituye parte de los mecanismos formales de SP2--SP6. La hipótesis tampoco
+incluye una prueba de estabilidad del sistema híbrido ni validación industrial o
+en hardware.
 
 \subsection{Hipótesis específicas}
 
 \noindent\textbf{H1a. Realizabilidad estratégica.}
 En instancias realizables de SP0 y SP1, una penalización mayor que el coste
 unilateral máximo hará coincidir los equilibrios de Nash puros con asignaciones
-de cobertura o cuota exacta. Un equilibrio deficitario que satisfaga los
-supuestos formales constituirá un contraejemplo.
+de cobertura o cuota exacta.
 
 \noindent\textbf{H1b. Cierre entero.}
 En condiciones de escasez, el cierre por ranking y cuórum (QR) aplicado a la
 relajación de Smith reducirá la fracción de robots que permanece en coaliciones
-parciales. La evidencia no apoyará esta afirmación si el efecto pareado frente a
-Smith continuo es nulo o adverso.
+parciales.
 
 \noindent\textbf{H1c. Incentivo de cuórum.}
 Con el cierre QR fijado, el beneficio de cuórum aumentará el valor de las cargas
-completadas frente al beneficio lineal. Solo recibirá apoyo si la comparación
-pareada favorece al incentivo de cuórum.
+completadas frente al beneficio lineal.
 
 \noindent\textbf{H2. Factibilidad mecánica.}
 La guardia vectorial de \emph{wrench} planar reducirá las falsas aceptaciones
-respecto al criterio escalar, sin una pérdida sistemática de cobertura útil en los
-mundos evaluados. La afirmación quedará sin apoyo si los falsos positivos no
-disminuyen o si la abstención del filtro impide su uso operativo.
+respecto al criterio escalar y conservará cobertura sobre las coaliciones
+factibles disponibles.
 
 \noindent\textbf{H3. Acoplamiento espacial.}
 Bajo el régimen de red degradada fijado, incorporar el coste espacial a la
 decisión estratégica reducirá el tiempo de terminación frente a la variante
-desacoplada. Para sustentar esta ventaja, el intervalo de confianza del efecto
-temporal deberá excluir cero en la dirección favorable. Una tasa de éxito
-coincidente, por sí sola, no demostrará equivalencia.
+desacoplada.
 
 \noindent\textbf{H4. Reparación.}
 Tras un fallo simple, el juego restaurará el certificado aditivo cuando la reserva
-completa cubra el déficit. En la misión integrada, activar la reparación aumentará
-el éxito frente a desactivarla. La hipótesis perderá apoyo si alguna instancia
-recuperable no restaura el certificado o si la diferencia de éxito no es
-favorable; el agotamiento del horizonte se registrará como fallo de recuperación.
+completa cubra el déficit. En la misión integrada, continuar con reemplazo
+aumentará el éxito frente a detener la misión tras el fallo.
 
 \noindent\textbf{H5a. Coste de escala.}
-En el catálogo binario de SP8, el coste de una activación local crecerá con el
-grado vecinal, mientras que el del oráculo exhaustivo implementado crecerá con el
-número de perfiles. La separación deberá observarse dentro del dominio en el que
-el oráculo certifica su solución.
+En el catálogo binario de SP8, una activación local tendrá coste proporcional al
+grado vecinal. El oráculo exhaustivo implementado crecerá con el número de
+perfiles dentro de su dominio certificado.
 
 \noindent\textbf{H5b. Calidad bajo escala.}
 La tasa global de perfiles libres de conflicto del método con retransmisión
-periódica no colapsará al aumentar la escala en el dominio ensayado. La hipótesis
-se refutará si la tasa alcanza cero en algún tamaño o si su deterioro contradice
-la conservación postulada.
+periódica se mantendrá por encima de cero en todos los tamaños ensayados.
+
+\subsection{Estimandos y reglas de decisión}
+
+La tabla asigna un criterio observable a cada predicción. Un intervalo que
+incluye cero deja una ventaja direccional sin sustento; no constituye una prueba
+de equivalencia.
+
+\begin{table}[H]
+  \centering
+  \caption{Estimandos y reglas de decisión para las hipótesis específicas.}
+  \label{tab:hypothesis-decision-rules}
+  \footnotesize
+  \begin{tabularx}{\textwidth}{p{1.0cm} p{5.0cm} Y}
+    \toprule
+    Hip. & Estimando principal & Regla de decisión \\
+    \midrule
+    H1a & Déficit y exceso en Nash puros realizables &
+    Un Nash deficitario bajo los supuestos formales contradice H1a. \\
+    H1b & Diferencia pareada de fracción parcial, QR menos Smith &
+    H1b requiere un efecto favorable; cero o signo adverso la deja sin apoyo. \\
+    H1c & Diferencia pareada de valor completado, cuórum menos lineal &
+    El intervalo debe favorecer al incentivo de cuórum. \\
+    H2 & Diferencia de falsos positivos y cobertura de la guardia &
+    Deben disminuir los falsos positivos sin perder coaliciones factibles
+    disponibles; la abstención se reporta por separado. \\
+    H3 & Diferencia pareada del tiempo de terminación &
+    El IC del 95\,\% debe excluir cero en la dirección favorable. \\
+    H4 & Restauración en casos recuperables y diferencia de éxito integrado &
+    Todos los casos recuperables deben restaurar el certificado y el efecto de
+    activar reparación debe ser favorable; un timeout cuenta como fallo. \\
+    H5a & Coste por activación y tiempo del oráculo en perfiles certificados &
+    Las curvas deben mostrar las dependencias previstas dentro del dominio común. \\
+    H5b & Tasa libre de conflictos por tamaño &
+    Una tasa igual a cero en cualquier tamaño refuta la conservación postulada. \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
 
 Los contrastes estocásticos emplearán mundos y semillas pareados. El análisis
-conservará las colisiones, los fallos de convergencia y los agotamientos del
-horizonte. Las pruebas de SP5 y SP7 se interpretarán como evidencia local sobre
-seguridad y tráfico, no como una garantía global del sistema integrado.
+mantendrá en el denominador colisiones, fallos de convergencia y agotamientos del
+horizonte. SP5 evalúa seguridad física local y SP7 exclusión lógica de tráfico;
+sus resultados conservan esos dominios.

@@ -1,39 +1,40 @@
 \begin{viuabstract}{Resumen}
-Este TFM evalúa una arquitectura híbrida e interpretable para formar
-coaliciones de robots heterogéneos y transportar una carga
-en modalidad Cargo. Combina juegos potenciales, cierre entero, umbrales de
-servicio, guardia planar de \emph{wrench}, control de pose, filtrado de seguridad,
-reparación tras fallos, reserva de rutas y mensajería vecinal. No se presenta
-como completamente distribuida: varios cierres, agregados, optimizadores por
-carga y el registro del simulador mantienen dependencias globales.
+Formar una coalición de robots móviles heterogéneos exige decidir qué robots
+pueden transportar juntos una carga y conservar esa decisión durante el
+movimiento. La arquitectura evaluada articula mecanismos interpretables en varias capas.
+La modalidad principal, \emph{Cargo}, representa una carga apoyada sobre
+una coalición rígida y enlaza juegos potenciales con cierre entero, verificación
+mecánica, control de pose, seguridad, reparación y comunicación vecinal. La
+implementación es híbrida, pues agregados, optimizadores por carga y el
+registro del simulador consultan información global.
 
-La investigación descompone el problema en SP0--SP8 y emplea demostraciones,
-oráculos acotados, baselines, ablaciones e intervalos de
-confianza del 95\,\%. Los resultados formales delimitan equilibrios de asignación,
-cuota y \emph{wrench}, estabilidad local con contactos fijos y terminación finita
-de los juegos de reparación y rutas.
+El análisis avanza desde la asignación uno a uno hasta la coordinación bajo
+redes imperfectas. Se caracterizan los equilibrios de asignación y cuota; se
+establecen condiciones de factibilidad planar de \emph{wrench}; se demuestran
+la estabilidad local con contactos fijos y la terminación de los juegos finitos de
+reparación y rutas. La evaluación compara métodos en mundos pareados mediante
+referencias globales acotadas, ablaciones e intervalos de confianza del
+95\,\%.
 
-En 600 mundos, la guardia mecánica redujo en 0.333 los falsos positivos. El
-juego de reparación restauró el certificado aditivo en 360 casos. La campaña
-Cargo integró reclutamiento, acoplamiento,
-transporte planar reducido, obstáculo, fallo y reemplazo, y completó 359 de 360
-misiones sin intersección carga--obstáculo durante el transporte. No se sustentó
-la ventaja temporal prevista para el coste espacial. Retirar la seguridad
-redujo el éxito en 0.996 bajo obstáculo. Desactivar la reparación lo redujo en
-0.989 bajo fallo. Con pérdida de paquetes de 0.25 y retardo de hasta dos eventos,
-las variantes vecinal y de información perfecta completaron 90/90 misiones. En
-SP8, 900 mundos hasta 128 robots mostraron que retransmitir elevó en 0.054 la
-tasa libre de conflictos, con 261.3 mensajes adicionales por agente, mientras
-la calidad colapsó en el mayor tamaño nominal. Un piloto cinemático
-tridimensional comprobó geometría y detectó bloqueos, no dinámica física ni
-rendimiento industrial.
+En 600 mundos, la verificación planar de factibilidad mecánica redujo en 0.333 la tasa
+de falsos positivos. El juego de reparación restauró los 360 certificados
+recuperables. El demostrador Cargo completó 359 de 360 misiones sin intersección
+entre la carga y los obstáculos durante el transporte. El contraste temporal no
+respaldó la ventaja prevista del término de coste espacial. En SP8, retransmitir elevó en
+0.054 la tasa libre de conflictos y añadió 261.3 mensajes por agente; esa tasa
+llegó a cero con 128 robots. Un piloto cinemático tridimensional registró
+bloqueos en los tres escenarios congestionados.
 
-La evidencia respalda una composición planar en los regímenes ensayados, no una
-garantía híbrida global. Quedan fuera soporte tridimensional, contacto
-rueda--suelo, red móvil, hardware y empuje mediante
-\emph{caging}.
+Las garantías formales se aplican bajo los supuestos declarados.
+Cargo aporta evidencia de compatibilidad funcional. La campaña integrada sustituye algunos
+mecanismos de SP2--SP6 y, por ello, no establece una garantía distribuida para
+el sistema completo. Aún requieren validación directa la dinámica
+tridimensional, el contacto rueda--suelo, las redes conmutadas, el hardware y el
+transporte por \emph{caging}.
 
-\keywords{Palabras clave}{coordinación multi-robot, robots móviles autónomos, formación de coaliciones, juegos potenciales, transporte cooperativo}
+\keywords{Palabras clave}{coordinación multi-robot,
+  robots móviles autónomos, formación de coaliciones,
+  juegos potenciales, transporte cooperativo}
 \end{viuabstract}
 
 \clearpage

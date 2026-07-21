@@ -2,12 +2,13 @@
 \label{sec:methodology}
 
 Se estudia una flota de AMR heterogéneos que forma coaliciones y transporta
-cargas entre una pose inicial y una pose objetivo. El modo principal es Cargo
-planar soportado. Caging se define como extensión secundaria y no hereda la
-validación de Cargo. El trabajo cubre decisión estratégica, factibilidad física,
-movimiento, obstáculos, fallo de un robot, tráfico y comunicación imperfecta.
-Quedan fuera el contacto tridimensional, la percepción real y la validación en
-hardware.
+cargas entre una pose inicial y una pose objetivo. El trabajo adopta Cargo planar
+soportado como modo primario: los robots ocupan puntos de apoyo conocidos y
+transmiten fuerza y momento a un cuerpo compuesto. La extensión caging se limita
+a su definición geométrica y a contactos unilaterales. La evidencia abarca la
+asignación, la factibilidad física, el movimiento, los obstáculos, el fallo de un
+robot, el tráfico y la comunicación imperfecta. El contacto tridimensional, la
+percepción real y la validación en hardware permanecen fuera de la campaña.
 
 \subsection{Alcance, modelo y control}
 \label{sec:method_model_scope}
@@ -27,11 +28,11 @@ El robot \(i\) es un uniciclo con estado
     \label{eq:method_common_model}
 \end{equation}
 
-La Figura~\ref{fig:method-unicycle-fleet} muestra la interpretación geométrica
-del modelo: la orientación fija la dirección de avance de cada AMR, mientras
-que \(v_i\) y \(\omega_i\) gobiernan su traslación y giro, respectivamente.
-El radio \(R_c\) determina qué robots pueden intercambiar mensajes vecinales.
+Geométricamente, \(\theta_i\) fija la dirección de avance, \(v_i\) gobierna la
+traslación y \(\omega_i\) el giro. Dos robots intercambian mensajes vecinales
+cuando su separación no supera el radio \(R_c\).
 
+\iffalse
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}[
@@ -103,13 +104,15 @@ El radio \(R_c\) determina qué robots pueden intercambiar mensajes vecinales.
     \label{fig:method-unicycle-fleet}
     \viuownsource
 \end{figure}
+\fi
 
-Cada robot usa estado propio, percepción local y mensajes de los vecinos dentro
-del radio de comunicación. El cierre entero, algunos agregados por carga y los
-certificados físicos conservan información global en varias campañas; por ello,
-la implementación evaluada es híbrida. La simulación es digital, con paso
-\(\Delta t\) declarado y actualizaciones locales asíncronas, sin rondas globales
-obligatorias.
+Las campañas locales actualizan cada robot con estado propio y mensajes recibidos
+dentro del radio de comunicación. El cierre entero, algunos agregados por carga
+y los certificados físicos consultan información global, de modo que la
+implementación evaluada es híbrida. Toda simulación digital declara su paso
+\(\Delta t\). Varios SP ejecutan mejores respuestas asíncronas; el demostrador
+Cargo, en cambio, completa siete o diez eventos de comunicación antes de cada
+selección. Cada resultado se interpreta bajo el régimen temporal que lo produjo.
 
 \subsection{Cargo y caging}
 \label{sec:method_physical_modes}
@@ -130,17 +133,25 @@ residual normalizado es menor que la tolerancia:
     W_k^d=-K_Pe_k^L-K_D\dot q_k^L.
     \label{eq:method_cargo_certificate_control}
 \end{equation}
-El primer término certifica el \emph{wrench}; el segundo regula la pose. El modelo
-supone contactos fijos, límites de actuación y dinámica planar reducida.
+En SP3, \(W_k^d\) se sustituye por la demanda estática
+\(W_k^{\mathrm{dem}}\); la forma PD corresponde al transporte de SP4.
+Aquí, \(\rho_k^W\) certifica la realizabilidad del \emph{wrench} y \(W_k^d\)
+genera la referencia de pose. El modelo supone contactos fijos, límites de
+actuación y dinámica planar reducida; bajo esos supuestos, la guardia se valida
+en SP3--SP4. El demostrador integrado admite coaliciones mediante un criterio
+agregado de cardinalidad, carga útil y fuerza, seguido por una distribución del
+\emph{wrench}. Su evidencia establece compatibilidad funcional, mientras que el
+certificado de~\eqref{eq:method_cargo_certificate_control} queda circunscrito a
+SP3--SP4.
 
-En caging, cada contacto es unilateral: el robot puede empujar, pero no tirar de
-la carga. La configuración solo se considera caging si pertenece a
-\(\mathcal C_k^{\mathrm{cage}}\), es decir, si la carga no tiene una ruta continua
-de escape con los robots fijados. Esta condición depende de la geometría y de la
-resolución usada para construir el espacio libre. No se usa el certificado de
-\emph{wrench} de Cargo ni su prueba de estabilidad; la
-Figura~\ref{fig:method-cargo-caging} contrasta las dos interfaces.
+En caging, la fuerza normal satisface \(f_n\geq0\), por lo que cada robot empuja
+la carga desde un contacto unilateral. Una configuración pertenece a
+\(\mathcal C_k^{\mathrm{cage}}\) cuando la carga carece de una ruta continua de
+escape con los robots fijados. La geometría y la resolución del espacio libre
+determinan esta condición. Su validación exige una campaña propia, distinta de
+la prueba de estabilidad y del certificado de \emph{wrench} de Cargo.
 
+\iffalse
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}[
@@ -224,23 +235,22 @@ Figura~\ref{fig:method-cargo-caging} contrasta las dos interfaces.
     \label{fig:method-cargo-caging}
     \viuownsource
 \end{figure}
+\fi
 
 \subsection{Aporte y validación por subproblema}
 \label{sec:method_sp_validation}
 
-El problema se divide en nueve subproblemas, SP0--SP8, porque reúne cuestiones
-que suelen formularse y validarse por separado: asignación básica, coaliciones de
-tamaño variable, heterogeneidad de capacidades, factibilidad mecánica,
-acoplamiento y transporte, seguridad ante obstáculos, recuperación tras fallos,
-tráfico entre coaliciones y efecto de la escala y la comunicación imperfecta.
-Cada cuestión requiere un modelo, métricas y comparadores propios. La secuencia
-comienza con el caso mínimo de SP0 y añade una condición en cada escalón, de modo
-que pueda identificarse qué componente explica un fallo antes de evaluar la
-misión integrada.
+La secuencia SP0--SP8 incorpora, por etapas, asignación, coaliciones, mecánica,
+transporte, seguridad, recuperación, tráfico y red. Cada subproblema emplea el
+modelo y los comparadores vinculados con su pregunta local. Sus garantías se
+restringen a esos supuestos. La misión integrada comprueba que los módulos
+coexisten en un demostrador híbrido; no ejecuta un único juego común a los nueve
+SP.
 
+\iffalse
 \begin{table}[H]
     \centering
-    \caption{Aporte y validación previstos para SP0--SP8.}
+    \caption{Aporte y evidencia empleada en SP0--SP8.}
     \label{tab:method_sp_contribution_validation}
     \footnotesize
     \renewcommand{\arraystretch}{1.08}
@@ -257,25 +267,46 @@ misión integrada.
         SP3 & Guardia Cargo de fuerza y momento; definición secundaria de caging. &
         QP de esfuerzos, falsos positivos y cobertura; caging queda pendiente de campaña propia. \\
         SP4 & Acoplamiento y control de pose del cuerpo compuesto. &
-        Poses objetivo pareadas, saturación activa y comparación de controles. \\
+        Poses objetivo pareadas, límites registrados y comparación de controles; sin campaña de saturación persistente. \\
         SP5 & Filtrado de seguridad con obstáculos. &
         Obstáculo aislado, pasillo y cuello de botella; colisión, distancia mínima, bloqueo y ablación del filtro. \\
         SP6 & Re-reclutamiento tras un fallo simple. &
-        Fallo antes y durante el transporte; oráculo restringido y ablación sin reparación. \\
+        Fallo antes y durante el transporte; oráculo restringido y, en Cargo, comparación entre continuar con reemplazo y detenerse. \\
         SP7 & Juego de rutas y reserva de recursos entre coaliciones. &
         Cruces y pasillos; entrega, conflicto, espera, interbloqueo y referencia central restringida. \\
         SP8 & Coste de escala y degradación de la red. &
-        Barridos en flota, radio, retardo y pérdida; mensajes, CPU, memoria y gap cuando el oráculo termina. \\
+        Barridos en flota, radio, retardo y pérdida; mensajes, CPU, memoria y brecha cuando el oráculo termina. \\
         \bottomrule
     \end{tabularx}
     \viuownsource
 \end{table}
+\fi
+
+SP0--SP1 y SP5--SP8 disponen de generadores versionados. En SP2--SP4, las
+observaciones históricas, el postproceso, las tablas y las auditorías permiten
+recalcular las cifras publicadas. La ausencia de parte de los generadores
+originales impide producir mundos nuevos equivalentes; por eso, estas tres etapas
+se presentan como reanálisis.
+
+El tratamiento Cargo denominado ``vecinal'' propaga identificadores mediante
+\emph{gossip}. El ejecutor consulta el estado global para elegir un líder
+temporal y resuelve distancia, carga útil y fuerza en un registro también global.
+Cuando el grafo generado es disconexo, añade aristas de anillo antes de simular
+pérdida y retardo. El conteo de mensajes y bytes comprende el \emph{gossip}, pero
+excluye la elección de líder, los atributos y las consultas al registro. La cifra
+resultante es una cota inferior del tráfico exigido por una realización carente
+de esa infraestructura. La ablación ``sin guardia física'' retira a la vez el
+criterio agregado, el punto intermedio y el filtro, de modo que estima su efecto
+conjunto. La ablación ``sin reparación'' detiene la misión tras el fallo y mide
+el efecto de continuar con reemplazo frente a detenerse; no compara el juego SP6
+con otro reasignador.
 
 \subsection{Escenarios, variables y métricas}
 \label{sec:method_scenarios_metrics}
 
-Los escenarios se generan por mundo y se reutilizan entre tratamientos. La tabla
-siguiente resume qué se varía y qué se mide.
+Cada mundo se genera una vez y se reutiliza entre tratamientos. La
+Tabla~\ref{tab:method_scenarios_metrics} fija los factores manipulados y los
+endpoints correspondientes a cada familia de escenarios.
 
 \begin{table}[H]
     \centering
@@ -289,7 +320,7 @@ siguiente resume qué se varía y qué se mide.
         \midrule
         Asignación y coalición &
         \(N\), \(K\), cuotas, demanda total, capacidades, batería y distancia. &
-        Factibilidad, déficit, exceso, cargas completas, utilidad y gap. \\
+        Factibilidad, déficit, exceso, cargas completas, utilidad y brecha. \\
         Mecánica y transporte &
         Geometría de contacto, límites de fuerza, \emph{wrench}, pose objetivo y saturación. &
         Residual de \emph{wrench}, error de formación, acoplamiento, error de pose, tiempo y energía estimada. \\
@@ -320,30 +351,32 @@ semilla, y se ejecuta con todos los métodos. El efecto pareado es
     \label{eq:method_paired_effect}
 \end{equation}
 
-Las instancias pequeñas se verifican por enumeración u oráculo con gap. Las
-campañas usan al menos 30 semillas cuando el coste lo permite. McNemar exacto se
-aplica a respuestas binarias; Wilcoxon, a continuas u ordinales; Friedman, a tres
-o más métodos. Se reportan efecto, intervalo por \emph{bootstrap} pareado de 2000
-remuestreos y \(p\) corregido con Holm.
+Las instancias pequeñas se verifican por enumeración o mediante un oráculo con
+brecha registrada. Las campañas usan al menos 30 semillas cuando el coste lo
+permite. McNemar exacto contrasta endpoints binarios, Wilcoxon compara respuestas
+continuas u ordinales por pares y Friedman actúa como prueba ómnibus cuando
+intervienen tres o más métodos. Cada contraste informa el efecto, su intervalo
+obtenido con 2000 remuestreos de \emph{bootstrap} pareado y el valor \(p\)
+corregido mediante Holm.
 
 El modelo de CoppeliaSim representa un almacén de \(24\times18\)~m construido
 sobre la escena de AWS RoboMaker \parencite{awsRobomakerWarehouse2021}. Incluye
 estanterías, cuatro zonas de despacho y destino, un paso central compartido y
-cuatro bases para una flota de \AwsSceneRobots{} Pioneer P3-DX. La escena contiene
-\AwsSceneActiveLoads{} cargas activas y \AwsSceneQueuedLoads{} en cola, con
-requisitos de uno, dos o tres robots por carga. El sensado se limita a
-\AwsSceneSensingRadius{}~m y la comunicación a
+cuatro bases para \AwsSceneRobots{} Pioneer P3-DX. Opera con
+\AwsSceneActiveLoads{} cargas activas y \AwsSceneQueuedLoads{} en cola, cuyos
+requisitos abarcan uno, dos o tres robots. El radio de sensado es
+\AwsSceneSensingRadius{}~m y el de comunicación
 \AwsSceneCommunicationRadius{}~m.
 
-Cada ejecución reproduce la secuencia despacho, reclutamiento, aproximación,
-transporte y entrega. Las rutas atraviesan el paso central, donde coinciden las
-coaliciones con una carretilla, dos peatones controlados y un AMR libre. También
-se incluyen el fallo de un miembro, la incorporación de un reemplazo y un ciclo
-acelerado de retorno por batería. Se registran poses, enlaces de comunicación,
-detecciones, entregas, cola pendiente y estado del fallo. La
-Figura~\ref{fig:method-coppeliasim-warehouse} muestra el montaje durante una
-ejecución.
+Una ejecución recorre despacho, reclutamiento, aproximación, transporte y
+entrega. En el paso central, las coaliciones comparten espacio con una carretilla,
+dos peatones controlados y un AMR libre. El protocolo introduce además el fallo
+de un miembro, su reemplazo y un retorno acelerado por batería. Los registros
+contienen poses, enlaces de comunicación, detecciones, entregas, cola pendiente
+y estado del fallo. La vista del montaje acompaña los resultados del piloto
+industrial.
 
+\iffalse
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.76\textwidth]{../results/coppeliasim_validation/aws_industrial_adversarial_industrial2/aws_industrial_oblique_live.png}
@@ -354,7 +387,9 @@ ejecución.
     \viusource{elaboración propia sobre la escena AWS RoboMaker Small Warehouse
     World, modificada para este TFM \parencite{awsRobomakerWarehouse2021}}
 \end{figure}
+\fi
 
-CoppeliaSim comprueba la integración geométrica y el replay cinemático de estas
-interfaces. No modela el agarre, la fricción rueda--suelo ni la dinámica de
-contacto, y tampoco sustituye una validación en hardware.
+La evidencia de CoppeliaSim se limita a la integración geométrica y al
+\emph{replay} cinemático de estas interfaces. El agarre, la fricción
+rueda--suelo, la dinámica de contacto y el comportamiento en hardware requieren
+modelos y ensayos adicionales.

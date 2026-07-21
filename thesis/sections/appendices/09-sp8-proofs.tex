@@ -1,7 +1,7 @@
 \section{Demostraciones complementarias de SP8}
 \label{app:sp8-proofs}
 
-Las propiedades siguientes suponen un grafo de comunicación no dirigido y fijo durante cada ejecución, con catálogos y costes constantes.
+El potencial visible de SP8 se define sobre un grafo de comunicación no dirigido y fijo durante cada ejecución. La prueba mantiene constantes los catálogos y los costes.
 
 \subsection{Potencial exacto y terminación finita}
 
@@ -11,12 +11,12 @@ Supóngase $\widehat r_{ij}=r_j$ en toda arista usada por una actualización. Si
  -\lambda_8\sum_{j\in\mathcal N_i^8}
  \bigl(|\mathcal E_{ir_i'}^8\cap\mathcal E_{jr_j}^8|-|\mathcal E_{ir_i}^8\cap\mathcal E_{jr_j}^8|\bigr)=\Delta U_i^8.
 \]
-Así, $\Phi_8^G$ es potencial exacto bajo coherencia y toda mejora estricta termina tras, como máximo, $\prod_i|\mathcal R_i^8|-1$ cambios. Con copias obsoletas por retardo o pérdida, la identidad puede fallar y no se reclama mejora finita global.
+Bajo copias coherentes, la identidad anterior hace a \(\Phi_8^G\) un potencial exacto. La finitud del espacio acota toda trayectoria de mejoras estrictas por \(\prod_i|\mathcal R_i^8|-1\) cambios. Con copias obsoletas, el pago puede usar un término vecinal distinto del incluido en \(\Phi_8^G\); esa pérdida de identidad queda fuera del teorema de terminación.
 
 \subsection{Imposibilidad bajo partición permanente}
 
-Sean $i$ y $j$ coaliciones de componentes distintas de $G_C^8$, e $i$ tenga dos rutas locales $a,b$ de igual coste. Constrúyanse dos instancias con el mismo historial intracomponente de $i$: en la primera, el término remoto no observable $\Gamma(a,r_j)$ vale $0$ y $\Gamma(b,r_j)$ vale $1$. En la segunda se intercambian esos valores. El óptimo global exige decisiones opuestas, pero todo algoritmo determinista basado solo en el historial local produce la misma. No puede ser óptimo en ambas. El mismo argumento hace indistinguibles una interacción remota nula y otra no nula. Por ello ninguna regla estrictamente intracomponente garantiza, para toda la familia acoplada, optimalidad global ni detección de todas las interacciones remotas, como afirma la Proposición~\ref{prop:sp8-partition-limit}. Sí pueden existir garantías para familias restringidas con información común adicional.
+Sean $i$ y $j$ coaliciones de componentes distintas de $G_C^8$, y supóngase que \(i\) dispone de dos rutas locales \(a,b\) con igual coste. Dos instancias comparten el mismo historial intracomponente de \(i\). En una, \(\Gamma(a,r_j)=0\) y \(\Gamma(b,r_j)=1\); en la otra, los valores se intercambian. El óptimo global elige rutas opuestas, mientras cualquier regla determinista basada en ese historial idéntico produce la misma ruta en ambas instancias. Al menos una decisión será subóptima. La misma construcción, con interacción remota nula frente a no nula, impide detectar ambas desde observaciones intracomponente. La optimalidad puede recuperarse en familias restringidas que impongan \(\Gamma=0\) entre componentes o compartan esos términos remotos.
 
 \subsection{Efecto elemental de la retransmisión}
 
-Con pérdidas independientes, la probabilidad de que fallen los $s$ intentos es $p_{\mathrm{loss}}^s$. La cota no vale para pérdidas correlacionadas ni resuelve una partición con probabilidad efectiva de entrega nula.
+Con pérdidas independientes, probabilidad \(0\leq p_{\mathrm{loss}}<1\) y \(s\) intentos, la probabilidad de fallo conjunto es \(p_{\mathrm{loss}}^s\). Las pérdidas correlacionadas requieren su distribución conjunta, y una partición con probabilidad efectiva de entrega nula carece de una cota decreciente de este tipo.

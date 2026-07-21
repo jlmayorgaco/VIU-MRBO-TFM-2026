@@ -1,7 +1,13 @@
 \section{Conclusiones y recomendaciones}
 \label{sec:conclusions}
 
-La pregunta principal admite una respuesta condicionada: fue posible formar coaliciones y completar una misión Cargo en una planta planar reducida mediante una arquitectura híbrida e interpretable. Las garantías pertenecen a capas distintas. Un Nash no certifica viabilidad mecánica y una simulación satisfactoria no demuestra estabilidad global ni validez industrial.
+La pregunta principal admite una respuesta condicionada. Los contratos por
+capas permiten formar coaliciones y el demostrador Cargo completa una misión en
+una planta planar reducida mediante una arquitectura híbrida e interpretable.
+Sus reglas integradas no reproducen todos los mecanismos de SP2--SP6. Las
+garantías pertenecen a capas distintas: un Nash no certifica viabilidad mecánica
+y una simulación satisfactoria no demuestra estabilidad global ni validez
+industrial.
 
 \subsection{Contribución y resultados principales}
 
@@ -9,23 +15,64 @@ SP0--SP2 caracterizan la formación estratégica. La penalización suficiente ob
 
 SP3--SP4 introducen la interfaz física. En 600 instancias, la guardia de \emph{wrench} redujo en $0.333$ los falsos positivos, con cobertura $1.000$ y abstención $0.500$. El QP sigue siendo central y planar. El servocontrol de SP4 es localmente estable con contactos fijos y realización exacta. SP5--SP8 separan seguridad, recuperación, tráfico y red. SP6 restauró 360/360 certificados recuperables, SP7 excluyó conflictos lógicos sin representar cuerpos continuos y SP8 obtuvo una brecha media de $0.497$ en 450 mundos certificados, mientras la calidad cayó a cero en la mayor escala nominal.
 
-Cargo compone reclutamiento, acoplamiento, transporte, obstáculo, fallo y reemplazo. El método vecinal terminó 359/360 misiones sin intersección entre la huella compuesta y el obstáculo durante el transporte. Retirar el bloque de seguridad o la reparación redujo el éxito en $0.996$ y $0.989$ en sus contrastes. Con pérdida $0.25$ y retardo de hasta dos eventos, las variantes vecinal y perfecta completaron 90/90. La vecinal empleó 249.3 mensajes y 58.2~kB por mundo degradado. Industrial 2 expuso el límite de transferencia: los tres escenarios congestionados agotaron $60$~s sin entregas aunque no se observaran solapamientos.
+Cargo combina las seis etapas mediante reglas propias del ejecutor y terminó
+359/360 misiones sin intersección carga--obstáculo durante el transporte. Las
+ablaciones de seguridad y reparación redujeron el éxito en $0.996$ y $0.989$.
+Con pérdida $0.25$ y retardo de hasta dos eventos, las variantes vecinal y perfecta
+completaron 90/90; la primera empleó 249.3 mensajes y 58.2~kB por mundo. Estos
+datos acreditan compatibilidad funcional, no validación integrada de SP2--SP6.
+En Industrial 2, los tres escenarios congestionados agotaron $60$~s sin entregas
+aunque no se observaran solapamientos.
 
 \subsection{Cumplimiento de los objetivos}
 
-El objetivo general se cumple en formulación y composición funcional planar, y solo parcialmente en descentralización. OE1 formaliza asignación, cuotas y heterogeneidad, OE2 conecta certificado mecánico y pose con un QP por carga, OE3 evalúa obstáculo, fallo y tráfico sin confundir sus métricas y OE4 mide CPU, mensajes, bytes, retardo, pérdida y escala.
+El objetivo general se cumple parcialmente. Se formalizan los contratos entre
+capas y se demuestra una composición funcional planar, pero no una arquitectura
+completamente distribuida ni la integración exacta de todos los mecanismos
+propuestos. OE1 caracteriza asignación, cuotas y heterogeneidad. OE2 relaciona
+certificado mecánico y control de pose por separado; Cargo no incorpora el QP
+geométrico inicial, por lo que la conexión integrada queda parcial. OE3 evalúa
+obstáculo, fallo y tráfico sin confundir sus métricas. OE4 mide CPU, mensajes,
+bytes, retardo, pérdida y escala dentro de los modelos ensayados.
 
-OE5 conserva la trazabilidad entre formulación, configuraciones, semillas, datos, métricas, pruebas y manifiestos. Su cumplimiento es parcial: SP0, SP1, SP5--SP8 y Cargo son regenerables con los artefactos disponibles, mientras SP2--SP4 permiten reanalizar observaciones archivadas sin disponer de todos sus generadores históricos. El piloto CoppeliaSim aporta auditoría geométrica y reproducción cinemática. Queda fuera una validación dinámica independiente.
+OE5 se cumple como demostrador de compatibilidad funcional: reúne las seis
+etapas previstas, declara sus diferencias frente a SP2--SP6 y emplea ablaciones
+para los bloques de seguridad y reparación. No demuestra que las garantías de
+los SP sobrevivan a la composición. De forma independiente, la reproducibilidad
+es parcial: SP0, SP1, SP5--SP8 y Cargo son regenerables con los artefactos
+disponibles, mientras SP2--SP4 permiten reanalizar observaciones archivadas sin
+todos sus generadores históricos. El piloto CoppeliaSim aporta auditoría
+geométrica y reproducción cinemática, no validación dinámica independiente.
 
 \subsection{Respuesta a las preguntas de investigación}
 
-\textbf{RQ1.} Recursos suficientes y penalización acotada permiten cierre realizable. Bajo escasez se necesitan selección todo-o-nada y QR. La contribución marginal mejora la alineación, pero no hereda optimalidad social ni ejecución vecinal completa.
+\textbf{RQ1.} Recursos y penalización suficientes permiten un cierre realizable;
+la escasez exige selección todo-o-nada y QR. La contribución marginal mejora la
+alineación sin heredar optimalidad social ni ejecución vecinal completa.
 
-\textbf{RQ2--RQ3.} El acoplamiento entre decisión y movimiento fue operativo, pero no aceleró la misión: efecto $-0.086$~s, IC del 95\,\% $[-0.178;0.013]$ y $p_{\mathrm{Holm}}=0.068$. La factibilidad física exige $\boldsymbol W_k^{\mathrm{req}}\in\mathcal W_{C_k}$. Cardinalidad y servicio son condiciones previas y carecen por sí solos de carácter certificado.
+\textbf{RQ2.} El acoplamiento entre decisión y movimiento fue operativo, pero no
+aceleró la misión: efecto $-0.086$~s, IC del 95\,\% $[-0.178;0.013]$ y
+$p_{\mathrm{Holm}}=0.068$. La mensajería vecinal mantuvo la ejecución en el
+régimen degradado ensayado, aunque el registro global impide atribuir el
+resultado a coordinación local completa.
 
-\textbf{RQ4--RQ5.} Obstáculo, fallo, tráfico y red producen fronteras distintas. Retransmitir añadió $261.3$ mensajes por agente y mejoró $0.054$ la tasa libre de conflictos, sin conservar calidad a gran escala. El ejecutor Cargo resuelve identificadores mediante un registro global. La coordinación es híbrida y el coste de la descentralización combina información, tráfico y pérdida de calidad.
+\textbf{RQ3.} La factibilidad física exige
+$\boldsymbol W_k^{\mathrm{req}}\in\mathcal W_{C_k}$; cardinalidad y servicio no
+son certificados mecánicos. El QP evaluado es planar y supone contactos y
+demanda conocidos.
 
-La batería se representó mediante disponibilidad estática en SP2 y se varió en el piloto Industrial~2, con solo dos semillas por escenario. No se aisló causalmente su efecto ni se modelaron descarga y recarga durante las campañas confirmatorias.
+\textbf{RQ4.} SP6 restauró 360/360 certificados estáticos recuperables; Cargo,
+89/90 mundos con fallo al continuar con reemplazo. La red ensayada toleró
+pérdida $0.25$ y retardo de hasta dos eventos. La batería solo se modeló como
+disponibilidad en SP2 y se varió con dos semillas por escenario en el piloto.
+La exclusión lógica no evitó bloqueos congestionados.
+
+\textbf{RQ5.} Retransmitir añadió $261.3$ mensajes por agente y mejoró $0.054$
+la tasa libre de conflictos, sin conservar calidad a gran escala. El coste
+observado combina mensajes, CPU y pérdida de calidad; no incluye por completo
+el tráfico del registro global de Cargo.
+
+No se aislaron causalmente la batería ni sus procesos de descarga y recarga.
 
 \subsection{Estado de las hipótesis}
 
@@ -48,14 +95,17 @@ La Tabla~\ref{tab:conclusion-hypotheses} restringe cada estado al dominio ensaya
     H3 & No sustentada & $-0.086$~s, IC $[-0.178;0.013]$, $p_{\mathrm{Holm}}=0.068$. & Composición operativa sin ventaja temporal. \\
     H4 & Apoyo parcial & 360/360 restauraciones estáticas y mejora en 89/90 mundos Cargo con fallo. & Un agotamiento; sin nuevo contacto físico. \\
     H5a & Sustentada & Activación local $O(d_i)$ frente al oráculo implementado $O(2^A A^2)$. & La cota corresponde al oráculo enumerativo implementado y no a todo centralizador. \\
-    H5b & Refutada & Tasa libre de conflictos cero en el mayor tamaño nominal. & Juego discreto de rutas. \\
-    HP & Apoyo delimitado & 359/360 misiones Cargo con la métrica de huella--obstáculo. & Planta reducida, registro global y seguridad combinada. \\
+    H5b & Refutada & Tasa libre de conflictos cero en el mayor tamaño nominal. & Catálogo binario con dos perfiles sin conflicto garantizados; brecha sin certificar para $A>12$. \\
+    HP & Apoyo delimitado & 359/360 misiones del demostrador Cargo con la métrica de huella--obstáculo. & Compatibilidad funcional; planta reducida, registro global y seguridad combinada. \\
     \bottomrule
   \end{tabularx}
   \viuownsource
 \end{table}
 
-HP recibe apoyo delimitado. H3 no se sustenta y H5b queda refutada. La coexistencia funcional no implica rapidez, calidad uniforme, autonomía distribuida ni validez para cualquier flota, red o geometría.
+HP recibe apoyo delimitado como compatibilidad funcional del demostrador. H3 no
+se sustenta y H5b queda refutada. La coexistencia observada no valida la
+integración exacta de SP2--SP6 ni implica rapidez, calidad uniforme, autonomía
+distribuida o fiabilidad industrial.
 
 \subsection{Limitaciones}
 
@@ -63,4 +113,14 @@ No existe una función de Lyapunov común para el sistema híbrido. El modelo us
 
 \subsection{Recomendaciones y trabajo futuro}
 
-La prioridad es repetir la campaña preespecificada en una planta física independiente con fricción, contacto, agarre, actuadores, masa incierta, ruido y saturación. Un prototipo ROS~2 debería medir edad de información, bytes efectivos, memoria, energía y CPU con topología móvil y pérdidas correlacionadas. Después, múltiples cargas exigirán un oráculo de particionamiento/MILP espacio--temporal y comparadores publicados de subasta, MAPF y control. La rama de empuje/caging necesita un modelo separado de contacto unilateral y no debe compartir las pruebas de Cargo. Toda extensión debe conservar mundos pareados, ablaciones y los resultados negativos como regresión.
+La primera prioridad metodológica es sustituir en el demostrador las reglas
+empíricas por los mecanismos de SP2--SP6 que se quieran reclamar como integrados
+y repetir sus ablaciones. La validación posterior requiere una planta física
+independiente con fricción, contacto, agarre, actuadores, masa incierta, ruido y
+saturación. Un prototipo ROS~2 debería medir edad de información, bytes
+efectivos, memoria, energía y CPU con topología móvil y pérdidas correlacionadas.
+Múltiples cargas exigirán un oráculo de particionamiento/MILP espacio--temporal
+y comparadores publicados de subasta, MAPF y control. La rama de empuje/caging
+necesita un modelo separado de contacto unilateral y no debe compartir las
+pruebas de Cargo. Toda extensión debe conservar mundos pareados, ablaciones y
+resultados negativos como regresión.

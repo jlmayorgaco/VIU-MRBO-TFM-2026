@@ -1,7 +1,7 @@
 \section{Demostraciones complementarias de SP0}
 \label{app:sp0-proofs}
 
-Las pruebas reúnen la frontera de complejidad, la caracterización del juego y los certificados de eficiencia usados en SP0. Todos los resultados suponen costes normalizados, un espacio de acciones finito y, cuando se indica, $\lambda>\kappa_{\max}$.
+SP0 relaciona la complejidad de la asignación uno a uno con la dinámica de mejora del juego. El resultado de complejidad usa costes normalizados. La prueba de terminación opera sobre un espacio de acciones finito, y la factibilidad del equilibrio invoca \(\lambda>\kappa_{\max}\).
 
 \subsection{Integralidad y complejidad}
 \label{app:proof-sp0-complexity}
@@ -25,7 +25,7 @@ Sea $a$ infactible. Si falta una tarea y existe un robot inactivo, asignarlo red
 
 En un perfil factible, retirar un robot crea déficit. Trasladarlo a una tarea ocupada crea déficit y exceso, mientras que activar un robot sobre una tarea ocupada crea exceso. El ahorro de coste no supera $\kappa_{\max}<\lambda$, por lo que ninguna desviación mejora la utilidad. Los Nash son exactamente las $P(N,K)=N!/(N-K)!$ asignaciones factibles. Como $D=E=0$ en ese conjunto, los máximos globales del potencial coinciden con las asignaciones de coste mínimo.
 
-Cada revisión rentable aumenta estrictamente $\Phi_\lambda$. El espacio contiene $(K+1)^N$ perfiles, no puede repetirse ninguno y la trayectoria termina tras, como máximo, $(K+1)^N-1$ cambios. Bajo activación justa y ocupación coherente, el estado final es Nash y satisface $\boldsymbol z_0=\boldsymbol0$. El argumento no cubre retardos, errores de estimación ni dinámica física.
+Cada revisión rentable aumenta estrictamente \(\Phi_\lambda\). Los cambios aceptados visitan perfiles distintos de un conjunto con \((K+1)^N\) elementos, lo que acota la trayectoria por \((K+1)^N-1\) cambios. Bajo activación justa y ocupación coherente, el perfil terminal es Nash y satisface \(\boldsymbol z_0=\boldsymbol0\). El dominio de este resultado es el juego lógico con ocupación coherente; los modelos de red y planta se analizan por separado.
 
 \subsection{Eficiencia y precios}
 \label{app:proof-sp0-poa}
@@ -56,6 +56,6 @@ Sea $\kappa^{\mathrm{pad}}$ la matriz cuadrada aumentada con las $N-K$ tareas fi
 \]
 y $|\widehat\pi_{ij}-\bar\pi_j|\leq e_\pi^t$ implican complementariedad $(\varepsilon+2e_\pi^t)$ respecto al precio promedio. Al sumar sobre robots, los precios se cancelan porque $\sigma_t$ y una permutación óptima recorren una vez cada tarea. Se obtiene~\eqref{eq:sp0-local-price-gap}.
 
-Defínase $\mathcal D_0:=\lVert[\widehat{\boldsymbol\pi}_i^0-\bar{\boldsymbol\pi}^0]_{i=1}^N\rVert_F$, el desacuerdo inicial apilado, que acota $\max_i\lVert\widehat{\boldsymbol\pi}_i^0-\bar{\boldsymbol\pi}^0\rVert_\infty$. Para $W=I-\alpha L$ simétrica, grafo conexo y $0<\alpha<2/\lambda_N(L)$, restringir $W$ al subespacio ortogonal a $\mathbf1$ da $e_\pi^t\leq q^t\mathcal D_0$, con $q=\max_{r\geq2}|1-\alpha\lambda_r(L)|<1$. Resolver $q^t\mathcal D_0\leq\eta$ produce $t_\eta=\lceil\log(\mathcal D_0/\eta)/(-\log q)\rceil$ y el coste suficiente $2|\mathcal E_C|Nt_\eta$. La cota puede ser conservadora y cuenta valores escalares en vez de paquetes.
+Defínase $\mathcal D_0:=\lVert[\widehat{\boldsymbol\pi}_i^0-\bar{\boldsymbol\pi}^0]_{i=1}^N\rVert_F$, el desacuerdo inicial apilado, que acota $\max_i\lVert\widehat{\boldsymbol\pi}_i^0-\bar{\boldsymbol\pi}^0\rVert_\infty$. Para $W=I-\alpha L$ simétrica, grafo conexo y $0<\alpha<2/\lambda_N(L)$, restringir $W$ al subespacio ortogonal a $\mathbf1$ da $e_\pi^t\leq q^t\mathcal D_0$, con $q=\max_{r\geq2}|1-\alpha\lambda_r(L)|<1$. Resolver $q^t\mathcal D_0\leq\eta$ produce $t_\eta=\lceil\log(\mathcal D_0/\eta)/(-\log q)\rceil$ y el coste suficiente $2|\mathcal E_C|Nt_\eta$. Esta cota cuenta transmisiones escalares y usa la contracción modal de peor caso; el empaquetado de valores o una contracción observada mayor reducirían el coste real.
 
 Para la imposibilidad, considérense dos robots desconectados y dos tareas. El robot 1 observa la misma fila $(0,a)$, $0<a<1$, en dos instancias. Si la fila remota es $(0, 1)$, el óptimo le asigna la tarea 2. Si es $(1, 0)$, le asigna la tarea 1. Como su información local es idéntica, una decisión determinista coincide en ambos casos y falla en uno. Una red desconectada no puede garantizar optimalidad global para toda matriz de costes.

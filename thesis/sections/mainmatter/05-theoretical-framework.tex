@@ -1,18 +1,18 @@
 \section{Marco teórico y estado del arte}
 \label{sec:theoretical-framework}
 
-El transporte cooperativo enlaza selección, coalición, estimación, contacto y movimiento, pero cada una de esas capas responde a una pregunta distinta. La asignación identifica quién debería participar; la formación determina si esos robots constituyen un equipo compatible; la mecánica comprueba si el equipo puede producir las fuerzas y torques requeridos; y el control ejecuta el movimiento sin violar restricciones de seguridad. Confundir estas preguntas conduce a inferencias inválidas: un Nash puede ser ineficiente, una suma de capacidades puede ocultar un torque irrealizable, el consenso no estabiliza la planta y una trayectoria segura puede bloquearse.
+Cada capa del transporte cooperativo certifica una propiedad distinta. La asignación entrega una composición nominal; la comprobación mecánica decide si esa composición puede realizar el \emph{wrench} requerido, y el controlador regula el movimiento dentro de sus restricciones. Estas verificaciones deben conservarse separadas: un perfil Nash aún puede ser ineficiente y una suma de capacidades compatible puede ocultar un torque irrealizable.
 
-El marco se organiza alrededor de esas fronteras de inferencia. Primero se sitúa el transporte cooperativo como una composición de contratos entre capas. Después se revisan MRTA y formación de coaliciones, juegos y estimación distribuida, factibilidad mecánica, control, seguridad, recuperación, tráfico y comunicación imperfecta. La síntesis final no busca una genealogía exhaustiva, sino identificar qué propiedades aporta cada familia y qué interfaz permanece abierta para el problema focal.
+Un contrato entre capas especifica la salida producida, los supuestos que la sostienen y la comprobación que debe efectuar el consumidor. Este criterio permite comparar MRTA, juegos, estimación, mecánica y control por la propiedad que entregan a la etapa siguiente, en lugar de tratarlos como soluciones intercambiables.
 
 \subsection{Transporte cooperativo y contratos entre capas}
 \label{subsec:tf-amr-transport}
 
-Los AMR de almacén combinan autonomía local con reglas de circulación, despacho y prioridad propias del sistema logístico \parencite{azadeh2019warehouse}. En este trabajo, cada robot revisa su decisión con estado propio y mensajes vecinales. La infraestructura compartida y los cierres globales se declaran por separado.
+Los AMR de almacén toman decisiones locales dentro de reglas logísticas de circulación, despacho y prioridad \parencite{azadeh2019warehouse}. En la arquitectura estudiada, una revisión local consulta el estado del robot y los mensajes vecinales; el cierre entero y la infraestructura compartida aportan las dependencias globales descritas en la metodología.
 
-En una misión individual, asignar una tarea y seguir una ruta pueden tratarse como decisiones consecutivas. El transporte colectivo rompe esa separación porque el valor de asignar un robot depende de qué otros robots concurren, de cuándo alcanzan la carga y de los contactos que pueden ocupar. La decisión estratégica y el movimiento quedan así acoplados: desplazarse modifica costes, vecindades y disponibilidad, mientras una revisión de coalición cambia el objetivo físico de cada agente. Los enfoques de mercado para tareas complejas capturan parte de esta dependencia mediante descomposición y reasignación, pero la simultaneidad de una coalición física requiere restricciones adicionales \parencite{zlotStentz2006ComplexTasks}.
+En una misión individual, la asignación puede preceder al seguimiento de ruta. En transporte colectivo, el valor de incorporar al robot \(i\) depende del resto de \(\mathcal C_k\), de su tiempo de llegada y del contacto disponible. El movimiento cambia el coste y la vecindad usados por la siguiente revisión, y una nueva coalición modifica la referencia física del robot. Los mercados para tareas complejas representan esta dependencia mediante descomposición y reasignación \parencite{zlotStentz2006ComplexTasks}; una coalición física añade la restricción de concurrencia en contactos compatibles.
 
-Una carga puede exceder masa, dimensiones, torque o maniobrabilidad individuales. El equipo debe cerrarse, ocupar contactos, producir el \emph{wrench} y conservar seguridad \parencite{an2023cooperativeReview}. La Figura~\ref{fig:tf-problem-gap} muestra contratos entre capas. Ninguna flecha implica una garantía conjunta.
+Una carga que rebasa la capacidad individual exige primero cerrar \(\mathcal C_k\). Esa composición debe admitir contactos capaces de realizar el \emph{wrench}; solo entonces el control puede ejecutar el transporte con su filtro de seguridad \parencite{an2023cooperativeReview}. Las flechas de la Figura~\ref{fig:tf-problem-gap} codifican esas entregas entre capas. Una garantía conjunta requeriría además demostrar la composición de todos los contratos.
 
 \begin{figure}[htbp]
   \centering
@@ -54,9 +54,9 @@ Una carga puede exceder masa, dimensiones, torque o maniobrabilidad individuales
   \viuownsource
 \end{figure}
 
-El contrato de la Figura~\ref{fig:tf-problem-gap} también separa información disponible de información ideal. Una medición local puede alimentar una estimación de ocupación o recurso, pero esa estimación tiene edad, alcance y error. La decisión se ejecuta digitalmente en instantes muestreados y puede ser asíncrona entre robots, sin rondas globales de planificación. Esto no convierte al sistema en continuo ni ``sin reloj'': el integrador, el periodo de muestreo y la política de mensajes siguen condicionando la realización física.
+Cada estimación local debe acompañarse de su instante de actualización y del vecindario que la produjo. Su error entra en la decisión que consume la ocupación o el recurso estimado. La ejecución permanece digital aunque las activaciones sean asíncronas: el integrador, el periodo de muestreo y la política de mensajes determinan la trayectoria implementada y sustituyen cualquier interpretación literal de ``sin reloj''.
 
-Cargo, la modalidad primaria, modela carga y robots acoplados como un cuerpo planar soportado. La coalición debe mantener su geometría, repartir soporte y realizar el \emph{wrench} de traslación y giro. El empuje usa contactos unilaterales, y \emph{caging} exige además un certificado de confinamiento. Las dos modalidades pueden compartir asignación y estimación, pero no el modelo de contacto ni una prueba de estabilidad. Por esa razón, la rama de empuje/caging se conserva como contraste conceptual y extensión secundaria, no como evidencia intercambiable con Cargo \parencite{an2023cooperativeReview,rosenfelder2024force}.
+Cargo modela los robots acoplados y la carga soportada como un cuerpo planar. Su contrato físico comprende la geometría de apoyo y la realización del \emph{wrench}. Caging parte de fuerzas unilaterales y exige certificar el confinamiento del objeto. Ambas modalidades pueden consumir la misma asignación estratégica, pero sus modelos de contacto requieren pruebas diferentes. La evidencia física del TFM corresponde a Cargo; caging permanece como extensión conceptual \parencite{an2023cooperativeReview,rosenfelder2024force}.
 
 \subsection{Asignación y formación de coaliciones}
 \label{subsec:tf-mrta}
@@ -69,33 +69,33 @@ La asignación multi-robot de tareas (MRTA) clasifica relaciones entre robots, t
   \qquad x_{ik}\in\{0, 1\}.
   \label{eq:tf-coalition-resource-feasibility}
 \end{equation}
-Las restricciones imponen exclusividad, cuota y cobertura de recursos. Su satisfacción es estratégica: afirma que la composición nominal reúne suficientes contribuciones, pero todavía no asigna contactos ni demuestra que esas contribuciones puedan combinarse físicamente. Replicar una tarea en varias plazas independientes tampoco preserva simultaneidad, complementariedad ni la condición todo-o-nada de la misión. Por ello, el algoritmo húngaro es un referente adecuado para la asignación uno a uno, mientras MILP, \emph{set partitioning} o formulaciones equivalentes son referencias más fieles para coaliciones y capacidades múltiples.
+La Ecuación~\eqref{eq:tf-coalition-resource-feasibility} certifica exclusividad, cuota y cobertura nominal de recursos. La admisibilidad mecánica sigue pendiente porque \(x_{ik}\) carece de variables de contacto y fuerza. Dividir una carga entre plazas independientes también pierde la condición simultánea de cierre. El algoritmo húngaro sirve como referencia en el caso uno a uno; las coaliciones con recursos múltiples requieren una formulación MILP o de \emph{set partitioning}.
 
-La función objetivo introduce una segunda distinción. Minimizar distancia o coste de movilización puede favorecer equipos rápidos pero incapaces de cerrar una carga, mientras maximizar cobertura parcial puede dispersar recursos entre misiones que nunca se completan. En tareas obligatorias interesa regular déficit y exceso; bajo escasez también debe decidirse qué cargas se activan. La factibilidad de una instancia, la factibilidad de cada coalición y la calidad social de la asignación son, por tanto, propiedades diferentes.
+La función objetivo debe valorar el cierre de la carga antes de premiar cobertura parcial. De otro modo, un coste de movilización bajo puede corresponder a una coalición incompleta. Cuando la demanda total supera los recursos, una variable de activación decide qué cargas entran en servicio. Este modelo separa la factibilidad global de la instancia, la admisibilidad de cada coalición y el coste social de una asignación factible.
 
-Las subastas adjudican mediante precios: Bertsekas resuelve asignación clásica \parencite{bertsekas1988Auction}, MURDOCH usa contratos robóticos \parencite{gerkeyMataric2002MURDOCH}, CBBA resuelve paquetes por consenso y ACBBA admite desorden \parencite{choiBrunetHow2009CBBA,johnson2011acbba}. Estas familias ofrecen decisiones interpretables y permiten distribuir parte de la negociación. No obstante, una puja suele valorar una tarea o paquete desde el estado del postor; sin una regla de cierre común, varios ganadores compatibles en precio pueden llegar en momentos distintos o competir por el mismo puesto de contacto.
+Las subastas distribuyen la negociación mediante precios. Bertsekas resuelve la asignación clásica \parencite{bertsekas1988Auction}; MURDOCH emplea contratos entre robots \parencite{gerkeyMataric2002MURDOCH}, y CBBA/ACBBA construyen paquetes bajo consenso y mensajes desordenados \parencite{choiBrunetHow2009CBBA,johnson2011acbba}. El precio y el paquete son observables, pero una coalición física necesita además una regla común de cierre que sincronice la llegada y reserve puestos de contacto.
 
-Coaliciones \emph{anytime}, basadas en capacidades y hedónicas modelan composición y preferencia \parencite{shehoryKraus1998Coalition,vigAdams2006Coalition,dutta2021hedonic}. Su ventaja es representar explícitamente que la utilidad de un robot depende del grupo al que se incorpora. El coste aparece en el espacio combinatorio de subconjuntos y en la necesidad de verificar desviaciones o intercambios locales. Una coalición estable frente a esas desviaciones no tiene por qué minimizar el coste total, y una coalición socialmente valiosa puede resultar inalcanzable con la información o los movimientos disponibles.
+Los modelos \emph{anytime}, basados en capacidades y hedónicos hacen depender \(u_i\) de la coalición que recibe al robot \parencite{shehoryKraus1998Coalition,vigAdams2006Coalition,dutta2021hedonic}. Esa dependencia representa complementariedad, a cambio de explorar subconjuntos y comprobar desviaciones locales. La estabilidad obtenida se refiere a dichas desviaciones. El coste social mínimo exige una comparación adicional, y la alcanzabilidad depende de la información y de los movimientos admitidos.
 
-ASyMTRe sintetiza equipos a partir de esquemas funcionales e IQ-ASyMTRe descarta composiciones incompatibles por interacción o calidad de información \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}. Esta línea acerca ``capacidad disponible'' a ``coalición ejecutable'' porque comprueba cómo se conectan sensores, recursos y comportamientos. Sin embargo, la ejecutabilidad funcional no sustituye un certificado de soporte, contacto y \emph{wrench}; esas restricciones dependen de la pose y de los límites físicos en el instante de ejecución.
+ASyMTRe compone equipos mediante esquemas funcionales, e IQ-ASyMTRe descarta composiciones incompatibles por interacción o calidad de información \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}. Su salida certifica que sensores, recursos y comportamientos forman una cadena funcional. La realizabilidad física requiere todavía comprobar, en la pose de ejecución, que los contactos y los límites de actuación producen el \emph{wrench} solicitado.
 
-Trabajos de 2024--2025 enlazan asignación con tiempo o movimiento: Shan et al.
-usan subasta para llegadas dinámicas \parencite{shan2024collectiveTransport}. Dai
-y Bezerra et al. aprenden coaliciones y rutas o revisiones espaciales
+Los trabajos recientes incorporan distintos tipos de dinámica a MRTA. Shan et al.
+distribuyen la asignación del transporte colectivo con restricciones temporales
+\parencite{shan2024collectiveTransport}. Dai et al. aprenden formación y rutas, y
+Bezerra et al. emplean mapas espaciales e intención para revisar la asignación
 \parencite{dai2024dynamicCoalition,bezerra2025dynamicCoalition}. Qiu et al.
-actualizan capacidad consumida y Shida et al. excluyen tareas inviables
-\parencite{qiu2024payloadConsumption,shida2025infeasibleTasks}. Emplean capacidad
-nominal o aprendida, no un certificado conjunto de contacto, \emph{wrench},
-seguridad y recuperación. Los métodos aprendidos resultan útiles como comparadores de calidad empírica y adaptación, pero no ofrecen por sí mismos la trazabilidad requerida para el mecanismo principal. La brecha relevante no consiste en que MRTA carezca de métodos competitivos, sino en que la salida de asignación rara vez se expresa como un contrato verificable para las capas físicas posteriores.
+actualizan por consenso la capacidad consumida; Shida et al. aprenden a excluir
+tareas inviables \parencite{qiu2024payloadConsumption,shida2025infeasibleTasks}.
+Estas salidas dinámicas constituyen comparadores empíricos. El problema focal añade una interfaz explícita que entrega a las capas físicas la composición, el certificado mecánico y la condición de reapertura de la decisión.
 
 \subsection{Información local, juegos y optimización distribuida}
 \label{subsec:tf-games-consensus}
 
-En $\mathcal G(t)=(\Robots,\mathcal E(t))$, $\lambda_2(L)>0$ mide conectividad algebraica en grafos no dirigidos \parencite{bullo2009distributed}. Grafos conmutados requieren conectividad conjunta y cotas temporales \parencite{olfatiSaber2004switchingConsensus}. Esta descripción debe distinguir comunicación de sensado: un robot puede observar un obstáculo sin intercambiar mensajes con él, o recibir la intención de un vecino cuya carga no percibe directamente. El grafo especifica quién puede compartir estado, no qué magnitud conoce cada agente ni con qué precisión.
+En el grafo de comunicación \(\mathcal G_c(t)=(\Robots,\mathcal E_c(t))\), \(\lambda_2(L)>0\) mide conectividad algebraica cuando la topología es no dirigida \parencite{bullo2009distributed}. Las topologías conmutadas exigen conectividad conjunta dentro de intervalos acotados \parencite{olfatiSaber2004switchingConsensus}. Un grafo de sensado \(\mathcal G_s(t)\) distinto codifica los obstáculos y cargas observables. El modelo de observación completa ambos grafos con la magnitud recibida y su precisión.
 
-El consenso estático aproxima una cantidad fija; el consenso dinámico sigue señales agregadas que cambian mientras los robots se mueven y revisan su decisión \parencite{kia2019dynamicConsensus}. Su error depende de conectividad, variación de la entrada, ganancias y discretización. Alcanzar acuerdo sobre una ocupación estimada tampoco decide qué carga conviene atender, y mucho menos estabiliza la planta. La estimación es una interfaz de información cuyo residual debe propagarse a la decisión que la utiliza.
+El consenso estático aproxima una cantidad fija. El consenso dinámico sigue el agregado cuando sus entradas cambian durante el movimiento \parencite{kia2019dynamicConsensus}. La cota de error depende de la conectividad, la variación de entrada, las ganancias y la discretización. El residual de ocupación estimada debe entrar en el pago que usa esa ocupación; la selección de carga y la estabilidad de la planta pertenecen a contratos posteriores.
 
-La ejecución distribuida puede organizarse mediante activaciones locales y mensajes sin una ronda global. Los resultados asíncronos requieren, sin embargo, hipótesis como activación persistente y retardos acotados \parencite{tsitsiklis1986asynchronousOptimization}. Si un robot deja de revisar indefinidamente o usa una copia obsoleta fuera del modelo admitido, la trayectoria digital ya no coincide con la dinámica ideal. Por ello, ``distribuido'', ``asíncrono'' y ``robusto a red'' no son sinónimos.
+Las activaciones locales permiten ejecutar revisiones sin una ronda global. El resultado asíncrono citado supone activación persistente y retardos acotados \parencite{tsitsiklis1986asynchronousOptimization}; una copia que excede esa cota queda fuera de su dominio. Distribuido describe la localización de la información, asíncrono describe la agenda de actualización y robusto a red exige una propiedad adicional bajo el modelo de pérdida o retardo.
 
 Los juegos poblacionales describen preferencias continuas sobre acciones. Sea $x\in\Delta=\{x\in\mathbb R_+^K:\sum_kx_k=1\}$ la masa distribuida entre estrategias, $f_k(x)$ el pago de la estrategia $k$ y $\bar f(x)=\sum_kx_kf_k(x)$ el pago medio. En un Nash poblacional, toda estrategia con masa positiva alcanza el pago máximo bajo el estado agregado \parencite{sandholm2010population}. Los juegos de potencial añaden una función escalar cuya variación coincide con cada desviación unilateral:
 \begin{equation}
@@ -103,7 +103,7 @@ Los juegos poblacionales describen preferencias continuas sobre acciones. Sea $x
   =\Phi(a_i',a_{-i})-\Phi(a_i,a_{-i}).
   \label{eq:tf-exact-potential}
 \end{equation}
-Esta igualdad debe probarse para el pago definido. Descuentos, proyecciones o información obsoleta pueden romperla. Un potencial exacto ordena desviaciones individuales y garantiza existencia de equilibrio puro en juegos finitos, pero no selecciona necesariamente el equilibrio de menor coste social. También debe distinguirse el potencial analítico, evaluado con agregados coherentes, del potencial visible que cada robot reconstruye con mensajes locales.
+La identidad~\eqref{eq:tf-exact-potential} se verifica con el pago implementado, incluidas sus proyecciones y descuentos. En un juego finito, su cumplimiento ordena las desviaciones y asegura la existencia de al menos un equilibrio puro. La eficiencia de ese equilibrio se evalúa aparte mediante coste social. Bajo mensajes locales, cada robot reconstruye un potencial visible cuya coincidencia con el potencial analítico depende de la coherencia de los agregados.
 
 Cinco protocolos de revisión frecuentes son
 \begin{equation}
@@ -116,7 +116,7 @@ Cinco protocolos de revisión frecuentes son
 \end{aligned}
 \label{eq:tf-population-dynamics}
 \end{equation}
-donde $[z]_+=\max\{z,0\}$ y $\operatorname{BR}(x)$ es la envolvente convexa de las estrategias de pago máximo. Las cinco dinámicas difieren en continuidad, exploración, soporte y estacionariedad, pero ninguna produce por sí sola el cierre discreto.
+donde $[z]_+=\max\{z,0\}$ y $\operatorname{BR}(x)$ es la envolvente convexa de las estrategias de pago máximo. La continuidad, la exploración y la conservación del soporte cambian entre protocolos. El cierre entero se aplica después de esta evolución continua mediante una regla adicional.
 
 \begin{figure}[!htbp]
   \centering
@@ -236,23 +236,23 @@ donde $[z]_+=\max\{z,0\}$ y $\operatorname{BR}(x)$ es la envolvente convexa de l
     \end{scope}
   \end{tikzpicture}%
   }
-  \caption[Retratos cualitativos de cuatro dinámicas poblacionales sobre un símplex.]{Retratos cualitativos de cuatro dinámicas poblacionales sobre un símplex de tres estrategias. Las flechas muestran la geometría característica de revisión y el punto naranja identifica un estado estacionario interior. Los retratos no representan la integración de un mismo campo de pagos.}
+  \caption[Retratos cualitativos de cuatro dinámicas poblacionales sobre un símplex.]{Retratos cualitativos de cuatro dinámicas poblacionales sobre un símplex de tres estrategias. Las flechas muestran la geometría característica de revisión y el punto naranja identifica un estado estacionario interior. Por economía gráfica se omite BNN, cuya ley permanece definida en~\eqref{eq:tf-population-dynamics}. Los retratos no representan la integración de un mismo campo de pagos.}
   \label{fig:tf-population-simplex}
   \viusource{elaboración propia, inspirada en la representación de \textcite{sandholm2010population}}
 \end{figure}
 
-La mejor respuesta cambia de dirección al cruzar regiones de indiferencia, la replicadora no recupera una estrategia ausente, Smith compara pares, BNN activa excesos sobre $\bar f$ y logit mantiene masa positiva y aproxima la mejor respuesta al disminuir $\eta$. Estas diferencias importan durante transitorios y ante estrategias inicialmente ausentes, aun cuando varias dinámicas compartan estados estacionarios bajo pagos ideales.
+La Figura~\ref{fig:tf-population-simplex} permite leer dos diferencias decisivas. La replicadora conserva en cero una estrategia ausente, mientras logit le asigna masa positiva; la mejor respuesta cambia de dirección en las fronteras de indiferencia. Smith y BNN redistribuyen masa mediante comparaciones pares y excesos sobre \(\bar f\). El estado inicial y el valor de \(\eta\) pueden, por ello, alterar el transitorio aunque coincidan estados estacionarios bajo pagos ideales.
 
-La masa continua aún debe cerrarse como una coalición factible. Ese cierre transforma preferencias o proporciones en decisiones binarias sujetas a exclusividad, cuota y recursos. Una proyección, un ranking o un redondeo puede alterar el valor del potencial y reintroducir déficit; por tanto, la convergencia de la relajación no acredita convergencia de la ejecución entera. El contrato completo debe declarar tanto la dinámica de preferencias como la regla de cierre y el tratamiento de empates.
+La dinámica produce preferencias continuas y el cierre las transforma en \(x_{ik}\in\{0,1\}\) bajo exclusividad y recursos. Una proyección o un redondeo puede cambiar el potencial de la relajación y crear déficit. La convergencia continua solo se conserva en la ejecución entera si la regla de cierre y su resolución de empates preservan la propiedad demostrada; ambas forman parte del contrato implementado.
 
-Un Nash generalizado con restricciones compartidas admite, bajo regularidad, una desigualdad variacional con multiplicadores comunes \parencite{yi2019operatorGNE,franci2022stochasticGNE}. Las dinámicas primal--dual actualizan decisiones y multiplicadores bajo supuestos de convexidad, monotonicidad, conectividad y ganancias \parencite{cherukuri2016primalDual,koshal2016aggregative}. Los precios duales interpretan congestión o déficit y ayudan a distribuir restricciones acopladas, pero no convierten una relajación convexa en una solución entera ni implican óptimo social.
+Con restricciones compartidas y las condiciones de regularidad declaradas, un Nash generalizado admite una desigualdad variacional con multiplicadores comunes \parencite{yi2019operatorGNE,franci2022stochasticGNE}. Las dinámicas primal--dual actualizan esos multiplicadores junto con las decisiones bajo convexidad, monotonicidad y conectividad \parencite{cherukuri2016primalDual,koshal2016aggregative}. El precio dual representa congestión o déficit. La integralidad y el coste social requieren mecanismos y estimandos separados.
 
-Pasividad y Lyapunov requieren almacenamiento, suministro, dominio y signo de la derivada \parencite{vanderschaf2017passivity,ortega2002passivity}. La etiqueta no se transfiere si cambian puertos, contacto, saturaciones o integrador. En un sistema acoplado, una prueba para la capa estratégica y otra para la planta pueden coexistir sin formar automáticamente una prueba para la interconexión híbrida completa.
+Una prueba de pasividad identifica los puertos, la función de almacenamiento y el suministro; una prueba de Lyapunov fija el dominio y el signo de la derivada \parencite{vanderschaf2017passivity,ortega2002passivity}. Los cambios de contacto, la saturación o la discretización alteran esas hipótesis. La estabilidad de la interconexión híbrida exige una prueba composicional adicional incluso cuando la capa estratégica y la planta poseen resultados locales propios.
 
 \subsection{Contacto, formación y \emph{wrench}}
 \label{subsec:tf-rigidity-wrench}
 
-Conectividad no implica rigidez: un grafo conexo permite propagar información, mientras la rigidez fija localmente la forma salvo traslaciones y rotaciones del conjunto \parencite{desai2001formation,bullo2009distributed}. Una formación puede ser rígida en el modelo geométrico y aun así exceder fuerza, torque o adherencia. Cargo añade soporte, actuadores y una interfaz de contacto que transmite esfuerzos entre robots y carga.
+La conectividad del grafo certifica propagación de información; la rigidez geométrica conserva localmente la forma salvo movimientos rígidos del conjunto \parencite{desai2001formation,bullo2009distributed}. Una formación rígida todavía puede exceder los límites de fuerza o adherencia. Cargo incorpora una interfaz de apoyo que transmite a la carga los esfuerzos acotados de los actuadores.
 
 Si $\boldsymbol\lambda_C$ agrupa esfuerzos de contacto y $G_C(q)$ es la matriz de agarre, el \emph{wrench} aplicado es
 \begin{equation}
@@ -260,41 +260,41 @@ Si $\boldsymbol\lambda_C$ agrupa esfuerzos de contacto y $G_C(q)$ es la matriz d
   \qquad \boldsymbol\lambda_C\in\mathcal U_C.
   \label{eq:tf-grasp-map}
 \end{equation}
-Movimiento, resultante y fuerzas internas son distintos \parencite{nakamura1989dynamics,yoshikawa1993coordinated}. Dos repartos de esfuerzo pueden producir el mismo \emph{wrench} neto y, sin embargo, cargar de forma muy diferente los actuadores o los contactos. Las componentes internas no mueven el cuerpo ideal, pero sí afectan saturación, compresión y pérdida de contacto. Geometría y contacto determinan cierre \parencite{bicchi1995closure}. Por ello, la capacidad escalar no sustituye $W_k^{\mathrm{req}}\in\mathcal W_C(q)=\{G_C(q)\boldsymbol\lambda:\boldsymbol\lambda\in\mathcal U_C\}$.
+La Ecuación~\eqref{eq:tf-grasp-map} separa el \emph{wrench} resultante de las fuerzas internas \parencite{nakamura1989dynamics,yoshikawa1993coordinated}. Dos vectores \(\boldsymbol\lambda_C\) pueden producir la misma resultante y cargar de manera distinta los actuadores. Las componentes del núcleo de \(G_C(q)\) afectan compresión, saturación y pérdida de contacto aunque el cuerpo ideal no se mueva. La geometría determina el cierre \parencite{bicchi1995closure}; la prueba pertinente es \(W_k^{\mathrm{req}}\in\mathcal W_C(q)=\{G_C(q)\boldsymbol\lambda:\boldsymbol\lambda\in\mathcal U_C\}\), no una suma escalar de capacidades.
 
-La pertenencia al conjunto realizable es dependiente de la configuración. El mismo equipo puede producir una fuerza longitudinal en una pose y perder margen de torque después de rotar o recolocar un contacto. Un certificado útil para reclutamiento debe, por tanto, declarar qué demanda de \emph{wrench} cubre, con qué geometría, límites y tolerancia. La abstención ante un certificado inconcluso es distinta de declarar que la tarea es imposible.
+Como \(G_C\) y \(\mathcal U_C\) dependen de la configuración, el margen de torque puede cambiar al rotar la carga o recolocar un contacto. El certificado de reclutamiento debe asociar su veredicto con una demanda de \emph{wrench}, una geometría, límites de actuación y tolerancia. Un resultado inconcluso produce abstención; la imposibilidad exige demostrar que la demanda queda fuera del conjunto realizable.
 
-Una vez fijados equipo y contactos, el control de pose regula la carga como cuerpo compuesto. Las estructuras virtuales y los controles coordinados distribuyen referencias entre robots, mientras la optimización restringida puede repartir esfuerzo y evitar obstáculos para una formación dada \parencite{alonsomora2017transport,ebel2024cooperative}. Esta literatura resuelve una parte esencial del transporte, pero suele comenzar después de que la composición física ya ha sido elegida.
+Con \(\mathcal C_k\) y los contactos fijados, el controlador regula la pose del cuerpo compuesto. Las estructuras virtuales distribuyen referencias entre robots, y la optimización restringida reparte esfuerzo o impone evitación para esa formación \parencite{alonsomora2017transport,ebel2024cooperative}. Estos resultados consumen un equipo ya elegido, por lo que el reclutamiento debe entregarles una composición mecánicamente admisible.
 
-Las pruebas de estabilidad para el seguimiento de pose requieren una planta, un error definido en un marco de referencia y límites sobre perturbaciones y saturación. En un modelo planar rígido pueden estudiarse energía, amortiguamiento o una función de Lyapunov local. Si los contactos cambian, un robot se retira o el \emph{wrench} solicitado no se realiza, la prueba debe incorporar explícitamente ese residual o restringirse al régimen de contacto fijo.
+Una prueba de seguimiento fija la planta, el marco del error y los límites de perturbación. En el modelo planar rígido, una función de Lyapunov local puede incorporar amortiguamiento y residual de \emph{wrench}. Cuando cambia un contacto o se retira un robot, el dominio de contacto fijo deja de aplicar y la coalición debe recertificarse antes de reutilizar el resultado.
 
-En empuje, $\mathcal U_C$ impone unilateralidad y fricción, y la pérdida de contacto forma parte de la dinámica. El \emph{caging} exige que la configuración de robots confine el objeto; rodearlo visualmente no basta \parencite{pereira2004caging,fink2008caging}. Esta diferencia justifica mantener separadas las ramas físicas: un certificado de soporte y \emph{wrench} para Cargo no prueba confinamiento, y un certificado geométrico de \emph{caging} no acredita reparto de soporte. En ambos casos permanece el problema adicional de seleccionar y adaptar el equipo con información local.
+En empuje, \(\mathcal U_C\) incorpora unilateralidad y fricción, y la dinámica admite pérdida de contacto. El certificado de \emph{caging} comprueba que la configuración confina el objeto \parencite{pereira2004caging,fink2008caging}. Cargo, en cambio, certifica soporte y realización de \emph{wrench}. La selección estratégica puede alimentar ambas ramas, pero cada una conserva su propio contrato físico.
 
 \subsection{Seguridad, fallos y red imperfecta}
 \label{subsec:tf-industrial-constraints}
 
-La evitación reactiva comienza con campos que suman atracción al objetivo y repulsión de obstáculos. Su bajo coste permite actuar en tiempo real, pero los mínimos locales impiden deducir llegada al destino \parencite{khatib1986obstacle}. Los obstáculos de velocidad trasladan la predicción de colisión al espacio de velocidades; RVO reparte la maniobra entre agentes y ORCA la expresa mediante semiplanos recíprocamente admisibles \parencite{vandenberg2008rvo,vandenberg2011orca}. Estas construcciones dependen de reciprocidad, horizonte y geometría, y no modelan por defecto una carga rígida con huella y dinámica propias.
+Los campos potenciales combinan atracción al objetivo y repulsión de obstáculos con bajo coste de cálculo. Sus mínimos locales permiten mantener separación y, al mismo tiempo, perder progreso hacia la meta \parencite{khatib1986obstacle}. RVO traslada la predicción al espacio de velocidades y reparte la maniobra; ORCA construye semiplanos recíprocamente admisibles \parencite{vandenberg2008rvo,vandenberg2011orca}. En una coalición Cargo, la reciprocidad, el horizonte y la geometría deben aplicarse a la huella del cuerpo compuesto.
 
-Las funciones de barrera de control (CBF) formulan seguridad como invariancia hacia delante de un conjunto. Un filtro CBF-QP modifica lo mínimo posible el control nominal para satisfacer desigualdades de barrera, siempre que el modelo, el grado relativo, el estado disponible y la factibilidad del problema sean los declarados \parencite{ames2017cbf}. Los certificados distribuidos permiten imponer separación entre robots, pero pueden necesitar frenado de emergencia y resultar conservadores \parencite{wang2017barrier}. Para una coalición Cargo, la barrera debe aplicarse a la huella compuesta o a una aproximación conservadora, no solo a los centros de los AMR.
+Una CBF define un conjunto seguro y una condición de invariancia hacia delante. El filtro CBF-QP proyecta el control nominal sobre las desigualdades admisibles bajo el modelo, el grado relativo y el estado declarados \parencite{ames2017cbf}. Los certificados distribuidos imponen separación entre pares y pueden recurrir a frenado de emergencia \parencite{wang2017barrier}. Para Cargo, la función de barrera debe representar la huella compuesta o una envolvente conservadora de ella.
 
-Seguridad y vivacidad son propiedades independientes. Un robot detenido mantiene distancia y puede satisfacer una barrera indefinidamente sin completar la misión. Del mismo modo, una velocidad nominal segura puede dejar de serlo después del reparto de \emph{wrench}, la saturación o la integración digital. Conviene distinguir al menos tres estados: acción nominal, acción filtrada y acción realmente ejecutada. La evidencia de distancia mínima muestreada solo caracteriza los instantes observados, salvo que exista una prueba que cubra el intervalo entre muestras.
+La invariancia del conjunto seguro y la llegada al destino exigen endpoints distintos. Una detención puede conservar distancia durante todo el horizonte y terminar sin entrega. Además, la saturación o el reparto de \emph{wrench} pueden separar la acción ejecutada de la orden nominal y de la salida del filtro. La distancia mínima muestreada caracteriza los instantes registrados; cubrir el intervalo entre muestras requiere una cota continua adicional.
 
-La recuperación añade otra transición entre capas. ALLIANCE usa impaciencia y aquiescencia para activar alternativas ante bajo desempeño, mientras las subastas dinámicas vuelven a adjudicar tareas después de eventos \parencite{parker1998alliance,nanjanath2006dynamicAuctions}. Estos mecanismos muestran que tolerancia a fallos no equivale a mantener una asignación estática. En tareas débilmente acopladas puede bastar con sustituir al ejecutor; en transporte colectivo debe reconstruirse la composición del equipo.
+ALLIANCE activa alternativas mediante impaciencia y aquiescencia, y las subastas dinámicas reabren la adjudicación después de un evento \parencite{parker1998alliance,nanjanath2006dynamicAuctions}. En una tarea débilmente acoplada, esa revisión puede sustituir a un ejecutor. El transporte colectivo debe además reconstruir \(\mathcal C_k\) porque el fallo cambia una composición compartida.
 
-La retirada de un robot de Cargo cambia simultáneamente soporte, geometría y conjunto realizable de \emph{wrench}. Una reparación estratégica solo es útil si existe reserva alcanzable, se detecta el fallo con suficiente antelación y la nueva coalición recupera el certificado físico antes de agotar el margen seguro. También debe distinguirse reparación mínima de reparación barata: eliminar miembros redundantes puede reducir coste, pero una dinámica local no garantiza escoger la combinación socialmente óptima. Si la capacidad remanente es insuficiente, abortar o detener la carga es un resultado correcto y no un fallo del reclutamiento.
+La retirada de un miembro modifica la geometría de apoyo y el conjunto realizable de \emph{wrench}. La reparación necesita una reserva alcanzable y tiempo suficiente para recertificar la nueva coalición antes de consumir el margen seguro. La minimalidad por inclusión elimina miembros redundantes; el coste mínimo compara además todas las combinaciones admisibles. Cuando la capacidad remanente resulta insuficiente, el resultado correcto es detener o abortar la carga.
 
-El tráfico entre coaliciones introduce conflictos espacio--temporales que la evitación reactiva no resuelve necesariamente. En MAPF, CBS separa detección de conflictos y planificación individual, con completitud y optimalidad en el modelo discreto, mientras ECBS intercambia optimalidad por una cota de suboptimalidad \parencite{sharon2015cbs,barer2014ecbs}. Para cuerpos extensos, LA-MAPF incorpora la huella geométrica y sus conflictos \parencite{li2019largeAgentMapf}. Métodos de reparación por grandes vecindarios, como MAPF-LNS2, buscan escalar mediante replanificación parcial sin heredar la cota de ECBS \parencite{li2022mapfLns2}.
+El tráfico entre coaliciones requiere resolver conflictos espacio--temporales además de evitar colisiones reactivamente. CBS alterna detección de conflictos y planificación individual, con completitud y optimalidad en su modelo discreto; ECBS acepta suboptimalidad acotada para reducir coste \parencite{sharon2015cbs,barer2014ecbs}. LA-MAPF incorpora la huella de cuerpos extensos \parencite{li2019largeAgentMapf}. MAPF-LNS2 escala mediante reparaciones parciales de gran vecindario y carece de la cota propia de ECBS \parencite{li2022mapfLns2}.
 
-Estos planificadores proporcionan baselines centrales o referencias para SP7, pero su seguridad es lógica dentro del grafo y del modelo temporal adoptado. Reservar un vértice o una arista evita coincidencias discretas; no garantiza separación euclídea durante la interpolación ni respeta automáticamente la cinemática de una carga. A la inversa, ORCA o una CBF pueden evitar colisiones locales sin resolver prioridades de pasillo y provocar bloqueo mutuo. La integración requiere una interfaz explícita entre ruta, reserva, huella y control continuo.
+SP7 usa esos planificadores como referencias centrales de tráfico. Una reserva de vértice o arista certifica exclusión dentro del grafo y del tiempo discretizado. La separación euclídea entre muestras depende de la interpolación, la huella y la cinemática. ORCA o una CBF cubren esa capa local, aunque las prioridades de pasillo requieren todavía arbitraje para evitar bloqueo mutuo. La interfaz integrada enlaza ruta reservada, huella y control continuo.
 
-Retardo, pérdida y topología alteran la información con la que se evalúan pagos, conflictos y reservas. El \emph{gossip} aleatorio caracteriza el coste de mezcla de promedios \parencite{boyd2006randomizedGossip}; el consenso con enlaces imperfectos depende del modelo estadístico y de la conectividad \parencite{kar2009imperfectConsensus,nedic2010constrainedConsensus}. ACBBA también se ha evaluado con pérdida de mensajes \parencite{rantanen2018lossyAcbba}. Ninguna de estas garantías cubre por defecto pérdidas en ráfaga, particiones persistentes, decisiones enteras y una planta móvil dentro de un único resultado.
+El retardo, la pérdida y la topología modifican las copias usadas para evaluar pagos y reservas. El \emph{gossip} aleatorio caracteriza el coste de mezclar promedios \parencite{boyd2006randomizedGossip}; el consenso con enlaces imperfectos depende del modelo estadístico y de la conectividad \parencite{kar2009imperfectConsensus,nedic2010constrainedConsensus}. ACBBA aporta evidencia específica bajo pérdida de mensajes \parencite{rantanen2018lossyAcbba}. Las decisiones enteras y la planta móvil quedan fuera de esos resultados de consenso.
 
-Cuando cada robot calcula su utilidad con copias vecinales, puede alcanzar un equilibrio respecto de lo visible y conservar conflictos remotos no observados. La retransmisión periódica reduce la probabilidad de perder un estado congelado bajo modelos independientes, a costa de mensajes y bytes; la transmisión solo por evento reduce tráfico, pero puede mantener versiones ausentes. Por tanto, la evaluación de red debe reportar conectividad, edad o rezago de la información, carga comunicativa y calidad operacional. Un equilibrio localmente coherente no implica consistencia global si la topología oculta interacciones relevantes.
+Con copias vecinales, el equilibrio se define respecto de la información visible y puede conservar un conflicto remoto. Bajo pérdidas independientes, la retransmisión periódica aumenta la probabilidad de recibir un estado congelado y consume más mensajes; la activación por evento reduce ese tráfico, pero una copia ausente puede permanecer sin actualizar. La evaluación relaciona la conectividad y la edad de la copia con la calidad operacional y la carga comunicativa. La consistencia global exige observar las interacciones que afectan el pago.
 
 \subsection{Comparación y brecha de investigación}
 \label{subsec:tf-synthesis-gap}
 
-El contrato básico de cada familia se compara en la Tabla~\ref{tab:tf-comparison}. ``Parcial'' indica que la propiedad depende de un módulo adicional o de supuestos ajenos al problema tratado.
+La Tabla~\ref{tab:tf-comparison} clasifica la salida que cada familia entrega a la capa siguiente. La marca ``Parcial'' identifica una propiedad que depende de un módulo adicional o de supuestos externos al problema tratado.
 
 \begin{table}[!htbp]
   \centering
@@ -321,22 +321,20 @@ El contrato básico de cada familia se compara en la Tabla~\ref{tab:tf-compariso
   \viuownsource
 \end{table}
 
-La tabla muestra que las familias no son intercambiables: cada una comienza con un objeto ya resuelto por otra. Los métodos de asignación suponen una medida de utilidad; el control de formación supone un equipo; los filtros de seguridad suponen un control nominal; y MAPF supone una abstracción espacial y temporal. El problema focal exige que la salida de una capa sea una entrada verificable para la siguiente, incluida la condición de reabrir la decisión cuando una medición invalida el contrato.
+Las familias parten de objetos distintos. La asignación consume una utilidad; el control de formación consume un equipo, el filtro de seguridad consume un control nominal y MAPF consume una abstracción espacio--temporal. La arquitectura propuesta convierte cada salida en una entrada verificable para la capa siguiente y reabre la decisión cuando una medición invalida ese contrato.
 
-La comparación también separa arquitectura de calidad. Un oráculo central con información global puede proporcionar un techo para instancias pequeñas, aunque no sea una comparación justa de descentralización. Un método local puede reducir coste comunicativo y adaptarse sin coordinador, pero debe medirse su pérdida de calidad, su dependencia de conectividad y los casos en que no detecta acoplamientos remotos. Ninguna etiqueta metodológica resuelve por sí sola ese intercambio.
+Arquitectura y calidad se evalúan con referencias diferentes. En instancias pequeñas, el oráculo global proporciona un techo de calidad bajo información privilegiada. El método local se compara mediante la brecha respecto de ese techo, la carga comunicativa y el efecto de la conectividad. Esta separación evita presentar el oráculo como competidor distribuido.
 
-La Figura~\ref{fig:tf-literature-timeline} resume la revisión en dos paneles complementarios. El panel~(a) distribuye trabajos ancla verificados en cuatro familias y periodos comunes; no propone una genealogía lineal ni atribuye prioridad universal. El panel~(b) cuenta, para cada SP canónico, las entradas ``VERIFICADA'' del ledger cuyo campo temático incluye ese subproblema. Una fuente puede contribuir a varios SP, de modo que las filas no deben sumarse como publicaciones únicas. En conjunto, ambos paneles muestran cómo se fueron acoplando coordinación móvil, asignación, coaliciones, transporte, seguridad y comunicación \parencite{khatib1986obstacle,nakamura1989dynamics,bicchi1995closure,balch1998behavior,shehoryKraus1998Coalition,kube2000cooperative,gerkeyMataric2004MRTA,pereira2004caging,vigAdams2006Coalition,parkerTang2006ASyMTRe,fink2008caging,vandenberg2008rvo,choiBrunetHow2009CBBA,johnson2011acbba,alonsomora2017transport,ames2017cbf,shibata2023event,paul2023collective,ebel2024cooperative,shan2024collectiveTransport,zhou2026cttapf}. La figura no constituye una bibliometría exhaustiva ni acredita resultados del TFM.
-
-La Figura~\ref{fig:tf-methodological-map} sintetiza la arquitectura de los trabajos del corpus, no su calidad, impacto o rendimiento. El eje horizontal distingue ejecución distribuida con información local de planificación central/global; el vertical distingue mecanismos explícitos de políticas aprendidas. El color identifica la familia primaria del mecanismo y la proximidad visual aproxima similitud arquitectónica, familiar y de alcance SP. Los trabajos MARL permiten distinguir MAPF descentralizado \parencite{sartoretti2019primal,phan2024cactus} de transporte cooperativo con capas locales y globales \parencite{shibata2023localGlobal,naito2025tihdp}.
-
-La escala es ordinal y el corpus concentra muchos métodos explícitos y varias políticas aprendidas, pero pocas formulaciones híbridas. Por ello aparece una franja intermedia poco poblada; no representa una discontinuidad teórica ni ausencia universal de literatura. Los puntos anteriores a 2019 son casi grises y semitransparentes, el color pleno se usa desde 2019 y el contorno naranja resalta 2023--2026. Las alturas de presentación evitan solapes y tampoco representan calidad ni rendimiento. La auditoría completa de indicadores, cálculos y trabajos se conserva como artefacto reproducible en el repositorio.
+El recuento del corpus auditado por familia, periodo y cobertura SP permite
+identificar qué bloques concentran antecedentes; no es una bibliometría exhaustiva.
 
 \nocite{zlotStentz2006ComplexTasks}
 
+\iffalse
 \begin{figure}[htbp]
   \centering
   \def\LiteraturePeriods{1985--94,1995--04,2005--09,2010--14,2015--19,2020--22,2023--26}
-  \resizebox{\textwidth}{!}{%
+  \makebox[\textwidth][c]{\resizebox{1.10\textwidth}{!}{%
   \begin{tikzpicture}[
     font=\sffamily,
     panel/.style={rounded corners=2pt,draw=VIUGray!72,line width=0.55pt,fill=white},
@@ -344,10 +342,9 @@ La escala es ordinal y el corpus concentra muchos métodos explícitos y varias 
     periodhead/.style={draw=VIUGray!44,fill=VIUDark!6,minimum width=1.78cm,minimum height=0.43cm,inner sep=1pt,font=\fontsize{6.0}{6.6}\selectfont\bfseries,text=VIUDark},
     lanecell/.style={rounded corners=1.5pt,minimum width=2.04cm,text width=1.90cm,align=center,inner sep=2pt,font=\fontsize{6.6}{7.3}\selectfont\bfseries,line width=0.65pt},
     milestone/.style={text width=1.68cm,align=left,inner xsep=1.5pt,inner ysep=1.3pt,font=\fontsize{6.05}{6.65}\selectfont,text=VIUDark},
-    coveragecell/.style={draw=VIUGray!48,minimum width=1.04cm,minimum height=0.36cm,inner sep=1pt,align=center,font=\fontsize{6.3}{6.8}\selectfont,text=VIUDark},
-    coverlabel/.style={coveragecell,minimum width=3.20cm,text width=3.06cm,align=left,font=\fontsize{6.3}{6.85}\selectfont},
-    coveragehead/.style={coveragecell,fill=VIUDark!7,font=\fontsize{5.8}{6.3}\selectfont\bfseries},
-    scopebadge/.style={rounded corners=1.2pt,minimum width=3.15cm,minimum height=0.31cm,inner sep=1pt,font=\fontsize{6.05}{6.55}\selectfont\bfseries,align=center}
+    coveragecell/.style={draw=VIUGray!48,minimum width=1.31cm,minimum height=0.36cm,inner sep=1pt,align=center,font=\fontsize{6.3}{6.8}\selectfont,text=VIUDark},
+    coverlabel/.style={coveragecell,minimum width=3.90cm,text width=3.76cm,align=left,font=\fontsize{6.3}{6.85}\selectfont},
+    coveragehead/.style={coveragecell,fill=VIUDark!7,font=\fontsize{5.8}{6.3}\selectfont\bfseries}
   ]
     % Panel (a): periodos comunes evitan tarjetas superpuestas y escalado tipográfico.
     \begin{scope}[yshift=5.95cm]
@@ -390,53 +387,49 @@ La escala es ordinal y el corpus concentra muchos métodos explícitos y varias 
 
     % Panel (b): recuentos regenerados desde el ledger y alcance canónico.
     \draw[panel] (0.10,0.12) rectangle (15.05,5.66);
-    \node[paneltitle] at (0.34,5.38) {(b) Cobertura del corpus y alcance declarado del TFM};
-    \node[coveragehead,minimum width=3.20cm] at (1.72,4.84) {Subproblema canónico};
+    \node[paneltitle] at (0.34,5.38) {(b) Cobertura del corpus por subproblema};
+    \node[coveragehead,minimum width=3.90cm] at (2.15,4.84) {Subproblema canónico};
     \foreach[count=\j] \period in \LiteraturePeriods{%
-      \pgfmathsetmacro{\periodx}{3.90+1.04*(\j-1)}%
+      \pgfmathsetmacro{\periodx}{4.775+1.35*(\j-1)}%
       \node[coveragehead] at (\periodx,4.84) {\period};
     }
-    \node[coveragehead,minimum width=0.82cm] at (11.15,4.84) {$\Sigma$};
-    \node[coveragehead,minimum width=3.15cm] at (13.45,4.84) {Alcance 2026};
+    \node[coveragehead,minimum width=1.30cm] at (14.20,4.84) {$\Sigma$};
 
     \newcount\coveragefigrow
     \coveragefigrow=0
     \newcommand{\coveragegeneratedrow}[5]{%
       \pgfmathsetmacro{\rowy}{4.40-0.39*\the\coveragefigrow}%
-      \node[coverlabel] at (1.72,\rowy) {\textbf{#1}\quad #2};
+      \node[coverlabel] at (2.15,\rowy) {\textbf{#1}\quad #2};
       \foreach[count=\j] \val in {#3}{%
-        \pgfmathsetmacro{\cellx}{3.90+1.04*(\j-1)}%
+        \pgfmathsetmacro{\cellx}{4.775+1.35*(\j-1)}%
         \pgfmathtruncatemacro{\shade}{ifthenelse(\val==0,0,min(82,10+8*\val))}%
-        \node[coveragecell,minimum width=1.00cm,fill=SPBlue!\shade] at (\cellx,\rowy) {\val};
+        \node[coveragecell,fill=SPBlue!\shade] at (\cellx,\rowy) {\val};
       }
-      \node[coveragecell,minimum width=0.82cm,fill=VIUDark!5,font=\fontsize{6.3}{6.8}\selectfont\bfseries] at (11.15,\rowy) {#4};
-      \ifcase#5
-        \node[scopebadge,draw=SPGreen!72,fill=SPGreen!9,text=SPGreen!52!black] at (13.45,\rowy) {obligatorio};
-      \or
-        \node[scopebadge,draw=VIUOrange!78,fill=VIUOrange!8,text=VIUOrange!72!black] at (13.45,\rowy) {extensión prioritaria};
-      \else
-        \node[scopebadge,draw=SPPurple!70,fill=SPPurple!7,text=SPPurple!72!black] at (13.45,\rowy) {condicionado};
-      \fi
+      \node[coveragecell,minimum width=1.30cm,fill=VIUDark!5,font=\fontsize{6.3}{6.8}\selectfont\bfseries] at (14.20,\rowy) {#4};
       \advance\coveragefigrow by 1
     }
     \input{generated/literature-coverage.tex}
 
     \node[font=\fontsize{6.0}{6.6}\selectfont,text=VIUDark,anchor=west] at (0.38,0.54)
       {Azul: escala común; mayor recuento, mayor intensidad.};
-    \node[font=\fontsize{6.0}{6.6}\selectfont\itshape,text=VIUDark,anchor=east] at (14.88,0.54)
-      {En SP3, ``obligatorio'' se refiere al modo primario Cargo.};
   \end{tikzpicture}%
-  }
-  \caption{Evoluci\'on temporal y cobertura del corpus consultado: (a) hitos verificados por familia y periodo; (b) entradas verificadas por subproblema y alcance declarado para 2026. Una fuente puede contar en varios SP; no es una bibliometr\'ia exhaustiva.}
+  }}
+  \caption{Evoluci\'on temporal y cobertura del corpus consultado: (a) hitos verificados por familia y periodo; (b) entradas verificadas por subproblema. Una fuente puede contar en varios SP; no es una bibliometr\'ia exhaustiva.}
   \label{fig:tf-literature-timeline}
   \viuownsource
 \end{figure}
+\fi
 
+El corpus se organiza también por arquitectura de información y explicitud del
+mecanismo. Las políticas aprendidas cubren MAPF descentralizado
+\parencite{sartoretti2019primal,phan2024cactus} y transporte con capas locales y globales \parencite{shibata2023localGlobal,naito2025tihdp}; esta clasificación describe arquitectura y alcance, no calidad experimental.
+
+\iffalse
 \begin{figure}[H]
   \centering
   \newcommand{\paperyear}[1]{\fontsize{4.2}{4.8}\selectfont #1}
   \newcommand{\paperlabel}[3]{\paperref{#1}{#2}\\[-2pt]\paperref{#1}{\paperyear{#3}}}
-  \resizebox{\textwidth}{!}{%
+  \makebox[\textwidth][c]{\resizebox{0.98\textwidth}{!}{%
   \begin{tikzpicture}[x=6.2cm,y=4.455cm,
     font=\sffamily,
     axis/.style={-{Latex[length=2.8mm]},draw=VIUDark,line width=1.05pt},
@@ -525,14 +518,15 @@ La escala es ordinal y el corpus concentra muchos métodos explícitos y varias 
     \node[legenddot,fill=SPPurple] at (0.78,-1.52) {};
     \node[legendtext,anchor=west] at (0.84,-1.52) {política aprendida};
   \end{tikzpicture}%
-  }
+  }}
   \caption{Mapa metodológico agrupado del corpus consultado. Los ejes codifican arquitectura y explicitud del mecanismo; el color identifica la familia primaria. Las posiciones son descriptivas y no representan calidad ni rendimiento.}
   \label{fig:tf-methodological-map}
   \viuownsource
 \end{figure}
+\fi
 
-La brecha está en las interfaces: MRTA cierra, consenso estima, juegos incentivan y control mueve equipos dados, pero su composición debe conservar exclusividad, mecánica, seguridad, recuperación y calidad bajo red imperfecta. El corpus verificado no contiene un método único que cierre todas esas interfaces mediante una arquitectura distribuida y explicable. Esta conclusión está limitada a las fuentes auditadas y no equivale a afirmar una inexistencia universal.
+El corpus auditado deja abierta una interfaz concreta: MRTA entrega una composición nominal, mientras el control cooperativo suele partir de un equipo físico ya fijado. Entre ambos faltan, dentro del conjunto verificado, un certificado mecánico consumible por el controlador y una regla que reabra la decisión tras un fallo o un cambio de información. Esta observación describe el corpus revisado y su protocolo de búsqueda.
 
-El posicionamiento del TFM se concreta en una contribución nuclear: una formulación de juego potencial o poblacional con restricciones de coalición y capacidad, acoplada a movimiento y recertificación local. La propuesta no pretende reemplazar planificación, control, percepción y comunicaciones por un único mecanismo. Su novedad verificable debe encontrarse en los contratos que permiten componerlos y en la evidencia que delimita cuándo esos contratos se mantienen o fallan.
+La contribución se concreta en una arquitectura híbrida de contratos y juegos locales con supuestos propios. La Tabla~\ref{tab:tf-comparison} sitúa cada contrato; SP0--SP8 lo someten después a escenarios de complejidad creciente. El demostrador Cargo integra las funciones mediante reglas simplificadas, un líder por carga y un registro global. Su resultado acredita compatibilidad funcional de la implementación, mientras las garantías formales permanecen asociadas al componente donde se demostraron.
 
-De esta síntesis se desprende la estrategia de validación. SP0--SP2 estudian cierre y heterogeneidad; SP3--SP4 añaden factibilidad física y transporte; SP5--SP7 incorporan seguridad, fallo y tráfico; y SP8 somete la información local a escala y red imperfecta. Las condiciones se añaden una a una para no atribuir al sistema completo una garantía probada solo en una capa. Los resultados negativos y las abstenciones deben conservarse porque identifican precisamente la frontera de cada conclusión.
+El aporte principal es la trazabilidad de cada salida hasta el supuesto y la prueba que la sostienen. Un resultado negativo o una abstención identifica la frontera del contrato. Extender una garantía local al sistema híbrido completo exigiría un argumento composicional adicional.

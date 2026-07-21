@@ -174,6 +174,8 @@ Todos los métodos deben recibir instancias pareadas. Un oráculo con informaci�
 
 Reportar distribuciones, tamaño muestral e intervalos de confianza, no solo medias. Incluir resultados negativos, ejecuciones no convergentes y violaciones. Separar:
 
+En la prosa principal, cada párrafo cuantitativo debe priorizar una comparación y su interpretación, idealmente en dos frases: **el indicador cambió de A a B; por tanto, el resultado respalda o no respalda la afirmación concreta**. Cuando la tabla o el anexo ya recoge intervalos, valores $p$ y comparadores secundarios, no repetirlos todos en el párrafo; conservar en el cuerpo solo el detalle estadístico necesario para matizar la conclusión.
+
 - verificación de la teoría o de invariantes;
 - calidad de solución y gap al oráculo;
 - coste computacional y de comunicación;

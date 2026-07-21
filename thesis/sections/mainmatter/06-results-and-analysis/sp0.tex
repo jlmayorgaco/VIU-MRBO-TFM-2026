@@ -1,13 +1,13 @@
 \subsection{SP0: asignación homogénea uno-a-uno como caso de referencia}
 \label{subsec:sp0}
 
-SP0 contiene $N\geq K$ robots homogéneos y $K$ cargas unitarias: cada carga recibe un robot, cada robot atiende como máximo una y la posición solo fija el coste. Este caso bipartito verifica oráculo y métricas antes de introducir heterogeneidad.
+SP0 contiene \(N\geq K\) robots intercambiables y \(K\) cargas unitarias. Cada carga recibe exactamente un robot, cada robot atiende a lo sumo una carga y la posición interviene únicamente en el coste. La pregunta experimental es cuánto difiere un equilibrio factible del coste mínimo obtenido por asignación clásica.
 
-Con penalización, los Nash puros coinciden con asignaciones factibles, pero solo los máximos del potencial minimizan coste. Dos Nash pueden tener razón arbitraria (Anexo~\ref{app:proof-sp0-poa}). No hay movimiento, contacto ni red imperfecta.
+Con \(\lambda>\kappa_{\max}\), todos los Nash puros son asignaciones factibles. El contraejemplo del Anexo~\ref{app:proof-sp0-poa} construye dos equilibrios cuya razón de costes crece sin cota, de modo que la eficiencia necesita un criterio adicional. El dominio de SP0 es la decisión lógica estática.
 
 \subsubsection{Caso base}
 
-La Figura~\ref{fig:sp0-scenario} distingue asociaciones, selección e inactividad. Las aristas representan decisiones y excluyen trayectorias o enlaces.
+En la Figura~\ref{fig:sp0-scenario}, cada arista codifica una asociación admisible y la arista azul identifica la decisión seleccionada; el robot restante representa la acción inactiva cuando \(N>K\).
 
 \begin{figure}[!htbp]
   \centering
@@ -43,7 +43,7 @@ La Figura~\ref{fig:sp0-scenario} distingue asociaciones, selección e inactivida
     \node[sprobotfree,scale=0.45] at (9.65, 0.34) {};
     \node[splegend,anchor=west] at (9.90, 0.34) {robot libre: $a_i=0$};
   \end{spdiagram}
-  \caption{SP0: asociaciones admisibles (gris), selección final (azul) y robot libre para $N>K$. La figura no representa movimiento ni comunicación.}
+  \caption{Exclusividad en SP0: las aristas grises son asociaciones admisibles, la azul es la selección final y \(R_5\) permanece libre cuando \(N>K\).}
   \label{fig:sp0-scenario}
   \viuownsource
 \end{figure}
@@ -55,7 +55,7 @@ Sean $p_i,p_k^L\in\mathbb R^2$ las posiciones del robot $i$ y de la carga $k$. C
  \kappa_{ik}=\bar\delta_{ik}\in[0, 1].
     \label{eq:sp0-distance-cost}
 \end{equation}
-La salida es una asociación lógica, sin trayectoria ni control. SP3 introduce contacto y SP4 transporte.
+La variable \(x_{ik}\) entrega una asociación lógica. Las trayectorias y las entradas de control pertenecen a modelos físicos posteriores.
 
 \subsubsection{Formulación exacta y oráculo de asignación}
 
@@ -68,7 +68,7 @@ Con $\Robots=\{1,\ldots,N\}$, $\Loads=\{1,\ldots,K\}$ y $x_{ik}\in\{0, 1\}$, el 
  &\sum_{i\in\Robots}x_{ik}=1 &&(k\in\Loads).
 \end{aligned}
 \end{equation}
-Es el problema lineal de asignación: su relajación tiene vértices enteros y el húngaro lo resuelve en $O(N^3)$ tiempo y $O(N^2)$ memoria \parencite{kuhn1955Hungarian}. SP0 pertenece a $\mathsf P$. La integralidad y la extensión con mochila 0--1 se prueban en el Anexo~\ref{app:proof-sp0-complexity}.
+La integralidad de los vértices de la relajación reduce SP0 a asignación lineal. El algoritmo húngaro lo resuelve en \(O(N^3)\) tiempo y \(O(N^2)\) memoria \parencite{kuhn1955Hungarian}, por lo que SP0 pertenece a \(\mathsf P\). El Anexo~\ref{app:proof-sp0-complexity} demuestra la reducción y localiza la dificultad NP cuando se añade selección tipo mochila 0--1.
 
 El oráculo recibe la matriz completa y no representa la arquitectura propuesta. Para un perfil $a$, el experimento usa
 \begin{equation}
@@ -80,9 +80,9 @@ El oráculo recibe la matriz completa y no representa la arquitectura propuesta.
  \end{aligned}
  \label{eq:sp0-evaluation-metrics}
 \end{equation}
-La brecha $r$ solo se informa si hay factibilidad. $\eta_W$ se muestra como $100W/W^\star$. Las \emph{operaciones registradas} no son comparables entre algoritmos: cuentan entradas/aristas, utilidades por puja, acciones o pares candidatos según el método.
+La brecha \(r\) se informa sobre soluciones factibles y \(\eta_W\) como \(100W/W^\star\). La columna de operaciones usa la unidad nativa de cada método, indicada en la tabla, y sirve para comparar tamaños dentro de un mismo algoritmo.
 
-Como $0\leq\kappa_{ik}\leq1$, $B=1.05$ garantiza $BK-C^\star\geq0.05K$ y evita dividir por cero. Solo escala el bienestar. No altera orden, oráculo ni pagos.
+Como \(0\leq\kappa_{ik}\leq1\), \(B=1.05\) garantiza \(BK-C^\star\geq0.05K\) y evita dividir por cero. La transformación multiplica la escala del bienestar y conserva el orden, el oráculo y los pagos.
 
 \subsubsection{Juego potencial y caracterización de los equilibrios}
 
@@ -107,14 +107,14 @@ La función potencial es $\Phi_\lambda=-F_\lambda$ y el pago marginal es $u_i(a)
  \qquad f_{i0}=0.
  \label{eq:sp0-action-fitness}
 \end{equation}
-Todos los términos son adimensionales. La activación revisa un robot por evento y adopta una mejora estricta. Prescinde de rondas globales de decisión y presupone una ocupación lógica coherente.
+Todos los términos son adimensionales. La activación revisa un robot por evento y adopta una mejora estricta. El resultado excluye revisiones simultáneas: dos respuestas calculadas sobre la misma ocupación pueden no aumentar el potencial y formar ciclos. Prescinde de rondas globales de decisión y presupone una ocupación lógica coherente.
 
 \begin{proposicion}[Factibilidad y selección en SP0]
 \label{thm:sp0-nash-characterization}
 Si $N\geq K$ y $\lambda>\kappa_{\max}$, entonces se cumplen cinco propiedades. \emph{(i)} El juego es de potencial exacto. \emph{(ii)} Sus Nash puros son exactamente las asignaciones factibles. \emph{(iii)} Toda secuencia de mejoras estrictas es finita y termina en un Nash. \emph{(iv)} Los máximos globales del potencial coinciden con las soluciones de \eqref{eq:sp0-oracle}. \emph{(v)} Un Nash cualquiera puede ser subóptimo.
 \end{proposicion}
 \end{contribucion}
-Cubrir un vacío o retirar un duplicado mejora el pago porque $\lambda$ supera el coste. Ningún perfil con déficit o exceso es Nash. Desde una asignación factible, toda desviación crea uno de ambos. Solo las de coste mínimo maximizan el potencial (Anexo~\ref{app:sp0-proofs}).
+Como \(\lambda\) supera cualquier coste individual, cubrir un vacío o retirar un duplicado es una mejora estricta y excluye de Nash todo perfil con déficit o exceso. En el conjunto factible, maximizar el potencial equivale a minimizar el coste; una desviación unilateral, sin embargo, explora solo su vecindario local (Anexo~\ref{app:sp0-proofs}).
 
 \begin{corolario}[Precios de estabilidad y anarquía de SP0]
 \label{cor:sp0-pos-poa}
@@ -130,11 +130,11 @@ de coste $1$ y un óptimo de coste $2\epsilon$, por lo que la razón diverge al
 hacer $\epsilon\downarrow0$. La existencia de un equilibrio óptimo no controla
 la eficiencia del equilibrio seleccionado por una trayectoria local.
 
-La penalización garantiza cobertura y exclusividad. La selección eficiente requiere un criterio adicional. El 2-intercambio amplía el vecindario de mejora y puede corregir equilibrios unilaterales, aunque solo certifica estabilidad frente a los pares examinados.
+El 2-intercambio responde a la multiplicidad de Nash factibles al permitir que dos robots revisen conjuntamente su asociación. Una solución terminal queda certificada frente a los pares examinados, un vecindario más amplio que el de la mejor respuesta unilateral.
 
 \subsubsection{Métodos comparados}
 
-Se comparan húngaro, subasta-$\varepsilon$, voraz y dos mejores respuestas. Los dos primeros globales conocen la matriz. Mejor respuesta usa costes propios y ocupación agregada. $\lambda=0$ es ablación. En la Tabla~\ref{tab:sp0-method-literature}, $m=\max\{N,K\}$, $B_\varepsilon$ cuenta pujas e $I_{\mathrm{BR}},I_2$ barridos.
+El húngaro, la subasta-\(\varepsilon\) y el voraz reciben la matriz global de costes. Las dos variantes de mejor respuesta consultan el coste propio y la ocupación agregada exacta. La ejecución con \(\lambda=0\) aísla la contribución de la penalización. En la Tabla~\ref{tab:sp0-method-literature}, \(m=\max\{N,K\}\), \(B_\varepsilon\) cuenta pujas e \(I_{\mathrm{BR}},I_2\) barridos.
 
 \begin{table}[!htbp]
  \centering
@@ -148,9 +148,9 @@ Se comparan húngaro, subasta-$\varepsilon$, voraz y dos mejores respuestas. Los
   Método/fuente & Clase & Coste & Arq./información & Parámetros & Garantía/límite \\
   \midrule
   Algoritmo húngaro \parencite{kuhn1955Hungarian} & LAP en P & $O(m^3)$ tiempo; $O(NK)$ memoria & Central; matriz $\boldsymbol\kappa$ completa & Desempate & Óptimo global del LAP. \\
-  Subasta-$\varepsilon$ \parencite{bertsekas1988Auction} & LAP en P & $O(KB_\varepsilon)$; $B_\varepsilon$ depende del rango y $\varepsilon$ & Precios/ganadores compartidos; sin red vecinal & $\varepsilon$ & Brecha aditiva $\leq N\varepsilon$. No demuestra ejecución distribuida. \\
-  Método voraz (familia de mercado \parencite{gerkeyMataric2002MURDOCH}) & LAP en P; heurística & $O(NK\log(NK))$ & Central; lista global de aristas & Orden/desempate & Factible. No equivale a MURDOCH y carece de cota. \\
-  Mejor respuesta \parencite{monderer1996potential} & Equilibrio de juego finito & $O(I_{\mathrm{BR}}NK)$; a lo sumo $(K+1)^N-1$ mejoras estrictas & Local con ocupación agregada exacta & $\lambda$, orden, $I_{\max}$ & Termina en Nash factible si $\lambda>\kappa_{\max}$. No es óptimo social. \\
+  Subasta-$\varepsilon$ \parencite{bertsekas1988Auction} & LAP en P & $O(KB_\varepsilon)$; $B_\varepsilon$ depende del rango y $\varepsilon$ & Precios y ganadores compartidos & $\varepsilon$ & Brecha aditiva \(\leq N\varepsilon\); arquitectura global. \\
+  Método voraz (familia de mercado \parencite{gerkeyMataric2002MURDOCH}) & LAP en P; heurística & $O(NK\log(NK))$ & Central; lista global de aristas & Orden/desempate & Factibilidad; heurística propia sin cota. \\
+  Mejor respuesta \parencite{monderer1996potential} & Equilibrio de juego finito & $O(I_{\mathrm{BR}}NK)$; a lo sumo $(K+1)^N-1$ mejoras estrictas & Local con ocupación agregada exacta & $\lambda$, orden, $I_{\max}$ & Nash factible si \(\lambda>\kappa_{\max}\); eficiencia local. \\
   Mejor respuesta + 2-intercambio & Búsqueda local & $O(I_2N^2)$ pares, con costes cacheados & Bilateral sobre asignación vigente & $I_{2,\max}$, desempate & Estable solo frente a los intercambios examinados. \\
   \bottomrule
  \end{tabularx}
@@ -159,6 +159,17 @@ Se comparan húngaro, subasta-$\varepsilon$, voraz y dos mejores respuestas. Los
 
 \subsubsection{Dinámica de revisión}
 
+La ejecución activa un robot por evento y calcula su mejor respuesta con coste propio y ocupación agregada exacta. Bajo \(N\geq K\), \(\lambda>\kappa_{\max}\) y activación justa, las mejoras estrictas recorren un espacio finito hasta eliminar vacíos y duplicados. El resultado regula la asignación lógica; el Anexo~\ref{app:sp0-proofs} contiene la cota de terminación.
+
+El certificado complementario con precios locales satisface
+\begin{equation}
+ 0\leq C(\sigma_t)-C^\star\leq N(\varepsilon+2e_\pi^t),
+ \label{eq:sp0-local-price-gap}
+\end{equation}
+si las copias alcanzan el desacuerdo declarado. El experimento no ejecutó ese consenso: usó ocupación global exacta, por lo que la cota documenta una interfaz pendiente y no una propiedad medida.
+
+
+\iffalse
 SP0 no integra planta, pero regula el perfil discreto $a$ mediante la salida
 \begin{equation}
  \boldsymbol z_0(a)=
@@ -180,34 +191,33 @@ Con activación asíncrona, la ley de realimentación ejecutada es
  \end{cases}
  \label{eq:sp0-feedback-law}
 \end{equation}
-El oráculo selecciona coste mínimo. El lazo solo regula cobertura y exclusividad. $\boldsymbol z_0=0$ no implica optimalidad.
+El oráculo minimiza \(C(\sigma)\) dentro del conjunto factible, mientras el lazo regula \(\boldsymbol z_0=0\), es decir, cobertura y exclusividad. La diferencia entre ambos objetivos mide la ineficiencia del equilibrio.
 
 \begin{corolario}[Regulación estratégica finita de SP0]
 \label{cor:sp0-strategic-regulation}
 Si $N\geq K$, $\lambda>\kappa_{\max}$, la ocupación realimentada es coherente y la activación no deja indefinidamente sin revisar a un robot con mejora estricta, la ley~\eqref{eq:sp0-feedback-law} alcanza en un número finito de revisiones el conjunto $\{a:\boldsymbol z_0(a)=\boldsymbol0\}$.
 \end{corolario}
-Cada actualización reduce $F_\lambda$ en un espacio finito y todo Nash cumple $D=E=0$ (Anexo~\ref{app:sp0-proofs}). Es una estabilización lógica por eventos. Quedan fuera la estabilidad física y la dinámica continua.
+Cada actualización reduce \(F_\lambda\) en un espacio finito y todo Nash cumple \(D=E=0\) (Anexo~\ref{app:sp0-proofs}). Esta terminación por eventos pertenece al perfil discreto; una planta continua exigiría otra función de estabilidad.
 
 \paragraph{Certificado con copias locales de precios.}
-El experimento usa ocupación global. Como resultado complementario, el Anexo~\ref{app:proof-sp0-local-prices} audita una asignación factible $\sigma_t$ mediante precios locales. Si cada robot satisface complementariedad $\varepsilon$ y las copias difieren del precio promedio a lo sumo en $e_\pi^t$, entonces
+El experimento usa ocupación global. Un certificado auxiliar basado en precios locales acota la brecha de una asignación factible \(\sigma_t\): si cada robot satisface complementariedad \(\varepsilon\) y las copias difieren del precio promedio a lo sumo en \(e_\pi^t\), entonces
 \begin{equation}
  0\leq C(\sigma_t)-C^\star\leq N(\varepsilon+2e_\pi^t).
  \label{eq:sp0-local-price-gap}
 \end{equation}
 Con consenso lineal sobre un grafo conexo, $e_\pi^t\leq q^t\mathcal D_0$, donde $\mathcal D_0:=\lVert[\widehat{\boldsymbol\pi}_i^0-\bar{\boldsymbol\pi}^0]_{i=1}^N\rVert_F$ es el desacuerdo inicial apilado y $q<1$ depende del espectro de $I-\alpha L$. De ahí se obtiene un coste suficiente de $2|\mathcal E_C|Nt_\eta$ escalares para alcanzar tolerancia $\eta$. Con costes enteros, una cota menor que uno certifica optimalidad. Una partición permanente impide una garantía uniforme porque existen matrices globales distintas e indistinguibles desde una componente.
+\fi
 \subsubsection{Diseño experimental}
 
-Se generaron 200 instancias pareadas mediante posiciones uniformes en el cuadrado unidad: $N\in\{4, 8, 16, 32, 64\}$, $K/N\in\{0.5, 1\}$ y 20 semillas por combinación. Los métodos recibieron las mismas matrices de coste. Se fijaron $\lambda=\kappa_{\max}+0.05$ y $\varepsilon=10^{-3}$. Además, 21 instancias pequeñas se enumeraron exhaustivamente. Se registraron factibilidad, déficit, exceso, coste, brecha por carga, bienestar relativo, operaciones y CPU. Los intervalos se calcularon mediante 2000 remuestras pareadas de instancias independientes. Los contratos de información no son equivalentes y no se evaluó una red.
+Se generaron 200 instancias pareadas mediante posiciones uniformes en el cuadrado unidad: $N\in\{4, 8, 16, 32, 64\}$, $K/N\in\{0.5, 1\}$ y 20 semillas por combinación. Los métodos recibieron las mismas matrices de coste. Se fijaron $\lambda=\kappa_{\max}+0.05$ y $\varepsilon=10^{-3}$. Como $\kappa_{ik}\in[0,1]$, un valor fijo $\lambda>1$ también satisface la condición sin calcular $\kappa_{\max}$; la campaña conserva el valor por instancia indicado. Además, 21 instancias pequeñas se enumeraron exhaustivamente. Se registraron factibilidad, déficit, exceso, coste, brecha por carga, bienestar relativo, operaciones y CPU. Los intervalos se calcularon mediante 2000 remuestras pareadas de instancias independientes. Los contratos de información no son equivalentes y no se evaluó una red.
 
 \subsubsection{Resultados}
 
 \paragraph{Caracterización formal.}
-Las 21 enumeraciones confirmaron la Proposición~\ref{thm:sp0-nash-characterization}. Para $N=K=5$ hubo $120$ Nash entre $7776$ perfiles y una única asignación óptima ($0.833\%$ de los equilibrios): factibilidad no selecciona eficiencia.
+Las 21 enumeraciones confirmaron la Proposición~\ref{thm:sp0-nash-characterization}. Para \(N=K=5\), una sola de las 120 asignaciones Nash fue óptima: el \(0.833\%\) del conjunto de equilibrios dentro de 7776 perfiles.
 
 El conjunto de equilibrios crece factorialmente y su brecha frente al oráculo presenta una dispersión amplia. Los cinco métodos completos alcanzaron la misma factibilidad, por lo que esa medida se informa en el texto y la tabla conserva las cifras de selección.
 
-% Gráfico generado conservado como artefacto suplementario; la tabla contiene
-% los valores exactos usados en la inferencia.
 \iffalse
 \begin{figure}[!htbp]
  \centering
@@ -232,11 +242,23 @@ El algoritmo húngaro, la subasta-$\varepsilon$, el método voraz, la mejor resp
  \viuownsource
 \end{table}
 
-Los valores no forman una clasificación arquitectónica porque los métodos reciben información distinta. Bajo ocupación coherente, mejor respuesta alcanzó siempre factibilidad, pero presentó una brecha mediana de $0.0560$ por carga y bienestar mediano del $93.65\%$. La diferencia pareada $r_{\mathrm{2-int}}-r_{\mathrm{BR}}$ fue $-0.07318$ (IC del $95\%$: $[-0.08201,-0.06508]$). El intercambio redujo la pérdida y obtuvo mediana cero, pero su cuartil superior fue $0.00065$. Este resultado no permite declarar optimalidad global. La subasta-$\varepsilon$ quedó prácticamente superpuesta al oráculo: diferencia media $5.74\times10^{-6}$ por carga (IC del $95\%$: $[3.37, 8.64]\times10^{-6}$), dentro de la cota aditiva.
+Los métodos reciben información distinta, por lo que los valores describen calidad y no equivalencia arquitectónica. Bajo ocupación coherente, mejor respuesta fue factible en las 200 instancias, con brecha mediana de \(0.0560\) por carga y bienestar mediano del \(93.65\%\). El 2-intercambio cambió la brecha en \(-0.07318\) (IC~95\%: \([-0.08201,-0.06508]\)); su mediana fue cero y el cuartil superior \(0.00065\), valores compatibles con una búsqueda local sin certificado global. La subasta-\(\varepsilon\) difirió del oráculo en \(5.74\times10^{-6}\) por carga en promedio (IC~95\%: \([3.37,8.64]\times10^{-6}\)), dentro de la cota aditiva.
+
+La escala cambia el coste de ejecución y la calidad del equilibrio de maneras distintas. Las mediciones de tiempo, trabajo lógico y bienestar por tamaño son descriptivas y no estiman una ley asintótica.
+
+\iffalse
+\begin{figure}[!htbp]
+ \centering
+ \includegraphics[width=0.98\textwidth]{../results/sp0/SP0_THEORY_v1/figures/fig-sp0-scaling-welfare.pdf}
+ \caption{SP0 por tamaño de flota: tiempo de CPU observado, evaluaciones registradas y bienestar normalizado. Las operaciones no son homogéneas entre algoritmos y las curvas no sustituyen las cotas de complejidad.}
+ \label{fig:sp0-scaling-welfare}
+ \viuownsource
+\end{figure}
+\fi
 
 \paragraph{Ablación de la penalización.}
-La formulación con $\lambda>\kappa_{\max}$ produjo 200 asignaciones factibles de 200, mientras $\lambda=0$ no produjo ninguna. Las 200 discordancias favorecieron al mecanismo completo y McNemar exacto rechazó la igualdad de factibilidad ($p=1.24\times10^{-60}$). Sin recompensa de cobertura ni penalización de duplicidad, la inactividad domina frente a asociaciones de coste positivo. La ablación verifica la respuesta a los términos de déficit y exceso, pero no demuestra cardinalidad variable ni comunicación vecinal. Los tiempos observados hasta $N=64$ tampoco demuestran escalabilidad asintótica.
+La formulación con \(\lambda>\kappa_{\max}\) produjo 200 asignaciones factibles; con \(\lambda=0\), ninguna. Las 200 discordancias favorecieron al mecanismo completo y McNemar exacto rechazó la igualdad de factibilidad (\(p=1.24\times10^{-60}\)). Sin recompensa de cobertura ni penalización de duplicidad, la inactividad domina las asociaciones de coste positivo. La ablación respalda la función causal de esos dos términos en SP0. La cardinalidad variable, la comunicación vecinal y la escala asintótica requieren campañas específicas.
 
 \subsubsection{Síntesis}
 
-El algoritmo húngaro resuelve exactamente el caso uno-a-uno y la subasta-$\varepsilon$ aproxima su coste. El juego potencial añade una propiedad distinta: con $\lambda>\kappa_{\max}$, sus equilibrios puros son precisamente las asignaciones factibles. La selección sigue abierta, pues la mejor respuesta puede terminar en un equilibrio subóptimo. El 2-intercambio reduce esa brecha sin garantizar optimalidad global. SP1 retira la demanda unitaria y SP2 la equivalencia de capacidades.
+Con \(\lambda>\kappa_{\max}\), el juego regula cobertura y exclusividad y hace factible todo Nash puro. La eficiencia permanece como criterio de selección dentro de ese conjunto. En 200 instancias pareadas, el 2-intercambio redujo la brecha de mejor respuesta y terminó con mediana cero, aunque su certificado se restringe al vecindario examinado.
