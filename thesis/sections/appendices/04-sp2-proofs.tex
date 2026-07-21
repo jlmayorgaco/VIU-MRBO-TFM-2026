@@ -1,7 +1,7 @@
 \section{Demostraciones complementarias de SP2}
 \label{app:sp2-proofs}
 
-La propiedad de alineación marginal de la Sección~\ref{subsec:sp2} se limita a preferencias continuas, una matriz fija de contribuciones de servicio durante la decisión, umbrales positivos y parámetros adimensionales fijos. La prueba no establece cierre entero, optimalidad combinatoria, consenso vecinal, capacidad mecánica ni convergencia de una discretización concreta.
+La alineación marginal de SP2 se demuestra para preferencias continuas, umbrales positivos y una matriz de servicio fija durante cada decisión. El resultado identifica el gradiente del potencial con el pago marginal. El cierre entero, la mecánica y la ejecución vecinal discretizada se tratan mediante resultados independientes.
 
 \subsection{Potencial de la puntuación marginal y frontera de integrabilidad}
 \label{app:sp2-marginal-proof}
@@ -28,4 +28,4 @@ Si $e_{ik}\neq e_{jk}$, estas expresiones difieren y violan la condición de sim
   -\frac{V_ke_{ik}e_{jk}}{(d_k^{\mathrm{srv}})^2}.
 \]
 
-La función $[1-s]_+$ es continua en $s=1$. Su integral también es continua y diferenciable, aunque su segunda derivada cambie por tramos. En consecuencia, el potencial de~\eqref{eq:sp2-potential} enlaza de forma continua las regiones $S_k<d_k^{\mathrm{srv}}$ y $S_k\geq d_k^{\mathrm{srv}}$, y su gradiente coincide con la puntuación marginal en ambas, con la derivada correspondiente en la frontera. Esto completa la Proposición~\ref{prop:sp2-marginal-alignment} dentro del alcance declarado.
+La función $[1-s]_+$ es continua en $s=1$. Su integral también es continua y diferenciable, aunque su segunda derivada cambie por tramos. El potencial de~\eqref{eq:sp2-potential} enlaza de forma continua las regiones $S_k<d_k^{\mathrm{srv}}$ y $S_k\geq d_k^{\mathrm{srv}}$. En ambas regiones, y mediante la derivada correspondiente en la frontera, su gradiente coincide con la puntuación marginal.

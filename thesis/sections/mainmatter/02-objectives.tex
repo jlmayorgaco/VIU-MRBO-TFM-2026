@@ -1,17 +1,17 @@
 \section{Objetivos}
 \label{sec:objectives}
 
-La formación de coaliciones solo resulta útil si conduce a un transporte
-ejecutable. Por esta razón, los objetivos abarcan la decisión estratégica, las
-restricciones físicas, los fallos y la comunicación.
+La coalición seleccionada debe poder acoplarse a la carga y completar el
+transporte. Los objetivos relacionan esa exigencia física con la decisión
+estratégica y con la información disponible durante la ejecución.
 
 \subsection{Objetivo general}
 
-Desarrollar y evaluar una arquitectura híbrida e interpretable que combine
-decisiones estratégicas locales y comunicación vecinal con cierres enteros y
-guardias físicas para formar coaliciones de robots móviles autónomos y transportar
-cargas heterogéneas. Medir su factibilidad, calidad de la solución, respuesta ante
-perturbaciones y coste de información frente a referencias globales.
+Desarrollar una arquitectura híbrida e interpretable que conecte revisiones estratégicas
+vecinales con cierre entero y guardias físicas para el transporte cooperativo de
+cargas heterogéneas. Su evaluación comparará factibilidad, calidad operacional y
+coste de información con referencias globales, y registrará la respuesta ante
+obstáculos, fallos y degradación de red.
 
 \subsection{Objetivos específicos}
 
@@ -23,31 +23,33 @@ perturbaciones y coste de información frente a referencias globales.
   parsep=0pt
 ]
 
-  \item Caracterizar la formación de coaliciones en el caso homogéneo uno a uno,
-  con cuotas variables y con servicio operacional heterogéneo. Determinar las
-  condiciones de realizabilidad, cierre entero y equilibrio, y medir la pérdida
-  de calidad frente a referencias globales bajo abundancia y escasez.
+  \item Formalizar la transición desde la asignación homogénea uno a uno hasta
+  las cuotas variables y el servicio heterogéneo. Para cada caso se determinarán
+  las condiciones de equilibrio y cierre; los experimentos medirán factibilidad
+  y brecha respecto de la referencia global en abundancia y escasez.
 
-  \item Construir un certificado de factibilidad mecánica para la modalidad
-  Cargo planar soportada a partir de la geometría de contacto, la matriz de
-  agarre, los límites de actuación y el residual normalizado de \emph{wrench}.
-  Vincular el certificado con el acoplamiento de robots diferenciales y con el
-  servocontrol de pose dentro del dominio donde se acredita estabilidad local.
+  \item Definir para Cargo un certificado planar que evalúe si la matriz de
+  agarre y los límites de actuación realizan el \emph{wrench} solicitado con el
+  residual permitido. Ese certificado debe proporcionar la condición de entrada
+  para el acoplamiento de robots diferenciales y para el servocontrol de pose en
+  el dominio de estabilidad local.
 
-  \item Medir la respuesta de las coaliciones ante obstáculos, un fallo simple
-  y conflictos de circulación. Registrar colisiones, progreso, bloqueos,
-  restauración del certificado y tiempo de recuperación. La exclusión lógica
-  del tráfico discreto se evaluará por separado de la seguridad física continua.
+  \item Evaluar la seguridad y la recuperación ante obstáculos y un fallo
+  simple, usando como respuestas la colisión, el progreso y el tiempo necesario
+  para restaurar el certificado. Los conflictos de circulación se estudiarán
+  sobre el grafo discreto; su invariante de exclusión se mantendrá separado de la
+  distancia física continua.
 
-  \item Determinar cómo afectan el tamaño del sistema, el alcance limitado de la
-  comunicación, el retardo y la pérdida de paquetes a la observabilidad, la
-  calidad estratégica, el coste computacional y el volumen de mensajes. Comparar
-  la coordinación vecinal por eventos y la retransmisión periódica con información
-  perfecta y con un oráculo exhaustivo, usado solo cuando certifique su solución.
+  \item Medir cómo cambian la tasa libre de conflictos, el tiempo de CPU y los
+  mensajes por agente al variar el tamaño de la flota y la red. La coordinación
+  por eventos y la retransmisión periódica se compararán con información perfecta;
+  el oráculo exhaustivo se usará únicamente en los tamaños donde certifique su
+  solución.
 
-  \item Integrar reclutamiento, cierre de coalición, acoplamiento, transporte,
-  seguridad y reemplazo tras un fallo en una misión Cargo. Usar ablaciones para
-  identificar los componentes necesarios y acotar la transferencia de resultados
-  al piloto industrial geométrico y cinemático.
+  \item Construir un demostrador Cargo en el que el cierre de la coalición
+  habilite el acoplamiento, el transporte continúe bajo la guardia de seguridad y
+  un fallo active el reemplazo. Las ablaciones identificarán qué etapas sostienen
+  el éxito; la comparación con SP2--SP6 y con el piloto cinemático delimitará el
+  alcance del demostrador.
 
 \end{enumerate}

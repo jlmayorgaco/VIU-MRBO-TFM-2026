@@ -1,14 +1,14 @@
 \section{Resultados y análisis}
 \label{sec:results}
 
-El análisis avanza de asignación a red imperfecta. Cada SP añade una condición. Enunciados y supuestos quedan en el cuerpo y pruebas completas en anexos.
+La evaluación transforma una asignación lógica en una misión de transporte y comprueba, por bloques, reclutamiento, interacción física, ejecución segura y operación bajo fallos o red imperfecta. SP0--SP8 modifican el estado, la información y la planta entre experimentos; cada resultado pertenece al modelo de su subproblema. Los anexos contienen las demostraciones completas.
 
 \subsection{Formulación general y arquitectura}
 \label{subsec:common-formulation}
 
-Sean $\Robots$ los robots y $\Loads$ las cargas. $\boldsymbol c_i$ y $\boldsymbol r_k$ son capacidades/requisitos, $\rho_{ik}$ preferencia y $x_{ik}$ pertenencia. Costes estratégicos se normalizan. Magnitudes físicas conservan SI.
+Sean \(\Robots\) los robots y \(\Loads\) las cargas. Para cada par \(i,k\), \(\boldsymbol c_i\) y \(\boldsymbol r_k\) representan capacidad y requisito, \(\rho_{ik}\) la preferencia y \(x_{ik}\) la pertenencia. Los costes estratégicos se expresan en escala normalizada; las variables físicas usan unidades SI.
 
-Los SP no comparten planta ni información. La Tabla~\ref{tab:results-model-map} separa decisión, agregados, cierre, certificado y planta. Cualquier lectura global limita la distribución completa.
+La Tabla~\ref{tab:results-model-map} identifica qué SP consulta agregados o cierres globales y cuál es su planta. Esas dependencias, combinadas con decisiones locales, definen la arquitectura híbrida evaluada.
 
 \begin{table}[!htbp]
  \centering
@@ -30,19 +30,21 @@ Los SP no comparten planta ni información. La Tabla~\ref{tab:results-model-map}
   6 & marginal local & déficit publicado & local por carga & cobertura aditiva & viaje reducido \\
   7 & ruta vecinal & intención local & testigo local & conflicto lógico visible & grafo discreto \\
   8 & ruta vecinal & mensajes imperfectos & local & conflicto visible & grafo discreto \\
-  Cargo & líder temporal con vistas vecinales & tablas versionadas con pérdida y retardo & líder por carga & guardia mecánica y geométrica & uniciclo y carga planar en una misión \\
+  Cargo & líder temporal tras \emph{gossip} de identificadores & atributos resueltos en registro global & líder por carga & criterio agregado, punto intermedio y filtro & uniciclo y carga planar en una misión \\
   \bottomrule
  \end{tabularx}
  \viuownsource
 \end{table}
 
-Las propiedades solo se transfieren si se conservan estado, información y modelo: equilibrio no certifica contacto, \emph{wrench} no garantiza seguimiento y exclusión discreta no prueba separación continua. En Cargo son vecinales la propagación versionada y la revisión. Líder, registro y QP permanecen por carga/globales. La arquitectura es híbrida.
+Una garantía puede pasar a la capa siguiente únicamente si esta conserva el estado, la información y el modelo de la prueba. Por ejemplo, la cobertura nominal de recursos debe someterse todavía al certificado de contacto. En Cargo, los enlaces vecinales descubren identificadores; el ejecutor consulta estado global para elegir líder y resolver atributos. Además, su admisión inicial usa un criterio agregado distinto del QP de SP3. Estas dependencias hacen híbrida la arquitectura.
 
 
 \subsection{Protocolo común y métodos de referencia}
 \label{subsec:common-protocol}
 
-Cada comparación usa mundos y semillas pareados, límites idénticos y una definición común de éxito. Las colisiones, la falta de convergencia y el agotamiento del horizonte permanecen en el denominador. Las tablas distinguen el método propuesto, el oráculo, los comparadores y las ablaciones. Las clases P o NP-difícil califican al problema. El coste de cada heurística se informa por separado.
+Cada celda experimental reutiliza el mundo y la semilla entre métodos, con idénticos límites de actuación, horizonte y criterio de éxito. Las colisiones, los bloqueos y los agotamientos del horizonte permanecen en el denominador. Las tablas distinguen el oráculo con información global del método, los comparadores y las ablaciones. La clase de complejidad corresponde al problema; el tiempo o la cota informados corresponden al algoritmo ejecutado.
+
+SP2--SP4 son reanálisis de observaciones archivadas, con postproceso, tablas y auditorías disponibles. Parte de sus generadores históricos falta. Cargo sí puede regenerarse desde su configuración y reproduce el demostrador híbrido implementado; esta campaña no ejecuta la composición de los juegos de SP2--SP6.
 
 \clearpage
 \input{sections/mainmatter/06-results-and-analysis/sp0}
@@ -72,18 +74,13 @@ Cada comparación usa mundos y semillas pareados, límites idénticos y una defi
 \subsection{Discusión transversal}
 \label{subsec:cross-discussion}
 
-Los resultados dependen de interfaces: estabilidad unilateral no implica eficiencia, cobertura escalar no implica \emph{wrench} y reserva discreta no implica separación geométrica. La ejecución integrada prueba compatibilidad sin transferir automáticamente las garantías de cada capa.
+Cada garantía queda asociada a la interfaz que la produjo. La cobertura escalar, por ejemplo, admite una coalición nominal que el QP de \emph{wrench} puede rechazar. La misión Cargo consiguió ejecutar juntos el reclutamiento, el movimiento, la respuesta a obstáculos y el reemplazo; las pruebas formales permanecen vinculadas a sus respectivos SP.
 
-SP0 elimina vacíos mediante penalización, aunque conserva posibles ineficiencias, y relaciona precios, conectividad y mensajes. SP1 muestra que el déficit no selecciona bajo escasez. Cuórum prioriza y QR cierra usando ordenación global. SP2 restaura integrabilidad marginal, pero mantiene cierre secuencial y servicio sin contacto.
+En reclutamiento, la eliminación del déficit establece factibilidad, pero la eficiencia necesita un coste social y la escasez exige decidir qué cargas activar. Las contribuciones marginales de SP2 incorporan heterogeneidad operacional. Los cierres ejecutados en este bloque todavía consultan agregados globales.
 
-SP3 redujo falsos positivos en $0.333$ sobre 600 mundos mediante geometría y actuadores, dentro de un QP planar. SP4 enlaza residual y pose con estabilidad local bajo contactos fijos y \emph{wrench} exacto, pero separa acoplamiento y transporte. KKT no sustituye planta ni servolazo.
+Las capas posteriores revelan límites diferentes. El QP planar redujo en \(0.333\) la tasa de falsos positivos sobre 600 mundos. El filtro de seguridad eliminó las colisiones observadas y conservó casos bloqueados, mientras la reparación restauró los 360 certificados recuperables. En SP8, la retransmisión elevó la tasa libre de conflicto en \(0.054\) y añadió \(261.3\) mensajes por agente; a 128 robots, esa tasa fue cero.
 
-SP5 elimina colisiones observadas del Hamiltoniano, pero conserva bloqueos. SP6 restaura 360 certificados recuperables. Algunos exceden el plazo porque la minimalidad estratégica y el reacoplamiento físico son distintos.
+Cargo completó 359 de 360 misiones mediante un líder por carga y un registro global, resultado que acredita coexistencia funcional. En el piloto cinemático AWS, los tres escenarios congestionados agotaron el horizonte de \(60\)~s aunque las muestras no registraron solapamientos. El piloto localiza un problema de vivacidad y no reproduce la evidencia dinámica del modo Cargo.
 
-SP7 certifica exclusión visible, con MAPF y distancia continua fuera de su alcance. En SP8, retransmitir mejora $0.054$ la tasa y añade $261.3$ mensajes/agente, pero la calidad colapsa a mayor escala: la comunicación recupera observabilidad parcial sin restaurar conectividad.
 
-Cargo integra tablas vecinales, reclutamiento, uniciclos, carga, obstáculo, fallo y reemplazo. Completa 359/360 misiones. Retirar seguridad o reparación reduce éxito $0.996/0.989$. Bajo red degradada, vecinal y perfecto completan 90/90. Vecinal usa 249.3 mensajes y 58.2~kB por mundo degradado.
-
-AWS prueba estrés con cuatro cargas, tráfico, batería y radios. En tres escenarios congestionados, todos agotaron $60$~s. Replicator--CBF se detuvo más que el predictor. Evitar solapamientos no corrigió el bloqueo, por lo que el replay no confirma Cargo.
-
-H3 no se sustenta: el efecto temporal fue $-0.086$~s, IC $[-0.178;0.013]$ y $p_{\mathrm{Holm}}=0.068$. Las capas son compatibles, pero carecen de una ventaja temporal demostrada. Propagación y selección son vecinales, mientras que el líder y las guardias operan por carga. La arquitectura no alcanza descentralización integral, convergencia híbrida ni validez industrial.
+El efecto temporal pareado de Cargo fue \(-0.086\)~s, con IC~95\% \([-0.178;0.013]\) y \(p_{\mathrm{Holm}}=0.068\); este resultado deja H3 sin apoyo. El \emph{gossip} vecinal transporta identificadores y el líder consulta el registro global para seleccionar la coalición y resolver sus atributos. La evidencia establece compatibilidad funcional bajo ese contrato híbrido. Una ventaja temporal, la convergencia del sistema integrado y la validez industrial requieren evidencia adicional.

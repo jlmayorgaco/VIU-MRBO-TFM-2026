@@ -1,86 +1,70 @@
 \section{Introducción}
 \label{sec:introduction}
 
-La intralogística concentra buena parte del uso profesional de los robots móviles
-autónomos (AMR). En su muestra anual de 2024, la IFR contabilizó 102\,900 robots
-de servicio destinados al transporte y la logística. La cifra creció un
-14\,\% respecto del año anterior y superó la mitad de las unidades profesionales
-observadas \parencite{internationalFederationRobotics2025}. El sistema Kiva y las
-plataformas comerciales de Geek+ y MiR ilustran su aplicación en almacenamiento,
-preparación de pedidos y abastecimiento interno
-\parencite{wurman2008coordinating,geekplusWarehouseSolutions,mirInternalTransport}.
-Estas operaciones suelen partir de cargas, interfaces y recorridos normalizados.
+La IFR registró 102\,900 robots de servicio para transporte y logística en 2024:
+un 14\,\% más que el año anterior y más de la mitad de las unidades profesionales
+de su muestra \parencite{internationalFederationRobotics2025}. En almacenes, Kiva
+documentó la coordinación de flotas para mover estanterías
+\parencite{wurman2008coordinating}; Geek+ y MiR ofrecen soluciones comerciales
+para preparación de pedidos y transporte interno
+\parencite{geekplusWarehouseSolutions,mirInternalTransport}. Estas aplicaciones
+se benefician de interfaces repetibles y recorridos conocidos.
 
-Este TFM se ocupa de las cargas que rompen esa regularidad. Un bastidor voluminoso,
-un subconjunto pesado, una pieza frágil o un objeto con una pose de entrega precisa
-puede rebasar la capacidad, la superficie de apoyo o la maniobrabilidad de un AMR.
-Una coalición temporal permite repartir la tarea sin dimensionar toda la flota para
-la carga máxima \parencite{an2023cooperativeReview}. El interés industrial está en
-conservar una flota modular cuando el material exige más de un robot o una forma de
-manipulación específica.
+El problema cambia cuando una carga rebasa la capacidad individual o exige apoyo
+en varios puntos. Un bastidor pesado, por ejemplo, puede requerir varios AMR y una
+pose de entrega precisa. Una coalición temporal reparte la tarea sin dimensionar
+toda la flota para la carga máxima \parencite{an2023cooperativeReview}. La
+modularidad se conserva, pero la decisión deja de ser una asignación uno a uno.
 
-Formar la coalición exige decidir quién participa y comprobar qué puede hacer el
-equipo seleccionado. Las taxonomías de asignación multi-robot distinguen las tareas
-simultáneas, la heterogeneidad de recursos y la dependencia entre decisiones
-\parencite{gerkeyMataric2004MRTA,korsahStentzDias2013iTax}. Los modelos de
-coalición representan la composición y el valor de los equipos
-\parencite{shehoryKraus1998Coalition,vigAdams2006Coalition}. Cubrir una cuota o un
-vector de recursos todavía no acredita la ejecución física: los robots han de
-ocupar contactos compatibles, producir las fuerzas y momentos requeridos, regular
-la pose y respetar los límites de actuación durante el movimiento
+La asignación multi-robot aporta las variables para seleccionar participantes
+\parencite{gerkeyMataric2004MRTA,korsahStentzDias2013iTax}, y los modelos de
+coalición representan el valor de una composición
+\parencite{shehoryKraus1998Coalition,vigAdams2006Coalition}. Esa salida lógica es
+solo la primera interfaz. El equipo debe ocupar contactos compatibles antes de
+producir el \emph{wrench} requerido; después, el control regula la pose bajo los
+límites de los actuadores
 \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe,alonsomora2017transport}.
-Una asignación válida en términos lógicos puede fallar al acoplarse, bloquearse
-ante un obstáculo o perder su viabilidad cuando se retira un robot.
+Un fallo en cualquiera de esas interfaces reabre la selección o detiene la tarea.
 
-Los trabajos revisados suelen comenzar y terminar en capas distintas. Las subastas
-distribuidas asignan tareas \parencite{gerkeyMataric2002MURDOCH,choiBrunetHow2009CBBA}.
-Los juegos de coalición describen preferencias y recursos
-\parencite{chenSun2012Coalition,dutta2021hedonic}; ASyMTRe comprueba composiciones
-funcionalmente ejecutables
-\parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}; y el control
-cooperativo mueve grupos ya constituidos \parencite{alonsomora2017transport}.
-Cada familia parte de variables y supuestos propios, de modo que sus garantías no
-pasan sin más a las demás capas. En el corpus verificado no se encontró un método
-que reuniera la decisión de coalición con la factibilidad mecánica, el movimiento,
-la seguridad, la reparación y la comunicación imperfecta. Esta conclusión se
-limita a la revisión documentada y no afirma la inexistencia universal de ese
-método.
+La literatura revisada resuelve partes diferentes de esa cadena. MURDOCH y CBBA
+adjudican tareas mediante negociación
+\parencite{gerkeyMataric2002MURDOCH,choiBrunetHow2009CBBA}; ASyMTRe comprueba
+composiciones funcionales
+\parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}. El control cooperativo
+parte, en cambio, de un grupo ya constituido \parencite{alonsomora2017transport}.
+Las garantías de estos métodos responden a estados de entrada distintos. Dentro
+del corpus y del criterio de inclusión documentados en el Capítulo~5, no se
+identificó una solución que conectara la decisión de coalición con la ejecución
+física, la recuperación y la degradación de red.
 
-Este trabajo hace explícitas las interfaces entre esas capas. Cada robot revisa su
-decisión con estado propio, percepción local y mensajes de sus vecinos. Cuando el
-cierre entero, un agregado por carga, una guardia física, el reparto de esfuerzo o
-un registro consultan información global, esa dependencia permanece visible. Los
-optimizadores
-centralizados actúan como oráculos, certificados o referencias en instancias
-acotadas, no como coordinadores de la operación. La arquitectura es, por ello,
-híbrida. Su evaluación determina hasta dónde puede formar coaliciones y completar
-el transporte, qué garantías conserva cada componente y cuánto cuesta sustituir
-información global por coordinación vecinal.
+Este trabajo especifica la entrada y la salida de cada interfaz. Los robots
+revisan decisiones a partir de su estado y de mensajes vecinales. El cierre
+entero y varios cálculos por carga consultan agregados globales; el registro del
+simulador también resuelve identificadores fuera del vecindario. Por eso la
+implementación evaluada es híbrida. Los optimizadores centralizados solo fijan
+referencias en instancias acotadas, y su ventaja informativa se declara en cada
+comparación.
 
-La evaluación introduce una dificultad nueva en cada SP. SP0, SP1 y SP2 tratan la
-asignación uno a uno,
-las cuotas variables y el servicio heterogéneo. SP3 y SP4 añaden el certificado
-planar de \emph{wrench}, el acoplamiento y el control de pose; de SP5 a SP8 se
-estudian obstáculos, fallos, tráfico y comunicación imperfecta. En cada paso se
-declaran el modelo, la información disponible, la métrica y el nivel de evidencia.
-Las propiedades formales se apoyan en demostraciones y enumeraciones. La calidad
-se mide con oráculos acotados, comparadores, ablaciones y experimentos pareados.
-Una misión integrada recorre la cadena completa, mientras que un piloto industrial
-tridimensional revela bloqueos geométricos y cinemáticos que los escenarios
-sintéticos no representan.
+Los experimentos siguen cuatro bloques. El primero pasa de asignación unitaria a
+cuotas y servicio heterogéneo. El segundo exige un \emph{wrench} planar y regula
+la pose después del acoplamiento. Seguridad, recuperación y tráfico se evalúan
+en el tercer bloque; el cuarto mide el coste de comunicación y la pérdida de
+calidad al crecer la flota. Demostraciones, enumeraciones y mundos pareados
+separan resultados formales de observaciones empíricas. Además, un demostrador
+Cargo comprueba la compatibilidad funcional de selección, acoplamiento,
+transporte y reemplazo. Como sustituye parte de los mecanismos de SP2--SP6, sus
+resultados no constituyen una validación integrada de esos subproblemas. El
+piloto tridimensional aporta un ensayo cinemático adicional de congestión.
 
-La validación física se concentra en la modalidad Cargo soportada. Después del
-acoplamiento, la carga y los robots forman un cuerpo planar reducido con contactos
-fijos y \emph{wrench} acotado. El modelo no incluye soporte tridimensional,
-interacción entre rueda y suelo ni percepción completa; tampoco valida agarre
-físico o empuje por confinamiento geométrico. Las garantías obtenidas pertenecen a
-componentes concretos y no constituyen una prueba de convergencia, estabilidad o
-seguridad para todo el sistema híbrido. Los resultados solo se extienden a los
-modelos, tamaños, geometrías y regímenes de comunicación evaluados.
+La modalidad física principal es Cargo soportada. Tras el acoplamiento, carga y
+robots se modelan como un cuerpo planar de contactos fijos con \emph{wrench}
+acotado. Las proposiciones formales se refieren a componentes concretos de ese
+modelo; los dominios experimentales aparecen en las tablas de protocolo. El
+soporte tridimensional, la interacción rueda--suelo y la percepción completa
+requieren otro modelo. Tampoco se ensayaron agarre físico ni empuje por
+confinamiento geométrico.
 
-Los capítulos siguientes separan objetivos, hipótesis, metodología y fundamentos
-teóricos antes de presentar la evidencia. Los Capítulos~2 a~5 cubren esos cuatro
-elementos. El Capítulo~6 contiene la formulación, los resultados y las validaciones
-integrada e industrial. El Capítulo~7 contrasta los objetivos y las hipótesis con
-la evidencia, fija las limitaciones y plantea trabajo futuro. Las demostraciones y
-el material de reproducibilidad quedan en los anexos.
+Los Capítulos~2 a~5 fijan objetivos, hipótesis, protocolo y fundamentos. El
+Capítulo~6 presenta la evidencia; el Capítulo~7 responde a las hipótesis y
+delimita la transferencia de los resultados. Los anexos contienen las
+demostraciones completas y el estado de reproducibilidad.

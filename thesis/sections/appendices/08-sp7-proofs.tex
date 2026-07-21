@@ -1,7 +1,7 @@
 \section{Demostraciones complementarias de SP7}
 \label{app:sp7-proofs}
 
-Estas pruebas suponen catálogos finitos, recursos no ponderados, costes fijos, mensajes coherentes y movimiento muestreado sobre un grafo inflado. No cubren dinámica continua, errores de localización, contacto ni red imperfecta.
+SP7 formaliza el tráfico sobre un grafo inflado con movimiento muestreado. El teorema de potencial usa catálogos finitos, recursos no ponderados y costes fijos; los invariantes del ejecutor requieren mensajes coherentes. La dinámica continua, el contacto, la localización y la red imperfecta se evalúan mediante contratos distintos.
 
 \subsection{Identidad de potencial exacto}
 \label{app:sp7-potential-proof}
@@ -15,21 +15,21 @@ Como $\binom{m+1}{2}-\binom m2=m$, añadir la ruta de $i$ incrementa cada térmi
  \Phi_7(r_i',\boldsymbol r_{-i})-\Phi_7(r_i,\boldsymbol r_{-i})
  =U_i(r_i',\boldsymbol r_{-i})-U_i(r_i,\boldsymbol r_{-i}).
 \]
-El juego es de potencial exacto \parencite{monderer1996potential}. Su espacio tiene $\prod_i|\mathcal R_i^7|$ perfiles. Toda mejora estricta aumenta $\Phi_7$, no repite perfil y termina en un Nash tras, como máximo, $\prod_i|\mathcal R_i^7|-1$ cambios. Esto prueba el Teorema~\ref{thm:sp7-exact-potential}.
+La identidad anterior satisface la definición de potencial exacto \parencite{monderer1996potential}. El espacio contiene \(\prod_i|\mathcal R_i^7|\) perfiles. Como una mejora estricta aumenta \(\Phi_7\), cada perfil aparece a lo sumo una vez y la trayectoria alcanza un Nash tras un máximo de \(\prod_i|\mathcal R_i^7|-1\) cambios.
 
 \subsection{Condición suficiente para excluir conflictos}
 \label{app:sp7-conflict-free-proof}
 
-Si $P_7(\boldsymbol r)>0$ y $\theta_7<\infty$, la definición~\eqref{eq:sp7-threshold} proporciona una desviación con $\Delta P=P_7(\boldsymbol r)-P_7(a,\boldsymbol r_{-i})>0$ y $[\Delta B]_+/\Delta P\leq\theta_7$, donde $\Delta B=B_7(a,\boldsymbol r_{-i})-B_7(\boldsymbol r)$. Su variación de potencial es $-\Delta B+\lambda_7\Delta P>0$ para $\lambda_7>\theta_7$: es inmediata si $\Delta B\leq0$ y, en otro caso, se sigue de $\lambda_7\Delta P>\theta_7\Delta P\geq\Delta B$. Por exactitud, el perfil conflictivo no es Nash. Todo Nash satisface $P_7=0$, como afirma la Proposición~\ref{prop:sp7-conflict-free}. Si no existe desviación unilateral que reduzca $P_7$, entonces $\theta_7=\infty$ y la conclusión no aplica. Esta es la frontera de los pasillos y cuellos de botella.
+Si $P_7(\boldsymbol r)>0$ y $\theta_7<\infty$, la definición~\eqref{eq:sp7-threshold} proporciona una desviación con $\Delta P=P_7(\boldsymbol r)-P_7(a,\boldsymbol r_{-i})>0$ y $[\Delta B]_+/\Delta P\leq\theta_7$, donde $\Delta B=B_7(a,\boldsymbol r_{-i})-B_7(\boldsymbol r)$. Para \(\Delta B\leq0\), se cumple \(-\Delta B+\lambda_7\Delta P>0\). Para \(\Delta B>0\), la definición da \(\Delta B\leq\theta_7\Delta P<\lambda_7\Delta P\), con el mismo signo positivo. La exactitud transfiere esta mejora del potencial al pago unilateral; por eso, todo Nash satisface \(P_7=0\). Cuando ninguna desviación unilateral reduce \(P_7\), se obtiene \(\theta_7=\infty\) y la proposición deja fuera ese pasillo o cuello de botella.
 
 \subsection{Invariante lógico de la reserva}
 \label{app:sp7-reservation-invariant}
 
-Inicialmente cada zona está libre. El arbitraje asigna un único propietario y rechaza entradas ajenas mientras exista su testigo. Este solo se libera después de observar la salida del propietario y cumplir el intervalo de despeje. Por inducción sobre los pasos, nunca se autorizan dos entradas incompatibles. Además, el ejecutor conserva una propuesta por destino, rechaza intercambios opuestos y movimientos hacia agentes estacionarios. Si los nodos activos son distintos al inicio, también lo son al final. La exclusión lógica queda invariante.
+El invariante parte de una zona libre. El arbitraje asigna un propietario único y conserva el testigo hasta observar su salida y completar el intervalo de despeje. Una autorización solo se concede si mantiene un destino único, evita un intercambio opuesto y excluye el nodo de un agente estacionario. Por inducción sobre los pasos, dos entradas incompatibles nunca quedan autorizadas y los nodos activos permanecen distintos.
 
 \subsection{Ausencia condicional de inanición}
 \label{app:sp7-no-starvation}
 
-Sea $S$ un conjunto finito de solicitantes persistentes. Mientras no avanza, $w_i$ aumenta. Tras cruzar, el propietario libera el testigo y abandona la competencia. En cada liberación se elige el máximo lexicográfico de $(w_i,P_i,-i)$. Si algún $j\in S$ nunca fuese elegido, las concesiones retirarían en tiempo finito a los demás hasta dejarlo como máximo, contradicción. El argumento falla si un propietario no libera, aparecen solicitantes sin límite o un agente reingresa indefinidamente.
+Sea $S$ un conjunto finito de solicitantes persistentes. Mientras no avanza, $w_i$ aumenta. Tras cruzar, el propietario libera el testigo y abandona la competencia. En cada liberación se elige el máximo lexicográfico de $(w_i,P_i,-i)$. Si algún \(j\in S\) nunca fuese elegido, las concesiones retirarían en tiempo finito a los demás y dejarían a \(j\) como máximo, que tendría que ser seleccionado en la siguiente liberación. La contradicción usa tres hipótesis explícitas: cada propietario libera, \(S\) permanece finito y ningún agente reingresa indefinidamente.
 
-Estos invariantes excluyen coincidencias de celda, no certifican distancia euclídea entre muestras. Una carga extensa aún puede violarla si la interpolación, la orientación o la dinámica no respetan la inflación. La ejecución física requiere una guardia como la de SP5.
+Estos invariantes certifican exclusión lógica de celdas en los instantes muestreados. La separación euclídea entre muestras depende de que la inflación represente la huella orientada y de que la interpolación respete esa envolvente. La ejecución física añade para ello una guardia como la de SP5.

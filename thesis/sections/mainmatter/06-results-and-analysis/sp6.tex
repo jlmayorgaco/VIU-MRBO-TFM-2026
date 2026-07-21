@@ -1,11 +1,11 @@
 \subsection{SP6: juego potencial de re-reclutamiento tras un fallo}
 \label{subsec:sp6}
 
-SP6 retira un soporte, detiene la carga y recluta reserva. La nueva coalición debe restaurar soporte, fuerza y torque. El reemplazo viaja a velocidad acotada hacia un contacto fijo, sin obstáculos ni reacoplamiento dinámico. Se estudia un fallo y una carga.
+Cuando falla un miembro, la coalición puede perder el certificado de soporte, fuerza o torque aun con la carga detenida. SP6 publica ese déficit y permite que las reservas revisen su participación antes de reanudar la misión. La campaña considera una carga y un fallo; el reemplazo viaja a velocidad acotada hacia un contacto prefijado en una trayectoria libre.
 
 \subsubsection{Fallo y reserva}
 
-La Figura~\ref{fig:sp6-scenario} separa detección, revisión y certificación.
+El reemplazo solo se moviliza después de que las revisiones locales reduzcan $D_6(\boldsymbol x)$ a cero, y la guardia vuelve a comprobar el certificado antes del arribo (Figura~\ref{fig:sp6-scenario}).
 
 \begin{figure}[!htbp]
   \centering
@@ -70,11 +70,11 @@ El oráculo central resuelve
   \sum_{i\in\mathcal R_k}c_{ia}^6x_i\geq d_{ka}^6,
   \quad a=1,\ldots,A_6.
 \end{equation}
-Se enumeran $2^{n_R}$ perfiles con prueba de optimalidad. Es un techo global postfallo, no un competidor arquitectónico equivalente.
+La enumeración de los $2^{n_R}$ perfiles certifica el coste mínimo postfallo con información global y sirve como techo para los métodos locales.
 
 \subsubsection{Métodos de comparación}
 
-ALLIANCE activa alternativas \parencite{parker1998alliance}, las subastas reasignan tras eventos \parencite{nanjanath2006dynamicAuctions}, ACBBA admite desorden \parencite{johnson2011acbba} y CBBA-PR limita revisiones \parencite{buckman2019cbbaPr}. Justifican reparación asíncrona, no certifican \emph{wrench}. La Tabla~\ref{tab:sp6-methods} muestra los tratamientos ejecutados.
+ALLIANCE aporta el antecedente de activación alternativa \parencite{parker1998alliance}; las subastas dinámicas, ACBBA y CBBA-PR motivan la revisión asíncrona tras eventos \parencite{nanjanath2006dynamicAuctions,johnson2011acbba,buckman2019cbbaPr}. Como esas fuentes no incorporan el certificado de \emph{wrench} usado aquí, la Tabla~\ref{tab:sp6-methods} distingue el mecanismo de reasignación de la guardia física.
 
 \begin{table}[!htbp]
   \centering
@@ -122,9 +122,9 @@ La carga publica déficit y cada reserva usa $\boldsymbol c_i^6,\kappa_i^6$. Cal
 El juego definido por~\eqref{eq:sp6-payoff} es un juego de potencial exacto con potencial $\Phi_6$. Existe al menos un Nash puro y toda sucesión asíncrona de mejoras estrictas termina en un Nash después de, como máximo, $2^{n_R}-1$ cambios aceptados.
 \end{teorema}
 
-El Anexo~\ref{app:sp6-proofs} prueba diferencias y finitud. $\boldsymbol x$ es Nash si ningún robot libre satisface
+$\boldsymbol x$ es Nash si ningún robot libre satisface
 $\lambda_6[D_6(\boldsymbol x)-D_6(\boldsymbol x+\boldsymbol e_i)]>\kappa_i^6$
-y ningún miembro ahorra al salir más que el déficit inducido. Caracteriza todos los equilibrios.
+y ningún miembro ahorra al salir más que el déficit inducido. Estas dos condiciones caracterizan todos los equilibrios; la derivación aparece en el Anexo~\ref{app:sp6-proofs}.
 
 Para excluir equilibrios deficitarios, sea
 \begin{equation}
@@ -145,24 +145,24 @@ Si la reserva completa cubre $\boldsymbol d_k^6$, entonces $\delta_{\min}>0$. Si
 \]
 \end{teorema}
 
-La ida elimina déficit y redundancia. En la vuelta, retirar de una coalición mínima crea déficit al menos $\delta_{\min}$. La penalización supera el ahorro y un externo solo cuesta. Véase el Anexo~\ref{app:sp6-feasible-nash-proof}.
+La demostración considera las dos desviaciones unilaterales: ingresar reduce un déficit y salir de una coalición mínima crea al menos $\delta_{\min}$. Con el umbral indicado, la penalización domina el ahorro de salida y un ingreso redundante aumenta el coste (Anexo~\ref{app:sp6-feasible-nash-proof}).
 
-Como los costes son positivos, toda reparación factible de coste mínimo es mínima por inclusión y, por el Teorema~\ref{thm:sp6-feasible-nash}, es Nash. Por tanto,
+Como los costes son positivos, toda reparación factible de coste mínimo es mínima por inclusión y, por el Teorema~\ref{thm:sp6-feasible-nash}, es Nash. De esta inclusión se sigue
 \begin{equation}
  \operatorname{PoS}_6=1.
  \label{eq:sp6-pos}
 \end{equation}
-Existe un equilibrio socialmente óptimo, pero la dinámica descentralizada no tiene por qué seleccionarlo.
+El conjunto de Nash contiene un óptimo social; la trayectoria de mejoras puede terminar en cualquier reparación mínima por inclusión.
 
 \begin{proposicion}[ineficiencia no acotada del peor Nash]
 \label{prop:sp6-unbounded-poa}
 No existe una cota uniforme, independiente de la instancia y de $\lambda_6$, para el cociente entre el coste del peor Nash factible y el oráculo~\eqref{eq:sp6-oracle}, incluso con un solo recurso y tres robots.
 \end{proposicion}
 
-El Anexo~\ref{app:sp6-proofs} construye un soporte de coste $M$ y dos complementarios de coste dos. Ambos son Nash y $M/2$ diverge. Así, $\operatorname{PoA}_6=+\infty$ aunque exista un equilibrio óptimo.
+La construcción del Anexo~\ref{app:sp6-proofs} usa un soporte de coste $M$ y dos complementarios de coste total dos. Ambos son Nash y el cociente $M/2$ diverge, de donde $\operatorname{PoA}_6=+\infty$ aunque exista un equilibrio óptimo.
 
 \begin{contribucion}{equilibrio de recuperación sujeto a certificado}
-La utilidad enlaza el déficit físico con la decisión de cada reserva. El umbral del Teorema~\ref{thm:sp6-feasible-nash} elimina equilibrios deficitarios y los costes positivos eliminan miembros redundantes. Aun así, una coalición localmente estable puede ser arbitrariamente cara frente al oráculo.
+La utilidad enlaza el déficit físico con la decisión de cada reserva. El umbral del Teorema~\ref{thm:sp6-feasible-nash} excluye equilibrios deficitarios y los costes positivos excluyen miembros redundantes. Estas condiciones no controlan el coste del peor equilibrio, que puede crecer sin cota frente al oráculo.
 \end{contribucion}
 
 \subsubsection{Movimiento del reemplazo}
@@ -181,14 +181,30 @@ Bajo los supuestos de los Teoremas~\ref{thm:sp6-exact-potential}--\ref{thm:sp6-f
 Si el lado derecho no supera el tiempo seguro remanente $T_{\mathrm{safe}}$, el certificado puede restaurarse antes del plazo bajo este modelo de arribo.
 \end{corolario}
 
-El viaje aproxima el uniciclo por $\ell_i/v_i^{\min}$ en segmento libre, omitiendo giro, evitación y asentamiento. Se evalúan cierre, certificado y puntualidad, no estabilidad postacoplamiento.
+El término $\ell_i/v_i^{\min}$ aproxima el viaje por un segmento libre y omite el giro y la evitación; $\tau_s$ representa el asentamiento por separado. La campaña evalúa cierre, restauración del certificado y puntualidad hasta el contacto.
 
 \subsubsection{Diseño experimental}
 
 \input{../results/processed/sp6/SP6_RECOVERY_CONFIRMATORY_v1/tables/sp6_numbers.tex}
-El diseño comprende \SPSixWorlds{} mundos y \SPSixRuns{} ejecuciones: cuatro escenarios, $n_R\in\{4,6,8\}$ y semillas 8600--8639. Los cinco métodos comparten mundo. \SPSixRecoverableWorlds{} son recuperables y \SPSixIrrecoverableWorlds{} carecen de un recurso.
+El diseño contiene \SPSixWorlds{} mundos pareados y \SPSixRuns{} ejecuciones. De ellos, \SPSixRecoverableWorlds{} disponen de reserva suficiente y \SPSixIrrecoverableWorlds{} carecen de un recurso; el endpoint principal es la restauración del certificado.
 
-Se preespecifican restauración, redundancia y coste frente a ablación, voraz y oráculo, con McNemar, Wilcoxon, \emph{bootstrap} y Holm. Los controles enumeran perfiles y verifican utilidad, Nash, ascenso, movimientos, imposibilidad y tiempo.
+\begin{table}[!htbp]
+  \centering
+  \caption{Diseño experimental de SP6-C.}
+  \label{tab:sp6-design}
+  \viutablefont
+  \begin{tabularx}{0.94\textwidth}{>{\raggedright\arraybackslash}p{2.4cm} Y}
+    \toprule
+    Elemento & Especificación \\
+    \midrule
+    Factores & Cuatro escenarios, $n_R\in\{4,6,8\}$, semillas 8600--8639 y cinco métodos sobre cada mundo. \\
+    Estimandos & Restauración, redundancia, coste frente al oráculo, puntualidad y mensajes. \\
+    Inferencia & McNemar para proporciones, Wilcoxon para diferencias pareadas, IC \mbox{bootstrap} y corrección de Holm. \\
+    Controles & Enumeración de perfiles, correspondencia de utilidad y potencial, condición de Nash, ascenso estricto, imposibilidad y cota temporal. \\
+    \bottomrule
+  \end{tabularx}
+  \viusource{elaboración propia a partir del protocolo experimental de SP6}
+\end{table}
 
 \subsubsection{Resultados}
 
@@ -205,28 +221,17 @@ En los 480 mundos, todo método que intenta reparar alcanza una tasa de certific
 
 Condicionado a factibilidad física, el juego restaura el certificado en \SPSixConditionalRestore{} de los mundos y no reabre ninguno de reserva insuficiente. Frente a no reparar, el efecto no condicionado es \SPSixHOneEffect{} con IC del 95\,\% $[\SPSixHOneCILow{},\SPSixHOneCIHigh{}]$ y $p_{\mathrm{Holm}}=\SPSixHOnePHolm$. En la enumeración, todos los Nash fueron factibles y mínimos por inclusión, como predicen los teoremas.
 
-El juego no conserva miembros unilateralmente redundantes. El método voraz, sí. La diferencia media es \SPSixHTwoEffect{} y $p_{\mathrm{Holm}}=\SPSixHTwoPHolm$. Esa minimalidad tiene un coste: la brecha media de movilización frente al oráculo es \SPSixPotentialGap{} y se usan \SPSixPotentialMessages{} mensajes por mundo, más que con el método voraz y menos que con la subasta marginal. La diferencia absoluta de coste frente al oráculo es \SPSixHThreeEffect{} y $p_{\mathrm{Holm}}=\SPSixHThreePHolm$.
+El juego eliminó miembros unilateralmente redundantes, a diferencia del voraz, con efecto medio \SPSixHTwoEffect{} y $p_{\mathrm{Holm}}=\SPSixHTwoPHolm$. La reparación mínima por inclusión presentó una brecha media de movilización \SPSixPotentialGap{} frente al oráculo y contabilizó \SPSixPotentialMessages{} mensajes por mundo, entre el voraz y la subasta marginal. La diferencia absoluta de coste frente al oráculo fue \SPSixHThreeEffect{} ($p_{\mathrm{Holm}}=\SPSixHThreePHolm$).
 
-Certificado y puntualidad producen resultados distintos. En los escenarios recuperables sin plazo estrecho, todos los métodos activos restauran y llegan a tiempo. Bajo plazo estrecho, el juego solo alcanza \SPSixTightPotentialSuccess{} de éxito temporal frente a \SPSixTightGreedySuccess{} del método voraz: factibilidad estratégica no compensa una reserva distante ni un plazo físicamente insuficiente.
+En los escenarios recuperables sin plazo estrecho, todos los métodos activos restauraron el certificado y llegaron a tiempo. Al estrechar el plazo, el éxito temporal del juego cayó a \SPSixTightPotentialSuccess{} frente a \SPSixTightGreedySuccess{} del voraz; la distancia de la reserva domina una decisión estratégicamente factible cuando el tiempo físico resulta insuficiente.
 
-% Matriz gráfica conservada en el artefacto confirmatorio; la tabla reporta las
-% mismas tasas y contrastes.
-\iffalse
-\begin{figure}[!htbp]
-  \centering
-  \includegraphics[width=0.91\textwidth]{../results/processed/sp6/SP6_RECOVERY_CONFIRMATORY_v1/figures/fig-sp6-recovery-matrix.pdf}
-  \caption{Tasa de restauración antes del plazo por escenario y método en SP6-C.}
-  \label{fig:sp6-recovery-matrix}
-  \viuownsource
-\end{figure}
-\fi
 
-El juego restaura y elimina redundancia, pero cuesta más que el oráculo. Ningún método domina coste, puntualidad y comunicación.
+No se definió una función que combinara coste, puntualidad y comunicación; el juego priorizó restauración sin redundancia y pagó una brecha de movilización frente al oráculo.
 
-El certificado aditivo no sustituye un QP geométrico. $\delta_{\min}$ se calibra exponencialmente fuera de línea y el viaje omite obstáculos. No se extrapola a fallos múltiples, SP6-E ni recuperación dinámica.
+La validez depende sobre todo del certificado aditivo y de la calibración exponencial de $\delta_{\min}$ fuera de línea. Un QP geométrico y una trayectoria con obstáculos podrían cambiar tanto la coalición elegida como la puntualidad; los fallos múltiples no se ensayaron.
 
 \subsubsection{Síntesis}
 
-Con reserva suficiente y una penalización por encima del umbral, los Nash puros son exactamente las reparaciones factibles mínimas por inclusión. $\operatorname{PoS}_6=1$ y $\operatorname{PoA}_6=+\infty$. La mejor respuesta termina en tiempo finito y la cota~\eqref{eq:sp6-time-bound} separa decisión, viaje y asentamiento. Las 480 instancias confirman esas propiedades.
+Con reserva suficiente y una penalización por encima del umbral, los Nash puros coinciden con reparaciones factibles mínimas por inclusión y la mejor respuesta termina en un número finito de cambios. Las 480 instancias respetaron esa caracterización. El plazo estrecho reveló la limitación operativa: restaurar el certificado produjo éxito temporal \SPSixTightPotentialSuccess{}, por debajo de \SPSixTightGreedySuccess{} del voraz.
 
-La existencia de un Nash óptimo no garantiza que la trayectoria lo seleccione ni que la misión termine: el peor Nash puede ser arbitrariamente caro y el escenario de plazo estrecho muestra que restaurar recursos no basta para llegar a tiempo. SP7 parte de coaliciones guardadas y añade conflictos de tráfico. SP8 mide la degradación de activaciones y mensajes bajo red imperfecta. La calibración exponencial permanece como limitación.
+$\operatorname{PoS}_6=1$ garantiza que existe un Nash óptimo, pero $\operatorname{PoA}_6=+\infty$ permite equilibrios arbitrariamente caros. SP7 toma las coaliciones restauradas como agentes compuestos y evalúa sus conflictos de ruta.

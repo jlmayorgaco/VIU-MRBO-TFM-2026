@@ -1,7 +1,7 @@
 \section{Demostraciones complementarias de SP4}
 \label{app:sp4-proofs}
 
-Las pruebas de SP4 cubren la convexidad fuerte del juego de vivacidad para una instantánea congelada y la disipación del servolazo planar de pose. No cubren convergencia global del sistema híbrido recedente, estabilidad con contacto conmutado ni validez de una representación cinemática como dinámica física.
+SP4 aporta dos resultados con dominios distintos. El juego de vivacidad posee convexidad fuerte para una instantánea congelada. El servolazo planar disipa energía mientras permanece el contacto modelado; la conmutación, la actualización recedente y la dinámica física requieren análisis adicionales.
 
 \subsection{Potencial y equilibrio variacional del juego de vivacidad}
 \label{app:sp4-game-proof}
@@ -24,11 +24,11 @@ Esta identidad de diferencias finitas demuestra que $J_G$ es un potencial exacto
 \]
 por lo que el negativo del gradiente, más el precio compartido, coincide con el pago de~\eqref{eq:sp4-payoff}. El precio es el multiplicador común de la restricción compartida y no altera la identidad del juego sin restricciones.
 
-Además,
+El Hessiano es
 \[
  \nabla^2J_G=\beta_4 B^{\mathsf T}B+\alpha_4 I\succeq\alpha_4 I\succ0.
 \]
-Por tanto, $J_G$ es $\alpha_4$-fuertemente convexo. El conjunto factible es la intersección del producto de simplex con $B\rho\leq\boldsymbol1$, luego es convexo y compacto. La acción esperar tiene ocupación nula y proporciona un punto de Slater. Existe un único minimizador $\rho^\star$.
+La desigualdad anterior hace a \(J_G\) \(\alpha_4\)-fuertemente convexo. El conjunto factible, intersección del producto de símplex con \(B\rho\leq\boldsymbol1\), es convexo y compacto. Como la acción esperar proporciona un punto de Slater con ocupación nula, existe un único minimizador \(\rho^\star\).
 
 Las condiciones KKT necesarias y suficientes son
 \[
@@ -37,7 +37,7 @@ Las condiciones KKT necesarias y suficientes son
  \qquad
  0\leq\pi^\star\perp\boldsymbol1-B\rho^\star\geq0.
 \]
-Al sustituir $-(\nabla_iJ_G+B_i^{\mathsf T}\pi)$ por el vector de pagos de cada robot se obtiene la desigualdad variacional del juego con restricciones compartidas. Así, el minimizador y el equilibrio variacional coinciden y son únicos, lo que completa la Proposición~\ref{prop:sp4-potential}. El resultado termina antes del cierre entero y antes de actualizar costes o conflictos.
+Al sustituir $-(\nabla_iJ_G+B_i^{\mathsf T}\pi)$ por el vector de pagos de cada robot se obtiene la desigualdad variacional del juego con restricciones compartidas. Su solución coincide con el único minimizador \(\rho^\star\). La Proposición~\ref{prop:sp4-potential} se restringe a la instantánea continua anterior al cierre entero y a la actualización de costes o conflictos.
 
 \subsection{Disipación del servolazo de pose}
 \label{app:sp4-pose-proof}
@@ -73,4 +73,4 @@ y, por tanto,
  \dot V\leq-\frac{\lambda_D}{2}\|\dot q_k^L\|_2^2
  +\frac{1}{2\lambda_D}\|\boldsymbol r_k^W\|_2^2.
 \]
-Esta cota demuestra disipación perturbada, no convergencia exacta cuando el residual persiste. Con ello queda probada la Proposición~\ref{prop:sp4-pose-stability} dentro de sus supuestos.
+La cota establece disipación con \(\boldsymbol r_k^W\) como entrada. Cuando el residual persiste, el término \(\|\boldsymbol r_k^W\|_2^2/(2\lambda_D)\) impide deducir convergencia exacta a partir de esta desigualdad.

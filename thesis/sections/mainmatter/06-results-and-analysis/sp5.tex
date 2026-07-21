@@ -3,11 +3,11 @@
 \subsection{SP5: seguridad de la huella rígida frente a obstáculos}
 \label{subsec:sp5}
 
-SP5 añade obstáculos y límites de fuerza. Tras acoplarse, los robots forman un cuerpo rígido y sus límites entran en $G_{C_k}\lambda_k$. La huella cubre carga y robots. El filtro precede al reparto y la distancia se mide tras saturar e integrar. Empuje queda fuera.
+Una trayectoria de pose factible puede atravesar un obstáculo. SP5 evalúa este fallo de seguridad en la rama Cargo. Tras el acoplamiento, la carga y los robots forman una huella rígida, mientras los límites de fuerza intervienen en $G_{C_k}\lambda_k$. El filtro precede al reparto de \emph{wrench}, de modo que la seguridad se mide otra vez después de saturar e integrar. La rama de empuje queda fuera del experimento.
 
 \subsubsection{Huella y obstáculos}
 
-La Figura~\ref{fig:sp5-scenario} separa control nominal, referencia filtrada y acción. La envolvente cubre el cuerpo compuesto.
+La garantía puede perderse entre la referencia filtrada y el \emph{wrench} aplicado, porque el reparto satura los esfuerzos antes de mover la huella compuesta (Figura~\ref{fig:sp5-scenario}).
 
 \begin{figure}[!htbp]
   \centering
@@ -74,7 +74,7 @@ El filtro ideal de velocidad en una muestra es la proyección convexa
   &&j\in\mathcal O_k .
 \end{aligned}
 \end{equation}
-\eqref{eq:sp5-velocity-projection} es referencia por muestra, no planificador. La ejecución usa doce barridos cíclicos y mide el residuo resultante.
+La ecuación~\eqref{eq:sp5-velocity-projection} calcula una proyección instantánea en cada muestra. La ejecución aproxima esa solución con doce barridos cíclicos y mide el residuo; el horizonte de planificación no forma parte de esta operación.
 
 La proyección anterior actúa solo sobre la velocidad traslacional. Para volver al espacio actuado se define, en la muestra $m$,
 \begin{equation}
@@ -110,11 +110,11 @@ y solo $W_k^{\mathrm{apl}}=G_{C_k}\boldsymbol\lambda_k$ mueve la planta. Este re
  \qquad \varepsilon_{\mathrm{act},j,m}\geq0,
  \label{eq:sp5-applied-margin}
 \end{equation}
-donde $\varepsilon_{\mathrm{act},j,m}$ reúne discretización, iteración, predicción, saturación y reparto. La barrera usa pose y velocidad aplicadas. El margen no se supone cero.
+donde $\varepsilon_{\mathrm{act},j,m}$ acota conjuntamente el error numérico de discretización e iteración y el error físico introducido por predicción, saturación y reparto. La barrera se evalúa con pose y velocidad aplicadas, y el margen puede ser positivo.
 
 \subsubsection{Métodos de comparación}
 
-Campos potenciales son reactivos, VO/RVO/ORCA operan en velocidades y CBF da invariancia condicionada \parencite{khatib1986obstacle,fiorini1998velocity,vandenberg2008rvo,vandenberg2011orca,ames2017cbf}. La Tabla~\ref{tab:sp5-methods} separa garantías y adaptaciones.
+El campo potencial proporciona una referencia reactiva en el espacio de control \parencite{khatib1986obstacle}. VO/RVO/ORCA permiten comparar la selección geométrica de velocidades \parencite{fiorini1998velocity,vandenberg2008rvo,vandenberg2011orca}, mientras el CBF fija la referencia de invariancia continua bajo sus supuestos de factibilidad y regularidad \parencite{ames2017cbf}. La Tabla~\ref{tab:sp5-methods} especifica cómo se adapta cada familia.
 
 \begin{table}[!htbp]
   \centering
@@ -128,11 +128,11 @@ Campos potenciales son reactivos, VO/RVO/ORCA operan en velocidades y CBF da inv
     Fuente/método & Clase & Coste por muestra & Arquitectura/información & Parámetros & Resultado aplicable y límite \\
     \midrule
     Campo potencial \parencite{khatib1986obstacle} & Realimentación reactiva & $O(m)$ & Local; geometría percibida & Ganancia, alcance & Sin invariancia general; adaptado al control de \emph{wrench}. \\
-    VO/RVO/ORCA \parencite{fiorini1998velocity,vandenberg2008rvo,vandenberg2011orca} & Geometría/LP 2D & $O(m)$ más selección; ORCA lineal esperado & Estados relativos & Horizonte, radios & Garantías bajo sus modelos; se evalúa una aproximación, no ORCA. \\
-    CBF-QP \parencite{ames2017cbf} & QP convexo si es factible & $C_{\mathrm{QP}}(2,m)$ & Depende de la geometría disponible & $\gamma_5$, margen, límites & Invariancia continua bajo supuestos; referencia conceptual, no optimizador ejecutado. \\
-    Barreras multirrobot \parencite{wang2017barrier} & QP local convexo & $C_{\mathrm{QP}}(p,m_i)$ & Distribuida; estados vecinos & Radio, frenado & Separación en el modelo citado; contextual, no evaluada. \\
+    VO/RVO/ORCA \parencite{fiorini1998velocity,vandenberg2008rvo,vandenberg2011orca} & Geometría/LP 2D & $O(m)$ más selección; ORCA lineal esperado & Estados relativos & Horizonte, radios & Garantías bajo sus modelos; se evalúa solo una aproximación a ORCA. \\
+    CBF-QP \parencite{ames2017cbf} & QP convexo si es factible & $C_{\mathrm{QP}}(2,m)$ & Depende de la geometría disponible & $\gamma_5$, margen, límites & Invariancia continua bajo supuestos; sirve como referencia conceptual y el optimizador no se ejecuta. \\
+    Barreras multirrobot \parencite{wang2017barrier} & QP local convexo & $C_{\mathrm{QP}}(p,m_i)$ & Distribuida; estados vecinos & Radio, frenado & Separación en el modelo citado; se usa como contexto y no se evalúa. \\
     Proyecciones cíclicas + reparto de \emph{wrench} (TFM) & Convexa por semiespacio; reparto aproximado & $O(I_5m)$ más mínimos cuadrados densos & Alcance local simulado y pose exacta de carga & $I_5=12$, $\Delta t$, margen & Sin prueba de factibilidad recursiva tras saturar e integrar. \\
-    Previsión central (referencia) & Igual guardia, geometría global & Igual orden, mayor información/mensajes & Central y global & Horizonte $1.8$ s & Techo informativo, no oráculo de rendimiento ni seguridad. \\
+    Previsión central (referencia) & Igual guardia, geometría global & Igual orden, mayor información/mensajes & Central y global & Horizonte $1.8$ s & Techo informativo; no certifica rendimiento ni seguridad. \\
     \bottomrule
   \end{tabularx}
   \viusource{elaboración propia a partir de las referencias citadas}
@@ -140,12 +140,12 @@ Campos potenciales son reactivos, VO/RVO/ORCA operan en velocidades y CBF da inv
 
 \subsubsection{Interfaz de seguridad}
 
-SP5 mantiene la coalición y modifica la entrada: la guardia filtra el \emph{wrench} antes de repartirlo. Cambiar miembros corresponde a SP6. Aquí se estudian seguridad y progreso.
+La guardia filtra el \emph{wrench} antes del reparto y conserva la membresía de la coalición durante toda la ejecución. Los estimandos son la colisión, el éxito seguro, el agotamiento del horizonte y el residual aplicado.
 
-CBF local usa obstáculos a \(6\) m, predice \(0.8\) s y cuenta \(2N\) mensajes. La referencia global usa \(1.8\) s y \(N(N-1)\). El simulador lee estado global para parear mundos, sin paquetes ni consenso. Se mide la disponibilidad de información sin implementar una red completa.
+El contrato local observa obstáculos hasta \(6\) m, predice \(0.8\) s y contabiliza \(2N\) mensajes. La referencia global amplía la predicción a \(1.8\) s y emplea \(N(N-1)\) mensajes. Ambos tratamientos leen del simulador el estado necesario para parear mundos; las cifras cuantifican disponibilidad de información, pues no se emulan paquetes ni consenso.
 
 \begin{contribucion}{guardia compatible con una carga rígida}
-Se distinguen el \emph{wrench} nominal, la referencia filtrada y el \emph{wrench} realizable. Solo este último mueve la planta y ninguna colisión, saturación o pose se corrige después de integrar. La separación permite atribuir los fallos al filtro, al reparto de fuerzas o a la planta.
+La cadena RAW/SAFE/EXEC conserva el \emph{wrench} nominal, la referencia filtrada y la acción realizable. La planta recibe EXEC; si SAFE satisface la barrera y EXEC la viola, el residual identifica la pérdida introducida por el reparto y la integración. Los estados resultantes se registran sin reparación posterior.
 \end{contribucion}
 
 \subsubsection{Dinámica y filtro de seguridad}
@@ -161,7 +161,7 @@ La coalición, los contactos y la tarea activa permanecen constantes respecto de
 \end{equation}
 y la referencia es $z_{5,m}^{\mathrm{apl}}=0$ junto con error de pose acotado. El controlador recibe la pose exacta de la carga, su velocidad y la geometría dentro del alcance. Predice la posición del grupo móvil, calcula el control nominal, lo filtra y reparte la fuerza realizable entre los contactos.
 
-La \emph{violación aplicada} no es distancia ni probabilidad. Por muestra,
+La \emph{violación aplicada} es la tasa de muestras cuyo residual de barrera después del reparto resulta positivo. Por muestra,
 \(r_m^{\mathrm{apl}}=\max_j z_{5,m,j}^{\mathrm{apl}}\) con la velocidad resultante
 después del reparto, la saturación y la integración. La métrica de una ejecución
 es
@@ -184,11 +184,26 @@ con $M_k$ diagonal, amortiguamiento y contactos fijos. El control es PD o Hamilt
 
 \subsubsection{Diseño experimental}
 
-El experimento contiene \SPFiveWorlds{} mundos pareados y \SPFiveRuns{} ejecuciones: seis escenarios, \(N\in\{4, 8, 12\}\), seis semillas y ocho métodos. El horizonte es \(45\) s. Una entrega exige error de posición no mayor que \(0.30\) m, error angular no mayor que \(8^\circ\), norma de velocidad no mayor que \(0.18\) durante cinco muestras y ausencia de colisión o fallo numérico. Las colisiones y el agotamiento del horizonte permanecen en el denominador.
+La campaña contiene \SPFiveWorlds{} mundos pareados y \SPFiveRuns{} ejecuciones de ocho métodos. La unidad independiente es el mundo y el endpoint principal es el éxito seguro; colisiones y agotamientos permanecen en el denominador.
 
-Los escenarios incluyen abierto, corredor circular aproximado, cruce, interferencia mixta, saturación y varias cargas. Los círculos no equivalen a pasillos poligonales industriales.
-
-Los ocho controles permiten tres comparaciones directas: Hamiltoniano con y sin CBF, aproximación VO frente a CBF anticipativa y CBF local frente a anticipación central. PD y el campo potencial completan la referencia nominal. McNemar exacto se usa para colisión y éxito seguro. Wilcoxon pareado, para la violación aplicada. Los intervalos remuestrean mundos y Holm corrige los cinco contrastes. Todos los métodos parten de estados libres y comparten planta, límites y horizonte.
+\begin{table}[!htbp]
+  \centering
+  \caption{Diseño experimental de SP5-C.}
+  \label{tab:sp5-design}
+  \viutablefont
+  \begin{tabularx}{0.96\textwidth}{>{\raggedright\arraybackslash}p{2.45cm} Y}
+    \toprule
+    Elemento & Especificación \\
+    \midrule
+    Factores & Seis escenarios, $N\in\{4,8,12\}$, seis semillas, ocho métodos y horizonte de 45~s. \\
+    Entrega & Error de posición $\leq0.30$~m, error angular $\leq8^\circ$, velocidad $\leq0.18$ durante cinco muestras y ausencia de colisión o fallo numérico. \\
+    Escenarios & Abierto, corredor circular aproximado, cruce, interferencia mixta, saturación y varias cargas; la geometría circular no reproduce pasillos poligonales industriales. \\
+    Contrastes & Guardia Hamiltoniana, VO frente a CBF anticipativo y CBF local frente a anticipación central; PD y campo potencial como referencias nominales. \\
+    Inferencia & McNemar exacto para colisión y éxito seguro; Wilcoxon pareado para violación aplicada; IC por remuestreo de mundos y Holm para cinco contrastes. \\
+    \bottomrule
+  \end{tabularx}
+  \viusource{elaboración propia a partir del protocolo experimental de SP5}
+\end{table}
 
 \subsubsection{Resultados}
 
@@ -203,32 +218,18 @@ Cada método se evaluó en \SPFiveRunsPerMethod{} mundos (Tabla~\ref{tab:sp5-res
   \viuownsource
 \end{table}
 
-La guardia redujo la proporción de mundos con colisión del Hamiltoniano de \SPFiveHamiltonianRawCollision{} a \SPFiveHamiltonianCBFCollision{}, con diferencia \(\SPFiveHamiltonianCollisionEffect{}\) e IC del 95\,\% \([\SPFiveHamiltonianCollisionCILow{},\SPFiveHamiltonianCollisionCIHigh{}]\), \(p_{\mathrm{Holm}}=\SPFiveHamiltonianCollisionPHolm\). El éxito seguro aumentó de \SPFiveHamiltonianRawSafe{} a \SPFiveHamiltonianCBFSafe{}, con diferencia \(\SPFiveHamiltonianSafeEffect{}\) e IC \([\SPFiveHamiltonianSafeCILow{},\SPFiveHamiltonianSafeCIHigh{}]\), \(p_{\mathrm{Holm}}=\SPFiveHamiltonianSafePHolm\). El efecto se limita a los mundos ensayados y no demuestra invariancia universal.
+La guardia redujo la proporción de mundos con colisión del Hamiltoniano de \SPFiveHamiltonianRawCollision{} a \SPFiveHamiltonianCBFCollision{}, con diferencia \(\SPFiveHamiltonianCollisionEffect{}\) e IC del 95\,\% \([\SPFiveHamiltonianCollisionCILow{},\SPFiveHamiltonianCollisionCIHigh{}]\), \(p_{\mathrm{Holm}}=\SPFiveHamiltonianCollisionPHolm\). El éxito seguro aumentó de \SPFiveHamiltonianRawSafe{} a \SPFiveHamiltonianCBFSafe{}, con diferencia \(\SPFiveHamiltonianSafeEffect{}\) e IC \([\SPFiveHamiltonianSafeCILow{},\SPFiveHamiltonianSafeCIHigh{}]\), \(p_{\mathrm{Holm}}=\SPFiveHamiltonianSafePHolm\). Estas estimaciones corresponden a los mundos muestreados.
 
-La comparación con la aproximación VO expone el intercambio entre progreso y seguridad. VO alcanza el mayor éxito seguro agregado, pero colisiona en \SPFiveVOCollision{} de los mundos. El CBF anticipativo registra \SPFivePreviewCollision{} colisiones y una diferencia de \(\SPFivePreviewCollisionEffect{}\), IC \([\SPFivePreviewCollisionCILow{},\SPFivePreviewCollisionCIHigh{}]\), \(p_{\mathrm{Holm}}=\SPFivePreviewCollisionPHolm\), a costa de \(0.602\) de agotamientos del horizonte. El CBF local obtiene el mejor compromiso sin colisiones observado: éxito \SPFiveLocalCBFSafe{} y agotamiento \SPFiveLocalCBFTimeout{}.
+VO obtuvo el mayor éxito seguro agregado y colisionó en \SPFiveVOCollision{} de los mundos. El CBF anticipativo registró \SPFivePreviewCollision{} colisiones, una diferencia de \(\SPFivePreviewCollisionEffect{}\) (IC \([\SPFivePreviewCollisionCILow{},\SPFivePreviewCollisionCIHigh{}]\), \(p_{\mathrm{Holm}}=\SPFivePreviewCollisionPHolm\)) y agotó el horizonte en \(0.602\) de los casos. El CBF local combinó cero colisiones observadas con éxito \SPFiveLocalCBFSafe{} y agotamiento \SPFiveLocalCBFTimeout{}; no se predefinió una función escalar que ordenara estos tres estimandos.
 
-Ningún método domina en entrega segura y colisión. La Tabla~\ref{tab:sp5-results} contiene ambos estimandos.
+Las trazas son compatibles con un frenado más temprano del horizonte de $1.8$~s ante invasiones predichas, seguido de más agotamientos en escenas estrechas. El diseño no aísla causalmente ese mecanismo.
 
-% La tabla contiene los mismos estimandos e intervalos; la figura se conserva
-% para trazabilidad y se omite del PDF.
-\iffalse
-\begin{figure}[!htbp]
-  \centering
-  \includegraphics[width=0.82\textwidth]{../results/processed/sp5/SP5_SAFETY_EVIDENCE_v1/figures/fig-sp5-safety-progress.pdf}
-  \caption{Intercambio entre transporte seguro y colisión en SP5-C. Barras: IC bootstrap del 95\,\%.}
-  \label{fig:sp5-safety-progress}
-  \viuownsource
-\end{figure}
-\fi
+La referencia central alcanzó éxito \SPFiveCentralSafe{} frente a \SPFiveLocalCBFSafe{} del CBF local, con efecto \(\SPFiveCentralSafeEffect{}\), y agotó el horizonte en \SPFiveCentralTimeout{} de los mundos. Para la violación aplicada, el efecto CBF local menos potencial fue \(\SPFiveBarrierEffect{}\). Incluso las variantes sin colisiones registraron tasas medias de \(0.064\)--\(0.068\): el reparto acotado y la integración pueden invalidar la condición satisfecha por SAFE antes de producir EXEC.
 
-La referencia central no mejora al CBF local: su éxito es \SPFiveCentralSafe{} frente a \SPFiveLocalCBFSafe{}, con efecto \(\SPFiveCentralSafeEffect{}\), y acumula \SPFiveCentralTimeout{} de agotamientos del horizonte. Más información y mayor anticipación no garantizan progreso. Tampoco se sustenta una menor violación aplicada del CBF local frente al potencial. El efecto \(\SPFiveBarrierEffect{}\) apunta en la dirección contraria. Incluso las variantes sin colisiones muestran tasas medias de \(0.064\)--\(0.068\), porque el reparto acotado de fuerzas y la integración pueden deshacer la condición satisfecha por la referencia filtrada.
-
-La guardia mejora Hamiltoniano y CBF anticipativo reduce colisiones frente a VO. La referencia central no supera CBF local ni el residual al potencial. Más información o factibilidad previa al reparto no aseguran mejor acción final.
-
-La holgura inicial mínima es \(0.2417\) m y el residual mecánico máximo \(1.14\times10^{-13}\). Sin reparación posterior y con mundos pareados, se verifica consistencia, no fricción, rueda--suelo, percepción ni contacto conmutado.
+La holgura inicial mínima fue \(0.2417\)~m y el residual mecánico máximo, \(1.14\times10^{-13}\); estas comprobaciones descartan una colisión inicial o un cierre numérico inconsistente. El modelo omite fricción, interacción rueda--suelo, percepción y contacto conmutado.
 
 \subsubsection{Síntesis}
 
-En los mundos evaluados, una guardia entre el control nominal y la realización de \emph{wrench} reduce las colisiones del Hamiltoniano sin guardia y de la aproximación VO. El bloqueo aumenta: cero colisiones observadas convive con hasta \(0.833\) de agotamientos del horizonte, y el residuo de la acción aplicada no desaparece. La evidencia alcanzada se limita, por tanto, a seguridad operacional en los escenarios ensayados, sin acreditar invariancia ni robustez general.
+La guardia redujo las colisiones del Hamiltoniano sin filtro, y el CBF anticipativo hizo lo mismo frente a VO. El límite apareció en el progreso: algunos tratamientos combinaron cero colisiones observadas con $0.833$ de agotamientos, mientras el reparto mantuvo un residual aplicado distinto de cero. La evidencia de seguridad operacional corresponde al cuerpo planar y a los escenarios ensayados.
 
-El alcance se limita al cuerpo compuesto planar, contactos fijos y geometría circular. El empuje no se estudia. SP6 conserva la misma planta conceptual, pero debe restaurar soporte y factibilidad tras retirar un robot.
+Los contactos fijos impiden responder a un fallo que retire parte del soporte. SP6 usa precisamente esa perturbación para evaluar la detección y el reclutamiento de un reemplazo.

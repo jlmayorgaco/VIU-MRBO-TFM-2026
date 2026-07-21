@@ -1,9 +1,10 @@
 \section{Reproducibilidad y disponibilidad}
 \label{app:reproducibility}
 
-La trazabilidad distingue la regeneración completa de una campaña del reanálisis
-de observaciones archivadas. La Tabla~\ref{tab:reproducibility-status} declara
-esa frontera sin reconstruir a posteriori generadores que no están disponibles.
+Una campaña es regenerable cuando conserva el generador, la configuración, las
+semillas y el postproceso necesarios para repetirla. La columna ``Estado'' de la
+Tabla~\ref{tab:reproducibility-status} separa ese caso del reanálisis basado en
+observaciones archivadas.
 
 \begin{table}[!htbp]
   \centering
@@ -16,8 +17,8 @@ esa frontera sin reconstruir a posteriori generadores que no están disponibles.
     Campo & Estado verificable \\
     \midrule
     Repositorio & \url{https://github.com/jlmayorgaco/VIU-MRBO-TFM-2026}. \\
-    Versión de depósito & Sin etiqueta ni DOI al cerrar esta revisión; deben fijarse tras consolidar el árbol. \\
-    SHA de la base Git & \texttt{9278953cb6affebaf2aa96cb8581a6565177e767}; existen cambios posteriores no consolidados, por lo que este SHA no se presenta como instantánea final. \\
+    Estado del depósito & Repositorio público. Etiqueta de versión y DOI todavía no asignados. \\
+    Commit base auditado & \texttt{9278953cb6affebaf2aa96cb8581a6565177e767}. La entrega incorpora cambios posteriores del árbol de trabajo. \\
     Entorno de referencia & Windows~11; Python~3.13.9; NumPy~2.3.5; pandas~2.3.3; SciPy~1.16.3. \\
     \bottomrule
   \end{tabularx}
@@ -43,6 +44,19 @@ esa frontera sin reconstruir a posteriori generadores que no están disponibles.
   \end{tabularx}
   \viuownsource
 \end{table}
+
+En SP2--SP4, ``reanálisis'' significa que las cifras, contrastes y figuras se
+recalculan desde observaciones archivadas mediante el postproceso disponible. Las
+pruebas formales y sus comprobaciones unitarias sí pueden repetirse, pero no se
+puede reconstruir íntegramente la campaña ni generar mundos nuevos equivalentes
+sin los generadores históricos ausentes. Esta categoría no se contabiliza como
+regeneración completa.
+
+Cargo puede regenerar sus mundos y ejecuciones, pero reproduce el contrato
+híbrido implementado: el \emph{gossip} transporta identificadores y el líder
+resuelve atributos en un registro global. Los bytes archivados no incluyen esos
+atributos ni las consultas al registro. La regeneración acredita trazabilidad del
+demostrador, no una implementación completamente distribuida.
 
 Jorge Luis Mayorga Taborda es responsable de la formulación, implementación,
 ejecución, análisis y redacción. La versión de depósito deberá crear una etiqueta

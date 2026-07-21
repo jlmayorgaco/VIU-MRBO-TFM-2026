@@ -15,7 +15,7 @@ Mejorar el capítulo 5 de la memoria mediante una ampliación crítica de sus fu
 
 ## Alcance y no alcance
 
-Incluye la ampliación de transporte cooperativo, MRTA y coaliciones, información local y juegos, factibilidad mecánica, control de pose, seguridad, recuperación, tráfico y red imperfecta. También incluye la comparación crítica final y el aumento de tamaño de las tres figuras existentes. No se eliminan figuras, no se incorporan resultados numéricos propios al capítulo 5, no se formulan teoremas nuevos y no se amplía la rama secundaria de empuje/caging más allá de su delimitación conceptual.
+Incluye la ampliación de transporte cooperativo, MRTA y coaliciones, información local y juegos, factibilidad mecánica, control de pose, seguridad, recuperación, tráfico y red imperfecta. También incluye la comparación crítica final y el aumento de tamaño de las cuatro figuras numeradas existentes. No se eliminan figuras, no se incorporan resultados numéricos propios al capítulo 5, no se formulan teoremas nuevos y no se amplía la rama secundaria de empuje/caging más allá de su delimitación conceptual.
 
 ## Supuestos y preguntas resueltas
 
@@ -36,11 +36,11 @@ No se generan datos científicos. La validación comprende compilación LuaLaTeX
 
 ## Hitos
 
-- [ ] Hito 1 — línea base de contenido, paginación y figuras auditada.
-- [ ] Hito 2 — narrativa teórica y comparación crítica ampliadas con fuentes verificadas.
-- [ ] Hito 3 — todas las figuras existentes conservadas y ampliadas.
-- [ ] Hito 4 — PDF compilado, capítulo medido y páginas revisadas visualmente.
-- [ ] Hito 5 — diff final y trazabilidad editorial revisados.
+- [x] Hito 1 — línea base de contenido, paginación y figuras auditada.
+- [x] Hito 2 — narrativa teórica y comparación crítica ampliadas con fuentes verificadas.
+- [x] Hito 3 — todas las figuras existentes conservadas y ampliadas.
+- [x] Hito 4 — PDF compilado, capítulo medido y páginas revisadas visualmente.
+- [x] Hito 5 — diff final y trazabilidad editorial revisados.
 
 ## Validación
 
@@ -59,9 +59,10 @@ No se generan datos científicos. La validación comprende compilación LuaLaTeX
 
 ## Registro de decisiones
 
-- 2026-07-17 — Se conservan las tres figuras existentes y la tabla comparativa; la solicitud explícita del autor prevalece sobre la sugerencia adjunta de seleccionar una sola figura de estado del arte.
+- 2026-07-17 — Se conservan las cuatro figuras numeradas existentes y la tabla comparativa; la solicitud explícita del autor prevalece sobre la sugerencia adjunta de seleccionar una sola figura de estado del arte.
 - 2026-07-17 — Se adopta 11--13 páginas como restricción canónica del repositorio y 11 páginas como objetivo editorial inicial.
+- 2026-07-17 — El mapa metodológico queda al 98 % del ancho de texto: sigue siendo mayor que el 75 % original y evita una página final casi vacía.
 
 ## Progreso
 
-Se completó la lectura de las fuentes canónicas, del texto adjunto, del capítulo vigente, del plan anterior y del ledger bibliográfico. La línea base contiene tres figuras: contratos entre capas, retratos de dinámicas poblacionales y una figura compuesta de cronología/cobertura más mapa metodológico. Las dos mitades de la figura compuesta están reducidas al 75 % del ancho de texto y son el principal objetivo de ampliación visual.
+Trabajo completado. El capítulo pasó de 7 a 12 páginas numeradas (11--22), dentro del intervalo canónico de 11--13. Se conservaron y ampliaron las Figuras 4--7: contratos entre capas, retratos de dinámicas poblacionales, cronología/cobertura y mapa metodológico. La narrativa desarrolla las interfaces entre asignación, cierre de coalición, información local, factibilidad de \emph{wrench}, seguridad, recuperación, tráfico y red imperfecta, y limita la brecha bibliográfica al corpus verificado. La compilación final aislada ejecutó Biber y pasadas estabilizadas de LuaLaTeX; `main.log` no contiene errores, citas o referencias indefinidas ni cajas `Overfull`. Se renderizaron e inspeccionaron las 12 páginas del capítulo y la transición al capítulo 6, sin recortes ni solapes. El PDF validado de 125 páginas se copió a `thesis/build/main.pdf`.

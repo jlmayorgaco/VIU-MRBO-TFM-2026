@@ -1038,10 +1038,11 @@ def _plot_results(output_dir: Path, runs: pd.DataFrame, summary: pd.DataFrame) -
         color="#0066A4",
         label="CPU local mediana",
     )
-    ax1.set_xlabel("Coaliciones K")
+    ax1.set_xlabel("Coaliciones A")
     ax1.set_ylabel("CPU local (ms)", color="#0066A4")
     ax2 = ax1.twinx()
     spaces = oracle_rows.groupby("n_coalitions", as_index=False)["oracle_profile_space"].first()
+    spaces["oracle_profile_space"] = spaces["oracle_profile_space"].map(float)
     ax2.plot(
         spaces["n_coalitions"],
         spaces["oracle_profile_space"],
@@ -1050,7 +1051,7 @@ def _plot_results(output_dir: Path, runs: pd.DataFrame, summary: pd.DataFrame) -
         label="Perfiles del oráculo",
     )
     ax2.set_yscale("log", base=2)
-    ax2.set_ylabel("Perfiles $2^K$", color="#E65300")
+    ax2.set_ylabel("Perfiles $2^A$", color="#E65300")
     ax1.grid(alpha=0.25)
     fig.tight_layout()
     fig.savefig(figures / "fig-sp8-cost-frontier.pdf", bbox_inches="tight")
