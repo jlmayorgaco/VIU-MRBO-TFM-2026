@@ -1,0 +1,107 @@
+experiment_id: SP1_CONFERENCE_VALIDATION_v2
+protocol_family: sp1_conference_remediation_predeclared_v2
+output_dir: results/sp1_validation/SP1_CONFERENCE_VALIDATION_v2
+comparison_v1_dir: results/sp1_validation/SP1_CONFERENCE_VALIDATION_v1
+parallel_workers: 8
+run_preflight_tests: true
+reserve_energy: 5.0
+oracle_time_limit_s: 60.0
+cost_weights:
+  distance: 0.45
+  time: 0.25
+  energy: 0.30
+
+preconditioned_dynamics:
+  eta: 0.22
+  step_min: 0.01
+  step_max: 0.10
+  entropy_tau: 0.003
+  consensus_gain: 1.0
+  use_integral_consensus: true
+  operational_tolerance: 0.001
+  refinement_primal_tolerance: 0.000001
+  refinement_consensus_tolerance: 0.0001
+  refinement_stationarity_tolerance: 0.0001
+  comparison_feasibility_tolerance: 0.000001
+
+augmenting_recovery:
+  max_chain_length: 12
+  max_nodes_per_augmentation: 50000
+  candidates_per_load: 30
+  prune: true
+  local_exchange: true
+  compress: true
+
+e1:
+  configurations: [[6, 2], [10, 2], [20, 4], [40, 8]]
+  seeds: {start: 12000, count: 100}
+  operational_max_iterations: 30000
+  refinement_max_iterations: 100000
+  trace_stride: 500
+  terminal_history_stride: 100001
+  lp_tau_max_iterations: 10000
+
+e4:
+  configurations:
+    - [6, 2]
+    - [6, 3]
+    - [6, 5]
+    - [10, 2]
+    - [10, 3]
+    - [10, 5]
+    - [15, 2]
+    - [15, 3]
+    - [15, 5]
+    - [20, 2]
+    - [20, 3]
+    - [20, 5]
+    - [30, 2]
+    - [30, 3]
+    - [30, 5]
+  seeds: {start: 42000, count: 100}
+  rounding_margin: 0.02
+  legacy_fractional_dynamics:
+    step: 0.03
+    max_iterations: 5000
+    convergence_residual_mode: relative
+    primal_tolerance: 0.001
+    consensus_tolerance: 0.0001
+    stationarity_tolerance: 0.001
+    comparison_feasibility_tolerance: 0.000001
+    entropy_tau: 0.003
+    consensus_gain: 1.0
+    use_integral_consensus: true
+
+e5:
+  fleet_sizes: [20, 50, 100, 200, 500]
+  robots_per_load: 5
+  seed_blocks:
+    "20": {start: 52000, count: 30}
+    "50": {start: 52100, count: 30}
+    "100": {start: 52200, count: 30}
+    "200": {start: 52300, count: 30}
+    "500": {start: 52500, count: 10}
+  operational_max_iterations: 3000
+  minimum_seeds_any_size: 10
+  milp_max_n: 50
+  rounding_margin: 0.02
+
+e6:
+  fleet_sizes: [8, 20, 40]
+  robots_per_load: 5
+  seeds: {start: 62000, count: 30}
+  scenarios: [open, warehouse]
+  operational_max_iterations: 30000
+  rounding_margin: 0.02
+  dt_s: 0.05
+  horizon_s: 120.0
+  desired_obstacles: 2
+  record_trajectory_seed: first
+
+statistics:
+  confidence_level: 0.95
+
+acceptance:
+  e1_operational_convergence_min: 0.95
+  e1_refined_comparability_min: 0.90
+  e4_augmenting_feasibility_min: 0.95
