@@ -1,0 +1,129 @@
+campaign_id: SP1_DYNAMICS_BENCHMARK_v3
+preview_id: SP1_DYNAMICS_BENCHMARK_v3_preview
+schema_version: 1
+base_v2_commit: 4c9ba49ddd486f923d622fdc6f21a127f154fd24
+analysis_seed: 903177
+resource_dimensions: 3
+reserve_energy: 5.0
+cost_weights:
+  distance: 0.45
+  time: 0.25
+  energy: 0.30
+entropy_tau: 0.003
+consensus:
+  gain: 1.0
+  integral: true
+  payload_components: [dual, integral_tracker]
+convergence:
+  operational:
+    primal: 0.001
+    consensus: 0.0001
+    fixed_point: 0.001
+  refinement:
+    primal: 0.000001
+    consensus: 0.0001
+    fixed_point: 0.0001
+recovery:
+  max_chain_length: 12
+  max_nodes_per_augmentation: 50000
+  candidates_per_load: 30
+  prune: true
+  local_exchange: true
+  compress: true
+budgets:
+  calibration:
+    max_logical_rounds: 1000
+    max_wall_time_s: 20.0
+    max_scalar_transmissions: 2000000000
+  preview:
+    max_logical_rounds: 1500
+    max_wall_time_s: 30.0
+    max_scalar_transmissions: 3000000000
+  evaluation:
+    max_logical_rounds: 3000
+    max_wall_time_s: 60.0
+    max_scalar_transmissions: 5000000000
+methods:
+  primary:
+    - Replicator-D-preconditioned
+    - Smith-D-preconditioned
+    - BNN-D-preconditioned
+    - Logit-D-annealed
+    - BestResponse-D
+  integer_secondary:
+    - BestResponse-pure
+  references:
+    - Auction-D
+    - LP-tau
+    - LP-raw
+    - MILP-oracle
+calibration:
+  seeds: {start: 70000, stop: 70019}
+  configurations: [[20, 4], [50, 10], [100, 20]]
+  candidates:
+    Replicator-D-preconditioned:
+      - {candidate_id: rep_eta_012, eta: 0.12, step_min: 0.005, step_max: 0.10}
+      - {candidate_id: rep_eta_022, eta: 0.22, step_min: 0.005, step_max: 0.10}
+      - {candidate_id: rep_eta_032, eta: 0.32, step_min: 0.005, step_max: 0.10}
+    Smith-D-preconditioned:
+      - {candidate_id: smith_008, eta: 0.08, damping: 0.50, step_min: 0.002, step_max: 0.08}
+      - {candidate_id: smith_012, eta: 0.12, damping: 0.35, step_min: 0.002, step_max: 0.08}
+      - {candidate_id: smith_018, eta: 0.18, damping: 0.25, step_min: 0.002, step_max: 0.08}
+    BNN-D-preconditioned:
+      - {candidate_id: bnn_008, eta: 0.08, damping: 0.50, step_min: 0.002, step_max: 0.08}
+      - {candidate_id: bnn_012, eta: 0.12, damping: 0.35, step_min: 0.002, step_max: 0.08}
+      - {candidate_id: bnn_018, eta: 0.18, damping: 0.25, step_min: 0.002, step_max: 0.08}
+    Logit-D-annealed:
+      - {candidate_id: logit_slow, eta: 0.10, damping: 0.35, T_0: 0.20, T_min: 0.010, gamma: 0.997}
+      - {candidate_id: logit_mid, eta: 0.16, damping: 0.30, T_0: 0.15, T_min: 0.005, gamma: 0.995}
+      - {candidate_id: logit_fast, eta: 0.22, damping: 0.25, T_0: 0.10, T_min: 0.002, gamma: 0.990}
+    BestResponse-D:
+      - {candidate_id: br_010, eta: 0.12, eta_br: 0.10}
+      - {candidate_id: br_025, eta: 0.16, eta_br: 0.25}
+      - {candidate_id: br_050, eta: 0.20, eta_br: 0.50}
+preview:
+  n_values: [20, 50, 100]
+  k_rule: ceil_n_over_5
+  seeds: [81000, 81001, 81002, 81003, 81004]
+  topologies: [complete, rdisk_v2]
+evaluation:
+  e71:
+    configurations: [[20, 4], [50, 10], [100, 20]]
+    seeds: {start: 82000, count: 30}
+    topology: shared_dual
+  e72:
+    configurations: [[20, 4], [50, 10], [100, 20]]
+    seeds: {start: 83000, count: 20}
+    topologies: [complete, rdisk_degree_4, rdisk_degree_8, rdisk_degree_16]
+  e73:
+    n_values: [20, 50, 100, 200, 500]
+    k_rule: ceil_n_over_5
+    seed_counts: {20: 30, 50: 30, 100: 30, 200: 20, 500: 10}
+    seed_start: 84000
+    topology: rdisk_v2
+  e74:
+    n: 100
+    k_values: [2, 5, 10, 20, 40]
+    seeds: {start: 85000, count: 30}
+    target_utilization: 0.75
+    topology: rdisk_v2
+  e75:
+    configurations: [[50, 10], [100, 20], [200, 40]]
+    seeds: {start: 86000, count: 20}
+    events: [robot_failure, new_load, capacity_drop, topology_degradation]
+    event_fraction: 0.30
+    topology: rdisk_v2
+oracles:
+  lp_tau: true
+  lp_raw: true
+  milp_max_n: 50
+  milp_timeout_s: 60.0
+repetitions:
+  bootstrap: 5000
+  confidence_level: 0.95
+improvement_gate:
+  convergence_risk_difference_min: 0.10
+  resource_reduction_min: 0.30
+  integer_feasibility_min: 0.95
+  milp_gap_noninferiority_margin: 0.02
+  require_no_new_invariant_violations: true
