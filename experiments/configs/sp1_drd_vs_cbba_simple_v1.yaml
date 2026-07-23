@@ -1,0 +1,189 @@
+campaign_id: SP1_DRD_VS_CBBA_SIMPLE_v1
+preview_id: SP1_DRD_VS_CBBA_SIMPLE_v1_preview
+schema_version: 1
+branch: codex/sp1-drd-vs-cbba-simple-v1
+base_commit: 8ba083517cc6052a1dd5af845cceecedccee4253
+parallel_workers: 6
+analysis_seed: 947231
+output_dirs:
+  preview: results/sp1_validation/SP1_DRD_VS_CBBA_SIMPLE_v1_preview
+  full: results/sp1_validation/SP1_DRD_VS_CBBA_SIMPLE_v1
+
+problem:
+  workspace_side_m: 1.0
+  position_tolerance: 1.0e-12
+  normalization_epsilon: 1.0e-12
+  log_epsilon: 1.0e-300
+  k_rule: ceil_n_over_5
+  utilization_range: [0.70, 0.90]
+  planted_eta_range: [0.75, 0.95]
+  max_world_generation_attempts: 100
+
+capacity_regimes:
+  low:
+    kind: uniform
+    low: 1.0
+    high: 2.0
+  medium:
+    kind: uniform
+    low: 0.5
+    high: 3.0
+  high:
+    kind: mixture
+    components:
+      - {weight: 0.60, low: 0.5, high: 1.2}
+      - {weight: 0.30, low: 1.2, high: 2.5}
+      - {weight: 0.10, low: 2.5, high: 4.0}
+
+graph:
+  primary: rdisk_degree_8
+  target_degree: 8
+  diagnostic_target_degrees: [4, 16]
+  eigen_tolerance: 1.0e-10
+  stochastic_tolerance: 1.0e-12
+
+potential:
+  idle_bias: 0.0
+  bid_minimum: 0.0
+
+drd:
+  initialization: uniform
+  secondary_initialization: distance_biased
+  max_rounds: 100000
+  max_wall_time_s: 600.0
+  dwell_rounds: 100
+  state_tolerance: 1.0e-6
+  consensus_tolerance: 1.0e-5
+  capacity_tolerance: 1.0e-5
+  trace_stride: 100
+  checkpoint_stride: 5000
+  message:
+    z_float64_per_load: 1
+    metadata_int64_per_packet: 1
+
+cbba:
+  name: CBBA-1-Capacity
+  bundle_length: 1
+  candidates_per_load_per_epoch: 1
+  secondary_candidates_per_load_per_epoch: all
+  max_rounds: 10000
+  max_wall_time_s: 600.0
+  stable_rounds_multiplier: 2
+  bid_record_fields:
+    robot_id: int64
+    load_id: int64
+    bid: float64
+    capacity: float64
+    version: int64
+  coalition_state_fields:
+    robot_id: int64
+    load_id: int64
+    capacity: float64
+    version: int64
+
+recovery:
+  max_chain_length: 12
+  max_nodes_per_augmentation: 50000
+  candidates_per_load: 30
+  prune: true
+  local_exchange: true
+  compress: true
+
+oracles:
+  lp_all_sizes: true
+  milp_max_n: 50
+  milp_timeout_s: 60.0
+
+calibration:
+  seeds: {start: 80000, stop: 80019}
+  configurations: [[20, 4], [50, 10], [100, 20]]
+  objective_order:
+    - raw_feasibility_desc
+    - raw_distance_asc
+    - wall_time_asc
+    - payload_bytes_asc
+    - stability_desc
+  candidates:
+    - {candidate_id: p01, rho: 1000.0, alpha: 0.001, tau: 0.001, bid_minimum: 0.0}
+    - {candidate_id: p02, rho: 10000.0, alpha: 0.0002, tau: 0.001, bid_minimum: 0.0}
+    - {candidate_id: p03, rho: 10000.0, alpha: 0.0005, tau: 0.0001, bid_minimum: 0.0}
+    - {candidate_id: p04, rho: 100000.0, alpha: 0.00002, tau: 0.0001, bid_minimum: 0.0}
+    - {candidate_id: p05, rho: 100000.0, alpha: 0.00005, tau: 0.00001, bid_minimum: 0.0}
+    - {candidate_id: p06, rho: 1000000.0, alpha: 0.000005, tau: 0.00001, bid_minimum: 0.0}
+
+preview:
+  n_values: [20, 50, 100]
+  seeds: [81000, 81001, 81002, 81003, 81004]
+  capacity_regime: medium
+  topology: rdisk_degree_8
+
+evaluation:
+  e1:
+    deterministic_cases: 10
+  e2:
+    n_values: [20, 50, 100, 200, 500]
+    seed_counts: {20: 30, 50: 30, 100: 30, 200: 20, 500: 10}
+    seed_start: 82000
+    capacity_regime: medium
+    topology: rdisk_degree_8
+  e3:
+    n: 100
+    k_values: [2, 5, 10, 20, 40]
+    seeds: {start: 83000, count: 30}
+    capacity_regime: medium
+    topology: rdisk_degree_8
+  e4:
+    configurations:
+      - {n: 50, k: 10, seeds: 30}
+      - {n: 100, k: 20, seeds: 30}
+      - {n: 200, k: 40, seeds: 20}
+    regimes: [low, medium, high]
+    seed_start: 84000
+    topology: rdisk_degree_8
+  e5:
+    configurations: [[20, 4], [50, 10], [100, 20]]
+    topologies: [complete, rdisk_degree_4, rdisk_degree_8, rdisk_degree_16]
+    seeds: {start: 85000, count: 20}
+    capacity_regime: medium
+  e6:
+    configurations: [[50, 10], [100, 20]]
+    utilization_targets: [0.50, 0.70, 0.85, 0.95]
+    seeds: {start: 86000, count: 20}
+    capacity_regime: medium
+    topology: rdisk_degree_8
+
+secondary_ablations:
+  evaluation_subset: preview_worlds
+  drd_distance_biased_initialization: true
+  cbba_multiple_candidates_per_load: true
+
+statistics:
+  confidence_level: 0.95
+  bootstrap_resamples: 5000
+  mcnemar: exact
+  continuous_test: wilcoxon_signed_rank
+  multiplicity: holm
+  survival_tau_s: 600.0
+  survival_tau_bytes: observed_budget
+
+drd_attractiveness:
+  distance_ratio_max: 0.95
+  excess_ratio_max: 0.90
+  milp_gap_improvement_points_min: 0.03
+  recovered_feasibility_noninferiority_margin: 0.02
+  bytes_ratio_max: 10.0
+  time_ratio_max: 10.0
+
+expected_counts:
+  calibration_worlds: 60
+  preview_worlds: 15
+  evaluation_worlds:
+    e1: 10
+    e2: 120
+    e3: 150
+    e4: 240
+    e5: 240
+    e6: 160
+    total: 920
+  primary_variants_per_world: 4
+  primary_evaluation_rows: 3680
