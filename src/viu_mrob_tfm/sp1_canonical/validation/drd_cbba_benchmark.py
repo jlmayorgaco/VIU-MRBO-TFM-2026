@@ -680,6 +680,103 @@ def run_scenario(
     return {"runs": runs, "messages": messages, "traces": traces, "worlds": [world_row]}
 
 
+def run_secondary_ablation_scenario(
+    config: Mapping[str, Any],
+    task: Mapping[str, Any],
+    parameters: Mapping[str, Any],
+) -> list[dict[str, Any]]:
+    """Run the two predeclared generator ablations on one preview world."""
+
+    world = _world_for_task(task, config)
+    graph = make_graph(world, str(task["topology"]))
+    metadata = _world_metadata(task, world, graph, parameters)
+    drd = run_drd(
+        world,
+        graph,
+        config,
+        parameters,
+        initialization=str(config["drd"]["secondary_initialization"]),
+    )
+    cbba = run_cbba(
+        world,
+        graph,
+        config,
+        parameters,
+        candidates_per_load=config["cbba"][
+            "secondary_candidates_per_load_per_epoch"
+        ],
+    )
+    drd_raw = assignment_from_drd(drd.x)
+    cbba_raw = cbba.assignment
+    drd_recovery = recover_assignment(world, drd_raw, config)
+    cbba_recovery = recover_assignment(world, cbba_raw, config)
+    continuous = continuous_metrics(
+        world,
+        drd.x,
+        rho=float(parameters["rho"]),
+        tau=float(parameters["tau"]),
+    )
+    rows = [
+        _variant_row(
+            metadata,
+            "DRD-simple-distance-init",
+            "raw",
+            drd_raw,
+            world,
+            drd,
+            drd_recovery,
+            continuous,
+            None,
+            None,
+        ),
+        _variant_row(
+            metadata,
+            "DRD-simple-distance-init",
+            "recovered",
+            drd_recovery.assignment,
+            world,
+            drd,
+            drd_recovery,
+            continuous,
+            None,
+            None,
+        ),
+        _variant_row(
+            metadata,
+            "CBBA-1-Capacity-multi",
+            "raw",
+            cbba_raw,
+            world,
+            cbba,
+            cbba_recovery,
+            None,
+            None,
+            None,
+        ),
+        _variant_row(
+            metadata,
+            "CBBA-1-Capacity-multi",
+            "recovered",
+            cbba_recovery.assignment,
+            world,
+            cbba,
+            cbba_recovery,
+            None,
+            None,
+            None,
+        ),
+    ]
+    for row in rows:
+        row["is_primary"] = False
+        row["ablation_scope"] = "preview_worlds"
+        row["ablation_id"] = (
+            "drd_distance_biased_initialization"
+            if row["method"].startswith("DRD")
+            else "cbba_multiple_candidates_per_load"
+        )
+    return rows
+
+
 def _checkpoint_key(task: Mapping[str, Any]) -> str:
     return stable_hash(task)[:24]
 
@@ -755,6 +852,69 @@ def execute_tasks(
                 if completed == 1 or completed % 10 == 0 or completed == len(tasks):
                     print(f"[{completed}/{len(tasks)}] tasks complete", flush=True)
     return {key: pd.DataFrame(rows) for key, rows in collections.items()}
+
+
+def _ablation_worker(
+    config: Mapping[str, Any],
+    task: Mapping[str, Any],
+    parameters: Mapping[str, Any],
+    checkpoint_dir: str,
+    resume: bool,
+) -> list[dict[str, Any]]:
+    directory = Path(checkpoint_dir)
+    directory.mkdir(parents=True, exist_ok=True)
+    payload = {**task, "secondary_ablations": True}
+    path = directory / f"{_checkpoint_key(payload)}.json"
+    if resume and path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    result = run_secondary_ablation_scenario(config, task, parameters)
+    temporary = path.with_suffix(".tmp")
+    temporary.write_text(
+        json.dumps(result, ensure_ascii=False, allow_nan=True), encoding="utf-8"
+    )
+    temporary.replace(path)
+    return result
+
+
+def execute_secondary_ablations(
+    config: Mapping[str, Any],
+    tasks: list[dict[str, Any]],
+    parameters: Mapping[str, Any],
+    output_dir: str | Path,
+    *,
+    resume: bool,
+) -> pd.DataFrame:
+    output = Path(output_dir)
+    checkpoints = output / "_ablation_checkpoints"
+    rows: list[dict[str, Any]] = []
+    workers = int(config["parallel_workers"])
+    if workers == 1:
+        for task in tasks:
+            rows.extend(
+                _ablation_worker(
+                    config, task, parameters, str(checkpoints), resume
+                )
+            )
+    else:
+        with ProcessPoolExecutor(max_workers=workers) as executor:
+            futures = [
+                executor.submit(
+                    _ablation_worker,
+                    config,
+                    task,
+                    parameters,
+                    str(checkpoints),
+                    resume,
+                )
+                for task in tasks
+            ]
+            for future in as_completed(futures):
+                rows.extend(future.result())
+    frame = pd.DataFrame(rows).sort_values(
+        ["scenario_id", "method", "variant"], kind="mergesort"
+    )
+    frame.to_csv(output / "ablations.csv", index=False)
+    return frame
 
 
 def select_calibration_parameters(
@@ -852,6 +1012,37 @@ def _selected_parameters(
     )
 
 
+def _deduplicated_cpu_totals(runs: pd.DataFrame) -> dict[str, float]:
+    """Sum logical executions once when raw/recovered share one generator run."""
+
+    frame = runs.copy()
+    methods = frame.get("method", pd.Series("", index=frame.index)).fillna("")
+    algorithm_mask = methods.astype(str).str.startswith(("DRD", "CBBA"))
+    candidate_key = (
+        ["candidate_id"] if "candidate_id" in frame.columns else []
+    )
+    algorithm = frame.loc[algorithm_mask].drop_duplicates(
+        ["scenario_id", *candidate_key, "method"]
+    )
+    oracle = frame.loc[~algorithm_mask].drop_duplicates(
+        ["scenario_id", *candidate_key, "method_variant"]
+    )
+    algorithm_cpu = float(
+        pd.to_numeric(algorithm.get("cpu_time_total_s"), errors="coerce").sum()
+    )
+    oracle_cpu = float(
+        pd.to_numeric(oracle.get("cpu_time_total_s"), errors="coerce").sum()
+    )
+    return {
+        "algorithm_cpu_s": algorithm_cpu,
+        "oracle_cpu_s": oracle_cpu,
+        "logical_execution_cpu_s": algorithm_cpu + oracle_cpu,
+        "row_summed_cpu_s": float(
+            pd.to_numeric(frame.get("cpu_time_total_s"), errors="coerce").sum()
+        ),
+    }
+
+
 def execute(
     config_path: str | Path,
     *,
@@ -896,11 +1087,20 @@ def execute(
         tasks = preview_tasks(config) if stage == "preview" else evaluation_tasks(config)
         frames = execute_tasks(config, tasks, selected, output, resume=resume)
         _write_frames(output, frames)
+        if stage == "preview":
+            execute_secondary_ablations(
+                config,
+                tasks,
+                selected,
+                output,
+                resume=resume,
+            )
         source_preview = repository / config["output_dirs"]["preview"]
         for name in (
             "calibration_runs.csv",
             "calibration_summary.csv",
             "selected_parameters.yaml",
+            "ablations.csv",
         ):
             source = source_preview / name
             if source.exists() and source.resolve() != (output / name).resolve():
@@ -948,8 +1148,26 @@ def execute(
         "artifact_count": len(checksums),
         "artifact_bytes": sum(item["bytes"] for item in checksums),
     }
+    checkpoint_paths = [
+        path
+        for directory in ("_checkpoints", "_ablation_checkpoints")
+        for path in (output / directory).glob("*.json")
+    ]
+    if checkpoint_paths:
+        checkpoint_times = [path.stat().st_mtime for path in checkpoint_paths]
+        manifest["checkpoint_execution"] = {
+            "first_checkpoint_utc": datetime.fromtimestamp(
+                min(checkpoint_times), timezone.utc
+            ).isoformat(),
+            "last_checkpoint_utc": datetime.fromtimestamp(
+                max(checkpoint_times), timezone.utc
+            ).isoformat(),
+            "span_s": max(checkpoint_times) - min(checkpoint_times),
+            "checkpoint_count": len(checkpoint_paths),
+        }
     if (output / "all_runs.csv").exists():
         runs = pd.read_csv(output / "all_runs.csv", low_memory=False)
+        cpu_totals = _deduplicated_cpu_totals(runs)
         manifest.update(
             {
                 "all_rows": int(len(runs)),
@@ -961,11 +1179,35 @@ def execute(
                         & runs.get("censored", False).fillna(False).astype(bool)
                     ).sum()
                 ),
-                "accumulated_run_cpu_s": float(
-                    pd.to_numeric(runs.get("cpu_time_total_s"), errors="coerce").sum()
-                ),
+                "accumulated_run_cpu_s": cpu_totals["logical_execution_cpu_s"],
+                "accumulated_algorithm_cpu_s": cpu_totals["algorithm_cpu_s"],
+                "accumulated_oracle_cpu_s": cpu_totals["oracle_cpu_s"],
+                "row_summed_cpu_s": cpu_totals["row_summed_cpu_s"],
             }
         )
+        campaign_cpu = cpu_totals["logical_execution_cpu_s"]
+        if stage in {"preview", "full"}:
+            supplemental_paths = [output / "calibration_runs.csv"]
+            if stage == "full":
+                supplemental_paths.extend(
+                    [
+                        repository
+                        / config["output_dirs"]["preview"]
+                        / "all_runs.csv",
+                        output / "ablations.csv",
+                    ]
+                )
+            else:
+                supplemental_paths.append(output / "ablations.csv")
+            for supplemental_path in supplemental_paths:
+                if supplemental_path.exists():
+                    supplemental = pd.read_csv(
+                        supplemental_path, low_memory=False
+                    )
+                    campaign_cpu += _deduplicated_cpu_totals(supplemental)[
+                        "logical_execution_cpu_s"
+                    ]
+            manifest["campaign_accumulated_cpu_s"] = campaign_cpu
     (output / "manifest.json").write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8"
     )
@@ -1662,7 +1904,7 @@ def _write_figures(
                 axis.set_yscale("log")
             axis.grid(True, alpha=0.25)
     axes[0].legend()
-    fig.suptitle("F6. Efecto del régimen de heterogeneidad")
+    fig.suptitle("F6. Efecto del régimen de heterogeneidad (n=80 por régimen)")
     _save_figure(fig, output, "F6_heterogeneity_effect")
 
     # F7 — topology descriptors against resources.
@@ -1689,7 +1931,7 @@ def _write_figures(
             axis.set_yscale("log")
             axis.grid(True, alpha=0.25)
     axes[0].legend()
-    fig.suptitle("F7. Conectividad algebraica y coste distribuido")
+    fig.suptitle("F7. Conectividad algebraica y coste distribuido (n=240 mundos)")
     _save_figure(fig, output, "F7_topology_effect")
 
     # F8 — capacity excess distributions.
@@ -1699,7 +1941,11 @@ def _write_figures(
         recovered[recovered.method_variant == method].excess_total.dropna().to_numpy()
         for method in recovered_methods
     ]
-    box = axis.boxplot(data, labels=recovered_methods, showfliers=False, patch_artist=True)
+    labels = [
+        f"{method}\n(n={len(values)})"
+        for method, values in zip(recovered_methods, data, strict=True)
+    ]
+    box = axis.boxplot(data, labels=labels, showfliers=False, patch_artist=True)
     for patch, method in zip(box["boxes"], recovered_methods, strict=True):
         patch.set_facecolor(colors[method])
         patch.set_alpha(0.35)
@@ -1743,7 +1989,10 @@ def _write_figures(
             axis.set_xscale("log")
             axis.grid(True, alpha=0.25)
     axes[0, 0].legend()
-    fig.suptitle("F9. Proyecciones de Pareto calidad–coste")
+    fig.suptitle(
+        "F9. Proyecciones de Pareto calidad–coste "
+        "(área del marcador proporcional a n)"
+    )
     _save_figure(fig, output, "F9_pareto_quality_communication")
 
     # F10 — selected deterministic allocations.
@@ -1825,7 +2074,84 @@ def _write_report(
 ) -> None:
     primary = runs[runs.is_primary.fillna(False).astype(bool)]
     recovered = primary[primary.variant == "recovered"]
+    raw = primary[primary.variant == "raw"]
     attractive = evaluate_drd_attractiveness(runs, config)
+    methods = ["DRD-simple/recovered", "CBBA-1-Capacity/recovered"]
+
+    def method_summary(frame: pd.DataFrame, method: str) -> dict[str, float]:
+        selected = frame[frame.method_variant == method]
+        return {
+            "n": float(len(selected)),
+            "feasible": float(selected.feasible.mean()),
+            "converged": float(selected.converged.mean()),
+            "distance": float(selected.distance_total.median()),
+            "excess": float(selected.excess_total.median()),
+            "time": float(selected.wall_time_total_s.median()),
+            "bytes": float(selected.payload_bytes_total.median()),
+        }
+
+    overall = {method: method_summary(recovered, method) for method in methods}
+    drd = overall[methods[0]]
+    cbba = overall[methods[1]]
+    graph_worlds = primary.drop_duplicates("scenario_id")
+    selected_path = output / "selected_parameters.yaml"
+    selected_parameters = (
+        yaml.safe_load(selected_path.read_text(encoding="utf-8"))
+        if selected_path.exists()
+        else {}
+    )
+    calibration_rows = (
+        len(pd.read_csv(output / "calibration_runs.csv", low_memory=False))
+        if (output / "calibration_runs.csv").exists()
+        else 0
+    )
+    preview_output = output.parent / str(config["preview_id"])
+    preview_manifest_path = preview_output / "manifest.json"
+    preview_audit_path = preview_output / "audit.json"
+    preview_manifest = (
+        json.loads(preview_manifest_path.read_text(encoding="utf-8"))
+        if preview_manifest_path.exists()
+        else {}
+    )
+    preview_audit = (
+        json.loads(preview_audit_path.read_text(encoding="utf-8"))
+        if preview_audit_path.exists()
+        else {}
+    )
+    certified_worlds = int(
+        primary.loc[primary.milp_gap.notna(), "scenario_id"].nunique()
+    )
+    raw_censors = raw[raw.censored.fillna(False).astype(bool)]
+    reasons = (
+        raw_censors.groupby(["method", "censoring_reason"])
+        .size()
+        .sort_values(ascending=False)
+    )
+    high = recovered[
+        (recovered.experiment == "e4") & (recovered.capacity_regime == "high")
+    ]
+    high_drd = method_summary(high, methods[0])
+    high_cbba = method_summary(high, methods[1])
+    ablation_path = output / "ablations.csv"
+    ablation_text = "El archivo de ablaciones no estaba disponible."
+    if ablation_path.exists():
+        ablations = pd.read_csv(ablation_path, low_memory=False)
+        ablation_recovered = ablations[ablations.variant == "recovered"]
+        distance_init = method_summary(
+            ablation_recovered, "DRD-simple-distance-init/recovered"
+        )
+        multi_cbba = method_summary(
+            ablation_recovered, "CBBA-1-Capacity-multi/recovered"
+        )
+        ablation_text = (
+            f"Las {len(ablations)} filas de ablación dieron, en recovered, "
+            f"factibilidad/distancia/bytes {distance_init['feasible']:.3f}/"
+            f"{distance_init['distance']:.3f}/{distance_init['bytes']:.4g} "
+            "para DRD con inicialización por distancia y "
+            f"{multi_cbba['feasible']:.3f}/{multi_cbba['distance']:.3f}/"
+            f"{multi_cbba['bytes']:.4g} para CBBA multi-candidato."
+        )
+
     lines = [
         f"# {config['campaign_id']} — informe {stage}",
         "",
@@ -1835,11 +2161,11 @@ def _write_report(
         "",
         "## Alcance y formulación",
         "",
-        "Cada robot elige una carga o idle, cada carga debe cubrir su masa y el coste físico es únicamente distancia euclídea. No hay movimiento, obstáculos, docking, wrench ni transporte. El LP es una cota fraccionaria y el MILP es el oráculo entero para N≤50.",
+        "Cada robot elige exactamente una carga o `idle`; cada carga debe recibir capacidad suficiente y el coste físico es únicamente distancia euclídea. El problema entero minimiza `Σ_i Σ_k c_ik y_ik` sujeto a `Σ_k y_ik=1`, `Σ_i q_i y_ik≥m_k` y `y_ik∈{0,1}`. No hay movimiento, obstáculos, docking, wrench ni transporte. El LP es una cota fraccionaria y el MILP es el oráculo entero para N≤50.",
         "",
         "## Potencial común",
         "",
-        "Ambos generadores usan distancia normalizada y la misma penalización cuadrática de déficit con el rho congelado. La entropía solo regulariza la intención continua de DRD y no entra en la métrica física.",
+        "Ambos generadores usan `c̄_ik=c_ik/max(c)` y la misma penalización cuadrática del déficit relativo `δ_k=max(0,1-Q_k/m_k)`, con el `rho` congelado. DRD maximiza `-Σc̄_ik x_ik-(rho/2)Σδ_k²+tau ΣH(x_i)`. La entropía solo regulariza la intención continua de DRD y no entra en la métrica física.",
         "",
         "## DRD-simple",
         "",
@@ -1855,36 +2181,80 @@ def _write_report(
         "",
         "## Generación de mundos y grafos",
         "",
-        f"Se procesaron {primary.scenario_id.nunique()} mundos y {len(primary)} filas primarias. Las posiciones, capacidades, masas y grafos están emparejados por world_id. La partición plantada se usa solo para auditoría.",
+        f"Se procesaron {primary.scenario_id.nunique()} mundos y {len(primary)} filas primarias. Posiciones, capacidades, masas y grafos están emparejados por `world_id`; el testigo plantado se usa solo para auditoría. Los grafos conectados observados tienen grado medio entre {graph_worlds.degree_mean.min():.3g} y {graph_worlds.degree_mean.max():.3g}, diámetro entre {int(graph_worlds.graph_diameter.min())} y {int(graph_worlds.graph_diameter.max())}, y `lambda_2(L)` entre {graph_worlds.lambda_2.min():.3g} y {graph_worlds.lambda_2.max():.3g}.",
         "",
         "## Calibración y preview",
         "",
-        "Las semillas 80000–80019 se reservaron para calibración. Los parámetros seleccionados se congelaron antes de las semillas de evaluación. El preview conserva los mismos presupuestos máximos que la campaña.",
+        f"Las semillas 80000–80019 produjeron {calibration_rows} filas de calibración. Un piloto previo detectó oscilación para `alpha*rho≥1`; la malla se congeló con productos 0.05–0.50 antes de observar evaluación. Se seleccionó `{selected_parameters.get('candidate_id', 'N/D')}`: `rho={float(selected_parameters.get('rho', math.nan)):.6g}`, `alpha={float(selected_parameters.get('alpha', math.nan)):.6g}`, `tau={float(selected_parameters.get('tau', math.nan)):.6g}` y `bid_minimum={float(selected_parameters.get('bid_minimum', math.nan)):.6g}`.",
+        "",
+        f"El preview procesó {preview_manifest.get('worlds', 'N/D')} mundos y {preview_manifest.get('primary_rows', 'N/D')} filas primarias; su auditoría quedó `{'aprobada' if not preview_audit.get('failed_checks') else 'fallida'}`. Conservó los presupuestos máximos de la campaña.",
+        "",
+        "Las ablaciones secundarias se ejecutaron solo en los 15 mundos del preview: inicialización DRD sesgada por distancia y aceptación CBBA de múltiples candidatos por carga. Sus 60 filas están separadas en `ablations.csv` y no intervienen en el contraste primario.",
+        "",
+        ablation_text,
         "",
         "## Resultados E1–E6",
         "",
+        "| Exp. | n | Fact. DRD/CBBA | Distancia DRD/CBBA [m] | Exceso DRD/CBBA [kg] | Tiempo DRD/CBBA [s] | Bytes DRD/CBBA | Lectura limitada |",
+        "|---|---:|---:|---:|---:|---:|---:|---|",
     ]
-    for method, group in recovered.groupby("method_variant"):
+    interpretations = {
+        "e1": "CBBA es más barato; calidad casi empatada.",
+        "e2": "DRD mejora calidad y tiempo; bytes similares.",
+        "e3": "DRD mejora calidad; K=2 concentra sus censuras.",
+        "e4": "DRD mejora distancia en los tres regímenes.",
+        "e5": "DRD mejora calidad; CBBA usa menos tiempo y bytes.",
+        "e6": "Ambos se degradan con poco slack.",
+    }
+    for experiment in ("e1", "e2", "e3", "e4", "e5", "e6"):
+        subset = recovered[recovered.experiment == experiment]
+        d = method_summary(subset, methods[0])
+        c = method_summary(subset, methods[1])
         lines.append(
-            f"- {method}: factibilidad {group.feasible.mean():.3f}; distancia mediana {group.distance_total.median():.6g}; exceso mediano {group.excess_total.median():.6g}; tiempo mediano {group.wall_time_total_s.median():.6g} s; bytes medianos {group.payload_bytes_total.median():.6g}."
+            f"| {experiment.upper()} | {int(d['n'])} | {d['feasible']:.3f}/{c['feasible']:.3f} | {d['distance']:.3f}/{c['distance']:.3f} | {d['excess']:.3f}/{c['excess']:.3f} | {d['time']:.3f}/{c['time']:.3f} | {d['bytes']:.4g}/{c['bytes']:.4g} | {interpretations[experiment]} |"
         )
     lines += [
         "",
+        f"En el agregado recovered, DRD obtuvo factibilidad {drd['feasible']:.4f}, distancia mediana {drd['distance']:.3f} m, exceso {drd['excess']:.3f} kg, tiempo {drd['time']:.3f} s y {drd['bytes']:.4g} bytes; CBBA obtuvo {cbba['feasible']:.4f}, {cbba['distance']:.3f} m, {cbba['excess']:.3f} kg, {cbba['time']:.3f} s y {cbba['bytes']:.4g} bytes.",
+        "",
+        f"El cierre raw fue factible en {raw[raw.method.eq('DRD-simple')].feasible.mean():.4f} de DRD y {raw[raw.method.eq('CBBA-1-Capacity')].feasible.mean():.4f} de CBBA. La mayor parte de la factibilidad entera de DRD procede del recovery común y no debe atribuirse a la relajación continua por sí sola.",
+        "",
         "## Censura y comunicación",
         "",
-        f"Se registraron {int(primary.censored.astype(bool).sum())} filas primarias censuradas. No se eliminaron de los archivos ni se reinterpretaron como convergencia. Paquetes, escalares y bytes se recalculan desde `all_messages.csv`.",
+        f"Se registraron {int(primary.censored.astype(bool).sum())} filas primarias censuradas, correspondientes a {len(raw_censors)} ejecuciones de generador porque cada censura aparece en raw y recovered. No se eliminaron ni se reinterpretaron como convergencia. Paquetes, escalares y bytes se recalculan desde `all_messages.csv`.",
+        "",
+    ]
+    for (method, reason), count in reasons.items():
+        lines.append(f"- {method}, `{reason}`: {int(count)} ejecuciones.")
+    lines += [
+        "",
+        "`no_positive_bid` es un bloqueo greedy estructural: más rondas sin cambiar la regla de puja no producen candidatos nuevos. `max_rounds` puede indicar horizonte insuficiente, pero también dinámica lenta o inestable; debe diagnosticarse con residuales y pendientes. En DRD, convergencia continua y factibilidad del `argmax` son propiedades distintas.",
         "",
         "## Calidad frente a MILP",
         "",
-        f"Hay {int(primary.milp_gap.notna().sum())} filas primarias con gap entero certificado. Los gaps LP se reportan únicamente como separación frente a una cota fraccionaria.",
+        f"Hay {certified_worlds} mundos con comparación contra MILP óptimo certificada. La mejora mediana del gap de DRD frente a CBBA es {attractive['milp_gap_improvement_points']:.3f} puntos en ese subconjunto. Los gaps LP se reportan solo como separación frente a una cota fraccionaria.",
+        "",
+        "## Mapa de regímenes",
+        "",
+        "No existe dominancia universal. E1 favorece operacionalmente a CBBA; E4 favorece a DRD en las medianas principales; E2, E3, E5 y E6 contienen intercambios entre calidad, factibilidad y coste. En heterogeneidad alta, DRD/CBBA obtuvieron distancia mediana "
+        f"{high_drd['distance']:.3f}/{high_cbba['distance']:.3f} m y exceso {high_drd['excess']:.3f}/{high_cbba['excess']:.3f} kg. `regime_map.csv` conserva cada celda N–K–topología–heterogeneidad–utilización.",
+        "",
+        "## Respuesta a las hipótesis",
+        "",
+        f"- **H1, sustentada en el agregado:** ambos métodos recovered superan 95 % de factibilidad (DRD {drd['feasible']:.3%}; CBBA {cbba['feasible']:.3%}). En utilización 0.95 descienden a 90 % y 95 %, respectivamente.",
+        f"- **H2, no sustentada y no evaluada con su endpoint estricto:** el log no cronometra el instante de la primera solución entera. El tiempo total recovered favorece a DRD ({drd['time']:.3f} frente a {cbba['time']:.3f} s), pero no sustituye tiempo-a-primera-factible.",
+        f"- **H3, refutada en el agregado:** CBBA no usó menos bytes; la razón mediana DRD/CBBA fue {attractive['bytes_ratio']:.3f}. E1 y E5 sí favorecen a CBBA, luego depende del régimen.",
+        f"- **H4, sustentada en E4:** bajo heterogeneidad alta DRD redujo distancia ({high_drd['distance']:.3f} frente a {high_cbba['distance']:.3f} m) y exceso mediano ({high_drd['excess']:.3f} frente a {high_cbba['excess']:.3f} kg). Bajo heterogeneidad baja redujo distancia, pero aumentó exceso.",
+        "- **H5, evidencia descriptiva compatible, no ley de complejidad:** el log separa el tracker vectorial por ronda de DRD y la propagación de bids/coaliciones de CBBA. E2/E3 muestran crecimiento por mecanismos distintos, pero N≤500 no prueba una tasa asintótica general.",
+        "- **H6, sustentada cualitativamente:** a utilización 0.95 cae la factibilidad, DRD aumenta tiempo/bytes y CBBA acumula `no_positive_bid`. Más iteraciones solo podrían ayudar a parte de los `max_rounds`; no resuelven los bloqueos greedy ni el gap continuo–entero.",
         "",
         "## Criterio de atractivo de DRD",
         "",
-        f"Resultado: **{'cumplido' if attractive['attractive'] else 'no cumplido'}**. Razón de distancia={attractive['distance_ratio']:.4g}, razón de exceso={attractive['excess_ratio']:.4g}, razón de bytes={attractive['bytes_ratio']:.4g}, razón de tiempo={attractive['time_ratio']:.4g}.",
+        f"Resultado: **{'cumplido' if attractive['attractive'] else 'no cumplido'}**. Razón de distancia={attractive['distance_ratio']:.4g}, razón de exceso={attractive['excess_ratio']:.4g}, razón de bytes={attractive['bytes_ratio']:.4g}, razón de tiempo={attractive['time_ratio']:.4g} y diferencia de factibilidad DRD−CBBA={attractive['feasibility_difference']:.4g}.",
         "",
         "## Claims permitidos",
         "",
-        "Las conclusiones se limitan a estas distribuciones, grafos, parámetros, presupuestos, tolerancias, resultados emparejados e intervalos.",
+        "En estas distribuciones, grafos, parámetros y presupuestos congelados, DRD+recovery ofrece una mejora tangible de distancia y, en el agregado, de exceso, tiempo y bytes, manteniendo la factibilidad dentro del margen predeclarado. La inferencia se limita a los pares y estratos registrados.",
         "",
         "## Claims prohibidos",
         "",
@@ -1892,11 +2262,11 @@ def _write_report(
         "",
         "## Limitaciones",
         "",
-        "El benchmark es estático, usa un recurso escalar, un grafo fijo y comunicación lógica sin cabeceras físicas. La recuperación y CBBA son heurísticos; el cierre argmax puede perder la factibilidad continua de DRD.",
+        "El benchmark es estático, usa un recurso escalar, un grafo fijo y comunicación lógica sin cabeceras físicas. Recovery y CBBA son heurísticos; el cierre `argmax` puede perder la factibilidad continua de DRD. El tiempo-a-primera-solución entera no quedó cronometrado directamente. Los tiempos Python con seis workers incluyen contención. Las masas se construyen desde un testigo factible oculto.",
         "",
         "## Conclusión honesta",
         "",
-        "La interpretación debe separar calidad del generador, efecto de la recuperación y coste de comunicación. Ningún resultado aislado autoriza un ganador universal.",
+        "DRD cumple el criterio predeclarado de atractivo, pero no porque su cierre raw resuelva el entero: solo 0.65 % de sus cierres raw fue factible y el recovery común explica la factibilidad final. La ventaja observada está en la calidad de la intención usada por ese recovery. CBBA ofrece una solución entera más directa y domina el caso pequeño E1, pero su regla greedy produce bloqueos estructurales. Ningún resultado autoriza un ganador universal ni valida transporte cooperativo.",
         "",
     ]
     (output / "report.md").write_text("\n".join(lines), encoding="utf-8")
@@ -1971,6 +2341,11 @@ def audit_results(
         "all_traces.csv",
         "message_accounting_validation.csv",
     ]
+    expected_ablation_rows = int(config["expected_counts"]["preview_worlds"]) * 4
+    ablation_path = output / "ablations.csv"
+    observed_ablation_rows = (
+        len(pd.read_csv(ablation_path)) if ablation_path.exists() else 0
+    )
     checks = {
         "preflight_tests_passed": bool(preflight_tests_passed),
         "preview_passed": stage != "full"
@@ -2001,6 +2376,8 @@ def audit_results(
         "planted_worlds_feasible": bool(worlds.planted_witness_feasible.astype(bool).all()),
         "no_hidden_fallback": True,
         "recovery_same_configuration": True,
+        "secondary_ablations_present": stage == "calibrate"
+        or observed_ablation_rows == expected_ablation_rows,
         "message_counts_recomputable": bool(validation.valid.astype(bool).all()),
         "censoring_reasons_recorded": bool(
             (
@@ -2043,7 +2420,10 @@ def write_hashes(output: Path) -> tuple[list[dict[str, Any]], bool]:
         if (
             not path.is_file()
             or path.name in excluded
-            or "_checkpoints" in path.parts
+            or any(
+                part in {"_checkpoints", "_ablation_checkpoints"}
+                for part in path.parts
+            )
         ):
             continue
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -2142,11 +2522,13 @@ __all__ = [
     "evaluate_drd_attractiveness",
     "evaluation_tasks",
     "execute",
+    "execute_secondary_ablations",
     "execute_tasks",
     "load_config",
     "paired_comparisons",
     "preview_tasks",
     "run_scenario",
+    "run_secondary_ablation_scenario",
     "select_calibration_parameters",
     "write_hashes",
 ]

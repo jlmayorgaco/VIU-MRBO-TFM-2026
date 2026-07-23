@@ -13,6 +13,7 @@ import yaml
 from scipy.sparse import csr_matrix
 
 from viu_mrob_tfm.sp1_canonical.validation.drd_cbba_benchmark import (
+    _deduplicated_cpu_totals,
     audit_results,
     calibration_tasks,
     deterministic_case_catalog,
@@ -20,6 +21,7 @@ from viu_mrob_tfm.sp1_canonical.validation.drd_cbba_benchmark import (
     evaluation_tasks,
     execute_tasks,
     preview_tasks,
+    run_secondary_ablation_scenario,
 )
 from viu_mrob_tfm.sp1_canonical.validation.drd_cbba_simple import (
     assignment_from_drd,
@@ -395,6 +397,65 @@ def test_checkpoint_resume_returns_identical_rows(tmp_path: Path) -> None:
         second["runs"].sort_index(axis=1),
         check_dtype=False,
     )
+
+
+def test_secondary_ablations_are_separate_and_complete() -> None:
+    cfg = copy.deepcopy(config())
+    cfg["drd"]["max_rounds"] = 3
+    cfg["cbba"]["max_rounds"] = 30
+    task = {
+        "experiment": "preview",
+        "scenario_id": "ablation",
+        "n": 4,
+        "k": 2,
+        "seed": 3011,
+        "capacity_regime": "medium",
+        "topology": "complete",
+        "utilization_target": None,
+        "include_oracles": False,
+        "include_recovery": True,
+    }
+    rows = run_secondary_ablation_scenario(cfg, task, parameters())
+    assert len(rows) == 4
+    assert {row["ablation_id"] for row in rows} == {
+        "drd_distance_biased_initialization",
+        "cbba_multiple_candidates_per_load",
+    }
+    assert {row["variant"] for row in rows} == {"raw", "recovered"}
+    assert not any(row["is_primary"] for row in rows)
+
+
+def test_cpu_totals_do_not_duplicate_raw_and_recovered() -> None:
+    frame = pd.DataFrame(
+        [
+            {
+                "scenario_id": "w1",
+                "candidate_id": "p",
+                "method": "DRD-simple",
+                "method_variant": "DRD-simple/raw",
+                "cpu_time_total_s": 2.0,
+            },
+            {
+                "scenario_id": "w1",
+                "candidate_id": "p",
+                "method": "DRD-simple",
+                "method_variant": "DRD-simple/recovered",
+                "cpu_time_total_s": 2.0,
+            },
+            {
+                "scenario_id": "w1",
+                "candidate_id": "p",
+                "method": "LP",
+                "method_variant": "LP/oracle",
+                "cpu_time_total_s": 1.0,
+            },
+        ]
+    )
+    totals = _deduplicated_cpu_totals(frame)
+    assert totals["algorithm_cpu_s"] == 2.0
+    assert totals["oracle_cpu_s"] == 1.0
+    assert totals["logical_execution_cpu_s"] == 3.0
+    assert totals["row_summed_cpu_s"] == 5.0
 
 
 def test_json_checkpoint_payload_is_finite_or_explicit_nan(tmp_path: Path) -> None:

@@ -169,6 +169,27 @@ La evaluación usa hasta 3.000 rondas, 60 s y $5\times10^9$ escalares por run. T
 
 E7.5 solo aplica un evento y ejecuta recuperación cuando el estado previo satisface el gate operacional completo. Si no existe ese origen, el evento queda excluido con razón registrada; los costes auxiliares no se interpretan como tiempo ni calidad de recuperación. Alcanzar un tamaño grande bajo censura no acredita escalabilidad.
 
+#### Benchmark DRD-simple frente a CBBA-1-Capacity
+
+`SP1_DRD_VS_CBBA_SIMPLE_v1` es una campaña independiente y más acotada: un
+recurso de capacidad escalar, posiciones congeladas, coste exclusivamente
+euclídeo y grafo conectado fijo. Compara `DRD-simple` con la adaptación
+`CBBA-1-Capacity` usando el mismo \(\rho\), mundos y grafos emparejados, LP en
+todos los tamaños, MILP para \(N\leq50\) y el mismo cierre entero para ambos
+generadores. La calibración usa solo semillas 80000--80019; la evaluación usa
+920 mundos distintos y conserva por separado `raw` y `recovered`. Una
+terminación por `no_positive_bid` se clasifica como bloqueo greedy y no como
+falta de iteraciones; `max_rounds` permanece censurado. La convergencia
+continua de DRD no se interpreta como factibilidad de su cierre `argmax`.
+
+La campaña registra payload lógico sin cabeceras físicas: paquete significa un
+envío unidireccional por arista. `all_messages.csv` permite reconstruir
+paquetes, escalares y bytes. La comparación primaria es
+`DRD-simple/recovered` frente a `CBBA-1-Capacity/recovered`; raw frente a raw
+caracteriza el generador. Las inicializaciones sesgadas por distancia y la
+aceptación múltiple de candidatos de CBBA son ablaciones secundarias limitadas
+a los 15 mundos del preview y no se mezclan con los 920 mundos principales.
+
 ### SP2
 
 Contribución operacional escalar dependiente del par robot--carga y casos donde la cardinalidad es suficiente pero el índice de servicio ponderado por disponibilidad no cubre el umbral. Comparar por separado cobertura parcial y cargas completas mediante dos referencias centrales. La carga útil nominal se normaliza con una escala explícita; batería y distancia no se interpretan como reducción mecánica. La compatibilidad no puede atribuirse a una campaña que la mantuvo universal; energía de misión, fuerza, torque y geometría de contacto se evalúan por separado desde SP3.

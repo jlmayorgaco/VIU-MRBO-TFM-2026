@@ -122,3 +122,34 @@ python -m pytest tests/test_sp1_drd_cbba_simple.py -q
 
 Los comandos finales y los hashes concretos se registrarán en los manifiestos
 generados por la propia campaña.
+
+## Cierre observado
+
+- Calibración: 360 tareas, 1.440 filas y selección congelada `p06`
+  (\(\rho=2\,000\,000\), \(\alpha=5\times10^{-8}\),
+  \(\tau=10^{-5}\)).
+- Preview: 15 mundos, 60 filas primarias y auditoría aprobada.
+- Evaluación: 920 mundos, 3.680 filas primarias y 5.000 filas totales con
+  oráculos.
+- Censura: 264 filas primarias, equivalentes a 132 ejecuciones de generador;
+  101 bloqueos CBBA `no_positive_bid`, 10 CBBA `max_rounds` y 21 DRD
+  `max_rounds`.
+- Coste: 13.153,72 s de CPU de ejecuciones lógicas únicas en E1--E6
+  (9.664,38 s de algoritmos y 3.489,34 s de oráculos); 15.082,48 s al
+  incluir calibración, preview y ablaciones; 6 workers; lapso entre el primer
+  y último checkpoint principal de 2.254,10 s. La suma bruta de filas,
+  22.818,09 s, duplica cada generador en raw/recovered y se conserva solo como
+  diagnóstico del esquema tabular.
+- Resultado agregado recovered: factibilidad DRD/CBBA 0,9957/0,9978;
+  distancia mediana 14,173/29,443 m; exceso 5,346/6,465 kg; tiempo
+  0,793/1,644 s; bytes 103.286.400/154.636.432.
+- El criterio predeclarado de atractivo de DRD se cumple. No hay ganador
+  universal: E1 favorece a CBBA; E4 favorece a DRD; E2, E3, E5 y E6
+  presentan intercambios.
+- La hipótesis H2 no queda evaluada con su endpoint estricto porque no se
+  cronometró el instante de la primera solución entera; el tiempo total no se
+  usa como sustituto silencioso.
+- La campaña y sus 22 comprobaciones automáticas pasan; las figuras F1--F10
+  fueron inspeccionadas en PNG y sus PDF vectoriales se renderizaron sin
+  clipping. Las ablaciones secundarias se conservan separadas en
+  `ablations.csv`.
