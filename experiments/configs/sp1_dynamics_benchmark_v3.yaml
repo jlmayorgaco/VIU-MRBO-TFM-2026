@@ -2,6 +2,10 @@ campaign_id: SP1_DYNAMICS_BENCHMARK_v3
 preview_id: SP1_DYNAMICS_BENCHMARK_v3_preview
 schema_version: 1
 base_v2_commit: 4c9ba49ddd486f923d622fdc6f21a127f154fd24
+parallel_workers: 6
+output_dirs:
+  preview: results/sp1_validation/SP1_DYNAMICS_BENCHMARK_v3_preview
+  full: results/sp1_validation/SP1_DYNAMICS_BENCHMARK_v3
 analysis_seed: 903177
 resource_dimensions: 3
 reserve_energy: 5.0
@@ -35,14 +39,17 @@ budgets:
     max_logical_rounds: 1000
     max_wall_time_s: 20.0
     max_scalar_transmissions: 2000000000
+    max_payoff_evaluations: 200000
   preview:
     max_logical_rounds: 1500
     max_wall_time_s: 30.0
     max_scalar_transmissions: 3000000000
+    max_payoff_evaluations: 300000
   evaluation:
     max_logical_rounds: 3000
     max_wall_time_s: 60.0
     max_scalar_transmissions: 5000000000
+    max_payoff_evaluations: 3000000
 methods:
   primary:
     - Replicator-D-preconditioned
