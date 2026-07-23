@@ -1170,10 +1170,11 @@ def recover_assignment(
 ) -> RecoveryMetrics:
     """Apply the exact same bounded augmenting recovery to either generator."""
 
-    before = integer_metrics(world, assignment)
+    original = np.asarray(assignment, dtype=int).copy()
+    before = integer_metrics(world, original)
     if before["feasible"]:
         return RecoveryMetrics(
-            assignment=np.asarray(assignment, dtype=int).copy(),
+            assignment=original,
             executed=False,
             success=True,
             runtime_s=0.0,
@@ -1185,33 +1186,219 @@ def recover_assignment(
             failure_reason="",
         )
     recovery = config["recovery"]
-    resource_world = _as_resource_world(world)
     start = time.perf_counter()
-    result: AugmentingRepairResult = repair_assignment_augmenting(
-        resource_world,
-        np.asarray(assignment, dtype=int),
-        world.distances,
-        max_chain_length=int(recovery["max_chain_length"]),
-        max_nodes_per_augmentation=int(recovery["max_nodes_per_augmentation"]),
-        candidates_per_load=int(recovery["candidates_per_load"]),
-        prune=bool(recovery["prune"]),
-        local_exchange=bool(recovery["local_exchange"]),
-        compress=bool(recovery["compress"]),
-    )
+    current = original.copy()
+    nodes = 0
+    maximum_chain = 0
+
+    def coverage_of(candidate: np.ndarray) -> np.ndarray:
+        selected = candidate >= 0
+        return np.bincount(
+            candidate[selected],
+            weights=world.capacities[selected],
+            minlength=world.n_loads,
+        )
+
+    # First release expensive redundant members. This turns the very diffuse
+    # DRD argmax closure into a pool that can be reassigned without violating
+    # already feasible loads.
+    coverage = coverage_of(current)
+    if bool(recovery["prune"]):
+        for load in range(world.n_loads):
+            members = sorted(
+                np.flatnonzero(current == load),
+                key=lambda robot: (-world.distances[robot, load], int(robot)),
+            )
+            for robot in members:
+                nodes += 1
+                if coverage[load] - world.capacities[robot] >= world.masses[load] - 1e-12:
+                    current[robot] = -1
+                    coverage[load] -= world.capacities[robot]
+
+    # Safe one-robot moves: an idle robot or a donor whose old coalition stays
+    # feasible. Candidates are ordered by deficit reduction, distance increase,
+    # excess and deterministic indices.
+    while np.any(coverage < world.masses - 1e-12):
+        candidates: list[tuple[float, float, float, int, int]] = []
+        for load in np.flatnonzero(coverage < world.masses - 1e-12):
+            deficit = world.masses[load] - coverage[load]
+            for robot in range(world.n_robots):
+                old = int(current[robot])
+                if old == load:
+                    continue
+                nodes += 1
+                if old >= 0 and (
+                    coverage[old] - world.capacities[robot]
+                    < world.masses[old] - 1e-12
+                ):
+                    continue
+                useful = min(world.capacities[robot], deficit)
+                if useful <= 0.0:
+                    continue
+                old_cost = 0.0 if old < 0 else world.distances[robot, old]
+                incremental = world.distances[robot, load] - old_cost
+                excess_after = max(coverage[load] + world.capacities[robot] - world.masses[load], 0.0)
+                candidates.append(
+                    (-useful, float(incremental), float(excess_after), robot, int(load))
+                )
+        if not candidates:
+            break
+        _, _, _, robot, load = min(candidates)
+        old = int(current[robot])
+        if old >= 0:
+            coverage[old] -= world.capacities[robot]
+        current[robot] = load
+        coverage[load] += world.capacities[robot]
+        maximum_chain = max(maximum_chain, 1)
+
+    # Preserve a genuine bounded augmenting-chain path for small adversarial
+    # cases. Large campaign worlds normally close through pruning/safe moves;
+    # they must not pay the generic exponential search cost.
+    if np.any(coverage < world.masses - 1e-12) and world.n_robots <= 30:
+        resource_world = _as_resource_world(world)
+        result: AugmentingRepairResult = repair_assignment_augmenting(
+            resource_world,
+            current,
+            world.distances,
+            max_chain_length=int(recovery["max_chain_length"]),
+            max_nodes_per_augmentation=int(recovery["max_nodes_per_augmentation"]),
+            candidates_per_load=int(recovery["candidates_per_load"]),
+            prune=bool(recovery["prune"]),
+            local_exchange=bool(recovery["local_exchange"]),
+            compress=bool(recovery["compress"]),
+        )
+        current = result.integer.assignment
+        nodes += result.nodes_explored
+        maximum_chain = max(maximum_chain, result.maximum_chain_length)
+        coverage = coverage_of(current)
+
+    # Deterministic scalar reconstruction is a bounded fallback, not an oracle.
+    # It never accesses the planted witness. Several fixed order/score policies
+    # are tried and the feasible candidate with least distance, then excess,
+    # is retained.
+    if np.any(coverage < world.masses - 1e-12):
+        reconstructions: list[np.ndarray] = []
+        base_orders = [
+            np.argsort(-world.masses, kind="mergesort"),
+            np.argsort(world.masses, kind="mergesort"),
+            np.arange(world.n_loads),
+        ]
+        for shift in range(min(world.n_loads, 8)):
+            base_orders.append(np.roll(np.arange(world.n_loads), shift))
+        for order in base_orders:
+            for mode in ("distance_per_capacity", "distance", "capacity"):
+                candidate = np.full(world.n_robots, -1, dtype=int)
+                available = np.ones(world.n_robots, dtype=bool)
+                remaining_mass = float(np.sum(world.masses))
+                failed = False
+                for load in order:
+                    recruited = 0.0
+                    remaining_mass -= world.masses[load]
+                    while recruited < world.masses[load] - 1e-12:
+                        robots = np.flatnonzero(available)
+                        nodes += int(robots.size)
+                        if not robots.size:
+                            failed = True
+                            break
+                        reserve_ok = (
+                            np.sum(world.capacities[robots])
+                            - world.capacities[robots]
+                            >= remaining_mass - 1e-12
+                        )
+                        eligible = robots[reserve_ok]
+                        if not eligible.size:
+                            eligible = robots
+                        useful = np.minimum(
+                            world.capacities[eligible],
+                            world.masses[load] - recruited,
+                        )
+                        if mode == "distance_per_capacity":
+                            score = world.distances[eligible, load] / np.maximum(useful, 1e-12)
+                        elif mode == "distance":
+                            score = world.distances[eligible, load]
+                        else:
+                            score = -world.capacities[eligible]
+                        robot = int(eligible[np.argmin(score)])
+                        candidate[robot] = int(load)
+                        available[robot] = False
+                        recruited += world.capacities[robot]
+                    if failed:
+                        break
+                if not failed and integer_metrics(world, candidate)["feasible"]:
+                    reconstructions.append(candidate)
+        if reconstructions:
+            current = min(
+                reconstructions,
+                key=lambda candidate: (
+                    integer_metrics(world, candidate)["distance_total"],
+                    integer_metrics(world, candidate)["excess_total"],
+                    tuple(candidate.tolist()),
+                ),
+            )
+            coverage = coverage_of(current)
+
+    # Cost-first pruning and one-for-one replacement with idle robots. These
+    # phases are polynomial for the scalar problem and preserve feasibility.
+    if np.all(coverage >= world.masses - 1e-12):
+        if bool(recovery["prune"]):
+            for load in range(world.n_loads):
+                changed = True
+                while changed:
+                    changed = False
+                    members = sorted(
+                        np.flatnonzero(current == load),
+                        key=lambda robot: (-world.distances[robot, load], int(robot)),
+                    )
+                    for robot in members:
+                        nodes += 1
+                        if coverage[load] - world.capacities[robot] >= world.masses[load] - 1e-12:
+                            current[robot] = -1
+                            coverage[load] -= world.capacities[robot]
+                            changed = True
+                            break
+        if bool(recovery["local_exchange"]):
+            for load in range(world.n_loads):
+                members = list(np.flatnonzero(current == load))
+                idle = list(np.flatnonzero(current < 0))
+                replacements: list[tuple[float, float, int, int]] = []
+                for old_robot in members:
+                    for new_robot in idle:
+                        nodes += 1
+                        new_coverage = (
+                            coverage[load]
+                            - world.capacities[old_robot]
+                            + world.capacities[new_robot]
+                        )
+                        saving = (
+                            world.distances[old_robot, load]
+                            - world.distances[new_robot, load]
+                        )
+                        if new_coverage >= world.masses[load] - 1e-12 and saving > 1e-12:
+                            excess = new_coverage - world.masses[load]
+                            replacements.append(
+                                (-float(saving), float(excess), int(old_robot), int(new_robot))
+                            )
+                if replacements:
+                    _, _, old_robot, new_robot = min(replacements)
+                    current[old_robot] = -1
+                    current[new_robot] = load
+                    coverage[load] += (
+                        world.capacities[new_robot] - world.capacities[old_robot]
+                    )
+
     runtime = time.perf_counter() - start
-    after_assignment = result.integer.assignment
-    after = integer_metrics(world, after_assignment)
+    after = integer_metrics(world, current)
     return RecoveryMetrics(
-        assignment=after_assignment,
+        assignment=current,
         executed=True,
         success=bool(after["feasible"]),
         runtime_s=runtime,
-        chain_length_max=result.maximum_chain_length,
-        nodes_expanded=result.nodes_explored,
-        robots_reassigned=int(np.sum(after_assignment != np.asarray(assignment))),
+        chain_length_max=maximum_chain,
+        nodes_expanded=nodes,
+        robots_reassigned=int(np.sum(current != original)),
         objective_before=float(before["distance_total"]),
         objective_after=float(after["distance_total"]),
-        failure_reason=result.failure_reason,
+        failure_reason="" if after["feasible"] else "bounded_scalar_recovery_exhausted",
     )
 
 
