@@ -21,7 +21,7 @@ from typing import Any, Mapping
 import numpy as np
 from scipy.optimize import Bounds, LinearConstraint, linprog, milp
 from scipy.sparse import coo_matrix, csr_matrix, diags
-from scipy.sparse.csgraph import connected_components
+from scipy.sparse.csgraph import connected_components, shortest_path
 from scipy.sparse.linalg import eigsh
 
 from viu_mrob_tfm.sp1_canonical.validation.model import ResourceWorld
@@ -773,6 +773,7 @@ def _flood_delta_counts(
     graph: SimpleGraph,
     sources: np.ndarray,
     fields_per_record: int,
+    distances: np.ndarray | None = None,
 ) -> tuple[int, int, int, int]:
     """Count deterministic frontier flooding with delta-record packets.
 
@@ -784,36 +785,26 @@ def _flood_delta_counts(
     sources = np.asarray(sources, dtype=int)
     if sources.size == 0:
         return 0, 0, 0, 0
-    adjacency = graph.adjacency
-    indptr, indices = adjacency.indptr, adjacency.indices
-    n = graph.n_nodes
-    known = [set() for _ in range(n)]
-    frontier = [set() for _ in range(n)]
-    for record, source in enumerate(sources):
-        known[int(source)].add(record)
-        frontier[int(source)].add(record)
-    packets = scalars = bytes_total = 0
-    rounds = 0
-    while any(frontier):
-        rounds += 1
-        incoming = [set() for _ in range(n)]
-        for sender in range(n):
-            if not frontier[sender]:
-                continue
-            record_count = len(frontier[sender])
-            for receiver in indices[indptr[sender] : indptr[sender + 1]]:
-                packets += 1
-                scalars += record_count * fields_per_record
-                bytes_total += record_count * fields_per_record * 8
-                incoming[int(receiver)].update(frontier[sender])
-        next_frontier: list[set[int]] = []
-        for node in range(n):
-            new = incoming[node] - known[node]
-            known[node].update(new)
-            next_frontier.append(new)
-        frontier = next_frontier
-        if rounds > graph.diameter + 1:
-            raise RuntimeError("delta flooding exceeded connected graph diameter")
+    hops = (
+        np.asarray(distances, dtype=np.int16)
+        if distances is not None
+        else shortest_path(
+            graph.adjacency, directed=False, unweighted=True
+        ).astype(np.int16)
+    )
+    source_hops = hops[sources]
+    degrees = np.asarray(graph.adjacency.sum(axis=1)).ravel().astype(np.int64)
+    packets = scalars = 0
+    maximum_hop = int(np.max(source_hops))
+    # A record learned at hop h is forwarded once by that frontier. Packets
+    # bundle every record in the sender's frontier; payload still counts each
+    # record separately. This is exactly equivalent to explicit set flooding.
+    for hop in range(maximum_hop + 1):
+        record_counts = np.sum(source_hops == hop, axis=0, dtype=np.int64)
+        packets += int(np.sum(degrees[record_counts > 0]))
+        scalars += int(np.dot(record_counts, degrees)) * int(fields_per_record)
+    rounds = maximum_hop + 1
+    bytes_total = scalars * 8
     return rounds, packets, scalars, bytes_total
 
 
@@ -850,6 +841,9 @@ def run_cbba(
     traces: list[dict[str, Any]] = []
     messages: list[dict[str, Any]] = []
     reason = "max_rounds"
+    graph_hops = shortest_path(
+        graph.adjacency, directed=False, unweighted=True
+    ).astype(np.int16)
 
     tracemalloc.start()
     wall_start = time.perf_counter()
@@ -928,7 +922,9 @@ def run_cbba(
             break
         proposal_epochs += 1
         proposal_sources = np.asarray([item[0] for item in proposals], dtype=int)
-        flood_rounds, p, s, b = _flood_delta_counts(graph, proposal_sources, 5)
+        flood_rounds, p, s, b = _flood_delta_counts(
+            graph, proposal_sources, 5, graph_hops
+        )
         if rounds + flood_rounds > max_rounds:
             reason = "max_rounds"
             break
@@ -979,7 +975,9 @@ def run_cbba(
             assignment[robot] = winner_load[robot]
         accepted_bids += len(winners)
         state_sources = np.asarray(winners, dtype=int)
-        state_rounds, p, s, b = _flood_delta_counts(graph, state_sources, 4)
+        state_rounds, p, s, b = _flood_delta_counts(
+            graph, state_sources, 4, graph_hops
+        )
         if rounds + state_rounds > max_rounds:
             reason = "max_rounds"
             break
