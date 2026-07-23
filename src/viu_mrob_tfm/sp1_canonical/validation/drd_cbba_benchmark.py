@@ -1485,8 +1485,8 @@ def _write_figures(
             rate = successes / len(group)
             xs.append(float(n))
             rates.append(rate)
-            low_errors.append(rate - low)
-            high_errors.append(high - rate)
+            low_errors.append(max(0.0, rate - low))
+            high_errors.append(max(0.0, high - rate))
             censor.append(float(group.censored.astype(bool).mean()))
         axes[0].errorbar(
             xs,
@@ -1613,8 +1613,8 @@ def _write_figures(
             low, high = wilson_interval(int(group.feasible.sum()), len(group))
             xs.append(k)
             rates.append(rate)
-            lows.append(rate - low)
-            highs.append(high - rate)
+            lows.append(max(0.0, rate - low))
+            highs.append(max(0.0, high - rate))
         axes[1, 1].errorbar(
             xs,
             rates,
