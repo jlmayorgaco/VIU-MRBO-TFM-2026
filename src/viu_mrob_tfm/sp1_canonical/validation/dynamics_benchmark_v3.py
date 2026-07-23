@@ -808,18 +808,43 @@ def make_figures(runs: pd.DataFrame, aggregate: pd.DataFrame, directory: Path) -
         _save_figure(figure, directory, "F7_v3_integer_quality")
 
         # F8
-        figure, axes = plt.subplots(1, 3, figsize=(14, 4.2), constrained_layout=True)
         e75 = primary[primary.experiment == "e75"]
-        for method in FRACTIONAL_METHODS:
-            group = e75[e75.method == method]
-            med = group.groupby("event")[["recovery_rounds", "hamming_recourse", "recovery_bytes"]].median()
-            x = np.arange(len(med))
-            for axis, metric in zip(axes, ["recovery_rounds", "hamming_recourse", "recovery_bytes"]):
-                axis.plot(x, med[metric], marker="o", color=colors[method], label=method.split("-")[0])
-                axis.set_xticks(x, med.index, rotation=25, ha="right")
-                axis.set_yscale("symlog", linthresh=1e-6)
-                axis.set_ylabel(metric)
-        axes[-1].legend(fontsize=7)
+        valid_origins = e75[e75.valid_event_origin.eq(True)]
+        if valid_origins.empty:
+            figure, axis = plt.subplots(figsize=(9, 4.5), constrained_layout=True)
+            counts = e75.groupby("method").valid_event_origin.sum().reindex(FRACTIONAL_METHODS, fill_value=0).astype(int)
+            totals = e75.groupby("method").size().reindex(FRACTIONAL_METHODS, fill_value=0).astype(int)
+            positions = np.arange(len(FRACTIONAL_METHODS))
+            axis.bar(positions, counts.to_numpy(), color=[colors[m] for m in FRACTIONAL_METHODS])
+            axis.set_xticks(positions, [m.split("-")[0] for m in FRACTIONAL_METHODS], rotation=25, ha="right")
+            axis.set_ylim(0, 1)
+            axis.set_yticks([0, 1])
+            axis.set_ylabel("Orígenes dinámicos válidos")
+            for position, count, total in zip(positions, counts, totals):
+                axis.text(position, 0.04, f"{count}/{total}", ha="center", va="bottom", fontsize=9)
+            axis.text(
+                0.5,
+                0.72,
+                "Recuperación no ejecutada:\nningún método convergió antes del evento",
+                transform=axis.transAxes,
+                ha="center",
+                va="center",
+                fontsize=13,
+                bbox={"boxstyle": "round,pad=0.5", "facecolor": "white", "edgecolor": "0.35"},
+            )
+            axis.set_title("E7.5 — evidencia de recuperación dinámica")
+        else:
+            figure, axes = plt.subplots(1, 3, figsize=(14, 4.2), constrained_layout=True)
+            for method in FRACTIONAL_METHODS:
+                group = valid_origins[valid_origins.method == method]
+                med = group.groupby("event")[["recovery_rounds", "hamming_recourse", "recovery_bytes"]].median()
+                x = np.arange(len(med))
+                for axis, metric in zip(axes, ["recovery_rounds", "hamming_recourse", "recovery_bytes"]):
+                    axis.plot(x, med[metric], marker="o", color=colors[method], label=method.split("-")[0])
+                    axis.set_xticks(x, med.index, rotation=25, ha="right")
+                    axis.set_yscale("symlog", linthresh=1e-6)
+                    axis.set_ylabel(metric)
+            axes[-1].legend(fontsize=7)
         _save_figure(figure, directory, "F8_v3_dynamic_recovery")
 
         # F9
@@ -896,6 +921,9 @@ def _report(
     rates = primary.groupby("method").operational_converged.mean().sort_values(ascending=False)
     feasibility = primary.groupby("method").integer_feasibility.mean().sort_values(ascending=False)
     joint = regimes[regimes.joint_improvement.astype(bool)] if not regimes.empty else pd.DataFrame()
+    e75 = primary[primary.experiment == "e75"]
+    valid_event_origins = int(e75.valid_event_origin.eq(True).sum())
+    recovery_executions = int(e75.recovery_executed.eq(True).sum())
     topology_complete = primary[(primary.experiment == "e72") & (primary.topology == "complete")].operational_converged.mean()
     topology_rdisk = primary[(primary.experiment == "e72") & (primary.topology != "complete")].operational_converged.mean()
     if not joint.empty:
@@ -940,21 +968,25 @@ def _report(
         "",
         f"Se registraron {len(censoring)} censuras primarias. Distribución: {censoring.censoring_reason.value_counts().to_dict() if len(censoring) else {}}.",
         "",
-        "## 9. Mapa de regímenes",
+        "## 9. E7.5 y recuperación",
+        "",
+        f"E7.5 produjo {valid_event_origins} orígenes dinámicos válidos y {recovery_executions} recuperaciones ejecutadas en {len(e75)} runs primarios. Sin convergencia operacional previa al evento, la campaña no aporta evidencia sobre tiempo, calidad ni coste de recuperación.",
+        "",
+        "## 10. Mapa de regímenes",
         "",
         f"El gate conjunto se satisfizo en {len(joint)} comparaciones de régimen. Conclusión predeclarada: {conclusion}",
         "",
-        "## 10. Claims permitidos",
+        "## 11. Claims permitidos",
         "",
         "Se permiten observaciones empíricas restringidas a mundos sintéticos, presupuestos, topologías y tolerancias registrados; diferencias de coste, calidad y convergencia se presentan como dependientes del régimen.",
         "",
-        "## 11. Claims prohibidos",
+        "## 12. Claims prohibidos",
         "",
         "No se afirma convergencia global, escalabilidad por alcanzar N=500, novedad de Smith/BNN/Logit, optimalidad de recovery, ni que menos rondas implique menor coste. LP/MILP no son distribuidos.",
         "",
-        "## 12. Limitaciones",
+        "## 13. Limitaciones",
         "",
-        "La evidencia es simulada y estática salvo E7.5; no incluye navegación ni transporte. El estimador de escala no es una constante de Lipschitz demostrada. La recuperación es heurística y el payload omite headers/protocolo físico.",
+        "La evidencia es simulada y estratégica; E7.5 configuró eventos, pero no alcanzó orígenes operacionales válidos y no ejecutó recuperación. No incluye navegación ni transporte. El estimador de escala no es una constante de Lipschitz demostrada. La recuperación es heurística y el payload omite headers/protocolo físico.",
         "",
         "## Conclusión A–E",
         "",

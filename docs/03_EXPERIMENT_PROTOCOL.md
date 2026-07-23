@@ -161,6 +161,14 @@ Casos homogéneos pequeños con solución analítica o enumerable, seguidos de i
 
 Coaliciones con requisitos `{1, 2, 3, 4}` y demanda total por debajo, igual y por encima de la capacidad disponible.
 
+#### Campaña de dinámicas V3
+
+`SP1_DYNAMICS_BENCHMARK_v3` mantiene idénticos por mundo los costes, la máscara, el estado inicial, el grafo, los duales, el tracker PI, las tolerancias y los presupuestos; el factor primario es la geometría de revisión entre Replicator-D, Smith-D, BNN-D, Logit-D annealed y BestResponse-D relajada. La calibración usa exclusivamente semillas 70000--70019 y congela parámetros antes del preview y la evaluación.
+
+La evaluación usa hasta 3.000 rondas, 60 s y $5\times10^9$ escalares por run. Toda ejecución que agota un presupuesto se conserva como censurada con causa explícita. Un paquete es un vector dirigido transmitido sobre una arista en un intercambio; el payload contabilizado concatena dual y tracker PI en `float64`, excluyendo cabeceras y protocolo físico. La unidad pareada es `world_id`; grafo, origen y semilla deben coincidir entre métodos.
+
+E7.5 solo aplica un evento y ejecuta recuperación cuando el estado previo satisface el gate operacional completo. Si no existe ese origen, el evento queda excluido con razón registrada; los costes auxiliares no se interpretan como tiempo ni calidad de recuperación. Alcanzar un tamaño grande bajo censura no acredita escalabilidad.
+
 ### SP2
 
 Contribución operacional escalar dependiente del par robot--carga y casos donde la cardinalidad es suficiente pero el índice de servicio ponderado por disponibilidad no cubre el umbral. Comparar por separado cobertura parcial y cargas completas mediante dos referencias centrales. La carga útil nominal se normaliza con una escala explícita; batería y distancia no se interpretan como reducción mecánica. La compatibilidad no puede atribuirse a una campaña que la mantuvo universal; energía de misión, fuerza, torque y geometría de contacto se evalúan por separado desde SP3.

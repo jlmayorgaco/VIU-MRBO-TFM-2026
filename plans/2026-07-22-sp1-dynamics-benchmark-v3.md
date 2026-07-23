@@ -60,11 +60,11 @@ La unidad independiente es `world_id`. Se calculan Wilson/McNemar para proporcio
 - [x] Hito 1 — rama limpia, commit inicial y protocolo congelado.
 - [x] Hito 2 — motor y E7.0 con pruebas específicas aprobadas.
 - [x] Hito 3 — calibración independiente completa y parámetros seleccionados.
-- [ ] Hito 4 — preview completo con todos sus gates aprobados.
-- [ ] Hito 5 — commit de implementación/configuración congelada y worktree limpio.
-- [ ] Hito 6 — E7.1–E7.5 completos, reanudables y con conteos exactos.
-- [ ] Hito 7 — estadística, F1–F9, reporte, auditoría y hashes aprobados.
-- [ ] Hito 8 — trazabilidad actualizada y commit final limpio.
+- [x] Hito 4 — preview completo con todos sus gates aprobados.
+- [x] Hito 5 — commit de implementación/configuración congelada y worktree limpio.
+- [x] Hito 6 — E7.1–E7.5 completos, reanudables y con conteos exactos.
+- [x] Hito 7 — estadística, F1–F9, reporte, auditoría y hashes aprobados.
+- [x] Hito 8 — trazabilidad actualizada y commit final limpio.
 
 ## Validación
 
@@ -91,7 +91,12 @@ El preview solo aprueba si no hay violaciones/NaN, las cuentas se recomputan, to
 - 2026-07-22 — Se separa BestResponse-pure en `result_family=integer_async`; no entra en gaps LP de las dinámicas fraccionarias.
 - 2026-07-22 — Se usa 75 % como punto central del intervalo predeclarado 70–80 % para E7.4.
 - 2026-07-22 — Ningún candidato convergió operacionalmente en 1.000 rondas r-disk; la selección aplicó honestamente el segundo criterio (residual terminal) y no amplió el espacio de tuning después de observar el resultado.
+- 2026-07-23 — El proceso de primer plano se detuvo tras quedar sin progreso en 447/600 tareas; se conservó cada checkpoint con `SUCCESS.json` y la campaña terminó mediante `--resume`, sin repetir ni descartar mundos.
+- 2026-07-23 — E7.5 produjo cero orígenes operacionales válidos en 1.200 runs; no se ejecutó recuperación y el resultado se registra como ausencia de evidencia, no como fallo ni éxito de recuperación.
+- 2026-07-23 — La revisión visual sustituyó F8 por una figura explícita de ausencia de orígenes válidos; datos, métricas y conteos permanecieron inalterados.
 
 ## Progreso
 
-Rama V3 creada desde V2. El motor y 43 pruebas pasan. La calibración ejecutó 900/900 runs en 1.267,5 s con auditoría aprobada. Al no observar convergencia operacional en ningún candidato, se seleccionaron por residual y después escalares/tiempo: `rep_eta_012`, `smith_008`, `bnn_012`, `logit_slow` y `br_010`. El resultado negativo se conserva y los parámetros quedan congelados antes del preview.
+Campaña cerrada. La calibración ejecutó 900/900 runs en 1.267,5 s y el preview ejecutó 150 runs primarios/280 filas totales en 496,2 s; ambos aprobaron sus auditorías. La evaluación completa produjo 4.200 runs primarios pareados en 840 escenarios y 5.960 filas totales. El manifiesto registra 14.437,7 s para la fase reanudada de generación/finalización y 148.848,2 s de tiempo de cómputo acumulado por run; el tiempo de pared completo, incluida la fase interrumpida y su reanudación, fue 30.325,6 s (8 h 25 min 25,6 s).
+
+Convergencias operacionales: Logit 269/840 (32,02 %), BNN 50/840 (5,95 %), Replicator 36/840 (4,29 %), Smith 36/840 (4,29 %) y BestResponse-D 0/840. Se conservaron 3.809 censuras: 2.874 por rondas, 915 por tiempo y 20 por comunicación. Ninguna comparación satisfizo el gate conjunto de convergencia, calidad y recursos. E7.5 tuvo 0/1.200 orígenes válidos y 0 recuperaciones ejecutadas. La auditoría automática e independiente aprobó conteos, pares, invariantes, contabilidad de mensajes y 38/38 hashes; las 44 pruebas de regresión pasaron.

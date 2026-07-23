@@ -67,6 +67,7 @@ Los resultados se escriben en la ruta `output_dir` declarada por cada YAML. Las 
 |---|---|---|
 | `viu-run-sp0-theory` | Auditoría formal y numérica de SP0 | `experiments/configs/sp0_theory.yaml` |
 | `viu-run-sp1` | Cuotas y cierre entero de SP1 | `experiments/configs/sp1_theory.yaml` |
+| `viu-run-sp1-dynamics-v3` | Benchmark pareado de dinámicas SP1 | `experiments/configs/sp1_dynamics_benchmark_v3.yaml` |
 | `viu-run-sp2` | Evidencia de capacidad efectiva | `experiments/configs/sp2_effective_capacity.yaml` |
 | `viu-run-sp3-evidence` | Evidencia de factibilidad de wrench | `experiments/configs/sp3_wrench_evidence.yaml` |
 | `viu-run-sp4-evidence` | Evidencia de docking y transporte | `experiments/configs/sp4_transport_evidence.yaml` |
@@ -78,6 +79,16 @@ Los resultados se escriben en la ruta `output_dir` declarada por cada YAML. Las 
 | `viu-run-cargo-e2e` | Campaña integrada SP2--SP6 | `experiments/configs/cargo_e2e_smoke.yaml` |
 
 Los experimentos confirmatorios pueden ser costosos. Antes de ejecutarlos, compruebe `mode`, semillas, número de escenarios y directorio de salida en el YAML correspondiente.
+
+## Campaña SP1 Dynamics V3
+
+La campaña congelada compara Replicator-D, Smith-D, BNN-D, Logit-D annealed y BestResponse-D con mundos pareados, censura explícita y contabilidad de comunicación. Los parámetros seleccionados están en `experiments/configs/sp1_dynamics_benchmark_v3_selected.yaml`; el paquete completo se genera en `results/sp1_validation/SP1_DYNAMICS_BENCHMARK_v3/`.
+
+```powershell
+viu-run-sp1-dynamics-v3 --config experiments/configs/sp1_dynamics_benchmark_v3.yaml --stage full --selected-parameters experiments/configs/sp1_dynamics_benchmark_v3_selected.yaml --output-dir results/sp1_validation/SP1_DYNAMICS_BENCHMARK_v3 --resume
+```
+
+El resultado V3 es negativo y dependiente del régimen: ninguna dinámica satisfizo universalmente el gate conjunto de convergencia, calidad y recursos. E7.5 no produjo orígenes válidos antes del evento, por lo que no respalda afirmaciones de recuperación dinámica.
 
 ## Memoria
 

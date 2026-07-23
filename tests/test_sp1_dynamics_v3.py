@@ -18,6 +18,7 @@ from viu_mrob_tfm.sp1_canonical.validation.benchmark_v3_core import (
 )
 from viu_mrob_tfm.sp1_canonical.validation.dynamics import make_graph, run_population_dynamics
 from viu_mrob_tfm.sp1_canonical.validation.dynamics_benchmark_v3 import (
+    _report,
     _write_hashes,
     audit_checks,
     calibration_tasks,
@@ -320,6 +321,37 @@ def test_checksum_file_roundtrips(tmp_path: Path) -> None:
     digest, relative = (tmp_path / "checksums.sha256").read_text(encoding="utf-8").strip().split("  ")
     assert relative == "artifact.txt"
     assert digest == records[0]["sha256"]
+
+
+def test_report_does_not_claim_recovery_without_valid_event_origin() -> None:
+    runs = pd.DataFrame(
+        [
+            {
+                "is_primary": True,
+                "experiment": "e75",
+                "scenario_id": f"event-{index}",
+                "method": method,
+                "operational_converged": False,
+                "integer_feasibility": 0.0,
+                "valid_event_origin": False,
+                "recovery_executed": False,
+                "topology": "rdisk",
+            }
+            for index, method in enumerate(FRACTIONAL_METHODS)
+        ]
+    )
+    report = _report(
+        config(),
+        runs,
+        pd.DataFrame(),
+        pd.DataFrame([{"censoring_reason": "max_rounds"}]),
+        pd.DataFrame(),
+        None,
+        1.0,
+    )
+    assert "0 orígenes dinámicos válidos" in report
+    assert "0 recuperaciones ejecutadas" in report
+    assert "no aporta evidencia" in report
 
 
 def test_audit_exposes_clean_start_and_end_fields() -> None:

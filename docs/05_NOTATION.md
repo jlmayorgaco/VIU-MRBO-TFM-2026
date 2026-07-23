@@ -108,6 +108,15 @@ Mantener una notación única en código, ecuaciones, figuras y memoria. Esta ta
 | `R^\dagger` | Radio que minimiza comunicación total sujeto a un nivel de calidad fijado; solo se estima cuando exista campaña de red | m | `communication_optimal_radius` |
 | `p_j` | Precio dual de la tarea u objeto `j` en auction | utilidad adimensional | `prices[j]` |
 | `rho_ik` | Preferencia continua del robot `i` por la carga `k` antes del cierre entero | adimensional, `[0,1]` | `preference[i,k]` |
+| `\ell` | Ronda lógica de SP1-V3: una actualización simultánea primal--dual; Replicator usa dos intercambios mirror-prox y las demás dinámicas uno | entero no negativo | `logical_round` |
+| `r_{m}^{\mathrm{prim}}(\ell)` | Residual primal de la dinámica `m`; su definición se registra por método y sus magnitudes no se comparan como si fueran una única norma | adimensional, no negativo | `primal_residual`, `residual_semantics` |
+| `r^{\mathrm{cons}}(\ell)` | Máximo desacuerdo de las copias duales/tracker respecto al promedio en SP1-V3 | adimensional, no negativo | `consensus_residual` |
+| `r_m^{\mathrm{fp}}(\ell)` | Residual de punto fijo específico de la revisión `m` usado junto con los gates primal y de consenso | adimensional, no negativo | `fixed_point_residual` |
+| `T_m(\ell)` | Temperatura de Logit-D en la ronda `\ell`, `\max(T_{\min},T_0\gamma^\ell)` | utilidad normalizada, positiva | `temperature` |
+| `P_\ell,S_\ell,B_\ell` | Paquetes dirigidos, escalares y bytes de payload acumulados hasta la ronda `\ell`; se excluyen cabeceras y protocolo físico | conteos; bytes para `B_\ell` | `directed_packets`, `scalar_transmissions`, `payload_bytes_total` |
+| `\lambda_2(L)` | Segundo autovalor del Laplaciano de la topología estática de comunicación | adimensional, no negativo | `lambda_2` |
+| `I_w^{\mathrm{evt}}` | Indicador de que el mundo dinámico `w` alcanzó convergencia operacional antes de aplicar el evento | binaria | `valid_event_origin` |
+| `\ell_i^{\mathrm{react}}` | Primera ronda en que una estrategia de masa nula o casi nula vuelve a superar el umbral de soporte para el robot `i` | rondas; indefinido si no ocurre | `reactivation_round` |
 | `\widehat x_{ik}^{\mathrm{rep}}` | Estimación local mantenida por el robot `i` de la masa media de preferencia hacia la carga `k` en la dinámica replicadora | adimensional, `[0,1]` salvo transitorios numéricos del consenso dinámico | `replicator_occupancy_estimate[i,k]` |
 | `e_{\mathrm{cons}}^{\mathrm{comp}}` | Máximo desacuerdo en norma infinito entre estimaciones y promedio de preferencias dentro de cada componente conexa | adimensional, no negativo | `consensus_error_final` |
 | `\mathcal M_{\mathrm{rep}}` | Número de valores escalares transmitidos por el consenso replicador, `2|E|K I` por evento con `I` iteraciones | conteo | `scalar_messages` |
