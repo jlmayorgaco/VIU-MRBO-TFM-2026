@@ -104,12 +104,14 @@ calibration:
     - payload_bytes_asc
     - stability_desc
   candidates:
-    - {candidate_id: p01, rho: 1000.0, alpha: 0.001, tau: 0.001, bid_minimum: 0.0}
-    - {candidate_id: p02, rho: 10000.0, alpha: 0.0002, tau: 0.001, bid_minimum: 0.0}
-    - {candidate_id: p03, rho: 10000.0, alpha: 0.0005, tau: 0.0001, bid_minimum: 0.0}
-    - {candidate_id: p04, rho: 100000.0, alpha: 0.00002, tau: 0.0001, bid_minimum: 0.0}
-    - {candidate_id: p05, rho: 100000.0, alpha: 0.00005, tau: 0.00001, bid_minimum: 0.0}
-    - {candidate_id: p06, rho: 1000000.0, alpha: 0.000005, tau: 0.00001, bid_minimum: 0.0}
+    # Pre-evaluation stability pilot: alpha*rho above 1 oscillated at N=100
+    # under sparse consensus. This frozen grid brackets 0.05--0.50.
+    - {candidate_id: p01, rho: 500000.0, alpha: 0.0000001, tau: 0.0001, bid_minimum: 0.0}
+    - {candidate_id: p02, rho: 1000000.0, alpha: 0.00000005, tau: 0.00001, bid_minimum: 0.0}
+    - {candidate_id: p03, rho: 1000000.0, alpha: 0.0000001, tau: 0.00001, bid_minimum: 0.0}
+    - {candidate_id: p04, rho: 1000000.0, alpha: 0.0000002, tau: 0.00001, bid_minimum: 0.0}
+    - {candidate_id: p05, rho: 1000000.0, alpha: 0.0000005, tau: 0.00001, bid_minimum: 0.0}
+    - {candidate_id: p06, rho: 2000000.0, alpha: 0.00000005, tau: 0.00001, bid_minimum: 0.0}
 
 preview:
   n_values: [20, 50, 100]

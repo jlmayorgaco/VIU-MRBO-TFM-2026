@@ -66,6 +66,11 @@ observar las semillas de evaluación.
 
 - Usar exclusivamente semillas 80000--80019 y las escalas (20,4), (50,10),
   (100,20).
+- Un piloto pre-evaluación adicional con semilla 99999 reveló oscilación para
+  `alpha*rho >= 1` en el grafo disperso de N=100. Antes de observar cualquier
+  semilla de evaluación se sustituyó la malla inicial por seis perfiles que
+  acotan `alpha*rho` entre 0.05 y 0.50. Los checkpoints de la malla descartada
+  se eliminaron por completo para impedir mezclar protocolos.
 - Evaluar perfiles compartidos de `rho`; ordenar lexicográficamente por
   factibilidad raw, distancia, tiempo, bytes y estabilidad.
 - Congelar `selected_parameters.yaml` antes de ejecutar preview/evaluación.
