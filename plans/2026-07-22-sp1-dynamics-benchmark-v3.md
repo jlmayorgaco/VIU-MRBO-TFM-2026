@@ -57,9 +57,9 @@ La unidad independiente es `world_id`. Se calculan Wilson/McNemar para proporcio
 
 ## Hitos
 
-- [ ] Hito 1 — rama limpia, commit inicial y protocolo congelado.
-- [ ] Hito 2 — motor y E7.0 con pruebas específicas aprobadas.
-- [ ] Hito 3 — calibración independiente completa y parámetros seleccionados.
+- [x] Hito 1 — rama limpia, commit inicial y protocolo congelado.
+- [x] Hito 2 — motor y E7.0 con pruebas específicas aprobadas.
+- [x] Hito 3 — calibración independiente completa y parámetros seleccionados.
 - [ ] Hito 4 — preview completo con todos sus gates aprobados.
 - [ ] Hito 5 — commit de implementación/configuración congelada y worktree limpio.
 - [ ] Hito 6 — E7.1–E7.5 completos, reanudables y con conteos exactos.
@@ -90,7 +90,8 @@ El preview solo aprueba si no hay violaciones/NaN, las cuentas se recomputan, to
 - 2026-07-22 — Se fija un único presupuesto de evaluación por run; no habrá tuning por N ni mundo.
 - 2026-07-22 — Se separa BestResponse-pure en `result_family=integer_async`; no entra en gaps LP de las dinámicas fraccionarias.
 - 2026-07-22 — Se usa 75 % como punto central del intervalo predeclarado 70–80 % para E7.4.
+- 2026-07-22 — Ningún candidato convergió operacionalmente en 1.000 rondas r-disk; la selección aplicó honestamente el segundo criterio (residual terminal) y no amplió el espacio de tuning después de observar el resultado.
 
 ## Progreso
 
-Rama V3 creada desde V2. El protocolo, semillas, candidatos y presupuestos se están congelando antes de implementar el motor.
+Rama V3 creada desde V2. El motor y 43 pruebas pasan. La calibración ejecutó 900/900 runs en 1.267,5 s con auditoría aprobada. Al no observar convergencia operacional en ningún candidato, se seleccionaron por residual y después escalares/tiempo: `rep_eta_012`, `smith_008`, `bnn_012`, `logit_slow` y `br_010`. El resultado negativo se conserva y los parámetros quedan congelados antes del preview.
