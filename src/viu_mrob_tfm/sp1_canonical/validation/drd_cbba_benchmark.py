@@ -2024,6 +2024,7 @@ def audit_results(
         "git_clean_end": bool(git_clean_end),
         "all_hashes_valid": all((output / name).exists() for name in required_artifacts if name not in {"manifest.json", "audit.json"}),
     }
+    checks = {key: bool(value) for key, value in checks.items()}
     return {
         "stage": stage,
         "expected_worlds": expected_worlds,

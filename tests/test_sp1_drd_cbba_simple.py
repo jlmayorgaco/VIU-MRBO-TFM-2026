@@ -13,6 +13,7 @@ import yaml
 from scipy.sparse import csr_matrix
 
 from viu_mrob_tfm.sp1_canonical.validation.drd_cbba_benchmark import (
+    audit_results,
     calibration_tasks,
     deterministic_case_catalog,
     deterministic_world,
@@ -403,3 +404,50 @@ def test_json_checkpoint_payload_is_finite_or_explicit_nan(tmp_path: Path) -> No
     loaded = json.loads(path.read_text(encoding="utf-8"))
     assert np.isnan(loaded["value"])
     assert loaded["reason"] == "not_applicable"
+
+
+def test_audit_is_json_serializable_with_numpy_backed_flags(tmp_path: Path) -> None:
+    cfg = config()
+    rows = []
+    for method, variant in (
+        ("DRD-simple", "raw"),
+        ("DRD-simple", "recovered"),
+        ("CBBA-1-Capacity", "raw"),
+        ("CBBA-1-Capacity", "recovered"),
+    ):
+        rows.append(
+            {
+                "is_primary": True,
+                "scenario_id": "x",
+                "method_variant": f"{method}/{variant}",
+                "world_hash": "w",
+                "graph_hash": "g",
+                "positions_hash": "p",
+                "capacities_hash": "c",
+                "loads_hash": "l",
+                "simplex_violation": 0.0,
+                "duplicate_assignment_count": 0,
+                "finite_state": True,
+                "censored": False,
+                "censoring_reason": "",
+                "seed": 81000,
+            }
+        )
+    pd.DataFrame(rows).to_csv(tmp_path / "all_runs.csv", index=False)
+    pd.DataFrame([{"planted_witness_feasible": True}]).to_csv(
+        tmp_path / "worlds.csv", index=False
+    )
+    pd.DataFrame([{"valid": True}]).to_csv(
+        tmp_path / "message_accounting_validation.csv", index=False
+    )
+    for name in ("config_snapshot.yaml", "all_messages.csv", "all_traces.csv"):
+        (tmp_path / name).write_text("", encoding="utf-8")
+    audit = audit_results(
+        tmp_path,
+        cfg,
+        stage="preview",
+        preflight_tests_passed=True,
+        git_clean_start=True,
+        git_clean_end=True,
+    )
+    json.dumps(audit)
