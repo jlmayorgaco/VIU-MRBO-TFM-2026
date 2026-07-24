@@ -1444,7 +1444,7 @@ def execute_closure(
         output_dir,
     )
     dynamic = run_dynamic_locality(
-        closure_config,
+        source_config,
         closure_config,
         output_dir,
         workers=worker_count,
