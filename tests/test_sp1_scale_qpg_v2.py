@@ -322,25 +322,32 @@ def test_local_residual_universe_and_recovery_respect_scope():
 def test_scale_strict_moves_are_monotone_and_terminate():
     world = _world()
     graph = make_quota_graph(world, "complete", _config())
-    result = run_scale_qpg(
-        world,
-        graph,
+    for method in (
         "SCALE-QPG-LogitBR-LocalAR",
-        _config(),
-        _parameters(),
-        stage="preview",
-        seed=123,
-    )
-    assert result.strict_potential_monotone
-    assert all(delta > _parameters()["epsilon_improvement"] for delta in result.potential_increments)
-    assert result.cycles_detected == 0
-    assert result.maximum_active_set_size <= _parameters()["L"]
-    assert result.recovery.locality_respected
-    assert result.first_atomic_assignment_time_s == 0.0
-    assert result.final_termination_time_s >= 0.0
-    assert result.payload_bytes_total == sum(
-        row["payload_bytes"] for row in result.message_rows
-    )
+        "SCALE-QPG-ReplicatorBR-LocalAR",
+    ):
+        result = run_scale_qpg(
+            world,
+            graph,
+            method,
+            _config(),
+            _parameters(),
+            stage="preview",
+            seed=123,
+        )
+        assert result.strict_potential_monotone
+        assert all(
+            delta > _parameters()["epsilon_improvement"]
+            for delta in result.potential_increments
+        )
+        assert result.cycles_detected == 0
+        assert result.maximum_active_set_size <= _parameters()["L"]
+        assert result.recovery.locality_respected
+        assert result.first_atomic_assignment_time_s == 0.0
+        assert result.final_termination_time_s >= 0.0
+        assert result.payload_bytes_total == sum(
+            row["payload_bytes"] for row in result.message_rows
+        )
 
 
 def test_all_world_cost_penalizes_infeasibility_above_any_feasible_distance():
@@ -366,7 +373,22 @@ def test_preview_and_full_task_counts_are_exact():
     config = _resolved_benchmark_config()
     preview = build_preview_tasks(config)
     full = build_full_tasks(config)
-    assert len(preview) == 30
+    assert len(preview) == 55
+    assert sum(task["kind"] == "scalar" for task in preview) == 30
+    assert sum(task["kind"] == "dynamic" for task in preview) == 25
+    assert set(config["methods"]["scalar"]) == {
+        "SCALE-QPG-LogitBR-LocalAR",
+        "SCALE-QPG-ReplicatorBR-LocalAR",
+        "Capacity-CBBA",
+        "Weighted-GRAPE",
+        "Weighted-Pair-GRAPE",
+        "Atomic-Quota-Logit",
+        "QPG-Logit-AR",
+        "QPG-Replicator-AR",
+        "RandomSeed-AR",
+        "NearestCompatibleSeed-AR",
+        "LPSeed-AR",
+    }
     observed = {
         experiment: sum(task["experiment"] == experiment for task in full)
         for experiment in [f"C{index}" for index in range(1, 10)]
@@ -392,7 +414,7 @@ def test_preview_and_full_task_counts_are_exact():
 
 def test_checkpoint_resume_reuses_completed_shard(tmp_path):
     config = copy.deepcopy(_resolved_benchmark_config())
-    config["methods"]["scalar"] = ["SCALE-QPG-BR-LocalAR"]
+    config["methods"]["scalar"] = ["SCALE-QPG-LogitBR-LocalAR"]
     config["oracles"]["milp_max_n"] = 0
     task = build_preview_tasks(config)[0]
     parameters = {

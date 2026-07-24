@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import copy
 import itertools
 import json
 import math
@@ -57,7 +56,6 @@ from .quota_game_core import (
 )
 from .scale_qpg import (
     SCALE_METHODS,
-    ScaleRunResult,
     all_world_cost,
     nearest_compatible_seed,
     random_seed_assignment,
@@ -102,25 +100,49 @@ def _scalar_task(
 
 def build_preview_tasks(config: Mapping[str, Any]) -> list[dict[str, Any]]:
     spec = config["preview"]
-    tasks = []
+    revision = str(spec["protocol_revision"])
+    tasks: list[dict[str, Any]] = []
     for n, regime, seed in itertools.product(
         spec["n_values"],
         spec["capacity_regimes"],
         spec["seeds"],
     ):
-        tasks.append(
-            _scalar_task(
-                "PREVIEW",
-                int(n),
-                int(math.ceil(int(n) / 5)),
-                int(seed),
-                {
-                    **spec,
-                    "capacity_regime": regime,
-                },
-                suffix=str(regime),
-            )
+        task = _scalar_task(
+            "PREVIEW",
+            int(n),
+            int(math.ceil(int(n) / 5)),
+            int(seed),
+            {
+                **spec,
+                "capacity_regime": regime,
+            },
+            suffix=str(regime),
         )
+        task["protocol_revision"] = revision
+        tasks.append(task)
+    dynamic = spec["dynamic"]
+    event_map = {"robot_failure": "committed_robot_failure"}
+    for event, seed in itertools.product(
+        dynamic["events"],
+        dynamic["seeds"],
+    ):
+        task = _scalar_task(
+            "PREVIEW-DYNAMIC",
+            int(dynamic["n"]),
+            int(dynamic["k"]),
+            int(seed),
+            dynamic,
+            suffix=str(event),
+        )
+        task.update(
+            {
+                "kind": "dynamic",
+                "event": event_map.get(str(event), str(event)),
+                "reported_event": str(event),
+                "protocol_revision": revision,
+            }
+        )
+        tasks.append(task)
     return tasks
 
 
@@ -705,6 +727,20 @@ def _scale_method(
             "strict_potential_monotone": result.strict_potential_monotone,
             "cycles_detected": result.cycles_detected,
             "accepted_version_violations": 0,
+            "potential_decreasing_accepted_moves": int(
+                sum(
+                    delta <= float(parameters["epsilon_improvement"])
+                    for delta in result.potential_increments
+                )
+            ),
+            "minimum_accepted_delta_phi": (
+                min(result.potential_increments)
+                if result.potential_increments
+                else math.nan
+            ),
+            "strict_br_finite_termination": bool(
+                result.converged and result.censoring_reason == "none"
+            ),
             "version_conflicts_rejected": result.version_conflicts,
             "locality_respected": result.recovery.locality_respected,
             "local_universe_robot_fraction": (
@@ -1952,13 +1988,193 @@ def _win_gates(
     }
 
 
+def _finite_ratio(numerator: float, denominator: float) -> float:
+    if not np.isfinite(numerator) or not np.isfinite(denominator):
+        return math.inf
+    if abs(float(denominator)) <= 1.0e-12:
+        return 0.0 if abs(float(numerator)) <= 1.0e-12 else math.inf
+    return float(numerator) / float(denominator)
+
+
+def _preview_performance_gates(
+    runs: pd.DataFrame,
+    dynamic: pd.DataFrame,
+    config: Mapping[str, Any],
+) -> dict[str, Any]:
+    thresholds = config["win_gates"]
+    baselines = list(thresholds["distributed_baselines"])
+    static = runs.loc[
+        runs["experiment"].eq("PREVIEW")
+        & runs["method"].isin([*SCALE_METHODS, *baselines])
+    ]
+    per_method: dict[str, Any] = {}
+    passed_by_gate = {
+        "recovered_feasibility": True,
+        "common_feasible_distance": True,
+        "payload_bytes": True,
+        "dynamic_recourse": True,
+        "unaffected_coalition_integrity": True,
+        "global_fallback_rate": True,
+    }
+
+    for method in SCALE_METHODS:
+        method_static = static[static["method"].eq(method)]
+        method_dynamic = dynamic[dynamic["method"].eq(method)]
+        static_feasibility = (
+            float(method_static["feasible"].mean())
+            if not method_static.empty
+            else 0.0
+        )
+        dynamic_feasibility = (
+            float(method_dynamic["post_event_feasible"].mean())
+            if not method_dynamic.empty
+            else 0.0
+        )
+
+        static_pivot = static.pivot_table(
+            index="world_id",
+            columns="method",
+            values="feasible",
+            aggfunc="first",
+        ).reindex(columns=[method, *baselines])
+        static_common_ids = static_pivot.dropna().index[
+            static_pivot.dropna().astype(bool).all(axis=1)
+        ]
+        static_common = static[static["world_id"].isin(static_common_ids)]
+        scale_distance = float(
+            static_common.loc[
+                static_common["method"].eq(method),
+                "distance_total_m",
+            ].median()
+        )
+        best_distance = min(
+            float(
+                static_common.loc[
+                    static_common["method"].eq(baseline),
+                    "distance_total_m",
+                ].median()
+            )
+            for baseline in baselines
+        )
+        scale_bytes = float(method_static["payload_bytes_total"].median())
+        best_bytes = min(
+            float(
+                static.loc[
+                    static["method"].eq(baseline),
+                    "payload_bytes_total",
+                ].median()
+            )
+            for baseline in baselines
+        )
+
+        dynamic_subset = dynamic[
+            dynamic["method"].isin([method, *baselines])
+        ]
+        dynamic_pivot = dynamic_subset.pivot_table(
+            index="world_id",
+            columns="method",
+            values="post_event_feasible",
+            aggfunc="first",
+        ).reindex(columns=[method, *baselines])
+        dynamic_common_ids = dynamic_pivot.dropna().index[
+            dynamic_pivot.dropna().astype(bool).all(axis=1)
+        ]
+        dynamic_common = dynamic_subset[
+            dynamic_subset["world_id"].isin(dynamic_common_ids)
+        ]
+        scale_recourse = float(
+            dynamic_common.loc[
+                dynamic_common["method"].eq(method),
+                "recourse",
+            ].median()
+        )
+        best_recourse = min(
+            float(
+                dynamic_common.loc[
+                    dynamic_common["method"].eq(baseline),
+                    "recourse",
+                ].median()
+            )
+            for baseline in baselines
+        )
+        integrity = (
+            float(method_dynamic["unaffected_coalition_integrity"].median())
+            if not method_dynamic.empty
+            else 0.0
+        )
+        fallback_rate = (
+            float(method_dynamic["fallback_global_used"].fillna(False).mean())
+            if not method_dynamic.empty
+            else 1.0
+        )
+        observed = {
+            "static_recovered_feasibility": static_feasibility,
+            "dynamic_recovered_feasibility": dynamic_feasibility,
+            "distance_ratio_to_best_baseline": _finite_ratio(
+                scale_distance,
+                best_distance,
+            ),
+            "bytes_ratio_to_best_baseline": _finite_ratio(
+                scale_bytes,
+                best_bytes,
+            ),
+            "recourse_ratio_to_best_dynamic_baseline": _finite_ratio(
+                scale_recourse,
+                best_recourse,
+            ),
+            "unaffected_coalition_integrity": integrity,
+            "global_fallback_rate": fallback_rate,
+            "common_feasible_static_worlds": int(len(static_common_ids)),
+            "common_feasible_dynamic_worlds": int(len(dynamic_common_ids)),
+        }
+        passed = {
+            "recovered_feasibility": min(
+                static_feasibility,
+                dynamic_feasibility,
+            )
+            >= float(thresholds["recovered_feasibility_min"]),
+            "common_feasible_distance": observed[
+                "distance_ratio_to_best_baseline"
+            ]
+            <= float(thresholds["distance_ratio_to_best_baseline_max"]),
+            "payload_bytes": observed["bytes_ratio_to_best_baseline"]
+            <= float(thresholds["bytes_ratio_to_best_baseline_max"]),
+            "dynamic_recourse": observed[
+                "recourse_ratio_to_best_dynamic_baseline"
+            ]
+            <= float(
+                thresholds["recourse_ratio_to_best_dynamic_baseline_max"]
+            ),
+            "unaffected_coalition_integrity": integrity
+            >= float(thresholds["unaffected_coalition_integrity_min"]),
+            "global_fallback_rate": fallback_rate
+            <= float(thresholds["global_fallback_rate_max"]),
+        }
+        for gate, value in passed.items():
+            passed_by_gate[gate] = bool(passed_by_gate[gate] and value)
+        per_method[method] = {
+            "observed": observed,
+            "passed": passed,
+            "all_passed": all(passed.values()),
+        }
+    return {
+        "baselines": baselines,
+        "per_method": per_method,
+        "passed": passed_by_gate,
+        "all_passed": all(passed_by_gate.values()),
+    }
+
+
 def _preview_gates(
     runs: pd.DataFrame,
+    dynamic: pd.DataFrame,
     worlds: pd.DataFrame,
     messages: pd.DataFrame,
     message_validation: pd.DataFrame,
     runtime: Mapping[str, Any],
     config: Mapping[str, Any],
+    parameters: Mapping[str, Any],
+    performance: Mapping[str, Any],
     output_dir: Path,
 ) -> dict[str, bool]:
     scale = runs[runs["method"].isin(SCALE_METHODS)]
@@ -1966,11 +2182,7 @@ def _preview_gates(
         (runs["domain"] == "scalar_quotas")
         & ~runs["method"].isin(["LP-oracle", "MILP-oracle"])
     ]
-    local = scale[
-        scale["method"].isin(
-            ["SCALE-QPG-BR-LocalAR", "SCALE-QPG-LogitBR-LocalAR"]
-        )
-    ]
+    local = scale
     finite_columns = [
         "distance_total_m",
         "all_world_cost",
@@ -1978,30 +2190,67 @@ def _preview_gates(
         "payload_bytes_total",
     ]
     expected_worlds = int(config["preview"]["expected_worlds"])
-    expected_operational = expected_worlds * len(config["methods"]["scalar"])
+    expected_dynamic = int(
+        config["preview"]["dynamic"]["expected_worlds"]
+    )
+    expected_tasks = expected_worlds + expected_dynamic
+    expected_operational = expected_tasks * len(config["methods"]["scalar"])
+    publication_fields = [
+        "load_id",
+        "committed_capacity",
+        "lower_quota",
+        "upper_quota",
+        "marginal_price",
+        "version",
+    ]
+    message_kinds = set(messages.get("message_kind", pd.Series(dtype=str)))
+    forbidden_periodic = {
+        "periodic_broadcast",
+        "periodic_market_update",
+        "global_broadcast",
+    }
     return {
-        "zero_double_assignment": bool(
+        "zero_double_assignments": bool(
             (operational["duplicate_assignment_count"].fillna(0) == 0).all()
         ),
-        "zero_accepted_version_violations": bool(
+        "zero_stale_version_commits": bool(
             (scale["accepted_version_violations"].fillna(0) == 0).all()
         ),
-        "strict_potential_non_decreasing": bool(
+        "zero_potential_decreasing_accepted_moves": bool(
+            (
+                scale["potential_decreasing_accepted_moves"].fillna(0)
+                == 0
+            ).all()
+        ),
+        "strict_br_monotonic_potential": bool(
             scale["strict_potential_monotone"].fillna(False).all()
         ),
-        "zero_cycles": bool((scale["cycles_detected"].fillna(0) == 0).all()),
-        "message_accounting_reproducible": bool(
+        "zero_strict_br_cycles": bool(
+            (scale["cycles_detected"].fillna(0) == 0).all()
+        ),
+        "strict_br_finite_termination": bool(
+            scale["strict_br_finite_termination"].fillna(False).all()
+        ),
+        "event_triggered_message_accounting": bool(
             message_validation["valid"].all()
+            and message_kinds.isdisjoint(forbidden_periodic)
+        ),
+        "load_publication_schema_exact": bool(
+            list(config["scale"]["load_publication_fields"])
+            == publication_fields
+            and config["scale"]["payload_schema"]["market_update"]
+            == {"float64": 4, "int64": 2}
+        ),
+        "active_set_size_bound": bool(
+            int(parameters["L"]) in {4, 8}
+            and (
+                scale["maximum_active_set_size"].fillna(0)
+                <= int(parameters["L"])
+            ).all()
         ),
         "local_recovery_scope_enforced": bool(
             local["locality_respected"].fillna(False).all()
-            and (
-                (
-                    local["local_universe_robot_fraction"].fillna(0.0)
-                    < 1.0
-                ).any()
-                or (local["recovery_robots_reassigned"].fillna(0) == 0).all()
-            )
+            and not local["fallback_global_used"].fillna(False).any()
         ),
         "same_instance_for_all_methods": bool(
             operational.groupby("world_id")["world_hash"].nunique().eq(1).all()
@@ -2012,13 +2261,30 @@ def _preview_gates(
         "no_nan_inf_core_metrics": bool(
             np.isfinite(operational[finite_columns].to_numpy(float)).all()
         ),
-        "exact_world_count": worlds["world_id"].nunique() == expected_worlds,
+        "exact_static_world_count": int(
+            worlds.loc[
+                worlds["experiment"].eq("PREVIEW"),
+                "world_id",
+            ].nunique()
+        )
+        == expected_worlds,
+        "exact_dynamic_world_count": int(
+            worlds.loc[
+                worlds["experiment"].eq("PREVIEW-DYNAMIC"),
+                "world_id",
+            ].nunique()
+        )
+        == expected_dynamic,
         "exact_operational_run_count": len(operational) == expected_operational,
         "checkpoint_resume_available": bool(
             (output_dir / "checkpoints" / "tasks").is_dir()
-            and int(runtime["tasks_completed"]) == expected_worlds
+            and int(runtime["tasks_completed"]) == expected_tasks
         ),
         "task_failures_zero": not bool(runtime["task_failures"]),
+        **{
+            f"performance_{gate}": bool(value)
+            for gate, value in performance["passed"].items()
+        },
     }
 
 
@@ -2233,6 +2499,11 @@ def _select_conclusion(
 ) -> tuple[str, str]:
     if win and win["all_passed"]:
         return "A", "SCALE-QPG supera los gates en el régimen objetivo."
+    if win and "per_method" in win:
+        return (
+            "F",
+            "SCALE-QPG no supera todos los gates del preview; V2 full queda bloqueada.",
+        )
     passed = win["passed"] if win else {}
     quality = all(
         passed.get(key, False)
@@ -2288,7 +2559,12 @@ def _build_report(
 ) -> None:
     scale = aggregates[
         aggregates["method"].isin(
-            ["SCALE-QPG-LogitBR-LocalAR", "Capacity-CBBA", "Weighted-Pair-GRAPE"]
+            [
+                *SCALE_METHODS,
+                "Capacity-CBBA",
+                "Weighted-GRAPE",
+                "Weighted-Pair-GRAPE",
+            ]
         )
     ]
     claims_allowed = [
@@ -2311,7 +2587,8 @@ def _build_report(
         (
             "El preview bloqueante "
             f"{'aprobó' if audit['passed'] else 'no aprobó'} los gates de "
-            "integridad. La campaña full no se interpreta desde este paquete."
+            "integridad y rendimiento. La campaña full no se ejecuta desde "
+            "este paquete."
             if is_preview
             else (
                 "La campaña full se ejecutó solo después de aprobar el preview. "
@@ -2390,6 +2667,7 @@ def _write_outputs(
     output_dir: Path,
     frames: Mapping[str, pd.DataFrame],
     config: Mapping[str, Any],
+    parameters: Mapping[str, Any],
     runtime: Mapping[str, Any],
     is_preview: bool,
 ) -> tuple[
@@ -2520,15 +2798,22 @@ def _write_outputs(
         "aggregates": aggregates,
         "survival": survival,
     }
-    win = None if is_preview else _win_gates(runs, dynamic, comparisons, config)
+    win = (
+        _preview_performance_gates(runs, dynamic, config)
+        if is_preview
+        else _win_gates(runs, dynamic, comparisons, config)
+    )
     if is_preview:
         gates = _preview_gates(
             runs,
+            dynamic,
             worlds,
             messages,
             message_validation,
             runtime,
             config,
+            parameters,
+            win,
             output_dir,
         )
     else:
@@ -2593,8 +2878,8 @@ def _write_outputs(
                 runs.loc[
                     runs["method"].isin(
                         [
-                            "SCALE-QPG-BR-LocalAR",
                             "SCALE-QPG-LogitBR-LocalAR",
+                            "SCALE-QPG-ReplicatorBR-LocalAR",
                         ]
                     ),
                     "locality_respected",
@@ -2625,6 +2910,8 @@ def _write_outputs(
         ],
     }
     write_json(output_dir / "audit.json", audit)
+    if is_preview:
+        write_json(output_dir / "scale_qpg_preview_audit.json", audit)
     conclusion = _select_conclusion(win, runs, dynamic)
     figures = generate_figures(
         output_dir,
@@ -2713,6 +3000,7 @@ def execute_campaign(
         output_dir=output_dir,
         frames=frames,
         config=config,
+        parameters=parameters,
         runtime=runtime,
         is_preview=is_preview,
     )
@@ -2728,6 +3016,11 @@ def execute_campaign(
         runtime=runtime,
         conclusion=conclusion,
     )
+    if is_preview:
+        (output_dir / "scale_qpg_preview_report.md").write_text(
+            (output_dir / "report.md").read_text(encoding="utf-8"),
+            encoding="utf-8",
+        )
     reproduce = f"""# Reproducción de {PREVIEW if is_preview else CAMPAIGN}
 
 ```powershell

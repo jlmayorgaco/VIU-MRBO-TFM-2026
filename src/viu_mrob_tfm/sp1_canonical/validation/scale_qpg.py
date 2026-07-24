@@ -4,7 +4,9 @@ The simulator is centralized only as an experimental harness.  Persistent
 robot state is deliberately sparse: a robot stores its current commitment and
 dictionaries indexed by its active set, never a length-K market vector.
 Physical assignments remain integer-valued throughout.  Logit probabilities
-select proposals; only an exact positive potential change can be committed.
+or sparse replicator intentions select proposals; only an exact positive
+potential change can be committed.  Both variants finish with asynchronous
+strict better response.
 """
 
 from __future__ import annotations
@@ -23,7 +25,6 @@ from .quota_game_core import (
     QuotaGraph,
     QuotaWorld,
     RecoveryResult,
-    assignment_distance,
     capacities_by_load,
     evaluate_assignment,
     recover_assignment,
@@ -33,9 +34,8 @@ from .quota_game_core import (
 
 
 SCALE_METHODS = (
-    "SCALE-QPG-BR-LocalAR",
     "SCALE-QPG-LogitBR-LocalAR",
-    "SCALE-QPG-LogitBR-GlobalAR",
+    "SCALE-QPG-ReplicatorBR-LocalAR",
 )
 
 
@@ -1054,10 +1054,8 @@ def run_scale_qpg(
     temperature_initial = float(parameters["T0"])
     temperature_minimum = float(parameters["T_min"])
     anneal = float(parameters["anneal"])
-    explore_activations = (
-        0 if method == "SCALE-QPG-BR-LocalAR" else int(parameters["R_explore"])
-    )
-    global_recovery = method == "SCALE-QPG-LogitBR-GlobalAR"
+    explore_activations = int(parameters["R_explore"])
+    global_recovery = False
     rng = np.random.default_rng(int(seed))
     assignment = (
         np.full(world.n_robots, world.idle_index, dtype=int)
@@ -1161,7 +1159,7 @@ def run_scale_qpg(
             )
 
     def attempt(robot_id: int, target: int, phase: str) -> bool:
-        nonlocal proposals, rejected, accepted, first_feasible
+        nonlocal proposals, rejected, accepted, first_feasible, strict_monotone
         proposal = _proposal(
             world=world,
             protocol=protocol,
@@ -1241,23 +1239,58 @@ def run_scale_qpg(
         finite = np.isfinite(deltas)
         shifted = np.full(deltas.shape, -np.inf, dtype=float)
         shifted[finite] = deltas[finite] - float(np.max(deltas[finite]))
-        weights = np.zeros_like(deltas)
-        weights[finite] = np.exp(
+        logit_weights = np.zeros_like(deltas)
+        logit_weights[finite] = np.exp(
             np.clip(shifted[finite] / max(temperature, 1.0e-12), -745.0, 0.0)
         )
-        weights /= max(float(np.sum(weights)), 1.0e-300)
+        logit_weights /= max(float(np.sum(logit_weights)), 1.0e-300)
+        if method == "SCALE-QPG-ReplicatorBR-LocalAR":
+            intention_prior = np.asarray(
+                [
+                    robots[robot_id].intention.get(
+                        action,
+                        1.0 / len(actions),
+                    )
+                    for action in actions
+                ],
+                dtype=float,
+            )
+            intention_prior /= max(
+                float(np.sum(intention_prior)),
+                1.0e-300,
+            )
+            mean_fitness = float(np.dot(intention_prior, deltas))
+            growth = np.zeros_like(deltas)
+            growth[finite] = np.exp(
+                np.clip(
+                    (deltas[finite] - mean_fitness)
+                    / max(temperature, 1.0e-12),
+                    -60.0,
+                    60.0,
+                )
+            )
+            weights = intention_prior * growth
+            if not np.isfinite(weights).all() or float(np.sum(weights)) <= 0.0:
+                weights = logit_weights
+            else:
+                weights /= float(np.sum(weights))
+            proposal_phase = "replicator_logit"
+        else:
+            weights = logit_weights
+            proposal_phase = "logit"
         robots[robot_id].intention = {
             action: float(probability)
             for action, probability in zip(actions, weights, strict=True)
         }
         target = int(rng.choice(np.asarray(actions, dtype=int), p=weights))
         if target != int(assignment[robot_id]):
-            attempt(robot_id, target, "logit")
+            attempt(robot_id, target, proposal_phase)
     else:
         censoring_reason = "max_epochs"
 
     # Strict asynchronous best response.
     if censoring_reason not in {"wall_time", "proposal_budget"}:
+        seen_strict = {stable_hash(assignment)}
         for epoch in range(maximum_epochs):
             if time.perf_counter() - started_wall >= maximum_wall:
                 censoring_reason = "wall_time"
