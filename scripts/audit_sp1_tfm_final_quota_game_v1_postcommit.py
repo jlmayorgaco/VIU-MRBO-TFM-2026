@@ -91,14 +91,19 @@ def _primary_integrity(repo: Path) -> tuple[list[Path], list[str]]:
         if not working.is_file():
             mismatches.append(f"missing:{relative.as_posix()}")
             continue
-        expected = subprocess.run(
-            ["git", "show", f"{SOURCE_COMMIT}:{relative.as_posix()}"],
+        comparison = subprocess.run(
+            [
+                "git",
+                "diff",
+                "--quiet",
+                SOURCE_COMMIT,
+                "--",
+                relative.as_posix(),
+            ],
             cwd=repo,
-            check=True,
-            capture_output=True,
-        ).stdout
-        actual = working.read_bytes()
-        if hashlib.sha256(expected).digest() != hashlib.sha256(actual).digest():
+            check=False,
+        )
+        if comparison.returncode != 0:
             mismatches.append(f"content:{relative.as_posix()}")
     return source_files, mismatches
 
