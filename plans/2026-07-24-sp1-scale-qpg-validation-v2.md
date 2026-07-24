@@ -182,7 +182,7 @@ mundos inviables. Las figuras y tablas se producen desde datos procesados.
 - [x] Parámetros congelados y preview auditado.
 - [x] Full C1--C9 bloqueado porque el preview no aprobó.
 - [x] Estadística, 12 figuras, reportes y claims actualizados.
-- [ ] Commit final, hashes verificados y árbol limpio.
+- [x] Commit final, hashes verificados y árbol limpio.
 
 ## Registro de decisiones
 
