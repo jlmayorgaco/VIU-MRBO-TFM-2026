@@ -1,0 +1,171 @@
+{
+  "bernstein": {
+    "roundings": 200000,
+    "states": 400,
+    "violation_rate": 0.0
+  },
+  "convergence": [
+    {
+      "censoring_rate": 0.65,
+      "method": "Atomic-Quota-Logit",
+      "persistent_rate": 0.35,
+      "transient_rate": 0.21666666666666667
+    },
+    {
+      "censoring_rate": 1.0,
+      "method": "DRD-simple-Logit",
+      "persistent_rate": 0.0,
+      "transient_rate": 0.0
+    },
+    {
+      "censoring_rate": 1.0,
+      "method": "DRD-simple-Replicator",
+      "persistent_rate": 0.0,
+      "transient_rate": 0.0
+    },
+    {
+      "censoring_rate": 1.0,
+      "method": "QPG-BNN",
+      "persistent_rate": 0.0,
+      "transient_rate": 0.0
+    },
+    {
+      "censoring_rate": 1.0,
+      "method": "QPG-Damped-BestResponse",
+      "persistent_rate": 0.0,
+      "transient_rate": 0.0
+    },
+    {
+      "censoring_rate": 1.0,
+      "method": "QPG-Logit",
+      "persistent_rate": 0.0,
+      "transient_rate": 0.0
+    },
+    {
+      "censoring_rate": 1.0,
+      "method": "QPG-Projection",
+      "persistent_rate": 0.0,
+      "transient_rate": 0.0
+    },
+    {
+      "censoring_rate": 0.0,
+      "method": "QPG-Replicator",
+      "persistent_rate": 1.0,
+      "transient_rate": 0.0
+    },
+    {
+      "censoring_rate": 1.0,
+      "method": "QPG-Smith",
+      "persistent_rate": 0.0,
+      "transient_rate": 0.0
+    }
+  ],
+  "dynamic": [
+    {
+      "feasibility": 0.8,
+      "median_integrity": 1.0,
+      "median_recourse": 0.0,
+      "recovery_variant": "global"
+    },
+    {
+      "feasibility": 0.8,
+      "median_integrity": 1.0,
+      "median_recourse": 0.0,
+      "recovery_variant": "local"
+    },
+    {
+      "feasibility": 0.8,
+      "median_integrity": 1.0,
+      "median_recourse": 0.0,
+      "recovery_variant": "local_recourse"
+    }
+  ],
+  "gap": {
+    "comparable": 2506,
+    "inequality_holds_when_comparable": true,
+    "rows": 2506
+  },
+  "mandatory_seed_question": "QPG aporta una ventaja residual tras el recovery común.",
+  "seed_attribution": [
+    {
+      "after_feasibility": 0.9722222222222222,
+      "before_feasibility": 0.18055555555555555,
+      "chains_gt2_rate": 0.0,
+      "median_distance_m": 1305.5299390999835,
+      "median_recourse": 8.0,
+      "seed_method": "Atomic-Quota-LogitSeed"
+    },
+    {
+      "after_feasibility": 0.6111111111111112,
+      "before_feasibility": 0.125,
+      "chains_gt2_rate": 0.20833333333333334,
+      "median_distance_m": 1291.193478381983,
+      "median_recourse": 6.0,
+      "seed_method": "Capacity-CBBASeed"
+    },
+    {
+      "after_feasibility": 0.9861111111111112,
+      "before_feasibility": 0.9722222222222222,
+      "chains_gt2_rate": 0.013888888888888888,
+      "median_distance_m": 1082.3193193113116,
+      "median_recourse": 3.0,
+      "seed_method": "GreedyDeficitSeed"
+    },
+    {
+      "after_feasibility": 0.9166666666666666,
+      "before_feasibility": 0.8472222222222222,
+      "chains_gt2_rate": 0.0,
+      "median_distance_m": 829.0805904891567,
+      "median_recourse": 5.0,
+      "seed_method": "LPSeed"
+    },
+    {
+      "after_feasibility": 0.5694444444444444,
+      "before_feasibility": 0.041666666666666664,
+      "chains_gt2_rate": 0.25,
+      "median_distance_m": 832.1971336852722,
+      "median_recourse": 21.0,
+      "seed_method": "NearestCompatibleSeed"
+    },
+    {
+      "after_feasibility": 0.9444444444444444,
+      "before_feasibility": 0.8333333333333334,
+      "chains_gt2_rate": 0.0,
+      "median_distance_m": 818.1615861597912,
+      "median_recourse": 7.0,
+      "seed_method": "QPG-LogitSeed"
+    },
+    {
+      "after_feasibility": 0.9305555555555556,
+      "before_feasibility": 0.8611111111111112,
+      "chains_gt2_rate": 0.0,
+      "median_distance_m": 856.8864399069603,
+      "median_recourse": 7.5,
+      "seed_method": "QPG-ReplicatorSeed"
+    },
+    {
+      "after_feasibility": 0.4583333333333333,
+      "before_feasibility": 0.0,
+      "chains_gt2_rate": 0.375,
+      "median_distance_m": 1664.5722207088143,
+      "median_recourse": 18.0,
+      "seed_method": "RandomSeed"
+    },
+    {
+      "after_feasibility": 0.8333333333333334,
+      "before_feasibility": 0.041666666666666664,
+      "chains_gt2_rate": 0.0,
+      "median_distance_m": 1965.654642044722,
+      "median_recourse": 6.0,
+      "seed_method": "Weighted-GRAPESeed"
+    },
+    {
+      "after_feasibility": 0.8194444444444444,
+      "before_feasibility": 0.20833333333333334,
+      "chains_gt2_rate": 0.0,
+      "median_distance_m": 1663.1579446978494,
+      "median_recourse": 6.0,
+      "seed_method": "Weighted-Pair-GRAPESeed"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "campaign": "SP1_TFM_VALIDATION_CLOSURE_v1_1",
+  "censoring_count": 1377,
+  "config_sha256": "e2ecdd92ea01aab5e35abb71f61e6a3660756908e2d77007493ac40b466e894b",
+  "environment": {
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.9",
+    "scipy": "1.16.3"
+  },
+  "fallback_count": 0,
+  "figures": [
+    "01_seed_quality_before_after_recovery",
+    "02_persistent_convergence",
+    "02b_raw_protocol_comparison",
+    "03_feasibility_all_world_cost",
+    "04_common_feasible_distance",
+    "05_bytes_vs_n_k",
+    "06_active_set_size_vs_k",
+    "07_dynamic_recourse",
+    "08_unaffected_coalition_integrity",
+    "09_augmenting_chain_complexity",
+    "10_bernstein_calibration",
+    "11_homogeneous_gap_decomposition",
+    "11b_gap_bound_dimensionless",
+    "11c_atomic_signed_change_m",
+    "12_pareto_quality_communication_recourse"
+  ],
+  "git_at_execution": {
+    "branch": "codex/sp1-scale-qpg-validation-v2",
+    "commit": "7f4cdf79ed237468ad35ce7f51d527e56567a6db",
+    "status_porcelain": "?? results/sp1_validation/SP1_TFM_VALIDATION_CLOSURE_v1_1/"
+  },
+  "row_counts": {
+    "bernstein": 400,
+    "convergence": 1620,
+    "convergence_traces": 17025468,
+    "dynamic": 180,
+    "gap": 2506,
+    "seed_attribution": 720
+  },
+  "runtime_s": 227.19589550001547,
+  "schema_version": 1,
+  "selected_parameters_sha256": "d930bc21755b40d52e5b87249b270f063d6b7e3ab4fac2661453de4e38f252d3",
+  "source_audit_passed": true,
+  "source_campaign": "SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1",
+  "source_checksum_entries": 56,
+  "source_commit": "d0ace5bbead043e55e3592300582f345fc7068e5",
+  "workers": 6
+}

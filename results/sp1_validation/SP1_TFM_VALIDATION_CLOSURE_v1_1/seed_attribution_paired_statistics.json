@@ -1,0 +1,175 @@
+{
+  "best_trivial_median_all_world_cost": 829.0805904891567,
+  "common_recovery_configuration": true,
+  "mandatory_question_answer": "QPG aporta una ventaja residual tras el recovery común.",
+  "method_summary": [
+    {
+      "after_feasibility": 0.9722222222222222,
+      "before_feasibility": 0.18055555555555555,
+      "chains_gt2_rate": 0.0,
+      "median_after_distance_m": 1305.5299390999835,
+      "median_all_world_cost": 1305.5299390999835,
+      "median_robots_moved": 8.0,
+      "seed_method": "Atomic-Quota-LogitSeed",
+      "worlds": 72
+    },
+    {
+      "after_feasibility": 0.6111111111111112,
+      "before_feasibility": 0.125,
+      "chains_gt2_rate": 0.20833333333333334,
+      "median_after_distance_m": 1291.193478381983,
+      "median_all_world_cost": 1944.4200726770562,
+      "median_robots_moved": 6.0,
+      "seed_method": "Capacity-CBBASeed",
+      "worlds": 72
+    },
+    {
+      "after_feasibility": 0.9861111111111112,
+      "before_feasibility": 0.9722222222222222,
+      "chains_gt2_rate": 0.013888888888888888,
+      "median_after_distance_m": 1082.3193193113116,
+      "median_all_world_cost": 1082.3193193113116,
+      "median_robots_moved": 3.0,
+      "seed_method": "GreedyDeficitSeed",
+      "worlds": 72
+    },
+    {
+      "after_feasibility": 0.9166666666666666,
+      "before_feasibility": 0.8472222222222222,
+      "chains_gt2_rate": 0.0,
+      "median_after_distance_m": 829.0805904891567,
+      "median_all_world_cost": 829.0805904891567,
+      "median_robots_moved": 5.0,
+      "seed_method": "LPSeed",
+      "worlds": 72
+    },
+    {
+      "after_feasibility": 0.5694444444444444,
+      "before_feasibility": 0.041666666666666664,
+      "chains_gt2_rate": 0.25,
+      "median_after_distance_m": 832.1971336852722,
+      "median_all_world_cost": 1100.0509321947056,
+      "median_robots_moved": 21.0,
+      "seed_method": "NearestCompatibleSeed",
+      "worlds": 72
+    },
+    {
+      "after_feasibility": 0.9444444444444444,
+      "before_feasibility": 0.8333333333333334,
+      "chains_gt2_rate": 0.0,
+      "median_after_distance_m": 818.1615861597912,
+      "median_all_world_cost": 818.1615861597912,
+      "median_robots_moved": 7.0,
+      "seed_method": "QPG-LogitSeed",
+      "worlds": 72
+    },
+    {
+      "after_feasibility": 0.9305555555555556,
+      "before_feasibility": 0.8611111111111112,
+      "chains_gt2_rate": 0.0,
+      "median_after_distance_m": 856.8864399069603,
+      "median_all_world_cost": 856.8864399069603,
+      "median_robots_moved": 7.5,
+      "seed_method": "QPG-ReplicatorSeed",
+      "worlds": 72
+    },
+    {
+      "after_feasibility": 0.4583333333333333,
+      "before_feasibility": 0.0,
+      "chains_gt2_rate": 0.375,
+      "median_after_distance_m": 1664.5722207088143,
+      "median_all_world_cost": 6554.878435319398,
+      "median_robots_moved": 18.0,
+      "seed_method": "RandomSeed",
+      "worlds": 72
+    },
+    {
+      "after_feasibility": 0.8333333333333334,
+      "before_feasibility": 0.041666666666666664,
+      "chains_gt2_rate": 0.0,
+      "median_after_distance_m": 1965.654642044722,
+      "median_all_world_cost": 2031.2288789010431,
+      "median_robots_moved": 6.0,
+      "seed_method": "Weighted-GRAPESeed",
+      "worlds": 72
+    },
+    {
+      "after_feasibility": 0.8194444444444444,
+      "before_feasibility": 0.20833333333333334,
+      "chains_gt2_rate": 0.0,
+      "median_after_distance_m": 1663.1579446978494,
+      "median_all_world_cost": 1737.248725540005,
+      "median_robots_moved": 6.0,
+      "seed_method": "Weighted-Pair-GRAPESeed",
+      "worlds": 72
+    }
+  ],
+  "paired_by_world_id": true,
+  "paired_comparisons_against_nearest": [
+    {
+      "comparison": "Atomic-Quota-LogitSeed vs NearestCompatibleSeed",
+      "median_all_world_cost_difference": 3.839936593788167,
+      "method_feasibility": 0.9722222222222222,
+      "reference_feasibility": 0.5694444444444444,
+      "worlds": 72
+    },
+    {
+      "comparison": "Capacity-CBBASeed vs NearestCompatibleSeed",
+      "median_all_world_cost_difference": 495.0859244005869,
+      "method_feasibility": 0.6111111111111112,
+      "reference_feasibility": 0.5694444444444444,
+      "worlds": 72
+    },
+    {
+      "comparison": "GreedyDeficitSeed vs NearestCompatibleSeed",
+      "median_all_world_cost_difference": 6.21199895488607,
+      "method_feasibility": 0.9861111111111112,
+      "reference_feasibility": 0.5694444444444444,
+      "worlds": 72
+    },
+    {
+      "comparison": "LPSeed vs NearestCompatibleSeed",
+      "median_all_world_cost_difference": -128.5729281821366,
+      "method_feasibility": 0.9166666666666666,
+      "reference_feasibility": 0.5694444444444444,
+      "worlds": 72
+    },
+    {
+      "comparison": "QPG-LogitSeed vs NearestCompatibleSeed",
+      "median_all_world_cost_difference": -93.28975478432463,
+      "method_feasibility": 0.9444444444444444,
+      "reference_feasibility": 0.5694444444444444,
+      "worlds": 72
+    },
+    {
+      "comparison": "QPG-ReplicatorSeed vs NearestCompatibleSeed",
+      "median_all_world_cost_difference": -75.45546382599258,
+      "method_feasibility": 0.9305555555555556,
+      "reference_feasibility": 0.5694444444444444,
+      "worlds": 72
+    },
+    {
+      "comparison": "RandomSeed vs NearestCompatibleSeed",
+      "median_all_world_cost_difference": 751.8502975485553,
+      "method_feasibility": 0.4583333333333333,
+      "reference_feasibility": 0.5694444444444444,
+      "worlds": 72
+    },
+    {
+      "comparison": "Weighted-GRAPESeed vs NearestCompatibleSeed",
+      "median_all_world_cost_difference": 155.10461243814046,
+      "method_feasibility": 0.8333333333333334,
+      "reference_feasibility": 0.5694444444444444,
+      "worlds": 72
+    },
+    {
+      "comparison": "Weighted-Pair-GRAPESeed vs NearestCompatibleSeed",
+      "median_all_world_cost_difference": -21.515274531473352,
+      "method_feasibility": 0.8194444444444444,
+      "reference_feasibility": 0.5694444444444444,
+      "worlds": 72
+    }
+  ],
+  "qpg_adds_value_beyond_common_recovery": true,
+  "qpg_median_all_world_cost": 818.1615861597912
+}

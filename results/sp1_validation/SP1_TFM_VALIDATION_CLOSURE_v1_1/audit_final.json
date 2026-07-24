@@ -1,0 +1,58 @@
+{
+  "campaign": "SP1_TFM_VALIDATION_CLOSURE_v1_1",
+  "cryptographic_boundary": "checksums_postcommit.sha256 excludes itself and binds every primary V1 file plus both postcommit JSON records.",
+  "gates": {
+    "committed_config_matches_frozen_config": true,
+    "final_source_checksums_recomputed": true,
+    "postcommit_checksums_valid": true,
+    "postcommit_metadata_files_present": true,
+    "selected_parameters_hash_matches": true,
+    "source_commit_is_ancestor": true,
+    "source_postcommit_audit_passed": true,
+    "source_primary_results_match_commit_tree": true,
+    "task_manifest_hash_matches": true,
+    "tasks_2200_of_2200": true,
+    "tests_203_of_203": true
+  },
+  "historical_discrepancies": {
+    "classification": "stale precommit config hash; corrected by the V1.1 post-commit ledger without modifying V1",
+    "committed_config_sha256": "e51ea08c4d9e5cbd5af01be8e8433a65ff9b9cf860db37f2afc034091d33fe05",
+    "legacy_checksum_ledger_all_valid": false,
+    "legacy_checksum_mismatch_isolated": true,
+    "legacy_manifest_config_hash_matches_committed_config": false,
+    "legacy_manifest_config_sha256": "e501ce53f2d567fad69df656a8d351aff8023fbd38b792899f8bedef89eeedc1"
+  },
+  "interpretation": "The embedded manifest.json remains historical precommit evidence. The immutable primary V1 tree is independently verified at source_commit and its additive postcommit metadata passes.",
+  "passed": true,
+  "source_campaign": "SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1",
+  "source_checksums": {
+    "entries": 56,
+    "final_recomputed_entries": 57,
+    "reconstructed": 0,
+    "valid": 56
+  },
+  "source_commit": "d0ace5bbead043e55e3592300582f345fc7068e5",
+  "source_junit": {
+    "errors": 0,
+    "failures": 0,
+    "passed": true,
+    "skipped": 0,
+    "tests": 203
+  },
+  "source_manifest_embedded_commit": "e7d9197bd80f808f0c29a3c6b583b6ab484d5084",
+  "source_manifest_embedded_status": "M .gitignore\n M docs/02_RESEARCH_MATRIX.md\n M docs/04_CLAIMS_EVIDENCE.md\n M src/viu_mrob_tfm/sp1_canonical/validation/quota_game_benchmark.py\n M src/viu_mrob_tfm/sp1_canonical/validation/quota_game_cases.py\n?? results/sp1_validation/\n?? scripts/finalize_sp1_tfm_final_quota_game_v1.py",
+  "source_runtime": {
+    "algorithm_cpu_accounting": "sum over unique (world_id, method) executions; raw, seeded and recovered rows share one execution and are not triple-counted",
+    "algorithm_cpu_time_s": 16945.640625,
+    "driver_cpu_time_s": 7.59375,
+    "last_resume_driver_cpu_time_s": 5.921875,
+    "last_resume_tasks_reused": 2200,
+    "last_resume_wall_time_s": 6.657225299975835,
+    "task_failures": [],
+    "tasks_completed": 2200,
+    "tasks_expected": 2200,
+    "tasks_reused": 0,
+    "wall_time_s": 3161.858587100054,
+    "workers": 6
+  }
+}
