@@ -671,9 +671,13 @@ def _controlled_bernstein_state(
     target: float,
     state_index: int,
     seed: int,
+    *,
+    n: int,
+    state_count: int,
 ) -> tuple[Any, np.ndarray, float]:
-    n = 50
-    probability = 0.40 + 0.20 * (state_index / 49.0)
+    probability = 0.40 + 0.20 * (
+        state_index / max(1.0, float(state_count - 1))
+    )
     capacities = np.ones(n, dtype=float)
     positions = np.column_stack([np.arange(n, dtype=float), np.zeros(n)])
     load_position = np.asarray([[n / 2.0, 1.0]])
@@ -731,13 +735,16 @@ def run_bernstein_validation(
 ) -> pd.DataFrame:
     spec = config["bernstein"]
     rows = []
+    state_count = int(spec["states_per_band"])
     for band_index, target in enumerate(spec["target_bands"]):
-        for state_index in range(int(spec["states_per_band"])):
+        for state_index in range(state_count):
             seed = int(spec["seed_start"]) + 1000 * band_index + state_index
             world, rho, lower_slack = _controlled_bernstein_state(
                 float(target),
                 state_index,
                 seed,
+                n=int(spec["n"]),
+                state_count=state_count,
             )
             bound = bernstein_rounding_bound(world, rho)
             rng = np.random.default_rng(seed)

@@ -33,6 +33,9 @@ from viu_mrob_tfm.sp1_canonical.validation.scale_qpg_benchmark import (
     build_preview_tasks,
     run_task_set,
 )
+from viu_mrob_tfm.sp1_canonical.validation.validation_closure_v1_1 import (
+    _controlled_bernstein_state,
+)
 
 
 def _world():
@@ -413,3 +416,15 @@ def test_checkpoint_resume_reuses_completed_shard(tmp_path):
     assert first["tasks_executed"] == 1
     assert second["tasks_executed"] == 0
     assert second["tasks_reused"] == 1
+
+
+def test_controlled_bernstein_state_uses_declared_population_size():
+    world, probabilities, _ = _controlled_bernstein_state(
+        0.10,
+        2,
+        89002,
+        n=20,
+        state_count=50,
+    )
+    assert world.n_robots == 20
+    assert probabilities.shape == (20, 2)
