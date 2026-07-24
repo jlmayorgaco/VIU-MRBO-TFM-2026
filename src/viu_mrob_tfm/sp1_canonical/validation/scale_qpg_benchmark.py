@@ -1583,12 +1583,22 @@ def paired_comparisons(
     dynamic: pd.DataFrame,
     config: Mapping[str, Any],
 ) -> pd.DataFrame:
-    primary = "SCALE-QPG-LogitBR-LocalAR"
-    baselines = ["Capacity-CBBA", "Weighted-Pair-GRAPE"]
+    is_preview = bool(runs["experiment"].eq("PREVIEW").any())
+    primaries = (
+        list(SCALE_METHODS)
+        if is_preview
+        else ["SCALE-QPG-LogitBR-LocalAR"]
+    )
+    baselines = (
+        list(config["win_gates"]["distributed_baselines"])
+        if is_preview
+        else ["Capacity-CBBA", "Weighted-Pair-GRAPE"]
+    )
+    target_experiment = "PREVIEW" if is_preview else "C3"
     target = runs.loc[
         (runs["domain"] == "scalar_quotas")
-        & (runs["experiment"] == "C3")
-        & runs["method"].isin([primary, *baselines])
+        & (runs["experiment"] == target_experiment)
+        & runs["method"].isin([*primaries, *baselines])
     ].copy()
     rows = []
     metrics = [
@@ -1599,141 +1609,157 @@ def paired_comparisons(
     ]
     resamples = int(config["statistics"]["bootstrap_resamples"])
     analysis_seed = int(config["statistics"]["analysis_seed"])
-    for baseline in baselines:
-        for metric, common_feasible in metrics:
-            left = target[target["method"] == primary][
-                ["world_id", metric, "feasible"]
-            ].rename(
-                columns={metric: "left", "feasible": "left_feasible"}
-            )
-            right = target[target["method"] == baseline][
-                ["world_id", metric, "feasible"]
-            ].rename(
-                columns={metric: "right", "feasible": "right_feasible"}
-            )
-            paired = left.merge(right, on="world_id", how="inner")
-            if common_feasible:
-                paired = paired[
-                    paired["left_feasible"].astype(bool)
-                    & paired["right_feasible"].astype(bool)
-                ]
-            paired = paired.dropna(subset=["left", "right"])
-            differences = (
-                paired["left"].to_numpy(float)
-                - paired["right"].to_numpy(float)
-            )
-            if differences.size and np.any(differences != 0.0):
-                p_value = float(
-                    wilcoxon(differences, zero_method="wilcox").pvalue
-                )
-            else:
-                p_value = 1.0
-            lower, upper = _paired_bootstrap(
-                differences,
-                resamples=resamples,
-                seed=analysis_seed
-                + int(stable_hash((baseline, metric))[:8], 16),
-            )
-            rows.append(
-                {
-                    "comparison": f"{primary} vs {baseline}",
-                    "metric": metric,
-                    "common_feasible_only": common_feasible,
-                    "pairs": len(paired),
-                    "median_paired_difference": float(np.median(differences))
-                    if differences.size
-                    else math.nan,
-                    "bootstrap_ci_lower": lower,
-                    "bootstrap_ci_upper": upper,
-                    "p_raw": p_value,
-                    "rank_biserial": _rank_biserial(differences),
-                }
-            )
-        left_feasible = target[target["method"] == primary][
-            ["world_id", "feasible"]
-        ].rename(columns={"feasible": "left"})
-        right_feasible = target[target["method"] == baseline][
-            ["world_id", "feasible"]
-        ].rename(columns={"feasible": "right"})
-        binary = left_feasible.merge(right_feasible, on="world_id")
-        discordant_left = int(
-            (binary["left"].astype(bool) & ~binary["right"].astype(bool)).sum()
-        )
-        discordant_right = int(
-            (~binary["left"].astype(bool) & binary["right"].astype(bool)).sum()
-        )
-        discordant = discordant_left + discordant_right
-        p_value = (
-            float(
-                binomtest(
-                    min(discordant_left, discordant_right),
-                    discordant,
-                    0.5,
-                    alternative="two-sided",
-                ).pvalue
-            )
-            if discordant
-            else 1.0
-        )
-        rows.append(
-            {
-                "comparison": f"{primary} vs {baseline}",
-                "metric": "feasibility",
-                "common_feasible_only": False,
-                "pairs": len(binary),
-                "median_paired_difference": float(
-                    binary["left"].astype(float).mean()
-                    - binary["right"].astype(float).mean()
-                ),
-                "bootstrap_ci_lower": math.nan,
-                "bootstrap_ci_upper": math.nan,
-                "p_raw": p_value,
-                "rank_biserial": math.nan,
-            }
-        )
-    if not dynamic.empty:
-        subset = dynamic[
-            dynamic["method"].isin([primary, *baselines])
-        ]
+    for primary in primaries:
         for baseline in baselines:
-            left = subset[subset["method"] == primary][
-                ["world_id", "recourse"]
-            ].rename(columns={"recourse": "left"})
-            right = subset[subset["method"] == baseline][
-                ["world_id", "recourse"]
-            ].rename(columns={"recourse": "right"})
-            paired = left.merge(right, on="world_id").dropna()
-            differences = paired["left"].to_numpy(float) - paired[
-                "right"
-            ].to_numpy(float)
+            for metric, common_feasible in metrics:
+                left = target[target["method"] == primary][
+                    ["world_id", metric, "feasible"]
+                ].rename(
+                    columns={metric: "left", "feasible": "left_feasible"}
+                )
+                right = target[target["method"] == baseline][
+                    ["world_id", metric, "feasible"]
+                ].rename(
+                    columns={metric: "right", "feasible": "right_feasible"}
+                )
+                paired = left.merge(right, on="world_id", how="inner")
+                if common_feasible:
+                    paired = paired[
+                        paired["left_feasible"].astype(bool)
+                        & paired["right_feasible"].astype(bool)
+                    ]
+                paired = paired.dropna(subset=["left", "right"])
+                differences = (
+                    paired["left"].to_numpy(float)
+                    - paired["right"].to_numpy(float)
+                )
+                if differences.size and np.any(differences != 0.0):
+                    p_value = float(
+                        wilcoxon(differences, zero_method="wilcox").pvalue
+                    )
+                else:
+                    p_value = 1.0
+                lower, upper = _paired_bootstrap(
+                    differences,
+                    resamples=resamples,
+                    seed=analysis_seed
+                    + int(
+                        stable_hash((primary, baseline, metric))[:8],
+                        16,
+                    ),
+                )
+                rows.append(
+                    {
+                        "comparison": f"{primary} vs {baseline}",
+                        "metric": metric,
+                        "common_feasible_only": common_feasible,
+                        "pairs": len(paired),
+                        "median_paired_difference": float(
+                            np.median(differences)
+                        )
+                        if differences.size
+                        else math.nan,
+                        "bootstrap_ci_lower": lower,
+                        "bootstrap_ci_upper": upper,
+                        "p_raw": p_value,
+                        "rank_biserial": _rank_biserial(differences),
+                    }
+                )
+            left_feasible = target[target["method"] == primary][
+                ["world_id", "feasible"]
+            ].rename(columns={"feasible": "left"})
+            right_feasible = target[target["method"] == baseline][
+                ["world_id", "feasible"]
+            ].rename(columns={"feasible": "right"})
+            binary = left_feasible.merge(right_feasible, on="world_id")
+            discordant_left = int(
+                (
+                    binary["left"].astype(bool)
+                    & ~binary["right"].astype(bool)
+                ).sum()
+            )
+            discordant_right = int(
+                (
+                    ~binary["left"].astype(bool)
+                    & binary["right"].astype(bool)
+                ).sum()
+            )
+            discordant = discordant_left + discordant_right
             p_value = (
-                float(wilcoxon(differences).pvalue)
-                if differences.size and np.any(differences != 0)
+                float(
+                    binomtest(
+                        min(discordant_left, discordant_right),
+                        discordant,
+                        0.5,
+                        alternative="two-sided",
+                    ).pvalue
+                )
+                if discordant
                 else 1.0
             )
-            lower, upper = _paired_bootstrap(
-                differences,
-                resamples=resamples,
-                seed=analysis_seed
-                + int(stable_hash((baseline, "recourse"))[:8], 16),
-            )
             rows.append(
                 {
                     "comparison": f"{primary} vs {baseline}",
-                    "metric": "dynamic_recourse",
+                    "metric": "feasibility",
                     "common_feasible_only": False,
-                    "pairs": len(paired),
+                    "pairs": len(binary),
                     "median_paired_difference": float(
-                        np.median(differences)
-                    )
-                    if differences.size
-                    else math.nan,
-                    "bootstrap_ci_lower": lower,
-                    "bootstrap_ci_upper": upper,
+                        binary["left"].astype(float).mean()
+                        - binary["right"].astype(float).mean()
+                    ),
+                    "bootstrap_ci_lower": math.nan,
+                    "bootstrap_ci_upper": math.nan,
                     "p_raw": p_value,
-                    "rank_biserial": _rank_biserial(differences),
+                    "rank_biserial": math.nan,
                 }
             )
+    if not dynamic.empty:
+        subset = dynamic[
+            dynamic["method"].isin([*primaries, *baselines])
+        ]
+        for primary in primaries:
+            for baseline in baselines:
+                left = subset[subset["method"] == primary][
+                    ["world_id", "recourse"]
+                ].rename(columns={"recourse": "left"})
+                right = subset[subset["method"] == baseline][
+                    ["world_id", "recourse"]
+                ].rename(columns={"recourse": "right"})
+                paired = left.merge(right, on="world_id").dropna()
+                differences = paired["left"].to_numpy(float) - paired[
+                    "right"
+                ].to_numpy(float)
+                p_value = (
+                    float(wilcoxon(differences).pvalue)
+                    if differences.size and np.any(differences != 0)
+                    else 1.0
+                )
+                lower, upper = _paired_bootstrap(
+                    differences,
+                    resamples=resamples,
+                    seed=analysis_seed
+                    + int(
+                        stable_hash((primary, baseline, "recourse"))[:8],
+                        16,
+                    ),
+                )
+                rows.append(
+                    {
+                        "comparison": f"{primary} vs {baseline}",
+                        "metric": "dynamic_recourse",
+                        "common_feasible_only": False,
+                        "pairs": len(paired),
+                        "median_paired_difference": float(
+                            np.median(differences)
+                        )
+                        if differences.size
+                        else math.nan,
+                        "bootstrap_ci_lower": lower,
+                        "bootstrap_ci_upper": upper,
+                        "p_raw": p_value,
+                        "rank_biserial": _rank_biserial(differences),
+                    }
+                )
     frame = pd.DataFrame(rows)
     frame["p_holm"] = _holm_adjust(frame["p_raw"].to_numpy(float))
     return frame
