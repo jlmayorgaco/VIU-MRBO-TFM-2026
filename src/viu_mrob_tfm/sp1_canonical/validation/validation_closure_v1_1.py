@@ -784,18 +784,12 @@ def run_bernstein_validation(
 
 def run_gap_decomposition(
     source_dir: Path,
-    config: Mapping[str, Any],
+    source_config: Mapping[str, Any],
+    closure_config: Mapping[str, Any],
     output_dir: Path,
 ) -> pd.DataFrame:
     theorem = pd.read_csv(source_dir / "theorem_diagnostics.csv")
-    worlds = pd.read_csv(source_dir / "worlds.csv")[
-        ["world_id", "normalization_scale_m"]
-    ] if "normalization_scale_m" in pd.read_csv(
-        source_dir / "worlds.csv", nrows=1
-    ).columns else None
-    # V1 worlds.csv stores the physical totals but not the normalization scale.
-    # It is reconstructed from the theorem identity when finite, and marked
-    # non-comparable otherwise.
+    worlds = pd.read_csv(source_dir / "worlds.csv")
     runs = pd.read_parquet(source_dir / "all_runs.parquet")
     lp = (
         runs.loc[
@@ -811,19 +805,45 @@ def run_gap_decomposition(
         & theorem["integer_upper_bound_m"].notna()
     ].copy()
     applicable = applicable.merge(lp, on="world_id", how="left")
-    scale = (
-        applicable["continuous_cost_m"]
-        / np.maximum(
-            applicable["regularized_primal_normalized"]
-            + applicable["entropy"]
-            * 0.01,
-            1.0e-12,
+    required_world_ids = set(applicable["world_id"])
+    scale_rows = []
+    for row in worlds.loc[
+        worlds["world_id"].isin(required_world_ids)
+    ].itertuples():
+        reproduced = make_quota_world(
+            int(row.n),
+            int(row.k),
+            int(row.seed),
+            source_config,
+            capacity_regime=str(row.capacity_regime),
+            utilization=float(row.utilization),
+            quota_band=str(row.quota_band),
+            compatibility_regime=str(row.compatibility_regime),
+            world_id=str(row.world_id),
         )
+        hash_verified = reproduced.world_hash == str(row.world_hash)
+        if not hash_verified:
+            raise RuntimeError(
+                "world reconstruction hash mismatch in A5: "
+                f"{row.world_id}"
+            )
+        scale_rows.append(
+            {
+                "world_id": str(row.world_id),
+                "normalization_scale_m": float(
+                    reproduced.normalization_scale_m
+                ),
+                "world_hash_verified": hash_verified,
+                "normalization_scale_source": "reproduced_frozen_world",
+            }
+        )
+    applicable = applicable.merge(
+        pd.DataFrame(scale_rows).drop_duplicates("world_id"),
+        on="world_id",
+        how="left",
     )
-    # The identity above can be distorted by load cost versus entropy.  Use
-    # only positive finite estimates and expose this reconstruction flag.
-    applicable["normalization_scale_reconstructed_m"] = scale
-    epsilon = float(config["gap"]["denominator_epsilon_m"])
+    scale = applicable["normalization_scale_m"]
+    epsilon = float(closure_config["gap"]["denominator_epsilon_m"])
     applicable["J_ref_m"] = np.maximum(
         epsilon,
         np.abs(applicable["lp_lower_bound_m"]),
@@ -859,15 +879,16 @@ def run_gap_decomposition(
         "positive_atomic_delta_m",
         "integer_gap_m",
         "J_ref_m",
-        "normalization_scale_reconstructed_m",
+        "normalization_scale_m",
     ]
     applicable["comparable"] = (
         np.isfinite(applicable[finite_columns]).all(axis=1)
-        & (applicable["normalization_scale_reconstructed_m"] > 0.0)
+        & applicable["world_hash_verified"].fillna(False)
+        & (applicable["normalization_scale_m"] > 0.0)
         & (applicable["optimization_error_m"] >= -1.0e-7)
         & (applicable["entropy_bias_bound_m"] >= -1.0e-7)
     )
-    tolerance = float(config["gap"]["numerical_tolerance"])
+    tolerance = float(closure_config["gap"]["numerical_tolerance"])
     applicable["decomposition_rhs_m"] = (
         applicable["optimization_error_m"]
         + applicable["entropy_bias_bound_m"]
@@ -899,7 +920,9 @@ def run_gap_decomposition(
         "comparable",
         "decomposition_rhs_m",
         "inequality_holds",
-        "normalization_scale_reconstructed_m",
+        "normalization_scale_m",
+        "normalization_scale_source",
+        "world_hash_verified",
     ]
     result = applicable[columns]
     result.to_csv(output_dir / "gap_decomposition.csv", index=False)
@@ -1393,7 +1416,7 @@ def _build_report(
         "",
         "- A3 prueba convergencia operacional bajo 12.000 rondas/240 s; no demuestra convergencia global.",
         "- La recuperación local es incompleta fuera de su universo residual.",
-        "- La reconstrucción del factor de escala de A5 se marca explícitamente y puede invalidar comparabilidad.",
+        "- A5 regenera cada mundo desde la configuración V1 congelada; una discrepancia de hash invalida la campaña.",
         "- La mensajería es payload lógico, no tráfico de middleware.",
         "",
         f"Runtime de cierre: {runtime_s:.3f} s.",
@@ -1447,6 +1470,7 @@ def execute_closure(
     bernstein = run_bernstein_validation(closure_config, output_dir)
     gap = run_gap_decomposition(
         source_dir,
+        source_config,
         closure_config,
         output_dir,
     )
