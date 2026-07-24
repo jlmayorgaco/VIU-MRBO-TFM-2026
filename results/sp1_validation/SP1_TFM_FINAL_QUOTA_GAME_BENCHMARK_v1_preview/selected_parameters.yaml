@@ -1,0 +1,26 @@
+candidate: balanced
+eta: 0.15
+alpha_price: 0.08
+temperature_initial: 0.15
+temperature_min: 0.005
+annealing: 0.995
+state_tolerance: 1.0e-05
+quota_tolerance: 1.0e-05
+price_tolerance: 1.0e-05
+consensus_tolerance: 0.0001
+selection_rule:
+- recovered_feasibility_desc
+- certificate_validity_desc
+- distance_asc
+- excess_asc
+- wall_time_asc
+- bytes_asc
+calibration_seeds:
+- 700000
+- 700001
+- 700002
+- 700003
+- 700004
+- 700005
+- 700006
+- 700007

@@ -300,19 +300,42 @@ def test_message_accounting_and_scalar_shard(world_graph, config: dict) -> None:
     assert json.loads(encoded)["worlds"][0]["world_hash"]
 
 
-def test_discrete_service_domain_is_separate(config: dict) -> None:
+@pytest.mark.parametrize(
+    ("services_per_robot", "pairwise"),
+    [(1, False), (5, False), (5, True)],
+)
+def test_discrete_service_domain_is_separate(
+    config: dict,
+    services_per_robot: int,
+    pairwise: bool,
+) -> None:
     world = make_service_world(
         n=30,
         service_types=5,
-        services_per_robot=1,
+        services_per_robot=services_per_robot,
         task_fraction=0.1,
         seed=996,
         config=config,
     )
-    result = run_grape_s(world, pairwise=False, seed=996, max_rounds=20)
+    result = run_grape_s(
+        world,
+        pairwise=pairwise,
+        seed=996,
+        max_rounds=100,
+    )
     metrics = evaluate_service_assignment(world, result.tasks, result.services)
-    assert result.method == "GRAPE-S"
-    assert isinstance(metrics["feasible"], bool)
+    expected_method = "Pair-GRAPE-S" if pairwise else "GRAPE-S"
+    assigned = result.tasks >= 0
+    assert result.method == expected_method
+    assert metrics["feasible"]
+    assert np.all(result.services[assigned] >= 0)
+    assert np.all(
+        world.robot_services[
+            np.arange(len(result.tasks))[assigned],
+            result.services[assigned],
+        ]
+        == 1
+    )
     assert "discrete-service" in result.deviation
 
 

@@ -236,11 +236,13 @@ def make_service_world(
     witness = np.arange(n, dtype=int) % k
     rng.shuffle(witness)
     requirements = np.zeros((k, service_types), dtype=int)
-    utilities = rng.uniform(0.8, 1.2, size=(k, service_types))
+    utilities = np.zeros((k, service_types), dtype=float)
     for robot, task in enumerate(witness):
         available = np.flatnonzero(robot_services[robot])
         service = int(available[(robot + task) % available.size])
         requirements[task, service] += 1
+    # Faithful evaluation condition from the version of record: u_js = |S_s|.
+    utilities[:] = requirements
     # Build a scalar geometry shell only to reuse the audited graph constructor.
     shell = make_manual_quota_world(
         case_id=f"service_shell_n{n}_s{service_types}_r{services_per_robot}_{seed}",
@@ -319,20 +321,19 @@ def _grape_utility(
     robot: int,
     task: int,
     service: int,
-    delivered: np.ndarray,
+    coalition_size: int,
 ) -> float:
     if task >= world.n_tasks or world.robot_services[robot, service] == 0:
         return 0.0
     requirement = int(world.task_requirements[task, service])
     if requirement <= 0:
         return 0.0
-    coalition = int(delivered[task, service])
     # Version-of-record service-vector utility: requirement-normalized reward
     # with coalition-size exponential attenuation.
     return float(
         world.task_service_utilities[task, service]
         / requirement
-        * math.exp(1.0 - coalition / requirement)
+        * math.exp(1.0 - int(coalition_size) / requirement)
     )
 
 
@@ -357,14 +358,29 @@ def run_grape_s(
         for robot in rng.permutation(world.n_robots):
             old_task, old_service = int(tasks[robot]), int(services[robot])
             old_value = (
-                _grape_utility(world, robot, old_task, old_service, delivered)
+                _grape_utility(
+                    world,
+                    robot,
+                    old_task,
+                    old_service,
+                    int(delivered[old_task, old_service]),
+                )
                 if old_task < world.n_tasks
                 else 0.0
             )
+            candidate_delivered = delivered.copy()
+            if old_task < world.n_tasks:
+                candidate_delivered[old_task, old_service] -= 1
             best = (old_value, old_task, old_service)
             for task in range(world.n_tasks):
                 for service in np.flatnonzero(world.robot_services[robot]):
-                    value = _grape_utility(world, robot, task, int(service), delivered)
+                    value = _grape_utility(
+                        world,
+                        robot,
+                        task,
+                        int(service),
+                        int(candidate_delivered[task, service]) + 1,
+                    )
                     candidate = (value, -task, -int(service))
                     incumbent = (best[0], -best[1], -best[2])
                     if candidate > incumbent:
@@ -377,32 +393,68 @@ def run_grape_s(
                 changed = True
                 moves += 1
                 packets += max(1, 2 * world.graph.diameter)
-        if pairwise:
+        if pairwise and not changed:
             metrics = evaluate_service_assignment(world, tasks, services)
+            delivered = metrics["delivered"].copy()
+            # Algorithm 2 preprocessing: limit every task/service coalition to
+            # its requirement, creating void robots before pairwise exchanges.
+            for task in range(world.n_tasks):
+                for service in range(world.n_services):
+                    excess = int(
+                        delivered[task, service]
+                        - world.task_requirements[task, service]
+                    )
+                    if excess <= 0:
+                        continue
+                    members = sorted(
+                        map(
+                            int,
+                            np.flatnonzero(
+                                (tasks == task) & (services == service)
+                            ),
+                        ),
+                        reverse=True,
+                    )
+                    for robot in members[:excess]:
+                        tasks[robot] = world.n_tasks
+                        services[robot] = -1
+                        delivered[task, service] -= 1
+                        changed = True
             deficits = np.argwhere(
-                metrics["delivered"] < world.task_requirements
+                delivered < world.task_requirements
             )
             for task, service in deficits:
-                idle = [
-                    int(r)
-                    for r in np.flatnonzero(tasks == world.n_tasks)
-                    if world.robot_services[r, service]
-                ]
-                if not idle:
-                    continue
-                replacement = idle[0]
-                for displaced in np.flatnonzero(tasks < world.n_tasks):
-                    old_task, old_service = int(tasks[displaced]), int(services[displaced])
-                    if world.robot_services[replacement, old_service] == 0:
-                        continue
-                    if world.robot_services[displaced, service] == 0:
-                        continue
+                while delivered[task, service] < world.task_requirements[task, service]:
+                    exchange: tuple[int, int] | None = None
+                    for replacement in map(
+                        int,
+                        np.flatnonzero(tasks == world.n_tasks),
+                    ):
+                        for displaced in map(
+                            int,
+                            np.flatnonzero(tasks < world.n_tasks),
+                        ):
+                            old_task = int(tasks[displaced])
+                            old_service = int(services[displaced])
+                            if world.robot_services[replacement, old_service] == 0:
+                                continue
+                            if world.robot_services[displaced, service] == 0:
+                                continue
+                            exchange = (replacement, displaced)
+                            break
+                        if exchange is not None:
+                            break
+                    if exchange is None:
+                        break
+                    replacement, displaced = exchange
+                    old_task = int(tasks[displaced])
+                    old_service = int(services[displaced])
                     tasks[replacement], services[replacement] = old_task, old_service
                     tasks[displaced], services[displaced] = int(task), int(service)
+                    delivered[task, service] += 1
                     swaps += 1
                     changed = True
                     packets += max(1, 4 * world.graph.diameter)
-                    break
         rounds = round_index + 1
         if not changed:
             converged = True
@@ -418,8 +470,8 @@ def run_grape_s(
         bytes_total=packets * 40,
         converged=converged,
         deviation=(
-            "Faithful discrete-service domain; serialized mutex emulates "
-            "collision-free asynchronous partition updates."
+            "Algorithm 1/2 discrete-service reward with u_js=|S_s|; "
+            "serialized mutex emulates collision-free asynchronous updates."
         ),
     )
 

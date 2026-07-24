@@ -1,0 +1,63 @@
+{
+  "audit_passed_precommit": true,
+  "campaign": "SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1_preview",
+  "config_sha256": "e501ce53f2d567fad69df656a8d351aff8023fbd38b792899f8bedef89eeedc1",
+  "environment": {
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.9",
+    "scipy": "1.16.3"
+  },
+  "execution_accounting": {
+    "postprocessing": "checkpoint resumes repaired E9 reporting, reproduced faithful E10 and regenerated analysis without changing primary wall time",
+    "primary_execution": "fresh checkpoint-free task execution"
+  },
+  "figures": [
+    "01_feasibility_raw_recovered",
+    "02_distance_recovered",
+    "03_overcapacity_recovered",
+    "04_wall_time_rmst_proxy",
+    "05_bytes",
+    "11_pareto_quality_cost",
+    "12_gap_decomposition"
+  ],
+  "git": {
+    "branch": "codex/sp1-tfm-final-quota-game-v1",
+    "commit": "efcdf8bda328ddb1ca606502fe969c5f09efd494",
+    "status_porcelain": "M docs/03_EXPERIMENT_PROTOCOL.md\n M docs/05_NOTATION.md\n M experiments/configs/sp1_tfm_final_quota_game_benchmark_v1.yaml\n M plans/2026-07-23-sp1-tfm-final-quota-game-benchmark-v1.md\n M pyproject.toml\n?? results/sp1_validation/\n?? src/viu_mrob_tfm/cli/run_sp1_tfm_final_quota_game_v1.py\n?? src/viu_mrob_tfm/sp1_canonical/validation/quota_game_benchmark.py\n?? src/viu_mrob_tfm/sp1_canonical/validation/quota_game_cases.py\n?? src/viu_mrob_tfm/sp1_canonical/validation/quota_game_core.py\n?? tests/test_sp1_tfm_final_quota_game_v1.py"
+  },
+  "grape_s": {
+    "citation_key": "diehlAdams2026GrapeS",
+    "data_repository": "https://github.com/HMTLab-Adams/JAAMAS-GRAPE-S-2026",
+    "doi": "10.1007/s10458-026-09758-4",
+    "primary_domain": "discrete_service_counts",
+    "scalar_quota_faithful": false,
+    "version_of_record_date": "2026-05-26"
+  },
+  "runtime": {
+    "algorithm_cpu_accounting": "sum over unique (world_id, method) executions; raw, seeded and recovered rows share one execution and are not triple-counted",
+    "algorithm_cpu_time_s": 877.578125,
+    "driver_cpu_time_s": 0.078125,
+    "last_resume_driver_cpu_time_s": 0.078125,
+    "last_resume_tasks_reused": 15,
+    "last_resume_wall_time_s": 0.07312909991014749,
+    "task_failures": [],
+    "tasks_completed": 15,
+    "tasks_expected": 15,
+    "tasks_reused": 0,
+    "wall_time_s": 310.7628477999242,
+    "workers": 6
+  },
+  "schema_version": 1,
+  "selected_parameters_sha256": "d930bc21755b40d52e5b87249b270f063d6b7e3ab4fac2661453de4e38f252d3",
+  "task_manifest_hash": "8dbce4165fe4e36b859033d4af081328e5a4c79611b48a330a167a2b2844eca0",
+  "tasks": 15,
+  "test_summary": {
+    "errors": 0,
+    "failures": 0,
+    "passed": true,
+    "skipped": 0,
+    "tests": 203
+  }
+}

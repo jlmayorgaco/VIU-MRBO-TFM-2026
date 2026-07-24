@@ -31,7 +31,7 @@ import numpy as np
 import pandas as pd
 import yaml
 from scipy.optimize import linear_sum_assignment
-from scipy.stats import binomtest, norm, wilcoxon
+from scipy.stats import binomtest, norm, rankdata, wilcoxon
 
 from .quota_game_cases import (
     deterministic_case_catalog,
@@ -325,6 +325,7 @@ def build_full_tasks(config: Mapping[str, Any]) -> list[dict[str, Any]]:
                 "task_fraction": float(e10["task_fraction"]),
                 "seed": int(seed),
                 "suffix": f"s{service_types}_r{per_robot}",
+                "algorithm_revision": 2,
             }
         )
     return tasks
@@ -1072,7 +1073,7 @@ def run_recovery_task(
             "mean_chain_length": math.nan,
             "nodes_expanded": math.nan,
             "runtime_s": milp_result.runtime_s,
-            "robots_reassigned": metrics["recourse_hamming"],
+            "robots_reassigned": milp_result.robots_reassigned,
             "cost_before_m": float(
                 evaluate_assignment(world, initial)["distance_total_m"]
             ),
@@ -1334,12 +1335,18 @@ def run_task_set(
         if (checkpoints / f"{identifier}.json").exists()
     ]
     tables = _read_shards(shards)
+    runtime_runs = pd.DataFrame(tables["runs"])
+    if not runtime_runs.empty and {"world_id", "method"}.issubset(runtime_runs):
+        runtime_runs = runtime_runs.drop_duplicates(
+            ["world_id", "method"],
+            keep="first",
+        )
     runtime = {
         "wall_time_s": time.perf_counter() - started_wall,
         "driver_cpu_time_s": time.process_time() - started_cpu,
         "algorithm_cpu_time_s": float(
             pd.to_numeric(
-                pd.DataFrame(tables["runs"]).get("cpu_time_s", pd.Series(dtype=float)),
+                runtime_runs.get("cpu_time_s", pd.Series(dtype=float)),
                 errors="coerce",
             ).sum()
         ),
@@ -1522,6 +1529,7 @@ def aggregate_results(runs: pd.DataFrame) -> pd.DataFrame:
     records = []
     for key, group in operational.groupby(keys, dropna=False):
         feasible = pd.to_numeric(group["feasible"], errors="coerce").fillna(0).astype(bool)
+        quality = group.loc[feasible]
         lo, hi = _wilson(int(feasible.sum()), int(feasible.size))
         records.append(
             {
@@ -1531,10 +1539,16 @@ def aggregate_results(runs: pd.DataFrame) -> pd.DataFrame:
                 "feasibility_wilson_low": lo,
                 "feasibility_wilson_high": hi,
                 "distance_median_m": float(
-                    pd.to_numeric(group["distance_total_m"], errors="coerce").median()
+                    pd.to_numeric(
+                        quality["distance_total_m"],
+                        errors="coerce",
+                    ).median()
                 ),
                 "overcapacity_median": float(
-                    pd.to_numeric(group["overcapacity_total"], errors="coerce").median()
+                    pd.to_numeric(
+                        quality["overcapacity_total"],
+                        errors="coerce",
+                    ).median()
                 ),
                 "wall_time_median_s": float(
                     pd.to_numeric(group["wall_time_s"], errors="coerce").median()
@@ -1591,12 +1605,12 @@ def paired_comparisons(
                 continue
             left_feasible = left.loc[common, "feasible"].astype(bool).to_numpy()
             right_feasible = right.loc[common, "feasible"].astype(bool).to_numpy()
-            paired = (
+            paired_all = (
                 left.loc[common, "distance_total_m"].to_numpy(float)
                 - right.loc[common, "distance_total_m"].to_numpy(float)
             )
-            finite = np.isfinite(paired)
-            paired = paired[finite]
+            quality_pair = left_feasible & right_feasible & np.isfinite(paired_all)
+            paired = paired_all[quality_pair]
             if paired.size:
                 samples = np.median(
                     paired[
@@ -1617,10 +1631,10 @@ def paired_comparisons(
                 rank_biserial = (
                     float(
                         (
-                            np.sum(np.abs(nonzero)[nonzero > 0])
-                            - np.sum(np.abs(nonzero)[nonzero < 0])
+                            np.sum(rankdata(np.abs(nonzero))[nonzero > 0])
+                            - np.sum(rankdata(np.abs(nonzero))[nonzero < 0])
                         )
-                        / np.sum(np.abs(nonzero))
+                        / np.sum(rankdata(np.abs(nonzero)))
                     )
                     if nonzero.size
                     else 0.0
@@ -1633,6 +1647,7 @@ def paired_comparisons(
                     "method": proposed,
                     "baseline": baseline,
                     "paired_worlds": len(common),
+                    "quality_paired_worlds": int(np.sum(quality_pair)),
                     "mcnemar_exact_p": _mcnemar_exact(
                         left_feasible, right_feasible
                     ),
@@ -1657,6 +1672,230 @@ def paired_comparisons(
             adjusted[index] = running
         frame["wilcoxon_holm_p"] = adjusted
     return frame
+
+
+def survival_rmst(runs: pd.DataFrame) -> pd.DataFrame:
+    """Kaplan--Meier summaries retaining right-censored executions."""
+
+    subset = runs[
+        (runs["closure"] == "recovered")
+        & runs["method"].isin(PRIMARY_METHODS)
+    ].drop_duplicates(["world_id", "method"])
+    if subset.empty:
+        return pd.DataFrame()
+    horizon = float(
+        pd.to_numeric(subset["wall_time_s"], errors="coerce").max()
+    )
+    records = []
+    for method, group in subset.groupby("method"):
+        durations = pd.to_numeric(
+            group["wall_time_s"],
+            errors="coerce",
+        ).to_numpy(float)
+        events = ~group["censored"].fillna(True).astype(bool).to_numpy()
+        finite = np.isfinite(durations)
+        durations, events = durations[finite], events[finite]
+        survival = 1.0
+        previous = 0.0
+        rmst = 0.0
+        at_risk = durations.size
+        for point in np.unique(durations):
+            rmst += survival * (float(point) - previous)
+            deaths = int(np.sum((durations == point) & events))
+            removed = int(np.sum(durations == point))
+            if at_risk > 0:
+                survival *= 1.0 - deaths / at_risk
+            at_risk -= removed
+            previous = float(point)
+        rmst += survival * max(horizon - previous, 0.0)
+        records.append(
+            {
+                "method": method,
+                "runs": durations.size,
+                "horizon_s": horizon,
+                "rmst_s": rmst,
+                "km_event_probability_by_horizon": 1.0 - survival,
+                "censoring_rate": float(1.0 - np.mean(events))
+                if events.size
+                else math.nan,
+            }
+        )
+    return pd.DataFrame(records)
+
+
+def pareto_fronts(runs: pd.DataFrame) -> pd.DataFrame:
+    """Method-level quality/time/bytes Pareto audit for static experiments."""
+
+    subset = runs[
+        runs["experiment"].isin(["E1", "E2", "E3", "E4", "E5"])
+        & (runs["closure"] == "recovered")
+        & runs["method"].isin(PRIMARY_METHODS)
+    ]
+    records = []
+    for method, group in subset.groupby("method"):
+        feasible = group["feasible"].fillna(False).astype(bool)
+        quality = group.loc[feasible]
+        records.append(
+            {
+                "method": method,
+                "feasibility": float(feasible.mean()),
+                "distance_median_m": float(quality["distance_total_m"].median()),
+                "wall_time_median_s": float(group["wall_time_s"].median()),
+                "bytes_median": float(group["payload_bytes_total"].median()),
+            }
+        )
+    frame = pd.DataFrame(records)
+    dominated = []
+    values = frame[
+        ["feasibility", "distance_median_m", "wall_time_median_s", "bytes_median"]
+    ].to_numpy(float)
+    for index, current in enumerate(values):
+        other = np.delete(values, index, axis=0)
+        weakly_better = (
+            (other[:, 0] >= current[0])
+            & (other[:, 1] <= current[1])
+            & (other[:, 2] <= current[2])
+            & (other[:, 3] <= current[3])
+        )
+        strictly_better = (
+            (other[:, 0] > current[0])
+            | (other[:, 1] < current[1])
+            | (other[:, 2] < current[2])
+            | (other[:, 3] < current[3])
+        )
+        dominated.append(bool(np.any(weakly_better & strictly_better)))
+    frame["pareto_nondominated"] = ~np.asarray(dominated)
+    return frame
+
+
+def _huber_fit(
+    response: np.ndarray,
+    predictors: np.ndarray,
+    terms: Sequence[str],
+) -> list[dict[str, Any]]:
+    """Small dependency-free Huber IRLS with sandwich standard errors."""
+
+    y = np.asarray(response, dtype=float)
+    x = np.asarray(predictors, dtype=float)
+    finite = np.isfinite(y) & np.all(np.isfinite(x), axis=1)
+    y, x = y[finite], x[finite]
+    beta = np.linalg.lstsq(x, y, rcond=None)[0]
+    weights = np.ones(y.size)
+    for _ in range(100):
+        residual = y - x @ beta
+        scale = max(
+            float(np.median(np.abs(residual - np.median(residual))) / 0.6745),
+            1.0e-12,
+        )
+        standardized = np.abs(residual) / (1.345 * scale)
+        weights = np.where(standardized <= 1.0, 1.0, 1.0 / standardized)
+        weighted_x = x * np.sqrt(weights)[:, None]
+        weighted_y = y * np.sqrt(weights)
+        candidate = np.linalg.lstsq(weighted_x, weighted_y, rcond=None)[0]
+        if np.linalg.norm(candidate - beta) <= 1.0e-10 * (
+            1.0 + np.linalg.norm(beta)
+        ):
+            beta = candidate
+            break
+        beta = candidate
+    residual = y - x @ beta
+    bread = np.linalg.pinv(x.T @ (weights[:, None] * x))
+    score = x * (weights * residual)[:, None]
+    covariance = bread @ (score.T @ score) @ bread
+    standard_errors = np.sqrt(np.maximum(np.diag(covariance), 0.0))
+    return [
+        {
+            "term": term,
+            "coefficient": float(coefficient),
+            "robust_se": float(standard_error),
+            "n": int(y.size),
+            "loss": "Huber",
+        }
+        for term, coefficient, standard_error in zip(
+            terms,
+            beta,
+            standard_errors,
+            strict=True,
+        )
+    ]
+
+
+def robust_factor_regressions(
+    runs: pd.DataFrame,
+    worlds: pd.DataFrame,
+) -> pd.DataFrame:
+    """Descriptive Huber models for E4 quality and E5 communication."""
+
+    records: list[dict[str, Any]] = []
+    e4 = runs[
+        (runs["experiment"] == "E4")
+        & (runs["closure"] == "recovered")
+        & runs["method"].isin(PRIMARY_METHODS)
+        & runs["feasible"].fillna(False).astype(bool)
+    ].copy()
+    if not e4.empty:
+        method_dummies = pd.get_dummies(e4["method"], prefix="method", dtype=float)
+        regime_dummies = pd.get_dummies(
+            e4[["capacity_regime", "quota_band"]],
+            drop_first=True,
+            dtype=float,
+        )
+        design = pd.concat(
+            [
+                pd.Series(1.0, index=e4.index, name="intercept"),
+                e4["utilization"].astype(float),
+                np.log1p(e4["n"].astype(float)).rename("log1p_n"),
+                regime_dummies,
+                method_dummies.drop(
+                    columns=["method_Capacity-CBBA"],
+                    errors="ignore",
+                ),
+            ],
+            axis=1,
+        )
+        for row in _huber_fit(
+            np.log1p(e4["distance_total_m"].to_numpy(float)),
+            design.to_numpy(float),
+            list(design.columns),
+        ):
+            records.append(
+                {
+                    "model": "E4_log1p_distance_feasible",
+                    "response": "log1p(distance_total_m)",
+                    **row,
+                }
+            )
+    e5 = runs[
+        (runs["experiment"] == "E5")
+        & (runs["closure"] == "recovered")
+        & runs["method"].isin(["DRD-simple-Logit", "QPG-Logit-AR"])
+    ].merge(
+        worlds[["world_id", "lambda_2"]],
+        on="world_id",
+        how="left",
+    )
+    if not e5.empty:
+        design = pd.DataFrame(
+            {
+                "intercept": 1.0,
+                "log1p_lambda_2": np.log1p(e5["lambda_2"].astype(float)),
+                "log1p_n": np.log1p(e5["n"].astype(float)),
+                "is_qpg_logit": (e5["method"] == "QPG-Logit-AR").astype(float),
+            }
+        )
+        for row in _huber_fit(
+            np.log1p(e5["payload_bytes_total"].to_numpy(float)),
+            design.to_numpy(float),
+            list(design.columns),
+        ):
+            records.append(
+                {
+                    "model": "E5_log1p_bytes",
+                    "response": "log1p(payload_bytes_total)",
+                    **row,
+                }
+            )
+    return pd.DataFrame(records)
 
 
 def _save_figure(fig: Any, base: Path) -> None:
@@ -1684,6 +1923,8 @@ def generate_figures(
         ]
         if subset.empty:
             return
+        if column in {"distance_total_m", "overcapacity_total"}:
+            subset = subset[subset["feasible"].fillna(False).astype(bool)]
         data = subset.groupby("method")[column].median().sort_values()
         fig, ax = plt.subplots(figsize=(9, 4.5))
         data.plot.bar(ax=ax, color="#3366aa")
@@ -1732,6 +1973,7 @@ def generate_figures(
             ax.scatter(part["lambda_2"], part["payload_bytes_total"], s=10, alpha=0.5, label=method)
         ax.set_xlabel(r"Algebraic connectivity $\lambda_2$")
         ax.set_ylabel("Bytes")
+        ax.set_yscale("log")
         ax.legend()
         base = figure_dir / "06_lambda2_communication"
         _save_figure(fig, base)
@@ -1794,6 +2036,7 @@ def generate_figures(
     rec = runs[
         (runs["closure"] == "recovered") & runs["method"].isin(PRIMARY_METHODS)
     ]
+    rec = rec[rec["feasible"].fillna(False).astype(bool)]
     if not rec.empty:
         data = rec.groupby("method").agg(
             distance=("distance_total_m", "median"),
@@ -1820,11 +2063,28 @@ def generate_figures(
             "atomicity_cost_m",
         ]
         data = cert[columns].apply(pd.to_numeric, errors="coerce").median()
-        fig, ax = plt.subplots(figsize=(7, 4.5))
-        data.plot.bar(ax=ax, color=["#3182bd", "#9ecae1", "#de2d26"])
-        ax.set_ylabel("Median diagnostic magnitude")
-        ax.set_xlabel("")
-        ax.tick_params(axis="x", rotation=25)
+        fig, axes = plt.subplots(1, 3, figsize=(10, 4.5))
+        labels = [
+            "Optimization residual",
+            "Entropy-bias bound",
+            "Atomic closure delta",
+        ]
+        units = ["normalized", "normalized", "m"]
+        colors = ["#3182bd", "#9ecae1", "#de2d26"]
+        for axis, column, label, unit, color in zip(
+            axes,
+            columns,
+            labels,
+            units,
+            colors,
+            strict=True,
+        ):
+            axis.bar([label], [data[column]], color=color)
+            axis.axhline(0.0, color="black", linewidth=0.8)
+            axis.set_ylabel(unit)
+            axis.tick_params(axis="x", rotation=20)
+            axis.grid(axis="y", alpha=0.2)
+        fig.suptitle("End-to-end gap diagnostics (separate units)")
         base = figure_dir / "12_gap_decomposition"
         _save_figure(fig, base)
         generated.append(base.name)
@@ -1924,13 +2184,21 @@ def _regime_map(runs: pd.DataFrame) -> pd.DataFrame:
     records = []
     keys = ["capacity_regime", "utilization", "quota_band"]
     for key, group in e4.groupby(keys):
-        summary = group.groupby("method").agg(
-            feasibility=("feasible", "mean"),
-            distance=("distance_total_m", "median"),
-            excess=("overcapacity_total", "median"),
-            time=("wall_time_s", "median"),
-            bytes=("payload_bytes_total", "median"),
-        )
+        records_by_method = []
+        for method, method_group in group.groupby("method"):
+            feasible = method_group["feasible"].fillna(False).astype(bool)
+            quality = method_group.loc[feasible]
+            records_by_method.append(
+                {
+                    "method": method,
+                    "feasibility": float(feasible.mean()),
+                    "distance": float(quality["distance_total_m"].median()),
+                    "excess": float(quality["overcapacity_total"].median()),
+                    "time": float(method_group["wall_time_s"].median()),
+                    "bytes": float(method_group["payload_bytes_total"].median()),
+                }
+            )
+        summary = pd.DataFrame(records_by_method).set_index("method")
         eligible = summary[summary["feasibility"] >= 0.95]
         winner = (
             str(
@@ -1964,25 +2232,45 @@ def create_report(
     rec = runs[
         (runs["closure"] == "recovered") & runs["method"].isin(PRIMARY_METHODS)
     ]
-    summary = (
-        rec.groupby("method")
+    if not rec.empty:
+        summary_rows = []
+        for method, group in rec.groupby("method"):
+            feasible = group["feasible"].fillna(False).astype(bool)
+            quality = group.loc[feasible]
+            summary_rows.append(
+                {
+                    "method": method,
+                    "runs": len(group),
+                    "feasibility": float(feasible.mean()),
+                    "distance_median_m": float(quality["distance_total_m"].median()),
+                    "excess_median": float(quality["overcapacity_total"].median()),
+                    "time_median_s": float(group["wall_time_s"].median()),
+                    "bytes_median": float(group["payload_bytes_total"].median()),
+                }
+            )
+        summary = (
+            pd.DataFrame(summary_rows)
+            .set_index("method")
+            .sort_values(
+                ["feasibility", "distance_median_m"],
+                ascending=[False, True],
+            )
+        )
+    else:
+        summary = pd.DataFrame()
+    service = runs[runs["experiment"] == "E10"]
+    service_summary = (
+        service.groupby(["method", "services_per_robot"])
         .agg(
-            runs=("world_id", "count"),
-            feasibility=("feasible", "mean"),
-            distance_median_m=("distance_total_m", "median"),
-            excess_median=("overcapacity_total", "median"),
+            runs=("feasible", "size"),
+            feasibility_rate=("feasible", "mean"),
             time_median_s=("wall_time_s", "median"),
             bytes_median=("payload_bytes_total", "median"),
         )
-        .sort_values(["feasibility", "distance_median_m"], ascending=[False, True])
-        if not rec.empty
-        else pd.DataFrame()
-    )
-    service = runs[runs["experiment"] == "E10"]
-    service_summary = (
-        service.groupby("method")["feasible"].mean().sort_values(ascending=False)
+        .sort_values(["services_per_robot", "feasibility_rate"], ascending=[True, False])
+        .reset_index()
         if not service.empty
-        else pd.Series(dtype=float)
+        else pd.DataFrame()
     )
     certificate = frames["theorem_diagnostics"]
     cert_applicable = certificate[
@@ -1991,6 +2279,201 @@ def create_report(
             pd.Series(index=certificate.index, dtype=bool),
         ).notna()
     ]
+    full_findings: list[str] = []
+    if not is_preview:
+        static = runs[
+            runs["experiment"].isin(["E1", "E2", "E3", "E4", "E5"])
+            & runs["method"].isin(PRIMARY_METHODS)
+        ]
+        closure_table = (
+            static.groupby(["method", "closure"])["feasible"]
+            .mean()
+            .unstack()
+            .reindex(columns=["raw", "seeded", "recovered"])
+            .sort_values("recovered", ascending=False)
+        )
+        easy = static[
+            (static["experiment"] == "E4")
+            & (static["closure"] == "recovered")
+            & (static["capacity_regime"] == "low")
+            & np.isclose(static["utilization"], 0.60)
+            & (static["quota_band"] == "wide")
+        ]
+        difficult = static[
+            (static["experiment"] == "E4")
+            & (static["closure"] == "recovered")
+            & (static["capacity_regime"] == "high")
+            & np.isclose(static["utilization"], 0.95)
+            & (static["quota_band"] == "narrow")
+        ]
+
+        def method_metrics(frame: pd.DataFrame, method: str) -> dict[str, float]:
+            group = frame[frame["method"] == method]
+            feasible_group = group[group["feasible"].fillna(False).astype(bool)]
+            return {
+                "feasibility": float(group["feasible"].mean()),
+                "distance": float(feasible_group["distance_total_m"].median()),
+                "excess": float(feasible_group["overcapacity_total"].median()),
+                "time": float(group["wall_time_s"].median()),
+                "bytes": float(group["payload_bytes_total"].median()),
+                "milp_gap": float(feasible_group["milp_certified_gap"].median()),
+            }
+
+        qpg_easy = method_metrics(easy, "QPG-Logit-AR")
+        qpg_rep_easy = method_metrics(easy, "QPG-Replicator-AR")
+        atomic_easy = method_metrics(easy, "Atomic-Quota-Logit")
+        weighted_easy = method_metrics(easy, "Weighted-GRAPE")
+        qpg_hard = method_metrics(difficult, "QPG-Logit-AR")
+        capacity_hard = method_metrics(difficult, "Capacity-CBBA")
+        weighted_hard = method_metrics(difficult, "Weighted-GRAPE")
+        qpg_static = method_metrics(
+            static[static["closure"] == "recovered"],
+            "QPG-Logit-AR",
+        )
+        qpg_rep_static = method_metrics(
+            static[static["closure"] == "recovered"],
+            "QPG-Replicator-AR",
+        )
+        drd_logit_static = method_metrics(
+            static[static["closure"] == "recovered"],
+            "DRD-simple-Logit",
+        )
+        band_excess = (
+            static[
+                (static["experiment"] == "E4")
+                & (static["closure"] == "recovered")
+                & static["feasible"].fillna(False).astype(bool)
+            ]
+            .groupby("quota_band")["overcapacity_total"]
+            .median()
+        )
+        dynamic = frames["dynamic_events"]
+        dynamic_summary = dynamic.groupby("method").agg(
+            feasibility=("post_event_feasible", "mean"),
+            recourse=("robots_reassigned", "median"),
+            bytes=("bytes_recovery", "median"),
+            intact=("unaffected_coalition_intact_fraction", "median"),
+        )
+        qpg_dynamic = dynamic_summary.loc["QPG-Logit-AR"]
+        best_dynamic_recourse = float(dynamic_summary["recourse"].min())
+        qpg_certificate = cert_applicable[
+            cert_applicable["method"] == "QPG-Logit-AR"
+        ]
+        e9 = frames["recovery_paths"]
+        e9 = e9[e9["experiment"] == "E9"]
+        e9_success = e9.groupby("repair_method")["success"].mean()
+
+        full_findings = [
+            "## Separación raw → seeded → recovered",
+            "",
+            closure_table.to_markdown(floatfmt=".4f"),
+            "",
+            "La factibilidad final no puede atribuirse a la dinámica continua. "
+            "En E1–E5, QPG-Logit pasó de "
+            f"{closure_table.loc['QPG-Logit-AR', 'raw']:.2%} raw a "
+            f"{closure_table.loc['QPG-Logit-AR', 'seeded']:.2%} seeded y "
+            f"{closure_table.loc['QPG-Logit-AR', 'recovered']:.2%} recovered. "
+            "El mismo recovery acotado también elevó sustancialmente a todos los "
+            "baselines; por tanto, es el principal responsable de la factibilidad.",
+            "",
+            "## Respuesta a las diez preguntas obligatorias",
+            "",
+            "1. **Régimen fácil.** No existe un dominador único. En E4 "
+            "(heterogeneidad baja, utilización 0,60, banda amplia), todos los "
+            "métodos fueron factibles: QPG-Replicator obtuvo la menor distancia "
+            f"mediana ({qpg_rep_easy['distance']:.1f} m), QPG-Logit quedó en "
+            f"{qpg_easy['distance']:.1f} m, Weighted-GRAPE tuvo el menor exceso "
+            f"({weighted_easy['excess']:.2f}) y Atomic-Quota-Logit fue mucho más "
+            f"barato en comunicación ({atomic_easy['bytes']:.0f} bytes).",
+            "",
+            "2. **Alta heterogeneidad y alta utilización.** Tampoco hubo "
+            "dominador. En E4 alta/0,95/estrecha, Capacity-CBBA tuvo la mayor "
+            f"factibilidad ({capacity_hard['feasibility']:.1%}), seguido por "
+            f"Weighted-GRAPE ({weighted_hard['feasibility']:.1%}); QPG-Logit "
+            f"alcanzó solo {qpg_hard['feasibility']:.1%}. Entre sus escasas "
+            f"salidas factibles, QPG-Logit sí obtuvo menor distancia "
+            f"({qpg_hard['distance']:.1f} m), lo que no compensa el sesgo de "
+            "selección inducido por la baja factibilidad.",
+            "",
+            "3. **Cuotas superiores.** Las bandas estrechas eliminaron violaciones "
+            "superiores en las salidas declaradas factibles, pero no redujeron el "
+            "exceso respecto de la cuota inferior: las medianas E4 fueron "
+            f"{band_excess.get('wide', np.nan):.3f} (amplia), "
+            f"{band_excess.get('medium', np.nan):.3f} (media) y "
+            f"{band_excess.get('narrow', np.nan):.3f} (estrecha). Su efecto "
+            "principal fue reducir la región factible.",
+            "",
+            "4. **Calidad frente a coste.** QPG compra una mejora descriptiva de "
+            f"distancia ({qpg_static['distance']:.1f} m de mediana estática), "
+            "pero no justifica su coste como ganador general: tuvo menor "
+            "factibilidad que los métodos hedónicos, censura del 100 % y una "
+            f"mediana de {qpg_static['bytes']:.0f} bytes. En el régimen difícil "
+            "incumplió los gates de factibilidad, gap MILP, recursos y recourse.",
+            "",
+            "5. **Estado continuo o recovery.** La ventaja de factibilidad provino "
+            "principalmente del recovery común, no del estado continuo; la tabla "
+            "raw/seeded/recovered lo hace auditable.",
+            "",
+            "6. **Logit frente a Replicator.** En QPG, Logit redujo distancia "
+            f"({qpg_static['distance']:.1f} frente a "
+            f"{qpg_rep_static['distance']:.1f} m) y exceso "
+            f"({qpg_static['excess']:.2f} frente a "
+            f"{qpg_rep_static['excess']:.2f}), pero perdió "
+            f"{(qpg_rep_static['feasibility'] - qpg_static['feasibility']):.2%} "
+            "de factibilidad. En DRD, Logit mejoró ligeramente factibilidad pero "
+            f"empeoró distancia ({drd_logit_static['distance']:.1f} m). No hay "
+            "mejora universal por cambiar el protocolo.",
+            "",
+            "7. **Mercados locales y cuello de botella V3.** La arquitectura evita "
+            "estructuralmente copias densas globales de todos los duales, pero no "
+            "redujo el tráfico medido: QPG-Logit usó aproximadamente un 21 % más "
+            "bytes que DRD-Logit en E1–E5. No se acredita la eliminación del "
+            "cuello de botella de comunicación.",
+            "",
+            "8. **Certificado extremo a extremo.** Fue válido en "
+            f"{int(qpg_certificate['certificate_valid'].sum())}/"
+            f"{len(qpg_certificate)} casos QPG-Logit aplicables, pero su gap "
+            f"relativo mediano ({qpg_certificate['gap_cert'].median():.1f}) fue "
+            "demasiado holgado para ser operativo. La cota Bernstein fue válida "
+            "pero vacua: mediana 1,0 frente a una frecuencia empírica de fallo "
+            "también cercana a 1,0.",
+            "",
+            "9. **Dónde GRAPE/CBBA son mejores.** Capacity-CBBA fue más factible "
+            "en el régimen difícil y mucho más barato en bytes; Weighted-GRAPE "
+            "y Weighted-Pair-GRAPE lograron la mayor factibilidad estática "
+            "agregada. En E10 discreto, Pair-GRAPE-S alcanzó 100 % y GRAPE-S "
+            "97,5 % con cinco servicios por robot, frente a 72,5 % de las "
+            "extensiones Capacity-CBBA y QPG.",
+            "",
+            "10. **Claim final defendible.** Se implementó y auditó una interfaz "
+            "trazable de intención continua, compromiso atómico y recuperación "
+            "común con precios locales y certificados válidos. La evidencia "
+            "identifica un intercambio entre distancia, factibilidad y "
+            "comunicación; no soporta superioridad general, convergencia ni "
+            "optimalidad entera distribuida.",
+            "",
+            "## Gates científicos y resultados negativos",
+            "",
+            f"- QPG-Logit obtuvo {qpg_hard['feasibility']:.1%} de factibilidad "
+            "en el régimen difícil predeclarado, lejos del 95 % exigido.",
+            f"- Su gap MILP mediano fue {qpg_hard['milp_gap']:.3f}, por encima "
+            "del 0,05 exigido.",
+            f"- El recourse dinámico mediano fue "
+            f"{qpg_dynamic['recourse']:.0f} robots frente al mejor valor "
+            f"{best_dynamic_recourse:.0f}; la razón "
+            f"{qpg_dynamic['recourse'] / best_dynamic_recourse:.2f} incumple "
+            "el máximo 0,70.",
+            f"- Todas las salidas pos-evento fueron reparadas, pero la fracción "
+            f"mediana de coaliciones no afectadas intactas fue "
+            f"{qpg_dynamic['intact']:.1f}; el cierre fue global, no local.",
+            f"- En E9, augmenting paths y MILP repair resolvieron "
+            f"{e9_success.get('augmenting_paths', np.nan):.1%} y "
+            f"{e9_success.get('milp_repair', np.nan):.1%}; greedy y swap "
+            f"resolvieron {e9_success.get('greedy', np.nan):.1%} y "
+            f"{e9_success.get('swap', np.nan):.1%}. Esto valida el generador "
+            "de cadenas 1–12 dentro del dominio ensayado, no completitud general.",
+            "",
+        ]
     report = [
         f"# {'Preview' if is_preview else 'Informe'} — {PREVIEW if is_preview else CAMPAIGN}",
         "",
@@ -2008,11 +2491,14 @@ def create_report(
         "",
         "## Resultado descriptivo agregado",
         "",
+        "La tabla siguiente agrupa E1–E7 y calcula distancia/exceso solo sobre "
+        "salidas recovered factibles; la sección posterior separa E1–E5 por cierre.",
+        "",
         summary.to_markdown() if not summary.empty else "Sin filas escalares.",
         "",
         "## Servicios discretos E10",
         "",
-        service_summary.to_frame("feasibility_rate").to_markdown()
+        service_summary.to_markdown()
         if not service_summary.empty
         else "No aplica al preview.",
         "",
@@ -2039,6 +2525,7 @@ def create_report(
         f"- CPU algorítmica acumulada: {runtime['algorithm_cpu_time_s']:.3f} s.",
         f"- Figuras PNG/PDF: {len(figures)}.",
         "",
+        *full_findings,
         "## Conclusión científica",
         "",
         "La interpretación final se basa en el mapa de regímenes y en pruebas "
@@ -2134,6 +2621,21 @@ def build_audit(
         not np.isinf(pd.to_numeric(runs[column], errors="coerce")).any()
         for column in finite_columns
     )
+    required_operational_columns = [
+        "wall_time_s",
+        "cpu_time_s",
+        "payload_bytes_total",
+        "packets_total",
+        "logical_rounds",
+        "feasible",
+        "simplex_violation",
+    ]
+    required_operational_numeric = operational[
+        required_operational_columns
+    ].apply(pd.to_numeric, errors="coerce")
+    no_nan_or_inf_required_operational = bool(
+        np.isfinite(required_operational_numeric.to_numpy(float)).all()
+    )
     certificate = frames["theorem_diagnostics"]
     applicable_cert = certificate[
         certificate.get(
@@ -2162,6 +2664,9 @@ def build_audit(
             if not worlds.empty
             else False,
             "no_inf": no_inf,
+            "no_nan_or_inf_required_operational_fields": (
+                no_nan_or_inf_required_operational
+            ),
             "simplex_valid": bool(
                 (
                     pd.to_numeric(
@@ -2172,7 +2677,13 @@ def build_audit(
                 ).all()
             ),
             "exclusive_atomic_output": bool(
-                operational.get("exclusive", False).fillna(False).all()
+                operational.get(
+                    "exclusive",
+                    pd.Series(False, index=operational.index, dtype=bool),
+                )
+                .astype("boolean")
+                .fillna(False)
+                .all()
             ),
             "certificate_valid_all_applicable": bool(
                 applicable_cert["certificate_valid"].astype(bool).all()
@@ -2284,6 +2795,32 @@ def execute_campaign(
         workers=workers or int(config["parallel_workers"]),
         force=force,
     )
+    primary_manifest_path = output_dir / "primary_execution_manifest.json"
+    if not is_preview and primary_manifest_path.exists():
+        primary_manifest = json.loads(
+            primary_manifest_path.read_text(encoding="utf-8")
+        )
+        primary_runtime = primary_manifest.get("runtime", {})
+        last_resume_wall_time = float(runtime["wall_time_s"])
+        last_resume_driver_cpu = float(runtime["driver_cpu_time_s"])
+        runtime = {
+            **runtime,
+            "wall_time_s": float(
+                primary_runtime.get("wall_time_s", runtime["wall_time_s"])
+            ),
+            "driver_cpu_time_s": float(
+                primary_runtime.get(
+                    "driver_cpu_time_s",
+                    runtime["driver_cpu_time_s"],
+                )
+            ),
+            "last_resume_wall_time_s": last_resume_wall_time,
+            "last_resume_driver_cpu_time_s": last_resume_driver_cpu,
+            "algorithm_cpu_accounting": (
+                "sum over unique (world_id, method) executions; closure rows "
+                "share one execution and are not triple-counted"
+            ),
+        }
     frames = _write_tables(
         tables,
         output_dir,
@@ -2294,6 +2831,18 @@ def execute_campaign(
     regime = _regime_map(frames["all_runs"])
     regime.to_csv(output_dir / "regime_map.csv", index=False)
     frames["regime_map"] = regime
+    survival = survival_rmst(frames["all_runs"])
+    survival.to_csv(output_dir / "survival_rmst.csv", index=False)
+    frames["survival_rmst"] = survival
+    pareto = pareto_fronts(frames["all_runs"])
+    pareto.to_csv(output_dir / "pareto_fronts.csv", index=False)
+    frames["pareto_fronts"] = pareto
+    robust = robust_factor_regressions(
+        frames["all_runs"],
+        frames["worlds"],
+    )
+    robust.to_csv(output_dir / "robust_regression.csv", index=False)
+    frames["robust_regression"] = robust
     figures = generate_figures(
         frames["all_runs"],
         frames["worlds"],
@@ -2305,13 +2854,16 @@ def execute_campaign(
     statistics = {
         "paired_comparisons": frames["paired_comparisons"].to_dict("records"),
         "methods": frames["aggregated_results"].to_dict("records"),
+        "survival_rmst": survival.to_dict("records"),
+        "pareto_fronts": pareto.to_dict("records"),
+        "robust_regression": robust.to_dict("records"),
         "notes": {
             "proportions": "Wilson 95%",
             "paired_binary": "exact McNemar/binomial",
             "continuous": "paired bootstrap, Wilcoxon and rank-biserial",
             "multiplicity": "Holm",
-            "survival": "right-censored runs retained; RMST proxy reported in aggregation",
-            "robust_regression": "descriptive factorial regime map; no causal claim",
+            "survival": "Kaplan-Meier and RMST; right-censored runs retained",
+            "robust_regression": "Huber IRLS with sandwich SE; descriptive, no causal claim",
         },
     }
     _write_json(output_dir / "statistics.json", statistics)
@@ -2362,6 +2914,12 @@ def execute_campaign(
         "grape_s": config["grape_s_source"],
     }
     _write_json(output_dir / "manifest.json", manifest)
+    if (
+        not is_preview
+        and int(runtime.get("tasks_reused", 0)) == 0
+        and not primary_manifest_path.exists()
+    ):
+        _write_json(primary_manifest_path, manifest)
     reproduce = f"""# Reproducción de {manifest['campaign']}
 
 Entorno: Python 3.11+, dependencias fijadas en `pyproject.toml`.

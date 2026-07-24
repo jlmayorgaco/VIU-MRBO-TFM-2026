@@ -108,6 +108,18 @@ results/campaigns/**/frames/*
 results/sp1_validation/SP1_DRD_VS_CBBA_SIMPLE_v1_preview/
 results/sp1_validation/SP1_DRD_VS_CBBA_SIMPLE_v1/
 
+# Final SP1 quota-game campaign: checkpoints and redundant CSV message/trace
+# mirrors are reproducible local artifacts. Canonical Parquet tables, compact
+# CSV summaries, manifests, checksums and final PNG/PDF figures remain versioned.
+results/sp1_validation/SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1/checkpoints/
+results/sp1_validation/SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1_preview/checkpoints/
+results/sp1_validation/SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1/all_messages.csv
+results/sp1_validation/SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1_preview/all_messages.csv
+results/sp1_validation/SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1/all_traces.csv
+results/sp1_validation/SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1_preview/all_traces.csv
+!results/sp1_validation/SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1/figures/*.pdf
+!results/sp1_validation/SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1_preview/figures/*.pdf
+
 # Organization quarantine / regenerated local artifacts
 archive/
 guidelines/

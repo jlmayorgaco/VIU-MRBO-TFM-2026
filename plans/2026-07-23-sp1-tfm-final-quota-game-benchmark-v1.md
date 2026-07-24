@@ -200,9 +200,9 @@ robustas exploratorias. Los censurados no se eliminan.
 - [x] Hito 5 — runner reanudable, auditoría y artefactos aprobados en humo.
 - [x] Hito 6 — calibración completada y parámetros congelados.
 - [x] Hito 7 — preview completo con gates aprobados.
-- [ ] Hito 8 — E0--E10 completos con conteos exactos.
-- [ ] Hito 9 — estadística, figuras, informe y revisión visual completados.
-- [ ] Hito 10 — trazabilidad, hashes, commit final y Git limpio.
+- [x] Hito 8 — E0--E10 completos con conteos exactos.
+- [x] Hito 9 — estadística, figuras, informe y revisión visual completados.
+- [x] Hito 10 — trazabilidad, hashes, commit final y Git limpio.
 
 ## Validación
 
@@ -255,10 +255,22 @@ disjuntas, hashes y estado Git limpio.
   que la optimización secundaria oculte el coste del cierre.
 - 2026-07-23 — La calibración exclusiva seleccionó `balanced`; el preview
   completó 15/15 mundos y aprobó todos los gates aplicables.
+- 2026-07-23 — La ejecución primaria full completó 2.200/2.200 tareas con seis
+  workers en 3.161,859 s de pared. La CPU algorítmica deduplicada por
+  `(world_id, method)` fue 16.945,641 s; los tres cierres no se triplican.
+- 2026-07-23 — La auditoría posterior corrigió el recourse del oráculo E9,
+  separó calidad de factibilidad, reparó el cálculo rank-biserial e hizo E10
+  fiel al dominio discreto publicado. Solo se regeneraron los shards afectados
+  y los análisis derivados; la ejecución primaria queda preservada.
+- 2026-07-23 — QPG-Logit no cumplió el gate competitivo difícil. El claim final
+  se limita a la interfaz trazable continuo--semilla--recovery con precios
+  locales y certificados válidos, junto con el mapa empírico de intercambios
+  entre distancia, factibilidad y comunicación.
 
 ## Progreso
 
-Fuentes, publicación primaria, núcleo, pruebas, calibración y preview
-completados. La campaña full E0--E10 se ejecuta mediante checkpoints
-reanudables en
-`C:\Users\walla\Documents\Github\VIU-MRBO-TFM-2026-sp1-quota`.
+Campaña cerrada: preview y full auditados, 203 pruebas aprobadas, 12 figuras
+PNG/PDF revisadas, hashes regenerados, claims C1J--C1O añadidos y resultados
+negativos conservados. Los checkpoints permanecen locales y reanudables; los
+artefactos canónicos compactos quedan versionados en la rama
+`codex/sp1-tfm-final-quota-game-v1`.
