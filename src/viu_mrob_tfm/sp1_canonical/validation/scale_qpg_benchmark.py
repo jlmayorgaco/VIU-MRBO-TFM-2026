@@ -2185,7 +2185,7 @@ def generate_figures(
         axes[1].set_xlabel("Delta firmado [m]")
     save(fig, "11_homogeneous_gap_decomposition")
 
-    fig, ax = plt.subplots(figsize=(8, 5.5))
+    fig, ax = plt.subplots(figsize=(11, 5.5))
     pareto = operational.groupby("method").agg(
         cost=("all_world_cost", "median"),
         bytes=("payload_bytes_total", "median"),
@@ -2197,8 +2197,28 @@ def generate_figures(
         c=pareto["recourse"],
         cmap="viridis",
     )
-    for method, row in pareto.iterrows():
-        ax.annotate(method, (row["cost"], row["bytes"]), fontsize=6)
+    method_key = []
+    label_offsets = ((4, 4), (4, -10), (-10, 4), (-10, -10))
+    for index, (method, row) in enumerate(pareto.iterrows(), start=1):
+        offset = label_offsets[(index - 1) % len(label_offsets)]
+        ax.annotate(
+            str(index),
+            (row["cost"], row["bytes"]),
+            xytext=offset,
+            textcoords="offset points",
+            fontsize=7,
+            weight="bold",
+        )
+        method_key.append(f"{index:>2}  {method}")
+    ax.text(
+        1.20,
+        0.5,
+        "\n".join(method_key),
+        transform=ax.transAxes,
+        va="center",
+        fontsize=7,
+        family="monospace",
+    )
     ax.set_xlabel("All-world cost [m]")
     ax.set_ylabel("Payload [bytes]")
     fig.colorbar(scatter, ax=ax, label="Recourse")
