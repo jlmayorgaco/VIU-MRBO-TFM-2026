@@ -1031,7 +1031,14 @@ def _dynamic_worker(
     closure_config: Mapping[str, Any],
     shard_path: str,
 ) -> str:
-    initial, world, graph, commitment, detail = _dynamic_pair(task, base_config)
+    effective_config = copy.deepcopy(base_config)
+    effective_config.setdefault("quota_bands", {}).update(
+        closure_config.get("quota_bands", {})
+    )
+    initial, world, graph, commitment, detail = _dynamic_pair(
+        task,
+        effective_config,
+    )
     if (
         task["reported_event"] == "robot_failure"
         and detail.get("affected_robot") is not None
@@ -1075,7 +1082,7 @@ def _dynamic_worker(
             affected.append(previous_load)
     rows = []
     for variant in closure_config["dynamic_locality"]["recovery_variants"]:
-        options = dict(base_config["recovery"])
+        options = dict(effective_config["recovery"])
         if variant == "local_recourse":
             options["recourse_weight_m"] = float(
                 closure_config["dynamic_locality"]["recourse_penalty"]
