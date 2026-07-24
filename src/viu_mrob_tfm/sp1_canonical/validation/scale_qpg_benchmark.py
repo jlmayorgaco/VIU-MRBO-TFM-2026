@@ -2381,27 +2381,25 @@ def generate_figures(
     ax.legend(fontsize=7)
     save(fig, "06_active_set_size_vs_k")
 
-    fig, ax = plt.subplots(figsize=(8, 4.8))
+    fig, ax = plt.subplots(figsize=(9, 6))
     if dynamic.empty:
         _not_available(ax, "C6 no pertenece al preview")
     else:
-        recourse = dynamic.groupby("method")["recourse"].median()
-        ax.bar(recourse.index, recourse.values)
-        ax.tick_params(axis="x", rotation=40)
-        ax.set_ylabel("Recourse mediano")
+        recourse = dynamic.groupby("method")["recourse"].median().sort_values()
+        ax.barh(recourse.index, recourse.values)
+        ax.set_xlabel("Recourse mediano")
     save(fig, "07_dynamic_recourse")
 
-    fig, ax = plt.subplots(figsize=(8, 4.8))
+    fig, ax = plt.subplots(figsize=(9, 6))
     if dynamic.empty:
         _not_available(ax, "C6 no pertenece al preview")
     else:
         integrity = dynamic.groupby("method")[
             "unaffected_coalition_integrity"
-        ].median()
-        ax.bar(integrity.index, integrity.values)
-        ax.tick_params(axis="x", rotation=40)
-        ax.set_ylim(0, 1)
-        ax.set_ylabel("Integridad mediana")
+        ].median().sort_values()
+        ax.barh(integrity.index, integrity.values)
+        ax.set_xlim(0, 1)
+        ax.set_xlabel("Integridad mediana")
     save(fig, "08_unaffected_coalition_integrity")
 
     fig, ax = plt.subplots(figsize=(8, 4.8))
