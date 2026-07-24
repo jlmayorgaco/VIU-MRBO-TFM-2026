@@ -1,12 +1,12 @@
 {
-  "audit_passed": true,
+  "audit_passed": false,
   "campaign": "SP1_SCALE_QPG_BENCHMARK_v2_preview",
-  "censoring_count": 184,
+  "censoring_count": 328,
   "conclusion": {
     "code": "F",
-    "text": "Existen regímenes distintos y no hay dominador."
+    "text": "SCALE-QPG no supera todos los gates del preview; V2 full queda bloqueada."
   },
-  "config_sha256": "28b560552beedfe6fa7f7e9fd0fb7aa1b31e523947e34ca48afc15c7064cef57",
+  "config_sha256": "f4428bfb07e31fc9cdbc7d38e8fc78a3fb232d202bf50bc34dc5e4c186789848",
   "environment": {
     "numpy": "2.3.5",
     "pandas": "2.3.3",
@@ -31,21 +31,82 @@
   ],
   "git_at_execution": {
     "branch": "codex/sp1-scale-qpg-validation-v2",
-    "commit": "aa84c1e00c212ab441068477b7a9c1d0e53e2edc",
-    "status_porcelain": "?? results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/\n?? results/sp1_validation/SP1_TFM_VALIDATION_CLOSURE_v1_1/"
+    "commit": "69936fd28e42f4c163835611f1e312d618704928",
+    "status_porcelain": "M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/aggregated_results.csv\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/all_messages.parquet\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/all_runs.parquet\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/all_traces.parquet\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/audit.json\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/bernstein_validation.csv\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/censoring.csv\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/checksums.sha256\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/config_snapshot.yaml\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/convergence_validation.csv\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/dynamic_events.csv\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/01_seed_quality_before_after_recovery.pdf\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/01_seed_quality_before_after_recovery.png\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/02_persistent_convergence.pdf\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/02_persistent_convergence.png\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/03_feasibility_all_world_cost.pdf\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/03_feasibility_all_world_cost.png\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/04_common_feasible_distance.pdf\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/04_common_feasible_distance.png\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/05_bytes_vs_n_k.pdf\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/05_bytes_vs_n_k.png\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/06_active_set_size_vs_k.pdf\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/06_active_set_size_vs_k.png\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/07_dynamic_recourse.pdf\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/07_dynamic_recourse.png\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/08_unaffected_coalition_integrity.pdf\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/08_unaffected_coalition_integrity.png\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/09_augmenting_chain_complexity.pdf\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/10_bernstein_calibration.pdf\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/10_bernstein_calibration.png\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/11_homogeneous_gap_decomposition.pdf\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/11_homogeneous_gap_decomposition.png\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/12_pareto_quality_communication_recourse.pdf\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/12_pareto_quality_communication_recourse.png\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/gap_decomposition.csv\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/manifest.json\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/message_accounting_validation.csv\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/paired_comparisons.csv\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/regime_map.csv\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/report.md\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/seed_attribution.csv\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/statistics.json\n M results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/survival_rmst.csv\n?? results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/scale_qpg_preview_audit.json\n?? results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/scale_qpg_preview_report.md"
   },
   "runtime": {
     "task_failures": [],
-    "tasks_completed": 30,
-    "tasks_executed": 30,
-    "tasks_expected": 30,
-    "tasks_reused": 0,
-    "wall_time_s": 213.55431440006942,
+    "tasks_completed": 55,
+    "tasks_executed": 0,
+    "tasks_expected": 55,
+    "tasks_reused": 55,
+    "wall_time_s": 0.5881893000332639,
     "workers": 6
   },
   "schema_version": 1,
-  "scientific_win_gates": null,
+  "scientific_win_gates": {
+    "all_passed": false,
+    "baselines": [
+      "Capacity-CBBA",
+      "Weighted-GRAPE",
+      "Weighted-Pair-GRAPE"
+    ],
+    "passed": {
+      "common_feasible_distance": false,
+      "dynamic_recourse": false,
+      "global_fallback_rate": true,
+      "payload_bytes": false,
+      "recovered_feasibility": false,
+      "unaffected_coalition_integrity": false
+    },
+    "per_method": {
+      "SCALE-QPG-LogitBR-LocalAR": {
+        "all_passed": false,
+        "observed": {
+          "bytes_ratio_to_best_baseline": 7.000724244070252,
+          "common_feasible_dynamic_worlds": 1,
+          "common_feasible_static_worlds": 15,
+          "distance_ratio_to_best_baseline": 1.3630866772479906,
+          "dynamic_recovered_feasibility": 0.8,
+          "global_fallback_rate": 0.0,
+          "recourse_ratio_to_best_dynamic_baseline": 0.7407407407407407,
+          "static_recovered_feasibility": 0.6,
+          "unaffected_coalition_integrity": 0.10526315789473684
+        },
+        "passed": {
+          "common_feasible_distance": false,
+          "dynamic_recourse": false,
+          "global_fallback_rate": true,
+          "payload_bytes": false,
+          "recovered_feasibility": false,
+          "unaffected_coalition_integrity": false
+        }
+      },
+      "SCALE-QPG-ReplicatorBR-LocalAR": {
+        "all_passed": false,
+        "observed": {
+          "bytes_ratio_to_best_baseline": 8.357776570704328,
+          "common_feasible_dynamic_worlds": 2,
+          "common_feasible_static_worlds": 15,
+          "distance_ratio_to_best_baseline": 1.2586272316221934,
+          "dynamic_recovered_feasibility": 0.84,
+          "global_fallback_rate": 0.0,
+          "recourse_ratio_to_best_dynamic_baseline": 0.6779661016949152,
+          "static_recovered_feasibility": 0.6333333333333333,
+          "unaffected_coalition_integrity": 0.10526315789473684
+        },
+        "passed": {
+          "common_feasible_distance": false,
+          "dynamic_recourse": true,
+          "global_fallback_rate": true,
+          "payload_bytes": false,
+          "recovered_feasibility": false,
+          "unaffected_coalition_integrity": false
+        }
+      }
+    }
+  },
   "selected_parameters_sha256": "d0c6e3a19e37007d10db17c2a0503851ebed0af63f96350c357fd7270c513491",
-  "task_manifest_hash": "c6e0c967e7726db2af2b6ae3c548e0f7e86ab37b51238ba8c62b96fb43d13f09",
-  "tasks": 30
+  "task_manifest_hash": "1d1743b6ad7179130482f0d468cf4bdbc78539f784d2d8ddc011aefb07916807",
+  "tasks": 55
 }

@@ -14,8 +14,10 @@ Esta etapa separa dos preguntas falsables:
 Los paquetes nuevos son:
 
 - `results/sp1_validation/SP1_TFM_VALIDATION_CLOSURE_v1_1`;
-- `results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview`;
-- `results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2`.
+- `results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview`.
+
+`SP1_SCALE_QPG_BENCHMARK_v2` full queda expresamente fuera de la entrega
+porque el preview no superó los gates bloqueantes.
 
 La rama es `codex/sp1-scale-qpg-validation-v2`, creada desde el commit limpio
 de V1 `d0ace5bbead043e55e3592300582f345fc7068e5`. El worktree original,
@@ -43,11 +45,11 @@ propias al dominio escalar.
 
 ## Arquitectura SCALE-QPG
 
-`SCALE-QPG-LogitBR-LocalAR` mantiene un compromiso entero en todo instante.
-La intención Logit solo selecciona propuestas. Cada propuesta usa versiones
-de mercado y un protocolo `free/current -> tentative -> committed`; un
-conflicto, timeout o incumplimiento produce rollback sin modificar el
-compromiso.
+`SCALE-QPG-LogitBR-LocalAR` y `SCALE-QPG-ReplicatorBR-LocalAR` mantienen un
+compromiso entero en todo instante. Las intenciones sparse Logit o Replicator
+solo seleccionan propuestas. Cada propuesta usa versiones de mercado y un
+protocolo `free/current -> tentative -> committed`; un conflicto, timeout o
+incumplimiento produce rollback sin modificar el compromiso.
 
 El potencial discreto es
 
@@ -66,8 +68,8 @@ evento, ruta, campo y tipo de byte.
 
 La recuperación local construye un universo residual desde las cargas
 afectadas y lo expande `h` capas. Solo robots y cargas del universo pueden
-cambiar. La variante primaria no usa fallback global. La variante
-`SCALE-QPG-LogitBR-GlobalAR` es una ablación explícita.
+cambiar. Ninguna variante del preview usa fallback global; esa posibilidad se
+conserva solo como ablación fuera de los dos métodos evaluados.
 
 ## Cierre V1.1
 
@@ -88,7 +90,7 @@ y el estado limpio se verifican y reportan después de crear dicho commit.
 
 - A2: muestra estratificada reproducible de mundos V1 E2--E7, common random
   numbers y diez semillas con el mismo `AugmentingRecovery`.
-- A3: 180 mundos (`3 tamaños x 3 topologías x 20`) y cinco métodos, con
+- A3: 180 mundos (`3 tamaños x 3 topologías x 20`) y nueve métodos, con
   límites reales de 12.000 rondas/240 s, dwell de 100 y sin recovery.
 - A4: ocho bandas objetivo, 50 estados por banda y 500 redondeos por estado.
 - A5: denominador homogéneo `max(epsilon, |LP lower bound|`; el delta firmado
@@ -104,9 +106,10 @@ evaluación `93000+` son disjuntas. La calibración usa perfiles
 predeclarados, un objetivo lexicográfico y `all_world_cost`; no se calibra por
 mundo. Los parámetros elegidos se congelan antes del preview.
 
-El preview contiene 30 mundos:
+El preview contiene 30 mundos estáticos:
 `N={20,50,100}`, cinco semillas, heterogeneidad media/alta, utilización 0,85,
-banda de 10 % y grado objetivo 8.
+banda de 10 % y grado objetivo 8. Añade 25 casos dinámicos separados:
+cinco eventos por las mismas cinco semillas en `(N,K)=(100,20)`.
 
 Diseño full congelado:
 
@@ -125,7 +128,7 @@ Diseño full congelado:
 - C9: 80 mundos de servicios discretos con el diseño V1, sin mezclarlos con
   el ranking escalar.
 
-Los métodos escalares son los trece predeclarados en la petición. MILP se
+Los métodos escalares son los once predeclarados en la petición. MILP se
 ejecuta hasta el tamaño congelado y LP en todos los tamaños. Todos los métodos
 comparten mundo/grafo y los cierres comunes comparten opciones.
 
@@ -150,7 +153,6 @@ tie-breaking, checkpoints y auditoría. Se ejecutan:
 python -m pytest -q
 python -m viu_mrob_tfm.cli.run_sp1_validation_closure_v1_1 --mode full --workers 6 --resume
 python -m viu_mrob_tfm.cli.run_sp1_scale_qpg_v2 --mode preview --workers 6 --resume
-python -m viu_mrob_tfm.cli.run_sp1_scale_qpg_v2 --mode full --workers 6 --resume
 ```
 
 Los datos crudos se guardan en shards reanudables y los artefactos derivados
@@ -174,12 +176,12 @@ mundos inviables. Las figuras y tablas se producen desde datos procesados.
 ## Hitos
 
 - [x] Rama/worktree aislados y fuentes canónicas leídas.
-- [ ] Protocolo y configuraciones congelados.
-- [ ] Cierre post-commit V1 y A2--A7 implementados y ejecutados.
-- [ ] Núcleo SCALE-QPG y pruebas aprobados.
-- [ ] Calibración, parámetros congelados y preview auditado.
-- [ ] Full C1--C9 ejecutado solo si el preview aprueba.
-- [ ] Estadística, 12 figuras, reportes y claims actualizados.
+- [x] Protocolo y configuraciones congelados.
+- [x] Cierre post-commit V1 y A2--A7 implementados y ejecutados.
+- [x] Núcleo SCALE-QPG y pruebas aprobados.
+- [x] Parámetros congelados y preview auditado.
+- [x] Full C1--C9 bloqueado porque el preview no aprobó.
+- [x] Estadística, 12 figuras, reportes y claims actualizados.
 - [ ] Commit final, hashes verificados y árbol limpio.
 
 ## Registro de decisiones
@@ -191,3 +193,9 @@ mundos inviables. Las figuras y tablas se producen desde datos procesados.
   commit y conserva el manifiesto precommit original como evidencia.
 - 2026-07-24 — Se fijaron los conteos no especificados de C4, C5, C7 y C8 antes
   de ejecutar datos.
+- 2026-07-24 — V1.1 cerró 1.620 trayectorias de convergencia y 60 eventos
+  dinámicos; sus 67 checksums pasaron.
+- 2026-07-24 — El preview ejecutó 30 mundos estáticos y 25 dinámicos. Pasaron
+  los invariantes de atomicidad, versiones, potencial, ciclos, mensajería y
+  localidad, pero fallaron factibilidad, distancia, bytes, integridad y el
+  gate conjunto de recourse; V2 full quedó bloqueado sin retuning.

@@ -152,15 +152,14 @@ methods:
   - Capacity-CBBA-Services
   - QPG-Multiservice-Extension
   scalar:
+  - SCALE-QPG-LogitBR-LocalAR
+  - SCALE-QPG-ReplicatorBR-LocalAR
   - Capacity-CBBA
   - Weighted-GRAPE
   - Weighted-Pair-GRAPE
   - Atomic-Quota-Logit
   - QPG-Logit-AR
   - QPG-Replicator-AR
-  - SCALE-QPG-BR-LocalAR
-  - SCALE-QPG-LogitBR-LocalAR
-  - SCALE-QPG-LogitBR-GlobalAR
   - RandomSeed-AR
   - NearestCompatibleSeed-AR
   - LPSeed-AR
@@ -329,6 +328,7 @@ preview:
   compatibility: arrival_radius
   topology: rdisk_degree_8
   expected_worlds: 30
+  protocol_revision: scale-qpg-preview-v2
   n_values:
   - 20
   - 50
@@ -336,6 +336,27 @@ preview:
   capacity_regimes:
   - medium
   - high
+  dynamic:
+    n: 100
+    k: 20
+    seeds:
+    - 92000
+    - 92001
+    - 92002
+    - 92003
+    - 92004
+    events:
+    - robot_failure
+    - capacity_drop
+    - new_load
+    - load_completion
+    - topology_degradation
+    capacity_regime: high
+    utilization: 0.85
+    quota_band: band10
+    compatibility: arrival_radius
+    topology: rdisk_degree_8
+    expected_worlds: 25
 evaluation:
   e0:
     deterministic_cases: 10
@@ -743,7 +764,7 @@ expected_counts:
   e8_roundings: 3000
   e9_instances: 260
   e10_worlds: 80
-  preview: 30
+  preview: 55
   c1: 120
   c2: 160
   c3: 720
@@ -777,6 +798,13 @@ scale:
   reservation_timeout_activations: 4
   stable_epochs_required: 1
   price_floor: 0.0
+  load_publication_fields:
+  - load_id
+  - committed_capacity
+  - lower_quota
+  - upper_quota
+  - marginal_price
+  - version
   payload_schema:
     proposal:
       float64: 2
@@ -818,3 +846,7 @@ win_gates:
   global_fallback_rate_max: 0.05
   atomicity_violations_max: 0
   holm_significant_required: true
+  distributed_baselines:
+  - Capacity-CBBA
+  - Weighted-GRAPE
+  - Weighted-Pair-GRAPE
