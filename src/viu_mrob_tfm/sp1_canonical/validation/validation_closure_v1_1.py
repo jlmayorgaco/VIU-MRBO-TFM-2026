@@ -1434,10 +1434,18 @@ def generate_closure_figures(
     ax.legend(fontsize=7)
     save(fig, "06_active_set_size_vs_k")
 
-    fig, ax = plt.subplots(figsize=(8, 4.8))
-    recourse = dynamic.groupby("recovery_variant")["recourse"].median()
-    ax.bar(recourse.index, recourse.values)
+    fig, ax = plt.subplots(figsize=(10, 4.8))
+    recourse = dynamic.pivot_table(
+        index="event",
+        columns="recovery_variant",
+        values="recourse",
+        aggfunc="median",
+    )
+    recourse.plot(kind="bar", ax=ax)
+    ax.set_xlabel("Evento")
     ax.set_ylabel("Recourse mediano")
+    ax.tick_params(axis="x", rotation=25)
+    ax.legend(title="Recovery", fontsize=8)
     save(
         fig,
         "07_dynamic_recourse",
