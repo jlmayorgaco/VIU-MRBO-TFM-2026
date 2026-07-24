@@ -175,7 +175,7 @@ disjuntas. Los mundos se emparejan por `world_id`.
 - E2: `N={20,50,100,200,500}`, semillas `{30,30,30,20,10}`.
 - E3: `N=100`, `K={2,5,10,20,40}`, 30 semillas.
 - E4: dos tamaños, tres heterogeneidades, tres utilizaciones, tres bandas,
-  15 semillas por celda.
+  15 semillas por celda: `2 × 3 × 3 × 3 × 15 = 810` mundos.
 - E5: tres tamaños, complete y grados objetivo 4/8/16, 20 semillas.
 - E6: Replicator, Smith, BNN, Logit, proyección y mejor respuesta amortiguada
   bajo la arquitectura QPG; tres tamaños y 20 semillas.
@@ -195,11 +195,11 @@ robustas exploratorias. Los censurados no se eliminan.
 
 - [x] Hito 1 — worktree aislado y rama limpia; V2/V3/DRD preservados.
 - [x] Hito 2 — fuentes canónicas y GRAPE-S final auditados.
-- [ ] Hito 3 — protocolo, plan y literatura congelados en commit inicial.
-- [ ] Hito 4 — núcleo matemático, métodos y pruebas unitarias aprobados.
-- [ ] Hito 5 — runner reanudable, auditoría y artefactos aprobados en humo.
-- [ ] Hito 6 — calibración completada y parámetros congelados.
-- [ ] Hito 7 — preview completo con gates aprobados.
+- [x] Hito 3 — protocolo, plan y literatura congelados en commit inicial.
+- [x] Hito 4 — núcleo matemático, métodos y pruebas unitarias aprobados.
+- [x] Hito 5 — runner reanudable, auditoría y artefactos aprobados en humo.
+- [x] Hito 6 — calibración completada y parámetros congelados.
+- [x] Hito 7 — preview completo con gates aprobados.
 - [ ] Hito 8 — E0--E10 completos con conteos exactos.
 - [ ] Hito 9 — estadística, figuras, informe y revisión visual completados.
 - [ ] Hito 10 — trazabilidad, hashes, commit final y Git limpio.
@@ -209,11 +209,9 @@ robustas exploratorias. Los censurados no se eliminan.
 Comandos previstos:
 
 ```powershell
-python -m pytest tests/test_sp1_tfm_final_quota_game.py -q
-python -m viu_mrob_tfm.cli.run_sp1_tfm_final_quota_game --stage calibrate
-python -m viu_mrob_tfm.cli.run_sp1_tfm_final_quota_game --stage preview
-python -m viu_mrob_tfm.cli.run_sp1_tfm_final_quota_game --stage full --resume
-python -m viu_mrob_tfm.cli.run_sp1_tfm_final_quota_game --stage audit
+python -m pytest tests/test_sp1_tfm_final_quota_game_v1.py -q
+python -m viu_mrob_tfm.cli.run_sp1_tfm_final_quota_game_v1 --mode preview --workers 6 --resume
+python -m viu_mrob_tfm.cli.run_sp1_tfm_final_quota_game_v1 --mode full --workers 6 --resume
 ```
 
 La aceptación exige invariantes, conteos exactos, mismas instancias/grafos,
@@ -247,9 +245,20 @@ disjuntas, hashes y estado Git limpio.
   separada, documentando el mapeo con el prompt.
 - 2026-07-23 — La publicación final de GRAPE-S confirmó requisitos discretos
   por servicio; se separó E10 del benchmark escalar.
+- 2026-07-23 — El perfil del preview identificó dos costes centrales: la
+  referencia entrópica SLSQP en \(N=100\) y un comparador atómico sin
+  estabilización antes del timeout. Se congeló la referencia entrópica hasta
+  \(N=50\), un guard de 160 rondas/5 s en preview y 40 rondas/2 s en full. El
+  guard se registra como censura, nunca como convergencia.
+- 2026-07-23 — `AugmentingRecovery` conserva longitud máxima 12 y 50.000 nodos
+  por aumento; su mejora local común queda acotada a dos pasadas para impedir
+  que la optimización secundaria oculte el coste del cierre.
+- 2026-07-23 — La calibración exclusiva seleccionó `balanced`; el preview
+  completó 15/15 mundos y aprobó todos los gates aplicables.
 
 ## Progreso
 
-Fuentes de verdad y publicación primaria revisadas. Rama limpia creada en
-`C:\Users\walla\Documents\Github\VIU-MRBO-TFM-2026-sp1-quota`. Pendiente:
-cerrar el commit inicial del protocolo e iniciar la implementación.
+Fuentes, publicación primaria, núcleo, pruebas, calibración y preview
+completados. La campaña full E0--E10 se ejecuta mediante checkpoints
+reanudables en
+`C:\Users\walla\Documents\Github\VIU-MRBO-TFM-2026-sp1-quota`.

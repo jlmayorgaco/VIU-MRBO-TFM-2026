@@ -190,6 +190,37 @@ caracteriza el generador. Las inicializaciones sesgadas por distancia y la
 aceptación múltiple de candidatos de CBBA son ablaciones secundarias limitadas
 a los 15 mundos del preview y no se mezclan con los 920 mundos principales.
 
+#### Campaña final de juego poblacional con cuotas
+
+`SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1` amplía el control anterior con cuotas
+inferiores y superiores, compatibilidad, mercados locales y recuperación
+atómica. La capacidad escalar indivisible se denota \(\chi_i\), porque \(q_i\)
+ya identifica el estado del robot en la notación canónica. La intención
+continua es \(\rho_{ik}\) y la ejecución atómica es \(x_{ik}\); el `x/y` del
+enunciado externo queda mapeado en la configuración congelada.
+
+Todos los métodos escalares reciben el mismo `world_id`, grafo y presupuesto.
+Se conservan `raw`, `seeded` y `recovered`; `AugmentingRecovery` usa para todos
+longitud máxima 12, 50.000 nodos por aumento, 30 candidatos y dos pasadas de
+intercambio local. El LP es una cota fraccionaria y el MILP solo aporta gap
+entero cuando certifica optimalidad. Hungarian se limita al control separado
+de capacidades unitarias y slots enteros.
+
+QPG usa una única pareja de precios comunes por carga, encaminada sobre el
+grafo, y no copias densas de todos los duales por robot. El guard de evaluación
+de 160 rondas/5 s en preview y 40 rondas/2 s en full es una causa explícita de
+censura; no satisface el criterio de convergencia, que además exige residual de
+estado, cuotas, precios/consenso y `dwell` de 100 rondas. La referencia
+entrópica SLSQP se ejecuta en el preview hasta \(N=50\); LP se conserva en
+todos los tamaños y MILP hasta \(N=50\).
+
+La calibración usa únicamente semillas 700000--700007. El preview emplea 15
+mundos distintos y congela el candidato `balanced` antes de E0--E10. E9
+verifica cadenas mínimas 1--12 contra greedy, swap y reparación MILP. E10 es
+un dominio secundario de requisitos enteros por servicio: solo allí se usan
+las etiquetas `GRAPE-S` y `Pair-GRAPE-S`; `Weighted-GRAPE` permanece
+explícitamente como adaptación del dominio escalar.
+
 ### SP2
 
 Contribución operacional escalar dependiente del par robot--carga y casos donde la cardinalidad es suficiente pero el índice de servicio ponderado por disponibilidad no cubre el umbral. Comparar por separado cobertura parcial y cargas completas mediante dos referencias centrales. La carga útil nominal se normaliza con una escala explícita; batería y distancia no se interpretan como reducción mecánica. La compatibilidad no puede atribuirse a una campaña que la mantuvo universal; energía de misión, fuerza, torque y geometría de contacto se evalúan por separado desde SP3.

@@ -108,6 +108,17 @@ Mantener una notación única en código, ecuaciones, figuras y memoria. Esta ta
 | `R^\dagger` | Radio que minimiza comunicación total sujeto a un nivel de calidad fijado; solo se estima cuando exista campaña de red | m | `communication_optimal_radius` |
 | `p_j` | Precio dual de la tarea u objeto `j` en auction | utilidad adimensional | `prices[j]` |
 | `rho_ik` | Preferencia continua del robot `i` por la carga `k` antes del cierre entero | adimensional, `[0,1]` | `preference[i,k]` |
+| `\chi_i` | Capacidad escalar, positiva e indivisible del robot `i` en `SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1`; se evita `q_i` porque en la notación canónica ya denota estado del robot | unidades de capacidad | `capacities[i]` |
+| `m_k^-,m_k^+` | Cuotas inferior y superior de capacidad de la carga `k` en la campaña final SP1 | mismas unidades que `\chi_i`, con `0\leq m_k^-\leq m_k^+` | `lower_quotas[k]`, `upper_quotas[k]` |
+| `\rho_{ik}` | Intención continua del robot `i` hacia la carga `k` en la campaña final SP1; incluye una acción `idle` por robot | adimensional, simplex en acciones compatibles | `rho[i,k]` |
+| `x_{ik}` | Decisión física atómica de la campaña final SP1; el símbolo `y_ik` del prompt se mapea a este símbolo canónico | binaria, con una única acción incluida `idle` | `assignment[i]`, `assignment_matrix` |
+| `Q_k(\rho),Q_k(x)` | Capacidad continua o atómica agregada en la carga `k`, `sum_i \chi_i rho_ik` o `sum_i \chi_i x_ik` | unidades de capacidad | `capacity`, `capacities_by_load` |
+| `d_k^-,d_k^+` | Déficit inferior y exceso sobre cuota superior, respectivamente | unidades de capacidad, no negativos | `deficit`, `excess_upper` |
+| `\lambda_k^-,\lambda_k^+` | Precios comunes del mercado local de la carga `k` para déficit y exceso | coste normalizado por unidad de capacidad, no negativos | `lambda_minus[k]`, `lambda_plus[k]` |
+| `\Phi_{\mathrm{QPG}}` | Potencial social común: distancia normalizada, penalización cuadrática de cuotas y coste de recourse; la entropía solo pertenece al optimizador continuo | utilidad normalizada | `social_potential` |
+| `\mathcal R_{\mathrm{AR}}` | Cierre entero común `AugmentingRecovery`, acotado por longitud y nodos; no es un algoritmo completo para toda instancia ponderada | operador de asignación a asignación | `recover_assignment` |
+| `d_0(\lambda^-,\lambda^+)` | Lower bound dual no regularizado expresado en metros | m | `nonregularized_dual_lower_bound` |
+| `g_{\mathrm{cert}}` | Gap extremo a extremo `(UB-LB)/max(1,abs(LB))` cuando existe una solución atómica factible | adimensional, no negativo salvo tolerancia numérica | `gap_cert` |
 | `\ell` | Ronda lógica de SP1-V3: una actualización simultánea primal--dual; Replicator usa dos intercambios mirror-prox y las demás dinámicas uno | entero no negativo | `logical_round` |
 | `r_{m}^{\mathrm{prim}}(\ell)` | Residual primal de la dinámica `m`; su definición se registra por método y sus magnitudes no se comparan como si fueran una única norma | adimensional, no negativo | `primal_residual`, `residual_semantics` |
 | `r^{\mathrm{cons}}(\ell)` | Máximo desacuerdo de las copias duales/tracker respecto al promedio en SP1-V3 | adimensional, no negativo | `consensus_residual` |

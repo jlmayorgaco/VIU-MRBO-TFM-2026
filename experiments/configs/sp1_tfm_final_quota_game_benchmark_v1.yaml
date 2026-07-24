@@ -1,6 +1,7 @@
 campaign_id: SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1
 preview_id: SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1_preview
 schema_version: 1
+implementation_revision: 2
 branch: codex/sp1-tfm-final-quota-game-v1
 base_commit: 0a8ecdf34d12fd0ecce686ce3c47d43231ce4a1f
 parallel_workers: 6
@@ -86,6 +87,17 @@ budgets:
     max_payoff_evaluations: 10000000
   dwell_rounds: 100
   trace_stride: 25
+  # An evaluation guard is a declared censoring mechanism, not convergence.
+  # It makes the paired factorial campaign finite while retaining the larger
+  # hard safety budgets above. Censored trajectories remain in every analysis.
+  evaluation_round_guard:
+    calibration: 120
+    preview: 160
+    full: 40
+  evaluation_wall_guard_s:
+    calibration: 10.0
+    preview: 5.0
+    full: 2.0
 
 messages:
   float_bytes: 8
@@ -132,16 +144,18 @@ methods:
 recovery:
   max_chain_length: 12
   max_nodes_per_augmentation: 50000
+  max_wall_time_s: 0.5
   candidates_per_load: 30
   prune: true
   local_exchange: true
+  local_exchange_max_passes: 2
   compress: true
 
 oracles:
   milp_timeout_s: 60.0
   milp_max_n_default: 50
   lp_all_sizes: true
-  entropy_reference_max_n: 100
+  entropy_reference_max_n: 50
   certified_gap_tolerance: 1.0e-8
 
 calibration:
@@ -318,7 +332,7 @@ expected_counts:
   e1_worlds: 150
   e2_worlds: 120
   e3_worlds: 150
-  e4_worlds: 2430
+  e4_worlds: 810
   e5_worlds: 240
   e6_worlds: 60
   e7_event_worlds: 300
