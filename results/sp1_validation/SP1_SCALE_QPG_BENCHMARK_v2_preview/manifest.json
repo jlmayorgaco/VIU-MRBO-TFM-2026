@@ -1,0 +1,51 @@
+{
+  "audit_passed": true,
+  "campaign": "SP1_SCALE_QPG_BENCHMARK_v2_preview",
+  "censoring_count": 184,
+  "conclusion": {
+    "code": "F",
+    "text": "Existen regímenes distintos y no hay dominador."
+  },
+  "config_sha256": "28b560552beedfe6fa7f7e9fd0fb7aa1b31e523947e34ca48afc15c7064cef57",
+  "environment": {
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.9",
+    "scipy": "1.16.3"
+  },
+  "fallback_count": 0,
+  "figures": [
+    "01_seed_quality_before_after_recovery",
+    "02_persistent_convergence",
+    "03_feasibility_all_world_cost",
+    "04_common_feasible_distance",
+    "05_bytes_vs_n_k",
+    "06_active_set_size_vs_k",
+    "07_dynamic_recourse",
+    "08_unaffected_coalition_integrity",
+    "09_augmenting_chain_complexity",
+    "10_bernstein_calibration",
+    "11_homogeneous_gap_decomposition",
+    "12_pareto_quality_communication_recourse"
+  ],
+  "git_at_execution": {
+    "branch": "codex/sp1-scale-qpg-validation-v2",
+    "commit": "aa84c1e00c212ab441068477b7a9c1d0e53e2edc",
+    "status_porcelain": "?? results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/\n?? results/sp1_validation/SP1_TFM_VALIDATION_CLOSURE_v1_1/"
+  },
+  "runtime": {
+    "task_failures": [],
+    "tasks_completed": 30,
+    "tasks_executed": 30,
+    "tasks_expected": 30,
+    "tasks_reused": 0,
+    "wall_time_s": 213.55431440006942,
+    "workers": 6
+  },
+  "schema_version": 1,
+  "scientific_win_gates": null,
+  "selected_parameters_sha256": "d0c6e3a19e37007d10db17c2a0503851ebed0af63f96350c357fd7270c513491",
+  "task_manifest_hash": "c6e0c967e7726db2af2b6ae3c548e0f7e86ab37b51238ba8c62b96fb43d13f09",
+  "tasks": 30
+}

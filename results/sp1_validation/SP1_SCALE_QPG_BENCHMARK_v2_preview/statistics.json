@@ -1,0 +1,404 @@
+{
+  "aggregates": [
+    {
+      "censoring_rate": 1.0,
+      "experiment": "PREVIEW",
+      "feasibility": 0.8666666666666667,
+      "feasibility_ci_lower": 0.703186733179637,
+      "feasibility_ci_upper": 0.9469034451594526,
+      "median_all_world_cost": 1208.9860136212178,
+      "median_common_candidate_distance_m": 1178.388956782443,
+      "median_payload_bytes": 38688.0,
+      "median_time_to_first_feasible_s": 5.046242700016592,
+      "median_wall_time_s": 5.058723950001877,
+      "method": "Atomic-Quota-Logit",
+      "worlds": 30
+    },
+    {
+      "censoring_rate": 0.9333333333333333,
+      "experiment": "PREVIEW",
+      "feasibility": 0.7,
+      "feasibility_ci_lower": 0.5212421254128504,
+      "feasibility_ci_upper": 0.8333525173175619,
+      "median_all_world_cost": 1395.1149296151557,
+      "median_common_candidate_distance_m": 1085.2002323042525,
+      "median_payload_bytes": 44184.0,
+      "median_time_to_first_feasible_s": 0.6472453000023961,
+      "median_wall_time_s": 0.8026459999964572,
+      "method": "Capacity-CBBA",
+      "worlds": 30
+    },
+    {
+      "censoring_rate": 0.0,
+      "experiment": "PREVIEW",
+      "feasibility": 0.9333333333333333,
+      "feasibility_ci_lower": 0.7867654163738308,
+      "feasibility_ci_upper": 0.9815229762087295,
+      "median_all_world_cost": 933.5239218496564,
+      "median_common_candidate_distance_m": 844.1933665151876,
+      "median_payload_bytes": 420.0,
+      "median_time_to_first_feasible_s": 0.008446149993687868,
+      "median_wall_time_s": 0.016770449990872294,
+      "method": "LPSeed-AR",
+      "worlds": 30
+    },
+    {
+      "censoring_rate": 0.0,
+      "experiment": "PREVIEW",
+      "feasibility": 0.6333333333333333,
+      "feasibility_ci_lower": 0.4551356365479487,
+      "feasibility_ci_upper": 0.7812607919389929,
+      "median_all_world_cost": 1028.068083214774,
+      "median_common_candidate_distance_m": 660.5152006928421,
+      "median_payload_bytes": 896.0,
+      "median_time_to_first_feasible_s": 0.01685610006097704,
+      "median_wall_time_s": 0.08515264996094629,
+      "method": "NearestCompatibleSeed-AR",
+      "worlds": 30
+    },
+    {
+      "censoring_rate": 1.0,
+      "experiment": "PREVIEW",
+      "feasibility": 0.9333333333333333,
+      "feasibility_ci_lower": 0.7867654163738308,
+      "feasibility_ci_upper": 0.9815229762087295,
+      "median_all_world_cost": 865.6648449356244,
+      "median_common_candidate_distance_m": 782.6592124300962,
+      "median_payload_bytes": 6651440.0,
+      "median_time_to_first_feasible_s": 0.15052564995130524,
+      "median_wall_time_s": 0.1719740999978967,
+      "method": "QPG-Logit-AR",
+      "worlds": 30
+    },
+    {
+      "censoring_rate": 1.0,
+      "experiment": "PREVIEW",
+      "feasibility": 0.9666666666666667,
+      "feasibility_ci_lower": 0.8332960900859082,
+      "feasibility_ci_upper": 0.9940914096183874,
+      "median_all_world_cost": 801.5600640049369,
+      "median_common_candidate_distance_m": 777.3427298021658,
+      "median_payload_bytes": 6651328.0,
+      "median_time_to_first_feasible_s": 0.16443290002644062,
+      "median_wall_time_s": 0.17686134995892644,
+      "method": "QPG-Replicator-AR",
+      "worlds": 30
+    },
+    {
+      "censoring_rate": 0.0,
+      "experiment": "PREVIEW",
+      "feasibility": 0.3333333333333333,
+      "feasibility_ci_lower": 0.19230498083676134,
+      "feasibility_ci_upper": 0.5121994835545616,
+      "median_all_world_cost": 6909.92874303033,
+      "median_common_candidate_distance_m": 588.9856989172142,
+      "median_payload_bytes": 1764.0,
+      "median_time_to_first_feasible_s": 0.1349864499643445,
+      "median_wall_time_s": 0.509772349963896,
+      "method": "RandomSeed-AR",
+      "worlds": 30
+    },
+    {
+      "censoring_rate": 0.0,
+      "experiment": "PREVIEW",
+      "feasibility": 0.6666666666666666,
+      "feasibility_ci_lower": 0.4878005164454384,
+      "feasibility_ci_upper": 0.8076950191632386,
+      "median_all_world_cost": 1764.6317924007503,
+      "median_common_candidate_distance_m": 1198.8753626453201,
+      "median_payload_bytes": 213548.0,
+      "median_time_to_first_feasible_s": 0.11372254992602393,
+      "median_wall_time_s": 0.3062101500108838,
+      "method": "SCALE-QPG-BR-LocalAR",
+      "worlds": 30
+    },
+    {
+      "censoring_rate": 0.0,
+      "experiment": "PREVIEW",
+      "feasibility": 0.6666666666666666,
+      "feasibility_ci_lower": 0.4878005164454384,
+      "feasibility_ci_upper": 0.8076950191632386,
+      "median_all_world_cost": 1683.8104585725507,
+      "median_common_candidate_distance_m": 1160.4572993621446,
+      "median_payload_bytes": 295404.0,
+      "median_time_to_first_feasible_s": 0.42699699994409457,
+      "median_wall_time_s": 0.8085326500586234,
+      "method": "SCALE-QPG-LogitBR-GlobalAR",
+      "worlds": 30
+    },
+    {
+      "censoring_rate": 0.0,
+      "experiment": "PREVIEW",
+      "feasibility": 0.6333333333333333,
+      "feasibility_ci_lower": 0.4551356365479487,
+      "feasibility_ci_upper": 0.7812607919389929,
+      "median_all_world_cost": 1646.4461261315648,
+      "median_common_candidate_distance_m": 998.9024273453464,
+      "median_payload_bytes": 309320.0,
+      "median_time_to_first_feasible_s": 0.32345749996602535,
+      "median_wall_time_s": 0.6765558999613859,
+      "method": "SCALE-QPG-LogitBR-LocalAR",
+      "worlds": 30
+    },
+    {
+      "censoring_rate": 0.9666666666666667,
+      "experiment": "PREVIEW",
+      "feasibility": 0.7,
+      "feasibility_ci_lower": 0.5212421254128504,
+      "feasibility_ci_upper": 0.8333525173175619,
+      "median_all_world_cost": 1439.5354033989684,
+      "median_common_candidate_distance_m": 1114.9883958415294,
+      "median_payload_bytes": 99148.0,
+      "median_time_to_first_feasible_s": 0.14411190000828356,
+      "median_wall_time_s": 0.20831325004110113,
+      "method": "Weighted-GRAPE",
+      "worlds": 30
+    },
+    {
+      "censoring_rate": 0.9666666666666667,
+      "experiment": "PREVIEW",
+      "feasibility": 0.8666666666666667,
+      "feasibility_ci_lower": 0.703186733179637,
+      "feasibility_ci_upper": 0.9469034451594526,
+      "median_all_world_cost": 833.4252597455968,
+      "median_common_candidate_distance_m": 791.7331880567788,
+      "median_payload_bytes": 203336.0,
+      "median_time_to_first_feasible_s": 2.8398828500066884,
+      "median_wall_time_s": 3.069997299986426,
+      "method": "Weighted-Pair-GRAPE",
+      "worlds": 30
+    }
+  ],
+  "conclusion": {
+    "code": "F",
+    "text": "Existen regímenes distintos y no hay dominador."
+  },
+  "methods": {
+    "censoring": "Kaplan-Meier/RMST and restricted mean bytes",
+    "continuous": "paired bootstrap, Wilcoxon and rank-biserial",
+    "multiplicity": "Holm",
+    "paired_binary": "exact McNemar/binomial",
+    "proportions": "Wilson 95%"
+  },
+  "paired_comparisons": [
+    {
+      "bootstrap_ci_lower": NaN,
+      "bootstrap_ci_upper": NaN,
+      "common_feasible_only": false,
+      "comparison": "SCALE-QPG-LogitBR-LocalAR vs Capacity-CBBA",
+      "median_paired_difference": NaN,
+      "metric": "all_world_cost",
+      "p_holm": 1.0,
+      "p_raw": 1.0,
+      "pairs": 0,
+      "rank_biserial": 0.0
+    },
+    {
+      "bootstrap_ci_lower": NaN,
+      "bootstrap_ci_upper": NaN,
+      "common_feasible_only": true,
+      "comparison": "SCALE-QPG-LogitBR-LocalAR vs Capacity-CBBA",
+      "median_paired_difference": NaN,
+      "metric": "distance_total_m",
+      "p_holm": 1.0,
+      "p_raw": 1.0,
+      "pairs": 0,
+      "rank_biserial": 0.0
+    },
+    {
+      "bootstrap_ci_lower": NaN,
+      "bootstrap_ci_upper": NaN,
+      "common_feasible_only": false,
+      "comparison": "SCALE-QPG-LogitBR-LocalAR vs Capacity-CBBA",
+      "median_paired_difference": NaN,
+      "metric": "payload_bytes_total",
+      "p_holm": 1.0,
+      "p_raw": 1.0,
+      "pairs": 0,
+      "rank_biserial": 0.0
+    },
+    {
+      "bootstrap_ci_lower": NaN,
+      "bootstrap_ci_upper": NaN,
+      "common_feasible_only": false,
+      "comparison": "SCALE-QPG-LogitBR-LocalAR vs Capacity-CBBA",
+      "median_paired_difference": NaN,
+      "metric": "first_feasible_time_s",
+      "p_holm": 1.0,
+      "p_raw": 1.0,
+      "pairs": 0,
+      "rank_biserial": 0.0
+    },
+    {
+      "bootstrap_ci_lower": NaN,
+      "bootstrap_ci_upper": NaN,
+      "common_feasible_only": false,
+      "comparison": "SCALE-QPG-LogitBR-LocalAR vs Capacity-CBBA",
+      "median_paired_difference": NaN,
+      "metric": "feasibility",
+      "p_holm": 1.0,
+      "p_raw": 1.0,
+      "pairs": 0,
+      "rank_biserial": NaN
+    },
+    {
+      "bootstrap_ci_lower": NaN,
+      "bootstrap_ci_upper": NaN,
+      "common_feasible_only": false,
+      "comparison": "SCALE-QPG-LogitBR-LocalAR vs Weighted-Pair-GRAPE",
+      "median_paired_difference": NaN,
+      "metric": "all_world_cost",
+      "p_holm": 1.0,
+      "p_raw": 1.0,
+      "pairs": 0,
+      "rank_biserial": 0.0
+    },
+    {
+      "bootstrap_ci_lower": NaN,
+      "bootstrap_ci_upper": NaN,
+      "common_feasible_only": true,
+      "comparison": "SCALE-QPG-LogitBR-LocalAR vs Weighted-Pair-GRAPE",
+      "median_paired_difference": NaN,
+      "metric": "distance_total_m",
+      "p_holm": 1.0,
+      "p_raw": 1.0,
+      "pairs": 0,
+      "rank_biserial": 0.0
+    },
+    {
+      "bootstrap_ci_lower": NaN,
+      "bootstrap_ci_upper": NaN,
+      "common_feasible_only": false,
+      "comparison": "SCALE-QPG-LogitBR-LocalAR vs Weighted-Pair-GRAPE",
+      "median_paired_difference": NaN,
+      "metric": "payload_bytes_total",
+      "p_holm": 1.0,
+      "p_raw": 1.0,
+      "pairs": 0,
+      "rank_biserial": 0.0
+    },
+    {
+      "bootstrap_ci_lower": NaN,
+      "bootstrap_ci_upper": NaN,
+      "common_feasible_only": false,
+      "comparison": "SCALE-QPG-LogitBR-LocalAR vs Weighted-Pair-GRAPE",
+      "median_paired_difference": NaN,
+      "metric": "first_feasible_time_s",
+      "p_holm": 1.0,
+      "p_raw": 1.0,
+      "pairs": 0,
+      "rank_biserial": 0.0
+    },
+    {
+      "bootstrap_ci_lower": NaN,
+      "bootstrap_ci_upper": NaN,
+      "common_feasible_only": false,
+      "comparison": "SCALE-QPG-LogitBR-LocalAR vs Weighted-Pair-GRAPE",
+      "median_paired_difference": NaN,
+      "metric": "feasibility",
+      "p_holm": 1.0,
+      "p_raw": 1.0,
+      "pairs": 0,
+      "rank_biserial": NaN
+    }
+  ],
+  "scientific_win_gates": null,
+  "survival": [
+    {
+      "method": "Atomic-Quota-Logit",
+      "restricted_mean_bytes": 40073.28,
+      "rmst_time_to_feasible_s": 4.492797850010295,
+      "runs": 30,
+      "tau_bytes": 82248.0,
+      "tau_time_s": 5.75303200003691
+    },
+    {
+      "method": "Capacity-CBBA",
+      "restricted_mean_bytes": 95492.79172905527,
+      "rmst_time_to_feasible_s": 2.4114914539647168,
+      "runs": 30,
+      "tau_bytes": 206304.0,
+      "tau_time_s": 5.3772356999106705
+    },
+    {
+      "method": "LPSeed-AR",
+      "restricted_mean_bytes": 548.5925925925926,
+      "rmst_time_to_feasible_s": 0.06385702333257848,
+      "runs": 30,
+      "tau_bytes": 1736.0,
+      "tau_time_s": 0.534700799966231
+    },
+    {
+      "method": "NearestCompatibleSeed-AR",
+      "restricted_mean_bytes": 1397.347368421053,
+      "rmst_time_to_feasible_s": 0.2296277433323364,
+      "runs": 30,
+      "tau_bytes": 2688.0,
+      "tau_time_s": 0.5426547999959439
+    },
+    {
+      "method": "QPG-Logit-AR",
+      "restricted_mean_bytes": 15542698.130864201,
+      "rmst_time_to_feasible_s": 0.18995164997953304,
+      "runs": 30,
+      "tau_bytes": 38001704.0,
+      "tau_time_s": 0.6629825999261811
+    },
+    {
+      "method": "QPG-Replicator-AR",
+      "restricted_mean_bytes": 14717968.35555556,
+      "rmst_time_to_feasible_s": 0.185136590001639,
+      "runs": 30,
+      "tau_bytes": 38001144.0,
+      "tau_time_s": 0.6533361999318004
+    },
+    {
+      "method": "RandomSeed-AR",
+      "restricted_mean_bytes": 4154.344644828856,
+      "rmst_time_to_feasible_s": 0.4059853867084408,
+      "runs": 30,
+      "tau_bytes": 5936.0,
+      "tau_time_s": 0.5228041000664234
+    },
+    {
+      "method": "SCALE-QPG-BR-LocalAR",
+      "restricted_mean_bytes": 464200.6666666667,
+      "rmst_time_to_feasible_s": 0.7613076626614204,
+      "runs": 30,
+      "tau_bytes": 1083344.0,
+      "tau_time_s": 1.8318424000171944
+    },
+    {
+      "method": "SCALE-QPG-LogitBR-GlobalAR",
+      "restricted_mean_bytes": 586894.9012987013,
+      "rmst_time_to_feasible_s": 1.0121706399600954,
+      "runs": 30,
+      "tau_bytes": 1311216.0,
+      "tau_time_s": 2.0737242999020964
+    },
+    {
+      "method": "SCALE-QPG-LogitBR-LocalAR",
+      "restricted_mean_bytes": 626360.5333333336,
+      "rmst_time_to_feasible_s": 1.081895716665313,
+      "runs": 30,
+      "tau_bytes": 1353904.0,
+      "tau_time_s": 2.0503884999779984
+    },
+    {
+      "method": "Weighted-GRAPE",
+      "restricted_mean_bytes": 194078.93333333335,
+      "rmst_time_to_feasible_s": 0.6607233033515515,
+      "runs": 30,
+      "tau_bytes": 472024.0,
+      "tau_time_s": 1.785172300064005
+    },
+    {
+      "method": "Weighted-Pair-GRAPE",
+      "restricted_mean_bytes": 247177.6,
+      "rmst_time_to_feasible_s": 2.8513689033493095,
+      "runs": 30,
+      "tau_bytes": 555464.0,
+      "tau_time_s": 5.525396500015631
+    }
+  ]
+}

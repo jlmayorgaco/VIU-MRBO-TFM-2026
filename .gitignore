@@ -120,6 +120,21 @@ results/sp1_validation/SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1_preview/all_traces.
 !results/sp1_validation/SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1/figures/*.pdf
 !results/sp1_validation/SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1_preview/figures/*.pdf
 
+# SCALE-QPG V2 and V1.1 closure: resumable shards and local driver logs are
+# reproducible but too large for the canonical compact result packages.
+results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/checkpoints/
+results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2/checkpoints/
+results/sp1_validation/SP1_TFM_VALIDATION_CLOSURE_v1_1/checkpoints/
+!results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview/figures/*.pdf
+!results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2/figures/*.pdf
+!results/sp1_validation/SP1_TFM_VALIDATION_CLOSURE_v1_1/figures/*.pdf
+preview.stdout.log
+preview.stderr.log
+closure.stdout.log
+closure.stderr.log
+full.stdout.log
+full.stderr.log
+
 # Organization quarantine / regenerated local artifacts
 archive/
 guidelines/

@@ -1,0 +1,55 @@
+{
+  "campaign": "SP1_SCALE_QPG_BENCHMARK_v2_preview",
+  "gates": {
+    "checkpoint_resume_available": true,
+    "exact_operational_run_count": true,
+    "exact_world_count": true,
+    "local_recovery_scope_enforced": true,
+    "message_accounting_reproducible": true,
+    "no_nan_inf_core_metrics": true,
+    "same_instance_for_all_methods": true,
+    "strict_potential_non_decreasing": true,
+    "task_failures_zero": true,
+    "zero_accepted_version_violations": true,
+    "zero_cycles": true,
+    "zero_double_assignment": true
+  },
+  "limitations": [
+    "Finite simulation is not a global convergence proof.",
+    "Local AR is bounded and incomplete.",
+    "Payload is logical traffic, not middleware traffic.",
+    "C9 is a separate discrete-service domain.",
+    "No transport physics or hardware is evaluated."
+  ],
+  "passed": true,
+  "row_counts": {
+    "aggregates": 12,
+    "bernstein": 0,
+    "censoring": 184,
+    "chains": 0,
+    "comparisons": 10,
+    "convergence": 90,
+    "dynamic": 0,
+    "fallbacks": 0,
+    "gap": 0,
+    "message_validation": 360,
+    "messages": 77281,
+    "regime": 6,
+    "runs": 420,
+    "seed_attribution": 0,
+    "services": 0,
+    "survival": 12,
+    "traces": 3692,
+    "worlds": 30
+  },
+  "runtime": {
+    "task_failures": [],
+    "tasks_completed": 30,
+    "tasks_executed": 30,
+    "tasks_expected": 30,
+    "tasks_reused": 0,
+    "wall_time_s": 213.55431440006942,
+    "workers": 6
+  },
+  "scientific_win_gates": null
+}

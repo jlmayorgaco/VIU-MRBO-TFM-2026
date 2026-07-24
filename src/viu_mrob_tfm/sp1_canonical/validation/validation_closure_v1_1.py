@@ -459,6 +459,7 @@ def _convergence_worker(
     closure_config: Mapping[str, Any],
     parameters: Mapping[str, Any],
     shard_path: str,
+    trace_path: str,
 ) -> str:
     spec = closure_config["convergence"]
     run_config = copy.deepcopy(base_config)
@@ -590,7 +591,12 @@ def _convergence_worker(
         "censoring_reason": result.censoring_reason,
         "recovery_executed": False,
     }
-    write_shard(Path(shard_path), {"summary": summary, "traces": traces})
+    pd.DataFrame(traces).to_parquet(
+        Path(trace_path),
+        index=False,
+        compression="zstd",
+    )
+    write_shard(Path(shard_path), {"summary": summary})
     return shard_path
 
 
@@ -605,13 +611,29 @@ def run_convergence_validation(
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     tasks = _convergence_tasks(closure_config)
     checkpoint = output_dir / "checkpoints" / "convergence"
+    checkpoint.mkdir(parents=True, exist_ok=True)
+    # Migrate early JSON trace shards produced by the first implementation.
+    # The numerical payload is unchanged; only the checkpoint codec changes.
+    for summary_path in checkpoint.glob("*.json"):
+        trace_path = summary_path.with_suffix(".parquet")
+        if trace_path.exists():
+            continue
+        payload = json.loads(summary_path.read_text(encoding="utf-8"))
+        if "traces" in payload:
+            pd.DataFrame(payload["traces"]).to_parquet(
+                trace_path,
+                index=False,
+                compression="zstd",
+            )
+            write_shard(summary_path, {"summary": payload["summary"]})
     pending = []
-    shards = []
+    shards: list[tuple[Path, Path]] = []
     for task in tasks:
-        path = checkpoint / f"{stable_hash(task)}.json"
-        shards.append(path)
-        if force or not path.exists():
-            pending.append((task, path))
+        summary_path = checkpoint / f"{stable_hash(task)}.json"
+        trace_path = summary_path.with_suffix(".parquet")
+        shards.append((summary_path, trace_path))
+        if force or not summary_path.exists() or not trace_path.exists():
+            pending.append((task, summary_path, trace_path))
     if pending:
         with ProcessPoolExecutor(max_workers=int(workers)) as pool:
             futures = [
@@ -621,19 +643,25 @@ def run_convergence_validation(
                     base_config,
                     closure_config,
                     parameters,
-                    str(path),
+                    str(summary_path),
+                    str(trace_path),
                 )
-                for task, path in pending
+                for task, summary_path, trace_path in pending
             ]
             for future in as_completed(futures):
                 future.result()
     summaries, traces = [], []
-    for path in shards:
-        payload = json.loads(path.read_text(encoding="utf-8"))
+    trace_frames = []
+    for summary_path, trace_path in shards:
+        payload = json.loads(summary_path.read_text(encoding="utf-8"))
         summaries.append(payload["summary"])
-        traces.extend(payload["traces"])
+        trace_frames.append(pd.read_parquet(trace_path))
     summary_frame = pd.DataFrame(summaries)
-    trace_frame = pd.DataFrame(traces)
+    trace_frame = (
+        pd.concat(trace_frames, ignore_index=True)
+        if trace_frames
+        else pd.DataFrame()
+    )
     summary_frame.to_csv(output_dir / "convergence_validation.csv", index=False)
     write_parquet_or_empty(output_dir / "all_traces.parquet", trace_frame)
     return summary_frame, trace_frame
