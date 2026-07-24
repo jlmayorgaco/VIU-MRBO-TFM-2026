@@ -15,9 +15,9 @@ quota_bands:
 postcommit_audit:
   expected_tasks: 2200
   expected_tests: 203
-  source_manifest: manifest.json
-  source_audit: audit.json
-  source_checksums: checksums.sha256
+  source_manifest: manifest_postcommit.json
+  source_audit: audit_postcommit.json
+  source_checksums: checksums_postcommit.sha256
   source_config: config_snapshot.yaml
   source_selected_parameters: selected_parameters.yaml
   final_files:
@@ -34,12 +34,12 @@ seed_attribution:
     - NearestCompatibleSeed
     - GreedyDeficitSeed
     - LPSeed
-    - Capacity-CBBA
-    - Weighted-GRAPE
-    - Weighted-Pair-GRAPE
-    - QPG-Replicator
-    - QPG-Logit
-    - Atomic-Quota-Logit
+    - Capacity-CBBASeed
+    - Weighted-GRAPESeed
+    - Weighted-Pair-GRAPESeed
+    - Atomic-Quota-LogitSeed
+    - QPG-ReplicatorSeed
+    - QPG-LogitSeed
 
 convergence:
   n_values: [20, 50, 100]
@@ -51,8 +51,12 @@ convergence:
   quota_band: medium
   compatibility: arrival_radius
   methods:
-    - QPG-Logit
     - QPG-Replicator
+    - QPG-Logit
+    - QPG-Smith
+    - QPG-BNN
+    - QPG-Projection
+    - QPG-Damped-BestResponse
     - DRD-simple-Logit
     - DRD-simple-Replicator
     - Atomic-Quota-Logit

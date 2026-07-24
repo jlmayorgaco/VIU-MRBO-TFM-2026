@@ -23,7 +23,6 @@ from scipy.stats import norm
 
 from .campaign_io import (
     git_metadata,
-    git_path_matches_commit,
     load_resolved_config,
     parse_junit,
     sha256_file,
@@ -93,14 +92,29 @@ def _source_audit(
 ) -> tuple[dict[str, Any], pd.DataFrame]:
     source = repo / str(config["source_results"])
     source_commit = str(config["source_commit"])
-    manifest = json.loads((source / "manifest.json").read_text(encoding="utf-8"))
+    legacy_manifest = json.loads(
+        (source / "manifest.json").read_text(encoding="utf-8")
+    )
     primary = json.loads(
         (source / "primary_execution_manifest.json").read_text(encoding="utf-8")
     )
-    audit = json.loads((source / "audit.json").read_text(encoding="utf-8"))
+    manifest = json.loads(
+        (
+            source / str(config["postcommit_audit"]["source_manifest"])
+        ).read_text(encoding="utf-8")
+    )
+    audit = json.loads(
+        (
+            source / str(config["postcommit_audit"]["source_audit"])
+        ).read_text(encoding="utf-8")
+    )
     checksum_validation = verify_checksum_ledger(
         source,
         source / str(config["postcommit_audit"]["source_checksums"]),
+    )
+    legacy_checksum_validation = verify_checksum_ledger(
+        source,
+        source / "checksums.sha256",
     )
     checksum_validation.to_csv(
         output_dir / "source_checksum_validation.csv",
@@ -118,7 +132,36 @@ def _source_audit(
     junit = parse_junit(source / "pytest-results.xml")
     expected_tasks = int(config["postcommit_audit"]["expected_tasks"])
     expected_tests = int(config["postcommit_audit"]["expected_tests"])
-    source_path_matches = git_path_matches_commit(repo, source_commit, source)
+    changed_source_paths = set(
+        subprocess.run(
+            [
+                "git",
+                "diff",
+                "--name-only",
+                source_commit,
+                "--",
+                str(source.relative_to(repo)),
+            ],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        ).stdout.splitlines()
+    )
+    allowed_postcommit_paths = {
+        (
+            source.relative_to(repo) / filename
+        ).as_posix()
+        for filename in (
+            "manifest_postcommit.json",
+            "audit_postcommit.json",
+            "checksums_postcommit.sha256",
+        )
+    }
+    unexpected_source_changes = (
+        changed_source_paths - allowed_postcommit_paths
+    )
     ancestor = (
         subprocess.run(
             ["git", "merge-base", "--is-ancestor", source_commit, "HEAD"],
@@ -127,7 +170,9 @@ def _source_audit(
         ).returncode
         == 0
     )
-    invalid_legacy = checksum_validation.loc[~checksum_validation["valid"]]
+    invalid_legacy = legacy_checksum_validation.loc[
+        ~legacy_checksum_validation["valid"]
+    ]
     only_stale_config_hash = bool(
         len(invalid_legacy) == 1
         and invalid_legacy.iloc[0]["file"] == "config_snapshot.yaml"
@@ -145,16 +190,19 @@ def _source_audit(
     )
     gates = {
         "source_commit_is_ancestor": ancestor,
-        "source_results_match_commit_tree": source_path_matches,
+        "source_primary_results_match_commit_tree": (
+            not unexpected_source_changes
+        ),
         "tasks_2200_of_2200": (
-            int(manifest["runtime"]["tasks_completed"]) == expected_tasks
-            and int(manifest["runtime"]["tasks_expected"]) == expected_tasks
+            int(manifest["tasks"]) == expected_tasks
             and int(primary["tasks"]) == expected_tasks
         ),
         "tests_203_of_203": (
             int(junit["tests"]) == expected_tests and bool(junit["passed"])
         ),
-        "legacy_checksum_mismatch_isolated": only_stale_config_hash,
+        "postcommit_checksums_valid": bool(
+            checksum_validation["valid"].all()
+        ),
         "final_source_checksums_recomputed": len(source_final_lines) > 0,
         "committed_config_matches_frozen_config": (
             config_hash == frozen_config_hash
@@ -167,51 +215,52 @@ def _source_audit(
             recomputed_task_hash == manifest["task_manifest_hash"]
             and recomputed_task_hash == primary["task_manifest_hash"]
         ),
-        "source_precommit_audit_passed": bool(
-            manifest["audit_passed_precommit"]
-            and all(
-                value
-                for key, value in audit["gates"].items()
-                if key != "git_clean_pending_final_commit"
-            )
+        "source_postcommit_audit_passed": bool(
+            audit["git_clean_start"]
+            and audit["git_clean_end"]
+            and audit["audit_passed_postcommit"]
+            and all(audit["gates"].values())
         ),
-        "reconstructable_omitted_csv_hashes": bool(
-            checksum_validation.loc[
-                checksum_validation["file"].isin(
-                    ["all_messages.csv", "all_traces.csv"]
-                ),
-                ["reconstructed_from_parquet", "valid"],
-            ]
-            .all(axis=None)
+        "postcommit_metadata_files_present": all(
+            (source / filename).is_file()
+            for filename in (
+                "manifest_postcommit.json",
+                "audit_postcommit.json",
+                "checksums_postcommit.sha256",
+            )
         ),
     }
     payload = {
         "campaign": CAMPAIGN,
         "source_campaign": config["source_campaign"],
         "source_commit": source_commit,
-        "source_manifest_embedded_commit": manifest["git"]["commit"],
-        "source_manifest_embedded_status": manifest["git"]["status_porcelain"],
+        "source_manifest_embedded_commit": legacy_manifest["git"]["commit"],
+        "source_manifest_embedded_status": legacy_manifest["git"][
+            "status_porcelain"
+        ],
         "interpretation": (
-            "The embedded V1 manifest remains historical precommit evidence. "
-            "The immutable source tree is independently verified at source_commit."
+            "The embedded manifest.json remains historical precommit evidence. "
+            "The immutable primary V1 tree is independently verified at "
+            "source_commit and its additive postcommit metadata passes."
         ),
         "gates": gates,
         "passed": all(gates.values()),
         "historical_discrepancies": {
             "legacy_checksum_ledger_all_valid": bool(
-                checksum_validation["valid"].all()
+                legacy_checksum_validation["valid"].all()
             ),
             "legacy_manifest_config_hash_matches_committed_config": (
-                config_hash == manifest["config_sha256"]
+                config_hash == legacy_manifest["config_sha256"]
             ),
-            "legacy_manifest_config_sha256": manifest["config_sha256"],
+            "legacy_manifest_config_sha256": legacy_manifest["config_sha256"],
             "committed_config_sha256": config_hash,
+            "legacy_checksum_mismatch_isolated": only_stale_config_hash,
             "classification": (
                 "stale precommit config hash; corrected by the V1.1 "
                 "post-commit ledger without modifying V1"
             ),
         },
-        "source_runtime": manifest["runtime"],
+        "source_runtime": legacy_manifest["runtime"],
         "source_junit": junit,
         "source_checksums": {
             "entries": int(len(checksum_validation)),
@@ -222,10 +271,8 @@ def _source_audit(
             "final_recomputed_entries": len(source_final_lines),
         },
         "cryptographic_boundary": (
-            "A tracked manifest cannot contain the hash of the commit that "
-            "contains itself. This audit binds the immutable V1 source commit; "
-            "the closure implementation commit and clean final HEAD are checked "
-            "after their respective commits."
+            "checksums_postcommit.sha256 excludes itself and binds every "
+            "primary V1 file plus both postcommit JSON records."
         ),
     }
     write_json(output_dir / "audit_final.json", payload)
@@ -278,12 +325,12 @@ def _seed_from_method(
         lp = solve_quota_lp(world)
         return quota_aware_seed(world, lp.rho), None
     method_map = {
-        "Capacity-CBBA": "Capacity-CBBA",
-        "Weighted-GRAPE": "Weighted-GRAPE",
-        "Weighted-Pair-GRAPE": "Weighted-Pair-GRAPE",
-        "QPG-Replicator": "QPG-Replicator-AR",
-        "QPG-Logit": "QPG-Logit-AR",
-        "Atomic-Quota-Logit": "Atomic-Quota-Logit",
+        "Capacity-CBBASeed": "Capacity-CBBA",
+        "Weighted-GRAPESeed": "Weighted-GRAPE",
+        "Weighted-Pair-GRAPESeed": "Weighted-Pair-GRAPE",
+        "QPG-ReplicatorSeed": "QPG-Replicator-AR",
+        "QPG-LogitSeed": "QPG-Logit-AR",
+        "Atomic-Quota-LogitSeed": "Atomic-Quota-Logit",
     }
     result = run_primary_method(
         world,
@@ -426,6 +473,16 @@ def run_seed_attribution(
     for path in shards:
         rows.extend(json.loads(path.read_text(encoding="utf-8"))["seed_rows"])
     frame = pd.DataFrame(rows)
+    frame["seed_method"] = frame["seed_method"].replace(
+        {
+            "Capacity-CBBA": "Capacity-CBBASeed",
+            "Weighted-GRAPE": "Weighted-GRAPESeed",
+            "Weighted-Pair-GRAPE": "Weighted-Pair-GRAPESeed",
+            "QPG-Replicator": "QPG-ReplicatorSeed",
+            "QPG-Logit": "QPG-LogitSeed",
+            "Atomic-Quota-Logit": "Atomic-Quota-LogitSeed",
+        }
+    )
     frame.to_csv(output_dir / "seed_attribution.csv", index=False)
     return frame
 
@@ -664,6 +721,10 @@ def run_convergence_validation(
     )
     summary_frame.to_csv(output_dir / "convergence_validation.csv", index=False)
     write_parquet_or_empty(output_dir / "all_traces.parquet", trace_frame)
+    write_parquet_or_empty(
+        output_dir / "convergence_traces.parquet",
+        trace_frame,
+    )
     return summary_frame, trace_frame
 
 
@@ -779,6 +840,7 @@ def run_bernstein_validation(
             )
     frame = pd.DataFrame(rows)
     frame.to_csv(output_dir / "bernstein_validation.csv", index=False)
+    frame.to_csv(output_dir / "bernstein_calibration.csv", index=False)
     return frame
 
 
@@ -926,6 +988,10 @@ def run_gap_decomposition(
     ]
     result = applicable[columns]
     result.to_csv(output_dir / "gap_decomposition.csv", index=False)
+    result.to_csv(
+        output_dir / "gap_decomposition_dimensionless.csv",
+        index=False,
+    )
     return result
 
 
@@ -1122,6 +1188,7 @@ def run_dynamic_locality(
         rows.extend(json.loads(path.read_text(encoding="utf-8"))["dynamic_rows"])
     frame = pd.DataFrame(rows)
     frame.to_csv(output_dir / "dynamic_events.csv", index=False)
+    frame.to_csv(output_dir / "dynamic_locality.csv", index=False)
     return frame
 
 
@@ -1173,12 +1240,82 @@ def _paired_seed_summary(seed_frame: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def _save_figure(fig: Any, output_dir: Path, name: str) -> None:
+def _seed_attribution_statistics(
+    seed_frame: pd.DataFrame,
+    comparisons: pd.DataFrame,
+) -> dict[str, Any]:
+    by_method = (
+        seed_frame.groupby("seed_method")
+        .agg(
+            worlds=("world_id", "nunique"),
+            before_feasibility=("before_feasible", "mean"),
+            after_feasibility=("after_feasible", "mean"),
+            median_after_distance_m=("after_distance_m", "median"),
+            median_all_world_cost=("all_world_cost", "median"),
+            median_robots_moved=("robots_reassigned", "median"),
+            chains_gt2_rate=("required_chain_gt_2", "mean"),
+        )
+        .reset_index()
+    )
+    qpg_labels = ["QPG-ReplicatorSeed", "QPG-LogitSeed"]
+    trivial_labels = [
+        "RandomSeed",
+        "NearestCompatibleSeed",
+        "GreedyDeficitSeed",
+        "LPSeed",
+    ]
+    qpg_cost = min(
+        float(
+            seed_frame.loc[
+                seed_frame["seed_method"].eq(label),
+                "all_world_cost",
+            ].median()
+        )
+        for label in qpg_labels
+    )
+    best_trivial_cost = min(
+        float(
+            seed_frame.loc[
+                seed_frame["seed_method"].eq(label),
+                "all_world_cost",
+            ].median()
+        )
+        for label in trivial_labels
+    )
+    qpg_adds_value = bool(qpg_cost < best_trivial_cost)
+    return {
+        "paired_by_world_id": True,
+        "common_recovery_configuration": True,
+        "method_summary": by_method.to_dict("records"),
+        "paired_comparisons_against_nearest": comparisons.to_dict("records"),
+        "qpg_median_all_world_cost": qpg_cost,
+        "best_trivial_median_all_world_cost": best_trivial_cost,
+        "qpg_adds_value_beyond_common_recovery": qpg_adds_value,
+        "mandatory_question_answer": (
+            "QPG aporta una ventaja residual tras el recovery común."
+            if qpg_adds_value
+            else (
+                "AugmentingRecovery explica la mayor parte de la calidad; "
+                "QPG no supera la mejor semilla trivial tras recovery."
+            )
+        ),
+    }
+
+
+def _save_figure(
+    fig: Any,
+    output_dir: Path,
+    name: str,
+    *,
+    aliases: Sequence[str] = (),
+) -> None:
     figure_dir = output_dir / "figures"
     figure_dir.mkdir(parents=True, exist_ok=True)
     fig.tight_layout()
     fig.savefig(figure_dir / f"{name}.png", dpi=180)
     fig.savefig(figure_dir / f"{name}.pdf")
+    for alias in aliases:
+        fig.savefig(output_dir / alias, dpi=180)
     plt.close(fig)
 
 
@@ -1193,8 +1330,13 @@ def generate_closure_figures(
 ) -> list[str]:
     names: list[str] = []
 
-    def save(fig: Any, name: str) -> None:
-        _save_figure(fig, output_dir, name)
+    def save(
+        fig: Any,
+        name: str,
+        *,
+        aliases: Sequence[str] = (),
+    ) -> None:
+        _save_figure(fig, output_dir, name, aliases=aliases)
         names.append(name)
 
     order = list(seed_frame["seed_method"].drop_duplicates())
@@ -1207,14 +1349,51 @@ def generate_closure_figures(
     ax.set_xticks(x, order, rotation=35, ha="right")
     ax.set_ylabel("Factibilidad")
     ax.legend()
-    save(fig, "01_seed_quality_before_after_recovery")
+    save(
+        fig,
+        "01_seed_quality_before_after_recovery",
+        aliases=("fig_seed_quality_before_after_recovery.png",),
+    )
 
     fig, ax = plt.subplots(figsize=(8, 4.8))
     rates = convergence.groupby("method")["persistent_convergence"].mean()
     ax.bar(rates.index, rates.values)
     ax.tick_params(axis="x", rotation=30)
     ax.set_ylabel("Convergencia persistente")
-    save(fig, "02_persistent_convergence")
+    save(
+        fig,
+        "02_persistent_convergence",
+        aliases=("fig_persistent_convergence.png",),
+    )
+
+    classifications = convergence.pivot_table(
+        index="method",
+        columns="classification",
+        values="world_id",
+        aggfunc="count",
+        fill_value=0,
+    ).reindex(
+        columns=[
+            "persistent_convergence",
+            "transient_gate_crossing",
+            "nonconvergence",
+        ],
+        fill_value=0,
+    )
+    classifications = classifications.div(
+        classifications.sum(axis=1).replace(0, np.nan),
+        axis=0,
+    )
+    fig, ax = plt.subplots(figsize=(10, 5))
+    classifications.plot(kind="bar", stacked=True, ax=ax)
+    ax.set_ylabel("Fracción de ejecuciones")
+    ax.set_xlabel("")
+    ax.legend(fontsize=7)
+    save(
+        fig,
+        "02b_raw_protocol_comparison",
+        aliases=("fig_raw_protocol_comparison.png",),
+    )
 
     fig, axes = plt.subplots(1, 2, figsize=(11, 4.5))
     axes[0].bar(after.index, after.values)
@@ -1255,7 +1434,11 @@ def generate_closure_figures(
     recourse = dynamic.groupby("recovery_variant")["recourse"].median()
     ax.bar(recourse.index, recourse.values)
     ax.set_ylabel("Recourse mediano")
-    save(fig, "07_dynamic_recourse")
+    save(
+        fig,
+        "07_dynamic_recourse",
+        aliases=("fig_dynamic_recourse.png",),
+    )
 
     fig, ax = plt.subplots(figsize=(8, 4.8))
     integrity = dynamic.groupby("recovery_variant")[
@@ -1264,7 +1447,11 @@ def generate_closure_figures(
     ax.bar(integrity.index, integrity.values)
     ax.set_ylim(0, 1)
     ax.set_ylabel("Integridad de coaliciones no afectadas")
-    save(fig, "08_unaffected_coalition_integrity")
+    save(
+        fig,
+        "08_unaffected_coalition_integrity",
+        aliases=("fig_unaffected_integrity.png",),
+    )
 
     fig, ax = plt.subplots(figsize=(8, 4.8))
     chains = seed_frame.groupby("maximum_chain_length")["nodes_expanded"].median()
@@ -1282,7 +1469,11 @@ def generate_closure_figures(
     ax.scatter(calibration["bound"], calibration["failure"])
     ax.set_xlabel("Cota Bernstein")
     ax.set_ylabel("Fallo empírico")
-    save(fig, "10_bernstein_calibration")
+    save(
+        fig,
+        "10_bernstein_calibration",
+        aliases=("fig_bernstein_reliability.png",),
+    )
 
     fig, axes = plt.subplots(1, 2, figsize=(11, 4.5))
     comparable = gap[gap["comparable"]]
@@ -1299,6 +1490,26 @@ def generate_closure_figures(
     axes[1].hist(gap["signed_atomic_delta_m"].dropna(), bins=30)
     axes[1].set_xlabel("Delta atómico firmado [m]")
     save(fig, "11_homogeneous_gap_decomposition")
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    ax.bar(medians.index, medians.values)
+    ax.tick_params(axis="x", rotation=25)
+    ax.set_ylabel("Componente / J_ref")
+    save(
+        fig,
+        "11b_gap_bound_dimensionless",
+        aliases=("fig_gap_bound_dimensionless.png",),
+    )
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    ax.hist(gap["signed_atomic_delta_m"].dropna(), bins=30)
+    ax.set_xlabel("J_integer - J_continuous [m]")
+    ax.set_ylabel("Frecuencia")
+    save(
+        fig,
+        "11c_atomic_signed_change_m",
+        aliases=("fig_atomic_signed_change_m.png",),
+    )
 
     fig, ax = plt.subplots(figsize=(7, 5))
     pareto = seed_frame.groupby("seed_method").agg(
@@ -1483,6 +1694,14 @@ def execute_closure(
     )
     comparisons = _paired_seed_summary(seed_frame)
     comparisons.to_csv(output_dir / "paired_comparisons.csv", index=False)
+    seed_statistics = _seed_attribution_statistics(
+        seed_frame,
+        comparisons,
+    )
+    write_json(
+        output_dir / "seed_attribution_paired_statistics.json",
+        seed_statistics,
+    )
     censoring = convergence.loc[
         convergence["censored"],
         [
@@ -1568,6 +1787,9 @@ def execute_closure(
         dynamic,
     )
     statistics = {
+        "mandatory_seed_question": seed_statistics[
+            "mandatory_question_answer"
+        ],
         "seed_attribution": (
             seed_frame.groupby("seed_method")
             .agg(

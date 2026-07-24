@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import fields
 from pathlib import Path
 import copy
+import json
 
 import numpy as np
 
@@ -34,6 +35,7 @@ from viu_mrob_tfm.sp1_canonical.validation.scale_qpg_benchmark import (
     run_task_set,
 )
 from viu_mrob_tfm.sp1_canonical.validation.validation_closure_v1_1 import (
+    _convergence_tasks,
     _controlled_bernstein_state,
 )
 
@@ -428,3 +430,41 @@ def test_controlled_bernstein_state_uses_declared_population_size():
     )
     assert world.n_robots == 20
     assert probabilities.shape == (20, 2)
+
+
+def test_validation_closure_declares_nine_protocols_and_exact_count():
+    repo = _repo()
+    config = load_resolved_config(
+        repo,
+        repo
+        / "experiments/configs/sp1_tfm_validation_closure_v1_1.yaml",
+    )
+    expected_methods = {
+        "QPG-Replicator",
+        "QPG-Logit",
+        "QPG-Smith",
+        "QPG-BNN",
+        "QPG-Projection",
+        "QPG-Damped-BestResponse",
+        "DRD-simple-Replicator",
+        "DRD-simple-Logit",
+        "Atomic-Quota-Logit",
+    }
+    assert set(config["convergence"]["methods"]) == expected_methods
+    assert len(_convergence_tasks(config)) == 1620
+    assert config["convergence"]["max_rounds"] == 12000
+    assert config["convergence"]["max_wall_time_s"] == 240
+    assert config["convergence"]["dwell_rounds"] == 100
+
+
+def test_v1_postcommit_audit_has_required_clean_flags():
+    path = (
+        _repo()
+        / "results/sp1_validation/SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1"
+        / "audit_postcommit.json"
+    )
+    audit = json.loads(path.read_text(encoding="utf-8"))
+    assert audit["git_clean_start"] is True
+    assert audit["git_clean_end"] is True
+    assert audit["audit_passed_postcommit"] is True
+    assert all(audit["gates"].values())
