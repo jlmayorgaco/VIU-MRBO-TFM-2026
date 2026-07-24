@@ -37,6 +37,8 @@ from viu_mrob_tfm.sp1_canonical.validation.scale_qpg_benchmark import (
 from viu_mrob_tfm.sp1_canonical.validation.validation_closure_v1_1 import (
     _convergence_tasks,
     _controlled_bernstein_state,
+    _dynamic_tasks,
+    _dynamic_worker,
 )
 
 
@@ -468,3 +470,31 @@ def test_v1_postcommit_audit_has_required_clean_flags():
     assert audit["git_clean_end"] is True
     assert audit["audit_passed_postcommit"] is True
     assert all(audit["gates"].values())
+
+
+def test_new_load_dynamic_worker_validates_repaired_pre_event_commitment(
+    tmp_path,
+):
+    repo = _repo()
+    closure = load_resolved_config(
+        repo,
+        repo
+        / "experiments/configs/sp1_tfm_validation_closure_v1_1.yaml",
+    )
+    base = load_resolved_config(
+        repo,
+        repo
+        / "experiments/configs/sp1_tfm_final_quota_game_benchmark_v1.yaml",
+    )
+    closure = copy.deepcopy(closure)
+    closure["dynamic_locality"]["recovery_variants"] = []
+    task = next(
+        task
+        for task in _dynamic_tasks(closure)
+        if task["reported_event"] == "new_load"
+    )
+    shard = tmp_path / "new_load.json"
+    assert _dynamic_worker(task, base, closure, str(shard)) == str(shard)
+    assert json.loads(shard.read_text(encoding="utf-8")) == {
+        "dynamic_rows": []
+    }

@@ -1039,15 +1039,14 @@ def _dynamic_worker(
         task,
         effective_config,
     )
+    pre_event_commitment = np.asarray(commitment, dtype=int).copy()
+    if not evaluate_assignment(initial, pre_event_commitment)["feasible"]:
+        raise RuntimeError("event was injected without a valid pre-event state")
     if (
         task["reported_event"] == "robot_failure"
         and detail.get("affected_robot") is not None
     ):
         commitment[int(detail["affected_robot"])] = world.idle_index
-    if not evaluate_assignment(initial, np.asarray(initial.witness_assignment))[
-        "feasible"
-    ]:
-        raise RuntimeError("event was injected without a valid pre-event state")
     markets = initialize_markets(
         world,
         commitment,
@@ -1075,9 +1074,7 @@ def _dynamic_worker(
     if detail.get("affected_load") is not None:
         affected.append(int(detail["affected_load"]))
     if detail.get("affected_robot") is not None:
-        previous_load = int(
-            np.asarray(initial.witness_assignment)[int(detail["affected_robot"])]
-        )
+        previous_load = int(pre_event_commitment[int(detail["affected_robot"])])
         if previous_load < world.n_loads:
             affected.append(previous_load)
     rows = []
