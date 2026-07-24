@@ -258,6 +258,15 @@ Mantener una notación única en código, ecuaciones, figuras y memoria. Esta ta
 | `B_{\mathrm{msg}}` | Tamaño contable de un mensaje ruta--versión en SP8 | bytes; 32 en la campaña | `message_bytes` |
 | `J` | Coste/función social de referencia | declarar | `social_cost` |
 | `gap` | Gap frente a oráculo | % o razón | `optimality_gap` |
+| `s_i` | Compromiso físico entero del robot `i` en SCALE-QPG; `0`/`idle` o una única carga | índice en `{0,...,K}` | `commitment[i]` |
+| `p_i^S` | Intención probabilística sparse del robot `i`, usada solo para seleccionar propuestas | simplex sobre `\mathcal A_i^S` | `intention` |
+| `\mathcal A_i^S` | Conjunto activo sparse de SCALE-QPG, de tamaño a lo sumo `L` | subconjunto de cargas más `idle` | `active_set` |
+| `Q_k(s)` | Capacidad escalar total comprometida a la carga `k` | misma unidad que `\chi_i` y las cuotas | `committed_capacity` |
+| `V_k(Q)` | Componente de penalización cuadrática inferior/superior del potencial SCALE-QPG | utilidad adimensional tras normalización | `load_value` |
+| `\Phi_t^S(s)` | Potencial atómico SCALE-QPG con coste normalizado y penalización de recourse | utilidad adimensional | `atomic_potential` |
+| `\nu_k` | Versión monótona del mercado local de la carga `k` | entero no negativo | `market.version` |
+| `\varepsilon_{\mathrm{imp}}` | Umbral mínimo estricto para aceptar un compromiso | utilidad adimensional, positiva | `epsilon_improvement` |
+| `h,H` | Radio del universo residual y longitud máxima de cadena local | enteros no negativos | `h`, `H` |
 | `p` | Índice de trabajo bibliográfico en la rúbrica de la Figura 3 | conjunto finito de trabajos verificados | `paper_key` |
 | `\chi_p^{\mathrm{dec}}` | Autonomía de la decisión en ejecución del trabajo `p` | ordinal en `{0,0.5,1}` | `decision_autonomy_score` |
 | `\chi_p^{\mathrm{loc}}` | Localidad de la información de ejecución del trabajo `p` | ordinal en `{0,0.5,1}` | `information_locality_score` |

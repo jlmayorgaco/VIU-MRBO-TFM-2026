@@ -257,6 +257,10 @@ class AlgorithmResult:
     finite_state: bool
     traces: tuple[dict[str, Any], ...] = field(default_factory=tuple)
     message_rows: tuple[dict[str, Any], ...] = field(default_factory=tuple)
+    first_atomic_assignment_time_s: float | None = None
+    first_feasible_time_s: float | None = None
+    first_persistent_feasible_time_s: float | None = None
+    final_termination_time_s: float | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -1440,6 +1444,8 @@ def _augmentation_for_target(
     candidates_per_load: int,
     tolerance: float,
     deadline: float | None = None,
+    previous_assignment: np.ndarray | None = None,
+    recourse_weight_m: float = 0.0,
 ) -> tuple[np.ndarray | None, tuple[tuple[int, int, int], ...], int, bool]:
     """Find one shortest augmenting chain that repairs ``target``.
 
@@ -1522,6 +1528,11 @@ def _augmentation_for_target(
                 world.distances_m[robot, source] if source < k else 0.0
             )
             increment = float(world.distances_m[robot, destination] - old_cost)
+            if previous_assignment is not None and recourse_weight_m > 0.0:
+                previous = int(previous_assignment[robot])
+                increment += float(recourse_weight_m) * (
+                    int(destination != previous) - int(source != previous)
+                )
             candidate_robots.append((increment, robot))
         candidate_robots.sort(key=lambda item: (item[0], item[1]))
         for increment, robot in candidate_robots[:candidates_per_load]:
@@ -1643,6 +1654,7 @@ def recover_assignment(
     maximum_nodes = int(options["max_nodes_per_augmentation"])
     deadline = started + float(options.get("max_wall_time_s", math.inf))
     candidates = int(options["candidates_per_load"])
+    recourse_weight_m = float(options.get("recourse_weight_m", 0.0))
     nodes = 0
     chain_lengths: list[int] = []
     repaired_loads = 0
@@ -1663,6 +1675,8 @@ def recover_assignment(
             candidates_per_load=candidates,
             tolerance=tolerance,
             deadline=deadline,
+            previous_assignment=previous_assignment,
+            recourse_weight_m=recourse_weight_m,
         )
         nodes += expanded
         if candidate is None:
@@ -2011,6 +2025,8 @@ def run_continuous_method(
     packets = scalars = payload_bytes = 0
     first_feasible_round: int | None = None
     bytes_to_first_feasible: int | None = None
+    first_feasible_time_s: float | None = None
+    first_persistent_feasible_time_s: float | None = None
     convergence_round: int | None = None
     bytes_to_convergence: int | None = None
     dwell = 0
@@ -2173,6 +2189,7 @@ def run_continuous_method(
         if continuous_feasible and first_feasible_round is None:
             first_feasible_round = logical_rounds
             bytes_to_first_feasible = payload_bytes
+            first_feasible_time_s = float(time.perf_counter() - started_wall)
         meets = bool(
             terminal_state <= state_tolerance
             and terminal_quota <= quota_tolerance
@@ -2193,6 +2210,19 @@ def run_continuous_method(
                     "quota_residual": terminal_quota,
                     "price_residual": terminal_price,
                     "consensus_residual": terminal_consensus,
+                    "fixed_point_residual": terminal_state,
+                    "potential": float(
+                        -np.sum(
+                            world.normalized_costs
+                            * candidate[:, : world.n_loads]
+                        )
+                        - 0.5
+                        * float(config["potential"]["rho_minus"])
+                        * np.dot(deficit, deficit)
+                        - 0.5
+                        * float(config["potential"]["rho_plus"])
+                        * np.dot(excess, excess)
+                    ),
                     "lower_violation": float(np.sum(deficit)),
                     "upper_violation": float(np.sum(excess)),
                     "packets_total": packets,
@@ -2217,6 +2247,9 @@ def run_continuous_method(
             censoring_reason = "none"
             convergence_round = logical_rounds - dwell_required + 1
             bytes_to_convergence = payload_bytes
+            first_persistent_feasible_time_s = float(
+                time.perf_counter() - started_wall
+            )
             break
 
     wall_time = float(time.perf_counter() - started_wall)
@@ -2260,6 +2293,10 @@ def run_continuous_method(
         finite_state=bool(invariants["finite"]),
         traces=tuple(traces),
         message_rows=tuple(message_rows),
+        first_atomic_assignment_time_s=None,
+        first_feasible_time_s=first_feasible_time_s,
+        first_persistent_feasible_time_s=first_persistent_feasible_time_s,
+        final_termination_time_s=wall_time,
     )
 
 
@@ -2290,6 +2327,9 @@ def _atomic_result(
     peak_memory_mb: float,
     traces: list[dict[str, Any]],
     messages: list[dict[str, Any]],
+    first_atomic_assignment_time_s: float | None = 0.0,
+    first_feasible_time_s: float | None = None,
+    first_persistent_feasible_time_s: float | None = None,
 ) -> AlgorithmResult:
     metrics = evaluate_assignment(world, assignment)
     return AlgorithmResult(
@@ -2334,6 +2374,10 @@ def _atomic_result(
         finite_state=True,
         traces=tuple(traces),
         message_rows=tuple(messages),
+        first_atomic_assignment_time_s=first_atomic_assignment_time_s,
+        first_feasible_time_s=first_feasible_time_s,
+        first_persistent_feasible_time_s=first_persistent_feasible_time_s,
+        final_termination_time_s=wall_time,
     )
 
 
@@ -2830,6 +2874,8 @@ def run_atomic_quota_logit(
     traces: list[dict[str, Any]] = []
     messages: list[dict[str, Any]] = []
     first_feasible_round = bytes_to_first_feasible = None
+    first_feasible_time_s: float | None = None
+    first_persistent_feasible_time_s: float | None = None
     convergence_round = bytes_to_convergence = None
     dwell = 0
     converged = False
@@ -2945,6 +2991,7 @@ def run_atomic_quota_logit(
         if metrics["feasible"] and first_feasible_round is None:
             first_feasible_round = logical_rounds
             bytes_to_first_feasible = payload_bytes
+            first_feasible_time_s = float(time.perf_counter() - started_wall)
         dwell = dwell + 1 if changes == 0 and metrics["feasible"] else 0
         traces.append(
             {
@@ -2955,6 +3002,15 @@ def run_atomic_quota_logit(
                 "feasible": metrics["feasible"],
                 "deficit_total": metrics["deficit_total"],
                 "excess_upper_total": metrics["excess_upper_total"],
+                "fixed_point_residual": float(changes / max(world.n_robots, 1)),
+                "potential": social_potential(
+                    world,
+                    assignment,
+                    rho_minus=rho_minus,
+                    rho_plus=rho_plus,
+                    gamma_switch=gamma_switch,
+                    previous_assignment=previous_assignment,
+                ),
                 "payload_bytes_total": payload_bytes,
             }
         )
@@ -2963,6 +3019,9 @@ def run_atomic_quota_logit(
             censoring_reason = "none"
             convergence_round = logical_rounds - dwell_required + 1
             bytes_to_convergence = payload_bytes
+            first_persistent_feasible_time_s = float(
+                time.perf_counter() - started_wall
+            )
             break
 
     wall = float(time.perf_counter() - started_wall)
@@ -2996,6 +3055,9 @@ def run_atomic_quota_logit(
         peak_memory_mb=float(max(peak - baseline_peak, 0) / (1024.0**2)),
         traces=traces,
         messages=messages,
+        first_atomic_assignment_time_s=0.0,
+        first_feasible_time_s=first_feasible_time_s,
+        first_persistent_feasible_time_s=first_persistent_feasible_time_s,
     )
 
 

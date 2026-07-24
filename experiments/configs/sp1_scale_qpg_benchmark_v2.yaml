@@ -1,0 +1,301 @@
+campaign_id: SP1_SCALE_QPG_BENCHMARK_v2
+preview_id: SP1_SCALE_QPG_BENCHMARK_v2_preview
+schema_version: 1
+branch: codex/sp1-scale-qpg-validation-v2
+base_config: experiments/configs/sp1_tfm_final_quota_game_benchmark_v1.yaml
+parallel_workers: 6
+analysis_seed: 990101
+output_dirs:
+  preview: results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2_preview
+  full: results/sp1_validation/SP1_SCALE_QPG_BENCHMARK_v2
+
+quota_bands:
+  band05: {headroom_fraction_of_witness: 0.05}
+  band10: {headroom_fraction_of_witness: 0.10}
+  band20: {headroom_fraction_of_witness: 0.20}
+  band30: {headroom_fraction_of_witness: 0.30}
+
+methods:
+  scalar:
+    - Capacity-CBBA
+    - Weighted-GRAPE
+    - Weighted-Pair-GRAPE
+    - Atomic-Quota-Logit
+    - QPG-Logit-AR
+    - QPG-Replicator-AR
+    - SCALE-QPG-BR-LocalAR
+    - SCALE-QPG-LogitBR-LocalAR
+    - SCALE-QPG-LogitBR-GlobalAR
+    - RandomSeed-AR
+    - NearestCompatibleSeed-AR
+    - LPSeed-AR
+  oracles: [LP-oracle, MILP-oracle]
+  services:
+    - GRAPE-S
+    - Pair-GRAPE-S
+    - Capacity-CBBA-Services
+    - QPG-Multiservice-Extension
+
+scale:
+  max_epochs:
+    calibration: 120
+    preview: 200
+    full: 240
+  max_wall_time_s:
+    calibration: 15
+    preview: 30
+    full: 60
+  max_proposals:
+    calibration: 200000
+    preview: 500000
+    full: 1000000
+  reservation_timeout_activations: 4
+  stable_epochs_required: 1
+  price_floor: 0.0
+  payload_schema:
+    proposal: {float64: 2, int64: 6}
+    reservation: {float64: 1, int64: 5}
+    commit: {float64: 2, int64: 5}
+    rollback: {float64: 0, int64: 5}
+    market_update: {float64: 4, int64: 2}
+    active_set_update: {float64: 1, int64: 2}
+    recovery: {float64: 2, int64: 5}
+  local_recovery:
+    max_nodes_per_augmentation: 50000
+    max_wall_time_s: 1.0
+    candidates_per_load: 30
+    compress: false
+    local_exchange: false
+
+calibration:
+  seeds:
+    - 91000
+    - 91001
+    - 91002
+    - 91003
+    - 91004
+    - 91005
+    - 91006
+    - 91007
+    - 91008
+    - 91009
+    - 91010
+    - 91011
+    - 91012
+    - 91013
+    - 91014
+    - 91015
+    - 91016
+    - 91017
+    - 91018
+    - 91019
+    - 91020
+    - 91021
+    - 91022
+    - 91023
+    - 91024
+    - 91025
+    - 91026
+    - 91027
+    - 91028
+    - 91029
+  configurations: [[50, 10], [100, 20]]
+  capacity_regime: high
+  utilization: 0.90
+  quota_band: band10
+  compatibility: arrival_radius
+  topology: rdisk_degree_8
+  objective_order:
+    - feasibility_desc
+    - all_world_cost_asc
+    - recourse_asc
+    - distance_asc
+    - bytes_asc
+    - time_asc
+  candidate_profiles:
+    compact:
+      L: 4
+      T0: 0.08
+      T_min: 0.003
+      anneal: 0.985
+      R_explore: 50
+      rho_minus: 20.0
+      rho_plus: 30.0
+      gamma_switch: 0.10
+      epsilon_improvement: 1.0e-8
+      epsilon_price: 0.02
+      h: 1
+      H: 4
+    balanced:
+      L: 6
+      T0: 0.12
+      T_min: 0.003
+      anneal: 0.990
+      R_explore: 100
+      rho_minus: 30.0
+      rho_plus: 40.0
+      gamma_switch: 0.15
+      epsilon_improvement: 1.0e-8
+      epsilon_price: 0.01
+      h: 2
+      H: 8
+    broad:
+      L: 8
+      T0: 0.16
+      T_min: 0.005
+      anneal: 0.995
+      R_explore: 200
+      rho_minus: 40.0
+      rho_plus: 60.0
+      gamma_switch: 0.25
+      epsilon_improvement: 1.0e-9
+      epsilon_price: 0.005
+      h: 3
+      H: 12
+    strict:
+      L: 6
+      T0: 0.05
+      T_min: 0.001
+      anneal: 0.980
+      R_explore: 50
+      rho_minus: 50.0
+      rho_plus: 80.0
+      gamma_switch: 0.20
+      epsilon_improvement: 1.0e-7
+      epsilon_price: 0.01
+      h: 2
+      H: 12
+
+preview:
+  n_values: [20, 50, 100]
+  seeds: [92000, 92001, 92002, 92003, 92004]
+  capacity_regimes: [medium, high]
+  utilization: 0.85
+  quota_band: band10
+  compatibility: arrival_radius
+  topology: rdisk_degree_8
+  expected_worlds: 30
+
+evaluation:
+  c1:
+    n_values: [20, 50, 100, 200, 500]
+    seed_counts: {20: 30, 50: 30, 100: 30, 200: 20, 500: 10}
+    seed_start: 93000
+    capacity_regime: high
+    utilization: 0.90
+    quota_band: band10
+    compatibility: arrival_radius
+    topology: rdisk_degree_8
+  c2:
+    n: 100
+    k_values: [5, 10, 20, 40]
+    active_set_sizes: [4, 8]
+    seeds: {start: 94000, count: 20}
+    capacity_regime: high
+    utilization: 0.90
+    quota_band: band10
+    compatibility: arrival_radius
+    topology: rdisk_degree_8
+  c3:
+    configurations: [[50, 10], [100, 20], [200, 40]]
+    seed_counts: {50: 30, 100: 30, 200: 20}
+    seed_start: 95000
+    capacity_regime: high
+    utilizations: [0.85, 0.90, 0.95]
+    quota_bands: [band05, band10, band20]
+    compatibility: arrival_radius
+    topology: rdisk_degree_8
+  c4:
+    configurations: [[50, 10], [100, 20], [200, 40]]
+    seeds: {start: 96000, count: 20}
+    capacity_regime: low
+    utilizations: [0.60, 0.70]
+    quota_band: band30
+    compatibility: arrival_radius
+    topology: rdisk_degree_8
+  c5:
+    n: 100
+    k: 20
+    seeds: {start: 97000, count: 30}
+    capacity_regime: high
+    utilization: 0.90
+    quota_band: band10
+    compatibility: arrival_radius
+    topologies: [complete, rdisk_degree_16, rdisk_degree_8, rdisk_degree_4]
+  c6:
+    n: 100
+    k: 20
+    seeds: {start: 98000, count: 30}
+    capacity_regime: high
+    utilization: 0.90
+    quota_band: band10
+    compatibility: arrival_radius
+    topology: rdisk_degree_8
+    events:
+      - robot_failure
+      - capacity_drop
+      - new_load
+      - load_completion
+      - topology_degradation
+  c7:
+    configurations: [[50, 10], [100, 20], [200, 40]]
+    seed_counts: {50: 30, 100: 30, 200: 20}
+    seed_start: 99000
+    capacity_regime: high
+    utilization: 0.90
+    quota_band: band10
+    compatibility: arrival_radius
+    topology: rdisk_degree_8
+  c8:
+    chain_lengths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    instances_per_length: 20
+    seed_start: 100000
+    methods: [greedy, swap, local_augmenting, global_augmenting, milp_repair]
+  c9:
+    n_values: [50, 100]
+    service_types: [5, 10]
+    services_per_robot: [1, 5]
+    task_fraction: 0.1
+    seeds: {start: 101000, count: 10}
+
+oracles:
+  milp_timeout_s: 60.0
+  milp_max_n: 100
+  lp_all_sizes: true
+
+all_world_cost:
+  cap_multiplier: N_times_world_max_cost
+
+statistics:
+  confidence_level: 0.95
+  bootstrap_resamples: 5000
+  analysis_seed: 990101
+  mcnemar: exact
+  continuous_test: wilcoxon_signed_rank
+  effect_size: rank_biserial
+  multiplicity: holm
+  survival: kaplan_meier_rmst
+
+win_gates:
+  recovered_feasibility_min: 0.95
+  distance_ratio_to_best_baseline_max: 0.90
+  all_world_cost_ratio_to_best_baseline_max: 0.90
+  bytes_ratio_to_best_baseline_max: 2.0
+  time_to_first_feasible_ratio_max: 1.5
+  recourse_ratio_to_best_dynamic_baseline_max: 0.70
+  unaffected_coalition_integrity_min: 0.80
+  global_fallback_rate_max: 0.05
+  atomicity_violations_max: 0
+  holm_significant_required: true
+
+expected_counts:
+  preview: 30
+  c1: 120
+  c2: 160
+  c3: 720
+  c4: 120
+  c5: 120
+  c6: 150
+  c7: 80
+  c8: 400
+  c9: 80

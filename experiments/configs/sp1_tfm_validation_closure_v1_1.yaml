@@ -1,0 +1,98 @@
+campaign_id: SP1_TFM_VALIDATION_CLOSURE_v1_1
+schema_version: 1
+branch: codex/sp1-scale-qpg-validation-v2
+source_campaign: SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1
+source_commit: d0ace5bbead043e55e3592300582f345fc7068e5
+base_config: experiments/configs/sp1_tfm_final_quota_game_benchmark_v1.yaml
+source_results: results/sp1_validation/SP1_TFM_FINAL_QUOTA_GAME_BENCHMARK_v1
+output_dir: results/sp1_validation/SP1_TFM_VALIDATION_CLOSURE_v1_1
+parallel_workers: 6
+analysis_seed: 900001
+
+quota_bands:
+  band10: {headroom_fraction_of_witness: 0.10}
+
+postcommit_audit:
+  expected_tasks: 2200
+  expected_tests: 203
+  source_manifest: manifest.json
+  source_audit: audit.json
+  source_checksums: checksums.sha256
+  source_config: config_snapshot.yaml
+  source_selected_parameters: selected_parameters.yaml
+  final_files:
+    - manifest_final.json
+    - audit_final.json
+    - checksums_final.sha256
+
+seed_attribution:
+  experiments: [E2, E3, E4, E5, E6, E7]
+  worlds_per_experiment: 12
+  selection_seed: 900011
+  methods:
+    - RandomSeed
+    - NearestCompatibleSeed
+    - GreedyDeficitSeed
+    - LPSeed
+    - Capacity-CBBA
+    - Weighted-GRAPE
+    - Weighted-Pair-GRAPE
+    - QPG-Replicator
+    - QPG-Logit
+    - Atomic-Quota-Logit
+
+convergence:
+  n_values: [20, 50, 100]
+  topologies: [complete, rdisk_degree_8, rdisk_degree_4]
+  seeds: {start: 87000, count: 20}
+  k_rule: ceil_n_over_5
+  capacity_regime: medium
+  utilization: 0.8
+  quota_band: medium
+  compatibility: arrival_radius
+  methods:
+    - QPG-Logit
+    - QPG-Replicator
+    - DRD-simple-Logit
+    - DRD-simple-Replicator
+    - Atomic-Quota-Logit
+  max_rounds: 12000
+  max_wall_time_s: 240
+  max_payoff_evaluations: 50000000
+  dwell_rounds: 100
+  trace_stride: 1
+
+bernstein:
+  target_bands: [0.001, 0.01, 0.05, 0.10, 0.25, 0.50, 0.75, 1.00]
+  states_per_band: 50
+  roundings_per_state: 500
+  seed_start: 89000
+  n: 20
+  k: 2
+  tolerance: 1.0e-12
+
+gap:
+  denominator_epsilon_m: 1.0e-9
+  numerical_tolerance: 1.0e-7
+
+dynamic_locality:
+  n: 100
+  k: 20
+  seeds: {start: 88000, count: 12}
+  events:
+    - robot_failure
+    - capacity_drop
+    - new_load
+    - load_completion
+    - topology_degradation
+  recovery_variants:
+    - global
+    - local
+    - local_recourse
+  capacity_regime: high
+  utilization: 0.9
+  quota_band: band10
+  topology: rdisk_degree_8
+  local_radius: 2
+  max_chain_length: 12
+  recourse_penalty: 0.25
