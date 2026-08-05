@@ -86,11 +86,15 @@ def test_pdf_has_exact_requested_page_budget() -> None:
         REPOSITORY_ROOT
         / "output"
         / "pdf"
-        / "sp1_levels_28p"
-        / "SP1_NIVELES_28P.pdf"
+        / "sp1_n1_10p"
+        / "SP1_N1_10P.pdf"
     )
     assert pdf_path.is_file()
-    assert len(PdfReader(str(pdf_path)).pages) == 28
+    reader = PdfReader(str(pdf_path))
+    assert len(reader.pages) == 10
+    text = "\n".join(page.extract_text() or "" for page in reader.pages)
+    assert "EXPERIMENTO E4" in text
+    assert "NIVEL 2 DE 4" not in text
 
 
 def test_n1_confirmatory_package_has_frozen_counts_and_invariants() -> None:
@@ -137,7 +141,7 @@ def test_n1_confirmatory_results_support_stated_validity_boundary() -> None:
     assert (contrasts["mcnemar_exact_p_holm"] < 0.05).all()
 
 
-def test_n1_confirmatory_figures_are_vector_and_pages_precede_n2() -> None:
+def test_n1_confirmatory_figures_are_vector_and_source_ends_after_e4() -> None:
     n1_root = LEVELS_OUTPUT_ROOT / "n1_v2"
     for stem in (
         "n1_quality_scenarios",
@@ -163,7 +167,7 @@ def test_n1_confirmatory_figures_are_vector_and_pages_precede_n2() -> None:
     n1_scaling = latex.index("SP1.N1 · E2: cuánto cuesta centralizar")
     n1_failure = latex.index("SP1.N1 · E3: qué ocurre tras una retirada")
     n1_validity = latex.index("SP1.N1 · E4: cuándo se rompe la reducción")
-    n2 = latex.index("Nivel 2: coaliciones con capacidad individual")
+    document_end = latex.index(r"\end{document}")
     assert (
         n1_model
         < n1_design
@@ -171,8 +175,9 @@ def test_n1_confirmatory_figures_are_vector_and_pages_precede_n2() -> None:
         < n1_scaling
         < n1_failure
         < n1_validity
-        < n2
+        < document_end
     )
+    assert "Nivel 2: coaliciones con capacidad individual" not in latex
     assert (
         r"\input{sp1_levels_23p/figures/n1_experimental_design.tex}"
         in latex
@@ -184,8 +189,7 @@ def test_latex_uses_canonical_payload_capacity_symbol() -> None:
         REPOSITORY_ROOT / "thesis" / "sp1_levels_23p" / "main.tex"
     ).read_text(encoding="utf-8")
     assert r"c_i^{\mathrm{pay}}" in latex
-    assert "precio dual explícito" in latex
-    assert "no contiene un precio dual explícito" in latex
+    assert r"N2 incorpora cada $c_i^{\mathrm{pay}}$" in latex
 
 
 def test_latex_defines_level_and_branch_nomenclature() -> None:
