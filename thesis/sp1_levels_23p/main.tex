@@ -713,22 +713,24 @@ independiente: mundo--semilla.
 \clearpage
 
 % --------------------------------------------------------------------------
-% Página 5 · N1
+% Página 5 · N1: modelo
 % --------------------------------------------------------------------------
 \leveltag{RESULTADOS SP1 · NIVEL 1 DE 4 · ASIGNACIÓN HOMOGÉNEA}
-\section*{SP1.N1: Homogeneous MRTA - Hungarian Baseline}
+\section*{SP1.N1: asignación exacta con robots homogéneos}
 
-N1 establece la referencia central para una flota homogénea: cada robot aporta
-la misma capacidad escalar $\bar c^{\mathrm{pay}}$. Las cargas conservan demandas
-$m_k$ distintas y se expanden en
-$n_k=\lceil m_k/\bar c^{\mathrm{pay}}\rceil$ slots intercambiables. A partir
-de las posiciones se construye la matriz $C=[d_{ih}]$ y se resuelve un
-\emph{linear sum assignment problem} (LSAP); los slots asignados a una misma
-carga forman su coalición. El LSAP admite una formulación lineal binaria cuya
-relajación es integral por la estructura totalmente unimodular de sus
-restricciones. La campaña conserva la etiqueta ``húngaro'' para este oráculo.
-El código no ejecuta símplex ni el algoritmo húngaro clásico: SciPy aplica un
-Jonker--Volgenant modificado y devuelve el óptimo global del LSAP codificado.
+N1 responde una pregunta concreta: qué coalición minimiza el coste de
+reclutamiento cuando todos los robots aportan la misma capacidad. Las cargas sí
+pueden exigir capacidades distintas. Una carga $k$ se representa mediante
+$n_k=\lceil m_k/\bar c^{\mathrm{pay}}\rceil$ puestos intercambiables, de modo que
+varios robots pueden atenderla. Con $\mathcal H=\bigcup_k\mathcal H_k$ y
+$M=|\mathcal H|$, se resuelve
+\[
+ \min_{x\in\{0,1\}^{N\times M}}\sum_{i,h}d_{ih}x_{ih},\qquad
+ \sum_i x_{ih}=1,\quad \sum_hx_{ih}\leq1.
+\]
+La matriz $d_{ih}$ contiene el coste robot--puesto. Su relajación lineal es
+integral y \texttt{linear\_sum\_assignment} devuelve el óptimo global del
+LSAP codificado mediante una variante de Jonker--Volgenant.
 
 \begin{figure}[H]
 \centering
@@ -810,201 +812,210 @@ Jonker--Volgenant modificado y devuelve el óptimo global del LSAP codificado.
   {\textbf{Método:} asignación combinatorial exacta; sin redondeo, branch-and-bound ni símplex};
 \end{tikzpicture}
 \endgroup
-\caption{Flujo de N1 y separación entre la formulación lineal binaria y el
-algoritmo de asignación utilizado en la implementación.}
+\caption{Reducción de cargas con distinta demanda a un LSAP entre robots
+homogéneos y puestos de coalición.}
 \label{fig:n1-homogeneous-pipeline}
 \viuownsource
 \end{figure}
 
-\begin{minipage}[t]{0.485\textwidth}
-\begin{tcolorbox}[
-  title={Ventajas},fonttitle=\bfseries,colback=SPGreen!4,colframe=SPGreen,
-  boxrule=0.55pt,arc=1.2mm,left=2mm,right=2mm,top=1mm,bottom=1mm]
-\begin{itemize}[leftmargin=1.15em,itemsep=1pt,topsep=1pt]
-\item Óptimo global y determinista para el LSAP.
-\item Coste polinómico: $\mathcal O(L^3)$, $L=\max\{N,M\}$.
-\item Demandas escalares distintas mediante slots.
-\end{itemize}
-\end{tcolorbox}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.485\textwidth}
-\begin{tcolorbox}[
-  title={Limitaciones},fonttitle=\bfseries,colback=SPRed!4,colframe=SPRed,
-  boxrule=0.55pt,arc=1.2mm,left=2mm,right=2mm,top=1mm,bottom=1mm]
-\begin{itemize}[leftmargin=1.15em,itemsep=1pt,topsep=1pt]
-\item Capacidad común y slots\\intercambiables.
-\item Arquitectura central con matriz global $C$.
-\item Sin certificado multirrecurso,\\mecánico, de seguridad o\\comunicación.
-\end{itemize}
-\end{tcolorbox}
-\end{minipage}
-
-\noindent\textbf{Alcance empírico.} La campaña N1 conserva
-\NOneRows{} ejecuciones y alcanza $N=\NOneMaxN{}$; esta evidencia mide
-cómputo y calidad, pero no amplía la garantía más allá del LSAP homogéneo.
+\noindent\colorbox{SPBlue!7}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
+\small \textbf{Salida de N1:} una coalición óptima para el modelo de puestos.
+Todavía no se modelan capacidades individuales ni negociación distribuida.}}
 
 \clearpage
 
 % --------------------------------------------------------------------------
-% Página 6 · N1 resultado espacial
+% Página 6 · N1: diseño experimental
 % --------------------------------------------------------------------------
-\leveltag{RESULTADOS SP1 · N1 · CALIDAD ESPACIAL HOMOGÉNEA}
-\section*{SP1.N1: beneficio práctico del óptimo global}
+\leveltag{RESULTADOS SP1 · N1 · DISEÑO EXPERIMENTAL}
+\section*{SP1.N1: cuatro experimentos, cuatro decisiones}
 
-\pagelead{%
-La primera hipótesis evalúa si la optimalidad exacta del LSAP produce una
-mejora práctica, además de formal, frente a una asignación greedy secuencial.
-Ambos métodos reciben la misma matriz robot--slot en cinco geometrías, tres
-tamaños, tres perfiles de demanda y 100 semillas por celda; el umbral
-preespecificado exige un ahorro mediano superior al 5\,\%.
-}
+La campaña separa calidad, coste computacional, retirada de robots y validez
+ante capacidades heterogéneas. Cada contraste reutiliza el mismo mundo para los
+métodos comparados; la semilla, no cada robot, constituye la réplica.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\linewidth]{../scripts/results/sp1_levels/n1/figures/n1_quality_scenarios.pdf}
-\caption{Calidad del óptimo homogéneo en \NOneQualityRows{} mundos. El panel
-izquierdo muestra el ahorro pareado frente a greedy con IC del 95\,\%; el panel
-derecho conserva la distribución del coste P95 normalizado. Naranja identifica
-los escenarios que superan el umbral práctico tras corrección de Holm.}
+\begingroup
+\pgfmathsetlengthmacro{\spxunitnexp}{\linewidth/13.5}
+\input{sp1_levels_23p/figures/n1_experimental_design.tex}
+\endgroup
+\caption{Diseño experimental de N1. El bucle genera mundos independientes y
+mantiene dentro de cada mundo los métodos o tratamientos que deben compararse.}
+\label{fig:n1-experimental-design}
+\viuownsource
+\end{figure}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 7 · N1: calidad
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N1 · EXPERIMENTO E1}
+\section*{SP1.N1: cuándo compensa el óptimo}
+
+E1 compara el Húngaro con greedy secuencial sobre la misma matriz $C$. Para
+cada mundo se calcula
+$\Delta_w=(J_w^{\mathrm{greedy}}-J_w^{\mathrm{H}})/J_w^{\mathrm{greedy}}$;
+la hipótesis exige una mediana superior al 5\,\% en cada escenario.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{../scripts/results/sp1_levels/n1_v2/figures/n1_quality_scenarios.pdf}
+\caption{Ahorro pareado y coste P95 normalizado en \NOneQualityRows{}
+mundos. El naranja marca los escenarios que superan el umbral práctico después
+de la corrección de Holm.}
 \label{fig:n1-quality-confirmatory}
 \viuownsource
 \end{figure}
 
-\noindent\textbf{Resultado.} El ahorro mediano agregado fue
-\NOneSavingPct\,\% (IC del 95\,\%:
-\NOneSavingLowPct--\NOneSavingHighPct\,\%) y
-\NOneScenarioGates{}/5 escenarios superaron el gate. La mejora fue mayor en
-Aleatorio (\NOneUniformSavingPct\,\%), Agrupado
-(\NOneClusteredSavingPct\,\%) y Pasillo
-(\NOneCorridorSavingPct\,\%); Anillo
-(\NOneRingSavingPct\,\%) y Separado
-(\NOneSeparatedSavingPct\,\%) mostraron que una geometría estructurada puede
-hacer al greedy casi óptimo. Las \NOneQualityRows{} ejecuciones fueron
-factibles y no registraron violaciones de cardinalidad.
+\noindent\textbf{Resultado.} Se rechaza $H_0$ en Aleatorio
+(\NOneUniformSavingPct\,\%), Agrupado (\NOneClusteredSavingPct\,\%) y
+Pasillo (\NOneCorridorSavingPct\,\%). No se rechaza en Separado
+(\NOneSeparatedSavingPct\,\%) ni Anillo (\NOneRingSavingPct\,\%). El
+ahorro agregado fue \NOneSavingPct\,\% (IC del 95\,\%:
+\NOneSavingLowPct\,\% a \NOneSavingHighPct\,\%).
 
-\begin{tcolorbox}[
-  colback=SPBlue!4,colframe=SPBlue,boxrule=0.55pt,arc=1.2mm,
-  left=2mm,right=2mm,top=1mm,bottom=1mm]
-\textbf{Lectura.} N1 aporta un techo exacto y una ganancia relevante cuando
-las decisiones locales compiten; no acredita una mejora uniforme para toda
-geometría ni superioridad frente a métodos distribuidos.
-\end{tcolorbox}
+\noindent\textbf{Análisis y conclusión.} La respuesta a E1 es condicional:
+centralizar compensa cuando la geometría hace que varios puestos compitan por
+los mismos robots, como ocurre en Aleatorio, Agrupado y Pasillo. En Separado y
+Anillo, la propia estructura espacial guía a greedy hacia soluciones próximas
+al óptimo y la mejora no alcanza el umbral práctico preespecificado.
+
+\noindent\colorbox{SPBlue!7}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
+\small \textbf{Decisión E1:} conservar el Húngaro como techo exacto de calidad,
+pero no atribuir a la centralización un beneficio uniforme. E2 debe establecer
+cuánto cuesta obtener ese techo.}}
 
 \clearpage
 
 % --------------------------------------------------------------------------
-% Página 7 · N1 escalabilidad
+% Página 8 · N1: coste computacional
 % --------------------------------------------------------------------------
-\leveltag{RESULTADOS SP1 · N1 · COSTE DE CENTRALIZACIÓN}
-\section*{SP1.N1: escalabilidad temporal y memoria global}
+\leveltag{RESULTADOS SP1 · N1 · EXPERIMENTO E2}
+\section*{SP1.N1 · E2: cuánto cuesta centralizar}
 
-\pagelead{%
-El segundo experimento aísla el tamaño de la matriz mediante siete valores de
-$N$, tres relaciones $M/N$ y 30 semillas por celda. Se miden por separado la
-construcción de $C$, el solver y el posprocesamiento. El ajuste log--log se
-estima sobre el crecimiento balanceado $N=M$ y describe únicamente el rango
-observado.
-}
+E2 caracteriza el coste del oráculo central, no su calidad. Se ejecutan
+630 casos pareados: siete tamaños entre $N=32$ y $N=2048$, tres razones $M/N$
+y 30 semillas. El tiempo se mide de P05 a P95 y la memoria de la matriz densa
+se audita contra $8NM$ bytes.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\linewidth]{../scripts/results/sp1_levels/n1/figures/n1_central_scaling.pdf}
-\caption{Escalabilidad central en 630 ejecuciones confirmatorias. Izquierda:
-tiempo del solver como P50 y banda P05--P95. Derecha: memoria exacta de la
-matriz global de distancias para cada relación $M/N$.}
-\label{fig:n1-scaling-confirmatory}
+\includegraphics[width=\linewidth]{../scripts/results/sp1_levels/n1_v2/figures/n1_central_scaling.pdf}
+\caption{Escalabilidad temporal y espacial del LSAP central en el intervalo
+observado. Las bandas muestran P05--P95; la memoria coincide con la matriz
+densa de costes.}
+\label{fig:n1-central-scaling}
 \viuownsource
 \end{figure}
 
-\noindent\textbf{Resultado.} Las 630 ejecuciones terminaron con asignación
-completa hasta $N=M=\NOneMaxN{}$. En la rama balanceada, la pendiente observada
-fue $\hat\beta=\NOneExponent$ (IC del 95\,\%:
-\NOneExponentLow--\NOneExponentHigh; $R^2=\NOneRSquared$); el P95 del solver en
-el mayor tamaño alcanzó \NOneScalingPninetyfiveMs\,ms. La memoria coincidió sin
-error con $8NM$ bytes: 32\,MiB cuando $N=M=2048$.
+\noindent\textbf{Resultado.} En la serie balanceada $N=M$, el ajuste descriptivo
+es $t\propto N^{\NOneExponent}$ (IC del 95\,\%: \NOneExponentLow{} a
+\NOneExponentHigh{}; $R^2=\NOneRSquared$). En $N=M=\NOneMaxN{}$, el P95 fue
+\NOneScalingPninetyfiveMs\,ms. La memoria observada siguió exactamente $8NM$.
 
-\begin{minipage}[t]{0.485\textwidth}
-\begin{tcolorbox}[
-  title={Ventaja observada},fonttitle=\bfseries,
-  colback=SPGreen!4,colframe=SPGreen,boxrule=0.55pt,arc=1.2mm,
-  left=2mm,right=2mm,top=1mm,bottom=1mm]
-Óptimo exacto, 100\,\% de finalización y latencia subsegundo en todo el rango
-ensayado.
-\end{tcolorbox}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.485\textwidth}
-\begin{tcolorbox}[
-  title={Límite demostrado},fonttitle=\bfseries,
-  colback=SPRed!4,colframe=SPRed,boxrule=0.55pt,arc=1.2mm,
-  left=2mm,right=2mm,top=1mm,bottom=1mm]
-No existe meseta de coste constante: el cómputo y la matriz global crecen con
-el problema.
-\end{tcolorbox}
-\end{minipage}
+\noindent\textbf{Análisis y conclusión.} La respuesta a E2 es que el cómputo no
+se satura en el intervalo estudiado: tiempo y memoria aumentan con el tamaño. En
+la serie balanceada, almacenar $C$ ya exige memoria cuadrática y el tiempo crece
+con pendiente observada \NOneExponent. El P95 de
+\NOneScalingPninetyfiveMs\,ms solo acredita viabilidad hasta
+$N=M=\NOneMaxN{}$ en este entorno; no respalda coste fijo ni tamaños ilimitados.
 
-\noindent\textbf{Alcance.} $\hat\beta$ no sustituye la cota algorítmica ni
-prueba comportamiento asintótico; depende de esta implementación, hardware y
-familia de matrices.
+\noindent\colorbox{SPPurple!7}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
+\small \textbf{Decisión E2:} usar el LSAP central como oráculo experimental,
+no como evidencia de una arquitectura escalable. E3 examina si ese oráculo
+puede recomputar la coalición después de una retirada.}}
 
 \clearpage
 
 % --------------------------------------------------------------------------
-% Página 8 · N1 frontera de validez
+% Página 9 · N1: retirada estática
 % --------------------------------------------------------------------------
-\leveltag{RESULTADOS SP1 · N1 · FRONTERA DE VALIDEZ}
-\phantomsection
-\noindent{\sffamily\bfseries\color{VIUOrange}
-  \fontsize{18}{22}\selectfont SP1.N1: frontera de validez\par}
-\vspace{6pt}
+\leveltag{RESULTADOS SP1 · N1 · EXPERIMENTO E3}
+\section*{SP1.N1 · E3: qué ocurre tras una retirada}
 
-\pagelead{%
-El tercer experimento verifica dos límites: el recálculo central tras retirar
-robots homogéneos y la validez de los slots cuando se introducen capacidades
-individuales sin modificar la capacidad total ni la geometría del mundo.
-}
+E3 retira robots y vuelve a resolver el LSAP con la matriz restante. Cada uno
+de los \NOneFailureWorlds{} mundos contiene cinco fracciones anidadas, para
+\NOneFailureRows{} recálculos. Con reserva
+$\delta=(N-M)/(N+M)$, la frontera cardinal es
+$f^*(\delta)=2\delta/(1+\delta)$.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.94\linewidth]{../scripts/results/sp1_levels/n1/figures/n1_validity_boundary.pdf}
-\caption{Frontera de N1: factibilidad postfallo frente al límite cardinal
-$f^*=2\delta/(1+\delta)$ (izquierda) y falsos factibles al aumentar la
-heterogeneidad de capacidad (derecha). Las líneas grises separan escenarios.}
-\label{fig:n1-validity-confirmatory}
+\includegraphics[width=\linewidth]{../scripts/results/sp1_levels/n1_v2/figures/n1_failure_recovery.pdf}
+\caption{Recálculo central después de una retirada estática. A: factibilidad
+observada y frontera $f^*(\delta)$. B: aumento del coste espacial entre los
+casos que permanecen factibles.}
+\label{fig:n1-failure-recovery}
 \viuownsource
 \end{figure}
 
-\noindent\textbf{Fallo homogéneo.} Los \NOneFailureWorlds{} mundos generaron
-\NOneFailureRows{} reasignaciones y coincidieron en
-\NOneFailureAgreementPct\,\% con la condición cardinal. Sin reserva, cualquier
-retirada positiva fue infactible; $\delta=0{,}20$ elevó la frontera al 33\,\% y
-cubrió todas las retiradas ensayadas hasta el 30\,\%. Es recourse estático con
-información global, no recuperación distribuida durante el transporte.
+\noindent\textbf{Resultado.} La factibilidad coincidió en
+\NOneFailureAgreementPct\,\% de los casos con $N_{\mathrm{activo}}\geq M$.
+Sin reserva, ninguna retirada positiva fue recuperable; con reserva suficiente,
+el LSAP reasignó todos los puestos, aunque aumentó la distancia recorrida.
 
-\noindent\textbf{Capacidad individual.} En \NOneHeteroWorlds{} mundos y
-\NOneHeteroRows{} auditorías, la tasa de falso factible aumentó desde 0\,\% en
-el caso homogéneo hasta \NOneLowFalsePct\,\%,
-\NOneModerateFalsePct\,\%, \NOneHighFalsePct\,\% y
-\NOneExtremeFalsePct\,\% en los cuatro niveles crecientes. Los cuatro contrastes
-McNemar permanecieron significativos tras Holm. HiGHS certificó
-\NOneMilpCertifiedPct\,\% y rescató \NOneMilpRescuePct\,\% de los falsos
-factibles de N1.
+\noindent\textbf{Análisis y conclusión.} La respuesta a E3 es afirmativa solo
+si la reserva deja al menos un robot activo por puesto. La coincidencia exacta
+con la frontera cardinal muestra que la recuperación depende de capacidad
+ociosa, no de una propiedad adaptativa del algoritmo; además, el aumento de
+distancia cuantifica el precio espacial de sustituir miembros retirados.
 
-\begin{tcolorbox}[
-  colback=VIUOrange!6,colframe=VIUOrange,boxrule=0.65pt,arc=1.2mm,
-  left=2mm,right=2mm,top=1mm,bottom=1mm]
-\textbf{Transición N1 $\rightarrow$ N2.} El Húngaro sigue siendo exacto para
-el LSAP que recibe; lo que falla es la equivalencia entre un slot y una unidad
-real de capacidad. N2 debe modelar $c_i^{\mathrm{pay}}$ dentro de las
-restricciones de coalición.
-\end{tcolorbox}
+\noindent\colorbox{SPGreen!8}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
+\small \textbf{Decisión E3:} N1 puede recalcular una asignación estática si un
+coordinador ya conoce el fallo. No modela detección, mensajes, movimiento ni
+recuperación distribuida; por tanto, este resultado no acredita resiliencia
+operacional.}}
 
 \clearpage
 
 % --------------------------------------------------------------------------
-% Página 9 · N2
+% Página 10 · N1: validez ante capacidades heterogéneas
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N1 · EXPERIMENTO E4}
+\section*{SP1.N1 · E4: cuándo se rompe la reducción}
+
+E4 conserva los mismos robots, cargas y posiciones, pero sustituye la capacidad
+común por cinco perfiles anidados. En \NOneHeteroWorlds{} mundos se contrastan
+\NOneHeteroRows{} veredictos por puestos con la capacidad física realizada;
+un MILP/HiGHS actúa únicamente como auditor externo.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{../scripts/results/sp1_levels/n1_v2/figures/n1_heterogeneity_boundary.pdf}
+\caption{Pérdida de validez de N1 al introducir capacidades individuales.
+A: falsos factibles del modelo por puestos, con IC de Wilson. B: certificación
+y rescate del auditor MILP sobre la capacidad real.}
+\label{fig:n1-heterogeneity-boundary}
+\viuownsource
+\end{figure}
+
+\noindent\textbf{Resultado.} La tasa de falsos factibles fue 0,0\,\%,
+\NOneLowFalsePct\,\%, \NOneModerateFalsePct\,\%, \NOneHighFalsePct\,\% y
+\NOneExtremeFalsePct\,\% al pasar de capacidad homogénea a heterogeneidad
+extrema. Los cuatro contrastes McNemar frente al caso homogéneo fueron
+significativos tras Holm; HiGHS certificó \NOneMilpCertifiedPct\,\% de las
+auditorías y rescató \NOneMilpRescuePct\,\% de los falsos factibles.
+
+\noindent\textbf{Análisis y conclusión.} La respuesta a E4 es negativa: N1
+deja de ser un modelo fiable tan pronto como los robots aportan capacidades
+distintas. Que el MILP recupere casi todos los falsos factibles indica que el
+problema no es la ausencia de coaliciones, sino la reducción incorrecta a
+puestos intercambiables. La heterogeneidad exige modelar la suma de capacidades.
+
+\noindent\colorbox{VIUOrange!9}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
+\small \textbf{Decisión N1 $\rightarrow$ N2:} el Húngaro sigue siendo exacto
+para el LSAP que recibe, pero ese LSAP ya representa mal la capacidad real.
+N2 incorpora cada $c_i^{\mathrm{pay}}$ mediante restricciones MILP.}}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 11 · N2
 % --------------------------------------------------------------------------
 \leveltag{RESULTADOS SP1 · NIVEL 2 DE 4 · ORÁCULO MILP HETEROGÉNEO}
-\section*{Nivel 2: capacidad individual y coaliciones indivisibles}
+\section*{Nivel 2: coaliciones con capacidad individual}
 
 \pagelead{%
 N2 responde qué cambia cuando cada robot posee una capacidad
@@ -1626,7 +1637,13 @@ puede defenderse en la memoria completa.
 
 \begin{center}
 \scriptsize
-\begin{tabularx}{0.99\textwidth}{p{1.0cm} p{2.45cm} p{2.25cm} p{2.4cm} Y}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{0.99\textwidth}{
+  >{\raggedright\arraybackslash}p{0.75cm}
+  >{\raggedright\arraybackslash}p{2.75cm}
+  >{\raggedright\arraybackslash}p{2.25cm}
+  >{\raggedright\arraybackslash}p{2.75cm}
+  >{\raggedright\arraybackslash}Y}
 \toprule
 Nivel & Problema & Arquitectura & Evidencia & Conclusión admisible \\
 \midrule
@@ -1658,8 +1675,8 @@ por coste comunicativo y ausencia de dominancia de calidad.
 
 \vfill
 \noindent{\footnotesize\color{VIUGray}\textbf{Decisión editorial.} El artefacto
-contiene 23 páginas: una introducción, una guía de nomenclatura, dos páginas de
-protocolo común, una de N1, dos de N2, dos de N3 y catorce de N4. No sustituye
+contiene 28 páginas: una introducción, una guía de nomenclatura, dos páginas de
+protocolo común, seis de N1, dos de N2, dos de N3 y catorce de N4. No sustituye
 los preliminares, referencias ni anexos de la memoria.}
 
 \end{document}

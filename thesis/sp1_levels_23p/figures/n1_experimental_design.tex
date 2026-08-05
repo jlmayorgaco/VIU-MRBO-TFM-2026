@@ -1,0 +1,103 @@
+\begin{tikzpicture}[x=\spxunitnexp,y=1cm]
+\tikzset{
+  loopbox/.style={sppanel,minimum width=2.45cm,minimum height=1.72cm,
+    align=center,font=\scriptsize,text=VIUDark},
+  experiment/.style={sppanel,minimum width=6.18cm,minimum height=4.02cm},
+  exphead/.style={font=\footnotesize\bfseries,text=VIUDark,anchor=west},
+  expbody/.style={font=\scriptsize,text=VIUGray,anchor=north west,
+    align=left,text width=5.34cm},
+  expcount/.style={font=\scriptsize\bfseries,anchor=west},
+  badge/.style={circle,minimum size=6.3mm,inner sep=0pt,
+    font=\scriptsize\bfseries,text=white,draw=none},
+  flow/.style={-{Latex[length=2.0mm]},draw=VIUOrange,line width=0.95pt,
+    shorten >=2pt,shorten <=2pt}
+}
+
+\fill[SPFloor] (0.01,0.15) rectangle (13.49,15.05);
+\fill[white] (0.01,14.30) rectangle (13.49,15.05);
+\draw[draw=SPGrid,line width=0.55pt] (0.01,14.30) -- (13.49,14.30);
+\draw[sparena] (0.01,0.15) rectangle (13.49,15.05);
+\node[font=\small\bfseries,anchor=west,text=VIUDark] at (0.32,14.67)
+  {Una campaña, cuatro preguntas};
+\node[font=\scriptsize,anchor=east,text=VIUOrange] at (13.18,14.67)
+  {unidad independiente: mundo--semilla};
+
+% Bucle de ejecución: las flechas circulan únicamente por los canales blancos.
+\node[loopbox,fill=white] (cell) at (1.55,13.02)
+  {\textbf{1 · Celda}\\escenario + parámetros\\hipótesis + endpoint};
+\node[loopbox,fill=SPGreen!3,draw=SPGreen!55] (world) at (4.68,13.02)
+  {\textbf{2 · Mundo}\\semilla $s\mapsto w$\\robots + cargas};
+\node[loopbox,fill=SPBlue!3,draw=SPBlue!55] (methods) at (7.81,13.02)
+  {\textbf{3 · Métodos}\\Húngaro + comparador\\mismo mundo};
+\node[loopbox,fill=VIUOrange!4,draw=VIUOrange!65] (record) at (10.94,13.02)
+  {\textbf{4 · Registro}\\estado + coste + tiempo\\una fila por mundo};
+\draw[flow] (cell.east) -- (world.west);
+\draw[flow] (world.east) -- (methods.west);
+\draw[flow] (methods.east) -- (record.west);
+\draw[-{Latex[length=1.8mm]},draw=VIUGray,line width=0.70pt]
+  (record.south) -- ++(0,-0.42) -| (world.south);
+\node[font=\scriptsize,text=VIUGray,fill=SPFloor,inner xsep=4pt,inner ysep=1pt]
+  at (7.81,11.76) {siguiente semilla; después, siguiente celda};
+
+% E1 · calidad
+\node[experiment,fill=SPBlue!2,draw=SPBlue!45] at (3.36,9.42) {};
+\node[badge,fill=SPBlue] at (0.63,10.96) {E1};
+\node[exphead] at (0.96,10.97) {¿Cuándo mejora el óptimo?};
+\draw[SPBlue!45,line width=0.55pt] (0.55,10.60) -- (6.17,10.60);
+\node[expbody] at (0.62,10.30) {%
+  \textbf{Diseño}\quad 4\,500 mundos: 5 escenarios $\times$ 3 tamaños
+  $\times$ 3 cuotas $\times$ 100 semillas.\\[3pt]
+  \textbf{Pareja}\quad Húngaro frente a greedy secuencial sobre la misma
+  matriz $C$.\\[3pt]
+  \textbf{Decisión}\quad $\operatorname{mediana}(\Delta_w)>0{,}05$
+  por escenario; bootstrap, Wilcoxon y Holm.};
+
+% E2 · coste
+\node[experiment,fill=SPPurple!2,draw=SPPurple!45] at (10.14,9.42) {};
+\node[badge,fill=SPPurple] at (7.41,10.96) {E2};
+\node[exphead] at (7.74,10.97) {¿Qué cuesta centralizar?};
+\draw[SPPurple!45,line width=0.55pt] (7.33,10.60) -- (12.95,10.60);
+\node[expbody] at (7.40,10.30) {%
+  \textbf{Diseño}\quad 630 ejecuciones: 7 tamaños
+  ($N=32$ a $2\,048$) $\times$ 3 razones $M/N$ $\times$ 30 semillas.\\[3pt]
+  \textbf{Métricas}\quad tiempo P05 a P95 y memoria exacta $8NM$.\\[3pt]
+  \textbf{Alcance}\quad ajuste log--log descriptivo.};
+
+% E3 · retirada
+\node[experiment,fill=SPGreen!2,draw=SPGreen!45] at (3.36,4.80) {};
+\node[badge,fill=SPGreen] at (0.63,6.34) {E3};
+\node[exphead] at (0.96,6.35) {¿Recalcula tras una retirada?};
+\draw[SPGreen!45,line width=0.55pt] (0.55,5.98) -- (6.17,5.98);
+\node[expbody] at (0.62,5.68) {%
+  \textbf{Diseño}\quad 1\,200 mundos: 3 tamaños $\times$ 4 reservas
+  $\times$ 100 semillas.\\[3pt]
+  \textbf{Barrido}\quad 5 fracciones anidadas por mundo;
+  6\,000 recálculos.\\[3pt]
+  \textbf{Criterio}\quad factible si y solo si
+  $N_{\mathrm{activo}}\geq M$.};
+
+% E4 · validez externa
+\node[experiment,fill=SPRed!2,draw=SPRed!45] at (10.14,4.80) {};
+\node[badge,fill=SPRed] at (7.41,6.34) {E4};
+\node[font=\scriptsize\bfseries,text=VIUDark,anchor=west] at (7.74,6.35)
+  {¿Es válido con capacidades distintas?};
+\draw[SPRed!45,line width=0.55pt] (7.33,5.98) -- (12.95,5.98);
+\node[expbody] at (7.40,5.68) {%
+  \textbf{Diseño}\quad 300 mundos: 2 tamaños $\times$ 5 escenarios
+  $\times$ 30 semillas.\\[3pt]
+  \textbf{Barrido}\quad 5 perfiles anidados por mundo;
+  1\,500 auditorías.\\[3pt]
+  \textbf{Auditor}\quad puestos frente a MILP/HiGHS; McNemar exacto
+  y Holm.};
+
+% Dos reglas suficientes para interpretar los contrastes.
+\draw[splegendbox] (0.32,0.48) rectangle (13.18,2.10);
+\node[font=\scriptsize\bfseries,text=VIUDark,anchor=west] at (0.62,1.64)
+  {Independencia};
+\node[font=\scriptsize,text=VIUGray,anchor=west] at (3.05,1.64)
+  {métodos y tratamientos quedan anidados en el mismo mundo--semilla};
+\node[font=\scriptsize\bfseries,text=VIUOrange,anchor=west] at (0.62,0.98)
+  {Registro íntegro};
+\node[font=\scriptsize,text=VIUGray,anchor=west] at (3.05,0.98)
+  {fallos, censura y timeout permanecen en el denominador};
+\end{tikzpicture}

@@ -1,4 +1,4 @@
-"""Build and validate the autonomous 26-page VIU SP1 levels PDF."""
+"""Build and validate the autonomous 28-page VIU SP1 levels PDF."""
 
 from __future__ import annotations
 
@@ -19,7 +19,13 @@ from sp1_levels_common import (
 
 
 SOURCE_DIR = REPOSITORY_ROOT / "thesis" / "sp1_levels_23p"
-DEFAULT_OUTPUT_DIR = REPOSITORY_ROOT / "output" / "pdf" / "sp1_levels_26p"
+DEFAULT_OUTPUT_DIR = REPOSITORY_ROOT / "output" / "pdf" / "sp1_levels_28p"
+ACTIVE_LEVEL_DIRS = {
+    "n1": "n1_v2",
+    "n2": "n2",
+    "n3": "n3",
+    "n4": "n4",
+}
 
 
 def _read_json(path: Path) -> dict[str, object]:
@@ -41,7 +47,7 @@ def _tex_bool(value: object) -> str:
 def generate_metrics_tex() -> Path:
     """Generate every quantitative macro from processed JSON artifacts."""
 
-    n1 = _read_json(LEVELS_OUTPUT_ROOT / "n1" / "key_metrics.json")
+    n1 = _read_json(LEVELS_OUTPUT_ROOT / "n1_v2" / "key_metrics.json")
     n2 = _read_json(LEVELS_OUTPUT_ROOT / "n2" / "key_metrics.json")
     n3 = _read_json(LEVELS_OUTPUT_ROOT / "n3" / "key_metrics.json")
     n4 = _read_json(LEVELS_OUTPUT_ROOT / "n4" / "key_metrics.json")
@@ -56,7 +62,7 @@ def generate_metrics_tex() -> Path:
         "NOneRows": _tex_integer(n1["raw_rows"]),
         "NOneMaxN": _tex_integer(n1["max_n"]),
         "NOneExponent": _tex_float(n1["solver_power_exponent"], 2),
-        "NOneRSquared": _tex_float(n1["solver_power_r_squared"], 2),
+        "NOneRSquared": _tex_float(n1["solver_power_r_squared"], 3),
         "NOneGreedyRatio": _tex_float(
             n1["median_greedy_to_hungarian_ratio"], 3
         ),
@@ -187,7 +193,7 @@ def _run_lualatex(output_dir: Path) -> Path:
         "-interaction=nonstopmode",
         "-halt-on-error",
         "-file-line-error",
-        "-jobname=SP1_NIVELES_26P",
+        "-jobname=SP1_NIVELES_28P",
         f"-output-directory={output_dir}",
         "sp1_levels_23p/main.tex",
     ]
@@ -219,10 +225,10 @@ def _run_lualatex(output_dir: Path) -> Path:
         "\n".join(logs),
         encoding="utf-8",
     )
-    built = output_dir / "SP1_NIVELES_26P.pdf"
+    built = output_dir / "SP1_NIVELES_28P.pdf"
     if not built.is_file():
         raise RuntimeError(
-            "LuaLaTeX completed without producing SP1_NIVELES_26P.pdf."
+            "LuaLaTeX completed without producing SP1_NIVELES_28P.pdf."
         )
     return built
 
@@ -272,8 +278,8 @@ def build_pdf(output_dir: Path) -> dict[str, object]:
     """Compile, enforce the page budget and render all pages."""
 
     required = [
-        LEVELS_OUTPUT_ROOT / level / "manifest.json"
-        for level in ("n1", "n2", "n3", "n4")
+        LEVELS_OUTPUT_ROOT / directory / "manifest.json"
+        for directory in ACTIVE_LEVEL_DIRS.values()
     ]
     missing = [str(path) for path in required if not path.is_file()]
     if missing:
@@ -284,14 +290,14 @@ def build_pdf(output_dir: Path) -> dict[str, object]:
     output_dir.mkdir(parents=True, exist_ok=True)
     metrics_path = generate_metrics_tex()
     built = _run_lualatex(output_dir)
-    final_pdf = output_dir / "SP1_NIVELES_26P.pdf"
+    final_pdf = output_dir / "SP1_NIVELES_28P.pdf"
     if built.resolve() != final_pdf.resolve():
         shutil.copy2(built, final_pdf)
     reader = PdfReader(str(final_pdf))
     page_count = len(reader.pages)
-    if page_count != 26:
+    if page_count != 28:
         raise RuntimeError(
-            f"Expected exactly 26 pages, but the PDF has {page_count}."
+            f"Expected exactly 28 pages, but the PDF has {page_count}."
         )
     rendered_pages = _render_pdf(final_pdf, output_dir / "rendered")
     if rendered_pages != page_count:
@@ -312,7 +318,7 @@ def build_pdf(output_dir: Path) -> dict[str, object]:
             "nomenclature_guide": 1,
             "common_scenarios": 1,
             "common_metrics_statistics": 1,
-            "N1": 4,
+            "N1": 6,
             "N2": 2,
             "N3": 2,
             "N4": 14,
@@ -335,9 +341,9 @@ def build_pdf(output_dir: Path) -> dict[str, object]:
         },
         "level_manifests": {
             level.upper(): sha256_file(
-                LEVELS_OUTPUT_ROOT / level / "manifest.json"
+                LEVELS_OUTPUT_ROOT / directory / "manifest.json"
             )
-            for level in ("n1", "n2", "n3", "n4")
+            for level, directory in ACTIVE_LEVEL_DIRS.items()
         },
     }
     write_json(output_dir / "manifest.json", manifest)
@@ -346,7 +352,7 @@ def build_pdf(output_dir: Path) -> dict[str, object]:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Build the exact 23-page VIU SP1 levels PDF."
+        description="Build the exact 28-page VIU SP1 levels PDF."
     )
     parser.add_argument(
         "--output-dir",

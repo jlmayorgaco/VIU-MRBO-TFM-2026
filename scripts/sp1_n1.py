@@ -16,10 +16,9 @@ from __future__ import annotations
 import argparse
 import copy
 import hashlib
-import json
 import math
 from pathlib import Path
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Mapping, Sequence
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -44,9 +43,12 @@ from sp1_levels_common import (
 
 
 DEFAULT_CONFIG = (
-    REPOSITORY_ROOT / "experiments" / "configs" / "sp1_n1_confirmatory.yaml"
+    REPOSITORY_ROOT
+    / "experiments"
+    / "configs"
+    / "sp1_n1_confirmatory_v2.yaml"
 )
-DEFAULT_OUTPUT = LEVELS_OUTPUT_ROOT / "n1"
+DEFAULT_OUTPUT = LEVELS_OUTPUT_ROOT / "n1_v2"
 
 SCENARIO_LABELS = {
     "uniform": "Aleatorio",
@@ -1062,7 +1064,7 @@ def _plot_quality(
         xlabel="Ahorro frente a greedy [%] · mediana e IC 95 %",
         title="Ganancia práctica del óptimo global",
     )
-    axes[0].legend(loc="lower right")
+    axes[0].legend(loc="upper center")
     axes[0].text(
         0.01,
         -0.22,
@@ -1372,6 +1374,527 @@ def _plot_boundary(
     return save_figure(figure, output_dir / "n1_validity_boundary", tight=False)
 
 
+def _plot_failure_recovery(
+    failure_summary: pd.DataFrame,
+    output_dir: Path,
+) -> list[Path]:
+    """Plot the recoverability boundary and the cost of static reallocation."""
+
+    figure, axes = plt.subplots(1, 2, figsize=(10.8, 4.55))
+    deltas = sorted(failure_summary["reserve_delta"].unique())
+    fractions = sorted(failure_summary["failure_fraction_nominal"].unique())
+    pivot = failure_summary.pivot(
+        index="reserve_delta",
+        columns="failure_fraction_nominal",
+        values="recovery_rate",
+    ).loc[deltas, fractions]
+    cmap = LinearSegmentedColormap.from_list(
+        "viu_recovery_detail",
+        ["#F7D7D2", "#FFF4E8", "#DDF2E7", COLORS["green"]],
+    )
+    image = axes[0].imshow(
+        pivot.to_numpy(float),
+        vmin=0.0,
+        vmax=1.0,
+        cmap=cmap,
+        aspect="auto",
+        origin="lower",
+    )
+    axes[0].set_xticks(
+        np.arange(len(fractions)),
+        [f"{100 * value:.0f}" for value in fractions],
+    )
+    axes[0].set_yticks(
+        np.arange(len(deltas)),
+        [f"{value:.2f}" for value in deltas],
+    )
+    axes[0].set(
+        xlabel="Robots retirados [%]",
+        ylabel=r"Reserva estructural, $\delta$",
+        title="A  ¿Permanece factible el recálculo?",
+    )
+    for row_index, delta in enumerate(deltas):
+        for column_index, fraction in enumerate(fractions):
+            value = float(pivot.loc[delta, fraction])
+            axes[0].text(
+                column_index,
+                row_index,
+                f"{100 * value:.0f}%",
+                ha="center",
+                va="center",
+                fontsize=8.2,
+                fontweight="bold",
+                color="white" if value > 0.75 else COLORS["dark"],
+            )
+        boundary = 2.0 * float(delta) / (1.0 + float(delta))
+        axes[0].text(
+            len(fractions) - 0.50,
+            row_index + 0.29,
+            rf"$f^*={100 * boundary:.0f}\%$",
+            ha="right",
+            va="center",
+            fontsize=7.2,
+            color=COLORS["dark"],
+        )
+    colorbar = figure.colorbar(image, ax=axes[0], fraction=0.045, pad=0.03)
+    colorbar.set_label("Fracción factible", fontsize=8.2)
+
+    for index, delta in enumerate(deltas):
+        block = failure_summary.loc[
+            np.isclose(failure_summary["reserve_delta"], delta)
+        ].sort_values("failure_fraction_nominal")
+        feasible = block["recovery_rate"] > 0.0
+        color = [
+            COLORS["gray"],
+            COLORS["blue"],
+            COLORS["green"],
+            COLORS["orange"],
+        ][index]
+        axes[1].plot(
+            100.0 * block.loc[feasible, "failure_fraction_nominal"],
+            100.0 * block.loc[feasible, "relative_cost_increase_median"],
+            marker="o",
+            linewidth=1.8,
+            color=color,
+            label=rf"$\delta={delta:.2f}$",
+        )
+    axes[1].set(
+        xlabel="Robots retirados [%]",
+        ylabel="Aumento mediano de coste [%]",
+        title="B  Precio espacial del recálculo factible",
+        xlim=(-1.0, 31.0),
+        ylim=(-2.0, 60.0),
+    )
+    axes[1].legend(loc="upper left", ncols=2)
+    axes[1].text(
+        0.02,
+        -0.22,
+        "Las curvas terminan cuando la reserva ya no cubre todos los puestos.",
+        transform=axes[1].transAxes,
+        fontsize=7.5,
+        color=COLORS["gray"],
+    )
+
+    for axis in axes:
+        axis.grid(True, which="major", linewidth=0.55, alpha=0.38)
+        axis.set_axisbelow(True)
+    figure.suptitle(
+        "N1 · recálculo central tras una retirada estática",
+        x=0.06,
+        y=1.02,
+        ha="left",
+        fontsize=11.0,
+        fontweight="bold",
+        color=COLORS["dark"],
+    )
+    figure.tight_layout(rect=(0, 0.06, 1, 0.97), w_pad=2.0)
+    return save_figure(figure, output_dir / "n1_failure_recovery", tight=False)
+
+
+def _plot_heterogeneity_boundary(
+    heterogeneity_summary: pd.DataFrame,
+    heterogeneity_runs: pd.DataFrame,
+    output_dir: Path,
+) -> list[Path]:
+    """Plot false feasibility and the MILP audit under individual capacities."""
+
+    figure, axes = plt.subplots(1, 2, figsize=(10.8, 4.55))
+    scenario_order = [
+        scenario
+        for scenario in SCENARIO_LABELS
+        if scenario in set(heterogeneity_summary["scenario"])
+    ]
+    capacity_order = [
+        mode
+        for mode in CAPACITY_LABELS
+        if mode in set(heterogeneity_summary["capacity_mode"])
+    ]
+    for scenario in scenario_order:
+        block = heterogeneity_summary.loc[
+            heterogeneity_summary["scenario"] == scenario
+        ].set_index("capacity_mode").loc[capacity_order].reset_index()
+        axes[0].plot(
+            block["capacity_cv_median"],
+            100.0 * block["false_feasible_rate"],
+            color=COLORS["light_gray"],
+            linewidth=1.0,
+            marker="o",
+            markersize=3.3,
+            alpha=0.90,
+        )
+
+    overall_rows: list[dict[str, float | str]] = []
+    for mode in capacity_order:
+        block = heterogeneity_runs.loc[
+            heterogeneity_runs["capacity_mode"] == mode
+        ]
+        false_rows = block.loc[block["hungarian_false_feasible"]]
+        successes = int(block["hungarian_false_feasible"].sum())
+        low, high = _wilson_interval(successes, len(block), confidence=0.95)
+        overall_rows.append(
+            {
+                "mode": mode,
+                "cv": float(block["capacity_cv"].median()),
+                "false_rate": successes / len(block),
+                "low": low,
+                "high": high,
+                "certification": float(block["milp_optimal_certified"].mean()),
+                "rescue": (
+                    float(false_rows["milp_rescues_false_feasible"].mean())
+                    if not false_rows.empty
+                    else math.nan
+                ),
+            }
+        )
+    overall = pd.DataFrame(overall_rows)
+    rates = 100.0 * overall["false_rate"].to_numpy(float)
+    lows = 100.0 * overall["low"].to_numpy(float)
+    highs = 100.0 * overall["high"].to_numpy(float)
+    axes[0].errorbar(
+        overall["cv"],
+        rates,
+        yerr=np.vstack(
+            (np.maximum(0.0, rates - lows), np.maximum(0.0, highs - rates))
+        ),
+        color=COLORS["orange"],
+        marker="o",
+        linewidth=2.1,
+        capsize=3,
+        label="agregado · IC 95 % Wilson",
+        zorder=4,
+    )
+    for index, mode in enumerate(capacity_order):
+        axes[0].annotate(
+            CAPACITY_LABELS[mode],
+            (overall.iloc[index]["cv"], rates[index]),
+            xytext=(0, 8 if index % 2 == 0 else -13),
+            textcoords="offset points",
+            ha="center",
+            fontsize=7.0,
+            color=COLORS["dark"],
+        )
+    axes[0].set(
+        xlabel=r"Heterogeneidad realizada, $\mathrm{CV}(c_i^{\mathrm{pay}})$",
+        ylabel="Falsos factibles de N1 [%]",
+        ylim=(-3.0, 103.0),
+        title="A  El veredicto por puestos deja de ser fiable",
+    )
+    axes[0].legend(loc="lower right")
+
+    positions = np.arange(len(capacity_order))
+    width = 0.34
+    certification = 100.0 * overall["certification"].to_numpy(float)
+    rescue = 100.0 * overall["rescue"].to_numpy(float)
+    axes[1].bar(
+        positions - width / 2,
+        certification,
+        width,
+        color=COLORS["blue"],
+        label="óptimo MILP certificado",
+    )
+    axes[1].bar(
+        positions + width / 2,
+        np.nan_to_num(rescue, nan=0.0),
+        width,
+        color=COLORS["green"],
+        label="rescate entre falsos factibles",
+    )
+    for index, value in enumerate(certification):
+        axes[1].text(
+            index - width / 2,
+            value + 1.2,
+            f"{value:.1f}",
+            ha="center",
+            va="bottom",
+            fontsize=7.0,
+            color=COLORS["dark"],
+        )
+    for index, value in enumerate(rescue):
+        label = "n/a" if math.isnan(value) else f"{value:.1f}"
+        y_value = 2.0 if math.isnan(value) else value + 1.2
+        axes[1].text(
+            index + width / 2,
+            y_value,
+            label,
+            ha="center",
+            va="bottom",
+            fontsize=7.0,
+            color=COLORS["dark"],
+        )
+    axes[1].set_xticks(
+        positions,
+        [CAPACITY_LABELS[mode] for mode in capacity_order],
+        rotation=18,
+        ha="right",
+    )
+    axes[1].set(
+        ylabel="Ejecuciones [%]",
+        ylim=(0.0, 108.0),
+        title="B  El MILP audita la capacidad real",
+    )
+    axes[1].legend(loc="lower left")
+    axes[1].text(
+        0.02,
+        -0.27,
+        "Rescate: el MILP encuentra una coalición capaz cuando la asignación por puestos falla.",
+        transform=axes[1].transAxes,
+        fontsize=7.5,
+        color=COLORS["gray"],
+    )
+
+    for axis in axes:
+        axis.grid(True, axis="y", linewidth=0.55, alpha=0.38)
+        axis.set_axisbelow(True)
+    figure.suptitle(
+        "N1 · auditoría externa con capacidades individuales",
+        x=0.06,
+        y=1.02,
+        ha="left",
+        fontsize=11.0,
+        fontweight="bold",
+        color=COLORS["dark"],
+    )
+    figure.tight_layout(rect=(0, 0.07, 1, 0.97), w_pad=2.0)
+    return save_figure(
+        figure,
+        output_dir / "n1_heterogeneity_boundary",
+        tight=False,
+    )
+
+
+def _plot_operating_envelope(
+    scaling_summary: pd.DataFrame,
+    scaling_metrics: Mapping[str, Any],
+    failure_summary: pd.DataFrame,
+    heterogeneity_summary: pd.DataFrame,
+    heterogeneity_runs: pd.DataFrame,
+    output_dir: Path,
+) -> list[Path]:
+    """Synthesize computation, static recourse and model validity in one plate."""
+
+    figure, axes = plt.subplots(1, 3, figsize=(12.4, 4.25))
+
+    # A. Measured centralized solver time.
+    for ratio in sorted(scaling_summary["slot_to_robot_ratio"].unique()):
+        block = scaling_summary.loc[
+            np.isclose(scaling_summary["slot_to_robot_ratio"], ratio)
+        ].sort_values("N")
+        color = ASPECT_COLORS.get(float(ratio), COLORS["blue"])
+        axes[0].plot(
+            block["N"],
+            block["solver_ms_median"],
+            marker="o",
+            markersize=3.8,
+            linewidth=1.35,
+            color=color,
+            label=rf"$M/N={ratio:.2f}$",
+        )
+        axes[0].fill_between(
+            block["N"],
+            block["solver_ms_p05"],
+            block["solver_ms_p95"],
+            color=color,
+            alpha=0.10,
+            linewidth=0,
+        )
+    axes[0].set(
+        xscale="log",
+        yscale="log",
+        xlabel="robots, $N$",
+        ylabel="tiempo solver [ms]",
+        title="A  Coste del oráculo central",
+    )
+    axes[0].legend(loc="upper left", fontsize=6.8, frameon=True)
+    axes[0].text(
+        0.97,
+        0.05,
+        (
+            rf"$N=M$: $\hat\beta={scaling_metrics['solver_power_exponent']:.2f}$"
+            "\n"
+            rf"IC 95 % [{scaling_metrics['solver_power_ci_low']:.2f}, "
+            rf"{scaling_metrics['solver_power_ci_high']:.2f}]"
+            "\najuste descriptivo"
+        ),
+        transform=axes[0].transAxes,
+        ha="right",
+        va="bottom",
+        fontsize=7.0,
+        color=COLORS["dark"],
+        bbox={
+            "boxstyle": "round,pad=0.30",
+            "facecolor": "white",
+            "edgecolor": COLORS["light_gray"],
+            "linewidth": 0.7,
+        },
+    )
+
+    # B. Static centralized recovery after robot withdrawal.
+    deltas = sorted(failure_summary["reserve_delta"].unique())
+    fractions = sorted(failure_summary["failure_fraction_nominal"].unique())
+    pivot = failure_summary.pivot(
+        index="reserve_delta",
+        columns="failure_fraction_nominal",
+        values="recovery_rate",
+    ).loc[deltas, fractions]
+    cmap = LinearSegmentedColormap.from_list(
+        "viu_recovery_compact",
+        ["#F7D7D2", "#FFF4E8", "#DDF2E7", COLORS["green"]],
+    )
+    axes[1].imshow(
+        pivot.to_numpy(float),
+        vmin=0.0,
+        vmax=1.0,
+        cmap=cmap,
+        aspect="auto",
+        origin="lower",
+    )
+    axes[1].set_xticks(
+        np.arange(len(fractions)),
+        [f"{100 * value:.0f}" for value in fractions],
+    )
+    axes[1].set_yticks(
+        np.arange(len(deltas)),
+        [f"{value:.2f}" for value in deltas],
+    )
+    axes[1].set(
+        xlabel="robots retirados [%]",
+        ylabel=r"reserva $\delta$",
+        title="B  Recálculo postfallo",
+    )
+    for row_index, delta in enumerate(deltas):
+        for column_index, fraction in enumerate(fractions):
+            value = float(pivot.loc[delta, fraction])
+            axes[1].text(
+                column_index,
+                row_index,
+                f"{100 * value:.0f}",
+                ha="center",
+                va="center",
+                fontsize=7.2,
+                fontweight="bold",
+                color="white" if value > 0.75 else COLORS["dark"],
+            )
+    axes[1].text(
+        0.02,
+        0.98,
+        "celdas: factibilidad [%]",
+        transform=axes[1].transAxes,
+        ha="left",
+        va="top",
+        fontsize=6.8,
+        color=COLORS["gray"],
+        bbox={
+            "boxstyle": "round,pad=0.22",
+            "facecolor": "white",
+            "edgecolor": "none",
+            "alpha": 0.88,
+        },
+    )
+
+    # C. External-validity audit under individual capacities.
+    scenario_order = [
+        scenario
+        for scenario in SCENARIO_LABELS
+        if scenario in set(heterogeneity_summary["scenario"])
+    ]
+    capacity_order = [
+        mode
+        for mode in CAPACITY_LABELS
+        if mode in set(heterogeneity_summary["capacity_mode"])
+    ]
+    for scenario in scenario_order:
+        block = heterogeneity_summary.loc[
+            heterogeneity_summary["scenario"] == scenario
+        ].set_index("capacity_mode").loc[capacity_order].reset_index()
+        axes[2].plot(
+            block["capacity_cv_median"],
+            100.0 * block["false_feasible_rate"],
+            color=COLORS["light_gray"],
+            linewidth=0.9,
+            marker="o",
+            markersize=2.6,
+            alpha=0.85,
+        )
+    overall_rows: list[dict[str, float]] = []
+    for mode in capacity_order:
+        block = heterogeneity_runs.loc[
+            heterogeneity_runs["capacity_mode"] == mode
+        ]
+        successes = int(block["hungarian_false_feasible"].sum())
+        low, high = _wilson_interval(successes, len(block), confidence=0.95)
+        overall_rows.append(
+            {
+                "cv": float(block["capacity_cv"].median()),
+                "rate": successes / len(block),
+                "low": low,
+                "high": high,
+            }
+        )
+    overall = pd.DataFrame(overall_rows)
+    rates = 100.0 * overall["rate"].to_numpy(float)
+    lows = 100.0 * overall["low"].to_numpy(float)
+    highs = 100.0 * overall["high"].to_numpy(float)
+    axes[2].errorbar(
+        overall["cv"],
+        rates,
+        yerr=np.vstack(
+            (np.maximum(0.0, rates - lows), np.maximum(0.0, highs - rates))
+        ),
+        color=COLORS["orange"],
+        marker="o",
+        markersize=4.2,
+        linewidth=1.7,
+        capsize=2.5,
+        label="agregado · IC 95 %",
+        zorder=4,
+    )
+    for index, mode in enumerate(capacity_order):
+        axes[2].annotate(
+            CAPACITY_LABELS[mode],
+            (overall.iloc[index]["cv"], rates[index]),
+            xytext=(0, 8 if index % 2 == 0 else -13),
+            textcoords="offset points",
+            ha="center",
+            fontsize=6.4,
+            color=COLORS["dark"],
+        )
+    axes[2].set(
+        xlabel=r"heterogeneidad, $\mathrm{CV}(c_i^{\mathrm{pay}})$",
+        ylabel="falsos factibles N1 [%]",
+        ylim=(-4.0, 104.0),
+        title="C  Ruptura de la reducción",
+    )
+    axes[2].legend(loc="lower right", fontsize=6.8, frameon=True)
+
+    for axis in axes:
+        axis.grid(True, which="major", linewidth=0.55, alpha=0.38)
+        axis.set_axisbelow(True)
+    figure.suptitle(
+        "N1 · envolvente operativa y frontera de validez",
+        x=0.055,
+        y=0.995,
+        ha="left",
+        fontsize=11.0,
+        fontweight="bold",
+        color=COLORS["dark"],
+    )
+    figure.text(
+        0.055,
+        0.012,
+        "A: rango medido, no ley asintótica · B: recálculo central estático · C: el MILP solo audita validez externa",
+        ha="left",
+        va="bottom",
+        fontsize=7.2,
+        color=COLORS["gray"],
+    )
+    figure.tight_layout(rect=(0.025, 0.075, 0.995, 0.935), w_pad=1.45)
+    return save_figure(
+        figure,
+        output_dir / "n1_operating_envelope",
+        tight=False,
+    )
+
+
 def _write_report(
     path: Path,
     metrics: Mapping[str, Any],
@@ -1493,6 +2016,23 @@ def build_level(
         scaling_summary, figures_dir, scaling_metrics
     )
     figure_paths += _plot_boundary(
+        failure_summary,
+        heterogeneity_summary,
+        heterogeneity_runs,
+        figures_dir,
+    )
+    figure_paths += _plot_failure_recovery(
+        failure_summary,
+        figures_dir,
+    )
+    figure_paths += _plot_heterogeneity_boundary(
+        heterogeneity_summary,
+        heterogeneity_runs,
+        figures_dir,
+    )
+    figure_paths += _plot_operating_envelope(
+        scaling_summary,
+        scaling_metrics,
         failure_summary,
         heterogeneity_summary,
         heterogeneity_runs,
