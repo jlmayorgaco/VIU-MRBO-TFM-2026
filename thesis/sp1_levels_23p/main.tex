@@ -1,0 +1,1665 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{viu-mrob-thesis}
+\input{sp1_levels_23p/generated/metrics.tex}
+
+\hypersetup{
+  pdftitle={Resultados SP1 por niveles},
+  pdfauthor={Jorge Luis Mayorga Taborda},
+  pdfsubject={Artefacto autónomo de validación editorial VIU}
+}
+
+\newcommand{\leveltag}[1]{%
+  \noindent\colorbox{VIUDark}{%
+    \parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
+      \color{white}\sffamily\bfseries\small #1%
+    }%
+  }\par\smallskip
+}
+
+\newcommand{\pagelead}[1]{%
+  \begin{tcolorbox}[
+    colback=SPFloor,
+    colframe=SPGrid,
+    boxrule=0.5pt,
+    arc=1.2mm,
+    left=2.5mm,right=2.5mm,top=1.5mm,bottom=1.5mm
+  ]
+  #1
+  \end{tcolorbox}
+}
+
+\newcommand{\resultfigure}[4][0.43\textheight]{%
+  \begin{center}
+    \includegraphics[width=\textwidth,height=#1,keepaspectratio]{#2}
+    \captionof{figure}{#3}
+    \label{#4}
+    \viuownsource
+  \end{center}
+}
+
+\newcommand{\compactsource}{%
+  {\centering\footnotesize\itshape Elaboración propia a partir de los datos
+  procesados y manifiestos de la campaña.\par}
+}
+
+\newcommand{\evidenceline}[4]{%
+  \noindent\textbf{Hecho:} #1\quad
+  \textbf{Evidencia:} #2\quad
+  \textbf{Límite:} #3\quad
+  \textbf{Transición:} #4
+}
+
+\begin{document}
+
+\viuromanfoliofalse
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% --------------------------------------------------------------------------
+% Página 1 · Introducción
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · INTRODUCCIÓN · FRONTERA DE MODELADO}
+\section*{SP1: Multi-Robot Task Allocation and Recruitment}
+
+La asignación multi-robot determina, antes de la ejecución física, qué agentes
+atenderán cada carga. En la formulación homogénea, todos los robots comparten
+$\bar c^{\mathrm{pay}}$, aunque las demandas $m_k$ pueden diferir. Cada carga
+se descompone en $n_k$ slots intercambiables; el algoritmo húngaro obtiene una
+asignación exacta \emph{robot--slot} que, por agregación, forma coaliciones
+multi-robot. En la formulación heterogénea, las capacidades
+$c_i^{\mathrm{pay}}$ difieren y la coalición debe satisfacer $m_k$; por ello se
+adopta un MILP central como oráculo. La reducción húngara solo es válida con
+capacidad escalar común y slots intercambiables.
+
+{\small
+\begin{minipage}[t]{0.48\textwidth}
+\textbf{Robots homogéneos (Húngaro).}
+\[
+\begin{aligned}
+\min_{x}\quad
+  &\sum_{i\in\mathcal I}\sum_{h\in\mathcal H}d_{ih}x_{ih}\\
+\mathrm{s.a.}\quad
+  &\sum_{h\in\mathcal H}x_{ih}\leq1 && i\in\mathcal I,\\
+  &\sum_{i\in\mathcal I}x_{ih}=1 && h\in\mathcal H,\\[-1mm]
+  &x_{ih}\in\{0,1\}.
+\end{aligned}
+\]
+$|\mathcal H_k|=\lceil m_k/\bar c^{\mathrm{pay}}\rceil$ slots para la carga
+$k$, con $c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\textbf{Robots heterogéneos (MILP).}
+\[
+\begin{aligned}
+\min_{x,e}\quad
+  &J_{\mathrm{het}}(x,e)\\
+\mathrm{s.a.}\quad
+  &\sum_{k\in\mathcal K}x_{ik}\leq1 && i\in\mathcal I,\\
+  &e_k=\sum_{i\in\mathcal I}c_i^{\mathrm{pay}}x_{ik}-m_k\geq0
+    && k\in\mathcal K,\\[-1mm]
+  &x_{ik}\in\{0,1\}.
+\end{aligned}
+\]
+\end{minipage}
+}
+
+\begin{figure}[H]
+\centering
+\begingroup
+\pgfmathsetlengthmacro{\spxunitintro}{\linewidth/13.5}
+\begin{tikzpicture}[x=\spxunitintro,y=1.30cm]
+\spdrawarena{Asignación multi-robot: Húngaro por slots frente a MILP heterogéneo}
+\draw[draw=SPGrid,line width=0.8pt] (6.75,0.75) -- (6.75,4.65);
+
+\node[sptitle,fill=SPBlue!9,anchor=west] at (0.35,4.35)
+  {Robots homogéneos · Húngaro};
+\node[spmuted,anchor=west] at (0.35,3.92)
+  {$c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$, pero $m_1\neq m_2$};
+\draw[spcoalition] (0.45,1.66) rectangle (1.55,3.69);
+\node[sprobot,minimum size=6.4mm,font=\tiny\bfseries]
+  (hr1) at (1.00,3.38) {$r_1$};
+\node[sprobot,minimum size=6.4mm,font=\tiny\bfseries]
+  (hr2) at (1.00,2.70) {$r_2$};
+\node[sprobot,minimum size=6.4mm,font=\tiny\bfseries]
+  (hr3) at (1.00,2.02) {$r_3$};
+\node[sprobot,minimum size=6.4mm,font=\tiny\bfseries]
+  (hr4) at (1.00,1.25) {$r_4$};
+\node[spannotation] at (2.17,3.60) {coalición para $k_1$};
+
+\draw[spfootprint] (3.48,1.66) rectangle (6.38,3.69);
+\node[spload,minimum width=0.62cm,minimum height=0.44cm,
+  inner sep=1pt,font=\tiny\bfseries]
+  (hs11) at (3.98,3.38) {$h_{11}$};
+\node[spload,minimum width=0.62cm,minimum height=0.44cm,
+  inner sep=1pt,font=\tiny\bfseries]
+  (hs12) at (3.98,2.70) {$h_{12}$};
+\node[spload,minimum width=0.62cm,minimum height=0.44cm,
+  inner sep=1pt,font=\tiny\bfseries]
+  (hs13) at (3.98,2.02) {$h_{13}$};
+\node[splabel] at (5.30,2.70)
+  {\textbf{una carga $k_1$}\\demanda $m_1$\\$n_1=3$ slots};
+
+\draw[spfootprint] (3.48,0.94) rectangle (6.38,1.56);
+\node[spload,minimum width=0.62cm,minimum height=0.42cm,
+  inner sep=1pt,font=\tiny\bfseries]
+  (hs21) at (3.98,1.25) {$h_{21}$};
+\node[splabel] at (5.30,1.25)
+  {\textbf{carga $k_2$}: $n_2=1$};
+
+\draw[spassign] (hr1) -- (hs11);
+\draw[spassign] (hr2) -- (hs12);
+\draw[spassign] (hr3) -- (hs13);
+\draw[spassign] (hr4) -- (hs21);
+
+\node[sptitle,fill=SPGreen!9,anchor=west] at (7.05,4.35)
+  {Robots y cargas heterogéneos · MILP};
+\node[spmuted,anchor=west] at (7.05,3.92)
+  {$c^{\mathrm{pay}}=(1,1,2,2)$;\quad $m=(4,2)$};
+\draw[spcoalition] (7.20,1.83) rectangle (8.20,3.72);
+\node[sprobot,minimum size=5.4mm,font=\tiny\bfseries]
+  (gr1) at (7.70,3.42) {$1$};
+\node[sprobot,minimum size=5.4mm,font=\tiny\bfseries]
+  (gr2) at (7.70,2.84) {$1$};
+\node[sprobot,minimum size=7.2mm,font=\tiny\bfseries]
+  (gr3) at (7.70,2.20) {$2$};
+\draw[spcoalitiongreen] (7.20,0.97) rectangle (8.20,1.62);
+\node[sprobotgreen,minimum size=7.2mm,font=\tiny\bfseries]
+  (gr4) at (7.70,1.29) {$2$};
+
+\node[spload,minimum width=1.12cm,minimum height=0.64cm,
+  inner sep=1.2pt,font=\tiny\bfseries] (gk1)
+  at (11.78,2.88) {carga $k_1$\\demanda $4$};
+\node[spload,minimum width=1.12cm,minimum height=0.64cm,
+  inner sep=1.2pt,font=\tiny\bfseries] (gk2)
+  at (11.78,1.29) {carga $k_2$\\demanda $2$};
+
+\draw[spassign] (gr1) -- (gk1);
+\draw[spassign] (gr2) -- (gk1);
+\draw[spassign] (gr3) -- (gk1);
+\draw[spassign,draw=SPGreen] (gr4) -- (gk2);
+\node[spannotation] at (9.62,3.45) {$1+1+2=4$};
+\node[spannotation] at (9.62,1.64) {$2=2$};
+\node[spmuted] at (9.70,2.14) {coaliciones sin exceso};
+
+\draw[spassign] (0.35,0.34) -- (1.05,0.34);
+\node[splegend,anchor=west] at (1.18,0.34) {seleccionado};
+\node[splegend,anchor=west] at (3.05,0.34)
+  {\textbf{Húngaro:} slot $1{:}1$; carga $N{:}1$};
+\node[splegend,anchor=west] at (7.35,0.34)
+  {\textbf{MILP:} distancia mínima; exceso $0$};
+\end{tikzpicture}
+\endgroup
+\caption{El panel húngaro conserva la multiplicidad robot--carga mediante
+slots. En el ejemplo MILP, el óptimo espacial asigna capacidades
+$1+1+2=4$ a $k_1$ y el robot restante, de capacidad $2$, a $k_2$; ambas
+restricciones quedan activas y el exceso es nulo. La optimalidad se refiere al
+modelo central representado.}
+\label{fig:sp1-model-boundary}
+\viuownsource
+\end{figure}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 2 · Guía de lectura
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · GUÍA DE LECTURA · NIVELES Y RAMAS}
+\section*{Mapa de niveles experimentales de SP1}
+
+Los niveles \textbf{N1--N4} ordenan la validación de SP1 sin crear nuevos
+subproblemas. La Figura~\ref{fig:sp1-level-guide} recorre la transición desde
+los oráculos globales (N1--N2) hasta la decisión vecinal (N3--N4); el
+transporte físico comienza en SP2.
+
+\begin{figure}[H]
+\centering
+\begingroup
+\pgfmathsetlengthmacro{\spxunitguide}{\linewidth/13.5}
+\begin{tikzpicture}[x=\spxunitguide,y=1.10cm]
+\tikzset{
+  guideflow/.style={-{Latex[length=1.9mm]},draw=VIUDark!68,
+    line width=0.82pt,shorten >=2pt,shorten <=2pt},
+  guidewire/.style={draw=VIUDark!68,line width=0.82pt,
+    shorten >=2pt,shorten <=2pt},
+  guideblue/.style={-{Latex[length=1.7mm]},draw=SPBlue!82,
+    line width=0.72pt,shorten >=1.5pt,shorten <=1.5pt},
+  guidegreen/.style={-{Latex[length=1.7mm]},draw=SPGreen!88,
+    line width=0.76pt,shorten >=1.5pt,shorten <=1.5pt},
+  guidepurple/.style={-{Latex[length=1.7mm]},draw=SPPurple!88,
+    line width=0.76pt,shorten >=1.5pt,shorten <=1.5pt},
+  guideheader/.style={sptitle,text width=4.70cm,align=left,
+    inner xsep=6pt,inner ysep=3.2pt},
+  guidebadge/.style={sppanel,fill=white,align=center,
+    font=\fontsize{6.2}{7.2}\selectfont\bfseries,
+    inner xsep=5pt,inner ysep=3pt,minimum height=0.52cm},
+  guideflowlabel/.style={sppanel,fill=white,align=center,
+    font=\fontsize{6.2}{7.2}\selectfont\bfseries,
+    inner xsep=4pt,inner ysep=3pt},
+  guidechange/.style={sppanel,align=center,
+    font=\fontsize{5.9}{6.7}\selectfont\bfseries,
+    inner xsep=4pt,inner ysep=3.2pt,line width=0.75pt},
+  guideoutcome/.style={sppanel,fill=white,align=center,
+    font=\fontsize{6.0}{7.0}\selectfont,
+    inner xsep=6pt,inner ysep=3pt},
+  guidesum/.style={sppanel,fill=white,align=center,
+    font=\fontsize{6.0}{7.0}\selectfont\bfseries,
+    inner xsep=4pt,inner ysep=3pt},
+  guidemethod/.style={sppanel,fill=white,align=center,
+    inner xsep=5pt,inner ysep=4pt}
+}
+\fill[SPFloor] (0.01,0.10) rectangle (13.49,14.35);
+\draw[sparena] (0.01,0.10) rectangle (13.49,14.35);
+
+\node[sppanel,fill=VIUDark,text=white,minimum width=11.6cm,
+  minimum height=0.78cm,font=\small\bfseries] at (6.75,13.83)
+  {SP1 \textbar\ evolución del reclutamiento: del oráculo global a la decisión vecinal};
+
+\node[sppanel,fill=SPBlue!4,minimum width=5.90cm,
+  minimum height=5.65cm] (n1) at (3.14,10.70) {};
+\node[sppanel,fill=SPGreen!4,minimum width=5.90cm,
+  minimum height=5.65cm] (n2) at (10.36,10.70) {};
+\node[sppanel,fill=SPPurple!4,minimum width=5.90cm,
+  minimum height=5.40cm] (n3) at (3.14,4.55) {};
+\node[sppanel,fill=VIUOrange!4,minimum width=5.90cm,
+  minimum height=5.40cm] (n4) at (10.36,4.55) {};
+
+\node[guideheader,fill=SPBlue!13]
+  at (3.14,12.65) {N1 \textbar\ Robots homogéneos};
+\node[guideheader,fill=SPGreen!13]
+  at (10.36,12.65) {N2 \textbar\ Capacidades heterogéneas};
+\node[guideheader,fill=SPPurple!13]
+  at (3.14,6.50) {N3 \textbar\ Baselines distribuidos};
+\node[guideheader,fill=VIUOrange!15]
+  at (10.36,6.50) {N4 \textbar\ Geo-QPG propuesto};
+
+\node[guidebadge,text width=1.32cm]
+  at (1.55,11.90) {HÚNGARO\\LSAP};
+\node[guidebadge,text width=1.00cm]
+  at (4.73,11.90) {GLOBAL};
+\node[guidebadge,text width=1.24cm]
+  at (8.75,11.90) {MILP\\HiGHS};
+\node[guidebadge,text width=1.00cm]
+  at (11.98,11.90) {GLOBAL};
+\node[guidebadge,text width=1.28cm]
+  at (1.55,5.78) {CBBA / GRAPE};
+\node[guidebadge,text width=1.18cm]
+  at (4.73,5.78) {VECINAL};
+\node[guidebadge,text width=1.18cm]
+  at (8.75,5.78) {WHITE-BOX};
+\node[guidebadge,text width=1.18cm]
+  at (11.98,5.78) {VECINAL};
+
+% Cada cambio de nivel es un nodo del flujo: las líneas terminan en su borde.
+\node[guidechange,fill=SPGreen!8,text width=1.12cm]
+  (change12) at (6.75,10.70)
+  {Añade\\capacidad\\individual};
+\draw[guidewire] (n1.east) -- (change12.west);
+\draw[guideflow] (change12.east) -- (n2.west);
+
+\node[guidechange,fill=white,text width=1.28cm]
+  (change23) at (6.75,7.65)
+  {Elimina\\coordinador\\global};
+\draw[guidewire,rounded corners=3pt]
+  (n2.south) -- (10.36,7.65) -- (change23.east);
+\draw[guideflow,rounded corners=3pt]
+  (change23.west) -- (3.14,7.65) -- (n3.north);
+
+\node[guidechange,fill=VIUOrange!9,text width=1.18cm]
+  (change34) at (6.75,4.55)
+  {Evalúa\\propuesta y\\ablaciones};
+\draw[guidewire] (n3.east) -- (change34.west);
+\draw[guideflow] (change34.east) -- (n4.west);
+
+% N1: cinco trayectorias paralelas; ninguna atraviesa otro robot o slot.
+\node[sprobot,minimum size=4.8mm,font=\tiny\bfseries] (n1r1) at (1.20,11.20) {$1$};
+\node[sprobot,minimum size=4.8mm,font=\tiny\bfseries] (n1r2) at (1.20,10.70) {$1$};
+\node[sprobot,minimum size=4.8mm,font=\tiny\bfseries] (n1r3) at (1.20,10.20) {$1$};
+\node[sprobot,minimum size=4.8mm,font=\tiny\bfseries] (n1r4) at (1.40,9.55) {$1$};
+\node[sprobot,minimum size=4.8mm,font=\tiny\bfseries] (n1r5) at (1.40,9.05) {$1$};
+\draw[spfootprint,fill=VIUOrange!4] (3.62,9.95) rectangle (4.78,11.46);
+\node[spload,minimum width=4.0mm,minimum height=4.0mm,
+  inner sep=0pt] (n1s11) at (4.03,11.20) {};
+\node[spload,minimum width=4.0mm,minimum height=4.0mm,
+  inner sep=0pt] (n1s12) at (4.03,10.70) {};
+\node[spload,minimum width=4.0mm,minimum height=4.0mm,
+  inner sep=0pt] (n1s13) at (4.03,10.20) {};
+\node[spannotation,anchor=west,inner xsep=3pt,inner ysep=2pt]
+  at (4.82,10.70) {$k_1$};
+\draw[spfootprint,fill=VIUOrange!4] (3.62,8.78) rectangle (4.78,9.75);
+\node[spload,minimum width=4.0mm,minimum height=4.0mm,
+  inner sep=0pt] (n1s21) at (4.03,9.55) {};
+\node[spload,minimum width=4.0mm,minimum height=4.0mm,
+  inner sep=0pt] (n1s22) at (4.03,9.05) {};
+\node[spannotation,anchor=west,inner xsep=3pt,inner ysep=2pt]
+  at (4.82,9.30) {$k_2$};
+\draw[guideblue] (n1r1) -- (n1s11);
+\draw[guideblue] (n1r2) -- (n1s12);
+\draw[guideblue] (n1r3) -- (n1s13);
+\draw[guideblue] (n1r4) -- (n1s21);
+\draw[guideblue] (n1r5) -- (n1s22);
+\node[guideoutcome,text width=4.05cm,minimum height=0.48cm]
+  at (3.14,8.48)
+  {\textcolor{SPBlue}{\textbf{EXACTO POR SLOTS}}};
+
+% N2: cada coalición se agrega antes de comprobar la demanda de la carga.
+\draw[spcoalitiongreen] (7.90,10.34) rectangle (9.55,11.36);
+\node[sprobotgreen,minimum size=4.8mm,font=\tiny\bfseries] (n2r1) at (8.20,10.83) {$1$};
+\node[sprobotgreen,minimum size=4.8mm,font=\tiny\bfseries] (n2r2) at (8.75,10.83) {$1$};
+\node[sprobotgreen,minimum size=6.0mm,font=\tiny\bfseries] (n2r3) at (9.25,10.83) {$2$};
+\node[guidesum,text width=0.72cm,minimum height=0.48cm]
+  (n2sum1) at (10.35,10.83)
+  {$\sum c_i=4$};
+\node[spload,minimum width=0.88cm,minimum height=0.50cm,
+  inner xsep=3pt,inner ysep=2.5pt,font=\tiny\bfseries]
+  (n2k1) at (11.90,10.83)
+  {$k_1$\; $m_1=4$};
+\draw[guidegreen] (9.58,10.83) -- (n2sum1.west);
+\draw[guidegreen] (n2sum1.east) -- (n2k1.west);
+
+\draw[spcoalitiongreen] (8.10,9.12) rectangle (9.30,9.88);
+\node[sprobotgreen,minimum size=6.0mm,font=\tiny\bfseries] (n2r4) at (8.70,9.50) {$2$};
+\node[guidesum,text width=0.72cm,minimum height=0.48cm]
+  (n2sum2) at (10.35,9.50)
+  {$\sum c_i=2$};
+\node[spload,minimum width=0.88cm,minimum height=0.50cm,
+  inner xsep=3pt,inner ysep=2.5pt,font=\tiny\bfseries]
+  (n2k2) at (11.90,9.50)
+  {$k_2$\; $m_2=2$};
+\draw[guidegreen] (9.33,9.50) -- (n2sum2.west);
+\draw[guidegreen] (n2sum2.east) -- (n2k2.west);
+\node[guideoutcome,text width=4.05cm,minimum height=0.48cm]
+  at (10.36,8.48)
+  {\textcolor{SPGreen}{\textbf{ÓPTIMO CERTIFICADO}}};
+
+% N3: cada rama dispone de su propia columna y de un carril de entrada.
+\node[sprobotpurple,minimum size=4.6mm] (n3r1) at (1.04,4.58) {};
+\node[sprobotpurple,minimum size=4.6mm] (n3r2) at (1.46,5.05) {};
+\node[sprobotpurple,minimum size=4.6mm] (n3r3) at (2.02,4.88) {};
+\node[sprobotpurple,minimum size=4.6mm] (n3r4) at (1.26,3.98) {};
+\node[sprobotpurple,minimum size=4.6mm] (n3r5) at (1.86,3.91) {};
+\draw[spcomm,draw=SPPurple!75] (n3r1) -- (n3r2);
+\draw[spcomm,draw=SPPurple!75] (n3r2) -- (n3r3);
+\draw[spcomm,draw=SPPurple!75] (n3r1) -- (n3r4);
+\draw[spcomm,draw=SPPurple!75] (n3r2) -- (n3r5);
+\draw[spcomm,draw=SPPurple!75] (n3r3) -- (n3r5);
+\draw[spcomm,draw=SPPurple!75] (n3r4) -- (n3r5);
+\node[diamond,aspect=1.35,draw=SPPurple,fill=white,line width=0.75pt,
+  minimum size=4.4mm,inner sep=0pt] (n3split) at (2.62,4.97) {};
+\draw[guidepurple] (n3r3.east) -- (n3split.west);
+\node[sppanel,fill=white,text width=1.05cm,minimum height=0.70cm,
+  inner sep=2.5pt,align=center,
+  font=\fontsize{6.0}{7.0}\selectfont\bfseries] (n31) at (3.45,4.30)
+  {N3.1\\CBBA};
+\node[sppanel,fill=white,text width=1.05cm,minimum height=0.70cm,
+  inner sep=2.5pt,align=center,
+  font=\fontsize{6.0}{7.0}\selectfont\bfseries] (n32) at (4.85,4.30)
+  {N3.2\\GRAPE};
+\draw[guidepurple] (n3split.east) -- (n31.north west);
+\draw[guidepurple,rounded corners=2pt]
+  (n3split.north) -- (2.62,5.27) -- (4.85,5.27) -- (n32.north);
+\node[guideoutcome,fill=SPPurple!8,text width=3.00cm,
+  minimum height=0.68cm] (n3out) at (4.12,3.00)
+  {\textcolor{SPPurple}{\textbf{CERTIFIED $\rightarrow$ RECOVERED}}};
+\draw[guidepurple] (n31.south) -- (n31.south |- n3out.north);
+\draw[guidepurple] (n32.south) -- (n32.south |- n3out.north);
+
+% N4: señal, decisión y coalición se leen sobre un único eje horizontal.
+\node[sprobotgreen,minimum size=4.8mm] (n4r1) at (8.05,4.63) {};
+\node[sprobotgreen,minimum size=4.8mm] (n4r2) at (8.55,5.13) {};
+\node[sprobotgreen,minimum size=4.8mm] (n4r3) at (9.05,4.63) {};
+\node[sprobotgreen,minimum size=4.8mm] (n4r4) at (8.55,3.93) {};
+\draw[spcomm,draw=SPGreen!75] (n4r1) -- (n4r2);
+\draw[spcomm,draw=SPGreen!75] (n4r2) -- (n4r3);
+\draw[spcomm,draw=SPGreen!75] (n4r1) -- (n4r4);
+\draw[spcomm,draw=SPGreen!75] (n4r3) -- (n4r4);
+\node[spannotation,inner xsep=4pt,inner ysep=2pt]
+  at (8.55,3.37) {señal $\Delta u_i$};
+\node[guidemethod,text width=1.05cm,minimum height=0.76cm,
+  font=\scriptsize\bfseries] (n4phi) at (10.30,4.63)
+  {$\Phi\!\uparrow$\\Geo-QPG};
+\draw[guidegreen] (n4r3.east) -- (n4phi.west);
+
+\draw[spcoalitiongreen] (11.45,3.87) rectangle (12.75,5.30);
+\node[spload,minimum width=0.62cm,minimum height=0.50cm,
+  inner sep=1pt,font=\tiny\bfseries] (n4load) at (12.10,4.63) {$k$};
+\node[sprobotgreen,minimum size=4.7mm] (n4c1) at (11.75,5.00) {};
+\node[sprobotgreen,minimum size=4.7mm] (n4c2) at (12.45,5.00) {};
+\node[sprobotgreen,minimum size=4.7mm] (n4c3) at (12.10,4.13) {};
+\draw[spassign,draw=VIUOrange] (n4c1) -- (n4load);
+\draw[spassign,draw=VIUOrange] (n4c2) -- (n4load);
+\draw[spassign,draw=VIUOrange] (n4c3) -- (n4load);
+\draw[guidegreen] (n4phi.east) -- (11.40,4.63);
+\node[guideoutcome,fill=VIUOrange!12,text width=1.25cm,
+  minimum height=0.48cm,font=\fontsize{6.0}{7.0}\selectfont\bfseries]
+  at (12.10,3.33) {GUARDED};
+\node[guideoutcome,text width=4.05cm,minimum height=0.48cm]
+  at (10.36,2.55)
+  {transporte físico $\rightarrow$ SP2};
+
+% Notación en cuatro módulos alineados, sin una frase corrida de extremo a extremo.
+\draw[splegendbox,fill=white] (0.42,0.35) rectangle (13.08,1.25);
+\node[font=\scriptsize\bfseries\sffamily] at (2.15,0.80)
+  {SP1.N3.1 / SP1.N3.2};
+\draw[draw=SPGrid,line width=0.55pt] (4.22,0.49) -- (4.22,1.11);
+\node[font=\scriptsize\sffamily] at (5.67,0.80)
+  {\textbf{SP1} = subproblema};
+\node[font=\scriptsize\sffamily] at (8.43,0.80)
+  {\textbf{N3} = nivel};
+\node[font=\scriptsize\sffamily] at (11.20,0.80)
+  {\textbf{.1/.2} = rama de método};
+\end{tikzpicture}
+\endgroup
+\caption{Evolución experimental de SP1. Las escenas muestran el cambio de
+modelo, arquitectura de información y criterio de salida entre niveles.}
+\label{fig:sp1-level-guide}
+\viuownsource
+\end{figure}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 3 · Escenarios comunes
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · PROTOCOLO EXPERIMENTAL}
+\section*{Escenarios}
+
+La Figura~\ref{fig:sp1-common-scenarios} sintetiza cinco generadores espaciales
+y, sobre un mundo uniforme, un ejemplo de fallo crítico de un robot asignado.
+Los ejes emplean coordenadas normalizadas
+$\tilde x=x/L_x,\ \tilde y=y/L_y\in[0,1]$ y una retícula de paso $0{,}2$; las
+áreas coloreadas representan soportes de muestreo o dos desviaciones estándar,
+nunca paredes ni trayectorias. Todos los métodos reciben el mismo mundo y la
+misma semilla; N1 y N2 solo se confrontan en la reducción homogénea equivalente.
+
+\begin{figure}[H]
+\centering
+\begingroup
+\pgfmathsetlengthmacro{\spxunitscen}{\linewidth/13.5}
+\begin{tikzpicture}[x=\spxunitscen,y=0.92cm]
+\tikzset{
+  scenecard/.style={draw=SPGrid!82,fill=SPFloor!34,line width=0.55pt,
+    rounded corners=1.5pt},
+  scenetitle/.style={font=\fontsize{8.4}{9.4}\selectfont\sffamily\bfseries,
+    text=VIUDark,anchor=west},
+  scenedesc/.style={font=\fontsize{7.3}{8.2}\selectfont\sffamily,
+    text=VIUGray,anchor=west},
+  minirobot/.style={sprobot,circle,aspect=1,minimum size=5.2mm,inner sep=0pt,
+    font=\fontsize{7.7}{8.3}\selectfont\bfseries},
+  miniload/.style={spload,minimum width=5.9mm,minimum height=4.7mm,
+    inner sep=1pt,font=\fontsize{7.7}{8.3}\selectfont\bfseries},
+  plotframe/.style={draw=VIUGray!82,line width=0.65pt},
+  plotgrid/.style={draw=SPGrid!34,line width=0.18pt},
+  plotmajor/.style={draw=SPGrid!62,line width=0.32pt},
+  plotaxis/.style={-{Latex[length=1.35mm]},draw=VIUGray!92,line width=0.68pt},
+  plottick/.style={font=\fontsize{7.0}{7.6}\selectfont\sffamily,
+    text=VIUGray},
+  plotnote/.style={draw=SPGrid!72,fill=white,rounded corners=0.8pt,
+    inner xsep=2.3pt,inner ysep=1.4pt,
+    font=\fontsize{7.0}{7.8}\selectfont\sffamily,text=VIUDark},
+  zonelabel/.style={font=\fontsize{7.0}{7.8}\selectfont\sffamily\bfseries,
+    text=VIUGray}
+}
+\newcommand{\scenarioaxes}{%
+  \fill[white] (0,0) rectangle (1,1);
+  \draw[step=0.20,plotgrid] (0,0) grid (1,1);
+  \draw[plotmajor] (0.5,0) -- (0.5,1);
+  \draw[plotmajor] (0,0.5) -- (1,0.5);
+  \draw[plotframe] (0,0) rectangle (1,1);
+  \draw[plotaxis] (0,0) -- (1.08,0);
+  \draw[plotaxis] (0,0) -- (0,1.08);
+  \node[plottick,anchor=south east,text=VIUDark] at (0.96,0.035)
+    {$\tilde x$};
+  \node[plottick,anchor=north west,text=VIUDark] at (0.035,0.96)
+    {$\tilde y$};
+  \draw[VIUGray!75,line width=0.45pt] (0.5,0) -- (0.5,-0.025);
+  \draw[VIUGray!75,line width=0.45pt] (1,0) -- (1,-0.025);
+  \draw[VIUGray!75,line width=0.45pt] (0,0.5) -- (-0.025,0.5);
+  \draw[VIUGray!75,line width=0.45pt] (0,1) -- (-0.025,1);
+  \node[plottick,anchor=north east] at (-0.015,-0.015) {0};
+  \node[plottick,anchor=north] at (0.5,-0.025) {0,5};
+  \node[plottick,anchor=north] at (1,-0.025) {1};
+  \node[plottick,anchor=east] at (-0.025,0.5) {0,5};
+  \node[plottick,anchor=east] at (-0.025,1) {1};
+}
+
+% Fila 1: aleatorio y agrupado
+\draw[scenecard] (0.08,11.508854) rectangle (6.50,16.55);
+\node[scenetitle] at (0.40,16.20) {1 · Aleatorio};
+\node[scenedesc] at (0.40,15.78) {robots y cargas uniformes en todo el dominio};
+\begin{scope}[shift={(1.63,11.728854)},x=3.40cm,y=3.40cm]
+  \scenarioaxes
+  \fill[SPBlue!5,opacity=0.42] (0.015,0.015) rectangle (0.985,0.985);
+  \node[plotnote,anchor=north east] at (0.97,0.97) {uniforme};
+  \node[minirobot] at (0.10,0.18) {$r_1$};
+  \node[minirobot] at (0.28,0.78) {$r_2$};
+  \node[minirobot] at (0.55,0.30) {$r_3$};
+  \node[minirobot] at (0.86,0.70) {$r_4$};
+  \node[miniload] at (0.13,0.58) {$k_1$};
+  \node[miniload] at (0.65,0.59) {$k_2$};
+  \node[miniload] at (0.88,0.16) {$k_3$};
+\end{scope}
+
+\draw[scenecard] (7.00,11.508854) rectangle (13.42,16.55);
+\node[scenetitle] at (7.32,16.20) {2 · Agrupado};
+\node[scenedesc] at (7.32,15.78) {robots uniformes; cargas en dos clústeres};
+\begin{scope}[shift={(8.55,11.728854)},x=3.40cm,y=3.40cm]
+  \scenarioaxes
+  \node[circle,aspect=1,minimum size=9.52mm,inner sep=0pt,
+    fill=VIUOrange!13,fill opacity=0.75,draw=VIUOrange!62,
+    dashed,line width=0.65pt] at (0.25,0.30) {};
+  \node[circle,aspect=1,minimum size=9.52mm,inner sep=0pt,
+    fill=VIUOrange!13,fill opacity=0.75,draw=VIUOrange!62,
+    dashed,line width=0.65pt] at (0.75,0.70) {};
+  \node[font=\fontsize{8}{8}\selectfont\bfseries,text=VIUOrange]
+    at (0.25,0.30) {$+$};
+  \node[font=\fontsize{8}{8}\selectfont\bfseries,text=VIUOrange]
+    at (0.75,0.70) {$+$};
+  \node[minirobot] at (0.10,0.82) {$r_1$};
+  \node[minirobot] at (0.43,0.58) {$r_2$};
+  \node[minirobot] at (0.66,0.14) {$r_3$};
+  \node[minirobot] at (0.91,0.36) {$r_4$};
+  \node[miniload] at (0.18,0.23) {$k_1$};
+  \node[miniload] at (0.67,0.62) {$k_2$};
+  \node[miniload] at (0.83,0.79) {$k_3$};
+\end{scope}
+
+% Fila 2: separado y anillo
+\draw[scenecard] (0.08,5.979427) rectangle (6.50,11.020573);
+\node[scenetitle] at (0.40,10.670573) {3 · Separado};
+\node[scenedesc] at (0.40,10.250573)
+  {robots: $\tilde x\leq0{,}35$; cargas: $\tilde x\geq0{,}65$};
+\begin{scope}[shift={(1.63,6.199427)},x=3.40cm,y=3.40cm]
+  \scenarioaxes
+  \fill[SPBlue!12,opacity=0.72] (0,0) rectangle (0.35,1);
+  \fill[VIUOrange!12,opacity=0.72] (0.65,0) rectangle (1,1);
+  \draw[SPBlue!58,dashed,line width=0.65pt] (0.35,0) -- (0.35,1);
+  \draw[VIUOrange!60,dashed,line width=0.65pt] (0.65,0) -- (0.65,1);
+  \node[zonelabel] at (0.18,0.92) {robots};
+  \node[zonelabel] at (0.82,0.92) {cargas};
+  \node[minirobot] at (0.10,0.18) {$r_1$};
+  \node[minirobot] at (0.23,0.70) {$r_2$};
+  \node[minirobot] at (0.31,0.34) {$r_3$};
+  \node[miniload] at (0.69,0.70) {$k_1$};
+  \node[miniload] at (0.81,0.23) {$k_2$};
+  \node[miniload] at (0.93,0.73) {$k_3$};
+\end{scope}
+
+\draw[scenecard] (7.00,5.979427) rectangle (13.42,11.020573);
+\node[scenetitle] at (7.32,10.670573) {4 · Anillo};
+\node[scenedesc] at (7.32,10.250573) {bandas radiales distintas alrededor del centro};
+\begin{scope}[shift={(8.55,6.199427)},x=3.40cm,y=3.40cm]
+  \scenarioaxes
+  % Nodos circulares con medidas físicas: la relación 1:1 no depende del scope.
+  % Robot: r in [0.36,0.48] -> centro 14.28 mm y banda 4.08 mm.
+  \node[circle,aspect=1,minimum size=28.56mm,inner sep=0pt,
+    draw=SPBlue!20,line width=4.08mm,opacity=0.78] at (0.50,0.50) {};
+  % Carga: r in [0.04,0.22] -> centro 4.42 mm y banda 6.12 mm.
+  \node[circle,aspect=1,minimum size=8.84mm,inner sep=0pt,
+    draw=VIUOrange!22,line width=6.12mm,opacity=0.82] at (0.50,0.50) {};
+  \node[circle,aspect=1,minimum size=32.64mm,inner sep=0pt,
+    draw=SPBlue!58,dashed,line width=0.65pt] at (0.50,0.50) {};
+  \node[circle,aspect=1,minimum size=24.48mm,inner sep=0pt,
+    draw=SPBlue!48,dashed,line width=0.55pt] at (0.50,0.50) {};
+  \node[circle,aspect=1,minimum size=14.96mm,inner sep=0pt,
+    draw=VIUOrange!62,dashed,line width=0.55pt] at (0.50,0.50) {};
+  \node[minirobot] at (0.08,0.50) {$r_1$};
+  \node[minirobot] at (0.50,0.94) {$r_2$};
+  \node[minirobot] at (0.92,0.50) {$r_3$};
+  \node[minirobot] at (0.50,0.10) {$r_4$};
+  \node[miniload] at (0.34,0.50) {$k_1$};
+  \node[miniload] at (0.66,0.52) {$k_2$};
+  \node[miniload] at (0.50,0.68) {$k_3$};
+\end{scope}
+
+% Fila 3: pasillo y fallo
+\draw[scenecard] (0.08,0.45) rectangle (6.50,5.491146);
+\node[scenetitle] at (0.40,5.141146) {5 · Pasillo};
+\node[scenedesc] at (0.40,4.721146) {cargas: banda ancha; robots: banda estrecha};
+\begin{scope}[shift={(1.63,0.67)},x=3.40cm,y=3.40cm]
+  \scenarioaxes
+  \fill[VIUOrange!13,opacity=0.70] (0,0.34) rectangle (1,0.66);
+  \fill[SPBlue!14,opacity=0.78] (0,0.42) rectangle (1,0.58);
+  \draw[VIUGray!68,densely dashed,line width=0.65pt] (0,0.50) -- (1,0.50);
+  \node[minirobot] at (0.10,0.47) {$r_1$};
+  \node[minirobot] at (0.31,0.54) {$r_2$};
+  \node[minirobot] at (0.67,0.44) {$r_3$};
+  \node[miniload] at (0.49,0.60) {$k_1$};
+  \node[miniload] at (0.86,0.37) {$k_2$};
+\end{scope}
+
+\draw[scenecard] (7.00,0.45) rectangle (13.42,5.491146);
+\node[scenetitle] at (7.32,5.141146) {6 · Fallo};
+\node[scenedesc] at (7.32,4.721146) {ejemplo: fallo crítico de un robot asignado};
+\begin{scope}[shift={(8.55,0.67)},x=3.40cm,y=3.40cm]
+  \scenarioaxes
+  \fill[VIUGray!13,opacity=0.62]
+    (0.10,0.24) -- (0.28,0.72) -- (0.61,0.79) -- (0.84,0.55)
+    -- (0.48,0.36) -- cycle;
+  \draw[VIUGray!65,dashed,line width=0.65pt]
+    (0.10,0.24) -- (0.28,0.72) -- (0.61,0.79) -- (0.84,0.55)
+    -- (0.48,0.36) -- cycle;
+  \coordinate (loadfail) at (0.84,0.55);
+  \draw[VIUGray!75,dashed,line width=0.65pt] (0.10,0.24) -- (loadfail);
+  \draw[VIUGray!75,dashed,line width=0.65pt] (0.28,0.72) -- (loadfail);
+  \draw[VIUGray!75,dashed,line width=0.65pt] (0.61,0.79) -- (loadfail);
+  \draw[SPRed!78,densely dotted,line width=0.90pt] (0.48,0.36) -- (loadfail);
+  \node[plotnote,anchor=north east] at (0.97,0.97) {asignación previa};
+  \node[minirobot] at (0.10,0.24) {$r_1$};
+  \node[minirobot] at (0.28,0.72) {$r_2$};
+  \node[sprobotinactive,circle,aspect=1,minimum size=5.2mm,inner sep=0pt,
+    font=\fontsize{7.7}{8.3}\selectfont\bfseries]
+    (failed) at (0.48,0.36) {$r_3$};
+  \draw[draw=SPRed,line width=1.0pt]
+    ([xshift=-1.7mm,yshift=-1.7mm]failed.center) --
+    ([xshift=1.7mm,yshift=1.7mm]failed.center);
+  \draw[draw=SPRed,line width=1.0pt]
+    ([xshift=-1.7mm,yshift=1.7mm]failed.center) --
+    ([xshift=1.7mm,yshift=-1.7mm]failed.center);
+  \node[minirobot] at (0.61,0.79) {$r_4$};
+  \node[miniload] at (loadfail) {$k_1$};
+\end{scope}
+
+% Leyenda mínima
+\node[minirobot] (legendrobot) at (4.48,-0.03) {};
+\node[font=\fontsize{7.5}{8.3}\selectfont\sffamily,anchor=west]
+  at (4.78,-0.03) {robot $r_i$};
+\node[miniload] (legendload) at (6.62,-0.03) {};
+\node[font=\fontsize{7.5}{8.3}\selectfont\sffamily,anchor=west]
+  at (6.96,-0.03) {carga $k_j$};
+\node[sprobotinactive,circle,aspect=1,minimum size=5.2mm,inner sep=0pt]
+  (legendfailed) at (8.83,-0.03) {};
+\draw[draw=SPRed,line width=0.95pt]
+  ([xshift=-1.7mm,yshift=-1.7mm]legendfailed.center) --
+  ([xshift=1.7mm,yshift=1.7mm]legendfailed.center);
+\draw[draw=SPRed,line width=0.95pt]
+  ([xshift=-1.7mm,yshift=1.7mm]legendfailed.center) --
+  ([xshift=1.7mm,yshift=-1.7mm]legendfailed.center);
+\node[font=\fontsize{7.5}{8.3}\selectfont\sffamily,anchor=west]
+  at (9.16,-0.03) {robot fallido};
+\end{tikzpicture}
+\endgroup
+\caption{Cinco generadores espaciales y un tratamiento representativo de la
+familia de fallos usados en la calibración común de N1--N2. En Pasillo, las
+bandas muestran dos desviaciones estándar; no representan paredes.}
+\label{fig:sp1-common-scenarios}
+\viuownsource
+\end{figure}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 4 · Protocolo experimental y análisis estadístico
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · PROTOCOLO EXPERIMENTAL · ANÁLISIS ESTADÍSTICO}
+\section*{Protocolo experimental y análisis estadístico}
+
+La Figura~\ref{fig:sp1-common-metrics} resume la campaña y su unidad
+independiente: mundo--semilla.
+
+\begin{figure}[H]
+\centering
+\begingroup
+\pgfmathsetlengthmacro{\spxunitstat}{\linewidth/13.5}
+\input{sp1_levels_23p/figures/protocol_pipeline.tex}
+\endgroup
+  \caption{Protocolo experimental Monte Carlo: diseño factorial, lazo de
+    ejecución pareada con registro auditable, procesamiento por mundo y decisión
+    estadística sobre hipótesis.}
+\label{fig:sp1-common-metrics}
+\viuownsource
+\end{figure}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 5 · N1
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 1 DE 4 · ASIGNACIÓN HOMOGÉNEA}
+\section*{SP1.N1: Homogeneous MRTA - Hungarian Baseline}
+
+N1 establece la referencia central para una flota homogénea: cada robot aporta
+la misma capacidad escalar $\bar c^{\mathrm{pay}}$. Las cargas conservan demandas
+$m_k$ distintas y se expanden en
+$n_k=\lceil m_k/\bar c^{\mathrm{pay}}\rceil$ slots intercambiables. A partir
+de las posiciones se construye la matriz $C=[d_{ih}]$ y se resuelve un
+\emph{linear sum assignment problem} (LSAP); los slots asignados a una misma
+carga forman su coalición. El LSAP admite una formulación lineal binaria cuya
+relajación es integral por la estructura totalmente unimodular de sus
+restricciones. La campaña conserva la etiqueta ``húngaro'' para este oráculo.
+El código no ejecuta símplex ni el algoritmo húngaro clásico: SciPy aplica un
+Jonker--Volgenant modificado y devuelve el óptimo global del LSAP codificado.
+
+\begin{figure}[H]
+\centering
+\begingroup
+\pgfmathsetlengthmacro{\spxunitnone}{\linewidth/13.5}
+\begin{tikzpicture}[x=\spxunitnone,y=1.06cm]
+\fill[SPFloor] (0.01,0.15) rectangle (13.49,5.05);
+\fill[white] (0.01,4.45) rectangle (13.49,5.05);
+\draw[draw=SPGrid,line width=0.55pt] (0.01,4.45) -- (13.49,4.45);
+\draw[sparena] (0.01,0.15) rectangle (13.49,5.05);
+\node[sptitle,anchor=west] at (0.22,4.75)
+  {Del escenario homogéneo a coaliciones por carga};
+
+\node[sppanel,minimum width=2.10cm,minimum height=2.88cm] (n1a)
+  at (1.23,2.82) {};
+\node[sptitle,fill=SPBlue!8] at (1.23,3.91) {1 · Escenario};
+\node[sprobot,minimum size=5.4mm,font=\tiny\bfseries] at (0.70,3.30) {$r_1$};
+\node[sprobot,minimum size=5.4mm,font=\tiny\bfseries] at (1.23,3.30) {$r_2$};
+\node[sprobot,minimum size=5.4mm,font=\tiny\bfseries] at (1.76,3.30) {$r_3$};
+\node[spannotation] at (1.23,2.82)
+  {$c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$};
+\node[spload,minimum width=0.70cm,minimum height=0.46cm,
+  inner sep=1pt,font=\tiny\bfseries] at (0.91,2.20) {$m_1$};
+\node[spload,minimum width=0.70cm,minimum height=0.46cm,
+  inner sep=1pt,font=\tiny\bfseries] at (1.55,2.20) {$m_2$};
+\node[spmuted,text width=1.80cm,align=center,font=\tiny] at (1.23,1.76)
+  {demandas $m_k$ distintas};
+
+\node[sppanel,minimum width=2.10cm,minimum height=2.88cm] (n1b)
+  at (3.92,2.82) {};
+\node[sptitle,fill=VIUOrange!10] at (3.92,3.91) {2 · Reducción};
+\node[spannotation] at (3.92,3.30)
+  {$n_k=\left\lceil m_k/\bar c^{\mathrm{pay}}\right\rceil$};
+\node[spload,minimum width=0.56cm,minimum height=0.42cm,
+  inner sep=1pt,font=\tiny\bfseries] at (3.30,2.58) {$h_{11}$};
+\node[spload,minimum width=0.56cm,minimum height=0.42cm,
+  inner sep=1pt,font=\tiny\bfseries] at (3.92,2.58) {$h_{12}$};
+\node[spload,minimum width=0.56cm,minimum height=0.42cm,
+  inner sep=1pt,font=\tiny\bfseries] at (4.54,2.58) {$h_{21}$};
+\node[spmuted,text width=1.80cm,align=center,font=\tiny] at (3.92,1.84)
+  {slots intercambiables\\$M=\sum_k n_k$};
+
+\node[sppanel,minimum width=2.10cm,minimum height=2.88cm] (n1c)
+  at (6.61,2.82) {};
+\node[sptitle,fill=SPPurple!9] at (6.61,3.91) {3 · Costes};
+\node[spannotation] at (6.61,3.22) {$C=[d_{ih}]$};
+\node[splabel] at (6.61,2.60) {$C\in\mathbb R^{N\times M}$};
+\node[spmuted,text width=1.80cm,align=center,font=\tiny] at (6.61,1.86)
+  {coste robot--slot\\información global};
+
+\node[sppanel,minimum width=2.10cm,minimum height=2.88cm] (n1d)
+  at (9.30,2.82) {};
+\node[sptitle,fill=SPGreen!9] at (9.30,3.91) {4 · Húngaro / LSAP};
+\node[spannotation,text width=1.85cm,align=center,font=\tiny] at (9.30,3.36)
+  {SciPy\\\texttt{linear\_sum\_}\\\texttt{assignment}};
+\node[spannotation,font=\tiny] at (9.30,2.48)
+  {Jonker--Volgenant mod.};
+\node[spmuted,text width=1.80cm,align=center,font=\tiny] at (9.30,1.87)
+  {método exacto};
+
+\node[sppanel,minimum width=2.10cm,minimum height=2.88cm] (n1e)
+  at (11.99,2.82) {};
+\node[sptitle,fill=SPBlue!8] at (11.99,3.91) {5 · Salida};
+\node[spannotation] at (11.99,3.24) {$x^*_{ih}\in\{0,1\}$};
+\node[spannotation,text width=1.80cm,align=center,font=\tiny] at (11.99,2.58)
+  {$\mathcal R_k\leftarrow x^*_{ih}$\\$h\in\mathcal H_k$};
+\node[spmuted,text width=1.80cm,align=center,font=\tiny] at (11.99,1.80)
+  {coaliciones por carga\\óptimo del LSAP};
+
+\draw[spmotion] (n1a.east) -- (n1b.west);
+\draw[spmotion] (n1b.east) -- (n1c.west);
+\draw[spmotion] (n1c.east) -- (n1d.west);
+\draw[spmotion] (n1d.east) -- (n1e.west);
+
+\draw[splegendbox] (0.01,0.20) rectangle (13.49,1.12);
+\node[splegend] at (6.75,0.82)
+  {\textbf{Modelo:} programa lineal binario $\rightarrow$ relajación LP integral por total unimodularidad};
+\node[splegend] at (6.75,0.47)
+  {\textbf{Método:} asignación combinatorial exacta; sin redondeo, branch-and-bound ni símplex};
+\end{tikzpicture}
+\endgroup
+\caption{Flujo de N1 y separación entre la formulación lineal binaria y el
+algoritmo de asignación utilizado en la implementación.}
+\label{fig:n1-homogeneous-pipeline}
+\viuownsource
+\end{figure}
+
+\begin{minipage}[t]{0.485\textwidth}
+\begin{tcolorbox}[
+  title={Ventajas},fonttitle=\bfseries,colback=SPGreen!4,colframe=SPGreen,
+  boxrule=0.55pt,arc=1.2mm,left=2mm,right=2mm,top=1mm,bottom=1mm]
+\begin{itemize}[leftmargin=1.15em,itemsep=1pt,topsep=1pt]
+\item Óptimo global y determinista para el LSAP.
+\item Coste polinómico: $\mathcal O(L^3)$, $L=\max\{N,M\}$.
+\item Demandas escalares distintas mediante slots.
+\end{itemize}
+\end{tcolorbox}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.485\textwidth}
+\begin{tcolorbox}[
+  title={Limitaciones},fonttitle=\bfseries,colback=SPRed!4,colframe=SPRed,
+  boxrule=0.55pt,arc=1.2mm,left=2mm,right=2mm,top=1mm,bottom=1mm]
+\begin{itemize}[leftmargin=1.15em,itemsep=1pt,topsep=1pt]
+\item Capacidad común y slots\\intercambiables.
+\item Arquitectura central con matriz global $C$.
+\item Sin certificado multirrecurso,\\mecánico, de seguridad o\\comunicación.
+\end{itemize}
+\end{tcolorbox}
+\end{minipage}
+
+\noindent\textbf{Alcance empírico.} La campaña N1 conserva
+\NOneRows{} ejecuciones y alcanza $N=\NOneMaxN{}$; esta evidencia mide
+cómputo y calidad, pero no amplía la garantía más allá del LSAP homogéneo.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 6 · N1 resultado espacial
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N1 · CALIDAD ESPACIAL HOMOGÉNEA}
+\section*{SP1.N1: beneficio práctico del óptimo global}
+
+\pagelead{%
+La primera hipótesis evalúa si la optimalidad exacta del LSAP produce una
+mejora práctica, además de formal, frente a una asignación greedy secuencial.
+Ambos métodos reciben la misma matriz robot--slot en cinco geometrías, tres
+tamaños, tres perfiles de demanda y 100 semillas por celda; el umbral
+preespecificado exige un ahorro mediano superior al 5\,\%.
+}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{../scripts/results/sp1_levels/n1/figures/n1_quality_scenarios.pdf}
+\caption{Calidad del óptimo homogéneo en \NOneQualityRows{} mundos. El panel
+izquierdo muestra el ahorro pareado frente a greedy con IC del 95\,\%; el panel
+derecho conserva la distribución del coste P95 normalizado. Naranja identifica
+los escenarios que superan el umbral práctico tras corrección de Holm.}
+\label{fig:n1-quality-confirmatory}
+\viuownsource
+\end{figure}
+
+\noindent\textbf{Resultado.} El ahorro mediano agregado fue
+\NOneSavingPct\,\% (IC del 95\,\%:
+\NOneSavingLowPct--\NOneSavingHighPct\,\%) y
+\NOneScenarioGates{}/5 escenarios superaron el gate. La mejora fue mayor en
+Aleatorio (\NOneUniformSavingPct\,\%), Agrupado
+(\NOneClusteredSavingPct\,\%) y Pasillo
+(\NOneCorridorSavingPct\,\%); Anillo
+(\NOneRingSavingPct\,\%) y Separado
+(\NOneSeparatedSavingPct\,\%) mostraron que una geometría estructurada puede
+hacer al greedy casi óptimo. Las \NOneQualityRows{} ejecuciones fueron
+factibles y no registraron violaciones de cardinalidad.
+
+\begin{tcolorbox}[
+  colback=SPBlue!4,colframe=SPBlue,boxrule=0.55pt,arc=1.2mm,
+  left=2mm,right=2mm,top=1mm,bottom=1mm]
+\textbf{Lectura.} N1 aporta un techo exacto y una ganancia relevante cuando
+las decisiones locales compiten; no acredita una mejora uniforme para toda
+geometría ni superioridad frente a métodos distribuidos.
+\end{tcolorbox}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 7 · N1 escalabilidad
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N1 · COSTE DE CENTRALIZACIÓN}
+\section*{SP1.N1: escalabilidad temporal y memoria global}
+
+\pagelead{%
+El segundo experimento aísla el tamaño de la matriz mediante siete valores de
+$N$, tres relaciones $M/N$ y 30 semillas por celda. Se miden por separado la
+construcción de $C$, el solver y el posprocesamiento. El ajuste log--log se
+estima sobre el crecimiento balanceado $N=M$ y describe únicamente el rango
+observado.
+}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{../scripts/results/sp1_levels/n1/figures/n1_central_scaling.pdf}
+\caption{Escalabilidad central en 630 ejecuciones confirmatorias. Izquierda:
+tiempo del solver como P50 y banda P05--P95. Derecha: memoria exacta de la
+matriz global de distancias para cada relación $M/N$.}
+\label{fig:n1-scaling-confirmatory}
+\viuownsource
+\end{figure}
+
+\noindent\textbf{Resultado.} Las 630 ejecuciones terminaron con asignación
+completa hasta $N=M=\NOneMaxN{}$. En la rama balanceada, la pendiente observada
+fue $\hat\beta=\NOneExponent$ (IC del 95\,\%:
+\NOneExponentLow--\NOneExponentHigh; $R^2=\NOneRSquared$); el P95 del solver en
+el mayor tamaño alcanzó \NOneScalingPninetyfiveMs\,ms. La memoria coincidió sin
+error con $8NM$ bytes: 32\,MiB cuando $N=M=2048$.
+
+\begin{minipage}[t]{0.485\textwidth}
+\begin{tcolorbox}[
+  title={Ventaja observada},fonttitle=\bfseries,
+  colback=SPGreen!4,colframe=SPGreen,boxrule=0.55pt,arc=1.2mm,
+  left=2mm,right=2mm,top=1mm,bottom=1mm]
+Óptimo exacto, 100\,\% de finalización y latencia subsegundo en todo el rango
+ensayado.
+\end{tcolorbox}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.485\textwidth}
+\begin{tcolorbox}[
+  title={Límite demostrado},fonttitle=\bfseries,
+  colback=SPRed!4,colframe=SPRed,boxrule=0.55pt,arc=1.2mm,
+  left=2mm,right=2mm,top=1mm,bottom=1mm]
+No existe meseta de coste constante: el cómputo y la matriz global crecen con
+el problema.
+\end{tcolorbox}
+\end{minipage}
+
+\noindent\textbf{Alcance.} $\hat\beta$ no sustituye la cota algorítmica ni
+prueba comportamiento asintótico; depende de esta implementación, hardware y
+familia de matrices.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 8 · N1 frontera de validez
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N1 · FRONTERA DE VALIDEZ}
+\phantomsection
+\noindent{\sffamily\bfseries\color{VIUOrange}
+  \fontsize{18}{22}\selectfont SP1.N1: frontera de validez\par}
+\vspace{6pt}
+
+\pagelead{%
+El tercer experimento verifica dos límites: el recálculo central tras retirar
+robots homogéneos y la validez de los slots cuando se introducen capacidades
+individuales sin modificar la capacidad total ni la geometría del mundo.
+}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.94\linewidth]{../scripts/results/sp1_levels/n1/figures/n1_validity_boundary.pdf}
+\caption{Frontera de N1: factibilidad postfallo frente al límite cardinal
+$f^*=2\delta/(1+\delta)$ (izquierda) y falsos factibles al aumentar la
+heterogeneidad de capacidad (derecha). Las líneas grises separan escenarios.}
+\label{fig:n1-validity-confirmatory}
+\viuownsource
+\end{figure}
+
+\noindent\textbf{Fallo homogéneo.} Los \NOneFailureWorlds{} mundos generaron
+\NOneFailureRows{} reasignaciones y coincidieron en
+\NOneFailureAgreementPct\,\% con la condición cardinal. Sin reserva, cualquier
+retirada positiva fue infactible; $\delta=0{,}20$ elevó la frontera al 33\,\% y
+cubrió todas las retiradas ensayadas hasta el 30\,\%. Es recourse estático con
+información global, no recuperación distribuida durante el transporte.
+
+\noindent\textbf{Capacidad individual.} En \NOneHeteroWorlds{} mundos y
+\NOneHeteroRows{} auditorías, la tasa de falso factible aumentó desde 0\,\% en
+el caso homogéneo hasta \NOneLowFalsePct\,\%,
+\NOneModerateFalsePct\,\%, \NOneHighFalsePct\,\% y
+\NOneExtremeFalsePct\,\% en los cuatro niveles crecientes. Los cuatro contrastes
+McNemar permanecieron significativos tras Holm. HiGHS certificó
+\NOneMilpCertifiedPct\,\% y rescató \NOneMilpRescuePct\,\% de los falsos
+factibles de N1.
+
+\begin{tcolorbox}[
+  colback=VIUOrange!6,colframe=VIUOrange,boxrule=0.65pt,arc=1.2mm,
+  left=2mm,right=2mm,top=1mm,bottom=1mm]
+\textbf{Transición N1 $\rightarrow$ N2.} El Húngaro sigue siendo exacto para
+el LSAP que recibe; lo que falla es la equivalencia entre un slot y una unidad
+real de capacidad. N2 debe modelar $c_i^{\mathrm{pay}}$ dentro de las
+restricciones de coalición.
+\end{tcolorbox}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 9 · N2
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 2 DE 4 · ORÁCULO MILP HETEROGÉNEO}
+\section*{Nivel 2: capacidad individual y coaliciones indivisibles}
+
+\pagelead{%
+N2 responde qué cambia cuando cada robot posee una capacidad
+$c_i^{\mathrm{pay}}$ distinta. Se mantienen mundos espaciales y cargas
+obligatorias, pero la reducción a slots homogéneos deja de ser válida. El
+resultado es un oráculo central con información global; no una arquitectura
+distribuida.
+}
+
+Con $x_{ik}\in\{0,1\}$, demanda $m_k$ y coste espacial $d_{ik}$, la formulación
+auditada impone
+\[
+ \min_x \sum_{i,k}d_{ik}x_{ik}
+       +\lambda_E\sum_k e_k+\lambda_R\sum_{i,k}x_{ik},
+\quad
+ \sum_kx_{ik}\leq1,\quad
+ \sum_i c_i^{\mathrm{pay}}x_{ik}\geq m_k,\quad e_k\geq0 .
+\]
+SciPy llama a HiGHS mediante \texttt{milp}. Un estado exitoso con gap nulo
+certifica el óptimo global del modelo codificado; un timeout con incumbente
+solo entrega una solución factible conocida.
+
+\resultfigure[0.40\textheight]
+  {../scripts/results/sp1_levels/n2/figures/n2_capacity.pdf}
+  {Nivel 2: efecto de heterogeneidad sobre factibilidad, certificación y exceso.}
+  {fig:n2-capacity}
+
+La campaña contiene \NTwoRows{} ejecuciones MILP. La nube de la
+Figura~\ref{fig:n2-capacity} no se interpreta causalmente: capacidad,
+demanda, geometría y número reclutado varían conjuntamente.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 7 · N2
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 2 · CENSURA Y COMPARACIÓN CONTROLADA}
+\section*{La aparente ``saturación'' es el límite de tiempo}
+
+La auditoría amplió N2 hasta $N=\NTwoMaxN{}$ y $K=\NTwoMaxK{}$ en
+\NTwoAuditRows{} casos. Se observaron \NTwoCensored{} ejecuciones censuradas y
+\NTwoOptimal{} óptimos certificados. Cuando el solver llega al límite, su
+tiempo se pega al timeout mientras cae la certificación; concluir coste fijo
+o capacidad para $N$ infinito sería incorrecto.
+
+\resultfigure[0.35\textheight]
+  {../scripts/results/sp1_levels/n2/figures/n2_saturation_audit.pdf}
+  {Auditoría temporal de N2: tiempo observado y fracción de óptimos certificados.}
+  {fig:n2-saturation}
+
+\begin{center}
+\includegraphics[
+  width=\textwidth,height=0.18\textheight,keepaspectratio
+]{../scripts/results/sp1_levels/comparison/figures/n1_n2_homogeneous_comparison.pdf}
+\captionof{figure}{Comparación N1--N2 restringida al mismo problema homogéneo.}
+\label{fig:n1-n2-controlled}
+\end{center}
+
+\textbf{Comparación justa N1--N2.} Se retienen \NOneNTwoPairs{} pares con
+el mismo modelo homogéneo y factibilidad compartida. La razón mediana de
+distancia MILP/húngaro es \NOneNTwoDistanceRatio{}, mientras la razón de
+tiempo del solver es \NOneNTwoSolverRatio{}. N2 recupera la solución
+estructurada, pero paga el coste del modelo general.
+
+\compactsource
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 8 · N3
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 3 DE 4 · RAMAS N3.1 Y N3.2}
+\section*{Nivel 3: negociación vecinal sin oráculo en ejecución}
+
+\pagelead{%
+N3 evalúa cuánto se pierde al retirar el coordinador global mediante
+adaptaciones de Capacity-CBBA y GRAPE sobre \NThreeWorlds{} mundos pareados.
+La negociación es vecinal y todos los métodos atraviesan el mismo certificador
+y la misma recuperación; como proxies, no heredan las garantías de la fuente.
+}
+
+\begin{center}
+\viutablefont
+\begin{tabularx}{0.98\textwidth}{p{1.25cm} p{2.25cm} p{2.2cm} p{2.7cm} Y}
+\toprule
+Rama & Método ejecutado & Información & Decisión local & Límite principal \\
+\midrule
+N3.1 & Capacity-CBBA & consenso vecinal & puja, paquete y conflicto & señal escalar; garantía original no transferida \\
+N3.1 & CBBA físico & consenso vecinal & contribución marginal & cierre mecánico posterior \\
+N3.2 & Weighted-GRAPE & desviaciones vecinales & cambio unilateral & proxy implementado \\
+N3.2 & Pair/Role-GRAPE-S & desviaciones vecinales & revisión de robot/rol & coste pareado y sin cota global \\
+\bottomrule
+\end{tabularx}
+\captionof{table}{Arquitectura de los baselines distribuidos de N3.
+Elaboración propia.}
+\end{center}
+
+\resultfigure[0.31\textheight]
+  {../scripts/results/sp1_levels/n3/figures/n3_pareto.pdf}
+  {Frontera descriptiva de calidad, cómputo y comunicación en N3.}
+  {fig:n3-pareto}
+
+Las \NThreeRows{} filas incluyen RAW, CERTIFIED y RECOVERED; la figura usa el
+cierre recuperado y el área del marcador representa bytes, no superioridad.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 9 · N3
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N3.1--N3.2 · CALIDAD, CÓMPUTO Y COMUNICACIÓN}
+\section*{Escalabilidad observada de los proxies distribuidos}
+
+La comparación de N3.1 y N3.2 se apoya en mundos pareados, no en promedios de campañas
+distintas. Se publican distribuciones y \NThreeGapRows{} observaciones de gap
+solo cuando el MILP está certificado. N3 alcanza $N=\NThreeMaxN{}$; tres
+tamaños no identifican un orden asintótico.
+
+\begin{center}
+\includegraphics[
+  width=\textwidth,height=0.34\textheight,keepaspectratio
+]{../scripts/results/sp1_levels/n3/figures/n3_quality_runtime.pdf}
+\captionof{figure}{N3: cobertura recuperada y tiempo total por tamaño.}
+\label{fig:n3-quality-runtime}
+\end{center}
+
+\begin{center}
+\includegraphics[
+  width=\textwidth,height=0.31\textheight,keepaspectratio
+]{../scripts/results/sp1_levels/n3/figures/n3_communication_gap.pdf}
+\captionof{figure}{N3: bytes y gap condicionado al oráculo certificado.}
+\label{fig:n3-communication-gap}
+\end{center}
+\compactsource
+
+\evidenceline
+  {la distribución evita coordinación global durante la negociación.}
+  {\NThreeWorlds{} mundos y \NThreeRecovered{} salidas recuperadas.}
+  {adaptaciones estáticas; sin transporte ni cota global.}
+  {comparar el mecanismo propuesto bajo el mismo cierre.}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 10 · N4
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 4 DE 4 · PROPUESTA GEO-QPG}
+\section*{Nivel 4: preferencias, señal física y cierre entero}
+
+\pagelead{%
+N4 evalúa si un juego poblacional white-box puede formar coaliciones
+geométricas usando estimaciones vecinales. Respecto de N3 cambia la ley de
+revisión; se conservan mundos, costes, certificador y recuperación. El método
+confirmatorio implementado no contiene un precio dual explícito de slots: su
+mecanismo es Geo-QPG con payoff marginal estimado y cierre entero común.
+}
+
+Cada robot $i$ distribuye preferencia $\rho_{ia}$ entre inactividad y acciones
+$a=(k,h)$ de carga--slot. La contribución bajo señal $s$ es
+$E_{ikh}^{s}$ y el agregado localmente estimado es
+\[
+ S_k^s(\rho)=\sum_i\sum_{a:\,k(a)=k}\rho_{ia}E_{ia}^{s}.
+\]
+La señal \emph{marginal physical} conserva recursos alineados no negativos;
+la variante escalar comprime capacidad. El payoff marginal usado por el robot
+es
+\[
+ f_{ia}= (E_{ia}^{s})^\mathsf T\nabla F_k(S_k^s)-c_{ia},
+\]
+donde $c_{ia}$ reúne distancia, energía, tiempo, giro y fiabilidad mediante
+pesos congelados antes de abrir las semillas confirmatorias.
+
+\begin{contribucion}{Aporte ejecutado en N4}
+\estadoaporte{propuesto y evaluado empíricamente; identidad de gradiente
+auditada para agregados exactos, sin prueba de convergencia del esquema
+muestreado con consenso finito.}
+La aportación es la combinación trazable de señal marginal física, dinámica
+QPG vecinal y cierre \textsc{raw--certified--recovered}. No se afirma
+superioridad global ni ejecución física.
+\end{contribucion}
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.1cm and 0.7cm]
+\node[sprobot] (r1) {$i$};
+\node[sppanel,right=of r1,text width=3.1cm,align=center] (est)
+  {estimación vecinal\\$\widehat S_{k,i}^{s}$};
+\node[sppanel,right=of est,text width=3.1cm,align=center] (qpg)
+  {revisión QPG\\$\rho_i^{m+1}$};
+\node[sppanel,right=of qpg,text width=3.1cm,align=center] (close)
+  {cierre entero\\\textsc{raw--cert--rec}};
+\draw[spcomm,-{Latex}] (r1) -- (est);
+\draw[spassign] (est) -- (qpg);
+\draw[spmotion] (qpg) -- (close);
+\end{tikzpicture}
+\captionof{figure}{Cadena ejecutada por N4 antes del certificado físico.}
+\label{fig:n4-chain-short}
+\end{center}
+\viuownsource
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 11 · N4
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 4 · POTENCIAL Y DINÁMICA DIGITAL}
+\section*{Potencial de señal y comportamiento anytime}
+
+El potencial implementado suma valor cóncavo de cobertura, resta coste y
+añade entropía local:
+\[
+\Phi_\tau^s(\rho)=
+\sum_k\frac{v_k}{|\mathcal R_k|}
+\sum_{r\in\mathcal R_k}
+\left(1-\exp\!\left[-\frac{S_{kr}^{s}(\rho)}{d_{kr}^{s}}\right]\right)
+-\sum_{i,a}c_{ia}\rho_{ia}
++\tau\sum_i H(\rho_i,\rho_{i0}).
+\]
+Para el motor logit, cada robot mezcla su estado actual con la respuesta suave
+de sus payoffs estimados; Smith reemplaza esa respuesta por flujos entre
+acciones. La ejecución es digital: máximo 80 iteraciones, tolerancia
+$10^{-5}$, amortiguamiento congelado y tres rondas de consenso por iteración.
+
+\resultfigure[0.45\textheight]
+  {../scripts/results/sp1_levels/n4/figures/n4_anytime.pdf}
+  {N4: progreso normalizado del potencial y residual de actualización.}
+  {fig:n4-anytime}
+
+La Figura~\ref{fig:n4-anytime} muestra rapidez inicial del motor logit y una
+reducción más gradual con Smith. El residual logit vuelve a crecer en parte de
+la campaña: la dinámica muestreada con agregados estimados no se presenta como
+ascenso monótono ni como prueba de convergencia global.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 12 · N4
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 4 · ARQUITECTURA DE INFORMACIÓN}
+\section*{De observaciones locales a una coalición certificada}
+
+La cadena de información separa intención continua, exclusividad entera y
+factibilidad. Llamar ``coalición'' a $\rho$ antes del cierre confundiría una
+preferencia con un conjunto ejecutable; llamar ``física'' a la salida cerrada
+sin guardia confundiría exclusividad con capacidad mecánica.
+
+\begin{center}
+\begin{tikzpicture}[node distance=0.62cm]
+\node[sppanel,text width=12.8cm,align=left] (obs) {
+\textbf{OBSERVED}\quad estado propio, acciones compatibles, costes y vecinos};
+\node[sppanel,text width=12.8cm,align=left,below=of obs] (est) {
+\textbf{ESTIMATED}\quad agregados $\widehat S_{k,i}^{s}$ tras consenso finito};
+\node[sppanel,text width=12.8cm,align=left,below=of est] (raw) {
+\textbf{RAW}\quad preferencias $\rho_i$ y argmax independiente};
+\node[sppanel,text width=12.8cm,align=left,below=of raw] (closed) {
+\textbf{CLOSED}\quad un robot por acción y exclusividad de slot};
+\node[sppanel,text width=12.8cm,align=left,below=of closed] (guarded) {
+\textbf{GUARDED}\quad capacidad, slots, batería y residual de wrench};
+\node[sppanel,text width=12.8cm,align=left,below=of guarded] (exec) {
+\textbf{EXECUTED}\quad fuera del alcance de esta campaña; comienza en SP2};
+\draw[spmotion] (obs) -- (est);
+\draw[spmotion] (est) -- (raw);
+\draw[spmotion] (raw) -- (closed);
+\draw[spmotion] (closed) -- (guarded);
+\draw[spnominal] (guarded) -- (exec);
+\end{tikzpicture}
+\captionof{figure}{Cadena de información y estados acreditados en N4.}
+\label{fig:n4-information-chain}
+\end{center}
+\viuownsource
+
+\begin{center}
+\viutablefont
+\begin{tabularx}{0.97\textwidth}{p{2.4cm} p{3.2cm} p{3.2cm} Y}
+\toprule
+Componente & Información & Salida & Garantía/límite \\
+\midrule
+QPG logit & vecinos y agregados estimados & preferencia continua & sin teorema para consenso finito \\
+Cierre independiente & preferencias locales & asignación RAW & puede duplicar o sobrecomprometer \\
+Certificador común & estado global de evaluación & subconjunto CERTIFIED & factible para el certificado implementado \\
+Recuperación & candidatos y cadenas & RECOVERED & heurística; no óptimo entero \\
+\bottomrule
+\end{tabularx}
+\captionof{table}{Responsabilidad y alcance de cada etapa de N4.}
+\end{center}
+\compactsource
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 13 · N4
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 4 · PROTOCOLO CONFIRMATORIO}
+\section*{Mundos pareados, factores y endpoints}
+
+La campaña confirmatoria contiene \NFourWorlds{} mundos independientes y
+\NFourCampaignRows{} filas método--mundo--cierre. Cada celda usa 50 semillas;
+los tamaños son $(N,K)=(12,3),(32,8),(64,16)$. El mundo, el bienestar físico,
+el certificador y la recuperación son comunes a todos los métodos.
+
+\begin{center}
+\viutablefont
+\begin{tabularx}{0.98\textwidth}{p{2.45cm} p{3.4cm} Y}
+\toprule
+Familia & Incremento controlado & Riesgo que aísla \\
+\midrule
+F0 separable & geometría fácil & coste de coordinación sin heterogeneidad crítica \\
+F1 heterogénea & capacidades críticas & selección de complementariedades \\
+F2 escasez & prioridades y demanda alta & abstención y valor servido \\
+F3 torque & signos y slots complementarios & falso positivo de una señal comprimida \\
+F4 geometría mixta & ruta, giro y forma & acoplamiento coste--rol \\
+F5 fallo de red & aristas no puente eliminadas & recourse estático postfallo \\
+\bottomrule
+\end{tabularx}
+\captionof{table}{Familias confirmatorias de N4.}
+\end{center}
+\compactsource
+
+\begin{center}
+\viutablefont
+\begin{tabularx}{0.98\textwidth}{p{2.6cm} p{3.1cm} p{3.2cm} Y}
+\toprule
+Factor & Variante principal & Ablación/control & Endpoint \\
+\midrule
+Señal & marginal física & capacidad escalar & falso positivo RAW, cobertura \\
+Motor & QPG logit & QPG Smith, Pair-GRAPE & bienestar y cobertura RECOVERED \\
+Cierre & RECOVERED & RAW, CERTIFIED & factibilidad y cambios \\
+Arquitectura & estimación vecinal & oráculo MILP global & gap cuando hay certificado \\
+\bottomrule
+\end{tabularx}
+\captionof{table}{Diseño factorial y endpoints predeclarados.}
+\end{center}
+\compactsource
+
+\pagelead{%
+Los gaps no se imputan cuando el MILP agota el tiempo o su salida certificada
+no es comparable. F5 es una instantánea posterior al fallo; no valida tiempos
+de detección, reconexión ni una trayectoria dinámica.
+}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 14 · N4
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 4 · EFECTO DEL CIERRE}
+\section*{RAW no es una coalición: el cierre cambia la conclusión}
+
+La comparación dentro del mismo método produce un efecto H2 de
+\NFourHtwoEffect{} sobre factibilidad mundial al pasar de RAW a RECOVERED.
+CERTIFIED puede abstenerse para no aceptar compromisos inválidos; RECOVERED
+intenta reconstruir servicio mediante cadenas y swaps. La mejora no convierte
+la recuperación en un optimizador entero.
+
+\resultfigure[0.53\textheight]
+  {../scripts/results/sp1_levels/n4/figures/n4_closure_ladder.pdf}
+  {N4: escalera RAW--CERTIFIED--RECOVERED para Geo-QPG físico.}
+  {fig:n4-closure}
+
+\begin{contribucion}{Resultado de cierre}
+\estadoaporte{validado empíricamente en los \NFourWorlds{} mundos
+confirmatorios.}
+El certificador evita etiquetar como físicas decisiones continuas o enteras
+que no satisfacen el residual implementado. La recuperación mejora
+factibilidad, pero consume información y cómputo adicionales; por ello se
+reporta separada de la negociación.
+\end{contribucion}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 15 · N4
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 4 · CALIDAD POR RÉGIMEN}
+\section*{Cobertura y bienestar no producen un ganador universal}
+
+La Figura~\ref{fig:n4-quality} contrasta Geo-QPG físico con Capacity-CBBA y
+Pair/Role-GRAPE-S después del mismo cierre. El ranking cambia con la familia:
+la señal o el motor que funciona en F0 no domina necesariamente cuando aparece
+escasez, torque o fallo. Esta dependencia de régimen justifica conservar
+resultados negativos y evita seleccionar un método por un promedio único.
+
+\resultfigure[0.52\textheight]
+  {../scripts/results/sp1_levels/n4/figures/n4_scenario_quality.pdf}
+  {N4 frente a N3: cobertura y bienestar por familia confirmatoria.}
+  {fig:n4-quality}
+
+El contraste H4 de bienestar produce un efecto \NFourHfourEffect{}, pero la
+hipótesis no pasa el gate compuesto (\NFourHfourPassed{}). Por tanto, la
+evidencia no sustenta superioridad global de Geo-QPG. Sí permite describir
+dónde intercambia distancia, exceso, runtime y comunicación.
+
+\evidenceline
+  {el régimen altera el ranking descriptivo.}
+  {seis familias y tres tamaños pareados.}
+  {sin dominancia estadística global.}
+  {examinar el gap solo con oráculo válido.}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 16 · N4
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 4 · GAP AL ORÁCULO}
+\section*{Referencia central condicionada a certificación}
+
+El MILP físico es un techo central para la envolvente lineal de recursos; no
+es un oráculo universal de contacto. La comparación usa exclusivamente
+salidas RECOVERED cuyo MILP de referencia quedó certificado. Los faltantes se
+conservan como tales: completar con cero reduciría artificialmente el gap.
+
+\resultfigure[0.51\textheight]
+  {../scripts/results/sp1_levels/n4/figures/n4_oracle_gap.pdf}
+  {Distribución del gap de Geo-QPG físico frente a MILP certificado.}
+  {fig:n4-gap}
+
+Las cajas comparan familias, no réplicas intercambiables de una misma
+distribución. Además, N4 dispone de resultados hasta $N=\NFourMaxN{}$, mientras
+el MILP confirmatorio se limita a tamaños donde la referencia es auditable.
+La conclusión admisible es calidad relativa condicionada, no optimalidad
+local o global del mecanismo distribuido.
+
+\begin{contribucion}{Lectura correcta del oráculo}
+\estadoaporte{validado empíricamente en el subconjunto certificable.}
+Un gap pequeño demuestra proximidad al objetivo del MILP en ese mundo y cierre;
+no demuestra equilibrio mecánico, estabilidad de transporte ni robustez ante
+incertidumbre de contacto.
+\end{contribucion}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 17 · N4
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 4 · ESCALABILIDAD DE RECURSOS}
+\section*{Cómputo y comunicación deben crecer juntos en el informe}
+
+La campaña mide tiempo total y bytes con el mismo conjunto de mundos. En los
+tres tamaños observados, Geo-QPG paga varias rondas de consenso por iteración;
+Smith modifica el patrón temporal, mientras CBBA/GRAPE intercambian calidad y
+mensajes con reglas discretas distintas.
+
+\resultfigure[0.52\textheight]
+  {../scripts/results/sp1_levels/n4/figures/n4_resource_scaling.pdf}
+  {Escalabilidad temporal y comunicativa observada en N3--N4.}
+  {fig:n4-resources}
+
+Tres tamaños permiten detectar tendencias y cuellos de botella, pero no
+distinguen de forma fiable crecimiento polinómico de exponencial. Tampoco
+puede extrapolarse a $N$ infinito: la red, el catálogo de acciones, las cargas
+y el número de iteraciones cambian el coste. La contribución metodológica es
+reportar ambos ejes y sus fallos, no declarar saturación.
+
+\pagelead{%
+El coste por iteración incluye estimar agregados sobre el grafo. La campaña
+contabiliza mensajes y bytes lógicos; no mide latencia de middleware, jitter,
+serialización real ni ejecución simultánea en procesadores físicos.
+}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 18 · N4
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 4 · COMPARACIÓN DISTRIBUIDA N3--N4}
+\section*{La calidad adicional no es gratuita}
+
+Para cada familia--tamaño, el baseline N3 se selecciona por bienestar mediano
+recuperado y se compara con Geo-QPG físico. La razón mediana de runtime N4/N3
+es \NThreeNFourRuntimeRatio{} y la de bytes es
+\NThreeNFourBytesRatio{}. Estos cocientes son descriptivos y dependen de la
+implementación común, pero revelan qué recurso impide superar el gate.
+
+\resultfigure[0.52\textheight]
+  {../scripts/results/sp1_levels/comparison/figures/n3_n4_resource_tradeoff.pdf}
+  {Trade-off de recursos entre Geo-QPG físico y el baseline distribuido elegido.}
+  {fig:n3-n4-tradeoff}
+
+La diferencia arquitectónica con MILP permanece explícita: N3 y N4 negocian
+con información vecinal; N2 observa el mundo completo. Una versión
+verdaderamente distribuida del MILP podría investigarse mediante
+descomposición, ADMM o coordinación de subproblemas, pero requeriría medir
+consenso, factibilidad primal y certificados; no es parte de esta campaña.
+
+\evidenceline
+  {N4 consume más comunicación en las celdas auditadas.}
+  {ratios pareados familia--tamaño.}
+  {bytes lógicos, no red física.}
+  {aislar señal y motor.}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 19 · N4
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 4 · ABLACIÓN DE SEÑAL}
+\section*{Señal física frente a capacidad escalar}
+
+H3 predeclaró el falso positivo RAW en F3--F4 para impedir que el certificador
+ocultara errores de la señal. La reducción exigida era de 20 puntos
+porcentuales. Ninguna de las tres comparaciones de señal alcanzó ese umbral;
+por tanto, la señal física no queda validada como mejora fuerte universal.
+
+\resultfigure[0.51\textheight]
+  {../scripts/results/sp1_levels/n4/figures/n4_signal_ablation.pdf}
+  {Ablación de señal QPG en los escenarios de torque y geometría mixta.}
+  {fig:n4-signal}
+
+La lectura útil es más fina: una señal multidimensional puede cambiar qué
+compromisos se forman, pero el beneficio depende de la familia y del tamaño.
+El cierre común elimina falsos positivos por construcción, de modo que
+analizar únicamente RECOVERED habría producido una conclusión circular.
+
+\begin{contribucion}{Resultado de la ablación de señal}
+\estadoaporte{hipótesis fuerte no sustentada.}
+La campaña no respalda una reducción RAW de 20 puntos porcentuales. La señal
+física se conserva por interpretabilidad y compatibilidad con el certificado,
+no porque haya demostrado dominancia agregada.
+\end{contribucion}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 20 · N4
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 4 · ABLACIÓN DEL MOTOR}
+\section*{Logit, Smith y revisión pareada}
+
+La ablación mantiene señal física y cierre, pero cambia la ley de revisión.
+H5 no encuentra superioridad concluyente de bienestar; sí acredita equivalencia
+práctica de cobertura dentro del margen predeclarado, con efecto
+\NFourHfiveEffect{} y gate \NFourHfivePassed{}.
+
+\resultfigure[0.51\textheight]
+  {../scripts/results/sp1_levels/n4/figures/n4_engine_ablation.pdf}
+  {Ablación del motor de revisión con señal y cierre comparables.}
+  {fig:n4-engine}
+
+El resultado separa dos afirmaciones que suelen confundirse. Cobertura
+equivalente no implica igual bienestar, distancia, exceso o coste de red. A su
+vez, un potencial creciente con agregados exactos no transfiere automáticamente
+convergencia al esquema digital que usa consenso finito.
+
+\pagelead{%
+La selección de motor debe apoyarse en el recurso dominante de la plataforma:
+logit ofrece respuesta suave y rápida al inicio; Smith reduce gradualmente el
+residual; la revisión pareada usa decisiones discretas, pero cambia su coste
+por actualización.
+}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 21 · N4
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 4 · FALLO Y RECURSO}
+\section*{Recourse estático: evidencia útil, alcance limitado}
+
+F5 elimina una realización congelada de aristas no puente y vuelve a evaluar
+la asignación. El ratio de cambios Geo-QPG/CBBA es
+\NFourHsevenRatio{}, por debajo del umbral predeclarado. Esto sustenta menor
+recourse en el proxy estático, no tiempo de recuperación dinámico.
+
+\resultfigure[0.51\textheight]
+  {../scripts/results/sp1_levels/n4/figures/n4_failure_proxy.pdf}
+  {F5: cambios de robots y cobertura tras el fallo estático de red.}
+  {fig:n4-failure}
+
+La campaña no modela paquetes perdidos independientemente en cada ronda,
+retardo de detección, movimiento durante el fallo ni reconexión. Para afirmar
+resiliencia operacional se necesitaría una trayectoria pre/postfallo con
+$T_{\mathrm{rec}}$, mensajes adicionales, distancia mínima y factibilidad
+mecánica a lo largo del tiempo.
+
+\begin{contribucion}{Resultado H7}
+\estadoaporte{validado únicamente como proxy estático postfallo.}
+El gate numérico se supera, pero la hipótesis dinámica permanece pendiente.
+La diferencia es sustantiva: pocos cambios en una instantánea no garantizan
+recuperación segura ni dentro de un plazo.
+\end{contribucion}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 22 · N4
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 4 · GATE COMPUESTO Y RESULTADO NEGATIVO}
+\section*{El criterio de éxito completo no se alcanza}
+
+El gate H4 exige simultáneamente factibilidad, cobertura, calidad, gap cuando
+aplica, runtime y bytes. De \NFourGateCells{} combinaciones familia--tamaño,
+\NFourGatePassed{} superan el conjunto. El criterio de bytes falla en
+\NFourBytesFailed{} combinaciones; calidad o cobertura añaden fallos puntuales.
+
+\resultfigure[0.58\textheight]
+  {../scripts/results/sp1_levels/n4/figures/n4_composite_gates.pdf}
+  {Descomposición del gate compuesto de éxito para N4.}
+  {fig:n4-gates}
+
+\begin{contribucion}{Conclusión confirmatoria de N4}
+\estadoaporte{resultado negativo validado y conservado.}
+Geo-QPG no cierra simultáneamente la brecha de calidad y el coste de recursos
+frente al baseline distribuido. El cuello de botella dominante es la
+comunicación contabilizada por el consenso repetido. Optimizar ese componente
+es una línea futura; no se reabre la campaña para ajustar el método después de
+observar las semillas.
+\end{contribucion}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 23 · N4
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · SÍNTESIS DE LOS CUATRO NIVELES}
+\section*{Arquitectura final de evidencia para SP1}
+
+Los cuatro niveles no forman una competición única: cada uno amplía la clase
+de problema y cambia la información disponible. La tabla resume el papel que
+puede defenderse en la memoria completa.
+
+\begin{center}
+\scriptsize
+\begin{tabularx}{0.99\textwidth}{p{1.0cm} p{2.45cm} p{2.25cm} p{2.4cm} Y}
+\toprule
+Nivel & Problema & Arquitectura & Evidencia & Conclusión admisible \\
+\midrule
+N1 & slots homogéneos & central, global & \NOneRows{} ejecuciones & óptimo del caso estructurado \\
+N2 & capacidad heterogénea & central, global & \NTwoRows{} ejecuciones; auditoría censurada & oráculo del MILP codificado cuando certifica \\
+N3 & negociación heterogénea & distribuida, vecinal & \NThreeWorlds{} mundos pareados & baselines/proxies con coste medido \\
+N4 & señal física, preferencias y cierre & distribuida, vecinal + guardia común & campaña factorial confirmatoria & cierre eficaz; equivalencia de cobertura; H4 negativo \\
+\bottomrule
+\end{tabularx}
+\captionof{table}{Síntesis de roles, arquitectura y fuerza de evidencia.}
+\end{center}
+\compactsource
+
+\begin{contribucion}{Respuesta de SP1 en este artefacto}
+\estadoaporte{parcialmente validado, con resultados negativos explícitos.}
+N1 establece la calibración exacta; N2 introduce heterogeneidad y actúa como
+techo central; N3 cuantifica el coste de retirar el coordinador; N4 aporta un
+mecanismo QPG interpretable cuyo cierre mejora factibilidad, pero H4 fracasa
+por coste comunicativo y ausencia de dominancia de calidad.
+\end{contribucion}
+
+\textbf{Limitaciones que pasan a la memoria completa.}
+\begin{itemize}[itemsep=0pt,topsep=2pt]
+  \item La campaña termina en \textsc{guarded}; la ejecución física pertenece a SP2.
+  \item Tres tamaños en N3--N4 no acreditan escalabilidad asintótica.
+  \item El MILP es global y centralizado; no es una comparación arquitectónica justa.
+  \item CBBA/GRAPE no heredan garantías; precio explícito y MILP distribuido quedan pendientes.
+\end{itemize}
+
+\vfill
+\noindent{\footnotesize\color{VIUGray}\textbf{Decisión editorial.} El artefacto
+contiene 23 páginas: una introducción, una guía de nomenclatura, dos páginas de
+protocolo común, una de N1, dos de N2, dos de N3 y catorce de N4. No sustituye
+los preliminares, referencias ni anexos de la memoria.}
+
+\end{document}

@@ -1,0 +1,14 @@
+method,role,architecture,information_scope,signal_family,canonical_status,common_certifier,common_recovery
+milp_physical_oracle,oracle,centralized,global,physical,reference,True,True
+lp_relaxation_oracle,oracle,centralized,global,physical,reference,True,True
+entropic_convex_oracle,oracle,centralized,global,physical,reference,True,True
+hungarian_slots,control,centralized,global,scalar,F0_only,True,True
+greedy_nearest,control,centralized,global,physical,control,True,True
+qpg_logit_scalar,factorial,distributed,neighbor_estimates,scalar,proposed_ablation,True,True
+geo_qpg_logit_physical,factorial,distributed,neighbor_estimates,physical,proposed,True,True
+capacity_cbba_scalar,factorial,distributed,neighbor_consensus,scalar,adaptation,True,True
+physical_cbba_marginal,factorial,distributed,neighbor_consensus,physical,adaptation,True,True
+weighted_grape_scalar,factorial,distributed,neighbor_deviations,scalar,adaptation,True,True
+role_grape_s_physical,control,distributed,neighbor_deviations,physical,adaptation,True,True
+pair_role_grape_s_physical,factorial,distributed,neighbor_deviations,physical,adaptation,True,True
+geo_qpg_smith_physical,ablation,distributed,neighbor_estimates,physical,proposed_ablation,True,True

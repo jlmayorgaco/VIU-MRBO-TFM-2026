@@ -1,0 +1,95 @@
+{
+  "schema_version": "sp1-level-package-v1",
+  "level": "N3",
+  "description": "Distributed CBBA/GRAPE adaptations evaluated on the paired SP1-GEO confirmatory worlds.",
+  "generated_at_utc": "2026-07-29T16:57:18.998708+00:00",
+  "environment": {
+    "python": "3.13.9",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "pandas": "2.3.3",
+    "numpy": "2.3.5",
+    "matplotlib": "3.10.6"
+  },
+  "sources": [
+    {
+      "path": "results/sp1_geo/SP1_TFM_GEO_QPG_SIGNAL_ENGINE_CLOSURE_BENCHMARK_v1/runs.parquet",
+      "bytes": 3703366,
+      "sha256": "ab0b06d8dcbbec55f7c2270ce9df1ea77ddd873d3842b95a9c63e7049d4a5b03"
+    },
+    {
+      "path": "results/sp1_geo/SP1_TFM_GEO_QPG_SIGNAL_ENGINE_CLOSURE_BENCHMARK_v1/summary.csv",
+      "bytes": 460255,
+      "sha256": "5fdb5af80846569ce67fd9cef343b8f191d7d7f24fb7d8790a095ee042bd9f67"
+    },
+    {
+      "path": "results/sp1_geo/SP1_TFM_GEO_QPG_SIGNAL_ENGINE_CLOSURE_BENCHMARK_v1/method_metadata.csv",
+      "bytes": 1254,
+      "sha256": "a551a955e10fe023d867ca3c110cf807a0780f16dfee8f74c7c52ac4c34a9415"
+    },
+    {
+      "path": "results/sp1_geo/SP1_TFM_GEO_QPG_SIGNAL_ENGINE_CLOSURE_BENCHMARK_v1/config_frozen.yaml",
+      "bytes": 1958,
+      "sha256": "949c0ebe5a9cb96e265bcca21bede0c8bea213503b33e246f8a780e9ccc8041c"
+    }
+  ],
+  "row_counts": {
+    "raw_level_rows": 10800,
+    "processed_summary": 12,
+    "processed_gap_summary": 8,
+    "processed_pareto": 4
+  },
+  "claims": [
+    "All N3 methods share worlds, evaluator, certifier and recovery.",
+    "MILP gaps are reported only where a certified reference exists."
+  ],
+  "limitations": [
+    "The methods are implemented adaptations and do not automatically inherit source-method guarantees.",
+    "The campaign evaluates static coalition formation, not physical transport."
+  ],
+  "artifacts": {
+    "figures/n3_communication_gap.pdf": {
+      "bytes": 52691,
+      "sha256": "96c0246b3c4032982d382df427c8cd5d7996fabacb81c5f4325bfa29d025259b"
+    },
+    "figures/n3_communication_gap.png": {
+      "bytes": 305006,
+      "sha256": "b39b68c5d678ebf41042fb2d15f6766d5efbfa39828cb4bd663e8908463d37b1"
+    },
+    "figures/n3_pareto.pdf": {
+      "bytes": 45533,
+      "sha256": "08c3fc6255c6ed8dccd2c45b0cc15c9a2fe8d85ce5c2fe4d72c156b40e16b368"
+    },
+    "figures/n3_pareto.png": {
+      "bytes": 166078,
+      "sha256": "5d954908396585e0b1d3aa84dcce139b7e57962abc72f797cce8010b83001564"
+    },
+    "figures/n3_quality_runtime.pdf": {
+      "bytes": 52701,
+      "sha256": "a6c311194983a7f165d8fc7d47fd00a0967f21ac030aa1d1ba03de08b57b9f17"
+    },
+    "figures/n3_quality_runtime.png": {
+      "bytes": 280004,
+      "sha256": "76e34aebe0df2a56ac07fafed93ebd9cb46fbad39cf84f3b198596943e9775ab"
+    },
+    "key_metrics.json": {
+      "bytes": 366,
+      "sha256": "f2996ee9323abc2497cdb491599c7f17249c2cc2de2be49a791dbfbbbc1d3446"
+    },
+    "processed/n3_gap_summary.csv": {
+      "bytes": 998,
+      "sha256": "69ab3082322177b6b2042655c95a8635ea33486b54eb74bd08c0f3264312e811"
+    },
+    "processed/n3_pareto.csv": {
+      "bytes": 395,
+      "sha256": "c90c1a5b464ae272ef0b090c654eb35bd22b0b2099a9377f0bffeb8a79137d8d"
+    },
+    "processed/n3_summary.csv": {
+      "bytes": 3957,
+      "sha256": "acade6113afd67b44998aa9b7592483576481397f8b800066c91e98609f41689"
+    },
+    "REPORT.md": {
+      "bytes": 348,
+      "sha256": "2eee4bf446075da85b1b30c9509782c7bc3970ffe3a81214914c0a613ee18dfa"
+    }
+  }
+}

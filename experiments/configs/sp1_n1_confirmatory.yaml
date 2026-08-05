@@ -1,0 +1,46 @@
+schema_version: sp1-n1-confirmatory-v1
+campaign_id: SP1_N1_HUNGARIAN_CONFIRMATORY_v1
+status: frozen_before_run
+created_utc: 2026-08-05
+base_seed: 2026080501
+q_bar_kg: 5.0
+workspace_m: [100.0, 100.0]
+mean_slots_per_load: 3.0
+analysis:
+  confidence_level: 0.95
+  bootstrap_resamples: 4000
+  practical_saving_threshold: 0.05
+  holm_family: five_spatial_scenarios
+quality:
+  slots: [40, 160, 640]
+  reserve_delta: 0.20
+  quota_modes: [symmetric, moderate, extreme]
+  scenarios: [uniform, clustered, separated, ring, corridor]
+  seeds_per_cell: 100
+scaling:
+  robot_counts: [32, 64, 128, 256, 512, 1024, 2048]
+  slot_to_robot_ratios: [0.25, 0.50, 1.00]
+  quota_mode: moderate
+  scenario: uniform
+  seeds_per_cell: 30
+failure:
+  slots: [40, 160, 640]
+  reserve_deltas: [0.00, 0.10, 0.20, 0.33]
+  failure_fractions: [0.00, 0.05, 0.10, 0.20, 0.30]
+  quota_mode: moderate
+  scenario: uniform
+  seeds_per_cell: 100
+heterogeneity:
+  slots: [12, 24]
+  reserve_delta: 0.20
+  quota_mode: moderate
+  scenarios: [uniform, clustered, separated, ring, corridor]
+  capacity_modes: [homogeneous, low, moderate, high, extreme]
+  seeds_per_cell: 30
+  milp_time_limit_s: 5.0
+  milp_relative_gap: 0.0
+limitations:
+  - Robot poses parameterize recruitment distance; physical transport is not simulated.
+  - Failure recovery is a centralized static re-solve.
+  - Log-log fits describe only the measured interval.
+  - The heterogeneous MILP is an external validity auditor, not an N1 competitor.

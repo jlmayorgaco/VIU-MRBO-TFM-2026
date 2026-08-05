@@ -1,0 +1,201 @@
+{
+  "schema_version": "sp1-level-package-v1",
+  "level": "N4",
+  "description": "Proposed neighbor-estimate Geo-QPG with signal, engine and integer-closure ablations.",
+  "generated_at_utc": "2026-07-29T17:01:51.596394+00:00",
+  "environment": {
+    "python": "3.13.9",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "pandas": "2.3.3",
+    "numpy": "2.3.5",
+    "matplotlib": "3.10.6"
+  },
+  "sources": [
+    {
+      "path": "results/sp1_geo/SP1_TFM_GEO_QPG_SIGNAL_ENGINE_CLOSURE_BENCHMARK_v1/runs.parquet",
+      "bytes": 3703366,
+      "sha256": "ab0b06d8dcbbec55f7c2270ce9df1ea77ddd873d3842b95a9c63e7049d4a5b03"
+    },
+    {
+      "path": "results/sp1_geo/SP1_TFM_GEO_QPG_SIGNAL_ENGINE_CLOSURE_BENCHMARK_v1/events.parquet",
+      "bytes": 2038842,
+      "sha256": "a89547dc0e27e7b7ba3371fc58744955db07177fa82a0ca0d34083f58ddaec4e"
+    },
+    {
+      "path": "results/sp1_geo/SP1_TFM_GEO_QPG_SIGNAL_ENGINE_CLOSURE_BENCHMARK_v1/summary.csv",
+      "bytes": 460255,
+      "sha256": "5fdb5af80846569ce67fd9cef343b8f191d7d7f24fb7d8790a095ee042bd9f67"
+    },
+    {
+      "path": "results/sp1_geo/SP1_TFM_GEO_QPG_SIGNAL_ENGINE_CLOSURE_BENCHMARK_v1/hypothesis_results.csv",
+      "bytes": 3292,
+      "sha256": "7aa98afc232edb3b2ce6699808942fb2a6941de91f527e7a2be17d2e6c0f718c"
+    },
+    {
+      "path": "results/sp1_geo/SP1_TFM_GEO_QPG_SIGNAL_ENGINE_CLOSURE_BENCHMARK_v1/success_gate_results.csv",
+      "bytes": 4358,
+      "sha256": "c56c863b186900a799ccf4ef74d7e6aff92620f4859fef895cedeefa510a2c22"
+    },
+    {
+      "path": "results/sp1_geo/SP1_TFM_GEO_QPG_SIGNAL_ENGINE_CLOSURE_BENCHMARK_v1/method_metadata.csv",
+      "bytes": 1254,
+      "sha256": "a551a955e10fe023d867ca3c110cf807a0780f16dfee8f74c7c52ac4c34a9415"
+    },
+    {
+      "path": "results/sp1_geo/SP1_TFM_GEO_QPG_SIGNAL_ENGINE_CLOSURE_BENCHMARK_v1/config_frozen.yaml",
+      "bytes": 1958,
+      "sha256": "949c0ebe5a9cb96e265bcca21bede0c8bea213503b33e246f8a780e9ccc8041c"
+    },
+    {
+      "path": "results/sp1_geo/SP1_TFM_GEO_QPG_SIGNAL_ENGINE_CLOSURE_BENCHMARK_v1/report.md",
+      "bytes": 5391,
+      "sha256": "c21eb4792368438a0b5f463e7a81c4f1a7f7f8837ec8ec4e52aeabf54ccd627b"
+    }
+  ],
+  "row_counts": {
+    "campaign_rows": 35100,
+    "level_rows": 13500,
+    "events": 136766,
+    "closure_summary": 9,
+    "scenario_quality_summary": 18,
+    "oracle_gap_summary": 12,
+    "resource_scaling_summary": 15,
+    "signal_ablation_summary": 12,
+    "engine_ablation_summary": 9,
+    "failure_summary": 6,
+    "anytime_summary": 27,
+    "composite_gate_cells": 15
+  },
+  "claims": [
+    "The common closure materially improves physical feasibility (H2).",
+    "Coverage is practically equivalent across the tested QPG/Pair-GRAPE engines (H5 endpoint).",
+    "No family-size cell passes the complete H4 success gate."
+  ],
+  "limitations": [
+    "No global superiority, asymptotic scalability or physical transport claim is supported.",
+    "F5 is a static post-failure proxy, not dynamic recourse.",
+    "Communication bytes fail the predeclared resource gate in all 15 H4 cells."
+  ],
+  "artifacts": {
+    "figures/n4_anytime.pdf": {
+      "bytes": 48528,
+      "sha256": "09df6e4cd5fcff4b6ff3216aa8f1ee050179c9bcc6bd9474e7d071a097035692"
+    },
+    "figures/n4_anytime.png": {
+      "bytes": 316185,
+      "sha256": "b081c95978ace272dabf7b5a753679c004ca175ce4409a0f179740d05c63784b"
+    },
+    "figures/n4_closure_ladder.pdf": {
+      "bytes": 49887,
+      "sha256": "1ea822b1bbf5f7bda60b4cfb12312f34bd1def3670f0eda57fcb9e300034150f"
+    },
+    "figures/n4_closure_ladder.png": {
+      "bytes": 182797,
+      "sha256": "16a31e043e3abc79196f48dc29930de49304b4433943f7afae5ffc62424167a4"
+    },
+    "figures/n4_composite_gates.pdf": {
+      "bytes": 45850,
+      "sha256": "e4197cc4703399b2e72336f9433d3766830127bab38244ac75b4e3d8316c29fb"
+    },
+    "figures/n4_composite_gates.png": {
+      "bytes": 162835,
+      "sha256": "85cf7c7191de328769d4aadafca312ff6da60597fec7ff8cd32a833787225e7f"
+    },
+    "figures/n4_engine_ablation.pdf": {
+      "bytes": 51107,
+      "sha256": "f61dfdbbfee699823e3adf6c7199b82762ae7fdd919b7e1c21d438771945059c"
+    },
+    "figures/n4_engine_ablation.png": {
+      "bytes": 213179,
+      "sha256": "74bd110a0fd0668d0ca9bc9d12dc6a2d89cb954b8e3fd8b4032efd16a9f7f636"
+    },
+    "figures/n4_failure_proxy.pdf": {
+      "bytes": 49291,
+      "sha256": "9bdae72eda987335c9ea1cf369684226b1741ae7be869470d51e3840a60fea98"
+    },
+    "figures/n4_failure_proxy.png": {
+      "bytes": 257448,
+      "sha256": "8dc116e549315efa39ed146054d5b1eede0d7c3e3905ffea0744fd09d68a52ec"
+    },
+    "figures/n4_oracle_gap.pdf": {
+      "bytes": 42964,
+      "sha256": "8680f1c31d986377641b74ef7a340c2030d65134c5342bc44c9104ccc1f61969"
+    },
+    "figures/n4_oracle_gap.png": {
+      "bytes": 142718,
+      "sha256": "17666836e252e03dbbe005d261ca082c0e6b6c78a730ff110c571c7aadfdde5e"
+    },
+    "figures/n4_resource_scaling.pdf": {
+      "bytes": 53672,
+      "sha256": "168547ec33d1ad093f67d179057cf61a861e5aedcfad4699841f272cc4b17f84"
+    },
+    "figures/n4_resource_scaling.png": {
+      "bytes": 397366,
+      "sha256": "ccfb4e4dcdc6b67209437ba97035a60af728c342b46f8e4b46096689f4473e20"
+    },
+    "figures/n4_scenario_quality.pdf": {
+      "bytes": 50401,
+      "sha256": "b3cc3419d7572c81cdba681598581e280a832c288d843aef725f483d9700bd36"
+    },
+    "figures/n4_scenario_quality.png": {
+      "bytes": 221910,
+      "sha256": "a514622111d0f1bfea217048a1784462981c9c90b9d71b0324872590c86725da"
+    },
+    "figures/n4_signal_ablation.pdf": {
+      "bytes": 50650,
+      "sha256": "8af8df64eab67664859463c0966e7025fe5dd0521bf42877617f3142b61d2a5b"
+    },
+    "figures/n4_signal_ablation.png": {
+      "bytes": 186243,
+      "sha256": "88dec21daae7de3b4271545609c921c1a327610872920fe8888e4e4e40b6a693"
+    },
+    "key_metrics.json": {
+      "bytes": 624,
+      "sha256": "37d16d971516bcb5a731016604270f7574dd6576578e3e78d763dbc627cf0501"
+    },
+    "processed/anytime_summary.csv": {
+      "bytes": 4930,
+      "sha256": "343b365c3b2273c26729391f87d7fb5bbf529df79354f57cdf307e292d4ead3e"
+    },
+    "processed/closure_summary.csv": {
+      "bytes": 1373,
+      "sha256": "6425df45f35b98fed736f2bccc293ad6332e6069d6904831a4668c03e5a82f94"
+    },
+    "processed/composite_gates.csv": {
+      "bytes": 4231,
+      "sha256": "cdccc316924e2f3bdb2e8aea6f36157255ac3fa2d9df73091aa93ecf800aa091"
+    },
+    "processed/engine_ablation_summary.csv": {
+      "bytes": 1366,
+      "sha256": "23cc612b0e981ed08484eb6694f53a794d19ae2644e3fe7c17c59fe9ca57c037"
+    },
+    "processed/failure_summary.csv": {
+      "bytes": 1047,
+      "sha256": "ac783d775312165b180d3fcf5ae7c9f3f2c6672294609c7097bfc3a8c367c138"
+    },
+    "processed/hypothesis_results.csv": {
+      "bytes": 3250,
+      "sha256": "5ccbfd4f67bf3dfeeae661ada85ed3e463dab3d08b662f2d124eef91cefb347b"
+    },
+    "processed/oracle_gap_summary.csv": {
+      "bytes": 1336,
+      "sha256": "c11eb97c7e3df85c21797919159bbd39bf59d0940df432de0fee55677e5b6295"
+    },
+    "processed/resource_scaling_summary.csv": {
+      "bytes": 2469,
+      "sha256": "abcabec364c19da5479329edcf0ae00077b49493196e441f9338ce7fcb6fdebc"
+    },
+    "processed/scenario_quality_summary.csv": {
+      "bytes": 3116,
+      "sha256": "6d74d65820ffeec3d291addd17aeb5bec28c9244e4b4de0f2b97ecde5c338695"
+    },
+    "processed/signal_ablation_summary.csv": {
+      "bytes": 2628,
+      "sha256": "06590c3e996f9f2cec0aff6af87b55110924d44f63bac24fa9072f131b729367"
+    },
+    "REPORT.md": {
+      "bytes": 492,
+      "sha256": "92b7f919d73ada8952ed6fd528fcba575235e19a4512acb984ffb6e295c5af00"
+    }
+  }
+}

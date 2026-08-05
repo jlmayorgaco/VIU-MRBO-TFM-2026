@@ -1,0 +1,79 @@
+{
+  "schema_version": "sp1-level-package-v1",
+  "level": "N2",
+  "description": "Centralized heterogeneous payload-capacity MILP oracle with a censoring-aware scalability audit.",
+  "generated_at_utc": "2026-07-29T17:07:16.325845+00:00",
+  "environment": {
+    "python": "3.13.9",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "pandas": "2.3.3",
+    "numpy": "2.3.5",
+    "matplotlib": "3.10.6"
+  },
+  "sources": [
+    {
+      "path": "scripts/results/sp1_a2_milp_revised/milp_results/mc_all_runs.csv",
+      "bytes": 1794700,
+      "sha256": "3226a33a2fdc1f984d4c7a6ee24a7e27afcb5df6804d70db1be333c4e9111f23"
+    },
+    {
+      "path": "scripts/results/sp1_a2_milp_revised/milp_results/saturation_audit/saturation_runs.csv",
+      "bytes": 39357,
+      "sha256": "b416b699d91020b0d0f36f06e415701ed68c2a0c3005d4fc2e55fb49209e91db"
+    },
+    {
+      "path": "scripts/results/sp1_a2_milp_revised/milp_results/config.json",
+      "bytes": 1916,
+      "sha256": "1f9f21cf5ace11e240454a94b8c4c885c74143be37bbfd761ced446b8bf33094"
+    }
+  ],
+  "row_counts": {
+    "raw_runs": 3420,
+    "saturation_runs": 105,
+    "capacity_summary": 5,
+    "saturation_summary": 23
+  },
+  "claims": [
+    "A successful status-0 run is a global MILP optimum for the encoded model.",
+    "Timeout incumbents are feasible candidates, not certified optima.",
+    "N1 and N2 are compared only under the shared homogeneous problem."
+  ],
+  "limitations": [
+    "The oracle uses global information and is not an architectural peer of distributed methods.",
+    "The runtime plateau is induced by the time limit and cannot support fixed-cost or infinite-N claims."
+  ],
+  "artifacts": {
+    "figures/n2_capacity.pdf": {
+      "bytes": 83093,
+      "sha256": "88024f741a503f6f650c791a30e9542eb792e5688c8db3b226eb0f6ba2e6c1d5"
+    },
+    "figures/n2_capacity.png": {
+      "bytes": 363835,
+      "sha256": "8988cea1a6685a19e87329facadedf3678bc4be5e59a731e5f4386b5f5da8c17"
+    },
+    "figures/n2_saturation_audit.pdf": {
+      "bytes": 50643,
+      "sha256": "f0f3610ea5af5f8aa4a3dcf93c397f023e56b8a2a6cd0ee22036cbf66f76cebe"
+    },
+    "figures/n2_saturation_audit.png": {
+      "bytes": 268834,
+      "sha256": "d24edda958b714c48f0224c55fc1bbfb19ab81d907311877c4fc900394e147b6"
+    },
+    "key_metrics.json": {
+      "bytes": 384,
+      "sha256": "f93ca0e38e618187aad96e654a77c9fbf6a386506ef057ea9b43ec57647ef27b"
+    },
+    "processed/capacity_summary.csv": {
+      "bytes": 1350,
+      "sha256": "927d5839634fd9b22ec1fdc709addae326884075eb19ad7e05628bffe4fe8b2e"
+    },
+    "processed/saturation_summary.csv": {
+      "bytes": 5022,
+      "sha256": "1614a9343cae658c1d6a86d30b3fcd9be413a4cbcb16e59bbde3a82b4062977f"
+    },
+    "REPORT.md": {
+      "bytes": 445,
+      "sha256": "06b3c80805aaa447c4fcdcbcbceef4ee82905a2890293693148c118d2b439519"
+    }
+  }
+}

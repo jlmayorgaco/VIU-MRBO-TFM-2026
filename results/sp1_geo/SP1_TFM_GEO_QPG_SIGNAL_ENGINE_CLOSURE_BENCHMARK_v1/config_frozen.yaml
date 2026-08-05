@@ -1,0 +1,71 @@
+schema_version: 1
+config_name: SP1_TFM_GEO_QPG_SIGNAL_ENGINE_CLOSURE_BENCHMARK_v1.yaml
+experiment_id: SP1_TFM_GEO_QPG_SIGNAL_ENGINE_CLOSURE_BENCHMARK_v1
+mode: confirmatory
+output_dir: results/sp1_geo/SP1_TFM_GEO_QPG_SIGNAL_ENGINE_CLOSURE_BENCHMARK_v1
+freeze:
+  frozen_after_preview_utc: '2026-07-24T17:14:39Z'
+  preview_manifest_sha256: db1cddf526610262e59bfe35d7fccf4ae06dfd429f24bc14c534feb407374ab0
+  preview_worlds_complete: 90
+  parameter_changes_after_final_preview: none
+  confirmatory_seed_block_opened_at_freeze: false
+scenario_files:
+  F0_easy_separable: configs/scenarios/sp1_geo/F0_easy_separable.yaml
+  F1_heterogeneous_critical: configs/scenarios/sp1_geo/F1_heterogeneous_critical.yaml
+  F2_scarce_priority: configs/scenarios/sp1_geo/F2_scarce_priority.yaml
+  F3_torque_complementarity: configs/scenarios/sp1_geo/F3_torque_complementarity.yaml
+  F4_mixed_geometry_route: configs/scenarios/sp1_geo/F4_mixed_geometry_route.yaml
+  F5_network_failure: configs/scenarios/sp1_geo/F5_network_failure.yaml
+sizes:
+- - 12
+  - 3
+- - 32
+  - 8
+- - 64
+  - 16
+seed_blocks:
+  preview:
+    start: 910000
+    count: 5
+  tuning:
+    start: 920000
+    count: 10
+  confirmatory:
+    start: 930000
+    count: 50
+cost_weights:
+  distance: 0.38
+  energy: 0.24
+  time: 0.18
+  turn: 0.12
+  reliability: 0.08
+methods:
+  qpg:
+    entropy_tau: 0.08
+    damping: 0.22
+    smith_damping: 0.015
+    max_iterations: 80
+    tolerance: 1.0e-05
+    consensus_rounds: 3
+    trace_stride: 10
+  cbba:
+    max_bundle_rounds: 48
+  grape:
+    max_iterations: 8
+oracles:
+  milp_max_n: 32
+  lp_max_n: 64
+  entropic_max_n: 12
+  milp_time_limit_s: 60.0
+  entropic_max_iterations: 1200
+recovery:
+  delta: 1.0e-09
+  max_chain_length: 12
+  candidates_per_load: 16
+  enable_swaps: true
+statistics:
+  analysis_seed: 990001
+  bootstrap_resamples: 10000
+  permutation_resamples: 50000
+  alpha: 0.05
+  equivalence_margin: 0.02

@@ -1,0 +1,50 @@
+{
+  "schema_version": "sp1-controlled-comparison-v1",
+  "scope": "N4 Geo-QPG versus the selected N3 distributed baseline",
+  "source": {
+    "path": "results/sp1_geo/SP1_TFM_GEO_QPG_SIGNAL_ENGINE_CLOSURE_BENCHMARK_v1/success_gate_results.csv",
+    "bytes": 4358,
+    "sha256": "c56c863b186900a799ccf4ef74d7e6aff92620f4859fef895cedeefa510a2c22"
+  },
+  "metrics": {
+    "cells": 15,
+    "composite_passed": 0,
+    "bytes_gate_failed": 15,
+    "median_runtime_ratio": 2.3302196612935013,
+    "median_bytes_ratio": 62.75345682233238
+  },
+  "artifacts": {
+    "figures/n1_n2_homogeneous_comparison.pdf": {
+      "bytes": 50523,
+      "sha256": "a53d43896794bbe43aa8cfc9b0be351c1b914b0d0975c184d65cfdd4f049daa2"
+    },
+    "figures/n1_n2_homogeneous_comparison.png": {
+      "bytes": 177706,
+      "sha256": "c3c51a29f76263fe2af5d7b4ce647da880fcb1ef0656e58e8ddd7f5b8b30b637"
+    },
+    "figures/n3_n4_resource_tradeoff.pdf": {
+      "bytes": 45910,
+      "sha256": "5ccd663203f53dfd6f0275fe2121895371eab77cabe8a792750fafb1fdbbb03d"
+    },
+    "figures/n3_n4_resource_tradeoff.png": {
+      "bytes": 165402,
+      "sha256": "b4b42d35a32e654398e024ad8660d7f8c0067955de3011f4db4b5a12ddc4de21"
+    },
+    "n1_n2_metrics.json": {
+      "bytes": 111,
+      "sha256": "80b9c2b954d6cb6c61017cfc2b7abd6ecc9799cbbc57c309d540ec054622d54d"
+    },
+    "n3_n4_metrics.json": {
+      "bytes": 166,
+      "sha256": "e72b8b75c2d4f600face94b3cd7285298fa90c914b5aa0a01658f21f34048373"
+    },
+    "processed/n1_n2_homogeneous_summary.csv": {
+      "bytes": 2439,
+      "sha256": "ed2d8dd4b4298b9daec0217c7e00f4781bfb5642785355a31c82f3ab7544178d"
+    },
+    "processed/n3_n4_composite_gates.csv": {
+      "bytes": 4231,
+      "sha256": "cdccc316924e2f3bdb2e8aea6f36157255ac3fa2d9df73091aa93ecf800aa091"
+    }
+  }
+}
