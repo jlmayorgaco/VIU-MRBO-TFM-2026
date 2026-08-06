@@ -27,3 +27,10 @@ La primera revisión eliminó muletillas evidentes, pero mantuvo una arquitectur
 - El PDF conserva diez páginas; las diez fueron inspeccionadas y no presentan solapamientos ni desbordamientos.
 - El registro de LaTeX no contiene avisos `Overfull`, `Underfull` ni advertencias de compilación.
 - Pasan 20 pruebas de estructura, N1 y figuras protegidas.
+
+## Ajuste narrativo posterior
+
+Los resultados E1--E4 se presentan ahora en dos párrafos continuos por
+experimento: el primero informa los datos y el segundo los interpreta y delimita.
+Se retiraron los rótulos internos y los recuadros de decisión para evitar cortes
+artificiales en la lectura.

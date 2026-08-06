@@ -187,10 +187,7 @@ def test_latex_uses_canonical_payload_capacity_symbol() -> None:
         REPOSITORY_ROOT / "thesis" / "sp1_levels_23p" / "main.tex"
     ).read_text(encoding="utf-8")
     assert r"c_i^{\mathrm{pay}}" in latex
-    assert (
-        r"N2 incorpora cada $c_i^{\mathrm{pay}}$"
-        in latex.replace("\n", " ")
-    )
+    assert r"incorpora cada $c_i^{\mathrm{pay}}$" in latex.replace("\n", " ")
 
 
 def test_latex_defines_level_and_branch_nomenclature() -> None:

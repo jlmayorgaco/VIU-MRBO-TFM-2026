@@ -872,23 +872,19 @@ práctico después de la corrección de Holm.}
 \viuownsource
 \end{figure}
 
-\noindent\textbf{Contraste por escenario.} Se rechaza $H_0$ en Aleatorio
-(\NOneUniformSavingPct\,\%), Agrupado (\NOneClusteredSavingPct\,\%) y
-Pasillo (\NOneCorridorSavingPct\,\%). No se rechaza en Separado
-(\NOneSeparatedSavingPct\,\%) ni Anillo (\NOneRingSavingPct\,\%). El
-ahorro agregado fue \NOneSavingPct\,\% (IC del 95\,\%:
+Los contrastes rechazan $H_0$ en Aleatorio (\NOneUniformSavingPct\,\%),
+Agrupado (\NOneClusteredSavingPct\,\%) y Pasillo
+(\NOneCorridorSavingPct\,\%). En Separado (\NOneSeparatedSavingPct\,\%) y
+Anillo (\NOneRingSavingPct\,\%) no se rechaza. Al reunir los cinco escenarios,
+el ahorro fue del \NOneSavingPct\,\% (IC del 95\,\%:
 \NOneSavingLowPct\,\% a \NOneSavingHighPct\,\%).
 
-\noindent\textbf{Lectura.} La geometría cambia el valor de la solución exacta.
-Aleatorio, Agrupado y Pasillo crean competencia por los mismos robots; allí una
-decisión global evita elecciones locales costosas. Separado y Anillo, en cambio,
-ya orientan a greedy hacia asignaciones próximas al óptimo. La diferencia medida
-en esos dos escenarios queda por debajo del 5\,\% fijado.
-
-\noindent\colorbox{SPBlue!7}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
-\small \textbf{Referencia de calidad:} el Húngaro se conserva como techo exacto. Los datos
-no justifican una ganancia uniforme de la centralización; su coste se estudia por
-separado en E2.}}
+La ventaja del Húngaro depende de la geometría. En Aleatorio, Agrupado y
+Pasillo, varios puestos compiten por los mismos robots y la decisión global evita
+elecciones locales costosas. Separado y Anillo ya conducen a greedy hacia
+asignaciones cercanas al óptimo, por lo que la mejora queda por debajo del 5\,\%
+fijado. Conservamos el Húngaro como referencia exacta de calidad, pero no
+suponemos que centralizar produzca la misma ganancia en todos los escenarios.
 
 \clearpage
 
@@ -912,21 +908,18 @@ Las bandas cubren P05--P95; la memoria corresponde a la matriz densa de costes.}
 \viuownsource
 \end{figure}
 
-\noindent\textbf{Escala observada.} En la serie balanceada $N=M$, el ajuste descriptivo
-es $t\propto N^{\NOneExponent}$ (IC del 95\,\%: \NOneExponentLow{} a
-\NOneExponentHigh{}; $R^2=\NOneRSquared$). En $N=M=\NOneMaxN{}$, el P95 fue
-\NOneScalingPninetyfiveMs\,ms. La memoria observada siguió exactamente $8NM$.
+En la serie balanceada $N=M$, el tiempo siguió el ajuste descriptivo
+$t\propto N^{\NOneExponent}$ (IC del 95\,\%: \NOneExponentLow{} a
+\NOneExponentHigh{}; $R^2=\NOneRSquared$). Para el mayor caso probado,
+$N=M=\NOneMaxN{}$, el P95 fue \NOneScalingPninetyfiveMs\,ms. La memoria coincidió
+con los $8NM$ bytes que requiere la matriz densa.
 
-\noindent\textbf{Límite de la evidencia.} La curva no se aplana. Almacenar $C$
-ya impone crecimiento cuadrático de memoria, y el tiempo de la serie balanceada
-sigue una pendiente observada de \NOneExponent. El P95 de
-\NOneScalingPninetyfiveMs\,ms corresponde a $N=M=\NOneMaxN{}$ en este equipo y
-con esta implementación. Fuera de ese intervalo no inferimos coste constante ni
-capacidad para tamaños ilimitados.
-
-\noindent\colorbox{SPPurple!7}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
-\small \textbf{Papel del oráculo:} el LSAP central permanece como referencia experimental.
-Esta campaña no prueba la escalabilidad de una arquitectura centralizada.}}
+La curva temporal no se aplana en el intervalo estudiado y la memoria crece de
+forma cuadrática. Estos resultados no respaldan un coste constante ni permiten
+extrapolar el comportamiento a tamaños ilimitados. El LSAP central se
+mantiene como referencia experimental: fue viable hasta $N=M=\NOneMaxN{}$ en
+este equipo, pero la campaña no demuestra que una arquitectura centralizada sea
+escalable.
 
 \clearpage
 
@@ -953,21 +946,17 @@ coste espacial en los casos que permanecen factibles.}
 \viuownsource
 \end{figure}
 
-\noindent\textbf{Frontera de factibilidad.} La factibilidad coincidió en
-\NOneFailureAgreementPct\,\% de los casos con $N_{\mathrm{activo}}\geq M$.
-Sin reserva, ninguna retirada positiva fue recuperable; con reserva suficiente,
-el LSAP reasignó todos los puestos, aunque aumentó la distancia recorrida.
+La factibilidad coincidió en \NOneFailureAgreementPct\,\% de los casos con la
+condición $N_{\mathrm{activo}}\geq M$. Sin reserva, ninguna retirada positiva
+fue recuperable. Cuando había robots suficientes, el LSAP reasignó todos los
+puestos, aunque la nueva coalición debía recorrer una distancia mayor.
 
-\noindent\textbf{Qué explica el recálculo.} La reserva debe dejar al menos un
-robot activo por puesto. La coincidencia exacta con la frontera cardinal atribuye
-la recuperación a esa capacidad ociosa, no a una adaptación del algoritmo.
-Cuando el recálculo sigue siendo factible, la sustitución de miembros aumenta el
-coste espacial.
-
-\noindent\colorbox{SPGreen!8}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
-\small \textbf{Límite de E3:} N1 recompone una asignación estática si el
-coordinador ya conoce la retirada. No modela detección, mensajes, movimiento ni
-recuperación distribuida; por ello, E3 no demuestra resiliencia operacional.}}
+Esta coincidencia con la frontera cardinal muestra que el recálculo depende de
+la capacidad ociosa: debe quedar al menos un robot activo por puesto. No es una
+adaptación del algoritmo. E3 supone también que el coordinador ya conoce la
+retirada; no incluye detección, mensajes, movimiento ni recuperación distribuida.
+El resultado describe una reasignación estática y no acredita resiliencia
+operacional.
 
 \clearpage
 
@@ -993,23 +982,18 @@ la certificación y el rescate obtenidos por el auditor MILP.}
 \viuownsource
 \end{figure}
 
-\noindent\textbf{Auditoría de capacidad.} La tasa de falsos factibles fue 0,0\,\%,
+La tasa de falsos factibles aumentó desde 0,0\,\% en el caso homogéneo hasta
 \NOneLowFalsePct\,\%, \NOneModerateFalsePct\,\%, \NOneHighFalsePct\,\% y
-\NOneExtremeFalsePct\,\% al pasar de capacidad homogénea a heterogeneidad
-extrema. Los cuatro contrastes McNemar frente al caso homogéneo fueron
-significativos tras Holm; HiGHS certificó \NOneMilpCertifiedPct\,\% de las
-auditorías y rescató \NOneMilpRescuePct\,\% de los falsos factibles.
+\NOneExtremeFalsePct\,\% en los cuatro niveles de heterogeneidad. Los contrastes
+McNemar frente al caso homogéneo fueron significativos tras la corrección de
+Holm. HiGHS certificó \NOneMilpCertifiedPct\,\% de las auditorías y encontró una
+coalición válida en \NOneMilpRescuePct\,\% de los falsos factibles.
 
-\noindent\textbf{Origen del error.} N1 deja de representar la factibilidad física
-cuando las capacidades son distintas. El MILP recupera casi todos los falsos
-factibles: en esos casos había una coalición válida, pero la reducción por
-puestos no podía verla. La formulación heterogénea debe sumar las capacidades de
-los miembros asignados.
-
-\noindent\colorbox{VIUOrange!9}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
-\small \textbf{Paso a N2:} el Húngaro conserva la exactitud sobre el LSAP
-formulado; el LSAP es el que deja de representar a los robots heterogéneos. N2
-incorpora cada $c_i^{\mathrm{pay}}$ mediante restricciones MILP.}}
+El problema está en la reducción por puestos. Cuando las capacidades difieren,
+el Húngaro sigue resolviendo correctamente el LSAP formulado, pero ese LSAP ya
+no representa la factibilidad física de la coalición. N2 corrige esta limitación:
+incorpora cada $c_i^{\mathrm{pay}}$ y exige que la suma de capacidades satisfaga
+la demanda de la carga.
 
 % El documento de trabajo se cierra aquí mientras N2--N4 se revisan por etapas.
 % La versión completa de 28 páginas permanece congelada en la etiqueta Git
