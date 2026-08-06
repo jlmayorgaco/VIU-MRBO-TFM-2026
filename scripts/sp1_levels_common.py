@@ -230,6 +230,26 @@ def write_json(path: Path, payload: Mapping[str, object]) -> None:
     )
 
 
+def _processor_name() -> str:
+    """Return a human-readable CPU model without adding a dependency."""
+
+    if platform.system() == "Windows":
+        try:
+            import winreg
+
+            key_path = (
+                r"HARDWARE\DESCRIPTION\System\CentralProcessor\0"
+            )
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, key_path) as key:
+                value, _ = winreg.QueryValueEx(key, "ProcessorNameString")
+            normalized = " ".join(str(value).split())
+            if normalized:
+                return normalized
+        except (OSError, ImportError):
+            pass
+    return platform.processor() or platform.machine() or "unknown"
+
+
 def write_level_manifest(
     *,
     output_dir: Path,
@@ -250,7 +270,7 @@ def write_level_manifest(
         "environment": {
             "python": platform.python_version(),
             "platform": platform.platform(),
-            "processor": platform.processor(),
+            "processor": _processor_name(),
             "machine": platform.machine(),
             "logical_cpu_count": os.cpu_count(),
             "pandas": pd.__version__,

@@ -800,6 +800,12 @@ def _quality_analysis(
             summary["saving_over_5pct_supported"].sum()
         ),
         "scenario_gates_total": len(summary),
+        "quality_supported_max_p_holm": float(
+            summary.loc[
+                summary["saving_over_5pct_supported"],
+                "wilcoxon_p_holm",
+            ].max()
+        ),
         "sign_sensitivity_matches_confirmatory_gate": bool(
             np.array_equal(
                 summary["saving_over_5pct_supported"].to_numpy(bool),
@@ -899,6 +905,8 @@ def _scaling_analysis(
         "scaling_max_n": int(runs["N"].max()),
         "scaling_max_m": int(runs["M"].max()),
         "scaling_completion_rate": float(runs["mission_feasible"].mean()),
+        "scaling_completed_count": int(runs["mission_feasible"].sum()),
+        "scaling_failed_count": int((~runs["mission_feasible"]).sum()),
         "memory_formula_max_relative_error": float(
             relative_memory_error.max()
         ),
@@ -1106,6 +1114,10 @@ def _heterogeneity_analysis(
     )
     extreme = overall.loc[overall["capacity_mode"] == "extreme"].iloc[0]
     false_rows = runs.loc[runs["hungarian_false_feasible"]]
+    uncertified = runs.loc[~runs["milp_optimal_certified"]]
+    uncertified_false = false_rows.loc[
+        ~false_rows["milp_optimal_certified"]
+    ]
     metrics = {
         "heterogeneous_world_rows": int(len(runs)),
         "heterogeneity_contrasts_supported": int(contrasts["supported"].sum()),
@@ -1114,6 +1126,23 @@ def _heterogeneity_analysis(
         "extreme_capacity_cv_median": float(extreme["capacity_cv_median"]),
         "milp_certification_rate": float(
             runs["milp_optimal_certified"].mean()
+        ),
+        "milp_audit_count": int(len(runs)),
+        "milp_feasible_incumbent_count": int(runs["milp_feasible"].sum()),
+        "milp_certified_count": int(runs["milp_optimal_certified"].sum()),
+        "milp_uncertified_count": int(len(uncertified)),
+        "false_feasible_count": int(len(false_rows)),
+        "milp_rescue_count_among_false": int(
+            false_rows["milp_rescues_false_feasible"].sum()
+        ),
+        "milp_uncertified_false_count": int(len(uncertified_false)),
+        "milp_uncertified_gap_min": float(uncertified["milp_mip_gap"].min()),
+        "milp_uncertified_gap_max": float(uncertified["milp_mip_gap"].max()),
+        "milp_time_limit_s": float(
+            config["heterogeneity"]["milp_time_limit_s"]
+        ),
+        "heterogeneity_supported_max_p_holm": float(
+            contrasts.loc[contrasts["supported"], "mcnemar_exact_p_holm"].max()
         ),
         "milp_rescue_rate_among_false": (
             float(false_rows["milp_rescues_false_feasible"].mean())

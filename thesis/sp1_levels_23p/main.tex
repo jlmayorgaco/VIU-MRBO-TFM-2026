@@ -1,6 +1,15 @@
 \documentclass[12pt,a4paper]{article}
 
 \usepackage{viu-mrob-thesis}
+\usepackage{csquotes}
+\usepackage[
+  backend=biber,
+  style=apa,
+  natbib=true,
+  sorting=nyt,
+  sortcites=true
+]{biblatex}
+\addbibresource{references.bib}
 \input{sp1_levels_23p/generated/metrics.tex}
 
 \hypersetup{
@@ -62,15 +71,14 @@
 \leveltag{RESULTADOS SP1 · INTRODUCCIÓN · FRONTERA DE MODELADO}
 \section*{SP1: Multi-Robot Task Allocation and Recruitment}
 
-El reclutamiento se resuelve antes de mover la carga: primero hay que elegir los
-robots de cada coalición. Si todos aportan $\bar c^{\mathrm{pay}}$, las distintas
-demandas $m_k$ se expresan mediante $n_k$ slots intercambiables. El algoritmo
-húngaro asigna un robot a cada slot y, al agruparlos por carga, obtiene la
-coalición. Una carga puede así reclutar varios robots. La equivalencia se pierde
-cuando varía $c_i^{\mathrm{pay}}$: contar slots ya no basta, porque la
-factibilidad depende de la suma de capacidades. Para ese caso usamos un MILP
-central como oráculo. El Húngaro sigue siendo exacto para el LSAP; el límite está
-en el modelo que recibe.
+Antes de mover una carga hay que decidir quién la moverá. Cuando todos los
+robots aportan $\bar c^{\mathrm{pay}}$, cada demanda $m_k$ puede dividirse en
+$n_k$ puestos intercambiables. El Húngaro asigna un robot a cada puesto y los
+puestos de una misma carga forman la coalición. Esta reducción admite varios
+robots por carga y mantiene un problema de asignación lineal exacto
+\parencite{kuhn1955Hungarian}. Si las capacidades cambian entre robots, contar
+puestos deja de representar la factibilidad: entonces importa la suma de
+capacidades. Ese segundo caso se audita con un MILP central.
 
 {\small
 \begin{minipage}[t]{0.48\textwidth}
@@ -93,7 +101,8 @@ $k$, con $c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$.
 \[
 \begin{aligned}
 \min_{x,e}\quad
-  &J_{\mathrm{het}}(x,e)\\
+  &\sum_{i,k}d_{ik}x_{ik}+0.25\sum_k e_k\\[-1mm]
+  &\hspace{14mm}+10^{-3}\sum_{i,k}x_{ik}\\
 \mathrm{s.a.}\quad
   &\sum_{k\in\mathcal K}x_{ik}\leq1 && i\in\mathcal I,\\
   &e_k=\sum_{i\in\mathcal I}c_i^{\mathrm{pay}}x_{ik}-m_k\geq0
@@ -101,6 +110,8 @@ $k$, con $c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$.
   &x_{ik}\in\{0,1\}.
 \end{aligned}
 \]
+{\footnotesize Score en metros equivalentes: $d_{ik}$ en m, $e_k$ en kg;
+los pesos del auditor son $0.25$ m/kg y $10^{-3}$ m por robot.}
 \end{minipage}
 }
 
@@ -695,8 +706,8 @@ límites físicos.}
 \leveltag{RESULTADOS SP1 · PROTOCOLO EXPERIMENTAL · ANÁLISIS ESTADÍSTICO}
 \section*{Protocolo experimental y análisis estadístico}
 
-Tomamos el mundo--semilla como unidad estadística. Dentro de él emparejamos
-métodos y contrastamos sus métricas con la hipótesis preespecificada
+Cada mundo--semilla es una réplica; los robots no lo son. Dentro de ella
+emparejamos los métodos y aplicamos la hipótesis preespecificada
 (Figura~\ref{fig:sp1-common-metrics}).
 
 \begin{figure}[H]
@@ -719,19 +730,20 @@ métodos y contrastamos sus métricas con la hipótesis preespecificada
 \leveltag{RESULTADOS SP1 · NIVEL 1 DE 4 · ASIGNACIÓN HOMOGÉNEA}
 \section*{SP1.N1: asignación exacta con robots homogéneos}
 
-N1 admite demandas distintas, pero mantiene fija la capacidad de cada robot en
-$\bar c^{\mathrm{pay}}$. Esa simplificación convierte la demanda $m_k$ en
-$n_k=\lceil m_k/\bar c^{\mathrm{pay}}\rceil$ puestos intercambiables y permite
-formar coaliciones de varios miembros. Si
+N1 conserva una sola capacidad robot, $\bar c^{\mathrm{pay}}$, aunque las cargas
+pidan cantidades distintas. Por eso puede sustituir cada demanda $m_k$ por
+$n_k=\lceil m_k/\bar c^{\mathrm{pay}}\rceil$ puestos y formar coaliciones de
+varios miembros. Si
 $\mathcal H=\bigcup_k\mathcal H_k$ y $M=|\mathcal H|$, se resuelve
 \[
  \min_{x\in\{0,1\}^{N\times M}}\sum_{i,h}d_{ih}x_{ih},\qquad
  \sum_i x_{ih}=1,\quad \sum_hx_{ih}\leq1.
 \]
-Cada $d_{ih}$ es el coste de asignar el robot $i$ al puesto $h$. Como la matriz
-de restricciones es totalmente unimodular, la relajación lineal tiene solución
-entera. La llamada \texttt{linear\_sum\_assignment} resuelve este LSAP mediante
-una variante de Jonker--Volgenant y devuelve su óptimo global.
+Aquí $d_{ih}$ es el coste de llevar el robot $i$ al puesto $h$. La matriz de
+restricciones es totalmente unimodular, de modo que la relajación lineal tiene
+un vértice óptimo entero. La implementación de SciPy usa una variante modificada
+de Jonker--Volgenant \parencite{crouse2016Rectangular}. Su solución es el óptimo
+global del LSAP formulado; esa garantía no se traslada al problema heterogéneo.
 
 \begin{figure}[H]
 \centering
@@ -831,10 +843,11 @@ no incluye capacidades individuales ni negociación distribuida.}}
 \leveltag{RESULTADOS SP1 · N1 · DISEÑO EXPERIMENTAL}
 \section*{SP1.N1: campaña de validación}
 
-Dividimos la evaluación en cuatro experimentos. E1 compara la calidad de la
-asignación; E2 mide el coste central; E3 introduce la retirada de un robot, y E4
-rompe el supuesto de capacidad común. El emparejamiento se conserva en todos los
-casos. La réplica es el mundo--semilla completo, no cada robot contenido en él.
+Una sola cifra no basta para juzgar N1. E1 mide cuánto mejora la asignación, E2
+cuánto cuesta resolverla de forma central, E3 qué ocurre cuando se retiran
+robots y E4 dónde deja de ser válido el modelo por puestos. Las cinco hipótesis
+se congelaron antes de ejecutar la campaña. En todos los casos, la réplica sigue
+siendo el mundo--semilla completo.
 
 \begin{figure}[H]
 \centering
@@ -856,12 +869,16 @@ de cada mundo--semilla.}
 \leveltag{RESULTADOS SP1 · N1 · EXPERIMENTO E1}
 \section*{SP1.N1: cuándo compensa el óptimo}
 
-En E1 comparamos el Húngaro con greedy secuencial. Ambos reciben la misma matriz
-$C$ en cada mundo. Medimos el ahorro relativo como
+E1 pregunta si resolver el problema global cambia lo suficiente la decisión.
+Ambos métodos reciben la misma matriz $C$. El greedy recorre los puestos en el
+orden en que fueron generados y toma el robot libre más cercano; si hay empate,
+elige el índice menor. Medimos el ahorro relativo como
 $\Delta_w=(J_w^{\mathrm{greedy}}-J_w^{\mathrm{H}})/J_w^{\mathrm{greedy}}$ y,
-antes de ejecutar la campaña, fijamos un criterio práctico del 5\,\%. El gate
-exige que el IC bootstrap de la mediana quede sobre ese umbral y que el
-desplazamiento pareado sea significativo en Wilcoxon tras corregir con Holm.
+antes de ejecutar la campaña, fijamos un umbral práctico del 5\,\%. Para
+superarlo, el IC bootstrap de la mediana debe quedar por encima del umbral y el
+Wilcoxon sobre $\Delta_w-0.05$ debe seguir siendo significativo tras Holm.
+El tamaño de efecto es la correlación biserial por rangos
+\parencite{holm1979Sequential,kerby2014SimpleDifference}.
 
 \begin{figure}[H]
 \centering
@@ -874,21 +891,21 @@ por rangos $r_{rb}$. El marcador codifica la decisión conjunta del gate.
 \viuownsource
 \end{figure}
 
-El gate se supera en Aleatorio (\NOneUniformSavingPct\,\%),
+El resultado cambia con la geometría. El criterio se supera en Aleatorio
+(\NOneUniformSavingPct\,\%),
 Agrupado (\NOneClusteredSavingPct\,\%) y Pasillo
 (\NOneCorridorSavingPct\,\%). En Separado (\NOneSeparatedSavingPct\,\%) y
-Anillo (\NOneRingSavingPct\,\%) no se supera. Una sensibilidad exacta de signo,
-incorporada como diagnóstico y no como nuevo confirmatorio, conserva esa misma
-clasificación. Al reunir los cinco escenarios,
+Anillo (\NOneRingSavingPct\,\%) no se supera. En los tres casos favorables,
+$p_{\mathrm{Holm}}\leq\NOneQualityPHolmBound$. El test exacto de signo, usado
+solo como sensibilidad, conserva la misma clasificación. Al reunir los cinco escenarios,
 el ahorro fue del \NOneSavingPct\,\% (IC del 95\,\%:
 \NOneSavingLowPct\,\% a \NOneSavingHighPct\,\%).
 
-La ventaja del Húngaro depende de la geometría. En Aleatorio, Agrupado y
-Pasillo, varios puestos compiten por los mismos robots y la decisión global evita
-elecciones locales costosas. Separado y Anillo ya conducen a greedy hacia
-asignaciones cercanas al óptimo, por lo que la mejora queda por debajo del 5\,\%
-fijado. Conservamos el Húngaro como referencia exacta de calidad, pero no
-suponemos que centralizar produzca la misma ganancia en todos los escenarios.
+La explicación es espacial. En Aleatorio, Agrupado y Pasillo, varios puestos
+compiten por los mismos robots y una elección temprana puede encarecer las que
+siguen. En Separado y Anillo, la propia geometría guía al greedy hacia soluciones
+cercanas al óptimo. El Húngaro queda como referencia exacta de calidad, pero la
+centralización no aporta la misma ganancia en todos los escenarios.
 
 \clearpage
 
@@ -898,10 +915,11 @@ suponemos que centralizar produzca la misma ganancia en todos los escenarios.
 \leveltag{RESULTADOS SP1 · N1 · EXPERIMENTO E2}
 \section*{SP1.N1 · E2: cuánto cuesta centralizar}
 
-E2 mide el coste del oráculo central en 630 casos: siete tamaños entre $N=32$ y
-$N=2048$, tres razones $M/N$ y 30 semillas. Los tiempos se resumen con
-P05--P95. Para la memoria usamos una comprobación directa: una matriz densa de
-doble precisión debe ocupar $8NM$ bytes.
+E2 mide el coste del oráculo central en \NOneScalingCompleted{} ejecuciones:
+siete tamaños entre $N=32$ y $N=2048$, tres razones $M/N$ y 30 semillas. Todas
+terminaron; no hubo fallos ni censura. El tiempo se resume con P05--P95 y la
+memoria se contrasta con la identidad exacta $8NM$ para una matriz densa de
+doble precisión.
 
 \begin{figure}[H]
 \centering
@@ -913,18 +931,18 @@ $N=M$. (b) Memoria determinista de la matriz densa, $8NM$ bytes.}
 \viuownsource
 \end{figure}
 
-En la serie balanceada $N=M$, el tiempo siguió el ajuste descriptivo
+En la serie balanceada $N=M$, las siete medianas siguieron el ajuste descriptivo
 $t\propto N^{\NOneExponent}$ (IC del 95\,\%: \NOneExponentLow{} a
 \NOneExponentHigh{}; $R^2=\NOneRSquared$). Para el mayor caso probado,
 $N=M=\NOneMaxN{}$, el P95 fue \NOneScalingPninetyfiveMs\,ms. La memoria coincidió
 con los $8NM$ bytes que requiere la matriz densa.
 
-La curva temporal no se aplana en el intervalo estudiado y la memoria crece de
-forma cuadrática. Estos resultados no respaldan un coste constante ni permiten
-extrapolar el comportamiento a tamaños ilimitados. El LSAP central se
-mantiene como referencia experimental: fue viable hasta $N=M=\NOneMaxN{}$ en
-este equipo, pero la campaña no demuestra que una arquitectura centralizada sea
-escalable.
+La curva no se aplana. Tampoco puede hacerlo la memoria de esta implementación,
+que crece como $NM$. Medimos los tiempos en un \NOneProcessor{} con
+\NOneLogicalCPU{} procesadores lógicos, Windows 11, Python
+\NOnePythonVersion{} y SciPy \NOneSciPyVersion{}. El mayor caso fue viable en
+ese equipo; fuera del intervalo ensayado no inferimos coste constante ni
+escalabilidad de la arquitectura central.
 
 \clearpage
 
@@ -934,10 +952,10 @@ escalable.
 \leveltag{RESULTADOS SP1 · N1 · EXPERIMENTO E3}
 \section*{SP1.N1 · E3: qué ocurre tras una retirada}
 
-En E3 el coordinador recibe una retirada ya conocida y resuelve de nuevo el LSAP;
-la detección del fallo queda fuera del experimento. Sobre cada uno de los
-\NOneFailureWorlds{} mundos aplicamos cinco fracciones de retirada anidadas, para
-un total de \NOneFailureRows{} recálculos. Con
+E3 empieza después del aviso de retirada: el coordinador ya conoce qué robots
+salieron y vuelve a resolver el LSAP. La detección del fallo no forma parte de
+este experimento. En cada uno de los \NOneFailureWorlds{} mundos aplicamos cinco
+fracciones anidadas, hasta completar \NOneFailureRows{} recálculos. Con
 $\delta=(N-M)/(N+M)$ como reserva, la frontera cardinal es
 $f^*(\delta)=2\delta/(1+\delta)$.
 
@@ -952,17 +970,15 @@ factibles; las curvas terminan al agotarse la reserva cardinal.}
 \viuownsource
 \end{figure}
 
-La factibilidad coincidió en \NOneFailureAgreementPct\,\% de los casos con la
-condición $N_{\mathrm{activo}}\geq M$. Sin reserva, ninguna retirada positiva
-fue recuperable. Cuando había robots suficientes, el LSAP reasignó todos los
-puestos, aunque la nueva coalición debía recorrer una distancia mayor.
+Los \NOneFailureRows{} recálculos coincidieron con la condición
+$N_{\mathrm{activo}}\geq M$. Sin reserva, cualquier retirada dejó al menos un
+puesto vacío. Cuando quedaron robots suficientes, el LSAP cubrió todos los
+puestos, a costa de una coalición más alejada.
 
-Esta coincidencia con la frontera cardinal muestra que el recálculo depende de
-la capacidad ociosa: debe quedar al menos un robot activo por puesto. No es una
-adaptación del algoritmo. E3 supone también que el coordinador ya conoce la
-retirada; no incluye detección, mensajes, movimiento ni recuperación distribuida.
-El resultado describe una reasignación estática y no acredita resiliencia
-operacional.
+La reserva, no una nueva propiedad del algoritmo, explica la recuperación. E3
+solo demuestra que el coordinador puede recalcular una asignación estática. No
+mide detección, mensajes, movimiento ni recuperación distribuida y, por ello,
+no acredita resiliencia operacional.
 
 \clearpage
 
@@ -972,11 +988,11 @@ operacional.
 \leveltag{RESULTADOS SP1 · N1 · EXPERIMENTO E4}
 \section*{SP1.N1 · E4: cuándo se rompe la reducción}
 
-E4 rompe el supuesto que hizo posible N1: sustituye la capacidad común por cinco
-perfiles anidados, sin cambiar robots, cargas ni posiciones. En
+E4 cambia una sola pieza del mundo: sustituye la capacidad común por cinco
+perfiles anidados y conserva robots, cargas y posiciones. En
 \NOneHeteroWorlds{} mundos comparamos \NOneHeteroRows{} veredictos del modelo por
-puestos con la capacidad agregada de las coaliciones. El MILP/HiGHS se usa solo
-como auditor externo.
+puestos con la capacidad agregada de cada coalición. HiGHS actúa únicamente como
+auditor externo del MILP \parencite{huangfuHall2018Highs}.
 
 \begin{figure}[H]
 \centering
@@ -990,18 +1006,23 @@ eje ampliado se limita a 93,5--101,25\,\%.}
 \viuownsource
 \end{figure}
 
-La tasa de falsos factibles aumentó desde 0,0\,\% en el caso homogéneo hasta
+El modelo por puestos no produjo falsos factibles en el caso homogéneo. La tasa
+subió a
 \NOneLowFalsePct\,\%, \NOneModerateFalsePct\,\%, \NOneHighFalsePct\,\% y
-\NOneExtremeFalsePct\,\% en los cuatro niveles de heterogeneidad. Los contrastes
-McNemar frente al caso homogéneo fueron significativos tras la corrección de
-Holm. HiGHS certificó \NOneMilpCertifiedPct\,\% de las auditorías y encontró una
-coalición válida en \NOneMilpRescuePct\,\% de los falsos factibles.
+\NOneExtremeFalsePct\,\% al aumentar la heterogeneidad; todos los McNemar dieron
+$p_{\mathrm{Holm}}\leq\NOneHeteroPHolmBound$. HiGHS halló una solución factible
+en las \NOneMilpAudits{} auditorías y certificó el óptimo en
+\NOneMilpCertifiedCount{}. Las otras \NOneMilpUncertifiedCount{} alcanzaron el
+límite de \NOneMilpTimeLimitSec{} s con gaps entre \NOneMilpGapMinPct{}\,\% y
+\NOneMilpGapMaxPct{}\,\%; no se eliminaron ni se contaron como certificadas.
 
-El problema está en la reducción por puestos. Cuando las capacidades difieren,
-el Húngaro sigue resolviendo correctamente el LSAP formulado, pero ese LSAP ya
-no representa la factibilidad física de la coalición. N2 corrige esta limitación:
-incorpora cada $c_i^{\mathrm{pay}}$ y exige que la suma de capacidades satisfaga
-la demanda de la carga.
+Entre los \NOneFalseFeasibleCount{} falsos factibles, el auditor certificó una
+alternativa válida en \NOneMilpRescueCount{}; los
+\NOneMilpUncertifiedFalseCount{} restantes tenían incumbente factible, pero no
+certificado. El Húngaro resolvió correctamente el LSAP que recibió. Lo que falló
+fue la reducción: sus puestos ya no representaban la capacidad física de la
+coalición. N2 debe conservar cada $c_i^{\mathrm{pay}}$ y comprobar la suma antes
+de aceptar la asignación.
 
 % El documento de trabajo se cierra aquí mientras N2--N4 se revisan por etapas.
 % La versión completa de 28 páginas permanece congelada en la etiqueta Git

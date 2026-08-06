@@ -102,11 +102,16 @@ nuevos intervalos de E3/E4 son estimación y transparencia, no nuevos gates.
   corrección editorial/reproducible.
 - 2026-08-06: no se promete un resultado "100 % inmune"; el criterio es que
   cada afirmación tenga evidencia, denominador, incertidumbre y límite visibles.
+- 2026-08-06: la segunda pasada elimina patrones de prosa automática, define el
+  baseline greedy y deja visibles las cinco hipótesis, el equipo de E2 y la
+  diferencia entre incumbente factible y certificado óptimo en E4.
 
 ## Progreso
 
 Revisión cerrada. Se conservaron los RAW y el protocolo congelado; se
-regeneraron postproceso, manifiesto, seis figuras y PDF. Las páginas 6--10 se
+regeneraron postproceso, manifiesto, seis figuras y PDF. Las diez páginas se
 inspeccionaron a resolución completa y la batería final terminó con 21 pruebas
-aprobadas. El dictamen y las limitaciones residuales constan en
+aprobadas. La auditoría de voz no encontró las muletillas o construcciones
+automáticas buscadas en el texto extraído. El dictamen y las limitaciones
+residuales constan en
 `reports/2026-08-06-sp1-n1-journal-readiness-audit.md`.

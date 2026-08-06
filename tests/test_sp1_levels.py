@@ -114,6 +114,17 @@ def test_n1_confirmatory_package_has_frozen_counts_and_invariants() -> None:
     assert metrics["failure_theory_agreement_rate"] == pytest.approx(1.0)
     assert metrics["scaling_max_n"] == 2_048
     assert metrics["scaling_max_m"] == 2_048
+    assert metrics["scaling_completed_count"] == 630
+    assert metrics["scaling_failed_count"] == 0
+    assert metrics["milp_audit_count"] == 1_500
+    assert metrics["milp_feasible_incumbent_count"] == 1_500
+    assert metrics["milp_certified_count"] == 1_495
+    assert metrics["milp_uncertified_count"] == 5
+    assert metrics["false_feasible_count"] == 900
+    assert metrics["milp_rescue_count_among_false"] == 897
+    assert metrics["milp_uncertified_false_count"] == 3
+    assert metrics["milp_uncertified_gap_min"] > 0.0
+    assert metrics["milp_uncertified_gap_max"] < 0.02
 
 
 def test_n1_confirmatory_results_support_stated_validity_boundary() -> None:
@@ -212,6 +223,7 @@ def test_n1_confirmatory_figures_are_vector_and_source_ends_after_e4() -> None:
     assert "scripts/sp1_levels_common.py" in source_paths
     assert manifest["environment"]["scipy"]
     assert manifest["environment"]["logical_cpu_count"] >= 1
+    assert len(manifest["environment"]["processor"].strip()) >= 3
 
     latex = (
         REPOSITORY_ROOT / "thesis" / "sp1_levels_23p" / "main.tex"
@@ -246,7 +258,7 @@ def test_latex_uses_canonical_payload_capacity_symbol() -> None:
         REPOSITORY_ROOT / "thesis" / "sp1_levels_23p" / "main.tex"
     ).read_text(encoding="utf-8")
     assert r"c_i^{\mathrm{pay}}" in latex
-    assert r"incorpora cada $c_i^{\mathrm{pay}}$" in latex.replace("\n", " ")
+    assert r"conservar cada $c_i^{\mathrm{pay}}$" in latex.replace("\n", " ")
 
 
 def test_latex_defines_level_and_branch_nomenclature() -> None:
@@ -319,10 +331,8 @@ def test_common_protocol_pages_precede_n1() -> None:
         assert obsolete_label not in latex
     assert "reducción homogénea equivalente" in latex
     assert r"\input{sp1_levels_23p/figures/protocol_pipeline.tex}" in latex
-    assert (
-        "mundo--semilla como unidad estadística"
-        in latex.replace("\n", " ")
-    )
+    prose = latex.replace("\n", " ")
+    assert "Cada mundo--semilla es una réplica; los robots no lo son" in prose
     assert "Cada campaña se preespecifica" not in latex
     assert r"y=1.30cm" in protocol_latex
     for protocol_term in (

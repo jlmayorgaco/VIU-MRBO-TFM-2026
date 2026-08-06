@@ -166,6 +166,22 @@ resueltos sin alterar la configuración congelada ni los datos RAW.
 - La batería cruzada terminó con 21 pruebas aprobadas, incluidas las
   protecciones TikZ y las invariantes del Húngaro.
 
+### Segunda lectura de voz y claridad
+
+La versión final evita frases de trámite y conclusiones genéricas. Cada página
+experimental parte de una pregunta, explica el contraste con palabras comunes,
+da los denominadores y termina con una respuesta limitada por lo que realmente
+se midió. La búsqueda sobre el texto extraído del PDF no encontró muletillas
+editoriales del tipo «cabe destacar», «en este sentido» o «por lo tanto», ni
+rayas largas usadas como sustituto de una relación lógica. También se comprobó
+que el texto extraído no contiene caracteres dañados.
+
+Esta revisión no certifica un resultado de Turnitin ni de otro detector. Esos
+sistemas son probabilísticos y no prueban autoría. La defensa de originalidad
+del capítulo se apoya en algo verificable: redacción específica del experimento,
+cifras generadas desde RAW, hipótesis congeladas, límites explícitos y fuentes
+primarias identificadas.
+
 ### Límites que deben permanecer visibles
 
 La campaña usa mundos sintéticos y estáticos. El tiempo de E2 depende del
