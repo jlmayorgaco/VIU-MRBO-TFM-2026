@@ -160,9 +160,7 @@ def test_n1_confirmatory_figures_are_vector_and_source_ends_after_e4() -> None:
     n1_model = latex.index(
         "SP1.N1: asignación exacta con robots homogéneos"
     )
-    n1_design = latex.index(
-        "SP1.N1: cuatro experimentos, cuatro decisiones"
-    )
+    n1_design = latex.index("SP1.N1: campaña de validación")
     n1_quality = latex.index("SP1.N1: cuándo compensa el óptimo")
     n1_scaling = latex.index("SP1.N1 · E2: cuánto cuesta centralizar")
     n1_failure = latex.index("SP1.N1 · E3: qué ocurre tras una retirada")
@@ -189,7 +187,10 @@ def test_latex_uses_canonical_payload_capacity_symbol() -> None:
         REPOSITORY_ROOT / "thesis" / "sp1_levels_23p" / "main.tex"
     ).read_text(encoding="utf-8")
     assert r"c_i^{\mathrm{pay}}" in latex
-    assert r"N2 incorpora cada $c_i^{\mathrm{pay}}$" in latex
+    assert (
+        r"N2 incorpora cada $c_i^{\mathrm{pay}}$"
+        in latex.replace("\n", " ")
+    )
 
 
 def test_latex_defines_level_and_branch_nomenclature() -> None:
@@ -262,7 +263,10 @@ def test_common_protocol_pages_precede_n1() -> None:
         assert obsolete_label not in latex
     assert "reducción homogénea equivalente" in latex
     assert r"\input{sp1_levels_23p/figures/protocol_pipeline.tex}" in latex
-    assert "unidad experimental independiente" in latex.replace("\n", " ")
+    assert (
+        "mundo--semilla como unidad estadística"
+        in latex.replace("\n", " ")
+    )
     assert "Cada campaña se preespecifica" not in latex
     assert r"y=1.30cm" in protocol_latex
     for protocol_term in (
