@@ -262,7 +262,7 @@ def test_common_protocol_pages_precede_n1() -> None:
         assert obsolete_label not in latex
     assert "reducción homogénea equivalente" in latex
     assert r"\input{sp1_levels_23p/figures/protocol_pipeline.tex}" in latex
-    assert "resume la campaña y su unidad" in latex.replace("\n", " ")
+    assert "unidad experimental independiente" in latex.replace("\n", " ")
     assert "Cada campaña se preespecifica" not in latex
     assert r"y=1.30cm" in protocol_latex
     for protocol_term in (
