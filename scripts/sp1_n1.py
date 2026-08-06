@@ -28,8 +28,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import yaml
-from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.colors import LinearSegmentedColormap, TwoSlopeNorm
 from matplotlib.lines import Line2D
+from matplotlib.ticker import FuncFormatter
 from scipy import stats
 
 import sp1_a1_hungarian as homogeneous
@@ -76,6 +77,11 @@ ASPECT_COLORS = {
     1.00: COLORS["orange"],
 }
 ASPECT_MARKERS = {0.25: "o", 0.50: "s", 1.00: "^"}
+QUOTA_LABELS = {
+    "symmetric": "simétrica",
+    "moderate": "moderada",
+    "extreme": "extrema",
+}
 JOURNAL_WIDTH_IN = 7.16
 JOURNAL_HEIGHT_IN = 3.12
 
@@ -128,6 +134,16 @@ def _quantile(values: Sequence[float], probability: float) -> float:
     array = np.asarray(values, dtype=float)
     array = array[np.isfinite(array)]
     return float(np.quantile(array, probability)) if array.size else math.nan
+
+
+def _decimal_comma(value: float, decimals: int) -> str:
+    """Format a plotted decimal according to Spanish typographic usage."""
+
+    return f"{value:.{decimals}f}".replace(".", ",")
+
+
+def _comma_tick(value: float, _: int) -> str:
+    return f"{value:g}".replace(".", ",")
 
 
 def _bootstrap_median_interval(
@@ -823,6 +839,49 @@ def _quality_analysis(
     return summary, metrics
 
 
+def _quality_cell_diagnostic(
+    runs: pd.DataFrame,
+    config: Mapping[str, Any],
+) -> pd.DataFrame:
+    """Return a post-hoc stratification without changing the E1 gate."""
+
+    rows: list[dict[str, Any]] = []
+    for scenario in config["quality"]["scenarios"]:
+        for slots in config["quality"]["slots"]:
+            for quota_mode in config["quality"]["quota_modes"]:
+                block = runs.loc[
+                    (runs["scenario"] == scenario)
+                    & (runs["M"] == slots)
+                    & (runs["quota_mode"] == quota_mode)
+                ]
+                if block.empty:
+                    continue
+                rows.append(
+                    {
+                        "scenario": scenario,
+                        "scenario_label": SCENARIO_LABELS[scenario],
+                        "M": int(slots),
+                        "quota_mode": quota_mode,
+                        "quota_label": QUOTA_LABELS.get(
+                            quota_mode, str(quota_mode)
+                        ),
+                        "n_worlds": len(block),
+                        "relative_saving_median": float(
+                            block["relative_saving"].median()
+                        ),
+                        "cells_above_practical_threshold": bool(
+                            block["relative_saving"].median()
+                            > float(
+                                config["analysis"][
+                                    "practical_saving_threshold"
+                                ]
+                            )
+                        ),
+                    }
+                )
+    return pd.DataFrame(rows)
+
+
 def _bootstrap_scaling_exponent(
     runs: pd.DataFrame,
     *,
@@ -1155,6 +1214,7 @@ def _heterogeneity_analysis(
 
 def _plot_quality(
     summary: pd.DataFrame,
+    diagnostic: pd.DataFrame,
     runs: pd.DataFrame,
     output_dir: Path,
     config: Mapping[str, Any],
@@ -1166,7 +1226,7 @@ def _plot_quality(
         1,
         2,
         figsize=(JOURNAL_WIDTH_IN, JOURNAL_HEIGHT_IN),
-        gridspec_kw={"width_ratios": [1.08, 0.92]},
+        gridspec_kw={"width_ratios": [0.95, 1.05]},
     )
 
     estimates = 100.0 * ordered["relative_saving_median"].to_numpy(float)
@@ -1216,7 +1276,7 @@ def _plot_quality(
         strict=True,
     ):
         axes[0].annotate(
-            rf"$r_{{rb}}={effect:.2f}$",
+            rf"$r_{{rb}}={_decimal_comma(effect, 2)}$",
             (estimate, position),
             xytext=(5, 0),
             textcoords="offset points",
@@ -1253,28 +1313,92 @@ def _plot_quality(
         fontsize=6.4,
     )
 
-    p05 = ordered["normalized_p95_cost_p05"].to_numpy(float)
-    q25 = ordered["normalized_p95_cost_q25"].to_numpy(float)
-    medians = ordered["normalized_p95_cost_median"].to_numpy(float)
-    q75 = ordered["normalized_p95_cost_q75"].to_numpy(float)
-    p95 = ordered["normalized_p95_cost_p95"].to_numpy(float)
-    axes[1].hlines(positions, p05, p95, color=COLORS["gray"], linewidth=0.9)
-    axes[1].hlines(positions, q25, q75, color=COLORS["blue"], linewidth=4.2)
-    axes[1].scatter(
-        medians,
-        positions,
-        marker="o",
-        s=23,
-        facecolor="white",
-        edgecolor=COLORS["dark"],
-        linewidth=0.75,
-        zorder=3,
+    cell_order = [
+        (int(slots), quota)
+        for slots in config["quality"]["slots"]
+        for quota in config["quality"]["quota_modes"]
+        if (
+            (diagnostic["M"] == int(slots))
+            & (diagnostic["quota_mode"] == quota)
+        ).any()
+    ]
+    diagnostic_indexed = diagnostic.set_index(
+        ["scenario", "M", "quota_mode"]
     )
-    axes[1].set_yticks(positions, ordered["scenario_label"])
-    axes[1].invert_yaxis()
+    heatmap = np.asarray(
+        [
+            [
+                100.0
+                * float(
+                    diagnostic_indexed.loc[
+                        (scenario, slots, quota),
+                        "relative_saving_median",
+                    ]
+                )
+                for slots, quota in cell_order
+            ]
+            for scenario in scenario_order
+        ]
+    )
+    cmap = LinearSegmentedColormap.from_list(
+        "viu_quality_threshold",
+        [COLORS["blue"], "#F8FAFC", COLORS["orange"]],
+    )
+    norm = TwoSlopeNorm(
+        vmin=min(0.0, float(np.nanmin(heatmap))),
+        vcenter=5.0,
+        vmax=max(5.01, float(np.nanmax(heatmap))),
+    )
+    image = axes[1].imshow(
+        heatmap,
+        cmap=cmap,
+        norm=norm,
+        aspect="auto",
+        interpolation="nearest",
+    )
+    for row_index in range(heatmap.shape[0]):
+        for column_index in range(heatmap.shape[1]):
+            value = float(heatmap[row_index, column_index])
+            axes[1].text(
+                column_index,
+                row_index,
+                _decimal_comma(value, 1),
+                ha="center",
+                va="center",
+                fontsize=5.9,
+                fontweight="bold" if value > 5.0 else "normal",
+                color=(
+                    "white"
+                    if value >= 10.0
+                    else COLORS["dark"]
+                ),
+            )
+    quota_initial = {"symmetric": "S", "moderate": "M", "extreme": "E"}
+    axes[1].set_xticks(
+        np.arange(len(cell_order)),
+        [
+            f"{slots}\n{quota_initial.get(quota, str(quota)[:1].upper())}"
+            for slots, quota in cell_order
+        ],
+    )
+    axes[1].set_yticks(
+        np.arange(len(scenario_order)),
+        [SCENARIO_LABELS[scenario] for scenario in scenario_order],
+    )
     axes[1].set(
-        xlabel="Distancia P95 / diagonal del dominio",
-        title="Coste espacial: P05--P95 e IQR",
+        xlabel="$M$ puestos · cuota S/M/E",
+        title="Diagnóstico posterior: mediana por celda [%]",
+    )
+    colorbar = figure.colorbar(image, ax=axes[1], fraction=0.045, pad=0.025)
+    colorbar.set_label("Ahorro mediano [%]", fontsize=7.2)
+    colorbar.ax.yaxis.set_major_formatter(FuncFormatter(_comma_tick))
+    axes[1].text(
+        0.0,
+        -0.27,
+        "S: simétrica · M: moderada · E: extrema · blanco: umbral 5 %",
+        transform=axes[1].transAxes,
+        fontsize=6.1,
+        color=COLORS["gray"],
     )
     label_panels(axes)
     figure.tight_layout(pad=0.45, w_pad=1.15)
@@ -1300,7 +1424,7 @@ def _plot_scaling(
             block["solver_ms_median"],
             marker=marker,
             color=color,
-            label=rf"$M/N={ratio:.2f}$",
+            label=rf"$M/N={_decimal_comma(float(ratio), 2)}$",
         )
         axes[0].fill_between(
             block["N"],
@@ -1309,12 +1433,21 @@ def _plot_scaling(
             color=color,
             alpha=0.12,
         )
+        axes[0].plot(
+            block["N"],
+            block["total_ms_median"],
+            color=color,
+            linestyle=":",
+            linewidth=1.0,
+            alpha=0.9,
+            label="_nolegend_",
+        )
         axes[1].plot(
             block["N"],
             block["matrix_mib_median"],
             marker=marker,
             color=color,
-            label=rf"$M/N={ratio:.2f}$",
+            label=rf"$M/N={_decimal_comma(float(ratio), 2)}$",
         )
     balanced = summary.loc[
         np.isclose(summary["slot_to_robot_ratio"], 1.0)
@@ -1330,7 +1463,11 @@ def _plot_scaling(
         color=COLORS["dark"],
         linestyle="--",
         linewidth=1.0,
-        label=rf"ajuste $N=M$: $N^{{{metrics['solver_power_exponent']:.2f}}}$",
+        label=(
+            rf"ajuste $N=M$: $N^{{"
+            f"{_decimal_comma(float(metrics['solver_power_exponent']), 2)}"
+            r"}$"
+        ),
         zorder=4,
     )
     axes[0].set(
@@ -1338,7 +1475,7 @@ def _plot_scaling(
         yscale="log",
         xlabel="Robots, $N$",
         ylabel="Tiempo del solver [ms]",
-        title="Tiempo del solver: P50 [P05, P95]",
+        title="Solver y pipeline total por mundo",
     )
     axes[0].legend(loc="upper left", ncols=2, fontsize=6.2)
     axes[0].text(
@@ -1347,10 +1484,12 @@ def _plot_scaling(
         (
             rf"$n={metrics['solver_power_fit_points']}$ tamaños balanceados"
             "\n"
-            rf"IC 95 % [{metrics['solver_power_ci_low']:.2f}, "
-            rf"{metrics['solver_power_ci_high']:.2f}]"
+            "IC 95 % ["
+            f"{_decimal_comma(float(metrics['solver_power_ci_low']), 2)}; "
+            f"{_decimal_comma(float(metrics['solver_power_ci_high']), 2)}]"
             "\n"
-            rf"$R^2={metrics['solver_power_r_squared']:.3f}$ · descriptivo"
+            rf"$R^2={_decimal_comma(float(metrics['solver_power_r_squared']), 3)}$"
+            " · descriptivo"
         ),
         transform=axes[0].transAxes,
         ha="right",
@@ -1363,12 +1502,22 @@ def _plot_scaling(
             "edgecolor": COLORS["light_gray"],
         },
     )
+    axes[0].text(
+        0.03,
+        0.37,
+        "línea continua: solver P50 [P05, P95]\nlínea de puntos: pipeline total P50",
+        transform=axes[0].transAxes,
+        ha="left",
+        va="top",
+        fontsize=6.1,
+        color=COLORS["gray"],
+    )
     axes[1].set(
         xscale="log",
         yscale="log",
         xlabel="Robots, $N$",
-        ylabel="Memoria de $C$ [MiB]",
-        title="Memoria exacta de la matriz global",
+        ylabel="Huella mínima de $C$ [MiB]",
+        title="Almacenamiento del ndarray denso",
     )
     axes[1].legend(loc="upper left", fontsize=6.4)
     label_panels(axes)
@@ -1577,7 +1726,10 @@ def _plot_failure_recovery(
     axes[0].set_yticks(
         delta_values,
         [
-            rf"{value:.2f}  |  {100 * (2.0 * value / (1.0 + value)):.0f}%"
+            (
+                f"{_decimal_comma(float(value), 2)}  |  "
+                f"{100 * (2.0 * value / (1.0 + value)):.0f}%"
+            )
             for value in deltas
         ],
     )
@@ -1636,7 +1788,7 @@ def _plot_failure_recovery(
             marker="o",
             linewidth=1.45,
             color=color,
-            label=rf"$\delta={delta:.2f}$",
+            label=rf"$\delta={_decimal_comma(float(delta), 2)}$",
         )
     axes[1].set(
         xlabel="Robots retirados [%]",
@@ -2206,6 +2358,7 @@ def build_level(
         heterogeneity_runs.to_csv(raw_paths["heterogeneity"], index=False)
 
     quality_summary, quality_metrics = _quality_analysis(quality_runs, config)
+    quality_diagnostic = _quality_cell_diagnostic(quality_runs, config)
     scaling_summary, scaling_metrics = _scaling_analysis(scaling_runs, config)
     failure_summary, failure_metrics = _failure_analysis(failure_runs, config)
     (
@@ -2216,6 +2369,9 @@ def build_level(
 
     quality_summary.to_csv(
         processed_dir / "quality_scenario_summary.csv", index=False
+    )
+    quality_diagnostic.to_csv(
+        processed_dir / "quality_cell_diagnostic.csv", index=False
     )
     scaling_summary.to_csv(processed_dir / "scaling_summary.csv", index=False)
     failure_summary.to_csv(processed_dir / "failure_summary.csv", index=False)
@@ -2228,7 +2384,11 @@ def build_level(
 
     figure_paths = []
     figure_paths += _plot_quality(
-        quality_summary, quality_runs, figures_dir, config
+        quality_summary,
+        quality_diagnostic,
+        quality_runs,
+        figures_dir,
+        config,
     )
     figure_paths += _plot_scaling(
         scaling_summary, figures_dir, scaling_metrics
@@ -2288,6 +2448,26 @@ def build_level(
         **failure_metrics,
         **heterogeneity_metrics,
     }
+    metrics["quality_cells_per_scenario"] = int(
+        quality_diagnostic.groupby("scenario").size().max()
+    )
+    for scenario, block in quality_diagnostic.groupby("scenario", sort=False):
+        metrics[f"quality_{scenario}_cells_above_threshold"] = int(
+            block["cells_above_practical_threshold"].sum()
+        )
+    diagnostic_target_quota = (
+        "extreme"
+        if "extreme" in set(quality_diagnostic["quota_mode"])
+        else str(config["quality"]["quota_modes"][-1])
+    )
+    corridor_extreme_small = quality_diagnostic.loc[
+        (quality_diagnostic["scenario"] == "corridor")
+        & (quality_diagnostic["quota_mode"] == diagnostic_target_quota)
+        & (quality_diagnostic["M"] == quality_diagnostic["M"].min())
+    ]
+    metrics["corridor_small_extreme_saving_median"] = float(
+        corridor_extreme_small["relative_saving_median"].iloc[0]
+    )
     for row in quality_summary.itertuples(index=False):
         scenario = str(row.scenario)
         metrics[f"saving_{scenario}_median"] = float(
@@ -2338,6 +2518,7 @@ def build_level(
             "failure_runs": len(failure_runs),
             "heterogeneity_runs": len(heterogeneity_runs),
             "quality_summary": len(quality_summary),
+            "quality_cell_diagnostic": len(quality_diagnostic),
             "scaling_summary": len(scaling_summary),
             "failure_summary": len(failure_summary),
             "heterogeneity_summary": len(heterogeneity_summary),

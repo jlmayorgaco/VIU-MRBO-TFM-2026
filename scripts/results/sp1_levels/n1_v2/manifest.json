@@ -2,7 +2,7 @@
   "schema_version": "sp1-level-package-v1",
   "level": "N1",
   "description": "Confirmatory homogeneous Hungarian campaign: spatial quality, controlled scaling, static post-failure re-allocation and an out-of-domain heterogeneous-capacity audit.",
-  "generated_at_utc": "2026-08-06T22:39:29.146753+00:00",
+  "generated_at_utc": "2026-08-06T23:25:34.359353+00:00",
   "environment": {
     "python": "3.13.9",
     "platform": "Windows-11-10.0.26200-SP0",
@@ -22,8 +22,8 @@
     },
     {
       "path": "scripts/sp1_n1.py",
-      "bytes": 86676,
-      "sha256": "b4421acddbc586656c19e9a1b8ac424de246a5727822838a23a860676d24d14a"
+      "bytes": 92728,
+      "sha256": "de723cf8a98056dfddce5611a62adfe54c219fec06fc4ea037263614606fb339"
     },
     {
       "path": "scripts/sp1_levels_common.py",
@@ -67,6 +67,7 @@
     "failure_runs": 6000,
     "heterogeneity_runs": 1500,
     "quality_summary": 5,
+    "quality_cell_diagnostic": 45,
     "scaling_summary": 21,
     "failure_summary": 20,
     "heterogeneity_summary": 25,
@@ -86,24 +87,24 @@
   ],
   "artifacts": {
     "figures/n1_central_scaling.pdf": {
-      "bytes": 59856,
-      "sha256": "36f74ede4cb8f4b94f6fa6c8e462d9b187131a247e7042094f0b181b669ff45d"
+      "bytes": 58598,
+      "sha256": "c41ba16e76545608020ad1311327c03cf3cd3f23a512df959d39e36cf36ad5a2"
     },
     "figures/n1_central_scaling.png": {
-      "bytes": 622313,
-      "sha256": "a174ee1ffe0dd93c1a584e824f46a2205b71fc404351e1de5c009bfb0e61831c"
+      "bytes": 709826,
+      "sha256": "eb500239af7b9ae5e78174dfc292d79857bf0fc73cc7009688eab4ce2cff6887"
     },
     "figures/n1_failure_recovery.pdf": {
-      "bytes": 52314,
-      "sha256": "6642ab726bd9a7781919442d293f5bc8aa140518f6ac05a41951bead20dae327"
+      "bytes": 52397,
+      "sha256": "b08ae8c4eee98f8650520217adc6b4bd2e4cf802344d2f994144c8f3c26d166e"
     },
     "figures/n1_failure_recovery.png": {
-      "bytes": 416502,
-      "sha256": "946c99a252452289c1091bfb2e82fdee36252a040423fa8e08995fce0b3c7480"
+      "bytes": 417332,
+      "sha256": "b272974d9d17936d95efe2b0c04a4d48b9ec5e27e448041f092457d3033fc49a"
     },
     "figures/n1_heterogeneity_boundary.pdf": {
       "bytes": 63195,
-      "sha256": "f5d9a25760d954ce3544a48b880cae1aa2f78c08e4ced734a7638472cb5242ce"
+      "sha256": "aa514157ddd2822cebadea576e3d026ab8915644a4d2eb913097d6c8a4c9a662"
     },
     "figures/n1_heterogeneity_boundary.png": {
       "bytes": 486143,
@@ -111,31 +112,31 @@
     },
     "figures/n1_operating_envelope.pdf": {
       "bytes": 67459,
-      "sha256": "76e5fde91c74ef746a1c432ae775d8145c6547cdfff287f6f6259f232692a38f"
+      "sha256": "b40f3568bb14c6b5d1ea462c1c305b805258a539e056c53e11eddb25275e1f68"
     },
     "figures/n1_operating_envelope.png": {
       "bytes": 618390,
       "sha256": "b4c6300ce7e27d84b920789030143c29bbb51f7c028fa5f0df94e64c2865a5f6"
     },
     "figures/n1_quality_scenarios.pdf": {
-      "bytes": 55608,
-      "sha256": "d2bd25c5a2e482590b8414ef41394d74cb99b64854a20b0c9b685995c6a06ac8"
+      "bytes": 92832,
+      "sha256": "d241f46f4e0ae7cb8bc8d2881d0f668bc06f055c0b14ba0ebeba22fb43d5cb1d"
     },
     "figures/n1_quality_scenarios.png": {
-      "bytes": 276716,
-      "sha256": "814bcb033fcb24dacb92fc9495fb4e6132e4d96f4b5c7b1af943a75cf7a2432e"
+      "bytes": 443546,
+      "sha256": "52314471f67bfda064de1bef90f0f4bfcedcda71bd8ddb472847e363a0c20880"
     },
     "figures/n1_validity_boundary.pdf": {
       "bytes": 66697,
-      "sha256": "674b24d9e03a50b6bad137b82994c505b47372cf24f5074eb08b44387b5bcd93"
+      "sha256": "05673054709f4478b70b86368a3808e47f31cf6c087bd3502eb08e8a532cd29e"
     },
     "figures/n1_validity_boundary.png": {
       "bytes": 525769,
       "sha256": "0040c8f48adffe3df944963f0974b8606387acddf36bc3181f55d8bd5b67ecb1"
     },
     "key_metrics.json": {
-      "bytes": 3504,
-      "sha256": "b74ef7ea09688c153d757a733a51b1ba564854dcca9d26957731490fb43beb31"
+      "bytes": 3840,
+      "sha256": "ec4719edfa733ad6ce671a96b96df9878a18db4d9fba3eb6d7cf98dc8abd8ef4"
     },
     "processed/failure_summary.csv": {
       "bytes": 2578,
@@ -148,6 +149,10 @@
     "processed/heterogeneity_summary.csv": {
       "bytes": 5245,
       "sha256": "8617fcb98b896bebbbb1876282dbb5f1b5bf41d321845471e0d504a8b600757a"
+    },
+    "processed/quality_cell_diagnostic.csv": {
+      "bytes": 3221,
+      "sha256": "902f17b88447fcba4367a633b3b78f79834370d4b63e6785937c8d22b644bcf4"
     },
     "processed/quality_scenario_summary.csv": {
       "bytes": 1801,

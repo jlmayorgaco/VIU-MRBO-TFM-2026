@@ -35,7 +35,7 @@ def _tex_integer(value: object) -> str:
 
 
 def _tex_float(value: object, decimals: int = 3) -> str:
-    return f"{float(value):.{decimals}f}"
+    return f"{float(value):.{decimals}f}".replace(".", r"{,}")
 
 
 def _tex_scientific(value: object, decimals: int = 2) -> str:
@@ -44,7 +44,8 @@ def _tex_scientific(value: object, decimals: int = 2) -> str:
         return "0"
     exponent = int(math.floor(math.log10(abs(numeric))))
     mantissa = numeric / (10**exponent)
-    return rf"{mantissa:.{decimals}f}\times10^{{{exponent}}}"
+    formatted = f"{mantissa:.{decimals}f}".replace(".", r"{,}")
+    return rf"{formatted}\times10^{{{exponent}}}"
 
 
 def _tex_text(value: object) -> str:
@@ -87,6 +88,27 @@ def generate_metrics_tex() -> Path:
             100.0 * n1["overall_saving_ci_high"], 2
         ),
         "NOneScenarioGates": _tex_integer(n1["scenario_gates_passed"]),
+        "NOneCellsPerScenario": _tex_integer(
+            n1["quality_cells_per_scenario"]
+        ),
+        "NOneUniformCellsAbove": _tex_integer(
+            n1["quality_uniform_cells_above_threshold"]
+        ),
+        "NOneClusteredCellsAbove": _tex_integer(
+            n1["quality_clustered_cells_above_threshold"]
+        ),
+        "NOneSeparatedCellsAbove": _tex_integer(
+            n1["quality_separated_cells_above_threshold"]
+        ),
+        "NOneRingCellsAbove": _tex_integer(
+            n1["quality_ring_cells_above_threshold"]
+        ),
+        "NOneCorridorCellsAbove": _tex_integer(
+            n1["quality_corridor_cells_above_threshold"]
+        ),
+        "NOneCorridorSmallExtremePct": _tex_float(
+            100.0 * n1["corridor_small_extreme_saving_median"], 2
+        ),
         "NOneQualityPHolmBound": _tex_scientific(
             n1["quality_supported_max_p_holm"]
         ),
@@ -167,6 +189,9 @@ def generate_metrics_tex() -> Path:
         "NOneMilpTimeLimitSec": _tex_float(n1["milp_time_limit_s"], 0),
         "NOneHeteroPHolmBound": _tex_scientific(
             n1["heterogeneity_supported_max_p_holm"]
+        ),
+        "NOneHeteroContrastsSupported": _tex_integer(
+            n1["heterogeneity_contrasts_supported"]
         ),
     }
     lines = [

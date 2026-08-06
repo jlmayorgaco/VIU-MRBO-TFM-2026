@@ -158,6 +158,9 @@ def test_n1_statistical_reporting_exposes_effects_intervals_and_denominators() -
     quality = pd.read_csv(
         n1_root / "processed" / "quality_scenario_summary.csv"
     )
+    diagnostic = pd.read_csv(
+        n1_root / "processed" / "quality_cell_diagnostic.csv"
+    )
     failure = pd.read_csv(n1_root / "processed" / "failure_summary.csv")
     heterogeneity = pd.read_csv(
         n1_root / "processed" / "heterogeneity_summary.csv"
@@ -172,6 +175,19 @@ def test_n1_statistical_reporting_exposes_effects_intervals_and_denominators() -
     assert (quality["normalized_p95_cost_q25"] <= quality["normalized_p95_cost_median"]).all()
     assert (quality["normalized_p95_cost_median"] <= quality["normalized_p95_cost_q75"]).all()
     assert (quality["normalized_p95_cost_q75"] <= quality["normalized_p95_cost_p95"]).all()
+    assert len(diagnostic) == 45
+    assert (diagnostic.groupby("scenario").size() == 9).all()
+    corridor_small_extreme = diagnostic.loc[
+        (diagnostic["scenario"] == "corridor")
+        & (diagnostic["M"] == 40)
+        & (diagnostic["quota_mode"] == "extreme")
+    ].iloc[0]
+    assert corridor_small_extreme["relative_saving_median"] == pytest.approx(
+        0.0475223680116618
+    )
+    assert not bool(
+        corridor_small_extreme["cells_above_practical_threshold"]
+    )
 
     feasible_cost = failure.loc[failure["feasible_cost_n"] > 0]
     assert (
@@ -232,8 +248,10 @@ def test_n1_confirmatory_figures_are_vector_and_source_ends_after_e4() -> None:
         "SP1.N1: asignación exacta con robots homogéneos"
     )
     n1_design = latex.index("SP1.N1: campaña de validación")
-    n1_quality = latex.index("SP1.N1: cuándo compensa el óptimo")
-    n1_scaling = latex.index("SP1.N1 · E2: cuánto cuesta centralizar")
+    n1_quality = latex.index(
+        "SP1.N1 · E1: Húngaro frente al greedy secuencial"
+    )
+    n1_scaling = latex.index("SP1.N1 · E2: coste computacional del LSAP")
     n1_failure = latex.index("SP1.N1 · E3: qué ocurre tras una retirada")
     n1_validity = latex.index("SP1.N1 · E4: cuándo se rompe la reducción")
     document_end = latex.index(r"\end{document}")
