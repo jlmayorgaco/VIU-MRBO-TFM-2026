@@ -5,6 +5,7 @@
 - Mundos de calidad: 4,500.
 - Ahorro mediano frente a greedy: 6.53% (IC 95% 6.12–6.90%).
 - Escenarios que superan el gate del 5% tras Holm: 3/5.
+- Sensibilidad exacta de signo: misma clasificación que el gate confirmatorio.
 - Pendiente log-log balanceada observada: 2.270 (IC 95% 2.236–2.307).
 - Concordancia recuperación–frontera cardinal: 100.00%.
 - Falsos factibles con heterogeneidad extrema: 97.67%.

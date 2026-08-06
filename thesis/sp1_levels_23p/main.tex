@@ -859,23 +859,27 @@ de cada mundo--semilla.}
 En E1 comparamos el Húngaro con greedy secuencial. Ambos reciben la misma matriz
 $C$ en cada mundo. Medimos el ahorro relativo como
 $\Delta_w=(J_w^{\mathrm{greedy}}-J_w^{\mathrm{H}})/J_w^{\mathrm{greedy}}$ y,
-antes de ejecutar la campaña, fijamos un criterio práctico: la mediana debe
-superar el 5\,\% en el escenario analizado.
+antes de ejecutar la campaña, fijamos un criterio práctico del 5\,\%. El gate
+exige que el IC bootstrap de la mediana quede sobre ese umbral y que el
+desplazamiento pareado sea significativo en Wilcoxon tras corregir con Holm.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{../scripts/results/sp1_levels/n1_v2/figures/n1_quality_scenarios.pdf}
-\caption{Ahorro pareado y coste P95 normalizado en \NOneQualityRows{}
-mundos. El naranja identifica los escenarios cuya mediana supera el umbral
-práctico después de la corrección de Holm.}
+\caption{E1, con 900 mundos independientes por escenario. (a) Mediana del
+ahorro, IC bootstrap del 95\,\%, umbral preespecificado y correlación biserial
+por rangos $r_{rb}$. El marcador codifica la decisión conjunta del gate.
+(b) P05--P95, rango intercuartílico y mediana del coste espacial P95.}
 \label{fig:n1-quality-confirmatory}
 \viuownsource
 \end{figure}
 
-Los contrastes rechazan $H_0$ en Aleatorio (\NOneUniformSavingPct\,\%),
+El gate se supera en Aleatorio (\NOneUniformSavingPct\,\%),
 Agrupado (\NOneClusteredSavingPct\,\%) y Pasillo
 (\NOneCorridorSavingPct\,\%). En Separado (\NOneSeparatedSavingPct\,\%) y
-Anillo (\NOneRingSavingPct\,\%) no se rechaza. Al reunir los cinco escenarios,
+Anillo (\NOneRingSavingPct\,\%) no se supera. Una sensibilidad exacta de signo,
+incorporada como diagnóstico y no como nuevo confirmatorio, conserva esa misma
+clasificación. Al reunir los cinco escenarios,
 el ahorro fue del \NOneSavingPct\,\% (IC del 95\,\%:
 \NOneSavingLowPct\,\% a \NOneSavingHighPct\,\%).
 
@@ -902,8 +906,9 @@ doble precisión debe ocupar $8NM$ bytes.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{../scripts/results/sp1_levels/n1_v2/figures/n1_central_scaling.pdf}
-\caption{Coste temporal y espacial del LSAP central en el intervalo observado.
-Las bandas cubren P05--P95; la memoria corresponde a la matriz densa de costes.}
+\caption{E2, con 30 mundos por celda. (a) P50 y banda P05--P95 del tiempo del
+solver en siete tamaños; la línea discontinua ajusta solo las siete medianas
+$N=M$. (b) Memoria determinista de la matriz densa, $8NM$ bytes.}
 \label{fig:n1-central-scaling}
 \viuownsource
 \end{figure}
@@ -939,9 +944,10 @@ $f^*(\delta)=2\delta/(1+\delta)$.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{../scripts/results/sp1_levels/n1_v2/figures/n1_failure_recovery.pdf}
-\caption{Recálculo central tras una retirada estática. El panel A compara la
-factibilidad observada con $f^*(\delta)$; el panel B cuantifica el aumento del
-coste espacial en los casos que permanecen factibles.}
+\caption{E3, con 300 mundos por celda y cinco tratamientos de retirada anidados
+por mundo. (a) Recuentos factibles sobre 300 y frontera $f^*(\delta)$.
+(b) Aumento mediano del coste e IC bootstrap del 95\,\% entre los recálculos
+factibles; las curvas terminan al agotarse la reserva cardinal.}
 \label{fig:n1-failure-recovery}
 \viuownsource
 \end{figure}
@@ -975,9 +981,11 @@ como auditor externo.
 \begin{figure}[H]
 \centering
 \includegraphics[width=\linewidth]{../scripts/results/sp1_levels/n1_v2/figures/n1_heterogeneity_boundary.pdf}
-\caption{Validez de N1 al introducir capacidades individuales. El panel A
-muestra los falsos factibles del modelo por puestos con IC de Wilson; el panel B,
-la certificación y el rescate obtenidos por el auditor MILP.}
+\caption{E4, con 300 mundos pareados por nivel de heterogeneidad. (a) Tasa
+agregada de falsos factibles e IC de Wilson del 95\,\%; las líneas grises son
+los cinco escenarios. (b) Certificación sobre todas las auditorías y rescate
+solo sobre falsos factibles, ambos con IC de Wilson y denominadores $n/N$. El
+eje ampliado se limita a 93,5--101,25\,\%.}
 \label{fig:n1-heterogeneity-boundary}
 \viuownsource
 \end{figure}

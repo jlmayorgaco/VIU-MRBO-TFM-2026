@@ -10,6 +10,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import pytest
+from PIL import Image
 from pypdf import PdfReader
 
 
@@ -141,6 +142,46 @@ def test_n1_confirmatory_results_support_stated_validity_boundary() -> None:
     assert (contrasts["mcnemar_exact_p_holm"] < 0.05).all()
 
 
+def test_n1_statistical_reporting_exposes_effects_intervals_and_denominators() -> None:
+    n1_root = LEVELS_OUTPUT_ROOT / "n1_v2"
+    quality = pd.read_csv(
+        n1_root / "processed" / "quality_scenario_summary.csv"
+    )
+    failure = pd.read_csv(n1_root / "processed" / "failure_summary.csv")
+    heterogeneity = pd.read_csv(
+        n1_root / "processed" / "heterogeneity_summary.csv"
+    )
+
+    assert quality["rank_biserial_vs_5pct"].between(-1.0, 1.0).all()
+    assert np.array_equal(
+        quality["saving_over_5pct_supported"].to_numpy(bool),
+        quality["sign_sensitivity_supported"].to_numpy(bool),
+    )
+    assert (quality["normalized_p95_cost_p05"] <= quality["normalized_p95_cost_q25"]).all()
+    assert (quality["normalized_p95_cost_q25"] <= quality["normalized_p95_cost_median"]).all()
+    assert (quality["normalized_p95_cost_median"] <= quality["normalized_p95_cost_q75"]).all()
+    assert (quality["normalized_p95_cost_q75"] <= quality["normalized_p95_cost_p95"]).all()
+
+    feasible_cost = failure.loc[failure["feasible_cost_n"] > 0]
+    assert (
+        feasible_cost["relative_cost_increase_ci_low"]
+        <= feasible_cost["relative_cost_increase_median"]
+    ).all()
+    assert (
+        feasible_cost["relative_cost_increase_median"]
+        <= feasible_cost["relative_cost_increase_ci_high"]
+    ).all()
+    assert (failure["recovery_count"] <= failure["n_worlds"]).all()
+
+    assert (heterogeneity["milp_certified_count"] <= heterogeneity["n_worlds"]).all()
+    assert (
+        heterogeneity["milp_rescue_count"]
+        <= heterogeneity["false_feasible_count"]
+    ).all()
+    assert heterogeneity["milp_certification_ci_low"].between(0.0, 1.0).all()
+    assert heterogeneity["milp_certification_ci_high"].between(0.0, 1.0).all()
+
+
 def test_n1_confirmatory_figures_are_vector_and_source_ends_after_e4() -> None:
     n1_root = LEVELS_OUTPUT_ROOT / "n1_v2"
     for stem in (
@@ -151,8 +192,26 @@ def test_n1_confirmatory_figures_are_vector_and_source_ends_after_e4() -> None:
         "n1_failure_recovery",
         "n1_heterogeneity_boundary",
     ):
-        assert (n1_root / "figures" / f"{stem}.pdf").is_file()
-        assert (n1_root / "figures" / f"{stem}.png").is_file()
+        pdf_path = n1_root / "figures" / f"{stem}.pdf"
+        png_path = n1_root / "figures" / f"{stem}.png"
+        assert pdf_path.is_file()
+        assert png_path.is_file()
+        page = PdfReader(str(pdf_path)).pages[0]
+        assert 500.0 <= float(page.mediabox.width) <= 540.0
+        assert 215.0 <= float(page.mediabox.height) <= 245.0
+        with Image.open(png_path) as image:
+            dpi = image.info.get("dpi", (0.0, 0.0))
+            assert dpi[0] >= 590.0
+            assert dpi[1] >= 590.0
+
+    manifest = json.loads(
+        (n1_root / "manifest.json").read_text(encoding="utf-8")
+    )
+    source_paths = {record["path"] for record in manifest["sources"]}
+    assert "scripts/sp1_n1.py" in source_paths
+    assert "scripts/sp1_levels_common.py" in source_paths
+    assert manifest["environment"]["scipy"]
+    assert manifest["environment"]["logical_cpu_count"] >= 1
 
     latex = (
         REPOSITORY_ROOT / "thesis" / "sp1_levels_23p" / "main.tex"

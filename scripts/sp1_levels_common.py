@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import os
 import platform
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -20,6 +21,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import scipy
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
@@ -96,14 +98,14 @@ def configure_publication_style() -> None:
 
     mpl.rcParams.update(
         {
-            "figure.dpi": 120,
-            "savefig.dpi": 360,
+            "figure.dpi": 150,
+            "savefig.dpi": 600,
             "font.family": "sans-serif",
             "font.sans-serif": ["Arial", "Liberation Sans", "DejaVu Sans"],
-            "font.size": 9.0,
-            "axes.titlesize": 10.2,
+            "font.size": 8.8,
+            "axes.titlesize": 9.2,
             "axes.titleweight": "bold",
-            "axes.labelsize": 9.2,
+            "axes.labelsize": 8.8,
             "axes.labelcolor": COLORS["dark"],
             "axes.edgecolor": COLORS["dark"],
             "axes.linewidth": 0.75,
@@ -117,11 +119,11 @@ def configure_publication_style() -> None:
             "grid.linewidth": 0.55,
             "xtick.color": COLORS["dark"],
             "ytick.color": COLORS["dark"],
-            "xtick.labelsize": 8.2,
-            "ytick.labelsize": 8.2,
+            "xtick.labelsize": 7.8,
+            "ytick.labelsize": 7.8,
             "legend.frameon": False,
-            "legend.fontsize": 8.0,
-            "legend.title_fontsize": 8.2,
+            "legend.fontsize": 7.5,
+            "legend.title_fontsize": 7.7,
             "lines.linewidth": 1.8,
             "lines.markersize": 5.2,
             "patch.linewidth": 0.75,
@@ -161,13 +163,19 @@ def save_figure(
     if tight:
         figure.tight_layout()
     paths = [output_stem.with_suffix(".pdf"), output_stem.with_suffix(".png")]
-    figure.savefig(paths[0], bbox_inches="tight", facecolor="white")
+    temporary = [
+        output_stem.with_name(output_stem.name + ".__tmp__.pdf"),
+        output_stem.with_name(output_stem.name + ".__tmp__.png"),
+    ]
+    figure.savefig(temporary[0], bbox_inches="tight", facecolor="white")
     figure.savefig(
-        paths[1],
+        temporary[1],
         bbox_inches="tight",
         facecolor="white",
-        dpi=360,
+        dpi=600,
     )
+    for source, target in zip(temporary, paths, strict=True):
+        source.replace(target)
     plt.close(figure)
     return paths
 
@@ -242,9 +250,13 @@ def write_level_manifest(
         "environment": {
             "python": platform.python_version(),
             "platform": platform.platform(),
+            "processor": platform.processor(),
+            "machine": platform.machine(),
+            "logical_cpu_count": os.cpu_count(),
             "pandas": pd.__version__,
             "numpy": np.__version__,
             "matplotlib": mpl.__version__,
+            "scipy": scipy.__version__,
         },
         "sources": [source_record(path) for path in sources],
         "row_counts": {key: int(value) for key, value in row_counts.items()},
