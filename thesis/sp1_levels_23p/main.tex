@@ -83,13 +83,13 @@
 Antes de mover una carga hay que decidir quién la moverá. Sean $\mathcal I$ los
 robots y $\mathcal K$ las cargas. Si todos aportan $\bar c^{\mathrm{pay}}$, cada
 demanda $m_k$ se divide en $n_k$ puestos: el Húngaro asigna un robot a cada uno
-y los puestos de la misma carga forman una coalición. Así admite varios robots
-por carga y conserva un problema lineal de asignación exacto (LSAP, por sus
+y los puestos de la misma carga forman una coalición. Los puestos permiten
+asignar varios robots por carga dentro de un problema lineal exacto (LSAP, por sus
 siglas en inglés)~\parencite{kuhn1955Hungarian}. Con capacidades individuales,
 contar puestos deja de representar la suma disponible y se necesita un programa
 lineal entero mixto (MILP) central. Las Ecuaciones~\eqref{eq:sp1-homogeneous-model}
-y \eqref{eq:sp1-heterogeneous-model} fijan ambos casos; la
-Figura~\ref{fig:sp1-model-boundary} muestra la diferencia.
+y \eqref{eq:sp1-heterogeneous-model} formulan ambos casos. La
+Figura~\ref{fig:sp1-model-boundary} los compara con dos ejemplos.
 
 {\small
 \begin{minipage}[t]{0.48\textwidth}
@@ -233,10 +233,10 @@ $2$ a $k_2$, sin exceso. La optimalidad se limita al modelo central representado
 \leveltag{RESULTADOS SP1 · GUÍA DE LECTURA · NIVELES Y RAMAS}
 \section*{Mapa de niveles experimentales de SP1}
 
-SP1 se valida por capas. N1 fija una referencia exacta para robots homogéneos y
+La validación de SP1 se divide en cuatro niveles. N1 fija una referencia exacta para robots homogéneos y
 N2 amplía el oráculo a capacidades individuales. En N3 desaparece el coordinador
 global; N4 reserva la misma información vecinal para evaluar Geo-QPG y sus
-ablaciones. La Figura~\ref{fig:sp1-level-guide} sitúa estas cuatro etapas. SP2
+ablaciones. La Figura~\ref{fig:sp1-level-guide} resume el cambio entre niveles. SP2
 comienza cuando la coalición ya formada inicia el transporte.
 
 \begin{figure}[H]
@@ -721,11 +721,11 @@ límites físicos.}
 \leveltag{RESULTADOS SP1 · PROTOCOLO EXPERIMENTAL · ANÁLISIS ESTADÍSTICO}
 \section*{Protocolo experimental y análisis estadístico}
 
-Monte Carlo repite mundos generados con semillas distintas y aplica todos los
-métodos al mismo mundo. Cada mundo--semilla es una réplica; los robots no lo son.
-Las cargas tampoco: ambos quedan anidados en ese mundo y no inflan la muestra. La
-Figura~\ref{fig:sp1-common-metrics} sigue el ciclo completo: generar, ejecutar,
-guardar los datos crudos, comparar y decidir la hipótesis. El intervalo
+Para cada combinación de escenario y parámetros generamos mundos con semillas
+distintas. Todos los métodos resuelven el mismo mundo. Cada mundo--semilla es una
+réplica; los robots no lo son. Las cargas tampoco: ambos quedan anidados en ese
+mundo y no inflan la muestra. La Figura~\ref{fig:sp1-common-metrics} resume el
+ciclo de generación, ejecución, registro, comparación y decisión. El intervalo
 \emph{bootstrap} remuestrea mundos completos para cuantificar la incertidumbre.
 
 \begin{figure}[H]
@@ -762,7 +762,7 @@ Aquí $d_{ih}$ es el coste robot--puesto. La matriz es totalmente unimodular: su
 relajación lineal ya contiene una solución óptima entera. SciPy usa una variante
 modificada de Jonker--Volgenant~\parencite{jonkerVolgenant1987Shortest,
 crouse2016Rectangular}, óptima para este LSAP pero no para el caso heterogéneo.
-La Figura~\ref{fig:n1-homogeneous-pipeline} recorre la reducción; la
+La Figura~\ref{fig:n1-homogeneous-pipeline} muestra los cinco pasos de la reducción; la
 Tabla~\ref{tab:n1-method-scope} delimita cada método.
 
 \begin{figure}[H]
@@ -863,7 +863,7 @@ Greedy\newline secuencial & Comparador central; usa el orden de puestos generado
 Sin garantía global; cambiar el orden puede cambiar el coste. \\
 Jonker--\newline Volgenant & Oráculo central para el LSAP rectangular. &
 Óptimo global del LSAP; coste cúbico de referencia $O(n^3)$, no capacidad heterogénea. \\
-MILP/HiGHS & Auditor externo de E4 con capacidades individuales. &
+MILP/HiGHS & Referencia de E4 con capacidades individuales. &
 Mejor solución factible (incumbente); óptimo solo cuando el solver lo certifica. \\
 \bottomrule
 \end{tabularx}
@@ -882,15 +882,14 @@ exacta se limita al modelo por puestos.}
 \leveltag{RESULTADOS SP1 · N1 · DISEÑO EXPERIMENTAL}
 \section*{SP1.N1: campaña de validación}
 
-Una sola cifra no basta para juzgar N1. E1 pregunta si mejora la calidad frente
-a una heurística voraz o \emph{greedy} (H-N1.Q); E2 describe cómo crece el coste
-de cálculo (H-N1.R); E3
-comprueba cuándo quedan robots suficientes (H-N1.F); y E4 contrasta si el modelo
-homogéneo falla al introducir capacidades distintas (H-N1.X). H-N1.I solo
-comprueba que el registro esté íntegro. Por tanto, hay dos contrastes, un
-diagnóstico, un invariante y un control de integridad, no cinco victorias
-estadísticas. La Figura~\ref{fig:n1-experimental-design} resume el diseño; cada
-réplica es un mundo--semilla completo.
+Evaluamos N1 con cuatro preguntas. E1 compara su calidad con una heurística voraz
+o \emph{greedy} (H-N1.Q). E2 mide cómo crece el coste de cálculo (H-N1.R). E3
+comprueba cuándo quedan robots suficientes tras una retirada (H-N1.F), y E4
+introduce capacidades distintas para poner a prueba el modelo homogéneo (H-N1.X).
+E1 y E4 son contrastes inferenciales; E2 es descriptivo y E3 comprueba un
+invariante. H-N1.I controla la integridad del registro. La
+Figura~\ref{fig:n1-experimental-design} resume el diseño; cada réplica es un
+mundo--semilla completo.
 
 \begin{figure}[H]
 \centering
@@ -898,11 +897,12 @@ réplica es un mundo--semilla completo.
 \pgfmathsetlengthmacro{\spxunitnexp}{\linewidth/13.5}
 \input{sp1_levels_23p/figures/n1_experimental_design.tex}
 \endgroup
-\caption{Diseño, tipo de evidencia y decisión de la campaña N1. Los métodos o
-tratamientos se emparejan dentro de cada mundo--semilla.}
+\caption{Diseño y tipo de evidencia de los cuatro experimentos de N1.}
 \label{fig:n1-experimental-design}
-\viuownsource
 \end{figure}
+\par\vspace{0.4mm}\noindent
+\makebox[\textwidth][c]{\footnotesize\itshape Elaboración propia.}
+\par
 
 \clearpage
 
@@ -922,8 +922,8 @@ de la mediana supere el 5\,\%. Wilcoxon compara las diferencias emparejadas y
 Holm evita declarar ventajas por azar al evaluar cinco escenarios. La correlación
 biserial por rangos indica si predominan pares por encima o por debajo del umbral
 \parencite{holm1979Sequential,kerby2014SimpleDifference}. La
-Figura~\ref{fig:n1-quality-confirmatory} muestra el contraste y el diagnóstico
-posterior por tamaño y cuota.
+Figura~\ref{fig:n1-quality-confirmatory} separa el contraste confirmatorio
+(panel a) del desglose posterior por tamaño y cuota (panel b).
 
 \begin{figure}[H]
 \centering
@@ -937,22 +937,20 @@ contraste confirmatorio.}
 \viuownsource
 \end{figure}
 
-El resultado confirmatorio es parcial: el criterio se supera en Aleatorio
-(\NOneUniformSavingPct\,\%), Agrupado (\NOneClusteredSavingPct\,\%) y Pasillo
-(\NOneCorridorSavingPct\,\%), pero no en Separado
-(\NOneSeparatedSavingPct\,\%) ni Anillo (\NOneRingSavingPct\,\%). En los tres
-casos favorables, $p_{\mathrm{Holm}}\leq\NOneQualityPHolmBound$; el test exacto
-de signo conserva la clasificación. El ahorro agregado de \NOneSavingPct\,\%
-es descriptivo, no un sexto contraste.
+El criterio se cumplió en Aleatorio (\NOneUniformSavingPct\,\%), Agrupado
+(\NOneClusteredSavingPct\,\%) y Pasillo (\NOneCorridorSavingPct\,\%). Separado
+(\NOneSeparatedSavingPct\,\%) y Anillo (\NOneRingSavingPct\,\%) quedaron por
+debajo. En los tres casos favorables, $p_{\mathrm{Holm}}\leq
+\NOneQualityPHolmBound$; el test exacto de signo dio la misma clasificación. El
+ahorro agregado de \NOneSavingPct\,\% es descriptivo, no un sexto contraste.
 
-El diagnóstico aclara la excepción: Aleatorio y Agrupado superan el umbral en
+Por tamaño, Aleatorio y Agrupado superaron el umbral en
 \NOneUniformCellsAbove/\NOneCellsPerScenario{} y
-\NOneClusteredCellsAbove/\NOneCellsPerScenario{} celdas; Pasillo, en
-\NOneCorridorCellsAbove/\NOneCellsPerScenario, porque cae al
-\NOneCorridorSmallExtremePct\,\% con $M=40$ y cuota extrema. Separado y Anillo
-no lo superan. E1 responde, por tanto, que el Húngaro compensa frente a esta
-heurística cuando varios puestos disputan los mismos robots. Es un techo exacto de
-calidad, no evidencia de una ventaja general de la centralización.
+\NOneClusteredCellsAbove/\NOneCellsPerScenario{} celdas. Pasillo lo hizo en
+\NOneCorridorCellsAbove/\NOneCellsPerScenario: con $M=40$ y cuota extrema cayó
+al \NOneCorridorSmallExtremePct\,\%. Separado y Anillo no lo superaron. El
+Húngaro mejora cuando varios puestos disputan los mismos robots. En N1 es la
+referencia exacta de calidad; no prueba que centralizar sea siempre mejor.
 
 \clearpage
 
@@ -970,7 +968,7 @@ se resuelve una vez, sin calentamiento explícito. Un reloj monotónico
 proceso completo; el ajuste usa solo el solver. La huella $8NM$ bytes cuenta la
 matriz densa de doble precisión (\texttt{ndarray}), no la memoria del proceso ni
 las estructuras internas de SciPy. La Figura~\ref{fig:n1-central-scaling}
-presenta tiempos y almacenamiento.
+reúne los tiempos medidos y la memoria mínima de la matriz.
 
 \begin{figure}[H]
 \centering
@@ -994,7 +992,7 @@ La curva no se aplana y el almacenamiento de $C$ crece exactamente como $NM$.
 Medimos los tiempos en un \NOneProcessor{} con
 \NOneLogicalCPU{} procesadores lógicos, Windows 11, Python
 \NOnePythonVersion{} y SciPy \NOneSciPyVersion{}. El mayor caso fue viable en
-ese equipo. El exponente describe esta implementación y este intervalo: no es
+ese equipo. El exponente solo describe esta implementación y este intervalo: no es
 una estimación de complejidad asintótica (Big-O) ni demuestra escalabilidad
 central.
 
@@ -1011,9 +1009,9 @@ salieron y vuelve a resolver el LSAP. La detección del fallo no forma parte de
 este experimento. En cada uno de los \NOneFailureWorlds{} mundos aplicamos cinco
 fracciones anidadas, hasta completar \NOneFailureRows{} recálculos. Con
 $\delta=(N-M)/(N+M)$ como reserva, la frontera cardinal es
-$f^*(\delta)=2\delta/(1+\delta)$. La
-Figura~\ref{fig:n1-failure-recovery} comprueba a la izquierda cuándo existe una
-asignación completa y muestra a la derecha cuánto aumenta su coste.
+$f^*(\delta)=2\delta/(1+\delta)$. En la
+Figura~\ref{fig:n1-failure-recovery}, el panel izquierdo marca cuándo existe una
+asignación completa y el derecho cuantifica cuánto aumenta su coste.
 
 \begin{figure}[H]
 \centering
@@ -1031,10 +1029,10 @@ $N_{\mathrm{activo}}\geq M$. Sin reserva, cualquier retirada dejó al menos un
 puesto vacío. Cuando quedaron robots suficientes, el LSAP cubrió todos los
 puestos, a costa de una coalición más alejada.
 
-La reserva, no una nueva propiedad del algoritmo, explica la recuperación. E3
-solo demuestra que el coordinador puede recalcular una asignación estática. No
-mide detección, mensajes, movimiento ni recuperación distribuida y, por ello,
-no acredita resiliencia operacional.
+La recuperación observada proviene de los robots de reserva. Con este experimento
+solo comprobamos que el coordinador recalcula una asignación estática. No medimos
+detección, mensajes, movimiento ni recuperación distribuida; estos resultados no
+bastan para afirmar resiliencia operacional.
 
 \clearpage
 
@@ -1044,15 +1042,14 @@ no acredita resiliencia operacional.
 \leveltag{RESULTADOS SP1 · N1 · EXPERIMENTO E4}
 \section*{SP1.N1 · E4: cuándo se rompe la reducción}
 
-E4 cambia una sola pieza del mundo: sustituye la capacidad común por cinco
-perfiles anidados y conserva robots, cargas y posiciones. En
-\NOneHeteroWorlds{} mundos comparamos \NOneHeteroRows{} veredictos del modelo por
-puestos con la carga útil escalar agregada de cada coalición. HiGHS actúa
-como auditor del MILP: «incumbente» es la mejor solución factible hallada y el
-certificado prueba que ninguna es mejor
+E4 sustituye la capacidad común por cinco perfiles anidados sin cambiar robots,
+cargas ni posiciones. En \NOneHeteroWorlds{} mundos comparamos
+\NOneHeteroRows{} veredictos del modelo por puestos con un MILP resuelto mediante
+HiGHS. «Incumbente» es la mejor solución factible hallada; el óptimo solo queda
+certificado si ninguna solución tiene un objetivo menor
 \parencite{huangfuHall2018Highs,highs2026Official}. La
-Figura~\ref{fig:n1-heterogeneity-boundary} compara los veredictos y mantiene
-visibles los límites de tiempo.
+Figura~\ref{fig:n1-heterogeneity-boundary} compara ambos veredictos e incluye los
+cinco casos que agotaron el límite de tiempo.
 
 \begin{figure}[H]
 \centering
@@ -1070,19 +1067,18 @@ subió a
 \NOneLowFalsePct\,\%, \NOneModerateFalsePct\,\%, \NOneHighFalsePct\,\% y
 \NOneExtremeFalsePct\,\% con la heterogeneidad. McNemar comparó cada veredicto
 sí/no con su par y Holm corrigió los cuatro contrastes
-($p_{\mathrm{Holm}}\leq\NOneHeteroPHolmBound$). HiGHS halló solución factible en
-\NOneMilpAudits{} auditorías y certificó \NOneMilpCertifiedCount{}. Las otras
-\NOneMilpUncertifiedCount{} agotaron \NOneMilpTimeLimitSec{} s con una brecha
-(\emph{gap}) de \NOneMilpGapMinPct{}--\NOneMilpGapMaxPct{}\,\%; se conservaron
-sin contarlas como certificadas.
+($p_{\mathrm{Holm}}\leq\NOneHeteroPHolmBound$). HiGHS encontró una solución
+factible en las \NOneMilpAudits{} ejecuciones y certificó el óptimo en
+\NOneMilpCertifiedCount{}. Cinco agotaron \NOneMilpTimeLimitSec{} s con una
+brecha (\emph{gap}) de \NOneMilpGapMinPct{}--\NOneMilpGapMaxPct{}\,\%; siguen en
+el denominador como no certificadas.
 
-El auditor certificó una alternativa válida en
-\NOneMilpRescueCount{}/\NOneFalseFeasibleCount{} falsos factibles; los otros
-\NOneMilpUncertifiedFalseCount{} tenían incumbente, no certificado. El Húngaro
-resolvió su LSAP: falló la reducción porque los puestos ya no representaban la
-carga útil agregada. Así, H-N1.X queda sustentada en los perfiles ensayados y N2
-debe conservar cada $c_i^{\mathrm{pay}}$. No se certifican fuerza, torque,
-contacto, estabilidad ni transporte; esa factibilidad mecánica pertenece a SP2.
+De los \NOneFalseFeasibleCount{} falsos factibles, HiGHS certificó
+\NOneMilpRescueCount{}; en los otros \NOneMilpUncertifiedFalseCount{} solo obtuvo
+un incumbente. El Húngaro resolvió el LSAP que recibió, pero los puestos ya no
+representaban la carga útil agregada. En los perfiles probados, la tasa aumentó
+como predice H-N1.X. N2 debe conservar cada $c_i^{\mathrm{pay}}$. No evaluamos fuerza,
+torque, contacto, estabilidad ni transporte; esa validación corresponde a SP2.
 
 % El documento de trabajo se cierra aquí mientras N2--N4 se revisan por etapas.
 % La versión completa de 28 páginas permanece congelada en la etiqueta Git

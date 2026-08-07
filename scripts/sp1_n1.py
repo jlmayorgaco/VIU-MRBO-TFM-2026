@@ -7,7 +7,7 @@ The campaign keeps four evidence layers separate:
 3. centralized static re-allocation after homogeneous robot loss; and
 4. an out-of-domain capacity audit that motivates N2.
 
-The heterogeneous MILP is used only as an external validity auditor in layer
+The heterogeneous MILP is used only as an external validity reference in layer
 4. It is not presented as an N1 method or as a fair architectural comparator.
 """
 
@@ -1948,7 +1948,7 @@ def _plot_heterogeneity_boundary(
         markersize=4.0,
         capsize=2.4,
         linewidth=1.0,
-        label="certificación / auditorías",
+        label="óptimo certificado / ejecuciones",
     )
     finite_rescue = np.isfinite(rescue)
     axes[1].errorbar(
@@ -1972,7 +1972,7 @@ def _plot_heterogeneity_boundary(
         markersize=4.0,
         capsize=2.4,
         linewidth=1.0,
-        label="rescate / falsos factibles",
+        label="asignación factible / falsos factibles",
     )
     count_column_x = 100.15
     for index, row in overall.iterrows():
@@ -2011,7 +2011,7 @@ def _plot_heterogeneity_boundary(
     axes[1].set(
         xlabel="Tasa [%] · vista ampliada",
         xlim=(93.5, 101.25),
-        title="Auditoría MILP: estimado e IC 95 %",
+        title="Comprobación MILP: estimado e IC 95 %",
     )
     axes[1].invert_yaxis()
     axes[1].axvline(100.0, color=COLORS["light_gray"], linewidth=0.8)
@@ -2311,7 +2311,7 @@ def _write_report(
         "- El Húngaro es exacto únicamente para la reducción homogénea a slots.",
         "- Las regresiones describen el rango medido; no prueban complejidad asintótica.",
         "- El fallo se resuelve mediante un recálculo central estático.",
-        "- El MILP heterogéneo actúa como auditor de validez externa y anticipa N2.",
+        "- La comparación con el MILP heterogéneo muestra por qué N2 debe conservar la capacidad individual.",
         "",
     ]
     path.write_text("\n".join(lines), encoding="utf-8")

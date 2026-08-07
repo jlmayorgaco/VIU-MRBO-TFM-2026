@@ -16,4 +16,4 @@
 - El Húngaro es exacto únicamente para la reducción homogénea a slots.
 - Las regresiones describen el rango medido; no prueban complejidad asintótica.
 - El fallo se resuelve mediante un recálculo central estático.
-- El MILP heterogéneo actúa como auditor de validez externa y anticipa N2.
+- La comparación con el MILP heterogéneo muestra por qué N2 debe conservar la capacidad individual.
