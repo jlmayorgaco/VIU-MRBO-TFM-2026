@@ -134,7 +134,9 @@ def generate_metrics_tex() -> Path:
         ),
         "NOneScalingCompleted": _tex_integer(n1["scaling_completed_count"]),
         "NOneScalingFailed": _tex_integer(n1["scaling_failed_count"]),
-        "NOneProcessor": _tex_text(environment["processor"]),
+        "NOneProcessor": _tex_text(
+            environment["processor"].replace("(R)", "").replace("(TM)", "")
+        ),
         "NOneLogicalCPU": _tex_integer(environment["logical_cpu_count"]),
         "NOnePythonVersion": _tex_text(environment["python"]),
         "NOneSciPyVersion": _tex_text(environment["scipy"]),

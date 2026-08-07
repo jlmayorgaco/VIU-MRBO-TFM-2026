@@ -14,6 +14,13 @@
 \addbibresource{references.bib}
 \input{sp1_levels_23p/generated/metrics.tex}
 
+% La fuente debe constituir un bloque propio incluso tras pies de varias líneas.
+\renewcommand{\viuownsource}{%
+  \par\vspace{0.8mm}\noindent
+  \makebox[\linewidth][c]{\footnotesize\itshape Elaboración propia.}%
+  \par
+}
+
 \hypersetup{
   pdftitle={Resultados SP1 por niveles},
   pdfauthor={Jorge Luis Mayorga Taborda},
@@ -71,26 +78,26 @@
 % Página 1 · Introducción
 % --------------------------------------------------------------------------
 \leveltag{RESULTADOS SP1 · INTRODUCCIÓN · FRONTERA DE MODELADO}
-\section*{SP1: Multi-Robot Task Allocation and Recruitment}
+\section*{SP1: asignación y reclutamiento multi-robot}
 
 Antes de mover una carga hay que decidir quién la moverá. Sean $\mathcal I$ los
-robots y $\mathcal K$ las cargas. Cuando todos aportan
-$\bar c^{\mathrm{pay}}$, cada demanda $m_k$ puede dividirse en
-$n_k$ puestos intercambiables. El Húngaro asigna un robot a cada puesto y los
-puestos de una misma carga forman la coalición. Esta reducción admite varios
-robots por carga y mantiene un problema lineal de asignación exacto (LSAP, por
-sus siglas en inglés)
-\parencite{kuhn1955Hungarian}. Si las capacidades cambian entre robots, contar
-puestos deja de representar la factibilidad: entonces importa la suma de
-capacidades. Ese segundo caso se audita con un programa lineal entero mixto
-(MILP) central.
+robots y $\mathcal K$ las cargas. Si todos aportan $\bar c^{\mathrm{pay}}$, cada
+demanda $m_k$ se divide en $n_k$ puestos: el Húngaro asigna un robot a cada uno
+y los puestos de la misma carga forman una coalición. Así admite varios robots
+por carga y conserva un problema lineal de asignación exacto (LSAP, por sus
+siglas en inglés)~\parencite{kuhn1955Hungarian}. Con capacidades individuales,
+contar puestos deja de representar la suma disponible y se necesita un programa
+lineal entero mixto (MILP) central. Las Ecuaciones~\eqref{eq:sp1-homogeneous-model}
+y \eqref{eq:sp1-heterogeneous-model} fijan ambos casos; la
+Figura~\ref{fig:sp1-model-boundary} muestra la diferencia.
 
 {\small
 \begin{minipage}[t]{0.48\textwidth}
 \textbf{Robots homogéneos (Húngaro).}
 {\footnotesize $x_{ih}\colon i\in\mathcal I\mapsto
 h\in\mathcal H=\bigcup_k\mathcal H_k$; $d_{ih}$ en m.}
-\[
+\begin{equation}
+\label{eq:sp1-homogeneous-model}
 \begin{aligned}
 \min_{x}\quad
   &\sum_{i\in\mathcal I}\sum_{h\in\mathcal H}d_{ih}x_{ih}\\
@@ -99,7 +106,7 @@ h\in\mathcal H=\bigcup_k\mathcal H_k$; $d_{ih}$ en m.}
   &\sum_{i\in\mathcal I}x_{ih}=1 && h\in\mathcal H,\\[-1mm]
   &x_{ih}\in\{0,1\}.
 \end{aligned}
-\]
+\end{equation}
 $|\mathcal H_k|=\lceil m_k/\bar c^{\mathrm{pay}}\rceil$ slots para la carga
 $k$, con $c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$.
 \end{minipage}\hfill
@@ -107,7 +114,8 @@ $k$, con $c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$.
 \textbf{Robots heterogéneos (MILP).}
 {\footnotesize $x_{ik}$ asigna $i$ a $k$; $d_{ik}$ se mide en m y $e_k$ es el
 exceso en kg.}
-\[
+\begin{equation}
+\label{eq:sp1-heterogeneous-model}
 \begin{aligned}
 \min_{x,e}\quad
   &\sum_{i,k}d_{ik}x_{ik}+\lambda_e\sum_k e_k\\[-1mm]
@@ -118,7 +126,7 @@ exceso en kg.}
     && k\in\mathcal K,\\[-1mm]
   &x_{ik}\in\{0,1\}.
 \end{aligned}
-\]
+\end{equation}
 {\footnotesize En E4, $\lambda_e=0{,}25$ m/kg y
 $\lambda_n=10^{-3}$ m/robot; ordenan soluciones, no la factibilidad.}
 \end{minipage}
@@ -713,9 +721,12 @@ límites físicos.}
 \leveltag{RESULTADOS SP1 · PROTOCOLO EXPERIMENTAL · ANÁLISIS ESTADÍSTICO}
 \section*{Protocolo experimental y análisis estadístico}
 
-Cada mundo--semilla es una réplica; los robots no lo son. Dentro de ella
-emparejamos los métodos y aplicamos el análisis preespecificado
-(Figura~\ref{fig:sp1-common-metrics}).
+Monte Carlo repite mundos generados con semillas distintas y aplica todos los
+métodos al mismo mundo. Cada mundo--semilla es una réplica; los robots no lo son.
+Las cargas tampoco: ambos quedan anidados en ese mundo y no inflan la muestra. La
+Figura~\ref{fig:sp1-common-metrics} sigue el ciclo completo: generar, ejecutar,
+guardar los datos crudos, comparar y decidir la hipótesis. El intervalo
+\emph{bootstrap} remuestrea mundos completos para cuantificar la incertidumbre.
 
 \begin{figure}[H]
 \centering
@@ -737,28 +748,28 @@ emparejamos los métodos y aplicamos el análisis preespecificado
 \leveltag{RESULTADOS SP1 · NIVEL 1 DE 4 · ASIGNACIÓN HOMOGÉNEA}
 \section*{SP1.N1: asignación exacta con robots homogéneos}
 
-N1 conserva una sola capacidad robot, $\bar c^{\mathrm{pay}}$, aunque las cargas
-pidan cantidades distintas. Por eso puede sustituir cada demanda $m_k$ por
-$n_k=\lceil m_k/\bar c^{\mathrm{pay}}\rceil$ puestos y formar coaliciones de
-varios miembros. Si
-$\mathcal H=\bigcup_k\mathcal H_k$ y $M=|\mathcal H|$, se resuelve
-\[
+N1 conserva una capacidad común, $\bar c^{\mathrm{pay}}$, aunque las cargas
+pidan cantidades distintas. Por eso sustituye cada demanda $m_k$ por
+$n_k=\lceil m_k/\bar c^{\mathrm{pay}}\rceil$ puestos. Con
+$\mathcal H=\bigcup_k\mathcal H_k$ y $M=|\mathcal H|$, la
+Ecuación~\eqref{eq:n1-lsap} define el problema:
+\begin{equation}
+\label{eq:n1-lsap}
  \min_{x\in\{0,1\}^{N\times M}}\sum_{i,h}d_{ih}x_{ih},\qquad
  \sum_i x_{ih}=1,\quad \sum_hx_{ih}\leq1.
-\]
-Aquí $d_{ih}$ es el coste de llevar el robot $i$ al puesto $h$. La matriz de
-restricciones es totalmente unimodular, de modo que la relajación lineal tiene
-un vértice óptimo entero. La implementación de SciPy usa una variante modificada
-de Jonker--Volgenant \parencite{jonkerVolgenant1987Shortest,
-crouse2016Rectangular}. Su solución es el óptimo global del LSAP formulado; esa
-garantía no se traslada al problema heterogéneo. La
-Tabla~\ref{tab:n1-method-scope} delimita el papel de cada método usado en N1.
+\end{equation}
+Aquí $d_{ih}$ es el coste robot--puesto. La matriz es totalmente unimodular: su
+relajación lineal ya contiene una solución óptima entera. SciPy usa una variante
+modificada de Jonker--Volgenant~\parencite{jonkerVolgenant1987Shortest,
+crouse2016Rectangular}, óptima para este LSAP pero no para el caso heterogéneo.
+La Figura~\ref{fig:n1-homogeneous-pipeline} recorre la reducción; la
+Tabla~\ref{tab:n1-method-scope} delimita cada método.
 
 \begin{figure}[H]
 \centering
 \begingroup
 \pgfmathsetlengthmacro{\spxunitnone}{\linewidth/13.5}
-\begin{tikzpicture}[x=\spxunitnone,y=1.06cm]
+\begin{tikzpicture}[x=\spxunitnone,y=0.90cm]
 \fill[SPFloor] (0.01,0.15) rectangle (13.49,5.05);
 \fill[white] (0.01,4.45) rectangle (13.49,5.05);
 \draw[draw=SPGrid,line width=0.55pt] (0.01,4.45) -- (13.49,4.45);
@@ -831,7 +842,7 @@ Tabla~\ref{tab:n1-method-scope} delimita el papel de cada método usado en N1.
 \node[splegend] at (6.75,0.82)
   {\textbf{Modelo:} programa lineal binario $\rightarrow$ relajación LP integral por total unimodularidad};
 \node[splegend] at (6.75,0.47)
-  {\textbf{Método:} asignación combinatorial exacta; sin redondeo, branch-and-bound ni símplex};
+  {\textbf{Método:} asignación exacta; sin redondeo ni exploración de ramas enteras};
 \end{tikzpicture}
 \endgroup
 \caption{Reducción de cargas con distinta demanda a un LSAP entre robots
@@ -851,9 +862,9 @@ homogéneos y puestos de coalición.}
 Greedy\newline secuencial & Comparador central; usa el orden de puestos generado. &
 Sin garantía global; cambiar el orden puede cambiar el coste. \\
 Jonker--\newline Volgenant & Oráculo central para el LSAP rectangular. &
-Óptimo global del LSAP; familia densa $O(n^3)$, no capacidad heterogénea. \\
+Óptimo global del LSAP; coste cúbico de referencia $O(n^3)$, no capacidad heterogénea. \\
 MILP/HiGHS & Auditor externo de E4 con capacidades individuales. &
-Incumbente factible; óptimo solo cuando el solver lo certifica. \\
+Mejor solución factible (incumbente); óptimo solo cuando el solver lo certifica. \\
 \bottomrule
 \end{tabularx}
 }
@@ -871,13 +882,15 @@ exacta se limita al modelo por puestos.}
 \leveltag{RESULTADOS SP1 · N1 · DISEÑO EXPERIMENTAL}
 \section*{SP1.N1: campaña de validación}
 
-Una sola cifra no basta para juzgar N1. E1 mide cuánto mejora la asignación, E2
-cuánto cuesta resolverla de forma central, E3 qué ocurre cuando se retiran
-robots y E4 dónde deja de ser válido el modelo por puestos. El protocolo congeló
-dos contrastes inferenciales (H-N1.Q y H-N1.X), una pregunta descriptiva de
-recursos (H-N1.R), un invariante cardinal (H-N1.F) y una puerta de integridad
-(H-N1.I). No se cuentan como cinco victorias estadísticas. En todos los casos,
-la réplica es el mundo--semilla completo.
+Una sola cifra no basta para juzgar N1. E1 pregunta si mejora la calidad frente
+a una heurística voraz o \emph{greedy} (H-N1.Q); E2 describe cómo crece el coste
+de cálculo (H-N1.R); E3
+comprueba cuándo quedan robots suficientes (H-N1.F); y E4 contrasta si el modelo
+homogéneo falla al introducir capacidades distintas (H-N1.X). H-N1.I solo
+comprueba que el registro esté íntegro. Por tanto, hay dos contrastes, un
+diagnóstico, un invariante y un control de integridad, no cinco victorias
+estadísticas. La Figura~\ref{fig:n1-experimental-design} resume el diseño; cada
+réplica es un mundo--semilla completo.
 
 \begin{figure}[H]
 \centering
@@ -897,16 +910,20 @@ tratamientos se emparejan dentro de cada mundo--semilla.}
 % Página 7 · N1: calidad
 % --------------------------------------------------------------------------
 \leveltag{RESULTADOS SP1 · N1 · EXPERIMENTO E1}
-\section*{SP1.N1 · E1: Húngaro frente al greedy secuencial}
+\section*{SP1.N1 · E1: Húngaro frente a una heurística voraz}
 
-E1 compara el Húngaro con el greedy secuencial implementado, no con todas las
-heurísticas. Ambos reciben $C$; el greedy recorre los puestos en el orden
-generado, toma el robot libre más cercano y desempata por índice. El ahorro es
+E1 compara el Húngaro con una heurística voraz (\emph{greedy}) secuencial
+implementada, no con todas las heurísticas. Ambos reciben $C$; la heurística
+recorre los puestos en el orden generado, toma el robot libre más cercano y
+desempata por índice. El ahorro es
 $\Delta_w=(J_w^{\mathrm{greedy}}-J_w^{\mathrm{H}})/J_w^{\mathrm{greedy}}$.
-El gate preespecificado exige que el IC bootstrap de la mediana supere el 5\,\%
-y que el Wilcoxon sobre $\Delta_w-0{,}05$ siga siendo significativo tras Holm;
-se añade la correlación biserial por rangos
-\parencite{holm1979Sequential,kerby2014SimpleDifference}.
+El criterio preespecificado exige que el intervalo de confianza (IC) bootstrap
+de la mediana supere el 5\,\%. Wilcoxon compara las diferencias emparejadas y
+Holm evita declarar ventajas por azar al evaluar cinco escenarios. La correlación
+biserial por rangos indica si predominan pares por encima o por debajo del umbral
+\parencite{holm1979Sequential,kerby2014SimpleDifference}. La
+Figura~\ref{fig:n1-quality-confirmatory} muestra el contraste y el diagnóstico
+posterior por tamaño y cuota.
 
 \begin{figure}[H]
 \centering
@@ -920,7 +937,7 @@ contraste confirmatorio.}
 \viuownsource
 \end{figure}
 
-El resultado confirmatorio es parcial: el gate se supera en Aleatorio
+El resultado confirmatorio es parcial: el criterio se supera en Aleatorio
 (\NOneUniformSavingPct\,\%), Agrupado (\NOneClusteredSavingPct\,\%) y Pasillo
 (\NOneCorridorSavingPct\,\%), pero no en Separado
 (\NOneSeparatedSavingPct\,\%) ni Anillo (\NOneRingSavingPct\,\%). En los tres
@@ -933,8 +950,8 @@ El diagnóstico aclara la excepción: Aleatorio y Agrupado superan el umbral en
 \NOneClusteredCellsAbove/\NOneCellsPerScenario{} celdas; Pasillo, en
 \NOneCorridorCellsAbove/\NOneCellsPerScenario, porque cae al
 \NOneCorridorSmallExtremePct\,\% con $M=40$ y cuota extrema. Separado y Anillo
-no lo superan. E1 responde, por tanto, que el Húngaro compensa frente a este
-greedy cuando varios puestos disputan los mismos robots. Es un techo exacto de
+no lo superan. E1 responde, por tanto, que el Húngaro compensa frente a esta
+heurística cuando varios puestos disputan los mismos robots. Es un techo exacto de
 calidad, no evidencia de una ventaja general de la centralización.
 
 \clearpage
@@ -948,17 +965,19 @@ calidad, no evidencia de una ventaja general de la centralización.
 E2 mide una llamada al oráculo central en \NOneScalingCompleted{} ejecuciones:
 siete tamaños entre $N=32$ y $N=2048$, tres razones $M/N$ y 30 semillas. Todas
 terminaron; no hubo fallos ni censura. Cada mundo genera una matriz distinta y
-se resuelve una vez, sin calentamiento explícito. El reloj
-\texttt{perf\_counter\_ns} separa construcción de $C$, llamada al solver,
-postproceso y total; el ajuste usa solo el tiempo del solver. La huella $8NM$
-bytes corresponde al \texttt{ndarray} denso de doble precisión, no a la memoria
-residente del proceso ni a estructuras internas de SciPy.
+se resuelve una vez, sin calentamiento explícito. Un reloj monotónico
+(\texttt{perf\_counter\_ns}) separa construcción de $C$, solver, postproceso y
+proceso completo; el ajuste usa solo el solver. La huella $8NM$ bytes cuenta la
+matriz densa de doble precisión (\texttt{ndarray}), no la memoria del proceso ni
+las estructuras internas de SciPy. La Figura~\ref{fig:n1-central-scaling}
+presenta tiempos y almacenamiento.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\linewidth]{../scripts/results/sp1_levels/n1_v2/figures/n1_central_scaling.pdf}
-\caption{E2, con 30 mundos por celda. (a) P50 y banda P05--P95 del solver; la
-línea de puntos añade la mediana del pipeline total y la discontinua ajusta solo
+\includegraphics[width=0.97\linewidth]{../scripts/results/sp1_levels/n1_v2/figures/n1_central_scaling.pdf}
+\caption{E2, con 30 mundos por celda. (a) P50 (mediana) y banda P05--P95
+(90\,\% central) del solver; la línea de puntos añade la mediana del proceso
+completo y la discontinua ajusta solo
 las siete medianas del solver con $N=M$. (b) Huella mínima determinista de la
 matriz $C$, $8NM$ bytes.}
 \label{fig:n1-central-scaling}
@@ -968,7 +987,7 @@ matriz $C$, $8NM$ bytes.}
 En la serie balanceada $N=M$, las siete medianas siguieron el ajuste descriptivo
 $t\propto N^{\NOneExponent}$ (IC del 95\,\%: \NOneExponentLow{} a
 \NOneExponentHigh{}; $R^2=\NOneRSquared$). Para el mayor caso probado,
-$N=M=\NOneMaxN{}$, el P95 fue \NOneScalingPninetyfiveMs\,ms. La memoria coincidió
+$N=M=\NOneMaxN{}$, el percentil 95 fue \NOneScalingPninetyfiveMs\,ms. La memoria coincidió
 con los $8NM$ bytes de $C$ en todas las ejecuciones.
 
 La curva no se aplana y el almacenamiento de $C$ crece exactamente como $NM$.
@@ -976,7 +995,8 @@ Medimos los tiempos en un \NOneProcessor{} con
 \NOneLogicalCPU{} procesadores lógicos, Windows 11, Python
 \NOnePythonVersion{} y SciPy \NOneSciPyVersion{}. El mayor caso fue viable en
 ese equipo. El exponente describe esta implementación y este intervalo: no es
-una estimación de Big-O ni demuestra escalabilidad de una arquitectura central.
+una estimación de complejidad asintótica (Big-O) ni demuestra escalabilidad
+central.
 
 \clearpage
 
@@ -991,7 +1011,9 @@ salieron y vuelve a resolver el LSAP. La detección del fallo no forma parte de
 este experimento. En cada uno de los \NOneFailureWorlds{} mundos aplicamos cinco
 fracciones anidadas, hasta completar \NOneFailureRows{} recálculos. Con
 $\delta=(N-M)/(N+M)$ como reserva, la frontera cardinal es
-$f^*(\delta)=2\delta/(1+\delta)$.
+$f^*(\delta)=2\delta/(1+\delta)$. La
+Figura~\ref{fig:n1-failure-recovery} comprueba a la izquierda cuándo existe una
+asignación completa y muestra a la derecha cuánto aumenta su coste.
 
 \begin{figure}[H]
 \centering
@@ -1026,41 +1048,41 @@ E4 cambia una sola pieza del mundo: sustituye la capacidad común por cinco
 perfiles anidados y conserva robots, cargas y posiciones. En
 \NOneHeteroWorlds{} mundos comparamos \NOneHeteroRows{} veredictos del modelo por
 puestos con la carga útil escalar agregada de cada coalición. HiGHS actúa
-únicamente como auditor externo del MILP; el incumbente factible y el certificado
-de optimalidad se registran por separado
-\parencite{huangfuHall2018Highs,highs2026Official}.
+como auditor del MILP: «incumbente» es la mejor solución factible hallada y el
+certificado prueba que ninguna es mejor
+\parencite{huangfuHall2018Highs,highs2026Official}. La
+Figura~\ref{fig:n1-heterogeneity-boundary} compara los veredictos y mantiene
+visibles los límites de tiempo.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\linewidth]{../scripts/results/sp1_levels/n1_v2/figures/n1_heterogeneity_boundary.pdf}
+\includegraphics[width=0.94\linewidth]{../scripts/results/sp1_levels/n1_v2/figures/n1_heterogeneity_boundary.pdf}
 \caption{E4, con 300 mundos pareados por nivel de heterogeneidad. (a) Tasa
-agregada de falsos factibles e IC de Wilson del 95\,\%; las líneas grises son
-los cinco escenarios. (b) Certificación sobre todas las auditorías y rescate
-solo sobre falsos factibles, ambos con IC de Wilson y denominadores $n/N$. El
-eje ampliado se limita a 93,5--101,25\,\%.}
+de falsos factibles e IC de Wilson del 95\,\%; gris: cinco escenarios.
+(b) Certificación total y rescate de falsos factibles, con IC de Wilson y
+denominadores $n/N$; eje ampliado a 93,5--101,25\,\%.}
 \label{fig:n1-heterogeneity-boundary}
 \viuownsource
 \end{figure}
 
-El modelo por puestos no produjo falsos factibles en el caso homogéneo. La tasa
+El modelo por puestos dio 0\,\% de falsos factibles en el caso homogéneo y
 subió a
 \NOneLowFalsePct\,\%, \NOneModerateFalsePct\,\%, \NOneHighFalsePct\,\% y
-\NOneExtremeFalsePct\,\% al aumentar la heterogeneidad; todos los McNemar dieron
-$p_{\mathrm{Holm}}\leq\NOneHeteroPHolmBound$. HiGHS halló una solución factible
-en las \NOneMilpAudits{} auditorías y certificó el óptimo en
-\NOneMilpCertifiedCount{}. Las otras \NOneMilpUncertifiedCount{} alcanzaron el
-límite de \NOneMilpTimeLimitSec{} s con gaps entre \NOneMilpGapMinPct{}\,\% y
-\NOneMilpGapMaxPct{}\,\%; no se eliminaron ni se contaron como certificadas.
+\NOneExtremeFalsePct\,\% con la heterogeneidad. McNemar comparó cada veredicto
+sí/no con su par y Holm corrigió los cuatro contrastes
+($p_{\mathrm{Holm}}\leq\NOneHeteroPHolmBound$). HiGHS halló solución factible en
+\NOneMilpAudits{} auditorías y certificó \NOneMilpCertifiedCount{}. Las otras
+\NOneMilpUncertifiedCount{} agotaron \NOneMilpTimeLimitSec{} s con una brecha
+(\emph{gap}) de \NOneMilpGapMinPct{}--\NOneMilpGapMaxPct{}\,\%; se conservaron
+sin contarlas como certificadas.
 
-Entre los \NOneFalseFeasibleCount{} falsos factibles, el auditor certificó una
-alternativa válida en \NOneMilpRescueCount{}; los
-\NOneMilpUncertifiedFalseCount{} restantes tenían incumbente factible, pero no
-certificado. El Húngaro resolvió correctamente el LSAP que recibió. Lo que falló
-fue la reducción: sus puestos ya no representaban la carga útil escalar de la
-coalición. Por tanto, H-N1.X queda sustentada dentro de los perfiles ensayados y
-N2 debe conservar cada $c_i^{\mathrm{pay}}$ antes de aceptar la asignación. Este
-resultado no certifica fuerza, torque, contacto, estabilidad ni transporte; esa
-factibilidad mecánica pertenece a SP2.
+El auditor certificó una alternativa válida en
+\NOneMilpRescueCount{}/\NOneFalseFeasibleCount{} falsos factibles; los otros
+\NOneMilpUncertifiedFalseCount{} tenían incumbente, no certificado. El Húngaro
+resolvió su LSAP: falló la reducción porque los puestos ya no representaban la
+carga útil agregada. Así, H-N1.X queda sustentada en los perfiles ensayados y N2
+debe conservar cada $c_i^{\mathrm{pay}}$. No se certifican fuerza, torque,
+contacto, estabilidad ni transporte; esa factibilidad mecánica pertenece a SP2.
 
 % El documento de trabajo se cierra aquí mientras N2--N4 se revisan por etapas.
 % La versión completa de 28 páginas permanece congelada en la etiqueta Git

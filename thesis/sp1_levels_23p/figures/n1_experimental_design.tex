@@ -24,7 +24,7 @@
 
 % Bucle de ejecución: las flechas circulan únicamente por los canales blancos.
 \node[loopbox,fill=white] (cell) at (1.55,13.02)
-  {\textbf{1 · Celda}\\escenario + parámetros\\pregunta + endpoint};
+  {\textbf{1 · Celda}\\escenario + parámetros\\pregunta + respuesta};
 \node[loopbox,fill=SPGreen!3,draw=SPGreen!55] (world) at (4.68,13.02)
   {\textbf{2 · Mundo}\\semilla $s\mapsto w$\\robots + cargas};
 \node[loopbox,fill=SPBlue!3,draw=SPBlue!55] (methods) at (7.81,13.02)
@@ -49,19 +49,19 @@
   $\times$ 3 cuotas $\times$ 100 semillas.\\[3pt]
   \textbf{Pareja}\quad Húngaro frente a greedy secuencial sobre la misma
   matriz $C$.\\[3pt]
-  \textbf{Contraste H-N1.Q}\quad $\operatorname{mediana}(\Delta_w)>0{,}05$
+  \textbf{Calidad (H-N1.Q)}\quad $\operatorname{mediana}(\Delta_w)>0{,}05$
   por escenario; bootstrap, Wilcoxon y Holm.};
 
 % E2 · coste
 \node[experiment,fill=SPPurple!2,draw=SPPurple!45] at (10.14,9.42) {};
 \node[badge,fill=SPPurple] at (7.41,10.96) {E2};
-\node[exphead] at (7.74,10.97) {¿Cómo escala el LSAP central?};
+\node[exphead] at (7.74,10.97) {¿Cómo crece su coste de cálculo?};
 \draw[SPPurple!45,line width=0.55pt] (7.33,10.60) -- (12.95,10.60);
 \node[expbody] at (7.40,10.30) {%
   \textbf{Diseño}\quad $7\times3\times30=630$ ejecuciones;
   $N=32$ a $2\,048$.\\[3pt]
   \textbf{Métricas}\quad tiempo P05--P95; memoria $8NM$.\\[3pt]
-  \textbf{Diagnóstico H-N1.R}\quad pendiente temporal en el rango.};
+  \textbf{Coste (H-N1.R)}\quad crecimiento temporal en el rango.};
 
 % E3 · retirada
 \node[experiment,fill=SPGreen!2,draw=SPGreen!45] at (3.36,4.80) {};
@@ -73,7 +73,7 @@
   $\times$ 100 semillas.\\[3pt]
   \textbf{Barrido}\quad 5 fracciones anidadas por mundo;
   6\,000 recálculos.\\[3pt]
-  \textbf{Invariante H-N1.F}\quad factible si y solo si
+  \textbf{Retirada (H-N1.F)}\quad factible si y solo si
   $N_{\mathrm{activo}}\geq M$.};
 
 % E4 · validez externa
@@ -87,7 +87,7 @@
   $\times$ 30 semillas.\\[3pt]
   \textbf{Barrido}\quad 5 perfiles anidados por mundo;
   1\,500 auditorías.\\[3pt]
-  \textbf{Contraste H-N1.X}\quad heterogeneidad $\uparrow$ falsos factibles;
+  \textbf{Validez (H-N1.X)}\quad heterogeneidad $\uparrow$ falsos factibles;
   MILP/HiGHS audita.};
 
 % La salida clasifica inferencia, diagnóstico e invariantes por separado.
@@ -95,11 +95,11 @@
 \node[font=\scriptsize\bfseries,text=VIUDark,anchor=west] at (0.62,1.64)
   {Inferencia};
 \node[font=\scriptsize,text=VIUGray,anchor=west] at (2.35,1.64)
-  {H-N1.Q: parcial (\NOneScenarioGates/5 escenarios)\quad
-   H-N1.X: sustentada (\NOneHeteroContrastsSupported/4 contrastes)};
+  {calidad: parcial (\NOneScenarioGates/5 escenarios)\quad
+   modelo homogéneo: falla (\NOneHeteroContrastsSupported/4 contrastes)};
 \node[font=\scriptsize\bfseries,text=VIUOrange,anchor=west] at (0.62,0.98)
   {Verificación};
 \node[font=\scriptsize,text=VIUGray,anchor=west] at (2.35,0.98)
-  {H-N1.R: tendencia en el rango\quad H-N1.F: invariante verificado\quad
-   H-N1.I: integridad aprobada};
+  {coste: crece en el rango\quad retirada: frontera verificada\quad
+   registro: integridad aprobada};
 \end{tikzpicture}

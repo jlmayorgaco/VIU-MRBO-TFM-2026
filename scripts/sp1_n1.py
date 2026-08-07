@@ -1297,12 +1297,12 @@ def _plot_quality(
             Line2D(
                 [0], [0], marker="o", color="none",
                 markerfacecolor=COLORS["orange"],
-                markeredgecolor=COLORS["dark"], label="gate superado",
+                markeredgecolor=COLORS["dark"], label="≥ 5 %: superado",
             ),
             Line2D(
                 [0], [0], marker="D", color="none",
                 markerfacecolor="white", markeredgecolor=COLORS["blue"],
-                label="gate no superado",
+                label="≥ 5 %: no superado",
             ),
             Line2D(
                 [0], [0], color=COLORS["red"], linestyle="--",
@@ -1475,7 +1475,7 @@ def _plot_scaling(
         yscale="log",
         xlabel="Robots, $N$",
         ylabel="Tiempo del solver [ms]",
-        title="Solver y pipeline total por mundo",
+        title="Tiempo del solver y proceso completo",
     )
     axes[0].legend(loc="upper left", ncols=2, fontsize=6.2)
     axes[0].text(
@@ -1505,7 +1505,7 @@ def _plot_scaling(
     axes[0].text(
         0.03,
         0.37,
-        "línea continua: solver P50 [P05, P95]\nlínea de puntos: pipeline total P50",
+        "línea continua: solver P50 [P05, P95]\nlínea de puntos: proceso completo P50",
         transform=axes[0].transAxes,
         ha="left",
         va="top",
@@ -1517,7 +1517,7 @@ def _plot_scaling(
         yscale="log",
         xlabel="Robots, $N$",
         ylabel="Huella mínima de $C$ [MiB]",
-        title="Almacenamiento del ndarray denso",
+        title="Memoria mínima de la matriz densa",
     )
     axes[1].legend(loc="upper left", fontsize=6.4)
     label_panels(axes)

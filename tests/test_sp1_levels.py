@@ -249,7 +249,7 @@ def test_n1_confirmatory_figures_are_vector_and_source_ends_after_e4() -> None:
     )
     n1_design = latex.index("SP1.N1: campaña de validación")
     n1_quality = latex.index(
-        "SP1.N1 · E1: Húngaro frente al greedy secuencial"
+        "SP1.N1 · E1: Húngaro frente a una heurística voraz"
     )
     n1_scaling = latex.index("SP1.N1 · E2: coste computacional del LSAP")
     n1_failure = latex.index("SP1.N1 · E3: qué ocurre tras una retirada")
@@ -352,18 +352,18 @@ def test_common_protocol_pages_precede_n1() -> None:
     prose = latex.replace("\n", " ")
     assert "Cada mundo--semilla es una réplica; los robots no lo son" in prose
     assert "Cada campaña se preespecifica" not in latex
-    assert r"y=1.30cm" in protocol_latex
+    assert r"y=1.03cm" in protocol_latex
     for protocol_term in (
         "Protocolo Monte Carlo · campaña pareada",
         "mundo--semilla",
         r"\mathcal W=\mathcal C\times\Theta\times\mathcal S",
-        "Bucle Monte Carlo pareado y registro RAW",
+        "Bucle Monte Carlo pareado y registro crudo (RAW)",
         "UNIDAD INDEPENDIENTE: MUNDO--SEMILLA",
         "3 · MÉTODOS",
         "4 · REGISTRO",
         "2 · MÉTRICAS",
         r"r<|\mathcal W|",
-        "RAW cerrado",
+        "datos cerrados",
         "Procesamiento reproducible",
         r"DECISIÓN $H_0/H_1$",
         r"no rechazar $H_0$",
@@ -371,6 +371,6 @@ def test_common_protocol_pages_precede_n1() -> None:
         "Friedman",
         "Kendall $W$",
         "Holm",
-        "TIMEOUT",
+        "FALLO/LÍMITE",
     ):
         assert protocol_term in protocol_source
