@@ -2,7 +2,7 @@
   "schema_version": "sp1-level-package-v1",
   "level": "N1",
   "description": "Confirmatory homogeneous Hungarian campaign: spatial quality, controlled scaling, static post-failure re-allocation and an out-of-domain heterogeneous-capacity audit.",
-  "generated_at_utc": "2026-08-07T13:04:33.898959+00:00",
+  "generated_at_utc": "2026-08-08T04:13:20.911037+00:00",
   "environment": {
     "python": "3.13.9",
     "platform": "Windows-11-10.0.26200-SP0",
@@ -14,6 +14,8 @@
     "matplotlib": "3.10.6",
     "scipy": "1.16.3"
   },
+  "git_commit": "10b5e7da225f1d862a7821f2023f0caa0c6ddb6d",
+  "git_tree_dirty": true,
   "sources": [
     {
       "path": "experiments/configs/sp1_n1_confirmatory_v2.yaml",
@@ -22,13 +24,13 @@
     },
     {
       "path": "scripts/sp1_n1.py",
-      "bytes": 92792,
-      "sha256": "41b00e8201b81774deebc06caaa618ddb75689d3fb0d5a1f9b02db94811f6888"
+      "bytes": 115087,
+      "sha256": "a3478773c62032ad478a488c7dd19f479d0d2f6595ce6e99e431112625887390"
     },
     {
       "path": "scripts/sp1_levels_common.py",
-      "bytes": 14040,
-      "sha256": "96024d5a13ebbff2728f46f74298a7ee622c6c59d7a2224f8071885267892549"
+      "bytes": 15468,
+      "sha256": "409fda4e86b6d232d03320557b5281b986c5e89767319d3cc7cb87fb9ac0b427"
     },
     {
       "path": "scripts/sp1_a1_hungarian.py",
@@ -42,25 +44,47 @@
     },
     {
       "path": "scripts/results/sp1_levels/n1_v2/raw/quality_runs.csv",
-      "bytes": 994670,
-      "sha256": "3b8c60e7b556077a6e36d91a84d9e90e946c27ae937b7e235649a0b7ec04d0cd"
+      "bytes": 1168266,
+      "sha256": "278a5570e2ff41c6ce34a5fe047af1095f9a0b1b2d26b5d85c3822861f115bff"
     },
     {
       "path": "scripts/results/sp1_levels/n1_v2/raw/scaling_runs.csv",
-      "bytes": 71063,
-      "sha256": "ab695f800c1b2bc6db7750c0d4e8f3367a4f6932cdefe3dd71e0034196879abf"
+      "bytes": 70874,
+      "sha256": "e57816423f364dec4756f349d302bf4fa1a4543e2ca00ab09f524b852278817f"
     },
     {
       "path": "scripts/results/sp1_levels/n1_v2/raw/failure_runs.csv",
-      "bytes": 877050,
-      "sha256": "1a45a4ae55c36445263291594ee138539c1295b80c021ffebea2b3f5fbca7b86"
+      "bytes": 876747,
+      "sha256": "0d4153ab8ebeefdb155596fea9c0b1d983799ddd3af7179779f190100df39297"
     },
     {
       "path": "scripts/results/sp1_levels/n1_v2/raw/heterogeneity_runs.csv",
-      "bytes": 314847,
-      "sha256": "40b54ec5873b12f439d33f44e96d2e75bb2d38fb12c12f538250afd2b6c62d9e"
+      "bytes": 386216,
+      "sha256": "15ae1ebb67dbfeb46f046fd995db3bce3aa717f4af6b05a1d34adbe68de6a292"
     }
   ],
+  "frozen_raw": {
+    "failure": {
+      "path": "scripts/results/sp1_levels/n1_v2/raw/failure_runs.csv",
+      "bytes": 876747,
+      "sha256": "0d4153ab8ebeefdb155596fea9c0b1d983799ddd3af7179779f190100df39297"
+    },
+    "heterogeneity": {
+      "path": "scripts/results/sp1_levels/n1_v2/raw/heterogeneity_runs.csv",
+      "bytes": 386216,
+      "sha256": "15ae1ebb67dbfeb46f046fd995db3bce3aa717f4af6b05a1d34adbe68de6a292"
+    },
+    "quality": {
+      "path": "scripts/results/sp1_levels/n1_v2/raw/quality_runs.csv",
+      "bytes": 1168266,
+      "sha256": "278a5570e2ff41c6ce34a5fe047af1095f9a0b1b2d26b5d85c3822861f115bff"
+    },
+    "scaling": {
+      "path": "scripts/results/sp1_levels/n1_v2/raw/scaling_runs.csv",
+      "bytes": 70874,
+      "sha256": "e57816423f364dec4756f349d302bf4fa1a4543e2ca00ab09f524b852278817f"
+    }
+  },
   "row_counts": {
     "quality_runs": 4500,
     "scaling_runs": 630,
@@ -71,7 +95,8 @@
     "scaling_summary": 21,
     "failure_summary": 20,
     "heterogeneity_summary": 25,
-    "heterogeneity_contrasts": 4
+    "heterogeneity_contrasts": 4,
+    "heterogeneity_severity": 5
   },
   "claims": [
     "Hungarian is exact for the homogeneous robot-slot reduction.",
@@ -87,56 +112,56 @@
   ],
   "artifacts": {
     "figures/n1_central_scaling.pdf": {
-      "bytes": 58914,
-      "sha256": "78b91b21e7848eb915dd8d0f251cec8cd972d1fd9d7d5940be2474ebc90d46fc"
+      "bytes": 58757,
+      "sha256": "676b5c313045e63ee9eebcaa9fb956c316c3725a168ed637870d53f96d7b492e"
     },
     "figures/n1_central_scaling.png": {
-      "bytes": 714684,
-      "sha256": "ef55f3b5b5e22d07788e5995ed196e316c85e3a5aca5d86128b87bbe9b5c32b4"
+      "bytes": 487922,
+      "sha256": "ba7ec2f97ef2aec8a7976b0a97e04950e679c66e760da80eae26078336c60836"
     },
     "figures/n1_failure_recovery.pdf": {
-      "bytes": 52397,
-      "sha256": "4c6dc0adc465891db157b1fd5496c77c38853dcdc46f0f33c4b5d434fdf6c4c2"
+      "bytes": 52124,
+      "sha256": "477e94f42461b9ecd71428f300ccfed2228f29cf88cbe95f259769ad16dcd951"
     },
     "figures/n1_failure_recovery.png": {
-      "bytes": 417332,
-      "sha256": "b272974d9d17936d95efe2b0c04a4d48b9ec5e27e448041f092457d3033fc49a"
+      "bytes": 326669,
+      "sha256": "0b37cad7ab33831c18728c750a0c7b253bc433c15115e9091a6684c8bd2182e9"
     },
     "figures/n1_heterogeneity_boundary.pdf": {
-      "bytes": 62603,
-      "sha256": "cd02d4191683eb66281070ba467665a19aec8befc9dedb57ebb9c4be72ee8468"
+      "bytes": 61041,
+      "sha256": "6cc7a51a860d4692507625ba3f0310f9b503660a52a110d74e58484148bfeea3"
     },
     "figures/n1_heterogeneity_boundary.png": {
-      "bytes": 495375,
-      "sha256": "26f7cfafd33bddea8eaef775287ff5157c293d80a24d453da92e6e85bb216f9e"
+      "bytes": 345370,
+      "sha256": "ddbf8e42d7b80de8dec3c9b444c1ebc0ed8b2582ff638b92f656c361e599e6f3"
     },
     "figures/n1_operating_envelope.pdf": {
-      "bytes": 67459,
-      "sha256": "40fcb7d2d0e11d879fb31b8be3f7a94f18556e0d0d37463feb0bb4b0b2eb3b52"
+      "bytes": 65049,
+      "sha256": "3ec2c696828632acf6545e405e60dd2d5cb4f3de3bb5df415e7a5d4baa42856a"
     },
     "figures/n1_operating_envelope.png": {
-      "bytes": 618390,
-      "sha256": "b4c6300ce7e27d84b920789030143c29bbb51f7c028fa5f0df94e64c2865a5f6"
+      "bytes": 451696,
+      "sha256": "75b1c6b1fe167959741c771cfc293b3e60b373096e0f5a85d160c0f301ffca2f"
     },
     "figures/n1_quality_scenarios.pdf": {
-      "bytes": 93263,
-      "sha256": "e049734456f0358e95753e87119e1862d7ad120d822e420966a9618943ea33c2"
+      "bytes": 68367,
+      "sha256": "1348a31c845d86ad5058807dfb5d0b0f81ab0b955067c3ff7c70690e943d6074"
     },
     "figures/n1_quality_scenarios.png": {
-      "bytes": 445642,
-      "sha256": "0265fdf7f61e62444dcdbf96b771a54103bce72aab46f11fdbd36e89ec4c039a"
+      "bytes": 437283,
+      "sha256": "d4d8ecfa09eb9598fb8bba4af988f44747bcb0ad65fd13299cec874ffc84d381"
     },
     "figures/n1_validity_boundary.pdf": {
-      "bytes": 66697,
-      "sha256": "b1f4e7587f869ba36a5ca351d11edfc1c57214c4a34fe51cf01fbbb6df07fd5a"
+      "bytes": 65513,
+      "sha256": "e24ef9b325ec091dd8c59bb92f7e21120eca506ee62c6c45436d30877e000e34"
     },
     "figures/n1_validity_boundary.png": {
-      "bytes": 525769,
-      "sha256": "0040c8f48adffe3df944963f0974b8606387acddf36bc3181f55d8bd5b67ecb1"
+      "bytes": 437610,
+      "sha256": "1ab725917c3a8a4ba160cf4646c59348fefb2b92109c0d04878d9bcd30775f64"
     },
     "key_metrics.json": {
-      "bytes": 3840,
-      "sha256": "ec4719edfa733ad6ce671a96b96df9878a18db4d9fba3eb6d7cf98dc8abd8ef4"
+      "bytes": 7321,
+      "sha256": "71cf9296ed2d04c32a1d635fa61e1d6fd8f74c3ffe5cfb84e37f29a451509296"
     },
     "processed/failure_summary.csv": {
       "bytes": 2578,
@@ -146,41 +171,45 @@
       "bytes": 396,
       "sha256": "04517c626120664a5e5a76b2968792868d779d641499c3dac87ea4c7e9b6484d"
     },
+    "processed/heterogeneity_severity.csv": {
+      "bytes": 860,
+      "sha256": "b6274e3a98e6363497dcbfcad58944dec21444115dc8ae1e2ecb4744e6295df5"
+    },
     "processed/heterogeneity_summary.csv": {
-      "bytes": 5245,
-      "sha256": "8617fcb98b896bebbbb1876282dbb5f1b5bf41d321845471e0d504a8b600757a"
+      "bytes": 5282,
+      "sha256": "d5875f1765c23f739d1a7afb9be2e81aa99eb89ebe9a9fed2662a1041266c3b0"
     },
     "processed/quality_cell_diagnostic.csv": {
       "bytes": 3221,
       "sha256": "902f17b88447fcba4367a633b3b78f79834370d4b63e6785937c8d22b644bcf4"
     },
     "processed/quality_scenario_summary.csv": {
-      "bytes": 1801,
-      "sha256": "a0fe6db20bb1411bfebea9e734d44758248c83d5850c448799a8bd8e5a976599"
+      "bytes": 2734,
+      "sha256": "747c20d43658fc74125b0ed16393f35ca4f726fe2d9a4baa0499df3b8dbd0d23"
     },
     "processed/scaling_summary.csv": {
-      "bytes": 1763,
-      "sha256": "68c729ce3cccff7ca48d057fbfb898de956eda4f9d142024b908621e1b2947de"
+      "bytes": 1657,
+      "sha256": "cdda024f18f98aaa760066c14d9a15ce355e7baa93207408c29c46ed489e8183"
     },
     "raw/failure_runs.csv": {
-      "bytes": 877050,
-      "sha256": "1a45a4ae55c36445263291594ee138539c1295b80c021ffebea2b3f5fbca7b86"
+      "bytes": 876747,
+      "sha256": "0d4153ab8ebeefdb155596fea9c0b1d983799ddd3af7179779f190100df39297"
     },
     "raw/heterogeneity_runs.csv": {
-      "bytes": 314847,
-      "sha256": "40b54ec5873b12f439d33f44e96d2e75bb2d38fb12c12f538250afd2b6c62d9e"
+      "bytes": 386216,
+      "sha256": "15ae1ebb67dbfeb46f046fd995db3bce3aa717f4af6b05a1d34adbe68de6a292"
     },
     "raw/quality_runs.csv": {
-      "bytes": 994670,
-      "sha256": "3b8c60e7b556077a6e36d91a84d9e90e946c27ae937b7e235649a0b7ec04d0cd"
+      "bytes": 1168266,
+      "sha256": "278a5570e2ff41c6ce34a5fe047af1095f9a0b1b2d26b5d85c3822861f115bff"
     },
     "raw/scaling_runs.csv": {
-      "bytes": 71063,
-      "sha256": "ab695f800c1b2bc6db7750c0d4e8f3367a4f6932cdefe3dd71e0034196879abf"
+      "bytes": 70874,
+      "sha256": "e57816423f364dec4756f349d302bf4fa1a4543e2ca00ab09f524b852278817f"
     },
     "REPORT.md": {
-      "bytes": 954,
-      "sha256": "46d40b1861a8227a820a17a354d8b89ab45d308e86fbf3e74f70b20343f8766a"
+      "bytes": 1434,
+      "sha256": "7530101e69914cad81755106cad9d5e1a8c21f657a37e48ddcac5475dad39746"
     }
   }
 }

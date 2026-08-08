@@ -164,9 +164,6 @@ def generate_metrics_tex() -> Path:
         "NOneMilpCertifiedPct": _tex_float(
             100.0 * n1["milp_certification_rate"], 2
         ),
-        "NOneMilpRescuePct": _tex_float(
-            100.0 * n1["milp_rescue_rate_among_false"], 2
-        ),
         "NOneMilpAudits": _tex_integer(n1["milp_audit_count"]),
         "NOneMilpFeasibleIncumbents": _tex_integer(
             n1["milp_feasible_incumbent_count"]
@@ -176,8 +173,12 @@ def generate_metrics_tex() -> Path:
             n1["milp_uncertified_count"]
         ),
         "NOneFalseFeasibleCount": _tex_integer(n1["false_feasible_count"]),
-        "NOneMilpRescueCount": _tex_integer(
-            n1["milp_rescue_count_among_false"]
+        # Feasible repair and certified repair are separate counts on purpose.
+        "NOneMilpFeasibleAmongFalse": _tex_integer(
+            n1["milp_feasible_among_false_count"]
+        ),
+        "NOneMilpCertifiedAmongFalse": _tex_integer(
+            n1["milp_certified_among_false_count"]
         ),
         "NOneMilpUncertifiedFalseCount": _tex_integer(
             n1["milp_uncertified_false_count"]
@@ -194,6 +195,75 @@ def generate_metrics_tex() -> Path:
         ),
         "NOneHeteroContrastsSupported": _tex_integer(
             n1["heterogeneity_contrasts_supported"]
+        ),
+        # E1 · relevancia práctica y control de orden del comparador.
+        "NOneShareUniform": _tex_float(
+            100.0 * n1["share_above_threshold_uniform"], 1
+        ),
+        "NOneShareClustered": _tex_float(
+            100.0 * n1["share_above_threshold_clustered"], 1
+        ),
+        "NOneShareCorridor": _tex_float(
+            100.0 * n1["share_above_threshold_corridor"], 1
+        ),
+        "NOneShareSeparated": _tex_float(
+            100.0 * n1["share_above_threshold_separated"], 1
+        ),
+        "NOneShareRing": _tex_float(100.0 * n1["share_above_threshold_ring"], 1),
+        "NOneOrderOverallPct": _tex_float(
+            100.0 * n1["quality_shuffled_order_overall_median"], 2
+        ),
+        "NOneOrderUniformPct": _tex_float(
+            100.0 * n1["shuffled_order_uniform_median"], 2
+        ),
+        "NOneOrderCorridorPct": _tex_float(
+            100.0 * n1["shuffled_order_corridor_median"], 2
+        ),
+        "NOneOrderCorridorLowPct": _tex_float(
+            100.0 * n1["shuffled_order_corridor_ci_low"], 2
+        ),
+        # E3 · resultado empírico posterior a la retirada.
+        "NOneFailureCostSharePct": _tex_float(
+            100.0 * n1["failure_cost_increase_share"], 1
+        ),
+        "NOneFailureCostRows": _tex_integer(n1["failure_cost_increase_rows"]),
+        "NOneMaxTestedFailureFraction": _tex_float(
+            n1["max_tested_failure_fraction"], 2
+        ),
+        "NOneFailureCostMaxPct": _tex_float(
+            100.0 * n1["failure_max_fraction_cost_median"], 1
+        ),
+        # E4 · severidad, tendencia y certificado de cardinalidad.
+        "NOneDeficitLowPct": _tex_float(100.0 * n1["deficit_low_median"], 1),
+        "NOneDeficitModeratePct": _tex_float(
+            100.0 * n1["deficit_moderate_median"], 1
+        ),
+        "NOneDeficitHighPct": _tex_float(100.0 * n1["deficit_high_median"], 1),
+        "NOneDeficitExtremePct": _tex_float(
+            100.0 * n1["deficit_extreme_median"], 1
+        ),
+        "NOneDeficitExtremeLowPct": _tex_float(
+            100.0 * n1["deficit_extreme_ci_low"], 1
+        ),
+        "NOneDeficitExtremeHighPct": _tex_float(
+            100.0 * n1["deficit_extreme_ci_high"], 1
+        ),
+        "NOneTrendSlope": _tex_float(n1["trend_slope"], 2),
+        "NOneTrendLow": _tex_float(n1["trend_ci_low"], 2),
+        "NOneTrendHigh": _tex_float(n1["trend_ci_high"], 2),
+        "NOneTrendOdds": _tex_float(n1["trend_odds_ratio_per_decile"], 2),
+        "NOneTrendClusters": _tex_integer(n1["trend_clusters"]),
+        "NOneTiebreakAgreementPct": _tex_float(
+            100.0 * n1["tiebreak_verdict_agreement"], 1
+        ),
+        "NOneCrossLoadTies": _tex_integer(n1["cross_load_cost_ties_total"]),
+        "NOneCertificateWorlds": _tex_integer(n1["certificate_worlds_count"]),
+        "NOneCertificateFalse": _tex_integer(
+            n1["certificate_false_feasible_count"]
+        ),
+        "NOneUncertifiedWorlds": _tex_integer(n1["uncertified_worlds_count"]),
+        "NOneUncertifiedFalse": _tex_integer(
+            n1["uncertified_false_feasible_count"]
         ),
     }
     lines = [
@@ -336,6 +406,39 @@ def _render_pdf(pdf_path: Path, render_dir: Path) -> int:
     return len(list(render_dir.glob("page-*.png")))
 
 
+def verify_frozen_raw() -> dict[str, str]:
+    """Fail unless the RAW recorded in each manifest is still byte-identical.
+
+    This build never runs a solver: it only typesets numbers that the campaign
+    already produced. The check makes that contract enforceable, so a PDF can
+    never quote a figure computed from a campaign that has since been rerun.
+    """
+
+    digests: dict[str, str] = {}
+    for directory in ACTIVE_LEVEL_DIRS.values():
+        manifest_path = LEVELS_OUTPUT_ROOT / directory / "manifest.json"
+        manifest = _read_json(manifest_path)
+        frozen = manifest.get("frozen_raw")
+        if not frozen:
+            raise RuntimeError(
+                f"{manifest_path} has no frozen_raw section; rerun sp1_n1.py "
+                "so the campaign records the hashes its analysis used."
+            )
+        for name, record in frozen.items():  # type: ignore[union-attr]
+            path = REPOSITORY_ROOT / str(record["path"])
+            if not path.is_file():
+                raise FileNotFoundError(f"Frozen RAW is missing: {path}")
+            digest = sha256_file(path)
+            if digest != record["sha256"]:
+                raise RuntimeError(
+                    f"{path} changed since the analysis ran "
+                    f"({record['sha256'][:12]} -> {digest[:12]}). Rerun "
+                    "sp1_n1.py before rebuilding the PDF."
+                )
+            digests[f"{directory}/{name}"] = digest
+    return digests
+
+
 def build_pdf(output_dir: Path) -> dict[str, object]:
     """Compile, enforce the page budget and render all pages."""
 
@@ -349,6 +452,7 @@ def build_pdf(output_dir: Path) -> dict[str, object]:
             "Run sp1_n1.py first. Missing: "
             + ", ".join(missing)
         )
+    frozen_digests = verify_frozen_raw()
     output_dir.mkdir(parents=True, exist_ok=True)
     metrics_path = generate_metrics_tex()
     built = _run_lualatex(output_dir)
@@ -404,6 +508,10 @@ def build_pdf(output_dir: Path) -> dict[str, object]:
             )
             for level, directory in ACTIVE_LEVEL_DIRS.items()
         },
+        # The campaign is upstream of this build; these are the exact RAW
+        # files the typeset numbers came from.
+        "frozen_raw_sha256": frozen_digests,
+        "runs_solvers": False,
     }
     write_json(output_dir / "manifest.json", manifest)
     return manifest

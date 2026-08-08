@@ -27,11 +27,15 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import statsmodels.api as smapi
 import yaml
 from matplotlib.colors import LinearSegmentedColormap, TwoSlopeNorm
 from matplotlib.lines import Line2D
 from matplotlib.ticker import FuncFormatter
 from scipy import stats
+from scipy.optimize import linear_sum_assignment as _linear_sum_assignment
+from statsmodels.genmod.cov_struct import Exchangeable
+from statsmodels.genmod.families import Binomial
 
 import sp1_a1_hungarian as homogeneous
 import sp1_a2_milp as heterogeneous
@@ -40,6 +44,7 @@ from sp1_levels_common import (
     LEVELS_OUTPUT_ROOT,
     REPOSITORY_ROOT,
     PowerLawFit,
+    bool_to_float,
     configure_publication_style,
     fit_power_law,
     label_panels,
@@ -82,8 +87,11 @@ QUOTA_LABELS = {
     "moderate": "moderada",
     "extreme": "extrema",
 }
-JOURNAL_WIDTH_IN = 7.16
-JOURNAL_HEIGHT_IN = 3.12
+# Sized so the figures print at roughly 1:1 inside the 15 cm text block of the
+# VIU template. Drawing them wider and scaling down in LaTeX shrinks the tick
+# and annotation fonts below legibility.
+JOURNAL_WIDTH_IN = 5.75
+JOURNAL_HEIGHT_IN = 2.02
 
 
 def _load_config(path: Path, *, smoke: bool) -> dict[str, Any]:
@@ -166,6 +174,51 @@ def _bootstrap_median_interval(
     alpha = 1.0 - confidence
     return (
         float(np.median(array)),
+        float(np.quantile(estimates, alpha / 2.0)),
+        float(np.quantile(estimates, 1.0 - alpha / 2.0)),
+    )
+
+
+def _stratified_bootstrap_median(
+    frame: pd.DataFrame,
+    column: str,
+    *,
+    strata: Sequence[str],
+    resamples: int,
+    seed: int,
+    confidence: float,
+) -> tuple[float, float, float]:
+    """Bootstrap the pooled median resampling worlds inside each design cell.
+
+    The 900 worlds of a scenario come from nine crossed cells of 100 seeds.
+    Resampling the pooled sample would let a cell dominate a replicate, so
+    each cell is resampled to its own size and the medians recombined.
+    """
+
+    groups = [
+        block[column].to_numpy(float)
+        for _, block in frame.groupby(list(strata), sort=True)
+    ]
+    groups = [values[np.isfinite(values)] for values in groups]
+    groups = [values for values in groups if values.size]
+    if not groups:
+        return math.nan, math.nan, math.nan
+    rng = np.random.default_rng(seed)
+    estimates = np.empty(resamples, dtype=float)
+    for index in range(resamples):
+        estimates[index] = float(
+            np.median(
+                np.concatenate(
+                    [
+                        values[rng.integers(0, values.size, values.size)]
+                        for values in groups
+                    ]
+                )
+            )
+        )
+    alpha = 1.0 - confidence
+    return (
+        float(np.median(np.concatenate(groups))),
         float(np.quantile(estimates, alpha / 2.0)),
         float(np.quantile(estimates, 1.0 - alpha / 2.0)),
     )
@@ -314,6 +367,29 @@ def _run_quality(config: Mapping[str, Any]) -> pd.DataFrame:
                         if greedy_cost > 0.0
                         else 0.0
                     )
+                    # Order control: the greedy baseline sweeps slots in the
+                    # order the reduction emits them (load by load). A second
+                    # evaluation under a deterministic random order, drawn
+                    # independently of positions and costs, measures how much
+                    # of the reported saving is an artefact of that order.
+                    order_rng = np.random.default_rng(
+                        homogeneous.stable_seed(
+                            base_seed, "n1-quality-greedy-order", world_seed
+                        )
+                    )
+                    shuffled_cost = homogeneous.sequential_greedy_cost(
+                        result.cost_matrix[
+                            np.ix_(
+                                order_rng.permutation(result.cost_matrix.shape[0]),
+                                order_rng.permutation(result.cost_matrix.shape[1]),
+                            )
+                        ]
+                    )
+                    shuffled_saving = (
+                        (shuffled_cost - result.total_cost) / shuffled_cost
+                        if shuffled_cost > 0.0
+                        else 0.0
+                    )
                     assignment_costs = [item.cost for item in result.assignments]
                     expected_slots = int(np.sum(quotas))
                     violations = int(
@@ -351,6 +427,8 @@ def _run_quality(config: Mapping[str, Any]) -> pd.DataFrame:
                                 else 1.0
                             ),
                             "relative_saving": saving,
+                            "greedy_cost_shuffled_order": shuffled_cost,
+                            "relative_saving_shuffled_order": shuffled_saving,
                             "normalized_assignment_cost_p95": (
                                 _quantile(assignment_costs, 0.95)
                                 / workspace_diagonal
@@ -565,7 +643,13 @@ def _audit_hungarian_capacity(
     robots: Sequence[Any],
     loads: Sequence[Any],
     assignments: Sequence[Any],
-) -> tuple[bool, float, float, float]:
+) -> tuple[bool, float, float, float, float]:
+    """Audit the physical capacity actually recruited by the slot assignment.
+
+    Returns feasibility, total shortfall, minimum and mean margin, and the
+    worst relative deficit ``D_w = max_k [(m_k - sum_i c_i y_ik)/m_k]_+``.
+    """
+
     capacity_by_robot = {robot.id: float(robot.capacity) for robot in robots}
     mass_by_load = {load.id: float(load.mass) for load in loads}
     recruited = {load.id: 0.0 for load in loads}
@@ -575,13 +659,87 @@ def _audit_hungarian_capacity(
         [recruited[load_id] - mass for load_id, mass in mass_by_load.items()],
         dtype=float,
     )
+    masses = np.asarray(list(mass_by_load.values()), dtype=float)
     shortfalls = np.maximum(-margins, 0.0)
     return (
         bool(np.all(margins >= -1e-9)),
         float(np.sum(shortfalls)),
         float(np.min(margins)),
         float(np.mean(margins)),
+        float(np.max(shortfalls / masses)),
     )
+
+
+def _permuted_capacity_audit(
+    robots: Sequence[Any],
+    loads: Sequence[Any],
+    q_bar: float,
+    seed: int,
+) -> tuple[bool, int]:
+    """Re-solve the slot LSAP under a permuted row and column order.
+
+    Positions are sampled continuously, so exact cost ties between slots of
+    different loads have probability zero; the only ties are the ``n_k``
+    identical columns of one load, which are interchangeable by construction.
+    This control confirms that the false-feasible verdict does not depend on
+    the order SciPy happens to receive. Also counts genuine cross-load ties.
+    """
+
+    homogeneous_robots, homogeneous_loads = heterogeneous._hungarian_entities(
+        robots, loads, q_bar
+    )
+    slots = homogeneous.build_slots(homogeneous_loads, q_bar)
+    cost_matrix = homogeneous.build_cost_matrix(homogeneous_robots, slots)
+    load_of_slot = np.asarray([slot.load_id for slot in slots])
+    cross_load_ties = 0
+    for row in cost_matrix:
+        values, counts = np.unique(row, return_counts=True)
+        for value in values[counts > 1]:
+            if len(set(load_of_slot[row == value])) > 1:
+                cross_load_ties += 1
+
+    rng = np.random.default_rng(seed)
+    row_order = rng.permutation(cost_matrix.shape[0])
+    column_order = rng.permutation(cost_matrix.shape[1])
+    rows, columns = _linear_sum_assignment(
+        cost_matrix[np.ix_(row_order, column_order)]
+    )
+    capacity_by_robot = {robot.id: float(robot.capacity) for robot in robots}
+    recruited = {load.id: 0.0 for load in loads}
+    for row_index, column_index in zip(rows, columns, strict=True):
+        robot = homogeneous_robots[row_order[row_index]]
+        slot = slots[column_order[column_index]]
+        recruited[slot.load_id] += capacity_by_robot[robot.id]
+    feasible = all(
+        recruited[load.id] >= float(load.mass) - 1e-9 for load in loads
+    )
+    return (not feasible), cross_load_ties
+
+
+def _cardinality_certificate(
+    robots: Sequence[Any],
+    loads: Sequence[Any],
+    q_bar: float,
+) -> bool:
+    """Test the validity window of the cardinality model on every load.
+
+    The nominal model is certified for load ``k`` when
+    ``(n_k - 1) c_max < m_k <= n_k c_min`` over the admissible set, which in
+    N1 is the whole fleet. Inside that window any ``n_k`` robots suffice and
+    fewer than ``n_k`` never do, so counting robots is exact.
+    """
+
+    capacities = np.asarray([robot.capacity for robot in robots], dtype=float)
+    c_min = float(capacities.min())
+    c_max = float(capacities.max())
+    for load in loads:
+        mass = float(load.mass)
+        cardinality = math.ceil(mass / q_bar)
+        lower_ok = (cardinality - 1) * c_max < mass + 1e-12
+        upper_ok = mass <= cardinality * c_min + 1e-12
+        if not (lower_ok and upper_ok):
+            return False
+    return True
 
 
 def _run_heterogeneity(config: Mapping[str, Any]) -> pd.DataFrame:
@@ -639,10 +797,26 @@ def _run_heterogeneity(config: Mapping[str, Any]) -> pd.DataFrame:
                         total_shortfall,
                         minimum_margin,
                         mean_margin,
+                        relative_deficit,
                     ) = _audit_hungarian_capacity(
                         robots,
                         loads,
                         slot_result.assignments,
+                    )
+                    certificate = _cardinality_certificate(robots, loads, q_bar)
+                    (
+                        permuted_false_feasible,
+                        cross_load_ties,
+                    ) = _permuted_capacity_audit(
+                        robots,
+                        loads,
+                        q_bar,
+                        homogeneous.stable_seed(
+                            base_seed,
+                            "n1-heterogeneity-tiebreak",
+                            world_seed,
+                            capacity_mode,
+                        ),
                     )
 
                     milp_result = None
@@ -702,6 +876,13 @@ def _run_heterogeneity(config: Mapping[str, Any]) -> pd.DataFrame:
                             "hungarian_total_shortfall_kg": total_shortfall,
                             "hungarian_minimum_margin_kg": minimum_margin,
                             "hungarian_mean_margin_kg": mean_margin,
+                            "hungarian_relative_deficit": relative_deficit,
+                            "cardinality_certificate": certificate,
+                            "false_feasible_permuted_order": permuted_false_feasible,
+                            "cross_load_cost_ties": cross_load_ties,
+                            "capacity_spread": float(
+                                np.max(capacities) / np.min(capacities)
+                            ),
                             "milp_feasible": milp_feasible,
                             "milp_optimal_certified": milp_optimal,
                             "milp_mip_gap": (
@@ -710,7 +891,15 @@ def _run_heterogeneity(config: Mapping[str, Any]) -> pd.DataFrame:
                                 and milp_result.mip_gap is not None
                                 else math.nan
                             ),
-                            "milp_rescues_false_feasible": bool(
+                            # Two distinct facts, never one column: that a
+                            # capacity-aware assignment EXISTS for a world N1
+                            # declared feasible, and that HiGHS proved it
+                            # optimal. Conflating them reads a certification
+                            # rate as a feasibility rate.
+                            "milp_repairs_false_feasible": bool(
+                                false_feasible and milp_feasible
+                            ),
+                            "milp_repairs_false_feasible_certified": bool(
                                 false_feasible and milp_feasible and milp_optimal
                             ),
                             "milp_solver_ms": (
@@ -738,17 +927,41 @@ def _quality_analysis(
     for scenario in scenario_order:
         block = runs.loc[runs["scenario"] == scenario]
         values = block["relative_saving"].to_numpy(float)
-        estimate, low, high = _bootstrap_median_interval(
-            values,
+        estimate, low, high = _stratified_bootstrap_median(
+            block,
+            "relative_saving",
+            strata=("M", "quota_mode"),
             resamples=resamples,
             seed=homogeneous.stable_seed(
                 int(config["base_seed"]), "analysis-quality", scenario
             ),
             confidence=confidence,
         )
+        shuffled = block["relative_saving_shuffled_order"].to_numpy(float)
+        (
+            shuffled_estimate,
+            shuffled_low,
+            shuffled_high,
+        ) = _stratified_bootstrap_median(
+            block,
+            "relative_saving_shuffled_order",
+            strata=("M", "quota_mode"),
+            resamples=resamples,
+            seed=homogeneous.stable_seed(
+                int(config["base_seed"]), "analysis-quality-order", scenario
+            ),
+            confidence=confidence,
+        )
+        exceed = int(np.sum(values > threshold))
+        exceed_low, exceed_high = _wilson_interval(
+            exceed, values.size, confidence=confidence
+        )
         shifted = values - threshold
-        raw_p[scenario] = _safe_wilcoxon_greater(shifted)
+        # The declared endpoint is a statement about the median, so the exact
+        # sign test contrasts it directly; Wilcoxon needs symmetry of the
+        # shifted differences and is kept only as a sensitivity analysis.
         sign_p[scenario] = _exact_sign_greater(shifted)
+        raw_p[scenario] = _safe_wilcoxon_greater(shifted)
         rows.append(
             {
                 "scenario": scenario,
@@ -757,6 +970,13 @@ def _quality_analysis(
                 "relative_saving_median": estimate,
                 "relative_saving_ci_low": low,
                 "relative_saving_ci_high": high,
+                "shuffled_order_median": shuffled_estimate,
+                "shuffled_order_ci_low": shuffled_low,
+                "shuffled_order_ci_high": shuffled_high,
+                "shuffled_order_median_shift": shuffled_estimate - estimate,
+                "share_above_threshold": exceed / values.size,
+                "share_above_threshold_ci_low": exceed_low,
+                "share_above_threshold_ci_high": exceed_high,
                 "normalized_p95_cost_median": float(
                     block["normalized_assignment_cost_p95"].median()
                 ),
@@ -776,35 +996,40 @@ def _quality_analysis(
                 "constraint_violations": int(
                     block["constraint_violations"].sum()
                 ),
-                "wilcoxon_p_raw": raw_p[scenario],
+                "sign_p_raw": sign_p[scenario],
+                "wilcoxon_sensitivity_p_raw": raw_p[scenario],
                 "rank_biserial_vs_5pct": _rank_biserial_paired(shifted),
-                "sign_sensitivity_p_raw": sign_p[scenario],
             }
         )
-    adjusted = _holm_adjust(raw_p)
     sign_adjusted = _holm_adjust(sign_p)
+    wilcoxon_adjusted = _holm_adjust(raw_p)
     summary = pd.DataFrame(rows)
-    summary["wilcoxon_p_holm"] = summary["scenario"].map(adjusted)
-    summary["sign_sensitivity_p_holm"] = summary["scenario"].map(
-        sign_adjusted
+    summary["sign_p_holm"] = summary["scenario"].map(sign_adjusted)
+    summary["wilcoxon_sensitivity_p_holm"] = summary["scenario"].map(
+        wilcoxon_adjusted
     )
     summary["saving_over_5pct_supported"] = (
         (summary["relative_saving_ci_low"] > threshold)
-        & (summary["wilcoxon_p_holm"] < 0.05)
+        & (summary["sign_p_holm"] < 0.05)
     )
-    summary["sign_sensitivity_supported"] = (
-        summary["sign_sensitivity_p_holm"] < 0.05
+    summary["wilcoxon_sensitivity_supported"] = (
+        summary["wilcoxon_sensitivity_p_holm"] < 0.05
+    )
+    summary["order_control_supported"] = (
+        summary["shuffled_order_ci_low"] > threshold
     )
 
-    overall = _bootstrap_median_interval(
-        runs["relative_saving"].to_numpy(float),
+    overall = _stratified_bootstrap_median(
+        runs,
+        "relative_saving",
+        strata=("scenario", "M", "quota_mode"),
         resamples=resamples,
         seed=homogeneous.stable_seed(
             int(config["base_seed"]), "analysis-quality-overall"
         ),
         confidence=confidence,
     )
-    overall_p = _safe_wilcoxon_greater(
+    overall_p = _exact_sign_greater(
         runs["relative_saving"].to_numpy(float) - threshold
     )
     metrics = {
@@ -819,14 +1044,32 @@ def _quality_analysis(
         "quality_supported_max_p_holm": float(
             summary.loc[
                 summary["saving_over_5pct_supported"],
-                "wilcoxon_p_holm",
+                "sign_p_holm",
             ].max()
         ),
         "sign_sensitivity_matches_confirmatory_gate": bool(
             np.array_equal(
                 summary["saving_over_5pct_supported"].to_numpy(bool),
-                summary["sign_sensitivity_supported"].to_numpy(bool),
+                summary["wilcoxon_sensitivity_supported"].to_numpy(bool),
             )
+        ),
+        "order_control_matches_confirmatory_gate": bool(
+            np.array_equal(
+                summary["saving_over_5pct_supported"].to_numpy(bool),
+                summary["order_control_supported"].to_numpy(bool),
+            )
+        ),
+        "quality_shuffled_order_overall_median": float(
+            _stratified_bootstrap_median(
+                runs,
+                "relative_saving_shuffled_order",
+                strata=("scenario", "M", "quota_mode"),
+                resamples=resamples,
+                seed=homogeneous.stable_seed(
+                    int(config["base_seed"]), "analysis-quality-order-overall"
+                ),
+                confidence=confidence,
+            )[0]
         ),
         "quality_feasibility_rate": float(runs["mission_feasible"].mean()),
         "quality_constraint_violations": int(
@@ -1032,9 +1275,30 @@ def _failure_analysis(
             }
         )
     summary = pd.DataFrame(rows)
+    withdrawn = runs.loc[
+        runs["recovery_feasible"] & (runs["failure_fraction_nominal"] > 0.0)
+    ]
     metrics = {
         "failure_theory_agreement_rate": float(
             runs["theory_agreement"].mean()
+        ),
+        # The re-solve is cheaper only if a withdrawn robot was idle; report
+        # how often the optimal cost strictly rises instead of asserting it.
+        "failure_cost_increase_share": float(
+            (withdrawn["relative_cost_increase"] > 0.0).mean()
+        ),
+        "failure_cost_increase_rows": int(len(withdrawn)),
+        "failure_cost_increase_median": float(
+            withdrawn["relative_cost_increase"].median()
+        ),
+        "failure_max_fraction_cost_median": float(
+            withdrawn.loc[
+                np.isclose(
+                    withdrawn["failure_fraction_nominal"],
+                    withdrawn["failure_fraction_nominal"].max(),
+                ),
+                "relative_cost_increase",
+            ].median()
         ),
         "zero_reserve_positive_failure_recovery_rate": float(
             runs.loc[
@@ -1050,10 +1314,49 @@ def _failure_analysis(
     return summary, metrics
 
 
+def _heterogeneity_trend(runs: pd.DataFrame) -> dict[str, float]:
+    """Fit an ordered trend of false feasibility on realized heterogeneity.
+
+    McNemar contrasts each profile against its homogeneous twin but says
+    nothing about monotonicity. A logistic GEE clustered by world uses the
+    paired structure and tests the single slope on ``CV(c_i)``.
+    """
+
+    frame = pd.DataFrame(
+        {
+            "false_feasible": bool_to_float(runs["hungarian_false_feasible"]),
+            "capacity_cv": pd.to_numeric(runs["capacity_cv"], errors="coerce"),
+            "world_id": runs["world_id"].astype(str),
+        }
+    ).dropna()
+    model = smapi.GEE.from_formula(
+        "false_feasible ~ capacity_cv",
+        groups="world_id",
+        data=frame,
+        family=Binomial(),
+        cov_struct=Exchangeable(),
+    )
+    fitted = model.fit()
+    slope = float(fitted.params["capacity_cv"])
+    stderr = float(fitted.bse["capacity_cv"])
+    z_value = slope / stderr if stderr > 0.0 else math.nan
+    return {
+        "trend_intercept": float(fitted.params["Intercept"]),
+        "trend_slope": slope,
+        "trend_stderr": stderr,
+        "trend_z": z_value,
+        "trend_p_one_sided": float(stats.norm.sf(z_value)),
+        "trend_ci_low": slope - 1.959963985 * stderr,
+        "trend_ci_high": slope + 1.959963985 * stderr,
+        "trend_odds_ratio_per_decile": float(math.exp(0.1 * slope)),
+        "trend_clusters": int(frame["world_id"].nunique()),
+    }
+
+
 def _heterogeneity_analysis(
     runs: pd.DataFrame,
     config: Mapping[str, Any],
-) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, Any]]:
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, dict[str, Any]]:
     confidence = float(config["analysis"]["confidence_level"])
     modes = list(config["heterogeneity"]["capacity_modes"])
     rows: list[dict[str, Any]] = []
@@ -1073,9 +1376,12 @@ def _heterogeneity_analysis(
             len(block),
             confidence=confidence,
         )
-        rescue_count = int(false_block["milp_rescues_false_feasible"].sum())
-        rescue_low, rescue_high = _wilson_interval(
-            rescue_count,
+        repair_count = int(false_block["milp_repairs_false_feasible"].sum())
+        repair_certified_count = int(
+            false_block["milp_repairs_false_feasible_certified"].sum()
+        )
+        repair_low, repair_high = _wilson_interval(
+            repair_count,
             len(false_block),
             confidence=confidence,
         )
@@ -1102,14 +1408,15 @@ def _heterogeneity_analysis(
                 "milp_certified_count": certified_count,
                 "milp_certification_ci_low": certified_low,
                 "milp_certification_ci_high": certified_high,
-                "milp_rescue_rate_among_false": (
-                    float(false_block["milp_rescues_false_feasible"].mean())
+                "milp_repair_rate_among_false": (
+                    float(false_block["milp_repairs_false_feasible"].mean())
                     if not false_block.empty
                     else math.nan
                 ),
-                "milp_rescue_count": rescue_count,
-                "milp_rescue_ci_low": rescue_low,
-                "milp_rescue_ci_high": rescue_high,
+                "milp_repair_count": repair_count,
+                "milp_repair_certified_count": repair_certified_count,
+                "milp_repair_ci_low": repair_low,
+                "milp_repair_ci_high": repair_high,
             }
         )
     summary = pd.DataFrame(rows)
@@ -1161,6 +1468,44 @@ def _heterogeneity_analysis(
     )
     contrasts["supported"] = contrasts["mcnemar_exact_p_holm"] < 0.05
 
+    severity_rows: list[dict[str, Any]] = []
+    for mode in modes:
+        block = runs.loc[runs["capacity_mode"] == mode]
+        false_block = block.loc[block["hungarian_false_feasible"]]
+        deficit, low, high = _bootstrap_median_interval(
+            false_block["hungarian_relative_deficit"].to_numpy(float),
+            resamples=int(config["analysis"]["bootstrap_resamples"]),
+            seed=homogeneous.stable_seed(
+                int(config["base_seed"]),
+                "analysis-heterogeneity-severity",
+                mode,
+            ),
+            confidence=confidence,
+        )
+        severity_rows.append(
+            {
+                "capacity_mode": mode,
+                "capacity_label": CAPACITY_LABELS[mode],
+                "capacity_cv_median": float(block["capacity_cv"].median()),
+                "capacity_spread_median": float(block["capacity_spread"].median()),
+                "n_false_feasible": int(len(false_block)),
+                "certificate_rate": float(block["cardinality_certificate"].mean()),
+                "deficit_median_when_false": deficit,
+                "deficit_ci_low": low,
+                "deficit_ci_high": high,
+                "deficit_p90_when_false": _quantile(
+                    false_block["hungarian_relative_deficit"].to_numpy(float), 0.90
+                ),
+                "milp_feasible_among_false": int(false_block["milp_feasible"].sum()),
+                "milp_certified_among_false": int(
+                    false_block["milp_optimal_certified"].sum()
+                ),
+            }
+        )
+    severity = pd.DataFrame(severity_rows)
+
+    trend = _heterogeneity_trend(runs)
+
     overall = (
         runs.groupby("capacity_mode", sort=False)
         .agg(
@@ -1191,8 +1536,11 @@ def _heterogeneity_analysis(
         "milp_certified_count": int(runs["milp_optimal_certified"].sum()),
         "milp_uncertified_count": int(len(uncertified)),
         "false_feasible_count": int(len(false_rows)),
-        "milp_rescue_count_among_false": int(
-            false_rows["milp_rescues_false_feasible"].sum()
+        "milp_repair_count_among_false": int(
+            false_rows["milp_repairs_false_feasible"].sum()
+        ),
+        "milp_repair_certified_count_among_false": int(
+            false_rows["milp_repairs_false_feasible_certified"].sum()
         ),
         "milp_uncertified_false_count": int(len(uncertified_false)),
         "milp_uncertified_gap_min": float(uncertified["milp_mip_gap"].min()),
@@ -1203,13 +1551,47 @@ def _heterogeneity_analysis(
         "heterogeneity_supported_max_p_holm": float(
             contrasts.loc[contrasts["supported"], "mcnemar_exact_p_holm"].max()
         ),
-        "milp_rescue_rate_among_false": (
-            float(false_rows["milp_rescues_false_feasible"].mean())
+        "milp_repair_rate_among_false": (
+            float(false_rows["milp_repairs_false_feasible"].mean())
             if not false_rows.empty
             else math.nan
         ),
+        # Feasibility and certified optimality are reported separately: a
+        # feasible incumbent always exists, certification may time out.
+        "milp_feasible_among_false_count": int(false_rows["milp_feasible"].sum()),
+        "milp_certified_among_false_count": int(
+            false_rows["milp_optimal_certified"].sum()
+        ),
+        # Order robustness: the verdict must not depend on how SciPy happens
+        # to receive the rows and columns.
+        "tiebreak_verdict_agreement": float(
+            (
+                bool_to_float(runs["hungarian_false_feasible"])
+                == bool_to_float(runs["false_feasible_permuted_order"])
+            ).mean()
+        ),
+        "cross_load_cost_ties_total": int(runs["cross_load_cost_ties"].sum()),
+        "certificate_worlds_count": int(runs["cardinality_certificate"].sum()),
+        "certificate_false_feasible_count": int(
+            runs.loc[runs["cardinality_certificate"], "hungarian_false_feasible"].sum()
+        ),
+        "uncertified_worlds_count": int((~runs["cardinality_certificate"]).sum()),
+        "uncertified_false_feasible_count": int(
+            runs.loc[
+                ~runs["cardinality_certificate"], "hungarian_false_feasible"
+            ].sum()
+        ),
+        **trend,
     }
-    return summary, contrasts, metrics
+    for row in severity.itertuples(index=False):
+        mode = str(row.capacity_mode)
+        metrics[f"deficit_{mode}_median"] = float(row.deficit_median_when_false)
+        metrics[f"deficit_{mode}_ci_low"] = float(row.deficit_ci_low)
+        metrics[f"deficit_{mode}_ci_high"] = float(row.deficit_ci_high)
+        metrics[f"capacity_spread_{mode}_median"] = float(
+            row.capacity_spread_median
+        )
+    return summary, contrasts, severity, metrics
 
 
 def _plot_quality(
@@ -1269,16 +1651,27 @@ def _plot_quality(
         linestyle="--",
         linewidth=1.0,
     )
-    for position, estimate, effect in zip(
+    # Order control: the same estimand recomputed against a greedy that
+    # sweeps a deterministic random slot order instead of the emitted one.
+    axes[0].scatter(
+        100.0 * ordered["shuffled_order_median"].to_numpy(float),
+        positions,
+        s=30,
+        marker="|",
+        color=COLORS["gray"],
+        linewidths=1.3,
+        zorder=4,
+    )
+    for position, estimate, share in zip(
         positions,
         estimates,
-        ordered["rank_biserial_vs_5pct"].to_numpy(float),
+        ordered["share_above_threshold"].to_numpy(float),
         strict=True,
     ):
         axes[0].annotate(
-            rf"$r_{{rb}}={_decimal_comma(effect, 2)}$",
+            rf"$\hat P={_decimal_comma(100.0 * share, 1)}$ %",
             (estimate, position),
-            xytext=(5, 0),
+            xytext=(6, 6),
             textcoords="offset points",
             ha="left",
             va="center",
@@ -1290,7 +1683,7 @@ def _plot_quality(
     axes[0].set(
         xlabel="Ahorro frente a greedy [%]",
         title="Efecto pareado: mediana e IC 95 %",
-        xlim=(0.5, 13.8),
+        xlim=(0.0, 15.5),
     )
     axes[0].legend(
         handles=[
@@ -1308,9 +1701,17 @@ def _plot_quality(
                 [0], [0], color=COLORS["red"], linestyle="--",
                 label="umbral 5 %",
             ),
+            Line2D(
+                [0], [0], marker="|", color=COLORS["gray"], linestyle="none",
+                markersize=7, label="orden aleatorizado",
+            ),
         ],
-        loc="upper left",
-        fontsize=6.4,
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.30),
+        ncol=2,
+        columnspacing=0.9,
+        handletextpad=0.5,
+        fontsize=5.9,
     )
 
     cell_order = [
@@ -1374,32 +1775,30 @@ def _plot_quality(
                 ),
             )
     quota_initial = {"symmetric": "S", "moderate": "M", "extreme": "E"}
+    # One line per tick: a stacked label collides with the axis caption once
+    # the panel is drawn at its printed height.
     axes[1].set_xticks(
         np.arange(len(cell_order)),
         [
-            f"{slots}\n{quota_initial.get(quota, str(quota)[:1].upper())}"
+            f"{slots}·{quota_initial.get(quota, str(quota)[:1].upper())}"
             for slots, quota in cell_order
         ],
+        fontsize=6.4,
+        rotation=45,
+        ha="right",
+        rotation_mode="anchor",
     )
     axes[1].set_yticks(
         np.arange(len(scenario_order)),
         [SCENARIO_LABELS[scenario] for scenario in scenario_order],
     )
     axes[1].set(
-        xlabel="$M$ puestos · cuota S/M/E",
+        xlabel="$M$ puestos · cuota simétrica, moderada o extrema",
         title="Diagnóstico posterior: mediana por celda [%]",
     )
     colorbar = figure.colorbar(image, ax=axes[1], fraction=0.045, pad=0.025)
     colorbar.set_label("Ahorro mediano [%]", fontsize=7.2)
     colorbar.ax.yaxis.set_major_formatter(FuncFormatter(_comma_tick))
-    axes[1].text(
-        0.0,
-        -0.27,
-        "S: simétrica · M: moderada · E: extrema · blanco: umbral 5 %",
-        transform=axes[1].transAxes,
-        fontsize=6.1,
-        color=COLORS["gray"],
-    )
     label_panels(axes)
     figure.tight_layout(pad=0.45, w_pad=1.15)
     return save_figure(figure, output_dir / "n1_quality_scenarios", tight=False)
@@ -1503,14 +1902,20 @@ def _plot_scaling(
         },
     )
     axes[0].text(
-        0.03,
-        0.37,
+        0.02,
+        0.02,
         "línea continua: solver P50 [P05, P95]\nlínea de puntos: proceso completo P50",
         transform=axes[0].transAxes,
         ha="left",
-        va="top",
+        va="bottom",
         fontsize=6.1,
         color=COLORS["gray"],
+        bbox={
+            "boxstyle": "round,pad=0.18",
+            "facecolor": "white",
+            "edgecolor": "none",
+            "alpha": 0.78,
+        },
     )
     axes[1].set(
         xscale="log",
@@ -1701,8 +2106,11 @@ def _plot_failure_recovery(
     cmap = LinearSegmentedColormap.from_list(
         "viu_recovery_detail", ["#F2E7E3", "#DCEAF5"]
     )
-    fraction_percent = 100.0 * np.asarray(fractions, dtype=float)
-    delta_values = np.asarray(deltas, dtype=float)
+    # Categorical spacing: the tested fractions (0, 5, 10, 20 and 30 %) are
+    # unevenly spaced, so plotting them on a metric axis squeezes the first
+    # three cells until their counts overlap.
+    fraction_percent = np.arange(len(fractions), dtype=float)
+    delta_values = np.arange(len(deltas), dtype=float)
 
     def cell_edges(values: np.ndarray) -> np.ndarray:
         midpoints = (values[:-1] + values[1:]) / 2.0
@@ -1748,8 +2156,8 @@ def _plot_failure_recovery(
                 )
             ].iloc[0]
             axes[0].text(
-                100.0 * fraction,
-                delta,
+                float(column_index),
+                float(row_index),
                 f"{int(cell['recovery_count'])}/{int(cell['n_worlds'])}",
                 ha="center",
                 va="center",
@@ -1809,10 +2217,19 @@ def _plot_failure_recovery(
 
 def _plot_heterogeneity_boundary(
     heterogeneity_summary: pd.DataFrame,
+    heterogeneity_severity: pd.DataFrame,
     heterogeneity_runs: pd.DataFrame,
     output_dir: Path,
+    metrics: Mapping[str, Any],
 ) -> list[Path]:
-    """Plot false feasibility and the MILP audit under individual capacities."""
+    """Plot how often the slot model fails and by how much.
+
+    Panel (a) keeps the incidence of false feasibility against realized
+    heterogeneity; panel (b) reports the severity of the violation, so the
+    binary verdict is never the only evidence. The MILP audit is a scalar
+    pair (feasible incumbents, certified optima) and stays in the text, where
+    feasibility and certification cannot be conflated by a shared axis.
+    """
 
     figure, axes = plt.subplots(
         1,
@@ -1853,14 +2270,6 @@ def _plot_heterogeneity_boundary(
         false_rows = block.loc[block["hungarian_false_feasible"]]
         successes = int(block["hungarian_false_feasible"].sum())
         low, high = _wilson_interval(successes, len(block), confidence=confidence)
-        certified = int(block["milp_optimal_certified"].sum())
-        cert_low, cert_high = _wilson_interval(
-            certified, len(block), confidence=confidence
-        )
-        rescued = int(false_rows["milp_rescues_false_feasible"].sum())
-        rescue_low, rescue_high = _wilson_interval(
-            rescued, len(false_rows), confidence=confidence
-        )
         overall_rows.append(
             {
                 "mode": mode,
@@ -1868,19 +2277,7 @@ def _plot_heterogeneity_boundary(
                 "false_rate": successes / len(block),
                 "low": low,
                 "high": high,
-                "certification": certified / len(block),
-                "certification_low": cert_low,
-                "certification_high": cert_high,
-                "certified": certified,
                 "audits": len(block),
-                "rescue": (
-                    rescued / len(false_rows)
-                    if not false_rows.empty
-                    else math.nan
-                ),
-                "rescue_low": rescue_low,
-                "rescue_high": rescue_high,
-                "rescued": rescued,
                 "false_total": len(false_rows),
             }
         )
@@ -1898,15 +2295,15 @@ def _plot_heterogeneity_boundary(
         marker="o",
         linewidth=2.1,
         capsize=3,
-        label="agregado · IC 95 % Wilson",
+        label="agregado · IC 95 %",
         zorder=4,
     )
     annotation_offsets = {
-        "homogeneous": (6, 7),
-        "low": (0, -13),
-        "moderate": (0, 8),
-        "high": (0, -13),
-        "extreme": (-5, 8),
+        "homogeneous": (8, 1),
+        "low": (9, -2),
+        "moderate": (3, -15),
+        "high": (7, -9),
+        "extreme": (-10, 7),
     }
     for index, mode in enumerate(capacity_order):
         offset = annotation_offsets.get(mode, (0, 8))
@@ -1919,103 +2316,101 @@ def _plot_heterogeneity_boundary(
             fontsize=6.2,
             color=COLORS["dark"],
         )
+    slope = float(metrics.get("trend_slope", math.nan))
+    intercept = float(metrics.get("trend_intercept", math.nan))
+    if np.isfinite(slope) and np.isfinite(intercept):
+        grid = np.linspace(
+            0.0, float(heterogeneity_runs["capacity_cv"].max()), 160
+        )
+        axes[0].plot(
+            grid,
+            100.0 / (1.0 + np.exp(-(intercept + slope * grid))),
+            color=COLORS["dark"],
+            linestyle="--",
+            linewidth=1.1,
+            label="tendencia GEE (por mundo)",
+            zorder=3,
+        )
     axes[0].set(
         xlabel=r"Heterogeneidad realizada, $\mathrm{CV}(c_i^{\mathrm{pay}})$",
         ylabel="Falsos factibles de N1 [%]",
         ylim=(-3.0, 103.0),
         title="Falsos factibles del modelo por puestos",
     )
-    axes[0].legend(loc="lower right", fontsize=6.4)
+    axes[0].legend(loc="lower right", fontsize=6.0)
 
+    severity = (
+        heterogeneity_severity.set_index("capacity_mode")
+        .loc[capacity_order]
+        .reset_index()
+    )
     positions = np.arange(len(capacity_order), dtype=float)
-    certification = 100.0 * overall["certification"].to_numpy(float)
-    cert_low = 100.0 * overall["certification_low"].to_numpy(float)
-    cert_high = 100.0 * overall["certification_high"].to_numpy(float)
-    rescue = 100.0 * overall["rescue"].to_numpy(float)
-    rescue_low = 100.0 * overall["rescue_low"].to_numpy(float)
-    rescue_high = 100.0 * overall["rescue_high"].to_numpy(float)
+    median = 100.0 * severity["deficit_median_when_false"].to_numpy(float)
+    low = 100.0 * severity["deficit_ci_low"].to_numpy(float)
+    high = 100.0 * severity["deficit_ci_high"].to_numpy(float)
+    p90 = 100.0 * severity["deficit_p90_when_false"].to_numpy(float)
+    finite = np.isfinite(median)
     axes[1].errorbar(
-        certification,
-        positions + 0.12,
+        median[finite],
+        positions[finite],
         xerr=np.vstack(
             (
-                np.maximum(0.0, certification - cert_low),
-                np.maximum(0.0, cert_high - certification),
+                np.maximum(0.0, median[finite] - low[finite]),
+                np.maximum(0.0, high[finite] - median[finite]),
             )
         ),
         fmt="o",
-        color=COLORS["blue"],
-        markersize=4.0,
-        capsize=2.4,
-        linewidth=1.0,
-        label="óptimo certificado / ejecuciones",
+        color=COLORS["red"],
+        markersize=4.2,
+        capsize=2.6,
+        linewidth=1.2,
+        label="mediana · IC 95 %",
+        zorder=4,
     )
-    finite_rescue = np.isfinite(rescue)
-    axes[1].errorbar(
-        rescue[finite_rescue],
-        positions[finite_rescue] - 0.12,
-        xerr=np.vstack(
-            (
-                np.maximum(
-                    0.0,
-                    rescue[finite_rescue] - rescue_low[finite_rescue],
-                ),
-                np.maximum(
-                    0.0,
-                    rescue_high[finite_rescue] - rescue[finite_rescue],
-                ),
+    axes[1].scatter(
+        p90[finite],
+        positions[finite],
+        marker="|",
+        s=68,
+        color=COLORS["gray"],
+        linewidths=1.3,
+        label="P90",
+        zorder=3,
+    )
+    for index in range(len(severity)):
+        count = int(severity.iloc[index]["n_false_feasible"])
+        if count == 0:
+            axes[1].text(
+                1.0,
+                positions[index],
+                "sin falsos factibles",
+                ha="left",
+                va="center",
+                fontsize=5.9,
+                color=COLORS["gray"],
             )
-        ),
-        fmt="s",
-        markerfacecolor="white",
-        color=COLORS["green"],
-        markersize=4.0,
-        capsize=2.4,
-        linewidth=1.0,
-        label="asignación factible / falsos factibles",
-    )
-    count_column_x = 100.15
-    for index, row in overall.iterrows():
+            continue
         axes[1].text(
-            count_column_x,
-            positions[index] + 0.12,
-            f"{int(row['certified'])}/{int(row['audits'])}",
+            max(high[index], p90[index]) + 2.2,
+            positions[index],
+            f"n={count}",
             ha="left",
             va="center",
             fontsize=5.8,
-            color=COLORS["blue"],
+            color=COLORS["dark"],
         )
-        if int(row["false_total"]) > 0:
-            axes[1].text(
-                count_column_x,
-                positions[index] - 0.12,
-                f"{int(row['rescued'])}/{int(row['false_total'])}",
-                ha="left",
-                va="center",
-                fontsize=5.8,
-                color=COLORS["green"],
-            )
-        else:
-            axes[1].text(
-                94.0,
-                positions[index] + 0.12,
-                "rescate n/a",
-                ha="left",
-                va="center",
-                fontsize=5.8,
-                color=COLORS["gray"],
-            )
     axes[1].set_yticks(
         positions, [CAPACITY_LABELS[mode] for mode in capacity_order]
     )
     axes[1].set(
-        xlabel="Tasa [%] · vista ampliada",
-        xlim=(93.5, 101.25),
-        title="Comprobación MILP: estimado e IC 95 %",
+        xlabel=r"Déficit relativo de la peor carga, $D_w$ [%]",
+        xlim=(0.0, 108.0),
+        title="Severidad cuando el modelo falla",
     )
-    axes[1].invert_yaxis()
-    axes[1].axvline(100.0, color=COLORS["light_gray"], linewidth=0.8)
-    axes[1].legend(loc="lower left", fontsize=6.1)
+    # Reserve a blank band above the first row so the legend keys are never
+    # read as data for the homogeneous profile.
+    axes[1].set_ylim(len(positions) - 0.4, -1.15)
+    axes[1].legend(loc="upper right", fontsize=6.1, ncol=2, columnspacing=1.0)
 
     axes[0].grid(True, axis="both", linewidth=0.55, alpha=0.38)
     axes[1].grid(True, axis="x", linewidth=0.55, alpha=0.38)
@@ -2280,11 +2675,21 @@ def _write_report(
             f"{metrics['scenario_gates_total']}."
         ),
         (
-            "- Sensibilidad exacta de signo: "
+            "- Sensibilidad Wilcoxon: "
             + (
-                "misma clasificación que el gate confirmatorio."
+                "misma clasificación que el gate confirmatorio de signo."
                 if metrics["sign_sensitivity_matches_confirmatory_gate"]
                 else "clasificación distinta; requiere discusión."
+            )
+        ),
+        (
+            "- Control de orden del greedy: mediana agregada "
+            f"{100*metrics['quality_shuffled_order_overall_median']:.2f}% "
+            "con orden aleatorizado; clasificación "
+            + (
+                "inalterada."
+                if metrics["order_control_matches_confirmatory_gate"]
+                else "alterada; requiere discusión."
             )
         ),
         (
@@ -2295,15 +2700,36 @@ def _write_report(
         ),
         (
             "- Concordancia recuperación–frontera cardinal: "
-            f"{100*metrics['failure_theory_agreement_rate']:.2f}%."
+            f"{100*metrics['failure_theory_agreement_rate']:.2f}% "
+            "(identidad de implementación, no un hallazgo estadístico)."
+        ),
+        (
+            "- Coste óptimo posterior estrictamente mayor en "
+            f"{100*metrics['failure_cost_increase_share']:.2f}% de los "
+            f"{metrics['failure_cost_increase_rows']:,} recálculos factibles "
+            "con retirada."
         ),
         (
             "- Falsos factibles con heterogeneidad extrema: "
             f"{100*metrics['extreme_false_feasible_rate']:.2f}%."
         ),
         (
-            "- Rescate MILP certificado entre falsos factibles: "
-            f"{100*metrics['milp_rescue_rate_among_false']:.2f}%."
+            "- MILP entre los falsos factibles: "
+            f"{metrics['milp_feasible_among_false_count']:,} con asignación "
+            f"factible y {metrics['milp_certified_among_false_count']:,} con "
+            f"óptimo certificado, de {metrics['false_feasible_count']:,}."
+        ),
+        (
+            "- Certificado de cardinalidad: se cumple en "
+            f"{metrics['certificate_worlds_count']:,} mundos, con "
+            f"{metrics['certificate_false_feasible_count']:,} falsos "
+            "factibles."
+        ),
+        (
+            "- Tendencia GEE de falso factible sobre CV: "
+            f"beta1={metrics['trend_slope']:.3f} "
+            f"(IC 95% {metrics['trend_ci_low']:.3f}–"
+            f"{metrics['trend_ci_high']:.3f})."
         ),
         "",
         "## Alcance",
@@ -2364,6 +2790,7 @@ def build_level(
     (
         heterogeneity_summary,
         heterogeneity_contrasts,
+        heterogeneity_severity,
         heterogeneity_metrics,
     ) = _heterogeneity_analysis(heterogeneity_runs, config)
 
@@ -2380,6 +2807,9 @@ def build_level(
     )
     heterogeneity_contrasts.to_csv(
         processed_dir / "heterogeneity_contrasts.csv", index=False
+    )
+    heterogeneity_severity.to_csv(
+        processed_dir / "heterogeneity_severity.csv", index=False
     )
 
     figure_paths = []
@@ -2405,8 +2835,10 @@ def build_level(
     )
     figure_paths += _plot_heterogeneity_boundary(
         heterogeneity_summary,
+        heterogeneity_severity,
         heterogeneity_runs,
         figures_dir,
+        heterogeneity_metrics,
     )
     figure_paths += _plot_operating_envelope(
         scaling_summary,
@@ -2479,6 +2911,21 @@ def build_level(
         metrics[f"saving_{scenario}_ci_high"] = float(
             row.relative_saving_ci_high
         )
+        metrics[f"share_above_threshold_{scenario}"] = float(
+            row.share_above_threshold
+        )
+        metrics[f"share_above_threshold_{scenario}_ci_low"] = float(
+            row.share_above_threshold_ci_low
+        )
+        metrics[f"share_above_threshold_{scenario}_ci_high"] = float(
+            row.share_above_threshold_ci_high
+        )
+        metrics[f"shuffled_order_{scenario}_median"] = float(
+            row.shuffled_order_median
+        )
+        metrics[f"shuffled_order_{scenario}_ci_low"] = float(
+            row.shuffled_order_ci_low
+        )
     for capacity_mode, block in heterogeneity_runs.groupby(
         "capacity_mode", sort=False
     ):
@@ -2523,7 +2970,9 @@ def build_level(
             "failure_summary": len(failure_summary),
             "heterogeneity_summary": len(heterogeneity_summary),
             "heterogeneity_contrasts": len(heterogeneity_contrasts),
+            "heterogeneity_severity": len(heterogeneity_severity),
         },
+        raw_paths=raw_paths,
         claims=(
             "Hungarian is exact for the homogeneous robot-slot reduction.",
             "Its practical saving against sequential greedy is scenario dependent.",

@@ -250,6 +250,41 @@ def _processor_name() -> str:
     return platform.processor() or platform.machine() or "unknown"
 
 
+def _git(*arguments: str) -> tuple[int, str]:
+    import subprocess
+
+    try:
+        completed = subprocess.run(
+            ["git", *arguments],
+            cwd=REPOSITORY_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=15,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return 1, ""
+    return completed.returncode, completed.stdout.strip()
+
+
+def _git_commit() -> str:
+    """Return the current commit, or an empty string outside a checkout."""
+
+    code, output = _git("rev-parse", "HEAD")
+    return output if code == 0 else ""
+
+
+def _git_tree_is_dirty() -> bool | None:
+    """Report whether the campaign ran against uncommitted changes.
+
+    Recording only the commit would overstate reproducibility: a run started
+    from a dirty tree cannot be recovered from that hash alone.
+    """
+
+    code, output = _git("status", "--porcelain", "--untracked-files=no")
+    return bool(output) if code == 0 else None
+
+
 def write_level_manifest(
     *,
     output_dir: Path,
@@ -259,8 +294,13 @@ def write_level_manifest(
     row_counts: Mapping[str, int],
     claims: Sequence[str],
     limitations: Sequence[str],
+    raw_paths: Mapping[str, Path] | None = None,
 ) -> Path:
-    """Create the reproducibility manifest for one level."""
+    """Create the reproducibility manifest for one level.
+
+    ``raw_paths`` is recorded separately from ``sources`` so a later build can
+    verify that the frozen campaign has not moved underneath the analysis.
+    """
 
     manifest = {
         "schema_version": "sp1-level-package-v1",
@@ -278,7 +318,13 @@ def write_level_manifest(
             "matplotlib": mpl.__version__,
             "scipy": scipy.__version__,
         },
+        "git_commit": _git_commit(),
+        "git_tree_dirty": _git_tree_is_dirty(),
         "sources": [source_record(path) for path in sources],
+        "frozen_raw": {
+            name: source_record(path)
+            for name, path in sorted((raw_paths or {}).items())
+        },
         "row_counts": {key: int(value) for key, value in row_counts.items()},
         "claims": list(claims),
         "limitations": list(limitations),
