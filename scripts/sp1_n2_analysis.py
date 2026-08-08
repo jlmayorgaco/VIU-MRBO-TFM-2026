@@ -179,6 +179,9 @@ def analyse_atomicity(
     fractional_total = int(usable["fractional_world"].sum())
     low, high = wilson(fractional_total, len(usable), confidence=confidence)
     # Does the gap actually track heterogeneity? Answer, do not assume.
+    # Descriptive only. The CV levels are paired inside each base world, so
+    # spearmanr's p-value -- which assumes independent rows -- does not hold
+    # here; the document quotes the coefficient and no inference from it.
     finite = usable.loc[np.isfinite(usable["gap_relative"])]
     correlation = stats.spearmanr(
         finite["capacity_cv"], finite["gap_relative"]

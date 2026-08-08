@@ -1153,10 +1153,9 @@ evaluamos fuerza, torque ni transporte: eso es SP2.
 \leveltag{RESULTADOS SP1 · NIVEL 2 DE 4 · CAPACIDADES INDIVIDUALES}
 \section*{SP1.N2: de contar robots a sumar capacidad}
 
-N2 cambia una sola hipótesis de N1: cada robot conserva su capacidad
-$c_i^{\mathrm{pay}}$. Todo lo demás sigue igual —problema estático, posiciones
-y costes conocidos, información global y decisión centralizada—, de modo que
-cuanto aparezca aquí es atribuible a esa única modificación. El Lema
+En la formulación, N2 cambia una única hipótesis de N1: cada robot conserva su
+capacidad individual $c_i^{\mathrm{pay}}$. El problema continúa siendo
+estático, con posiciones y costes conocidos, global y centralizado. El Lema
 \ref{lema:n1-boundary} ya anticipó que fuera de su ventana la cardinalidad deja
 de certificar capacidad; N2 sustituye el recuento por la suma y estudia qué
 problema queda, según la Ecuación~\eqref{eq:n2-milp}:
@@ -1325,14 +1324,14 @@ formulación congelada.
 \clearpage
 
 % --------------------------------------------------------------------------
-% Página 14 · N2: precio de la atomicidad
+% Página 14 · N2: brecha de atomicidad de la formulación directa de capacidad
 % --------------------------------------------------------------------------
 \leveltag{RESULTADOS SP1 · N2 · EXPERIMENTO E2}
 \section*{SP1.N2 · E2: cuánto cuesta que los robots sean indivisibles}
 
 E2 resuelve cada mundo dos veces con el \emph{mismo} objeto de modelo,
-cambiando únicamente el vector de integralidad: así, cualquier diferencia entre
-LP y MILP procede de la atomicidad y no de una formulación distinta. Una
+cambiando solo el vector de integralidad: la diferencia entre LP y MILP es la
+brecha de atomicidad de esta formulación directa de capacidad, no de otra. Una
 variable se considera fraccional si $\varepsilon<x_{ik}<1-\varepsilon$ con
 $\varepsilon=10^{-6}$, y la brecha relativa es
 $G=(J_{\mathrm{MILP}}-J_{\mathrm{LP}})/J_{\mathrm{MILP}}$, bien definida porque
@@ -1349,13 +1348,13 @@ las variables activas ($x_{ik}>10^{-6}$), fracción que lo es.}
 \viuownsource
 \end{figure}
 
-Los denominadores conviene fijarlos. De los \NTwoAtomicityRows{} mundos el LP
+Conviene fijar los denominadores. De los \NTwoAtomicityRows{} mundos el LP
 resolvió los \NTwoLpOptimalRows{} y devolvió solución fraccionaria en el
-\NTwoFractionalAllPct\,\%; en \NTwoAtomicityComparable{} el MILP también alcanzó
-el óptimo, y solo sobre ellos se calcula la brecha, mientras que en los
+\NTwoFractionalAllPct\,\%; en \NTwoAtomicityComparable{} el MILP también lo
+alcanzó, y solo sobre ellos se calcula la brecha; en los
 \NTwoLpOnlyCount{} restantes demostró infactibilidad. La afirmación fuerte se
-sostiene: en \NTwoStrictGapRows{} de \NTwoAtomicityComparable{} la brecha fue
-estrictamente positiva ($G>10^{-6}$, mínimo \NTwoGapMinPct\,\%), luego ningún
+sostiene: en \NTwoStrictGapRows{} de \NTwoAtomicityComparable{} fue
+estrictamente positiva ($G>10^{-6}$, mínimo \NTwoGapMinPct\,\%) y ningún
 óptimo entero alcanzó el valor del LP. Su mediana fue \NTwoGapPct\,\%
 (IC 95\,\%: \NTwoGapLowPct--\NTwoGapHighPct\,\%), percentil 95
 \NTwoGapPninetyfivePct\,\% y máximo \NTwoGapMaxPct\,\%; nunca negativa
@@ -1363,16 +1362,16 @@ estrictamente positiva ($G>10^{-6}$, mínimo \NTwoGapMinPct\,\%), luego ningún
 
 La brecha \emph{no} crece con la heterogeneidad: su mediana vale
 \NTwoGapHomogeneousPct\,\% con capacidades iguales, baja a \NTwoGapMidPct\,\% en
-el nivel intermedio y vuelve a \NTwoGapExtremePct\,\% en el extremo. La
-correlación de Spearman, \NTwoSpearman, es significativa por el tamaño muestral
-pero despreciable, y llamarla «tendencia» sería engañoso. Que haya brecha con
-capacidades iguales tampoco contradice la integralidad de N1: es la
-Observación~\ref{obs:n2-relaxation}, y lo que mide es la formulación.
+el intermedio y vuelve a \NTwoGapExtremePct\,\% en el extremo. La
+asociación de Spearman, \NTwoSpearman, es descriptiva y despreciable: los
+niveles de CV están pareados por mundo, así que no lleva inferencia ni se
+lee como tendencia. Que la haya con capacidades iguales tampoco
+contradice la integralidad de N1: es la
+Observación~\ref{obs:n2-relaxation}, y mide la formulación.
 
-El resultado más fuerte no es de coste sino de factibilidad: en los
+Lo más fuerte no es el coste sino la factibilidad: en los
 \NTwoLpOnlyCount{} mundos citados el LP era factible y el entero
-\textsc{infeasible}. La relajación no solo promete un coste inalcanzable: puede
-prometer una solución que no existe.
+\textsc{infeasible}. Ahí la relajación promete una solución inexistente.
 
 \clearpage
 
@@ -1385,8 +1384,8 @@ prometer una solución que no existe.
 E3 cruza la presión $\rho$ con la heterogeneidad sobre \NTwoPhaseWorlds{} mundos
 base y \NTwoPhaseRows{} ejecuciones. Dentro de cada mundo, geometría y masas son
 idénticas en los cinco niveles de CV y la oferta total está fijada, así que una
-diferencia de factibilidad no puede explicarse por más capacidad. Un incumbente
-prueba factibilidad aunque no certifique, y \NTwoPhaseCensored{} ejecuciones
+diferencia de factibilidad no puede deberse a más capacidad. Un incumbente
+prueba factibilidad aunque no certifique; \NTwoPhaseCensored{} ejecuciones
 quedaron sin certificar.
 
 \begin{figure}[H]
@@ -1402,10 +1401,10 @@ solo el mecanismo de emparejamiento.}
 
 Con $\rho>1$ nada es factible, como exige el Lema~\ref{lema:n2-partition}. Lo
 informativo ocurre por debajo: de las \NTwoSlackRows{} ejecuciones con $\rho<1$,
-\NTwoSlackInfeasible{} resultaron probadas infactibles
-(\NTwoSlackInfeasiblePct\,\%). La holgura agregada no basta, y el
-contraejemplo del Lema~\ref{lema:n2-partition} deja de ser una curiosidad
-teórica para convertirse en un régimen observable.
+\NTwoSlackInfeasible{} fueron probadas infactibles
+(\NTwoSlackInfeasiblePct\,\%). La holgura agregada no basta: el contraejemplo
+del Lema~\ref{lema:n2-partition} deja de ser una curiosidad teórica y pasa a
+ser un régimen observable.
 
 La dispersión ayuda, pero no sin límite. La factibilidad global sube del
 \NTwoPhaseHomogeneousPct\,\% al \NTwoPhaseExtremePct\,\%, con pendiente GEE
@@ -1419,10 +1418,11 @@ factibles en todas las presiones con $\rho<1$. En la banda de transición
 de $\mathrm{CV}=\NTwoBandMiddleCv$ al extremo hizo perder factibilidad a
 \NTwoBandMiddleOnly{} mundos y ganarla a \NTwoBandExtremeOnly{}
 (\NTwoBandMiddlePct\,\% frente a \NTwoBandExtremePct\,\%; McNemar exacto
-$p=\NTwoBandMcNemarP$, contraste \emph{post hoc}). Es heterogeneidad útil, no
+$p=\NTwoBandMcNemarP$, exploratorio \emph{post hoc}, no confirmatorio). Es
+heterogeneidad útil, no
 ilimitada. El panel (b) es consistente con un mejor empaquetamiento —con
 $c_i^{\mathrm{pay}}$ común cada carga desperdicia hasta una capacidad al
-redondear—, pero no medimos ese emparejamiento: el mecanismo queda inferido.
+redondear—, pero no lo medimos: el mecanismo queda inferido.
 
 \clearpage
 
@@ -1461,8 +1461,9 @@ $N$. Ningún agotamiento se registró como infactibilidad. No ajustamos ninguna
 ley de potencias: el comportamiento de un MILP depende de la familia de
 instancias y del límite, y llamar complejidad a una regresión sería un abuso.
 
-N2 deja el problema correcto resuelto y un oráculo utilizable en un régimen
-finito. La Proposición~\ref{prop:n2-limit} lo ancla a N1; los
+N2 deja formalizado el problema heterogéneo correcto y proporciona un oráculo
+central certificado en un régimen finito. La Proposición~\ref{prop:n2-limit} lo
+ancla a N1; los
 Lemas~\ref{lema:n2-partition} y \ref{lema:n2-atomicity} explican por qué contar
 robots y por qué relajar la integralidad fallan de maneras distintas. Lo que
 todavía no se ha tocado es la arquitectura: \eqref{eq:n2-milp} necesita conocer
