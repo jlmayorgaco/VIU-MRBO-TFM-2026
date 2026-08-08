@@ -1210,9 +1210,10 @@ sensibilidades declaradas y \eqref{eq:n2-milp} el único oráculo de N2.
 
 \begin{n1prop}[N1 como caso particular de N2]
 \label{prop:n2-limit}
-Si $c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$ para todo $i$ y $d_{ik}>0$,
-entonces \eqref{eq:n2-milp} y el LSAP por puestos \eqref{eq:n1-lsap} tienen el
-mismo valor óptimo, y el óptimo de \eqref{eq:n2-milp} recluta exactamente
+Si $c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$ para todo $i$, $d_{ik}>0$ y
+$\sum_kn_k\leq N$, entonces \eqref{eq:n2-milp} y el LSAP por puestos
+\eqref{eq:n1-lsap} son factibles, tienen el mismo valor óptimo, y el óptimo de
+\eqref{eq:n2-milp} recluta exactamente
 $n_k=\lceil m_k/\bar c^{\mathrm{pay}}\rceil$ robots por carga.
 \end{n1prop}
 
@@ -1227,7 +1228,7 @@ cumple $|S_k|=n_k$.
 }
 
 La hipótesis $d_{ik}>0$ no es decorativa: con un robot sobre su carga
-sobre-reclutar sería gratis y solo quedaría garantizada la igualdad de
+sobre-reclutar sería gratis y solo se garantizaría la igualdad de
 \emph{valores}. No hace falta suponer $m_k=n_k\bar c^{\mathrm{pay}}$.
 
 \begin{n1obs}[Mismo problema entero, distinta relajación]
@@ -1237,8 +1238,8 @@ relajaciones. Con $c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$, relajar
 \eqref{eq:n2-milp} da $\sum_ix_{ik}\geq m_k/\bar c^{\mathrm{pay}}$, con lado
 derecho rara vez entero: el LP compra la fracción sobrante. La expansión por
 puestos es una formulación \emph{extendida} con lado derecho $1$ y matriz
-totalmente unimodular, luego su relajación sí es integral. Por eso E2 halla
-brecha aun con capacidades iguales sin contradecir a N1.
+totalmente unimodular: su relajación sí es integral. Por eso E2 halla
+brecha con capacidades iguales sin contradecir a N1.
 \end{n1obs}
 
 \begin{n1lema}[La capacidad agregada es necesaria, no suficiente]
@@ -1252,7 +1253,7 @@ $\rho=\sum_km_k/\sum_ic_i^{\mathrm{pay}}$. El recíproco es falso.
 \begin{proof}
 Sumar las restricciones de capacidad sobre $k$, con cada robot sirviendo a lo
 sumo una carga, da la desigualdad. Para el recíproco basta
-$c^{\mathrm{pay}}=(4,4)$ y $m=(5,3)$: $\rho=1$, pero la carga de $5$~kg exige
+$c^{\mathrm{pay}}=(4,4)$ y $m=(5,3)$: $\rho=1$, pero la de $5$~kg exige
 ambos robots y deja la de $3$~kg sin nadie.
 \end{proof}
 }
@@ -1260,7 +1261,7 @@ ambos robots y deja la de $3$~kg sin nadie.
 \begin{n1lema}[La relajación no es realizable]
 \label{lema:n2-atomicity}
 Relajar $y_{ik}\in\{0,1\}$ a $x_{ik}\in[0,1]$ puede reducir estrictamente el
-óptimo, y puede además volver factible una instancia sin solución atómica.
+óptimo y volver factible una instancia sin solución atómica.
 \end{n1lema}
 
 {\small
@@ -1271,9 +1272,10 @@ sirve el ejemplo del Lema~\ref{lema:n2-partition}, cuyo LP es factible.
 \end{proof}
 }
 
-Sobre la complejidad no afirmamos más de lo sostenible: la integralidad
-destruye la estructura LSAP y deja un MILP combinatorio. No damos reducción de
-dureza porque no la hemos demostrado para \emph{esta} formulación.
+Sobre la complejidad no afirmamos más de lo sostenible: lo que destruye la
+estructura LSAP no es la integralidad —N1 también es entero— sino la cobertura
+ponderada de capacidad, y lo que queda es un MILP combinatorio. No damos
+reducción de dureza porque no la hemos demostrado para \emph{esta} formulación.
 
 \clearpage
 

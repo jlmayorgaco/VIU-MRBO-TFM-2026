@@ -1,4 +1,4 @@
-"""Build and validate the 10-page VIU SP1.N1 working document."""
+"""Build and validate the VIU SP1 levels working document (N1 and N2)."""
 
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ from sp1_levels_common import (
 
 
 SOURCE_DIR = REPOSITORY_ROOT / "thesis" / "sp1_levels_23p"
-DEFAULT_OUTPUT_DIR = REPOSITORY_ROOT / "output" / "pdf" / "sp1_n1_10p"
+DEFAULT_OUTPUT_DIR = REPOSITORY_ROOT / "output" / "pdf" / "sp1_levels"
 ACTIVE_LEVEL_DIRS = {
     "n1": "n1_v2",
     "n2": "n2_v1",
@@ -404,7 +404,7 @@ def _run_lualatex(output_dir: Path) -> Path:
         "-interaction=nonstopmode",
         "-halt-on-error",
         "-file-line-error",
-        "-jobname=SP1_N1_10P",
+        "-jobname=SP1_levels_N1_N2",
         f"-output-directory={output_dir}",
         "sp1_levels_23p/main.tex",
     ]
@@ -441,7 +441,7 @@ def _run_lualatex(output_dir: Path) -> Path:
         str(output_dir),
         "--output-directory",
         str(output_dir),
-        "SP1_N1_10P",
+        "SP1_levels_N1_N2",
     ]
     completed = subprocess.run(
         biber_command,
@@ -471,10 +471,10 @@ def _run_lualatex(output_dir: Path) -> Path:
         "\n".join(logs),
         encoding="utf-8",
     )
-    built = output_dir / "SP1_N1_10P.pdf"
+    built = output_dir / "SP1_levels_N1_N2.pdf"
     if not built.is_file():
         raise RuntimeError(
-            "LuaLaTeX completed without producing SP1_N1_10P.pdf."
+            "LuaLaTeX completed without producing SP1_levels_N1_N2.pdf."
         )
     return built
 
@@ -570,7 +570,7 @@ def build_pdf(output_dir: Path) -> dict[str, object]:
     output_dir.mkdir(parents=True, exist_ok=True)
     metrics_path = generate_metrics_tex()
     built = _run_lualatex(output_dir)
-    final_pdf = output_dir / "SP1_N1_10P.pdf"
+    final_pdf = output_dir / "SP1_levels_N1_N2.pdf"
     if built.resolve() != final_pdf.resolve():
         shutil.copy2(built, final_pdf)
     reader = PdfReader(str(final_pdf))
@@ -586,7 +586,7 @@ def build_pdf(output_dir: Path) -> dict[str, object]:
             f"Rendered {rendered_pages} pages for a {page_count}-page PDF."
         )
     manifest = {
-        "schema_version": "sp1-n1-pdf-v1",
+        "schema_version": "sp1-levels-pdf-v1",
         "pdf": {
             "path": final_pdf.relative_to(REPOSITORY_ROOT).as_posix(),
             "bytes": final_pdf.stat().st_size,
@@ -635,7 +635,7 @@ def build_pdf(output_dir: Path) -> dict[str, object]:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Build the exact 10-page VIU SP1.N1 working PDF."
+        description="Build the exact 16-page VIU SP1 levels PDF (N1 and N2)."
     )
     parser.add_argument(
         "--output-dir",

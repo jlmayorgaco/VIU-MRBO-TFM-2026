@@ -71,10 +71,17 @@ def test_frozen_n1_pages_are_byte_identical_after_n2() -> None:
 
     # Rendering is checked too, ignoring whitespace: PDF text extraction
     # re-spaces glyphs around maths between builds, which is not a change.
-    pdf_path = next(
-        (REPOSITORY_ROOT / "output" / "pdf").glob("*/SP1_N1*.pdf"), None
+    # Named exactly, not globbed: a glob that stops matching after a rename
+    # silently degrades this guard into a no-op, or worse, keeps validating a
+    # stale artifact left behind under the old name.
+    pdf_path = (
+        REPOSITORY_ROOT
+        / "output"
+        / "pdf"
+        / "sp1_levels"
+        / "SP1_levels_N1_N2.pdf"
     )
-    assert pdf_path is not None, "no SP1 PDF was built"
+    assert pdf_path.is_file(), f"no SP1 PDF was built at {pdf_path}"
     reader = PdfReader(str(pdf_path))
     assert len(reader.pages) >= snapshot["page_count"]
     for record in snapshot["pages"]:
@@ -134,7 +141,7 @@ def test_frozen_raw_hashes_match_the_manifest() -> None:
 
     pdf_manifest = json.loads(
         (
-            REPOSITORY_ROOT / "output" / "pdf" / "sp1_n1_10p" / "manifest.json"
+            REPOSITORY_ROOT / "output" / "pdf" / "sp1_levels" / "manifest.json"
         ).read_text(encoding="utf-8")
     )
     assert pdf_manifest["runs_solvers"] is False
@@ -206,8 +213,8 @@ def test_pdf_has_exact_requested_page_budget() -> None:
         REPOSITORY_ROOT
         / "output"
         / "pdf"
-        / "sp1_n1_10p"
-        / "SP1_N1_10P.pdf"
+        / "sp1_levels"
+        / "SP1_levels_N1_N2.pdf"
     )
     assert pdf_path.is_file()
     reader = PdfReader(str(pdf_path))
