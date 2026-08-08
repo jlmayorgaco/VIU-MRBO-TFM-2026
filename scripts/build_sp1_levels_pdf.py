@@ -23,7 +23,9 @@ SOURCE_DIR = REPOSITORY_ROOT / "thesis" / "sp1_levels_23p"
 DEFAULT_OUTPUT_DIR = REPOSITORY_ROOT / "output" / "pdf" / "sp1_n1_10p"
 ACTIVE_LEVEL_DIRS = {
     "n1": "n1_v2",
+    "n2": "n2_v1",
 }
+EXPECTED_PAGES = 16
 
 
 def _read_json(path: Path) -> dict[str, object]:
@@ -66,6 +68,7 @@ def generate_metrics_tex() -> Path:
 
     n1 = _read_json(LEVELS_OUTPUT_ROOT / "n1_v2" / "key_metrics.json")
     n1_manifest = _read_json(LEVELS_OUTPUT_ROOT / "n1_v2" / "manifest.json")
+    n2 = _read_json(LEVELS_OUTPUT_ROOT / "n2_v1" / "key_metrics.json")
     environment = n1_manifest["environment"]
 
     macros = {
@@ -265,6 +268,88 @@ def generate_metrics_tex() -> Path:
         "NOneUncertifiedFalse": _tex_integer(
             n1["uncertified_false_feasible_count"]
         ),
+        # ---------------- N2 ------------------------------------------------
+        "NTwoRows": _tex_integer(n2["raw_rows"]),
+        # E1 · oracle validation
+        "NTwoOracleRows": _tex_integer(n2["oracle_rows"]),
+        "NTwoOracleAgreementPct": _tex_float(
+            100.0 * n2["oracle_status_agreement"], 1
+        ),
+        "NTwoOracleDisagreements": _tex_integer(n2["oracle_status_disagreements"]),
+        "NTwoOracleComparable": _tex_integer(n2["oracle_comparable_rows"]),
+        "NTwoOracleInfeasible": _tex_integer(n2["oracle_infeasible_rows"]),
+        "NTwoOracleMaxError": _tex_scientific(n2["oracle_max_absolute_error"]),
+        "NTwoOracleMaxStates": _tex_integer(n2["oracle_max_states"]),
+        "NTwoHomogeneousRows": _tex_integer(n2["homogeneous_rows"]),
+        "NTwoHomogeneousAgreementPct": _tex_float(
+            100.0 * n2["homogeneous_feasibility_agreement"], 1
+        ),
+        "NTwoHomogeneousMaxError": _tex_scientific(
+            n2["homogeneous_max_distance_error"]
+        ),
+        "NTwoHomogeneousCardinality": _tex_integer(
+            n2["homogeneous_cardinality_matches"]
+        ),
+        # E2 · price of atomicity
+        "NTwoAtomicityRows": _tex_integer(n2["atomicity_rows"]),
+        "NTwoAtomicityComparable": _tex_integer(n2["atomicity_comparable_rows"]),
+        "NTwoGapPct": _tex_float(100.0 * n2["atomicity_gap_median"], 1),
+        "NTwoGapLowPct": _tex_float(100.0 * n2["atomicity_gap_ci_low"], 1),
+        "NTwoGapHighPct": _tex_float(100.0 * n2["atomicity_gap_ci_high"], 1),
+        "NTwoGapPninetyfivePct": _tex_float(100.0 * n2["atomicity_gap_p95"], 1),
+        "NTwoGapMaxPct": _tex_float(100.0 * n2["atomicity_gap_max"], 1),
+        "NTwoGapMinPct": _tex_float(100.0 * n2["atomicity_gap_min"], 1),
+        "NTwoFractionalPct": _tex_float(
+            100.0 * n2["atomicity_fractional_rate"], 1
+        ),
+        "NTwoFractionalLowPct": _tex_float(
+            100.0 * n2["atomicity_fractional_ci_low"], 1
+        ),
+        "NTwoNegativeGaps": _tex_integer(n2["atomicity_negative_gaps"]),
+        "NTwoLpOnlyCount": _tex_integer(
+            n2["atomicity_lp_feasible_milp_infeasible"]
+        ),
+        "NTwoSpearman": _tex_float(n2["atomicity_cv_spearman"], 3),
+        "NTwoGapHomogeneousPct": _tex_float(
+            100.0 * n2["atomicity_gap_median_cv000"], 1
+        ),
+        "NTwoGapMidPct": _tex_float(100.0 * n2["atomicity_gap_median_cv035"], 1),
+        "NTwoGapExtremePct": _tex_float(
+            100.0 * n2["atomicity_gap_median_cv100"], 1
+        ),
+        # E3 · phase diagram
+        "NTwoPhaseRows": _tex_integer(n2["phase_rows"]),
+        "NTwoPhaseWorlds": _tex_integer(n2["phase_worlds"]),
+        "NTwoPhaseCensored": _tex_integer(n2["phase_censored"]),
+        "NTwoSlackRows": _tex_integer(n2["phase_slack_rows"]),
+        "NTwoSlackInfeasible": _tex_integer(n2["phase_slack_infeasible"]),
+        "NTwoSlackInfeasiblePct": _tex_float(
+            100.0 * n2["phase_slack_infeasible_rate"], 1
+        ),
+        "NTwoTrendCv": _tex_float(n2["phase_trend_cv"], 2),
+        "NTwoTrendCvLow": _tex_float(n2["phase_trend_cv_low"], 2),
+        "NTwoTrendCvHigh": _tex_float(n2["phase_trend_cv_high"], 2),
+        "NTwoTrendPressure": _tex_float(n2["phase_trend_pressure"], 1),
+        "NTwoTrendPressureLow": _tex_float(n2["phase_trend_pressure_low"], 1),
+        "NTwoTrendPressureHigh": _tex_float(n2["phase_trend_pressure_high"], 1),
+        "NTwoPhaseHomogeneousPct": _tex_float(
+            100.0 * n2["phase_homogeneous_feasible_rate"], 1
+        ),
+        "NTwoPhaseExtremePct": _tex_float(
+            100.0 * n2["phase_extreme_feasible_rate"], 1
+        ),
+        # E4 · certification frontier
+        "NTwoCertRows": _tex_integer(n2["certification_rows"]),
+        "NTwoCertMinN": _tex_integer(n2["certification_min_n"]),
+        "NTwoCertMaxN": _tex_integer(n2["certification_max_n"]),
+        "NTwoIncumbentPct": _tex_float(
+            100.0 * n2["certification_incumbent_rate"], 1
+        ),
+        "NTwoCertNTwenty": _tex_float(100.0 * n2["certification_rate_n20"], 1),
+        "NTwoCertNForty": _tex_float(100.0 * n2["certification_rate_n40"], 1),
+        "NTwoCertNFifty": _tex_float(100.0 * n2["certification_rate_n50"], 1),
+        "NTwoCertNSixty": _tex_float(100.0 * n2["certification_rate_n60"], 1),
+        "NTwoCertNEighty": _tex_float(100.0 * n2["certification_rate_n80"], 1),
     }
     lines = [
         "% Generated by scripts/build_sp1_levels_pdf.py; do not edit.",
@@ -461,9 +546,10 @@ def build_pdf(output_dir: Path) -> dict[str, object]:
         shutil.copy2(built, final_pdf)
     reader = PdfReader(str(final_pdf))
     page_count = len(reader.pages)
-    if page_count != 10:
+    if page_count != EXPECTED_PAGES:
         raise RuntimeError(
-            f"Expected exactly 10 pages, but the PDF has {page_count}."
+            f"Expected exactly {EXPECTED_PAGES} pages, but the PDF has "
+            f"{page_count}."
         )
     rendered_pages = _render_pdf(final_pdf, output_dir / "rendered")
     if rendered_pages != page_count:
@@ -485,6 +571,7 @@ def build_pdf(output_dir: Path) -> dict[str, object]:
             "common_scenarios": 1,
             "common_metrics_statistics": 1,
             "N1": 6,
+            "N2": 6,
         },
         "style": {
             "paper": "A4",

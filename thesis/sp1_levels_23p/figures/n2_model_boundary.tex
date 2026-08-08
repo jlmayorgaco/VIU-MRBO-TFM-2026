@@ -1,0 +1,67 @@
+\begin{tikzpicture}[x=\spxunitntwo,y=1.02cm]
+\tikzset{
+  n2title/.style={font=\fontsize{8.0}{9.0}\selectfont\sffamily\bfseries,
+    text=VIUDark,anchor=west},
+  n2body/.style={font=\fontsize{7.0}{8.0}\selectfont\sffamily,
+    text=VIUGray,anchor=north west,align=left},
+  n2math/.style={font=\fontsize{7.4}{8.4}\selectfont,text=VIUDark,align=center},
+  n2chip/.style={sppanel,fill=white,align=center,
+    font=\fontsize{6.6}{7.4}\selectfont\bfseries,inner xsep=4pt,inner ysep=2.6pt},
+  n2bad/.style={sppanel,fill=SPRed!8,draw=SPRed!55,align=center,
+    font=\fontsize{6.6}{7.4}\selectfont\bfseries,inner xsep=4pt,inner ysep=2.6pt},
+  n2ok/.style={sppanel,fill=SPGreen!8,draw=SPGreen!55,align=center,
+    font=\fontsize{6.6}{7.4}\selectfont\bfseries,inner xsep=4pt,inner ysep=2.6pt},
+}
+\fill[SPFloor] (0.01,0.10) rectangle (13.49,6.35);
+\fill[white] (0.01,5.72) rectangle (13.49,6.35);
+\draw[draw=SPGrid,line width=0.55pt] (0.01,5.72) -- (13.49,5.72);
+\draw[sparena] (0.01,0.10) rectangle (13.49,6.35);
+\node[n2title] at (0.28,6.03)
+  {Dos hechos que la cardinalidad de N1 no puede expresar};
+\draw[draw=SPGrid,line width=0.55pt] (6.75,0.35) -- (6.75,5.50);
+
+% ---- Izquierda: capacidad agregada suficiente pero no particionable -------
+\node[n2title,text=SPRed!70!black] at (0.32,5.32)
+  {A · Suma suficiente, reparto imposible};
+\node[n2body,text width=5.85cm] at (0.32,4.98) {%
+  Dos robots de $4$\,kg y dos cargas de $5$ y $3$\,kg.
+  La oferta iguala exactamente a la demanda.};
+
+\node[n2chip,text width=1.05cm] (ra) at (1.30,3.60) {$c_1=4$};
+\node[n2chip,text width=1.05cm] (rb) at (2.70,3.60) {$c_2=4$};
+\node[spload,minimum width=1.05cm,minimum height=0.52cm,inner sep=1pt,
+  font=\fontsize{6.6}{7.4}\selectfont\bfseries] (la) at (4.60,3.98) {$m_1=5$};
+\node[spload,minimum width=1.05cm,minimum height=0.52cm,inner sep=1pt,
+  font=\fontsize{6.6}{7.4}\selectfont\bfseries] (lb) at (4.60,3.18) {$m_2=3$};
+\draw[spassign,draw=SPRed] (ra) -- (la);
+\draw[spassign,draw=SPRed] (rb) -- (la);
+\node[n2math] at (3.40,2.55) {$\sum_i c_i=8=\sum_k m_k$};
+\node[n2body,text width=5.85cm] at (0.32,2.24) {%
+  La carga de $5$\,kg no la levanta ningún robot solo, así que exige los dos y
+  la de $3$\,kg se queda sin nadie.};
+\node[n2bad,text width=4.70cm] at (3.05,1.02)
+  {INFACTIBLE con $\rho=1$: la capacidad agregada es\\
+   necesaria, no suficiente};
+
+% ---- Derecha: la relajación compra fracciones de robot -------------------
+\node[n2title,text=SPBlue!70!black] at (7.05,5.32)
+  {B · El continuo compra un tercio de robot};
+\node[n2body,text width=5.85cm] at (7.05,4.98) {%
+  Dos robots de $3$\,kg y una carga de $4$\,kg; uno está cerca
+  ($d=1$) y el otro lejos ($d=10$).};
+
+\node[n2chip,text width=1.30cm] (sa) at (8.10,3.86) {$c_1=3$\\$d=1$};
+\node[n2chip,text width=1.30cm] (sb) at (8.10,2.86) {$c_2=3$\\$d=10$};
+\node[spload,minimum width=1.05cm,minimum height=0.52cm,inner sep=1pt,
+  font=\fontsize{6.6}{7.4}\selectfont\bfseries] (lc) at (10.40,3.36) {$m=4$};
+\draw[spassign,draw=SPBlue] (sa) -- (lc);
+\draw[spassign,draw=SPBlue,densely dashed] (sb) -- (lc);
+\node[spannotation,font=\fontsize{6.2}{7.0}\selectfont] at (9.35,2.62)
+  {$x_2=\tfrac13$};
+
+\node[n2chip,text width=2.30cm] at (8.30,1.72) {LP\; $J=4{,}33$};
+\node[n2ok,text width=2.55cm] at (11.15,1.72) {MILP\; $J=11$};
+\node[n2body,text width=5.85cm] at (7.05,1.26) {%
+  La relajación reparte «masa de robot»; una coalición física debe reclutar el
+  agente entero. La brecha no es ruido numérico: es el precio de la atomicidad.};
+\end{tikzpicture}

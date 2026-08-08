@@ -1145,7 +1145,301 @@ falsos factibles, y los \NOneUncertifiedFalse{} fallos surgieron entre las
 capacidad a cardinalidad, y por eso N2 conserva cada $c_i^{\mathrm{pay}}$. No
 evaluamos fuerza, torque ni transporte: eso es SP2.
 
-% El documento de trabajo se cierra aquí mientras N2--N4 se revisan por etapas.
-% La versión completa de 28 páginas permanece congelada en la etiqueta Git
-% sp1-n1-v2-frozen-2026-08-05.
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 11 · N2: de la cardinalidad a la capacidad individual
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 2 DE 4 · CAPACIDADES INDIVIDUALES}
+\section*{SP1.N2: de contar robots a sumar capacidad}
+
+N2 cambia una sola hipótesis de N1: cada robot conserva su capacidad
+$c_i^{\mathrm{pay}}$. Todo lo demás sigue igual —problema estático, posiciones
+y costes conocidos, información global y decisión centralizada—, de modo que
+cuanto aparezca aquí es atribuible a esa única modificación. El Lema
+\ref{lema:n1-boundary} ya anticipó que fuera de su ventana la cardinalidad deja
+de certificar capacidad; N2 sustituye el recuento por la suma y estudia qué
+problema queda, según la Ecuación~\eqref{eq:n2-milp}:
+\begin{equation}
+\label{eq:n2-milp}
+ \min_{y\in\{0,1\}^{N\times K}}\sum_{i,k}d_{ik}y_{ik},\qquad
+ \sum_{k}y_{ik}\leq1,\quad \sum_{i}c_i^{\mathrm{pay}}y_{ik}\geq m_k .
+\end{equation}
+La fila de capacidad lleva coeficientes $c_i^{\mathrm{pay}}$ reales, no ceros y
+unos: la matriz deja de ser de incidencia bipartita y con ella se pierde la
+unimodularidad total que hacía exacta la relajación en N1. Esa pérdida no es un
+tecnicismo, y la Figura~\ref{fig:n2-model-boundary} muestra sus dos caras con
+instancias mínimas verificadas por enumeración.
+
+\begin{figure}[H]
+\centering
+\begingroup
+\pgfmathsetlengthmacro{\spxunitntwo}{\linewidth/13.5}
+\scalebox{0.94}{\input{sp1_levels_23p/figures/n2_model_boundary.tex}}
+\endgroup
+\caption{Dos fenómenos que N1 no podía representar. A la izquierda, oferta y
+demanda coinciden y aun así no existe reparto atómico. A la derecha, la
+relajación continua compra un tercio de robot y alcanza un coste que ninguna
+coalición física puede igualar.}
+\label{fig:n2-model-boundary}
+\viuownsource
+\end{figure}
+
+El objetivo es distancia pura. La campaña heredada de N1 añadía
+$\lambda_e\sum_k e_k$ con $e_k\geq\sum_ic_i^{\mathrm{pay}}y_{ik}-m_k$; como
+$e_k$ tiene coste positivo, satura en el óptimo y ese término equivale a
+$\lambda_e\sum_{i,k}c_i^{\mathrm{pay}}y_{ik}$ más una constante, es decir, a un
+precio por kilogramo reclutado. Mantenerlo habría mezclado el cambio de modelo
+con un cambio de objetivo en toda comparación con N1, así que queda como
+sensibilidad declarada y no como oráculo primario.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 12 · N2: resultados teóricos
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N2 · QUÉ CAMBIA RESPECTO DE N1}
+\section*{SP1.N2: tres consecuencias exactas}
+
+\begin{n1prop}[N1 como caso particular de N2]
+\label{prop:n2-limit}
+Si $c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$ para todo $i$ y $d_{ik}>0$,
+entonces \eqref{eq:n2-milp} y el LSAP por puestos \eqref{eq:n1-lsap} tienen el
+mismo valor óptimo, y el óptimo de \eqref{eq:n2-milp} recluta exactamente
+$n_k=\lceil m_k/\bar c^{\mathrm{pay}}\rceil$ robots por carga.
+\end{n1prop}
+
+{\small
+\begin{proof}
+Con capacidad común, $\sum_i\bar c^{\mathrm{pay}}y_{ik}\geq m_k$ equivale a
+$|S_k|\geq n_k$, luego el conjunto factible de \eqref{eq:n2-milp} contiene al de
+\eqref{eq:n1-lsap}, que fija $|S_k|=n_k$. Si algún $|S_k|>n_k$, retirar el
+robot asignado de mayor $d_{ik}$ conserva la factibilidad y reduce
+estrictamente el objetivo porque $d_{ik}>0$; luego todo óptimo cumple
+$|S_k|=n_k$ y ambos problemas optimizan sobre el mismo conjunto.
+\end{proof}
+}
+
+La hipótesis $d_{ik}>0$ no es decorativa: si un robot estuviese sobre su carga,
+sobre-reclutar sería gratuito y el argumento del intercambio solo garantizaría
+la igualdad de \emph{valores}, no la unicidad del óptimo. Nótese además que no
+hace falta suponer $m_k=n_k\bar c^{\mathrm{pay}}$.
+
+\begin{n1lema}[La capacidad agregada es necesaria, no suficiente]
+\label{lema:n2-partition}
+Si existe asignación factible entonces
+$\sum_i c_i^{\mathrm{pay}}\geq\sum_k m_k$, es decir $\rho\leq1$ con
+$\rho=\sum_km_k/\sum_ic_i^{\mathrm{pay}}$. El recíproco es falso.
+\end{n1lema}
+
+{\small
+\begin{proof}
+Sumando las restricciones de capacidad sobre $k$ y usando que cada robot sirve
+a lo sumo una carga se obtiene la desigualdad. Para el recíproco basta
+$c^{\mathrm{pay}}=(4,4)$ y $m=(5,3)$: se cumple $\rho=1$, pero la carga de
+$5$~kg exige los dos robots y deja la de $3$~kg sin nadie.
+\end{proof}
+}
+
+\begin{n1lema}[La relajación no es realizable]
+\label{lema:n2-atomicity}
+Relajar $y_{ik}\in\{0,1\}$ a $x_{ik}\in[0,1]$ puede reducir estrictamente el
+óptimo, y puede además volver factible una instancia sin solución atómica.
+\end{n1lema}
+
+{\small
+\begin{proof}
+Con $c^{\mathrm{pay}}=(3,3)$, $m=4$ y $d=(1,10)$, el LP toma
+$x=(1,\tfrac13)$ y alcanza $13/3$, mientras que toda coalición atómica necesita
+ambos robots y cuesta $11$. Para la segunda parte sirve el ejemplo del
+Lema~\ref{lema:n2-partition}, cuyo LP es factible repartiendo medio robot.
+\end{proof}
+}
+
+Sobre la complejidad no afirmamos más de lo que podemos sostener: la
+integralidad destruye la estructura LSAP y deja un MILP combinatorio que el
+oráculo resuelve por ramificación y acotación. No presentamos una reducción
+formal de dureza porque no la hemos demostrado para \emph{esta} formulación.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 13 · N2: protocolo y validación del oráculo
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N2 · PROTOCOLO Y EXPERIMENTO E1}
+\section*{SP1.N2 · E1: ¿es fiable el oráculo?}
+
+Las capacidades son lognormales renormalizadas a
+$\sum_ic_i^{\mathrm{pay}}=N\bar c^{\mathrm{pay}}$, de modo que variar
+$\mathrm{CV}(c_i^{\mathrm{pay}})$ nunca altera la oferta total; las masas son un
+reparto Dirichlet de $\rho\sum_ic_i^{\mathrm{pay}}$. Geometría y masas se
+sortean con la semilla del mundo y las capacidades con una corriente propia, así
+que los niveles de heterogeneidad están pareados dentro de cada mundo. Cada
+ejecución cae en una de cuatro clases congeladas, que N3 y N4 reutilizarán:
+\textsc{optimal} (incumbente y certificado), \textsc{feasible\_time\_limit}
+(incumbente sin certificado), \textsc{infeasible} (el solver demuestra que no
+hay solución) y \textsc{unknown}. Un límite de tiempo nunca se lee como
+infactibilidad, y solo las instancias \textsc{optimal} sirven de referencia
+óptima.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.86\linewidth]{../scripts/results/sp1_levels/n2_v1/figures/n2_oracle_validation.pdf}
+\caption{E1. (a) Cada mundo enumerable resuelto dos veces: por HiGHS y
+recorriendo todas las asignaciones atómicas. (b) Discrepancia máxima frente al
+LSAP congelado de N1 cuando todas las capacidades son iguales; la línea marca
+$10^{-9}$.}
+\label{fig:n2-oracle}
+\viuownsource
+\end{figure}
+
+En \NTwoOracleRows{} mundos de hasta \NTwoOracleMaxStates{} asignaciones
+posibles, el oráculo y la enumeración coincidieron en la clase de solución el
+\NTwoOracleAgreementPct\,\% de las veces, con \NTwoOracleDisagreements{}
+desacuerdos, incluidas las \NTwoOracleInfeasible{} instancias que ambos probaron
+infactibles. Entre las \NTwoOracleComparable{} comparables el error absoluto
+máximo fue $\NTwoOracleMaxError$~m, atribuible a la aritmética en coma flotante.
+
+El límite homogéneo reproduce N1. En \NTwoHomogeneousRows{} mundos con
+$c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$, la factibilidad coincidió con la del
+LSAP en el \NTwoHomogeneousAgreementPct\,\% de los casos, la mayor diferencia de
+distancia fue $\NTwoHomogeneousMaxError$~m y el MILP reclutó exactamente $n_k$
+robots por carga en \NTwoHomogeneousCardinality{} de \NTwoHomogeneousRows{},
+como exige la Proposición~\ref{prop:n2-limit}. No se reejecutó ninguna campaña
+de N1: se comparó contra su formulación congelada.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 14 · N2: precio de la atomicidad
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N2 · EXPERIMENTO E2}
+\section*{SP1.N2 · E2: cuánto cuesta que los robots sean indivisibles}
+
+E2 resuelve cada mundo dos veces con el \emph{mismo} objeto de modelo,
+cambiando únicamente el vector de integralidad: así, cualquier diferencia entre
+LP y MILP procede de la atomicidad y no de una formulación distinta. Una
+variable se considera fraccional si $\varepsilon<x_{ik}<1-\varepsilon$ con
+$\varepsilon=10^{-6}$, y la brecha relativa es
+$G=(J_{\mathrm{MILP}}-J_{\mathrm{LP}})/J_{\mathrm{MILP}}$, bien definida porque
+el objetivo es una suma de distancias positivas.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.86\linewidth]{../scripts/results/sp1_levels/n2_v1/figures/n2_atomicity.pdf}
+\caption{E2, sobre \NTwoAtomicityComparable{} mundos con ambos problemas
+resueltos. (a) Distribución de la brecha de integralidad por nivel de
+heterogeneidad. (b) Proporción de mundos con alguna variable fraccional y
+fracción de variables activas que lo son.}
+\label{fig:n2-atomicity}
+\viuownsource
+\end{figure}
+
+La relajación fue fraccional en el \NTwoFractionalPct\,\% de los mundos
+(IC 95\,\% desde \NTwoFractionalLowPct\,\%): comprar fracciones de robot no es
+una rareza sino el comportamiento por defecto. La brecha mediana fue
+\NTwoGapPct\,\% (IC 95\,\%: \NTwoGapLowPct--\NTwoGapHighPct\,\%), con percentil
+95 de \NTwoGapPninetyfivePct\,\% y máximo \NTwoGapMaxPct\,\%; nunca fue negativa
+(\NTwoNegativeGaps{} casos), como exige que el LP acote por debajo.
+
+La brecha \emph{no} crece con la heterogeneidad. Su mediana vale
+\NTwoGapHomogeneousPct\,\% con capacidades iguales, baja a \NTwoGapMidPct\,\% en
+el nivel intermedio y vuelve a \NTwoGapExtremePct\,\% en el extremo: la relación
+es en forma de U. La correlación de Spearman es \NTwoSpearman, significativa por
+el tamaño muestral pero despreciable en magnitud, y describir eso como
+«tendencia» sería engañoso.
+
+El resultado más fuerte no es de coste sino de factibilidad: en
+\NTwoLpOnlyCount{} mundos el LP era factible mientras el problema entero
+resultó \textsc{infeasible}. La relajación no solo promete un coste inalcanzable;
+puede prometer una solución que no existe. Es un límite inferior útil, no un
+plan ejecutable.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 15 · N2: heterogeneidad y presión
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N2 · EXPERIMENTO E3}
+\section*{SP1.N2 · E3: presión de capacidad frente a dispersión}
+
+E3 cruza la presión $\rho$ con la heterogeneidad sobre \NTwoPhaseWorlds{} mundos
+base y \NTwoPhaseRows{} ejecuciones. Dentro de cada mundo, geometría y masas son
+idénticas en los cinco niveles de CV y la oferta total está fijada, así que una
+diferencia de factibilidad no puede explicarse por más capacidad. La
+factibilidad se estima sobre las ejecuciones resueltas: un incumbente prueba
+factibilidad aunque no haya certificado, y \NTwoPhaseCensored{} ejecuciones
+quedaron sin certificar.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.90\linewidth]{../scripts/results/sp1_levels/n2_v1/figures/n2_phase_diagram.pdf}
+\caption{E3. (a) Fracción de mundos con asignación atómica factible en cada
+celda. (b) Capacidad reclutada por encima de la demanda, que explica el
+mecanismo: con capacidades iguales el redondeo por carga desperdicia mucho más.}
+\label{fig:n2-phase}
+\viuownsource
+\end{figure}
+
+Con $\rho>1$ nada es factible, como exige el Lema~\ref{lema:n2-partition}. Lo
+informativo ocurre por debajo: de las \NTwoSlackRows{} ejecuciones con $\rho<1$,
+\NTwoSlackInfeasible{} resultaron probadas infactibles
+(\NTwoSlackInfeasiblePct\,\%). La holgura agregada no basta, y el
+contraejemplo del Lema~\ref{lema:n2-partition} deja de ser una curiosidad
+teórica para convertirse en un régimen observable.
+
+El efecto de la heterogeneidad es opuesto al que sugeriría la intuición de N1.
+La factibilidad global pasa del \NTwoPhaseHomogeneousPct\,\% con capacidades
+iguales al \NTwoPhaseExtremePct\,\% en el nivel extremo, y la pendiente GEE
+sobre $\mathrm{CV}$, agrupada por mundo, es $\NTwoTrendCv$
+(IC 95\,\%: \NTwoTrendCvLow{} a \NTwoTrendCvHigh) frente a
+$\NTwoTrendPressure$ para $\rho$. El panel (b) da el mecanismo: con
+$c_i^{\mathrm{pay}}$ común cada carga desperdicia hasta una capacidad completa
+al redondear, mientras que la dispersión permite emparejar robots grandes con
+cargas grandes. Conviene no confundir esto con E4 de N1, que medía falsos
+factibles del modelo por cardinalidad: aquí se mide la factibilidad real del
+problema heterogéneo, y son preguntas distintas.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 16 · N2: frontera de certificación y transición
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N2 · EXPERIMENTO E4 Y SÍNTESIS}
+\section*{SP1.N2 · E4: hasta dónde certifica el oráculo}
+
+E4 no compara N2 con N1: mide durante cuánto tiempo el oráculo central sigue
+entregando un óptimo \emph{certificado} dentro de un presupuesto. Recorre
+$N=\NTwoCertMinN$ a $\NTwoCertMaxN$ con $K=N/{\approx}3$, heterogeneidad alta y
+$\rho$ fija, bajo límites de $1$ y $5$~s.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.94\linewidth]{../scripts/results/sp1_levels/n2_v1/figures/n2_certification.pdf}
+\caption{E4, con 15 mundos por celda. (a) Tiempo P50 (continua) y P95
+(discontinua). (b) Fracción con óptimo certificado e IC de Wilson. (c) Brecha
+MIP que queda cuando el presupuesto se agota.}
+\label{fig:n2-certification}
+\viuownsource
+\end{figure}
+
+Con $5$~s, la certificación pasa del \NTwoCertNTwenty\,\% en $N=20$ al
+\NTwoCertNForty\,\% en $N=40$, \NTwoCertNFifty\,\% en $N=50$ y
+\NTwoCertNEighty\,\% en $N=80$. La degradación es de certificación, no de
+solución: hubo incumbente factible en el \NTwoIncumbentPct\,\% de las
+\NTwoCertRows{} ejecuciones, y la brecha residual crece de forma ordenada.
+Ningún agotamiento del presupuesto se registró como infactibilidad. No
+ajustamos ninguna ley de potencias: el comportamiento de un MILP depende de la
+familia de instancias y del límite, y llamar complejidad a una regresión sería
+un abuso.
+
+N2 deja el problema correcto resuelto y un oráculo utilizable en un régimen
+finito. La Proposición~\ref{prop:n2-limit} lo ancla a N1; los
+Lemas~\ref{lema:n2-partition} y \ref{lema:n2-atomicity} explican por qué contar
+robots y por qué relajar la integralidad fallan de maneras distintas. Lo que
+todavía no se ha tocado es la arquitectura: \eqref{eq:n2-milp} necesita conocer
+simultáneamente todas las posiciones, capacidades y demandas. N3 conserva
+exactamente este problema y retira esa dependencia global.
+
+% N1 permanece congelado en SP1-N1-FROZEN; N2 solo anade paginas.
 \end{document}

@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
+import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -23,6 +26,66 @@ from sp1_levels_common import (  # noqa: E402
     fit_power_law,
     sha256_file,
 )
+
+
+def test_frozen_n1_pages_are_byte_identical_after_n2() -> None:
+    """N1 is frozen at SP1-N1-FROZEN; adding N2 may not disturb it.
+
+    The document is shared, so N2 necessarily edits main.tex. This pins the
+    rendered text of the ten N1 pages instead, which is the thing that must
+    not move: same wording, same numbers, same order.
+    """
+
+    snapshot = json.loads(
+        (
+            REPOSITORY_ROOT / "thesis" / "config" / "sp1-n1-frozen-pages.json"
+        ).read_text(encoding="utf-8")
+    )
+
+    # The decisive check is on the source: everything N1 contributed to the
+    # shared document must still be a byte-identical prefix of it.
+    marker = (
+        "% El documento de trabajo se cierra aquí mientras N2--N4 se revisan "
+        "por etapas."
+    )
+    frozen = subprocess.run(
+        ["git", "show", f"{snapshot['source_tag']}:thesis/sp1_levels_23p/main.tex"],
+        cwd=REPOSITORY_ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=True,
+    ).stdout
+    n1_body = frozen.split(marker)[0]
+    assert (
+        hashlib.sha256(n1_body.encode("utf-8")).hexdigest()
+        == snapshot["n1_source_prefix_sha256"]
+    )
+    current = (
+        REPOSITORY_ROOT / "thesis" / "sp1_levels_23p" / "main.tex"
+    ).read_text(encoding="utf-8")
+    assert current.startswith(n1_body), (
+        "the frozen N1 source is no longer a prefix of main.tex; "
+        "N1 may only be reopened for a reproducible factual error"
+    )
+
+    # Rendering is checked too, ignoring whitespace: PDF text extraction
+    # re-spaces glyphs around maths between builds, which is not a change.
+    pdf_path = next(
+        (REPOSITORY_ROOT / "output" / "pdf").glob("*/SP1_N1*.pdf"), None
+    )
+    assert pdf_path is not None, "no SP1 PDF was built"
+    reader = PdfReader(str(pdf_path))
+    assert len(reader.pages) >= snapshot["page_count"]
+    for record in snapshot["pages"]:
+        text = re.sub(
+            r"\s+", "", reader.pages[record["index"] - 1].extract_text() or ""
+        )
+        digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        assert digest == record["sha256"], (
+            f"frozen N1 page {record['index']} changed; "
+            "N1 may only be reopened for a reproducible factual error"
+        )
 
 
 def test_pdf_build_never_reruns_the_experimental_campaign() -> None:
@@ -76,9 +139,9 @@ def test_frozen_raw_hashes_match_the_manifest() -> None:
     )
     assert pdf_manifest["runs_solvers"] is False
     # The PDF records the very RAW digests the campaign registered.
-    assert set(pdf_manifest["frozen_raw_sha256"].values()) == {
-        record["sha256"] for record in frozen.values()
-    }
+    assert {record["sha256"] for record in frozen.values()} <= set(
+        pdf_manifest["frozen_raw_sha256"].values()
+    )
 
 
 def test_power_law_fit_recovers_known_exponent() -> None:
@@ -148,10 +211,12 @@ def test_pdf_has_exact_requested_page_budget() -> None:
     )
     assert pdf_path.is_file()
     reader = PdfReader(str(pdf_path))
-    assert len(reader.pages) == 10
+    assert len(reader.pages) == 16
     text = "\n".join(page.extract_text() or "" for page in reader.pages)
     assert "EXPERIMENTO E4" in text
-    assert "NIVEL 2 DE 4" not in text
+    # N2 now occupies pages 11-16 of the same document.
+    assert "NIVEL 2 DE 4" in text
+    assert "NIVEL 3 DE 4" not in text
 
 
 def test_n1_confirmatory_package_has_frozen_counts_and_invariants() -> None:
