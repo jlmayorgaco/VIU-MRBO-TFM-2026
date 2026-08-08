@@ -306,6 +306,7 @@ def generate_metrics_tex() -> Path:
             100.0 * n2["atomicity_fractional_ci_low"], 1
         ),
         "NTwoNegativeGaps": _tex_integer(n2["atomicity_negative_gaps"]),
+        "NTwoStrictGapRows": _tex_integer(n2["atomicity_strict_gap_rows"]),
         "NTwoLpOnlyCount": _tex_integer(
             n2["atomicity_lp_feasible_milp_infeasible"]
         ),
@@ -350,10 +351,13 @@ def generate_metrics_tex() -> Path:
         "NTwoBandExtremePct": _tex_float(
             100.0 * n2["phase_band_extreme_rate"], 1
         ),
-        "NTwoBandPValue": _tex_scientific(
-            n2["phase_band_middle_vs_extreme_p"]
-        ),
-        "NTwoBestCv": _tex_float(n2["phase_best_cv"], 2),
+        "NTwoBandPairs": _tex_integer(n2["phase_band_pairs"]),
+        "NTwoBandMiddleCv": _tex_float(n2["phase_band_middle_level"], 2),
+        "NTwoBandMiddleOnly": _tex_integer(n2["phase_band_middle_only"]),
+        "NTwoBandExtremeOnly": _tex_integer(n2["phase_band_extreme_only"]),
+        "NTwoBandMcNemarP": _tex_float(n2["phase_band_mcnemar_p"], 4),
+        "NTwoPlateauLow": _tex_float(min(n2["phase_plateau_levels"]), 2),
+        "NTwoPlateauHigh": _tex_float(max(n2["phase_plateau_levels"]), 2),
         # E4 · certification frontier
         "NTwoCertRows": _tex_integer(n2["certification_rows"]),
         "NTwoCertMinN": _tex_integer(n2["certification_min_n"]),

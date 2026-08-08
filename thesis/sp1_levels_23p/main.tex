@@ -1187,14 +1187,13 @@ coalición física puede igualar.}
 
 El objetivo es distancia pura, y conviene distinguirlo del de la
 Ecuación~\eqref{eq:sp1-heterogeneous-model}: aquel es el MILP
-\emph{diagnóstico} con el que N1 auditó su modelo por puestos en E4, no el
-oráculo de N2. Añadía $\lambda_e\sum_ke_k$ con
-$e_k\geq\sum_ic_i^{\mathrm{pay}}y_{ik}-m_k$; como $e_k$ tiene coste positivo,
-satura y ese término equivale a $\lambda_e\sum_{i,k}c_i^{\mathrm{pay}}y_{ik}$
-más una constante, un precio por kilogramo reclutado. Mantenerlo habría
-mezclado el cambio de modelo con un cambio de objetivo, así que las
-penalizaciones quedan como sensibilidades declaradas y \eqref{eq:n2-milp} es el
-único oráculo primario de N2.
+\emph{diagnóstico} con el que N1 auditó su modelo por puestos en E4. Añadía
+$\lambda_e\sum_ke_k$ con $e_k\geq\sum_ic_i^{\mathrm{pay}}y_{ik}-m_k$; como
+$e_k$ tiene coste positivo, satura y ese término equivale a
+$\lambda_e\sum_{i,k}c_i^{\mathrm{pay}}y_{ik}$ más una constante, un precio por
+kilogramo, mientras $\lambda_n$ pone precio a cada robot. Mantenerlos habría
+mezclado el cambio de modelo con un cambio de objetivo, así que ambos son
+sensibilidades declaradas y \eqref{eq:n2-milp} el único oráculo de N2.
 
 \clearpage
 
@@ -1344,22 +1343,23 @@ el objetivo es una suma de distancias positivas.
 \includegraphics[width=0.78\linewidth]{../scripts/results/sp1_levels/n2_v1/figures/n2_atomicity.pdf}
 \caption{E2, sobre \NTwoAtomicityComparable{} mundos con ambos problemas
 resueltos. (a) Distribución de la brecha de integralidad por nivel de
-heterogeneidad. (b) Proporción de mundos con alguna variable fraccional y
-fracción de variables activas que lo son.}
+heterogeneidad. (b) Proporción de mundos con alguna variable fraccional y, entre
+las variables activas ($x_{ik}>10^{-6}$), fracción que lo es.}
 \label{fig:n2-atomicity}
 \viuownsource
 \end{figure}
 
-Los denominadores conviene fijarlos. De los \NTwoAtomicityRows{} mundos, el LP
-resolvió los \NTwoLpOptimalRows{} y fue fraccional en el
-\NTwoFractionalAllPct\,\%: comprar fracciones de robot es el comportamiento por
-defecto, no una rareza. En \NTwoAtomicityComparable{} el MILP también alcanzó el
-óptimo, y solo sobre ellos se calcula la brecha; en los \NTwoLpOnlyCount{}
-restantes demostró infactibilidad (\NTwoOtherStatusRows{} con otro estado). La
-brecha mediana fue \NTwoGapPct\,\% (IC 95\,\%:
-\NTwoGapLowPct--\NTwoGapHighPct\,\%), percentil 95 \NTwoGapPninetyfivePct\,\% y
-máximo \NTwoGapMaxPct\,\%; nunca negativa (\NTwoNegativeGaps{} casos), como
-exige que el LP acote por debajo.
+Los denominadores conviene fijarlos. De los \NTwoAtomicityRows{} mundos el LP
+resolvió los \NTwoLpOptimalRows{} y devolvió solución fraccionaria en el
+\NTwoFractionalAllPct\,\%; en \NTwoAtomicityComparable{} el MILP también alcanzó
+el óptimo, y solo sobre ellos se calcula la brecha, mientras que en los
+\NTwoLpOnlyCount{} restantes demostró infactibilidad. La afirmación fuerte se
+sostiene: en \NTwoStrictGapRows{} de \NTwoAtomicityComparable{} la brecha fue
+estrictamente positiva ($G>10^{-6}$, mínimo \NTwoGapMinPct\,\%), luego ningún
+óptimo entero alcanzó el valor del LP. Su mediana fue \NTwoGapPct\,\%
+(IC 95\,\%: \NTwoGapLowPct--\NTwoGapHighPct\,\%), percentil 95
+\NTwoGapPninetyfivePct\,\% y máximo \NTwoGapMaxPct\,\%; nunca negativa
+(\NTwoNegativeGaps{} casos).
 
 La brecha \emph{no} crece con la heterogeneidad: su mediana vale
 \NTwoGapHomogeneousPct\,\% con capacidades iguales, baja a \NTwoGapMidPct\,\% en
@@ -1391,10 +1391,11 @@ quedaron sin certificar.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.90\linewidth]{../scripts/results/sp1_levels/n2_v1/figures/n2_phase_diagram.pdf}
+\includegraphics[width=0.84\linewidth]{../scripts/results/sp1_levels/n2_v1/figures/n2_phase_diagram.pdf}
 \caption{E3. (a) Fracción de mundos con asignación atómica factible en cada
-celda. (b) Capacidad reclutada por encima de la demanda, que explica el
-mecanismo: con capacidades iguales el redondeo por carga desperdicia mucho más.}
+celda. (b) Capacidad reclutada por encima de la demanda: es consistente con un
+mejor ajuste entre capacidades discretas y demandas, pero no identifica por sí
+solo el mecanismo de emparejamiento.}
 \label{fig:n2-phase}
 \viuownsource
 \end{figure}
@@ -1407,21 +1408,21 @@ contraejemplo del Lema~\ref{lema:n2-partition} deja de ser una curiosidad
 teórica para convertirse en un régimen observable.
 
 La dispersión ayuda, pero no sin límite. La factibilidad global sube del
-\NTwoPhaseHomogeneousPct\,\% con capacidades iguales al
-\NTwoPhaseExtremePct\,\% en el extremo, con pendiente GEE sobre $\mathrm{CV}$,
-agrupada por mundo, de $\NTwoTrendCv$ (IC 95\,\%: \NTwoTrendCvLow{} a
-\NTwoTrendCvHigh) frente a $\NTwoTrendPressure$ para $\rho$. Pero esa pendiente
-resume una tendencia, no la forma del fenómeno: el máximo está en
-$\mathrm{CV}=\NTwoBestCv$. En la banda de transición
-($\rho\in\{0{,}85;\,0{,}92;\,0{,}97\}$) la factibilidad pasa del
-\NTwoBandHomogeneousPct\,\% al \NTwoBandMiddlePct\,\% en los niveles
-intermedios y baja al \NTwoBandExtremePct\,\% en el extremo
-($p=\NTwoBandPValue$, Fisher exacto): heterogeneidad útil, no ilimitada.
-
-El panel (b) es consistente con un efecto de empaquetamiento: con
-$c_i^{\mathrm{pay}}$ común cada carga desperdicia hasta una capacidad completa al
-redondear. No medimos el emparejamiento capacidad--demanda, así que el mecanismo
-queda inferido, no demostrado, y no debe confundirse con E4 de N1.
+\NTwoPhaseHomogeneousPct\,\% al \NTwoPhaseExtremePct\,\%, con pendiente GEE
+sobre $\mathrm{CV}$, agrupada por mundo, de $\NTwoTrendCv$
+(IC 95\,\%: \NTwoTrendCvLow{} a \NTwoTrendCvHigh) frente a
+$\NTwoTrendPressure$ para $\rho$. Esa pendiente resume una tendencia, no la
+forma del fenómeno: el máximo es una meseta en
+$\mathrm{CV}\in\{\NTwoPlateauLow;\,\NTwoPlateauHigh\}$, los dos únicos niveles
+factibles en todas las presiones con $\rho<1$. En la banda de transición
+($\rho\in\{0{,}85;\,0{,}92;\,0{,}97\}$; \NTwoBandPairs{} mundos pareados), pasar
+de $\mathrm{CV}=\NTwoBandMiddleCv$ al extremo hizo perder factibilidad a
+\NTwoBandMiddleOnly{} mundos y ganarla a \NTwoBandExtremeOnly{}
+(\NTwoBandMiddlePct\,\% frente a \NTwoBandExtremePct\,\%; McNemar exacto
+$p=\NTwoBandMcNemarP$, contraste \emph{post hoc}). Es heterogeneidad útil, no
+ilimitada. El panel (b) es consistente con un mejor empaquetamiento —con
+$c_i^{\mathrm{pay}}$ común cada carga desperdicia hasta una capacidad al
+redondear—, pero no medimos ese emparejamiento: el mecanismo queda inferido.
 
 \clearpage
 
@@ -1433,8 +1434,9 @@ queda inferido, no demostrado, y no debe confundirse con E4 de N1.
 
 E4 no compara N2 con N1: mide durante cuánto tiempo el oráculo central sigue
 entregando un óptimo \emph{certificado} dentro de un presupuesto. Recorre
-$N=\NTwoCertMinN$ a $\NTwoCertMaxN$ con $K=N/{\approx}3$, heterogeneidad alta y
-$\rho$ fija, bajo límites de $1$ y $5$~s.
+$N=\NTwoCertMinN$ a $\NTwoCertMaxN$ con $K=3N/10$, geometría aleatoria,
+$\mathrm{CV}(c_i^{\mathrm{pay}})=0{,}65$ nominal y $\rho=0{,}85$, con $15$
+semillas por celda y límites de $1$ y $5$~s.
 
 \begin{figure}[H]
 \centering

@@ -209,6 +209,10 @@ def analyse_atomicity(
         "atomicity_fractional_ci_low": low,
         "atomicity_fractional_ci_high": high,
         "atomicity_negative_gaps": int((usable["gap_relative"] < -1e-9).sum()),
+        # A fractional LP solution is weaker than a strictly positive gap: the
+        # latter proves no integer optimum reaches the relaxed value.
+        "atomicity_strict_gap_rows": int((usable["gap_relative"] > 1e-6).sum()),
+        "atomicity_gap_tolerance": 1e-6,
         "atomicity_cv_spearman": float(correlation.statistic),
         "atomicity_cv_spearman_p": float(correlation.pvalue),
     }
@@ -317,25 +321,52 @@ def analyse_phase(
     }
     # The effect is not monotone: intermediate dispersion packs best, and the
     # extreme level gives part of that advantage back near saturation.
+    #
+    # Every CV level is applied to the same base worlds, so an independent
+    # two-sample test would both ignore the pairing and, if the two middle
+    # levels were pooled, count each world twice. The contrast is therefore
+    # McNemar exact on one pre-named middle level against the extreme one.
     band = runs.loc[runs["pressure"].isin([0.85, 0.92, 0.97])]
-    middle = band.loc[band["capacity_cv"].isin([0.35, 0.65]), "feasible_known"]
-    extreme_band = band.loc[
-        band["capacity_cv"] == band["capacity_cv"].max(), "feasible_known"
-    ]
-    homogeneous_band = band.loc[band["capacity_cv"] == 0.0, "feasible_known"]
-    odds = stats.fisher_exact(
-        [
-            [int(middle.sum()), len(middle) - int(middle.sum())],
-            [int(extreme_band.sum()), len(extreme_band) - int(extreme_band.sum())],
-        ]
+    wide = band.pivot(
+        index="world_id", columns="capacity_cv", values="feasible_known"
+    )
+    extreme_level = float(max(wide.columns))
+    middle_level = 0.35
+    middle_only = int(
+        (wide[middle_level].astype(bool) & ~wide[extreme_level].astype(bool)).sum()
+    )
+    extreme_only = int(
+        (~wide[middle_level].astype(bool) & wide[extreme_level].astype(bool)).sum()
+    )
+    discordant = middle_only + extreme_only
+    mcnemar_p = (
+        float(
+            stats.binomtest(
+                middle_only, discordant, 0.5, alternative="two-sided"
+            ).pvalue
+        )
+        if discordant
+        else 1.0
     )
     by_cv = runs.groupby("capacity_cv")["feasible_known"].mean()
+    best_rate = float(by_cv.max())
+    plateau = [
+        float(level)
+        for level, rate in by_cv.items()
+        if abs(rate - best_rate) < 1e-12
+    ]
     metrics_extra = {
-        "phase_band_homogeneous_rate": float(homogeneous_band.mean()),
-        "phase_band_middle_rate": float(middle.mean()),
-        "phase_band_extreme_rate": float(extreme_band.mean()),
-        "phase_band_middle_vs_extreme_p": float(odds.pvalue),
-        "phase_best_cv": float(by_cv.idxmax()),
+        "phase_band_pairs": int(len(wide)),
+        "phase_band_homogeneous_rate": float(wide[0.0].mean()),
+        "phase_band_middle_rate": float(wide[middle_level].mean()),
+        "phase_band_extreme_rate": float(wide[extreme_level].mean()),
+        "phase_band_middle_level": middle_level,
+        "phase_band_middle_only": middle_only,
+        "phase_band_extreme_only": extreme_only,
+        "phase_band_mcnemar_p": mcnemar_p,
+        "phase_best_rate": best_rate,
+        "phase_plateau_levels": plateau,
+        "phase_plateau_size": len(plateau),
         "phase_monotone_in_cv": bool((by_cv.diff().dropna() > 0).all()),
     }
     homogeneous = summary.loc[summary["capacity_cv"] == 0.0]
