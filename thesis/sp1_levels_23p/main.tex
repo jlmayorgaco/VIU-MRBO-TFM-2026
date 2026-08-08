@@ -1185,21 +1185,30 @@ coalición física puede igualar.}
 \viuownsource
 \end{figure}
 
-El objetivo es distancia pura. La campaña heredada de N1 añadía
-$\lambda_e\sum_k e_k$ con $e_k\geq\sum_ic_i^{\mathrm{pay}}y_{ik}-m_k$; como
-$e_k$ tiene coste positivo, satura en el óptimo y ese término equivale a
-$\lambda_e\sum_{i,k}c_i^{\mathrm{pay}}y_{ik}$ más una constante, es decir, a un
-precio por kilogramo reclutado. Mantenerlo habría mezclado el cambio de modelo
-con un cambio de objetivo en toda comparación con N1, así que queda como
-sensibilidad declarada y no como oráculo primario.
+El objetivo es distancia pura, y conviene distinguirlo del de la
+Ecuación~\eqref{eq:sp1-heterogeneous-model}: aquel es el MILP
+\emph{diagnóstico} con el que N1 auditó su modelo por puestos en E4, no el
+oráculo de N2. Añadía $\lambda_e\sum_ke_k$ con
+$e_k\geq\sum_ic_i^{\mathrm{pay}}y_{ik}-m_k$; como $e_k$ tiene coste positivo,
+satura y ese término equivale a $\lambda_e\sum_{i,k}c_i^{\mathrm{pay}}y_{ik}$
+más una constante, un precio por kilogramo reclutado. Mantenerlo habría
+mezclado el cambio de modelo con un cambio de objetivo, así que las
+penalizaciones quedan como sensibilidades declaradas y \eqref{eq:n2-milp} es el
+único oráculo primario de N2.
 
 \clearpage
 
 % --------------------------------------------------------------------------
 % Página 12 · N2: resultados teóricos
 % --------------------------------------------------------------------------
+% Declarada aquí y no en el preámbulo: el preámbulo pertenece al prefijo
+% congelado de N1 y debe permanecer byte a byte idéntico.
+\theoremstyle{remark}
+\newtheorem{n1obs}{Observación}
+\theoremstyle{plain}
+
 \leveltag{RESULTADOS SP1 · N2 · QUÉ CAMBIA RESPECTO DE N1}
-\section*{SP1.N2: tres consecuencias exactas}
+\section*{SP1.N2: qué se conserva y qué se rompe}
 
 \begin{n1prop}[N1 como caso particular de N2]
 \label{prop:n2-limit}
@@ -1212,18 +1221,27 @@ $n_k=\lceil m_k/\bar c^{\mathrm{pay}}\rceil$ robots por carga.
 {\small
 \begin{proof}
 Con capacidad común, $\sum_i\bar c^{\mathrm{pay}}y_{ik}\geq m_k$ equivale a
-$|S_k|\geq n_k$, luego el conjunto factible de \eqref{eq:n2-milp} contiene al de
-\eqref{eq:n1-lsap}, que fija $|S_k|=n_k$. Si algún $|S_k|>n_k$, retirar el
-robot asignado de mayor $d_{ik}$ conserva la factibilidad y reduce
-estrictamente el objetivo porque $d_{ik}>0$; luego todo óptimo cumple
-$|S_k|=n_k$ y ambos problemas optimizan sobre el mismo conjunto.
+$|S_k|\geq n_k$, luego el factible de \eqref{eq:n2-milp} contiene al de
+\eqref{eq:n1-lsap}, que fija $|S_k|=n_k$. Si algún $|S_k|>n_k$, retirar el robot
+de mayor $d_{ik}$ conserva factibilidad y baja el objetivo; luego todo óptimo
+cumple $|S_k|=n_k$.
 \end{proof}
 }
 
-La hipótesis $d_{ik}>0$ no es decorativa: si un robot estuviese sobre su carga,
-sobre-reclutar sería gratuito y el argumento del intercambio solo garantizaría
-la igualdad de \emph{valores}, no la unicidad del óptimo. Nótese además que no
-hace falta suponer $m_k=n_k\bar c^{\mathrm{pay}}$.
+La hipótesis $d_{ik}>0$ no es decorativa: con un robot sobre su carga
+sobre-reclutar sería gratis y solo quedaría garantizada la igualdad de
+\emph{valores}. No hace falta suponer $m_k=n_k\bar c^{\mathrm{pay}}$.
+
+\begin{n1obs}[Mismo problema entero, distinta relajación]
+\label{obs:n2-relaxation}
+La Proposición~\ref{prop:n2-limit} iguala los \emph{óptimos enteros}, no las
+relajaciones. Con $c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$, relajar
+\eqref{eq:n2-milp} da $\sum_ix_{ik}\geq m_k/\bar c^{\mathrm{pay}}$, con lado
+derecho rara vez entero: el LP compra la fracción sobrante. La expansión por
+puestos es una formulación \emph{extendida} con lado derecho $1$ y matriz
+totalmente unimodular, luego su relajación sí es integral. Por eso E2 halla
+brecha aun con capacidades iguales sin contradecir a N1.
+\end{n1obs}
 
 \begin{n1lema}[La capacidad agregada es necesaria, no suficiente]
 \label{lema:n2-partition}
@@ -1234,10 +1252,10 @@ $\rho=\sum_km_k/\sum_ic_i^{\mathrm{pay}}$. El recíproco es falso.
 
 {\small
 \begin{proof}
-Sumando las restricciones de capacidad sobre $k$ y usando que cada robot sirve
-a lo sumo una carga se obtiene la desigualdad. Para el recíproco basta
-$c^{\mathrm{pay}}=(4,4)$ y $m=(5,3)$: se cumple $\rho=1$, pero la carga de
-$5$~kg exige los dos robots y deja la de $3$~kg sin nadie.
+Sumar las restricciones de capacidad sobre $k$, con cada robot sirviendo a lo
+sumo una carga, da la desigualdad. Para el recíproco basta
+$c^{\mathrm{pay}}=(4,4)$ y $m=(5,3)$: $\rho=1$, pero la carga de $5$~kg exige
+ambos robots y deja la de $3$~kg sin nadie.
 \end{proof}
 }
 
@@ -1249,17 +1267,15 @@ Relajar $y_{ik}\in\{0,1\}$ a $x_{ik}\in[0,1]$ puede reducir estrictamente el
 
 {\small
 \begin{proof}
-Con $c^{\mathrm{pay}}=(3,3)$, $m=4$ y $d=(1,10)$, el LP toma
-$x=(1,\tfrac13)$ y alcanza $13/3$, mientras que toda coalición atómica necesita
-ambos robots y cuesta $11$. Para la segunda parte sirve el ejemplo del
-Lema~\ref{lema:n2-partition}, cuyo LP es factible repartiendo medio robot.
+Con $c^{\mathrm{pay}}=(3,3)$, $m=4$ y $d=(1,10)$ el LP toma $x=(1,\tfrac13)$ y
+alcanza $13/3$, mientras que toda coalición atómica cuesta $11$. Para lo segundo
+sirve el ejemplo del Lema~\ref{lema:n2-partition}, cuyo LP es factible.
 \end{proof}
 }
 
-Sobre la complejidad no afirmamos más de lo que podemos sostener: la
-integralidad destruye la estructura LSAP y deja un MILP combinatorio que el
-oráculo resuelve por ramificación y acotación. No presentamos una reducción
-formal de dureza porque no la hemos demostrado para \emph{esta} formulación.
+Sobre la complejidad no afirmamos más de lo sostenible: la integralidad
+destruye la estructura LSAP y deja un MILP combinatorio. No damos reducción de
+dureza porque no la hemos demostrado para \emph{esta} formulación.
 
 \clearpage
 
@@ -1270,17 +1286,16 @@ formal de dureza porque no la hemos demostrado para \emph{esta} formulación.
 \section*{SP1.N2 · E1: ¿es fiable el oráculo?}
 
 Las capacidades son lognormales renormalizadas a
-$\sum_ic_i^{\mathrm{pay}}=N\bar c^{\mathrm{pay}}$, de modo que variar
+$\sum_ic_i^{\mathrm{pay}}=N\bar c^{\mathrm{pay}}$, así que variar
 $\mathrm{CV}(c_i^{\mathrm{pay}})$ nunca altera la oferta total; las masas son un
-reparto Dirichlet de $\rho\sum_ic_i^{\mathrm{pay}}$. Geometría y masas se
-sortean con la semilla del mundo y las capacidades con una corriente propia, así
-que los niveles de heterogeneidad están pareados dentro de cada mundo. Cada
-ejecución cae en una de cuatro clases congeladas, que N3 y N4 reutilizarán:
+reparto Dirichlet de $\rho\sum_ic_i^{\mathrm{pay}}$. Geometría y masas usan la
+semilla del mundo y las capacidades una corriente propia, de modo que los
+niveles de heterogeneidad quedan pareados dentro de cada mundo. Cada ejecución
+cae en una de cuatro clases congeladas que N3 y N4 reutilizarán:
 \textsc{optimal} (incumbente y certificado), \textsc{feasible\_time\_limit}
-(incumbente sin certificado), \textsc{infeasible} (el solver demuestra que no
-hay solución) y \textsc{unknown}. Un límite de tiempo nunca se lee como
-infactibilidad, y solo las instancias \textsc{optimal} sirven de referencia
-óptima.
+(incumbente sin certificado), \textsc{infeasible} (probada) y \textsc{unknown}.
+Un límite de tiempo nunca se lee como infactibilidad, y solo \textsc{optimal}
+sirve de referencia óptima.
 
 \begin{figure}[H]
 \centering
@@ -1300,13 +1315,13 @@ desacuerdos, incluidas las \NTwoOracleInfeasible{} instancias que ambos probaron
 infactibles. Entre las \NTwoOracleComparable{} comparables el error absoluto
 máximo fue $\NTwoOracleMaxError$~m, atribuible a la aritmética en coma flotante.
 
-El límite homogéneo reproduce N1. En \NTwoHomogeneousRows{} mundos con
-$c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$, la factibilidad coincidió con la del
-LSAP en el \NTwoHomogeneousAgreementPct\,\% de los casos, la mayor diferencia de
-distancia fue $\NTwoHomogeneousMaxError$~m y el MILP reclutó exactamente $n_k$
-robots por carga en \NTwoHomogeneousCardinality{} de \NTwoHomogeneousRows{},
-como exige la Proposición~\ref{prop:n2-limit}. No se reejecutó ninguna campaña
-de N1: se comparó contra su formulación congelada.
+El límite homogéneo reproduce N1: en \NTwoHomogeneousRows{} mundos con
+$c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$ la factibilidad coincidió con la del
+LSAP en el \NTwoHomogeneousAgreementPct\,\% de los casos, la mayor diferencia
+fue $\NTwoHomogeneousMaxError$~m y el MILP reclutó exactamente $n_k$ robots en
+\NTwoHomogeneousCardinality{} de \NTwoHomogeneousRows{}, como exige la
+Proposición~\ref{prop:n2-limit}. No se reejecutó N1: se comparó contra su
+formulación congelada.
 
 \clearpage
 
@@ -1326,7 +1341,7 @@ el objetivo es una suma de distancias positivas.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.86\linewidth]{../scripts/results/sp1_levels/n2_v1/figures/n2_atomicity.pdf}
+\includegraphics[width=0.78\linewidth]{../scripts/results/sp1_levels/n2_v1/figures/n2_atomicity.pdf}
 \caption{E2, sobre \NTwoAtomicityComparable{} mundos con ambos problemas
 resueltos. (a) Distribución de la brecha de integralidad por nivel de
 heterogeneidad. (b) Proporción de mundos con alguna variable fraccional y
@@ -1335,25 +1350,29 @@ fracción de variables activas que lo son.}
 \viuownsource
 \end{figure}
 
-La relajación fue fraccional en el \NTwoFractionalPct\,\% de los mundos
-(IC 95\,\% desde \NTwoFractionalLowPct\,\%): comprar fracciones de robot no es
-una rareza sino el comportamiento por defecto. La brecha mediana fue
-\NTwoGapPct\,\% (IC 95\,\%: \NTwoGapLowPct--\NTwoGapHighPct\,\%), con percentil
-95 de \NTwoGapPninetyfivePct\,\% y máximo \NTwoGapMaxPct\,\%; nunca fue negativa
-(\NTwoNegativeGaps{} casos), como exige que el LP acote por debajo.
+Los denominadores conviene fijarlos. De los \NTwoAtomicityRows{} mundos, el LP
+resolvió los \NTwoLpOptimalRows{} y fue fraccional en el
+\NTwoFractionalAllPct\,\%: comprar fracciones de robot es el comportamiento por
+defecto, no una rareza. En \NTwoAtomicityComparable{} el MILP también alcanzó el
+óptimo, y solo sobre ellos se calcula la brecha; en los \NTwoLpOnlyCount{}
+restantes demostró infactibilidad (\NTwoOtherStatusRows{} con otro estado). La
+brecha mediana fue \NTwoGapPct\,\% (IC 95\,\%:
+\NTwoGapLowPct--\NTwoGapHighPct\,\%), percentil 95 \NTwoGapPninetyfivePct\,\% y
+máximo \NTwoGapMaxPct\,\%; nunca negativa (\NTwoNegativeGaps{} casos), como
+exige que el LP acote por debajo.
 
-La brecha \emph{no} crece con la heterogeneidad. Su mediana vale
+La brecha \emph{no} crece con la heterogeneidad: su mediana vale
 \NTwoGapHomogeneousPct\,\% con capacidades iguales, baja a \NTwoGapMidPct\,\% en
-el nivel intermedio y vuelve a \NTwoGapExtremePct\,\% en el extremo: la relación
-es en forma de U. La correlación de Spearman es \NTwoSpearman, significativa por
-el tamaño muestral pero despreciable en magnitud, y describir eso como
-«tendencia» sería engañoso.
+el nivel intermedio y vuelve a \NTwoGapExtremePct\,\% en el extremo. La
+correlación de Spearman, \NTwoSpearman, es significativa por el tamaño muestral
+pero despreciable, y llamarla «tendencia» sería engañoso. Que haya brecha con
+capacidades iguales tampoco contradice la integralidad de N1: es la
+Observación~\ref{obs:n2-relaxation}, y lo que mide es la formulación.
 
-El resultado más fuerte no es de coste sino de factibilidad: en
-\NTwoLpOnlyCount{} mundos el LP era factible mientras el problema entero
-resultó \textsc{infeasible}. La relajación no solo promete un coste inalcanzable;
-puede prometer una solución que no existe. Es un límite inferior útil, no un
-plan ejecutable.
+El resultado más fuerte no es de coste sino de factibilidad: en los
+\NTwoLpOnlyCount{} mundos citados el LP era factible y el entero
+\textsc{infeasible}. La relajación no solo promete un coste inalcanzable: puede
+prometer una solución que no existe.
 
 \clearpage
 
@@ -1366,9 +1385,8 @@ plan ejecutable.
 E3 cruza la presión $\rho$ con la heterogeneidad sobre \NTwoPhaseWorlds{} mundos
 base y \NTwoPhaseRows{} ejecuciones. Dentro de cada mundo, geometría y masas son
 idénticas en los cinco niveles de CV y la oferta total está fijada, así que una
-diferencia de factibilidad no puede explicarse por más capacidad. La
-factibilidad se estima sobre las ejecuciones resueltas: un incumbente prueba
-factibilidad aunque no haya certificado, y \NTwoPhaseCensored{} ejecuciones
+diferencia de factibilidad no puede explicarse por más capacidad. Un incumbente
+prueba factibilidad aunque no certifique, y \NTwoPhaseCensored{} ejecuciones
 quedaron sin certificar.
 
 \begin{figure}[H]
@@ -1388,17 +1406,22 @@ informativo ocurre por debajo: de las \NTwoSlackRows{} ejecuciones con $\rho<1$,
 contraejemplo del Lema~\ref{lema:n2-partition} deja de ser una curiosidad
 teórica para convertirse en un régimen observable.
 
-El efecto de la heterogeneidad es opuesto al que sugeriría la intuición de N1.
-La factibilidad global pasa del \NTwoPhaseHomogeneousPct\,\% con capacidades
-iguales al \NTwoPhaseExtremePct\,\% en el nivel extremo, y la pendiente GEE
-sobre $\mathrm{CV}$, agrupada por mundo, es $\NTwoTrendCv$
-(IC 95\,\%: \NTwoTrendCvLow{} a \NTwoTrendCvHigh) frente a
-$\NTwoTrendPressure$ para $\rho$. El panel (b) da el mecanismo: con
-$c_i^{\mathrm{pay}}$ común cada carga desperdicia hasta una capacidad completa
-al redondear, mientras que la dispersión permite emparejar robots grandes con
-cargas grandes. Conviene no confundir esto con E4 de N1, que medía falsos
-factibles del modelo por cardinalidad: aquí se mide la factibilidad real del
-problema heterogéneo, y son preguntas distintas.
+La dispersión ayuda, pero no sin límite. La factibilidad global sube del
+\NTwoPhaseHomogeneousPct\,\% con capacidades iguales al
+\NTwoPhaseExtremePct\,\% en el extremo, con pendiente GEE sobre $\mathrm{CV}$,
+agrupada por mundo, de $\NTwoTrendCv$ (IC 95\,\%: \NTwoTrendCvLow{} a
+\NTwoTrendCvHigh) frente a $\NTwoTrendPressure$ para $\rho$. Pero esa pendiente
+resume una tendencia, no la forma del fenómeno: el máximo está en
+$\mathrm{CV}=\NTwoBestCv$. En la banda de transición
+($\rho\in\{0{,}85;\,0{,}92;\,0{,}97\}$) la factibilidad pasa del
+\NTwoBandHomogeneousPct\,\% al \NTwoBandMiddlePct\,\% en los niveles
+intermedios y baja al \NTwoBandExtremePct\,\% en el extremo
+($p=\NTwoBandPValue$, Fisher exacto): heterogeneidad útil, no ilimitada.
+
+El panel (b) es consistente con un efecto de empaquetamiento: con
+$c_i^{\mathrm{pay}}$ común cada carga desperdicia hasta una capacidad completa al
+redondear. No medimos el emparejamiento capacidad--demanda, así que el mecanismo
+queda inferido, no demostrado, y no debe confundirse con E4 de N1.
 
 \clearpage
 
@@ -1427,11 +1450,14 @@ Con $5$~s, la certificación pasa del \NTwoCertNTwenty\,\% en $N=20$ al
 \NTwoCertNForty\,\% en $N=40$, \NTwoCertNFifty\,\% en $N=50$ y
 \NTwoCertNEighty\,\% en $N=80$. La degradación es de certificación, no de
 solución: hubo incumbente factible en el \NTwoIncumbentPct\,\% de las
-\NTwoCertRows{} ejecuciones, y la brecha residual crece de forma ordenada.
-Ningún agotamiento del presupuesto se registró como infactibilidad. No
-ajustamos ninguna ley de potencias: el comportamiento de un MILP depende de la
-familia de instancias y del límite, y llamar complejidad a una regresión sería
-un abuso.
+\NTwoCertRows{} ejecuciones. Las \NTwoCensoredRows{} sin certificar conservaron
+brechas MIP de pocos puntos porcentuales
+(\NTwoGapCertMinPct--\NTwoGapCertMaxPct\,\%, mediana
+\NTwoGapCertMedPct\,\% y percentil 95 \NTwoGapCertPninetyfivePct\,\%); la brecha
+tiende a aumentar donde el presupuesto se agota, pero no de forma monótona en
+$N$. Ningún agotamiento se registró como infactibilidad. No ajustamos ninguna
+ley de potencias: el comportamiento de un MILP depende de la familia de
+instancias y del límite, y llamar complejidad a una regresión sería un abuso.
 
 N2 deja el problema correcto resuelto y un oráculo utilizable en un régimen
 finito. La Proposición~\ref{prop:n2-limit} lo ancla a N1; los

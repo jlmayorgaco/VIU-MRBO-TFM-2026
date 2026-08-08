@@ -194,6 +194,11 @@ def analyse_atomicity(
         "atomicity_comparable_rows": int(len(usable)),
         "atomicity_lp_feasible_milp_infeasible": int(len(lp_only)),
         "atomicity_lp_only_share": len(lp_only) / max(1, len(runs)),
+        "atomicity_lp_optimal_rows": int((runs["lp_status"] == oracle.OPTIMAL).sum()),
+        "atomicity_fractional_over_all_lp": float(runs["fractional_world"].mean()),
+        "atomicity_other_status_rows": int(
+            len(runs) - len(usable) - len(lp_only)
+        ),
         "atomicity_gap_median": overall[0],
         "atomicity_gap_ci_low": overall[1],
         "atomicity_gap_ci_high": overall[2],
@@ -310,12 +315,36 @@ def analyse_phase(
             trend.params["pressure"] + 1.959963985 * trend.bse["pressure"]
         ),
     }
+    # The effect is not monotone: intermediate dispersion packs best, and the
+    # extreme level gives part of that advantage back near saturation.
+    band = runs.loc[runs["pressure"].isin([0.85, 0.92, 0.97])]
+    middle = band.loc[band["capacity_cv"].isin([0.35, 0.65]), "feasible_known"]
+    extreme_band = band.loc[
+        band["capacity_cv"] == band["capacity_cv"].max(), "feasible_known"
+    ]
+    homogeneous_band = band.loc[band["capacity_cv"] == 0.0, "feasible_known"]
+    odds = stats.fisher_exact(
+        [
+            [int(middle.sum()), len(middle) - int(middle.sum())],
+            [int(extreme_band.sum()), len(extreme_band) - int(extreme_band.sum())],
+        ]
+    )
+    by_cv = runs.groupby("capacity_cv")["feasible_known"].mean()
+    metrics_extra = {
+        "phase_band_homogeneous_rate": float(homogeneous_band.mean()),
+        "phase_band_middle_rate": float(middle.mean()),
+        "phase_band_extreme_rate": float(extreme_band.mean()),
+        "phase_band_middle_vs_extreme_p": float(odds.pvalue),
+        "phase_best_cv": float(by_cv.idxmax()),
+        "phase_monotone_in_cv": bool((by_cv.diff().dropna() > 0).all()),
+    }
     homogeneous = summary.loc[summary["capacity_cv"] == 0.0]
     extreme = summary.loc[summary["capacity_cv"] == summary["capacity_cv"].max()]
     for label, block in (("homogeneous", homogeneous), ("extreme", extreme)):
         metrics[f"phase_{label}_feasible_rate"] = float(
             block["feasible_count"].sum() / max(1, block["resolved"].sum())
         )
+    metrics.update(metrics_extra)
     return summary, metrics
 
 
@@ -356,6 +385,29 @@ def analyse_certification(runs: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, A
         "certification_incumbent_rate": float(runs["incumbent_exists"].mean()),
         "certification_overall_rate": float(runs["optimal_certified"].mean()),
     }
+    censored = runs.loc[~runs["optimal_certified"]]
+    if not censored.empty:
+        gaps = censored["mip_gap"].to_numpy(float)
+        by_size = censored.groupby(["time_limit_s", "N"])["mip_gap"].median()
+        metrics.update(
+            {
+                "certification_censored_rows": int(len(censored)),
+                "certification_gap_min": float(np.min(gaps)),
+                "certification_gap_median": float(np.median(gaps)),
+                "certification_gap_p95": float(np.quantile(gaps, 0.95)),
+                "certification_gap_max": float(np.max(gaps)),
+                # Whether the residual gap grows with size is a claim, so test
+                # it rather than assert it.
+                "certification_gap_monotone": bool(
+                    all(
+                        (
+                            by_size.loc[limit].sort_index().diff().dropna() > 0
+                        ).all()
+                        for limit in by_size.index.get_level_values(0).unique()
+                    )
+                ),
+            }
+        )
     for row in summary.itertuples(index=False):
         if math.isclose(row.time_limit_s, 5.0):
             metrics[f"certification_rate_n{int(row.N)}"] = float(row.certified_rate)
