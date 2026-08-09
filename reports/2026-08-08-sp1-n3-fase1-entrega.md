@@ -119,7 +119,7 @@ Lo que sí hice: el observador ahora detecta el ciclo y lo reporta como `DEADLOC
 **Corregido.** Bid congelado al comprometerse + barrera monótona por carga. Esto **redefine el
 método**: `Capacity-CBBA` pasa a llevar una barrera de retorno, y así queda congelado.
 
-### 2. Weighted-Pair-GRAPE escala ≈ N^4.9 en reloj
+### 2. Weighted-Pair-GRAPE escala ≈ N^5,0 en reloj
 
 Mediana de tiempo de pared, grafo completo, **tras las correcciones**:
 
@@ -163,26 +163,41 @@ Esto debe decirse en E3 explícitamente, o el lector concluirá que la localidad
 ### Capacity-CBBA (adaptación)
 
 ```
-estado_i = { tabla: {robot -> BidRecord}, acked: {vecino -> {robot -> versión}} }
+estado_i = { tabla:   {robot -> BidRecord},
+             sent:    {vecino -> {robot -> última versión TRANSMITIDA}},
+             barrera: {carga -> mejor puja con la que fui desplazado} }
 BidRecord = (robot, target, capacidad, ΔD, -d, token, versión)
 
 cada ronda t:
+  0. si t mod max(N,4) == 0:  sent = {}      # retransmisión completa periódica
+                                             # (nada acusa recibo; un registro
+                                             #  perdido solo se repara así)
+
   1. para cada mensaje recibido, para cada registro r:
          si r.robot == i: descartar        # cada robot es autoridad sobre sí mismo
          si r.versión > tabla[r.robot].versión: tabla[r.robot] = r
 
   2. si mi target k >= 0:
          miembros = {r in tabla : r.target == k}
-         si i no está en prefijo_voraz(miembros, m_k):  target = -1     # desplazado
+         si i no está en prefijo_voraz(miembros, m_k):
+             barrera[k] = max(barrera[k], mi puja actual)   # recordar la derrota
+             target = -1
 
-  3. si target < 0:  target = argmax_k b_ik   sobre k con r_ik > 0
-     recalcular ΔD, -d para el target
+  3. si target < 0:
+         target = argmax_k b_ik  sobre k con r_ik > 0  Y  b_ik > barrera[k]
+     si target >= 0 y no cambió:  NO recalcular ΔD ni -d      # puja congelada
 
   4. si algo cambió: versión += 1
 
   5. para cada vecino v:
-         enviar los registros cuya versión > acked[v][robot]
+         enviar los registros cuya versión > sent[v][robot]
 ```
+
+Dos detalles son los que hacen que el proceso termine, y ambos se añadieron tras medir que
+sin ellos oscila indefinidamente: la **puja congelada** del paso 3 (si flota con el residual,
+el prefijo se reordena sin que nadie puje) y la **barrera** del paso 2 (solo se vuelve a una
+carga perdida con una puja estrictamente mejor; la barrera no decrece y el espacio de pujas
+es finito).
 
 `prefijo_voraz(miembros, m_k)`: ordena por bid descendente y acumula capacidad hasta cubrir
 `m_k`; todo lo que sobra es redundante y libera (con `d_ik > 0` salir siempre baja el objetivo).
@@ -237,6 +252,16 @@ del paquete autorizado a declarar `CONVERGED`.
 Verificado en `test_grape_applies_one_strictly_improving_move_per_epoch`, que reconstruye la
 trayectoria y comprueba `(D,J)` estrictamente decreciente época a época.
 
+**La hipótesis que la prueba necesita y que no es gratuita.** Todo el argumento descansa en
+que la inundación alcance a todos dentro de la época. Con enlaces fiables eso se cumple por
+construcción (`N−1` rondas ≥ diámetro). Con pérdida **no está garantizado**, y el acuerdo exacto
+sobre enlaces que pueden perder mensajes es el problema del ataque coordinado, que no tiene
+solución. Por eso la implementación reintenta cada propuesta y, además, **comprueba** la
+consistencia al final en vez de suponerla: si los robots no sostienen el mismo perfil, el
+estado es `DIVERGED` y nunca `CONVERGED`. La prueba, por tanto, se enuncia **condicionada a
+entrega fiable**; fuera de esa condición la terminación es empírica y va acompañada del
+invariante que la delata.
+
 **No se prueba.** Nada sobre optimalidad. Un equilibrio unilateral o por pares no es óptimo
 social; el piloto lo muestra: `weighted_grape` converge a `D = 1.011` (infactible) mientras
 `weighted_pair_grape` alcanza `D = 0` en el mismo mundo. Tampoco se prueba nada sobre la
@@ -256,10 +281,20 @@ r_ik  = [ m_k − Σ_{j ∈ Ĉ_ik, j≠i} c_j ]_+          estimación local de 
 b_ik  = ( ΔD_ik , −d_ik , −token_i )               comparación lexicográfica
 ```
 
+más dos reglas sin las cuales el proceso no termina:
+
+```
+puja congelada:  mientras i mantenga su compromiso con k, b_ik no se recalcula
+barrera:         i solo vuelve a k si b_ik > barrera_i[k],
+                 donde barrera_i[k] = mejor puja con la que i fue desplazado de k
+```
+
 `token_i = sha256(world_seed ‖ c_i ‖ p_i)`: viaja con el robot, **no** es el índice de fila.
 La capacidad viaja en el registro porque sin ella no se puede estimar `r_ik`.
 
-Con este bid el proceso oscila (§ resumen 1).
+Sobrecobertura: el prefijo voraz deja fuera a los redundantes y estos liberan; con `d_ik > 0`
+salir siempre baja el objetivo. Mensajes obsoletos: se descartan por versión (solo se acepta
+`r.versión > conocida`), y un robot nunca acepta un registro sobre sí mismo.
 
 ## 5. Esquemas de mensaje y bytes reales
 
@@ -276,7 +311,7 @@ serializada de cada transmisión unicast. Un método que necesita decir más, pa
 
 ## 6. E1 white-box — resultados
 
-**46 pruebas, todas pasan** (`test_sp1_n3_contract.py`, `test_sp1_n3_invariants.py`).
+**50 pruebas, todas pasan** (`test_sp1_n3_contract.py`, `test_sp1_n3_invariants.py`).
 
 Cubren: forma exacta de `RobotView` (y ausencia de campos globales); firma de `step`;
 imposibilidad de reaccionar en la misma ronda; rechazo de envío a no-vecino; round-trip de los
@@ -287,6 +322,11 @@ certificado separando déficit de conflicto; exclusividad; reproducibilidad bit 
 invariancia a permutación; monotonía estricta de `(D,J)` por época; capacidad de los pares de
 reclutar un robot ocioso; radio crítico como umbral de conectividad; orden de los regímenes;
 grafo conexo mínimo; y control negativo de partición.
+
+Más cuatro regresiones añadidas tras los fallos: GRAPE nunca certifica convergencia sobre
+perfiles divergentes (y el test falla si ninguna ejecución diverge ni al 70 %, para que no se
+convierta en un test que no prueba nada); CBBA termina en toda la rejilla; las tablas de CBBA
+se reparan bajo pérdida; y un punto fijo no se reporta como ciclo.
 
 **Dos bugs reales encontrados por E1**, además del de float32:
 
@@ -380,7 +420,7 @@ El conteo anterior de 1 500 oráculos era erróneo por dos motivos: E3 no genera
 tratamiento, porque los siete tratamientos no cambian el problema central.
 
 **Advertencia de viabilidad:** con el runtime actual, la celda N=64 de E4 para
-`weighted_pair_grape` cuesta ≈ 45 h. E4 no es ejecutable sin resolver §16.2.
+`weighted_pair_grape` cuesta ≈ 72 h. E4 no es ejecutable sin resolver §16.2.
 
 ## 12. Tests
 
@@ -407,8 +447,20 @@ scripts/results/sp1_levels/n3_v1_pilot/{radius_pilot.csv,runtime_pilot.csv,pilot
 reports/2026-08-08-sp1-n3-fase1-entrega.md
 ```
 
-**Modificados: ninguno.** En particular **no** se tocó `scripts/sp1_levels_common.py`; N3 tiene
-su propio módulo común, como se pidió.
+**Modificados**
+
+```
+tests/test_sp1_levels.py               guardián de N1 acotado a la sección de N1
+thesis/config/sp1-n1-frozen-pages.json hash de esa sección + nota de alcance
+thesis/sp1_levels_23p/main.tex         escala de la Figura 3: 0,50 -> 0,62
+```
+
+Los tres proceden de un encargo posterior y distinto (agrandar las Figuras 3 y 4). La Figura 3
+sube un 24 %; la Figura 4 no admite ningún aumento dentro de las 16 páginas. El cambio no
+altera ni una palabra ni un número: el texto extraído de las 16 páginas es idéntico, porque
+escalar un TikZ no mueve ningún glifo.
+
+**No** se tocó `scripts/sp1_levels_common.py`; N3 tiene su propio módulo común, como se pidió.
 
 ## 14. Integridad
 
@@ -429,9 +481,29 @@ git diff SP1-N2-FROZEN HEAD -- scripts/results/sp1_levels/n1_v2 \
 
 ---
 
+## 15. Integridad del documento de tesis
+
+El único cambio en `thesis/` es la escala de la Figura 3 y el acotamiento del guardián de N1,
+ambos del encargo posterior de figuras. Verificado:
+
+- PDF: 16 páginas, 0 overfull, sin referencias ni citas indefinidas, `runs_solvers: false`.
+- El texto renderizado de las 16 páginas es **idéntico** al de antes del cambio.
+- La sección propia de N1 sigue exigiéndose **literal byte a byte** dentro de `main.tex`.
+- Las páginas 1–10 siguen fijadas por el hash de su texto renderizado.
+
+El guardián se acotó porque cubría también las páginas 1–4, que son portada común y no
+resultados de N1: pinchar su tipografía byte a byte hacía indistinguible un ajuste de tamaño
+de una manipulación de resultados.
+
+---
+
 ## 16. Decisiones que necesito antes de E2
 
-**16.1 · Capacity-CBBA no termina.** Opciones:
+**16.1 · Capacity-CBBA no termina. — RESUELTO en código, pendiente de tu visto bueno.**
+Implementada la variante (a) en su forma más simple: puja congelada mientras dura el
+compromiso, más barrera monótona de retorno por carga. 135/135 ejecuciones terminan.
+**Esto redefine el método**, así que necesito que lo apruebes como definición congelada de
+`Capacity-CBBA`. Las alternativas que descarté quedan aquí por si prefieres otra:
 
 - **(a) Salvaguarda monótona de precios** (estilo subasta): cada robot mantiene el mejor bid
   visto por carga; solo puede tomar una carga si supera estrictamente el precio al que la
@@ -443,10 +515,10 @@ git diff SP1-N2-FROZEN HEAD -- scripts/results/sp1_levels/n1_v2 \
   la adaptación no termina. Científicamente honesto y es en sí un resultado, pero entonces
   `P(raw_feasible)` de CBBA no es interpretable y habría que decirlo.
 
-Mi recomendación: **(a)**, y reportar además la frecuencia de ciclo del bid sin salvaguarda
-como hallazgo, porque es exactamente la garantía que la adaptación multi-ganador pierde.
+La frecuencia de ciclo del bid sin salvaguarda queda reportada como hallazgo (§1), porque es
+exactamente la garantía que la adaptación multi-ganador pierde.
 
-**16.2 · Pair-GRAPE escala ≈ N^4.9.** Opciones: limitar E4 a N ≤ 32 para esa rama;
+**16.2 · Pair-GRAPE escala ≈ N^5,0.** Opciones: limitar E4 a N ≤ 32 para esa rama;
 restringir la enumeración de pares (por ejemplo solo a cargas en el radio del robot);
 o aceptar el coste y recortar réplicas. Sin decisión, E4 no se puede ejecutar.
 
@@ -454,7 +526,12 @@ o aceptar el coste y recortar réplicas. Sin decisión, E4 no se puede ejecutar.
 prefiere la opción B (concurrente, sin teorema) como segunda rama para que E3 tenga un eje de
 calidad no plano? Implementar B es viable, pero entonces hay dos GRAPE distintos que comparar.
 
-**16.4 · GRAPE diverge bajo pérdida y miente al declarar `CONVERGED`.** Opciones:
+**16.4 · GRAPE diverge bajo pérdida. — RESUELTO en código, pendiente de tu visto bueno.**
+Implementada (a) en versión acotada —4 reintentos por propuesta y vecino, no reenvío en cada
+ronda— **más** el invariante. Divergencia 0/40 a 15 % y 30 %; a 50–90 % lo residual sale como
+`DIVERGED` y nunca como `CONVERGED`. No implementé (b), el acuerdo en dos fases: es más fuerte
+pero más caro, y con el invariante presente el fallo ya es visible en vez de silencioso.
+Dime si prefieres (b). Las opciones consideradas:
 
 - **(a) Inundación robusta**: reenviar el mejor conocido a cada vecino en *cada* ronda de la
   época en lugar de solo cuando cambia. Cuesta bytes (y hay que medirlo, no estimarlo), pero
@@ -469,7 +546,8 @@ robots no sostienen el mismo perfil, el estado no puede ser `CONVERGED` sino `DI
 observación pura y debería existir aunque se elija (b), porque es lo que convierte un fallo
 silencioso en un fallo visible.
 
-Mi recomendación: **(b) + el invariante**, y reportar la tasa de divergencia de (a) como
-evidencia de por qué la hipótesis de entrega fiable no era decorativa.
+**Estado: E2–E4 confirmatorios siguen bloqueados.** Abiertas quedan §16.2 y §16.3, que no son
+fallos sino decisiones de alcance, más tu confirmación de §16.1 y §16.4, que cambian la
+definición de un método y el protocolo de un flood respectivamente.
 
-**No abro semillas confirmatorias hasta tener estas cuatro respuestas.**
+**No abro semillas confirmatorias hasta tener esas respuestas.**
