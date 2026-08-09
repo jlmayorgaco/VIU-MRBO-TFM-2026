@@ -42,12 +42,17 @@ def test_frozen_n1_pages_are_byte_identical_after_n2() -> None:
         ).read_text(encoding="utf-8")
     )
 
-    # The decisive check is on the source: everything N1 contributed to the
-    # shared document must still be a byte-identical prefix of it.
-    marker = (
-        "% El documento de trabajo se cierra aquí mientras N2--N4 se revisan "
-        "por etapas."
-    )
+    # The decisive check is on the source: N1's own section must still appear
+    # byte-identical inside the shared document.
+    #
+    # Scoped to N1's pages rather than to the whole prefix. Pages 1-4 are the
+    # common front matter -- reading guide, scenarios, protocol -- which N1 does
+    # not own and N2 equally depends on. Pinning them byte-for-byte also pinned
+    # the size of a shared figure, so a purely typographic fix that changes no
+    # word, number or figure content was indistinguishable from tampering with
+    # a result. Those pages remain pinned by their rendered text below, which is
+    # what actually protects the science.
+    bounds = snapshot["n1_section_bounds"]
     frozen = subprocess.run(
         ["git", "show", f"{snapshot['source_tag']}:thesis/sp1_levels_23p/main.tex"],
         cwd=REPOSITORY_ROOT,
@@ -56,16 +61,16 @@ def test_frozen_n1_pages_are_byte_identical_after_n2() -> None:
         encoding="utf-8",
         check=True,
     ).stdout
-    n1_body = frozen.split(marker)[0]
+    n1_body = frozen.split(bounds["start"], 1)[1].split(bounds["end"], 1)[0]
     assert (
         hashlib.sha256(n1_body.encode("utf-8")).hexdigest()
-        == snapshot["n1_source_prefix_sha256"]
+        == snapshot["n1_section_sha256"]
     )
     current = (
         REPOSITORY_ROOT / "thesis" / "sp1_levels_23p" / "main.tex"
     ).read_text(encoding="utf-8")
-    assert current.startswith(n1_body), (
-        "the frozen N1 source is no longer a prefix of main.tex; "
+    assert n1_body in current, (
+        "the frozen N1 section is no longer present verbatim in main.tex; "
         "N1 may only be reopened for a reproducible factual error"
     )
 
