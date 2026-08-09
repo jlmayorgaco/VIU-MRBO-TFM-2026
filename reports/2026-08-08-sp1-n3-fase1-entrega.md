@@ -39,7 +39,13 @@ Qué se cambió, en una línea cada uno:
 - **CBBA**: retransmisión completa cada `N` rondas, y la ventana de quiescencia cubre un ciclo
   entero de refresco, para que "silencio" no se declare en el hueco entre heartbeats.
 
-**Sigue abierto:** §16.2 (Pair-GRAPE escala ≈ N^4.9) y §16.3 (calidad de GRAPE invariante al
+Una consecuencia observable que conviene registrar: el detector **sigue observando un ciclo en
+27 de 81 ejecuciones** del piloto (todas de CBBA). La barrera hace que el proceso termine, pero
+la trayectoria todavía revisita alguna configuración por el camino. Como la ejecución acaba
+asentándose, el estado es `QUIESCENT_OBSERVED` y no `DEADLOCK`: el detector registra el hecho,
+no decide sobre él.
+
+**Sigue abierto:** §16.2 (Pair-GRAPE escala ≈ N^5,0) y §16.3 (calidad de GRAPE invariante al
 grafo conexo). Ninguno es un bug; son decisiones de alcance.
 
 ---
@@ -85,6 +91,8 @@ Sobre 27 ejecuciones piloto:
 | weighted_grape | 27 | 0 | 0 |
 | weighted_pair_grape | 27 | 0 | 0 |
 
+(Tras la corrección, la misma rejilla da 27/27 `QUIESCENT_OBSERVED` para CBBA y 0 `DEADLOCK`.)
+
 Y con presupuesto ampliado a 4 000 rondas el resultado **empeora** respecto al presupuesto
 pequeño, porque el corte cae en otro punto del ciclo límite:
 
@@ -113,17 +121,17 @@ método**: `Capacity-CBBA` pasa a llevar una barrera de retorno, y así queda co
 
 ### 2. Weighted-Pair-GRAPE escala ≈ N^4.9 en reloj
 
-Mediana de tiempo de pared, grafo completo:
+Mediana de tiempo de pared, grafo completo, **tras las correcciones**:
 
 | método | N=16 | N=24 | N=32 |
 |---|---:|---:|---:|
-| capacity_cbba | 37 ms | 148 ms | 393 ms |
-| weighted_grape | 139 ms | 472 ms | 1 048 ms |
-| **weighted_pair_grape** | **902 ms** | **7 060 ms** | **26 245 ms** |
+| capacity_cbba | 57 ms | 209 ms | 492 ms |
+| weighted_grape | 253 ms | 912 ms | 1 773 ms |
+| **weighted_pair_grape** | **1 200 ms** | **7 526 ms** | **38 640 ms** |
 
-Exponente empírico ≈ 4,9. Extrapolado a N=64: **≈ 13 min por ejecución**. E4 propone
+Exponente empírico ≈ 5,0. Extrapolado a N=64: **≈ 21 min por ejecución**. E4 propone
 N=64 × 30 mundos × 7 tratamientos = 210 ejecuciones solo de pair-GRAPE en esa celda,
-es decir **≈ 45 h**. E4 no es ejecutable tal como se propuso.
+es decir **≈ 72 h**. E4 no es ejecutable tal como se propuso.
 
 El coste viene de la enumeración conjunta: cada robot evalúa (K+1)² desviaciones por vecino
 en cada arranque de época, y con grafo completo eso es O(N·K²) por robot, O(N²K²) por época,
@@ -327,16 +335,20 @@ exactamente el umbral de conectividad del grafo R-disk.
 
 ## 9. Piloto de runtime
 
-Bytes por robot (mediana, todos los regímenes):
+Bytes por robot (mediana, todos los regímenes), **tras las correcciones**:
 
 | método | N=16 | N=24 | N=32 |
 |---|---:|---:|---:|
-| capacity_cbba | 21 008 | 90 727 | 98 667 |
-| weighted_grape | 9 050 | 13 807 | 32 019 |
-| weighted_pair_grape | 7 829 | 13 756 | 26 706 |
+| capacity_cbba | 7 615 | 20 350 | 21 679 |
+| weighted_grape | 21 113 | 53 137 | 59 330 |
+| weighted_pair_grape | 15 152 | 44 917 | 53 455 |
 
-Tiempo de pared: ver § resumen 2. CBBA es barato en reloj pero caro en bytes (difunde tabla
-completa y no converge, así que sigue difundiendo).
+La relación se invirtió respecto a la medición previa: antes CBBA era el más caro en bytes
+(98 667/robot a N=32) porque no terminaba y seguía difundiendo hasta agotar el presupuesto.
+Con la barrera termina en 38–57 rondas y baja a 21 679. GRAPE sube porque los reintentos
+acotados son el precio de no divergir bajo pérdida.
+
+Tiempo de pared: ver § resumen 2.
 
 ## 10-11. E2–E4 propuestos y conteo corregido
 
