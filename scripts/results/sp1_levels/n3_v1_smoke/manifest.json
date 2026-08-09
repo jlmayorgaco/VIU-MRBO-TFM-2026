@@ -1,0 +1,50 @@
+{
+  "base_seed": 999000001,
+  "campaign_id": "SP1_N3_DISTRIBUTED_BASELINES_v1_SMOKE",
+  "config_sha256": "94d7a80ecc151ef3650091e8bb5c2715bc427f36bc2ce406218a1639a8129862",
+  "contract": {
+    "central_repair": "forbidden",
+    "global_robot_table": "forbidden",
+    "hidden_from_algorithms": [
+      "adjacency",
+      "diameter",
+      "lambda_2",
+      "rounds_remaining",
+      "global_profile"
+    ],
+    "load_catalog": "announced to every robot at t=0, immutable",
+    "milp_at_runtime": "forbidden",
+    "name": "distributed decision, globally announced tasks, neighbour-only robot state",
+    "observer": "records metrics only; never decides, stops or repairs",
+    "other_robot_state": "only via counted messages over edges of G",
+    "own_state": "capacity and position, private",
+    "public_constants": [
+      "n_robots",
+      "n_loads",
+      "max_rounds"
+    ],
+    "rounds": "synchronous; a message emitted at t cannot influence any decision before t+1"
+  },
+  "environment": {
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.9",
+    "scipy": "1.16.3"
+  },
+  "frozen_raw": {
+    "e2_quality": {
+      "path": "scripts/results/sp1_levels/n3_v1_smoke/raw/e2_quality_runs.csv",
+      "rows": 36,
+      "sha256": "2abce8e68696ae1f5074fc47caaee5bc90f7bb2812aba2a4c2f8d2caac94e4ee"
+    },
+    "e3_locality": {
+      "path": "scripts/results/sp1_levels/n3_v1_smoke/raw/e3_locality_runs.csv",
+      "rows": 90,
+      "sha256": "23abf98fdde34f057851941aa99c5002b8206dc6ba3d18427cd394c5104de99e"
+    }
+  },
+  "git_commit": "d3b2cb09450ac7cb16493391f63e6d44ea6f3282",
+  "schema_version": "sp1-n3-campaign-v1",
+  "smoke": true
+}
