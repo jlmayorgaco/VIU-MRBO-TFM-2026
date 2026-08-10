@@ -38,7 +38,7 @@ contract:
   rounds: synchronous; a message emitted at t cannot influence any decision before t+1
 
 methods:
-  - capacity_cbba          # multi-winner, deficit bid, frozen commitment, return barrier
+  - capacity_cbba_rb       # multi-winner, deficit bid, frozen commitment, return barrier
   - weighted_grape         # epoch-serialized lexicographic improvement
   - weighted_pair_grape    # sensitivity: general joint deviations with a neighbour
 
@@ -120,7 +120,14 @@ endpoints:
 
 limitations:
   - The baselines are adaptations; no published guarantee transfers to them.
-  - Capacity-CBBA carries a return barrier without which it does not terminate.
+  - Capacity-CBBA-RB is the adaptation *with a local return barrier*. Without
+    it the pilot showed the process never settles, so the barrier is part of
+    the method's definition and not a fix applied after seeing results. It uses
+    only this robot's own losing bid, remembered per load; it reads no global
+    deficit, no global assignment, no oracle and no observer.
+  - Weighted-Pair-GRAPE starts from the unilateral equilibrium rather than from
+    scratch, so it is a refinement of Weighted-GRAPE and reported as its
+    sensitivity, never as an independent third baseline.
   - Weighted-GRAPE's termination proof assumes reliable delivery; outside that
     condition the divergence invariant reports DIVERGED instead of CONVERGED.
   - Weighted-GRAPE reconstructs the full profile from counted messages, so it

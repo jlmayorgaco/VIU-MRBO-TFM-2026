@@ -451,7 +451,7 @@ def test_capacity_cbba_terminates_on_every_pilot_world() -> None:
     rounds made the result *worse* because the cut fell elsewhere in the cycle.
     """
 
-    from viu_mrob_tfm.sp1_n3.contract import DEADLOCK
+    from viu_mrob_tfm.sp1_n3.contract import CYCLE_OBSERVED
 
     for size in (10, 16):
         for scenario in ("uniform", "clustered", "corridor"):
@@ -466,9 +466,9 @@ def test_capacity_cbba_terminates_on_every_pilot_world() -> None:
                 for regime in ("complete", "medium", "threshold"):
                     adjacency = adjacency_for_regime(world.robot_positions, regime)
                     record = run_method(
-                        world, adjacency, "capacity_cbba", regime=regime
+                        world, adjacency, "capacity_cbba_rb", regime=regime
                     )
-                    assert record.observation.algorithm_status != DEADLOCK
+                    assert record.observation.algorithm_status != CYCLE_OBSERVED
 
 
 def test_cbba_repairs_stale_records_under_loss() -> None:
@@ -500,7 +500,7 @@ def test_cbba_repairs_stale_records_under_loss() -> None:
             channel=channel,
             init=capacity_cbba.initial_state,
             step=capacity_cbba.step,
-            max_rounds=default_max_rounds("capacity_cbba", world.n_robots),
+            max_rounds=default_max_rounds("capacity_cbba_rb", world.n_robots),
             priority_tokens=priority_tokens(
                 world.seed, world.capacities, world.robot_positions
             ),
@@ -546,3 +546,141 @@ def test_a_fixed_point_is_not_reported_as_a_cycle() -> None:
     )
     assert observed.algorithm_status == QUIESCENT_OBSERVED
     assert not observed.cycle_detected
+
+
+# ----------------------------------------------- gates before the confirmatory
+def test_cycle_detector_never_shortens_a_run() -> None:
+    """Observation must not become a decision, nor a discount on the bill.
+
+    If the engine stopped the moment a repeat appeared, the method that cycles
+    would be charged fewer rounds and fewer bytes than it actually spends, and
+    the communication comparison would reward cycling.
+    """
+
+    from viu_mrob_tfm.sp1_n3.contract import LoadCatalog, StepResult, run_rounds
+
+    world = _world(n=6, k=2)
+    seen_rounds: list[int] = []
+
+    def step(view):
+        seen_rounds.append(view.round_index)
+        # Deliberately oscillates between two configurations forever.
+        return StepResult(state=(view.round_index % 2, view.robot_id))
+
+    _, watched = run_rounds(
+        capacities=world.capacities,
+        positions=world.robot_positions,
+        distances=world.distances,
+        catalog=LoadCatalog(world.load_positions, world.demands),
+        adjacency=complete_adjacency(world.n_robots),
+        init=lambda view: (0, view.robot_id),
+        step=step,
+        max_rounds=25,
+        priority_tokens=list(range(world.n_robots)),
+        signature=lambda states: tuple(states),
+        quiescence_window=3,
+    )
+    assert watched.cycle_detected, "the probe was supposed to cycle"
+    # The run went the full distance despite the cycle being visible early.
+    assert watched.rounds == 25
+    assert max(seen_rounds) == 24
+
+
+def test_cbba_barrier_reads_only_local_state() -> None:
+    """The barrier is what makes CBBA-RB terminate, so it must stay local.
+
+    It may only remember bids this robot itself lost with, which it knows from
+    its own table. A barrier fed by the true global deficit, by the oracle or
+    by the observer would make the method quietly centralised.
+    """
+
+    import inspect
+
+    from viu_mrob_tfm.sp1_n3 import capacity_cbba
+
+    source = inspect.getsource(capacity_cbba)
+    for forbidden in (
+        "oracle",
+        "observation",
+        "adjacency",
+        "diameter",
+        "lambda_2",
+        "global",
+    ):
+        assert forbidden not in source.lower().replace("globally", ""), (
+            f"capacity_cbba refers to {forbidden!r}; the barrier must be built "
+            "from RobotView and delivered messages only"
+        )
+    # The barrier is written only from this robot's own losing bid.
+    assert "barrier[target] = lost_with if previous is None else max(" in source
+
+
+@pytest.mark.parametrize("scenario", ["uniform", "clustered", "corridor"])
+def test_pair_grape_refines_and_never_worsens_grape(scenario: str) -> None:
+    """Pair-GRAPE starts from the unilateral equilibrium, so it cannot lose.
+
+    Running it as a separate search from the same start would let it land
+    worse on some worlds, and then it could not be reported as a sensitivity
+    of Weighted-GRAPE at all.
+    """
+
+    for offset in range(4):
+        world = _world(
+            n=12, k=4, pressure=0.85, seed=2026080801 + 31 * offset, scenario=scenario
+        )
+        adjacency = adjacency_for_regime(world.robot_positions, "medium")
+        unilateral = run_method(world, adjacency, "weighted_grape", regime="medium")
+        paired = run_method(world, adjacency, "weighted_pair_grape", regime="medium")
+        key_uni = lexicographic_key(
+            unilateral.assignment, world.capacities, world.demands, world.distances
+        )
+        key_pair = lexicographic_key(
+            paired.assignment, world.capacities, world.demands, world.distances
+        )
+        assert key_pair <= key_uni, (
+            f"pair refinement worsened the profile: {key_uni} -> {key_pair}"
+        )
+
+
+def test_disconnected_components_exchange_nothing() -> None:
+    """The negative control must be a real information barrier.
+
+    Not merely "coordination is harder": no message may cross between
+    components, so no component can acquire another's state at any price.
+    """
+
+    from viu_mrob_tfm.sp1_n3.contract import LoadCatalog, priority_tokens, run_rounds
+    from viu_mrob_tfm.sp1_n3 import capacity_cbba
+    from viu_mrob_tfm.sp1_n3.graph import components
+    from viu_mrob_tfm.sp1_n3.runner import default_max_rounds
+
+    world = _world(n=16, k=5, pressure=0.85, seed=4242000)
+    adjacency = adjacency_for_regime(world.robot_positions, "partitioned")
+    blocks = components(adjacency)
+    assert len(blocks) >= 2, "this world did not partition; pick another"
+    membership = {robot: index for index, b in enumerate(blocks) for robot in b}
+
+    crossings = 0
+
+    def watched(view):
+        for message in view.inbox:
+            nonlocal crossings
+            if membership[message.sender] != membership[view.robot_id]:
+                crossings += 1
+        return capacity_cbba.step(view)
+
+    run_rounds(
+        capacities=world.capacities,
+        positions=world.robot_positions,
+        distances=world.distances,
+        catalog=LoadCatalog(world.load_positions, world.demands),
+        adjacency=adjacency,
+        init=capacity_cbba.initial_state,
+        step=watched,
+        max_rounds=default_max_rounds("capacity_cbba_rb", world.n_robots),
+        priority_tokens=priority_tokens(
+            world.seed, world.capacities, world.robot_positions
+        ),
+        quiescence_window=capacity_cbba.heartbeat_period(world.n_robots) + 1,
+    )
+    assert crossings == 0, f"{crossings} messages crossed a permanent partition"

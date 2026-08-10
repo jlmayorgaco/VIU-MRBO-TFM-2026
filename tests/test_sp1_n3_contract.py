@@ -105,7 +105,7 @@ def test_catalog_is_the_only_shared_input() -> None:
 
 @pytest.mark.parametrize("method", METHODS)
 def test_step_functions_take_only_a_view(method: str) -> None:
-    if method == "capacity_cbba":
+    if method == "capacity_cbba_rb":
         step = capacity_cbba.step
     else:
         step = weighted_grape.make_step(pair_moves=method == "weighted_pair_grape")
@@ -214,7 +214,7 @@ def test_message_sizes_are_serialized_not_assumed() -> None:
 def test_reported_bytes_match_the_transmissions() -> None:
     world = _world(n=6, k=2)
     adjacency = adjacency_for_regime(world.robot_positions, "medium")
-    record = run_method(world, adjacency, "capacity_cbba", regime="medium")
+    record = run_method(world, adjacency, "capacity_cbba_rb", regime="medium")
     observed = record.observation
     assert observed.bytes_sent == sum(observed.bytes_by_round)
     assert observed.messages == sum(observed.messages_by_round)
@@ -273,7 +273,7 @@ def test_cbba_never_claims_convergence() -> None:
     world = _world(n=8, k=3)
     for regime in ("complete", "medium", "threshold"):
         adjacency = adjacency_for_regime(world.robot_positions, regime)
-        record = run_method(world, adjacency, "capacity_cbba", regime=regime)
+        record = run_method(world, adjacency, "capacity_cbba_rb", regime=regime)
         assert record.observation.algorithm_status != CONVERGED
 
 

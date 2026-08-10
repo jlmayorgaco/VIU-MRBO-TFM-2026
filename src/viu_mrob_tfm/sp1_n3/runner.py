@@ -22,10 +22,10 @@ from .graph import graph_metrics
 from .worlds import World
 
 
-METHODS = ("capacity_cbba", "weighted_grape", "weighted_pair_grape")
+METHODS = ("capacity_cbba_rb", "weighted_grape", "weighted_pair_grape")
 
 METHOD_LABELS = {
-    "capacity_cbba": "Capacity-CBBA",
+    "capacity_cbba_rb": "Capacity-CBBA-RB",
     "weighted_grape": "Weighted-GRAPE",
     "weighted_pair_grape": "Weighted-Pair-GRAPE",
 }
@@ -66,7 +66,7 @@ def default_max_rounds(method: str, n_robots: int, *, epochs: int = 0) -> int:
     reported as MAX_ROUNDS rather than treated as convergence.
     """
 
-    if method == "capacity_cbba":
+    if method == "capacity_cbba_rb":
         return max(8 * n_robots, 64)
     budget = epochs or max(4 * n_robots, 40)
     return 1 + budget * weighted_grape.epoch_length(n_robots)
@@ -89,7 +89,7 @@ def run_method(
     tokens = priority_tokens(world.seed, world.capacities, world.robot_positions)
     budget = max_rounds or default_max_rounds(method, world.n_robots)
 
-    if method == "capacity_cbba":
+    if method == "capacity_cbba_rb":
         init = capacity_cbba.initial_state
         step = capacity_cbba.step
         extract = capacity_cbba.extract_assignment

@@ -80,6 +80,8 @@ class GrapeState:
     last_sent: dict[int, tuple[tuple, int]] = field(default_factory=dict)
     epoch: int = 0
     done: bool = False
+    # 0 = unilateral deviations only, 1 = joint deviations enabled.
+    phase: int = 0
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, GrapeState):
@@ -88,6 +90,7 @@ class GrapeState:
             np.array_equal(self.actions, other.actions)
             and self.epoch == other.epoch
             and self.done == other.done
+            and self.phase == other.phase
         )
 
 
@@ -288,6 +291,7 @@ def make_step(*, pair_moves: bool):
             last_sent=dict(state.last_sent),
             epoch=state.epoch,
             done=state.done,
+            phase=state.phase,
         )
         if following.done:
             return StepResult(state=following, outgoing=(), terminated=True)
@@ -324,12 +328,30 @@ def make_step(*, pair_moves: bool):
         local = (view.round_index - 1) % horizon
 
         if local == 0:
-            following.best = _own_best(view, following, pair_moves=pair_moves)
+            # Pair moves only after the unilateral equilibrium is reached, so
+            # Pair-GRAPE refines Weighted-GRAPE instead of running a different
+            # search from the same start. That makes
+            # (D,J)_pair <=_lex (D,J)_grape true by construction rather than a
+            # hope, and it is why the pair variant is a sensitivity and not an
+            # independent third baseline.
+            following.best = _own_best(
+                view, following, pair_moves=following.phase == 1
+            )
             following.last_sent = {}
 
         if local == horizon - 1:
             winner = following.best
             if winner is None or not winner.has_move:
+                if pair_moves and following.phase == 0:
+                    # Unilateral equilibrium reached. Every robot learns it in
+                    # the same round from the same flooded "no move", so they
+                    # all switch together and the shared profile stays shared.
+                    following.phase = 1
+                    following.best = None
+                    following.last_sent = {}
+                    return StepResult(
+                        state=following, outgoing=(), terminated=False
+                    )
                 following.done = True
                 return StepResult(state=following, outgoing=(), terminated=True)
             _apply(following, winner)

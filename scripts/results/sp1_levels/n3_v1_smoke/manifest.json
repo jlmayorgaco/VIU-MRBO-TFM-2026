@@ -1,7 +1,7 @@
 {
   "base_seed": 999000001,
   "campaign_id": "SP1_N3_DISTRIBUTED_BASELINES_v1_SMOKE",
-  "config_sha256": "94d7a80ecc151ef3650091e8bb5c2715bc427f36bc2ce406218a1639a8129862",
+  "config_sha256": "1f736d4d50e748280024a670a53236045b3a30988f61dba7bbad4041a3a0dd6e",
   "contract": {
     "central_repair": "forbidden",
     "global_robot_table": "forbidden",
@@ -29,22 +29,43 @@
     "numpy": "2.3.5",
     "pandas": "2.3.3",
     "platform": "Windows-11-10.0.26200-SP0",
+    "protocol": "sp1-n3-1.0",
     "python": "3.13.9",
     "scipy": "1.16.3"
   },
   "frozen_raw": {
-    "e2_quality": {
-      "path": "scripts/results/sp1_levels/n3_v1_smoke/raw/e2_quality_runs.csv",
-      "rows": 36,
-      "sha256": "2abce8e68696ae1f5074fc47caaee5bc90f7bb2812aba2a4c2f8d2caac94e4ee"
+    "e2_runs": {
+      "path": "scripts/results/sp1_levels/n3_v1_smoke/raw/e2_runs.csv",
+      "rows": 24,
+      "sha256": "821f66783398d45f9bdd76fd058cb20415a46198d9d63fc2f484b8cb628bf6a4"
     },
-    "e3_locality": {
-      "path": "scripts/results/sp1_levels/n3_v1_smoke/raw/e3_locality_runs.csv",
-      "rows": 90,
-      "sha256": "23abf98fdde34f057851941aa99c5002b8206dc6ba3d18427cd394c5104de99e"
+    "e3_runs": {
+      "path": "scripts/results/sp1_levels/n3_v1_smoke/raw/e3_runs.csv",
+      "rows": 30,
+      "sha256": "2a8815d7d2e9905fb34adde942cf320b674f4e4d1f62402e48f269b07fa5c732"
+    },
+    "graph_instances": {
+      "path": "scripts/results/sp1_levels/n3_v1_smoke/raw/graph_instances.csv",
+      "rows": 18,
+      "sha256": "2e43447c09b392f3c37191af302d88aa20b53c2f43c37e6a21f3500129cf2847"
+    },
+    "oracle_runs": {
+      "path": "scripts/results/sp1_levels/n3_v1_smoke/raw/oracle_runs.csv",
+      "rows": 10,
+      "sha256": "acd282eff9f4958cdcef0f172ecfe50632a83887cbece271f6453ca7ce84e655"
+    },
+    "worlds": {
+      "path": "scripts/results/sp1_levels/n3_v1_smoke/raw/worlds.csv",
+      "rows": 10,
+      "sha256": "1d1a8a12a975e6195d525ac4e9cbd8553e70080e15d1c27e28804b20148684e3"
     }
   },
-  "git_commit": "d3b2cb09450ac7cb16493391f63e6d44ea6f3282",
+  "git": {
+    "commit": "0b86fa355c8232c2cdcd19c426a8b8b8f0623251",
+    "tree_dirty": true
+  },
+  "note": "The oracle is the frozen N2 MILP; the methods are the N3 baselines. No recovery, no packet loss, no delay.",
+  "runs_solvers": true,
   "schema_version": "sp1-n3-campaign-v1",
   "smoke": true
 }

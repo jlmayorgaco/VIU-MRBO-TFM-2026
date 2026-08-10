@@ -42,7 +42,7 @@ CONVERGED = "CONVERGED"
 QUIESCENT_OBSERVED = "QUIESCENT_OBSERVED"
 MAX_ROUNDS = "MAX_ROUNDS"
 TIME_LIMIT = "TIME_LIMIT"
-DEADLOCK = "DEADLOCK"
+CYCLE_OBSERVED = "CYCLE_OBSERVED"
 DIVERGED = "DIVERGED"
 ERROR = "ERROR"
 
@@ -51,7 +51,7 @@ ALGORITHM_STATUS = (
     QUIESCENT_OBSERVED,
     MAX_ROUNDS,
     TIME_LIMIT,
-    DEADLOCK,
+    CYCLE_OBSERVED,
     DIVERGED,
     ERROR,
 )
@@ -222,7 +222,7 @@ class Observation:
             "delivered": self.delivered,
             "dropped": self.dropped,
             "algorithm_status": self.algorithm_status,
-            "cycle_detected": self.cycle_detected,
+            "cycle_observed": self.cycle_detected,
             "cycle_length": self.cycle_length,
             "consistent": self.consistent,
         }
@@ -392,8 +392,12 @@ def run_rounds(
         else:
             idle_rounds = 0
 
+    # Relabelling only, and only after the loop has ended on its own terms.
+    # The detector must never shorten a run: cutting the moment a cycle is
+    # seen would hand the cycling method a smaller communication bill than
+    # the one it actually incurs.
     if status == MAX_ROUNDS and observation.cycle_detected:
-        status = DEADLOCK
+        status = CYCLE_OBSERVED
     # A self-declared termination is only as good as the agreement behind it.
     # Under lossy links robots can end an epoch holding different profiles and
     # each conclude, correctly for its own view, that no move is left. Without
@@ -451,7 +455,7 @@ __all__ = [
     "ALGORITHM_STATUS",
     "CONVERGED",
     "Channel",
-    "DEADLOCK",
+    "CYCLE_OBSERVED",
     "DIVERGED",
     "ENVELOPE",
     "ENVELOPE_BYTES",
