@@ -1,0 +1,8 @@
+figure,indicator,value,unit,interpretation
+comparison_distance_parity,maximum_absolute_distance_error,0.0,m,Diferencia máxima entre costes de distancia en la reducción homogénea.
+comparison_paired_solver_time,median_milp_to_hungarian_solver_ratio,181.59851551956814,razón,Ratio pareado de tiempo; valores mayores que uno indican mayor tiempo del MILP.
+comparison_runtime_scaling,milp_solver_wall_ns_trend_identifiable,False,booleano,Exige pendiente positiva y R²≥0.50 para MILP homogéneo.
+comparison_runtime_scaling,milp_solver_wall_ns_r_squared,0.2699184529678845,adimensional,Bondad del ajuste log–log descriptivo de MILP homogéneo.
+comparison_runtime_scaling,hungarian_solver_wall_ns_trend_identifiable,False,booleano,Exige pendiente positiva y R²≥0.50 para Hungarian.
+comparison_runtime_scaling,hungarian_solver_wall_ns_r_squared,0.07650635130160788,adimensional,Bondad del ajuste log–log descriptivo de Hungarian.
+comparison_feasibility_agreement,feasibility_disagreement_count,0,mundos,Número de mundos con clasificación de factibilidad distinta.

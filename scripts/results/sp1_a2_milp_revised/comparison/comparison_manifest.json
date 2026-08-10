@@ -1,0 +1,109 @@
+{
+  "schema_version": 2,
+  "profile": "smoke",
+  "scope": "Controlled homogeneous MILP versus Hungarian on identical worlds.",
+  "row_counts": {
+    "scaling": 20,
+    "balance": 10,
+    "asymmetry": 50,
+    "failures": 46,
+    "all": 126
+  },
+  "audit": {
+    "all_rows_homogeneous": true,
+    "feasibility_disagreements": 0,
+    "maximum_absolute_distance_error_m": 0.0,
+    "png_dpi": 450,
+    "vector_pdf_for_each_png": true
+  },
+  "artifacts": {
+    "config.json": {
+      "bytes": 1274,
+      "sha256": "5844c64baa9c6d1fde18fd327629dc67b57ab61d27a717f6cd320f440e462b66"
+    },
+    "CONTROLLED_COMPARISON_REPORT.md": {
+      "bytes": 1113,
+      "sha256": "db8cf540ad832560038cdff5b70a712c879bcf4508ef2a2691923cc60621d3f8"
+    },
+    "FIGURE_GUIDE.md": {
+      "bytes": 1613,
+      "sha256": "5f92721442d1b8592281591c792fcd9fa3665b5f934fafee16914c8844f6169d"
+    },
+    "figure_indicators.csv": {
+      "bytes": 1079,
+      "sha256": "bfbb1b12013d39fe5e4ef58be0c220c21ac3163e8b4f79c4fdb456063feff706"
+    },
+    "figures/comparison_distance_parity.pdf": {
+      "bytes": 35970,
+      "sha256": "832cfe83f5f903d7172d60c520a08f15e5f865d3ad751ae23d9d63a9d6fc2dae"
+    },
+    "figures/comparison_distance_parity.png": {
+      "bytes": 299318,
+      "sha256": "c004ec249e643490e302e9f89bec60378061ba91054c39466eb8053a874979f3"
+    },
+    "figures/comparison_feasibility_agreement.pdf": {
+      "bytes": 30615,
+      "sha256": "c5ec007c295ad527cc82908de97ef77d30d59fc84769cb1aa667feb20825d91b"
+    },
+    "figures/comparison_feasibility_agreement.png": {
+      "bytes": 247793,
+      "sha256": "687b5d079de3fa76695af2db95acd93dd3b47630884e72629fcbc805793184ca"
+    },
+    "figures/comparison_paired_solver_time.pdf": {
+      "bytes": 28072,
+      "sha256": "3860d704ba7f7ed37791a24845992c5c505b350af3c7fe1fbb640b0120b79e69"
+    },
+    "figures/comparison_paired_solver_time.png": {
+      "bytes": 280411,
+      "sha256": "ebb0e35c3c3149d800786ea8ededba190baffe88a089e991722eadf4fc4df424"
+    },
+    "figures/comparison_runtime_scaling.pdf": {
+      "bytes": 33596,
+      "sha256": "4aa47922fdbb5dc423313c7ecadae425ffa96f17019a3dac4255ead3f7491e44"
+    },
+    "figures/comparison_runtime_scaling.png": {
+      "bytes": 283123,
+      "sha256": "f91b485e5e40189c37bb4b68c68928c5e04c27e60ba9e10313641608f2537249"
+    },
+    "mc_all_runs.csv": {
+      "bytes": 110692,
+      "sha256": "f03d1651a2006fee523c3b1628d1cfaf947f8bf4345332081f0855f095a921e9"
+    },
+    "mc_asymmetry.csv": {
+      "bytes": 46801,
+      "sha256": "c09ca8b8fb7b98f3c35c7cc65a76cb22e07eefbc505356a62b0321259a6df3cc"
+    },
+    "mc_balance.csv": {
+      "bytes": 9701,
+      "sha256": "60fd0f3c0705d46540c262331a09d932c9533d70e4f029007b01d9995e391674"
+    },
+    "mc_failures.csv": {
+      "bytes": 42693,
+      "sha256": "8e5d1f128ecfbf8ae3f951845d5de97b6ba203d3d46f797d3985dd75fd241ab8"
+    },
+    "mc_scaling.csv": {
+      "bytes": 17248,
+      "sha256": "51aa4f60b6084ef926a0ef1bed03c5115afe1844cf5e4069b465cdc9cb4238d3"
+    },
+    "METRIC_CROSSWALK.md": {
+      "bytes": 2366,
+      "sha256": "1a67f29b123f976e35c2bf7ba38d49fa151469e98e0c1aca266d573ca372fbb9"
+    },
+    "summary_asymmetry.csv": {
+      "bytes": 7674,
+      "sha256": "cf7c3d1b68211bc2da6443086eb5eba6b74d0f26a86232aa6ebeac4c1cc8e17a"
+    },
+    "summary_balance.csv": {
+      "bytes": 1896,
+      "sha256": "f13b65aa1305a352cf566b83814239d65b5f4ffb2acc5e20318a1819dc1675fb"
+    },
+    "summary_failures.csv": {
+      "bytes": 6664,
+      "sha256": "5b19a6a8109798746feaa6a222ba2986eb29b35a6407c1b2c512d8c72d3ebf59"
+    },
+    "summary_scaling.csv": {
+      "bytes": 3005,
+      "sha256": "b7113aef59da47fc00b9e17271f2c954d673a4f9a21e6e5c4868eedf50fedf0d"
+    }
+  }
+}

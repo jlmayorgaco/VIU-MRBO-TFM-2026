@@ -84,7 +84,7 @@ def test_frozen_n1_pages_are_byte_identical_after_n2() -> None:
         / "output"
         / "pdf"
         / "sp1_levels"
-        / "SP1_levels_N1_N2.pdf"
+        / "SP1_levels_N1_N2_N3.pdf"
     )
     assert pdf_path.is_file(), f"no SP1 PDF was built at {pdf_path}"
     reader = PdfReader(str(pdf_path))
@@ -219,16 +219,17 @@ def test_pdf_has_exact_requested_page_budget() -> None:
         / "output"
         / "pdf"
         / "sp1_levels"
-        / "SP1_levels_N1_N2.pdf"
+        / "SP1_levels_N1_N2_N3.pdf"
     )
     assert pdf_path.is_file()
     reader = PdfReader(str(pdf_path))
-    assert len(reader.pages) == 16
+    assert len(reader.pages) == 22
     text = "\n".join(page.extract_text() or "" for page in reader.pages)
     assert "EXPERIMENTO E4" in text
     # N2 now occupies pages 11-16 of the same document.
     assert "NIVEL 2 DE 4" in text
-    assert "NIVEL 3 DE 4" not in text
+    assert "NIVEL 3 DE 4" in text
+    assert "NIVEL 4 DE 4" not in text
 
 
 def test_n1_confirmatory_package_has_frozen_counts_and_invariants() -> None:

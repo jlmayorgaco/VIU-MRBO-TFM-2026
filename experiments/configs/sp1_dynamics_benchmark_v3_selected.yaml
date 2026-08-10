@@ -1,0 +1,59 @@
+campaign_id: SP1_DYNAMICS_BENCHMARK_v3
+calibration_seed_range:
+  - 70000
+  - 70019
+selection_rule: "lexicographic: convergence desc, residual/scalars/wall asc"
+selected_parameters:
+  Replicator-D-preconditioned:
+    candidate_id: rep_eta_012
+    eta: 0.12
+    step_min: 0.005
+    step_max: 0.1
+    selection_metrics:
+      convergence_rate: 0.0
+      median_terminal_residual: 0.017928496552225243
+      median_scalars: 37080000.0
+      median_wall_time_s: 1.6893449999624863
+  Smith-D-preconditioned:
+    candidate_id: smith_008
+    eta: 0.08
+    damping: 0.5
+    step_min: 0.002
+    step_max: 0.08
+    selection_metrics:
+      convergence_rate: 0.0
+      median_terminal_residual: 0.013417277663977224
+      median_scalars: 18540000.0
+      median_wall_time_s: 8.889556350011844
+  BNN-D-preconditioned:
+    candidate_id: bnn_012
+    eta: 0.12
+    damping: 0.35
+    step_min: 0.002
+    step_max: 0.08
+    selection_metrics:
+      convergence_rate: 0.0
+      median_terminal_residual: 0.016687801212175984
+      median_scalars: 18540000.0
+      median_wall_time_s: 9.617852900002617
+  Logit-D-annealed:
+    candidate_id: logit_slow
+    eta: 0.1
+    damping: 0.35
+    T_0: 0.2
+    T_min: 0.01
+    gamma: 0.997
+    selection_metrics:
+      convergence_rate: 0.0
+      median_terminal_residual: 0.01688667088273979
+      median_scalars: 18540000.0
+      median_wall_time_s: 6.0756896999664605
+  BestResponse-D:
+    candidate_id: br_010
+    eta: 0.12
+    eta_br: 0.1
+    selection_metrics:
+      convergence_rate: 0.0
+      median_terminal_residual: 0.13130495869394615
+      median_scalars: 18540000.0
+      median_wall_time_s: 5.545544249936938

@@ -414,9 +414,18 @@ __all__ = [
 
 
 def profile_signature(states: list[GrapeState]) -> tuple[int, ...]:
-    """Each robot's own action, for the observer's cycle check."""
+    """Each robot's own action, plus the protocol phase, for the cycle check.
 
-    return tuple(int(state.actions[robot]) for robot, state in enumerate(states))
+    The phase belongs in the signature because Pair-GRAPE crosses from
+    unilateral to joint deviations without moving anyone: the profile at the
+    end of phase 0 is the profile at the start of phase 1. Without the phase
+    the observer sees that unchanged profile as a revisit and flags a cycle
+    that never happened -- which it did, on every Pair-GRAPE run, with a
+    reported period of exactly one epoch.
+    """
+
+    phase = int(states[0].phase) if states else 0
+    return (phase, *(int(state.actions[robot]) for robot, state in enumerate(states)))
 
 
 def profiles_agree(states: list[GrapeState]) -> bool:

@@ -1,0 +1,75 @@
+{
+  "q_bar": 5.0,
+  "workspace_width": 100.0,
+  "workspace_height": 100.0,
+  "mean_quota": 3.0,
+  "base_seed": 20260728,
+  "seeds_per_cell": 2,
+  "scaling_m_values": [
+    10,
+    20
+  ],
+  "scaling_deltas": [
+    -0.33,
+    -0.2,
+    0.0,
+    0.2,
+    0.33
+  ],
+  "balance_m_values": [
+    20
+  ],
+  "balance_deltas": [
+    -0.95,
+    -0.5,
+    0.0,
+    0.5,
+    0.95
+  ],
+  "asymmetry_m_values": [
+    20
+  ],
+  "asymmetry_delta": 0.2,
+  "quota_modes": [
+    "symmetric",
+    "low",
+    "moderate",
+    "high",
+    "extreme"
+  ],
+  "spatial_modes": [
+    "uniform",
+    "clustered",
+    "separated",
+    "ring",
+    "corridor"
+  ],
+  "failure_m_values": [
+    20
+  ],
+  "failure_deltas": [
+    0.0,
+    0.2,
+    0.33
+  ],
+  "failure_treatments": [
+    "no_failure",
+    "idle_robot_failure",
+    "random_assigned_failure",
+    "critical_assigned_failure",
+    "random_5_percent",
+    "random_10_percent",
+    "random_20_percent",
+    "random_30_percent"
+  ],
+  "capacity_modes": [
+    "homogeneous"
+  ],
+  "default_capacity_mode": "homogeneous",
+  "max_retries": 3,
+  "time_limit_seconds": 10.0,
+  "mip_rel_gap": 0.0,
+  "distance_weight": 1.0,
+  "excess_weight": 0.25,
+  "robot_use_weight": 0.001
+}

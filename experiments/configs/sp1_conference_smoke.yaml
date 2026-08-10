@@ -1,0 +1,89 @@
+experiment_id: SP1_CONFERENCE_VALIDATION_SMOKE_v1
+protocol_family: sp1_conference_validation_frozen_v1
+output_dir: results/sp1_validation/SP1_CONFERENCE_VALIDATION_SMOKE_v1
+fail_on_audit: false
+run_preflight_tests: false
+reserve_energy: 5.0
+oracle_time_limit_s: 10.0
+cost_weights: {distance: 0.45, time: 0.25, energy: 0.30}
+dynamics:
+  integrator: mirror_prox
+  step: 0.03
+  max_iterations: 250
+  convergence_residual_mode: relative
+  primal_tolerance: 0.001
+  consensus_tolerance: 0.0001
+  stationarity_tolerance: 0.001
+  comparison_feasibility_tolerance: 0.000001
+  entropy_tau: 0.003
+  consensus_gain: 1.0
+  use_integral_consensus: true
+  history_stride: 25
+statistics: {bootstrap_resamples: 200, analysis_seed: 970000}
+e0:
+  history_stride: 100
+  acceptance: {regularized_error: 0.0001, primal_relative: 0.0001, rep_d_rep_c_state_error: 0.0001}
+  dynamics:
+    step: 0.10
+    max_iterations: 50000
+    convergence_residual_mode: absolute
+    primal_tolerance: 0.000001
+    consensus_tolerance: 0.000001
+    stationarity_tolerance: 0.00001
+e1:
+  configurations: [[6, 2], [10, 2]]
+  seeds: [1200]
+  trace_stride: 25
+  terminal_history_stride: 251
+  lp_tau_max_iterations: 5000
+  dynamics: {max_iterations: 250}
+e2:
+  n_robots: 10
+  n_loads: 2
+  seeds: [2200]
+  topologies: [complete, star, ring, path, grid, near_disconnect]
+  rdisk_levels: 3
+  trace_stride: 25
+  negative_control_max_iterations: 50
+  lp_tau_max_iterations: 5000
+  dynamics: {max_iterations: 250}
+e3:
+  n_robots: 10
+  n_loads: 2
+  seeds: [3200]
+  integrators: [euler_pure, projected_euler, exponential_replicator, mirror_prox]
+  step_factors: [0.25, 0.5, 1.0, 1.5, 2.0, 4.0]
+  trace_stride: 25
+  lp_tau_max_iterations: 5000
+  dynamics: {max_iterations: 120}
+e4:
+  configurations: [[6, 2], [10, 3]]
+  seeds: [4200]
+  best_of_samples: [5, 30, 100]
+  rounding_margin: 0.02
+  failure_penalty_multiplier: 2.0
+  dynamics: {max_iterations: 150}
+e5:
+  fleet_sizes: [20, 50]
+  robots_per_load: 5
+  seed_blocks:
+    "20": [5200]
+    "50": [5201]
+  minimum_seeds_any_size: 1
+  milp_max_n: 20
+  rounding_margin: 0.02
+  dynamics: {max_iterations: 80}
+e6:
+  fleet_sizes: [8]
+  robots_per_load: 4
+  seeds: [6200]
+  scenarios: [open, warehouse]
+  rounding_margin: 0.02
+  dt_s: 0.10
+  horizon_s: 80.0
+  dynamics: {max_iterations: 150}
+ablations:
+  enabled: true
+  n_robots: 8
+  n_loads: 2
+  seeds: [7200]

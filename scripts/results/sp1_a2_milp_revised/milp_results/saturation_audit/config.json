@@ -1,0 +1,56 @@
+{
+  "fixed_demand_m": 120,
+  "fixed_demand_n_values": [
+    120,
+    160,
+    220,
+    300,
+    400,
+    550,
+    750,
+    1000,
+    1400,
+    1900,
+    2600,
+    3500,
+    4800
+  ],
+  "joint_m_values": [
+    40,
+    60,
+    90,
+    130,
+    190,
+    280,
+    420,
+    620,
+    900,
+    1200
+  ],
+  "joint_delta": 0.2,
+  "timeout_probe_n_values": [
+    400,
+    800,
+    1600,
+    3200
+  ],
+  "timeout_probe_seconds": [
+    2.0,
+    5.0,
+    20.0
+  ],
+  "replicates": 3,
+  "main_timeout_seconds": 5.0,
+  "q_bar": 5.0,
+  "mean_quota": 3.0,
+  "workspace_width": 100.0,
+  "workspace_height": 100.0,
+  "base_seed": 20260729,
+  "quota_mode": "moderate",
+  "spatial_mode": "uniform",
+  "capacity_mode": "moderate",
+  "mip_rel_gap": 0.0,
+  "distance_weight": 1.0,
+  "excess_weight": 0.25,
+  "robot_use_weight": 0.001
+}

@@ -684,3 +684,24 @@ def test_disconnected_components_exchange_nothing() -> None:
         quiescence_window=capacity_cbba.heartbeat_period(world.n_robots) + 1,
     )
     assert crossings == 0, f"{crossings} messages crossed a permanent partition"
+
+
+def test_pair_grape_phase_switch_is_not_a_cycle() -> None:
+    """Crossing from unilateral to joint deviations moves nobody.
+
+    The profile at the end of phase 0 is the profile at the start of phase 1,
+    so a signature that ignores the phase sees a revisit and reports a cycle on
+    every single Pair-GRAPE run. It is an observational false positive, not an
+    oscillation, and it invalidated a whole confirmatory campaign once.
+    """
+
+    for offset in range(3):
+        world = _world(n=16, k=5, pressure=0.85, seed=2026080901 + 17 * offset)
+        adjacency = adjacency_for_regime(world.robot_positions, "medium")
+        paired = run_method(world, adjacency, "weighted_pair_grape", regime="medium")
+        unilateral = run_method(world, adjacency, "weighted_grape", regime="medium")
+        assert not unilateral.observation.cycle_detected
+        assert not paired.observation.cycle_detected, (
+            "the phase boundary was reported as a cycle of length "
+            f"{paired.observation.cycle_length}"
+        )

@@ -1,0 +1,14 @@
+figure,indicator,value,unit,interpretation
+saturation_runtime_and_certification,fixed_demand_largest_n,4800,robots,Mayor tamaño completado en Demanda fija ($M=120$).
+saturation_runtime_and_certification,fixed_demand_tail_optimality_rate,0.0,proporción,Optimalidad en el mayor tamaño de Demanda fija ($M=120$).
+saturation_runtime_and_certification,fixed_demand_tail_censoring_rate,1.0,proporción,Censura en el mayor tamaño de Demanda fija ($M=120$).
+saturation_runtime_and_certification,joint_growth_largest_n,1800,robots,Mayor tamaño completado en Crecimiento conjunto ($\delta=0.20$).
+saturation_runtime_and_certification,joint_growth_tail_optimality_rate,0.0,proporción,Optimalidad en el mayor tamaño de Crecimiento conjunto ($\delta=0.20$).
+saturation_runtime_and_certification,joint_growth_tail_censoring_rate,1.0,proporción,Censura en el mayor tamaño de Crecimiento conjunto ($\delta=0.20$).
+saturation_timeout_probe,timeout_2s_tail_optimality,0.0,proporción,Optimalidad a N=3200 con límite 2 s.
+saturation_timeout_probe,timeout_5s_tail_optimality,0.0,proporción,Optimalidad a N=3200 con límite 5 s.
+saturation_timeout_probe,timeout_20s_tail_optimality,0.0,proporción,Optimalidad a N=3200 con límite 20 s.
+saturation_model_growth,fixed_demand_binary_growth_exponent,0.9999999999999998,adimensional,Pendiente log–log de N×K para Demanda fija ($M=120$).
+saturation_model_growth,fixed_demand_memory_growth_exponent,0.999125249597775,adimensional,Pendiente log–log de memoria explícita para Demanda fija ($M=120$).
+saturation_model_growth,joint_growth_binary_growth_exponent,2.0041919757058815,adimensional,Pendiente log–log de N×K para Crecimiento conjunto ($\delta=0.20$).
+saturation_model_growth,joint_growth_memory_growth_exponent,2.0005697166483034,adimensional,Pendiente log–log de memoria explícita para Crecimiento conjunto ($\delta=0.20$).

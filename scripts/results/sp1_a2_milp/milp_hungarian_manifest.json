@@ -1,0 +1,298 @@
+{
+  "schema_version": 1,
+  "profile": "quick",
+  "scientific_scope": "Static centralized assignment; scalar payload capacity only.",
+  "comparison_note": "MILP heterogeneous versus Hungarian homogeneous changes both model and method; homogeneous MILP rows audit algorithmic equivalence.",
+  "config": {
+    "q_bar": 5.0,
+    "workspace_width": 100.0,
+    "workspace_height": 100.0,
+    "mean_quota": 3.0,
+    "base_seed": 20260728,
+    "seeds_per_cell": 10,
+    "scaling_m_values": [
+      10,
+      13,
+      17,
+      22,
+      29,
+      38,
+      49,
+      64,
+      83,
+      108,
+      132,
+      160
+    ],
+    "scaling_deltas": [
+      -0.4,
+      -0.33,
+      -0.27,
+      -0.2,
+      -0.13,
+      -0.07,
+      0.0,
+      0.07,
+      0.13,
+      0.2,
+      0.27,
+      0.33,
+      0.4
+    ],
+    "balance_m_values": [
+      20,
+      80
+    ],
+    "balance_deltas": [
+      -0.95,
+      -0.9,
+      -0.85,
+      -0.8,
+      -0.75,
+      -0.7,
+      -0.65,
+      -0.6,
+      -0.55,
+      -0.5,
+      -0.45,
+      -0.4,
+      -0.35,
+      -0.3,
+      -0.25,
+      -0.2,
+      -0.15,
+      -0.1,
+      -0.05,
+      0.0,
+      0.05,
+      0.1,
+      0.15,
+      0.2,
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6,
+      0.65,
+      0.7,
+      0.75,
+      0.8,
+      0.85,
+      0.9,
+      0.95
+    ],
+    "asymmetry_m_values": [
+      40,
+      160
+    ],
+    "asymmetry_delta": 0.2,
+    "quota_modes": [
+      "symmetric",
+      "low",
+      "moderate",
+      "high",
+      "extreme"
+    ],
+    "spatial_modes": [
+      "uniform",
+      "clustered",
+      "separated",
+      "ring",
+      "corridor"
+    ],
+    "failure_m_values": [
+      40,
+      160
+    ],
+    "failure_deltas": [
+      0.0,
+      0.2,
+      0.33
+    ],
+    "failure_treatments": [
+      "no_failure",
+      "idle_robot_failure",
+      "random_assigned_failure",
+      "critical_assigned_failure",
+      "random_5_percent",
+      "random_10_percent",
+      "random_20_percent",
+      "random_30_percent"
+    ],
+    "capacity_modes": [
+      "homogeneous",
+      "low",
+      "moderate",
+      "high",
+      "extreme"
+    ],
+    "default_capacity_mode": "moderate",
+    "max_retries": 3,
+    "time_limit_seconds": 5.0,
+    "mip_rel_gap": 0.0,
+    "distance_weight": 1.0,
+    "excess_weight": 0.25,
+    "robot_use_weight": 0.001
+  },
+  "row_counts": {
+    "scaling": 1560,
+    "balance": 780,
+    "asymmetry": 500,
+    "failures": 480,
+    "capacity": 100,
+    "all": 3420
+  },
+  "audit": {
+    "all_unique_study_seed_treatment": true,
+    "capacity_modes": [
+      "extreme",
+      "high",
+      "homogeneous",
+      "low",
+      "moderate"
+    ],
+    "spatial_modes": [
+      "clustered",
+      "corridor",
+      "ring",
+      "separated",
+      "uniform"
+    ],
+    "quota_modes": [
+      "extreme",
+      "high",
+      "low",
+      "moderate",
+      "symmetric"
+    ]
+  },
+  "artifacts": {
+    "mc_scaling.csv": {
+      "bytes": 994885,
+      "sha256": "973e1ce719b7800f082d5c848cd09b46cd642f0933e15ae42a765d344f4cc7ca"
+    },
+    "mc_balance.csv": {
+      "bytes": 487756,
+      "sha256": "8f0d73f61ce46e067b145b0ad61841ae456c26f27a14acba019bf9772338d44f"
+    },
+    "mc_asymmetry.csv": {
+      "bytes": 343752,
+      "sha256": "6a1c9fda47ad8f2d82f5a2551f24bad945fe12c1592b21279507646bf4bdf7df"
+    },
+    "mc_failures.csv": {
+      "bytes": 362315,
+      "sha256": "b8ec34d79acce5a6def2f227f5c6eac1efbed2b518bd18d4bc8ad3cc65402e78"
+    },
+    "mc_capacity.csv": {
+      "bytes": 67548,
+      "sha256": "e5d7f1c8ce14b4ce39fdedf521ab5eabc9c4f35b78bbdeb54ba50cb7cff815ac"
+    },
+    "mc_all_runs.csv": {
+      "bytes": 2251164,
+      "sha256": "708a7127f277b4dd0b6b87f1496a8721f35ba4ba59a472e554424101851e1e6b"
+    },
+    "summary_scaling.csv": {
+      "bytes": 142196,
+      "sha256": "29e882ee7fabf349f22ab1cba90fe3b60a1bebfdf3fe97a1f527d6cb2b6e2f44"
+    },
+    "summary_balance.csv": {
+      "bytes": 68822,
+      "sha256": "85457015029e09143a19bcf1fd5419d2963794014c619d4ee8f3bb45286a8030"
+    },
+    "summary_asymmetry.csv": {
+      "bytes": 57244,
+      "sha256": "cf7d4565d92bc095dcb0630d1d354253f2b85a11265438ee04bd2b5f8342e8be"
+    },
+    "summary_failures.csv": {
+      "bytes": 58551,
+      "sha256": "055d2bf398d51e03ece875e8f67764bcd4ffcb3bedd04ac35bb5a5cf82a71ae3"
+    },
+    "summary_capacity.csv": {
+      "bytes": 13000,
+      "sha256": "533ce4ea8e92dbeefb48b6aa21b936de4bc3971f7869dcf99b0777b0cb5514c2"
+    },
+    "config.json": {
+      "bytes": 1916,
+      "sha256": "1f9f21cf5ace11e240454a94b8c4c885c74143be37bbfd761ced446b8bf33094"
+    },
+    "MILP_HUNGARIAN_COMPARISON_REPORT.md": {
+      "bytes": 885,
+      "sha256": "7517ee42c047a9f0321ecf0ee88e79fb3f709f61ed17b8709cb088630aa58f40"
+    },
+    "plots/asymmetry_quota_excess.png": {
+      "bytes": 60459,
+      "sha256": "c396b417d60de67293706342a353f981dd7cd8e855e17ffbbc5c9774d9eae5d1"
+    },
+    "plots/asymmetry_spatial_p95.png": {
+      "bytes": 59199,
+      "sha256": "ab7c1aa602969236c5da26f2a66c8b6eec3f03d40b986caf7effb22bdabd61bb"
+    },
+    "plots/balance_distance_ratio.png": {
+      "bytes": 66967,
+      "sha256": "0f7f18ba786949239c795e7d7f1c6a2dcf190527026feba083f12020ff2f3c2a"
+    },
+    "plots/balance_feasibility.png": {
+      "bytes": 69796,
+      "sha256": "f81daa307bcc84b2065c1a871072f16e099bfd9c77989ec3631f6eb80da4ea9f"
+    },
+    "plots/branch_and_bound_nodes.png": {
+      "bytes": 65530,
+      "sha256": "598ac6a89e1c135942dd8a553c7db22d2f6c2a7d277d11ed922acc7d78b9cbc4"
+    },
+    "plots/capacity_assigned_robot_difference.png": {
+      "bytes": 63320,
+      "sha256": "d98bb5a03bec614ff855cd936f5899c4670851c6f41ac36d9d3f7df9a18b6d46"
+    },
+    "plots/capacity_cv.png": {
+      "bytes": 62952,
+      "sha256": "7eab005bc29874d8cff899031db00ccb9319951263abd8b6d74c1655d7b81613"
+    },
+    "plots/capacity_cv_vs_excess.png": {
+      "bytes": 136847,
+      "sha256": "a1c3be65178d540f2e801e9734e1f71aa46d4c995c41b15a7c83ee1b265edd6d"
+    },
+    "plots/capacity_feasibility.png": {
+      "bytes": 74828,
+      "sha256": "07fa3d0edf18eb6a1a2b9435e96a143973677dc980f6db999dbd7306ac88fd2d"
+    },
+    "plots/failure_assignment_churn.png": {
+      "bytes": 98044,
+      "sha256": "1803a8b4f46d3d13ee3c8ad8d03fac26b755053fc05acfa42b9cceb3d9aa2bd6"
+    },
+    "plots/failure_feasibility.png": {
+      "bytes": 103466,
+      "sha256": "b76099eeb6dc63eb7d3a1e675890320b61072e67345fafe9ff276382482fa573"
+    },
+    "plots/failure_relative_distance.png": {
+      "bytes": 93085,
+      "sha256": "7d68ea8ae6a527b007b4f59613f275496d0a1ff0f18e33aa5fea8c9c7223e4d6"
+    },
+    "plots/model_memory.png": {
+      "bytes": 78984,
+      "sha256": "ee837a7b9e0445915fab3ade2d00bd224ccaa04b1ac20b5d957a9571f114bc6d"
+    },
+    "plots/optimality_by_size.png": {
+      "bytes": 250883,
+      "sha256": "40314003f0bcd177e407dd14aec8c1eb2aebcf0eaa085222f0ae640e136a5c52"
+    },
+    "plots/paired_solver_time.png": {
+      "bytes": 174817,
+      "sha256": "aa9eb37a7430c8d97cb1236a21c5c929b8a40c66710d1d757c8856b16158f502"
+    },
+    "plots/paired_total_distance.png": {
+      "bytes": 127813,
+      "sha256": "2b48c09cf546c1c51aafb83ea733dde6479f8c127da7d2b5a7e9c4403246ce83"
+    },
+    "plots/scaling_solver_time.png": {
+      "bytes": 178459,
+      "sha256": "f8d7f17bd31f9ce49be3e020efb5e2bca93af123dea0b96a16072bd7e609dce1"
+    },
+    "plots/scaling_total_time.png": {
+      "bytes": 181610,
+      "sha256": "2a5db489796752850a782de4795e0d01056c1e7c46d8bc942a374c0fb7672219"
+    }
+  }
+}

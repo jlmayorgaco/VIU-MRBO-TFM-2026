@@ -1,0 +1,75 @@
+{
+  "schema_version": 2,
+  "profile": "saturation-audit",
+  "scope": "Heterogeneous MILP scaling with explicit timeout-censoring audit.",
+  "row_counts": {
+    "completed": 105,
+    "expected": 105,
+    "fixed_demand": 39,
+    "joint_growth": 30,
+    "timeout_probe": 36
+  },
+  "audit": {
+    "unique_case_keys": true,
+    "complete": true,
+    "maximum_n": 4800,
+    "censored_count": 86,
+    "optimal_count": 19,
+    "png_dpi": 450,
+    "vector_pdf_for_each_png": true
+  },
+  "artifacts": {
+    "config.json": {
+      "bytes": 866,
+      "sha256": "1bd24718e0dc41189f8e2c3856803136e8a85d9c86cc68317751c3c923f71f82"
+    },
+    "figure_indicators.csv": {
+      "bytes": 1892,
+      "sha256": "c95125d802cf0eaeaf19dbfa5b609528863932e12aacd70501199041f04fb7f1"
+    },
+    "figures/saturation_model_growth.pdf": {
+      "bytes": 36752,
+      "sha256": "78a0d29d6c4f841e52e7e11548e0e1672ef9265f9b28f4c4cc110ac574ffca49"
+    },
+    "figures/saturation_model_growth.png": {
+      "bytes": 347275,
+      "sha256": "90a55f28e77d8480d8cff94cf5c1c87ff32577171522dfcbb37ce6ce73626a10"
+    },
+    "figures/saturation_phase_costs.pdf": {
+      "bytes": 35927,
+      "sha256": "cccc2ad7ee22bb9924a90c26f355aa494bdc370525c69191c0c36469460d60ed"
+    },
+    "figures/saturation_phase_costs.png": {
+      "bytes": 314999,
+      "sha256": "6a20b45f4639e6a1b84de67b8b0ce3b75bfa997fe973c88899dcf9d10b90fdc3"
+    },
+    "figures/saturation_runtime_and_certification.pdf": {
+      "bytes": 41862,
+      "sha256": "0998f54da7fd3a0ca2367d7d49120f363c0dce823fd6999a42fda0f40f9cd4dd"
+    },
+    "figures/saturation_runtime_and_certification.png": {
+      "bytes": 557970,
+      "sha256": "f4e147327a7058150256a26a82fe60e67c27bda21a77e993e4867f83f50f5b72"
+    },
+    "figures/saturation_timeout_probe.pdf": {
+      "bytes": 29245,
+      "sha256": "f753cf1ccc8c404ff3bec2f5b79324d81e46e9f67b7d0d5b2cc0ba8eb866752f"
+    },
+    "figures/saturation_timeout_probe.png": {
+      "bytes": 429238,
+      "sha256": "1aaccf84dfbc0258a1dc27b3c881b50c9474d460cb3bfd9e3e1671df786412d6"
+    },
+    "SATURATION_AUDIT_REPORT.md": {
+      "bytes": 3383,
+      "sha256": "3d395647ab6f3156aef9b0fb2011ebf1f22644789caa5b03d137f51b57465996"
+    },
+    "saturation_runs.csv": {
+      "bytes": 39357,
+      "sha256": "b416b699d91020b0d0f36f06e415701ed68c2a0c3005d4fc2e55fb49209e91db"
+    },
+    "saturation_summary.csv": {
+      "bytes": 4315,
+      "sha256": "8fbf4ed2992b9d8d97b7ac2b32152b659dae58454907e71d6620d0d845221919"
+    }
+  }
+}

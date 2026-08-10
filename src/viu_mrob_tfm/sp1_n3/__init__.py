@@ -18,7 +18,7 @@ from __future__ import annotations
 
 # Stamped into every RAW row so a result can always be traced to the exact
 # protocol that produced it.
-PROTOCOL_VERSION = "sp1-n3-1.0"
+PROTOCOL_VERSION = "sp1-n3-1.1"
 
 from . import capacity_cbba, certificate, contract, graph, messages, weighted_grape, worlds
 from .runner import METHOD_LABELS, METHODS, RunRecord, run_method

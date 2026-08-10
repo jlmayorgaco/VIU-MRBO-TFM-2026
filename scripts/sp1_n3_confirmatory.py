@@ -50,9 +50,9 @@ from viu_mrob_tfm.sp1_n3.worlds import make_world
 
 
 DEFAULT_CONFIG = (
-    REPOSITORY_ROOT / "experiments" / "configs" / "sp1_n3_confirmatory_v1.yaml"
+    REPOSITORY_ROOT / "experiments" / "configs" / "sp1_n3_confirmatory_v2.yaml"
 )
-DEFAULT_OUTPUT = REPOSITORY_ROOT / "scripts" / "results" / "sp1_levels" / "n3_v1"
+DEFAULT_OUTPUT = REPOSITORY_ROOT / "scripts" / "results" / "sp1_levels" / "n3_v2"
 
 SCENARIO_LABELS = {
     "uniform": "Aleatorio",
