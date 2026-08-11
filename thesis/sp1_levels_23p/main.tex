@@ -12,6 +12,37 @@
   sortcites=true
 ]{biblatex}
 \addbibresource{references.bib}
+
+% Pseudocódigo al estilo IEEE: flotante con reglas, palabras clave en naranja
+% VIU y en castellano, para que el algoritmo se lea como el resto del texto.
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\floatname{algorithm}{Algoritmo}
+\renewcommand{\algorithmicrequire}{\textbf{\textcolor{VIUOrange}{Entrada:}}}
+\renewcommand{\algorithmicensure}{\textbf{\textcolor{VIUOrange}{Salida:}}}
+\algrenewcommand\algorithmicif{\textcolor{VIUOrange}{\textbf{si}}}
+\algrenewcommand\algorithmicthen{\textcolor{VIUOrange}{\textbf{entonces}}}
+\algrenewcommand\algorithmicelse{\textcolor{VIUOrange}{\textbf{si no}}}
+\algrenewcommand\algorithmicend{\textcolor{VIUOrange}{\textbf{fin}}}
+\algrenewcommand\algorithmicfor{\textcolor{VIUOrange}{\textbf{para}}}
+\algrenewcommand\algorithmicforall{\textcolor{VIUOrange}{\textbf{para cada}}}
+\algrenewcommand\algorithmicdo{\textcolor{VIUOrange}{\textbf{hacer}}}
+\algrenewcommand\algorithmicwhile{\textcolor{VIUOrange}{\textbf{mientras}}}
+\algrenewcommand\algorithmicreturn{\textcolor{VIUOrange}{\textbf{devolver}}}
+\algrenewcommand\algorithmicfunction{\textcolor{VIUOrange}{\textbf{función}}}
+\algrenewcommand\algorithmicprocedure{\textcolor{VIUOrange}{\textbf{procedimiento}}}
+\algrenewcommand\alglinenumber[1]{\footnotesize\textcolor{VIUGray}{#1:}}
+\algrenewcommand\algorithmiccomment[1]{\hfill\textcolor{VIUGray}{\itshape\% #1}}
+% Las líneas de cierre no aportan estructura aquí y sí densidad: la sangría ya
+% delimita los bloques.
+\algtext*{EndIf}
+\algtext*{EndFor}
+\algtext*{EndFunction}
+% Un poco más de aire y una tipografía algo menor: los algoritmos de N3 son
+% densos y comparten página con su diagrama.
+\makeatletter
+\renewcommand{\ALG@beginalgorithmic}{\fontsize{7.6}{9.1}\selectfont}
+\makeatother
 \input{sp1_levels_23p/generated/metrics.tex}
 
 % La fuente debe constituir un bloque propio incluso tras pies de varias líneas.
@@ -1230,20 +1261,6 @@ sensibilidades declaradas y \eqref{eq:n2-milp} el único oráculo de N2.
 \theoremstyle{remark}
 \newtheorem{n1obs}{Observación}
 
-% Caja de pseudocódigo: el estilo del documento ya usa tcolorbox, así que no
-% hace falta un paquete de algoritmos y se evita un conflicto de preámbulo.
-\newcounter{n3alg}
-\newcommand{\algline}[2][0]{%
-  \hspace*{#1em}\ignorespaces #2\par}
-\newenvironment{n3alg}[1]{%
-  \refstepcounter{n3alg}%
-  \begin{tcolorbox}[
-    colback=SPFloor,colframe=SPGrid,boxrule=0.5pt,arc=1.0mm,
-    left=2.2mm,right=2.2mm,top=1.4mm,bottom=1.4mm,
-    title={\sffamily\bfseries\footnotesize Algoritmo \arabic{n3alg}. #1},
-    coltitle=white,colbacktitle=VIUDark,
-  ]\ttfamily\fontsize{7.4}{8.9}\selectfont\raggedright
-}{\end{tcolorbox}}
 \theoremstyle{plain}
 
 \leveltag{RESULTADOS SP1 · N2 · QUÉ CAMBIA RESPECTO DE N1}
@@ -1657,59 +1674,60 @@ tres cosas. La puja deja de medir utilidad y mide reducción del déficit que
 queda por cubrir; cada carga admite varios ganadores, los que hacen falta para
 alcanzar $m_k$; y el desempate usa un testigo intrínseco al robot. Con esos
 cambios ninguna garantía del artículo original se transporta: no hay cota de
-rondas ni argumento de ganancias marginales decrecientes.
+rondas ni argumento de ganancias marginales decrecientes. La barrera de retorno
+y la puja congelada del Algoritmo~\ref{alg:n3-cbba} son lo que hace que
+termine.
 
 \begin{figure}[H]
 \centering
 \begingroup
 \pgfmathsetlengthmacro{\spxunitc}{\linewidth/13.5}
-\scalebox{0.99}{%
-\begin{tikzpicture}[x=\spxunitc,y=0.82cm]
+\scalebox{0.98}{%
+\begin{tikzpicture}[x=\spxunitc,y=0.70cm]
 \tikzset{
   cstage/.style={draw=SPGrid!85,fill=SPFloor!45,line width=0.55pt,rounded corners=1.2pt},
+  cbarbox/.style={draw=VIUOrange!60,fill=VIUOrange!07,line width=0.7pt,rounded corners=1.2pt},
   cttl/.style={font=\fontsize{7.4}{8.2}\selectfont\sffamily\bfseries,anchor=north west},
   clab/.style={font=\fontsize{6.8}{7.6}\selectfont\sffamily,anchor=north west},
   cflow/.style={-{Latex[length=2.0mm]},draw=VIUDark!70,line width=0.9pt},
-  cbar/.style={-{Latex[length=2.0mm]},draw=SPRed,line width=0.9pt},
+  cbar/.style={-{Latex[length=2.0mm]},draw=VIUOrange,line width=1.0pt},
+  ctag/.style={font=\fontsize{6.4}{7.0}\selectfont\sffamily,text=VIUOrange},
 }
-% 1. estimar
-\draw[cstage] (0.05,2.55) rectangle (3.20,4.75);
-\node[cttl] at (0.25,4.60) {1 · Estimar};
-\node[clab] at (0.25,4.05) {De la tabla local:};
-\node[clab] at (0.25,3.62) {$r_{ik}=[m_k-\!\!\sum\limits_{j\in\widehat C_{ik}}\!\! c_j]_+$};
-\node[clab] at (0.25,2.95) {déficit que falta en $k$};
-% 2. pujar
-\draw[cstage] (3.55,2.55) rectangle (6.70,4.75);
-\node[cttl] at (3.75,4.60) {2 · Pujar};
-\node[clab] at (3.75,4.05) {$\Delta D_{ik}=\min\{c_i,r_{ik}\}$};
-\node[clab] at (3.75,3.55) {$b_{ik}=(\Delta D_{ik},-d_{ik},-\tau_i)$};
-\node[clab] at (3.75,2.95) {solo si $b_{ik}>$ barrera$_i[k]$};
-% 3. consenso
-\draw[cstage] (7.05,2.55) rectangle (10.20,4.75);
-\node[cttl] at (7.25,4.60) {3 · Consenso};
-\node[clab] at (7.25,4.05) {difundir a vecinos los};
-\node[clab] at (7.25,3.62) {registros con versión nueva;};
-\node[clab] at (7.25,3.19) {aceptar solo versión mayor;};
-\node[clab] at (7.25,2.80) {refresco completo cada $N$};
-% 4. prefijo
-\draw[cstage] (10.55,2.55) rectangle (13.45,4.75);
-\node[cttl] at (10.75,4.60) {4 · Prefijo};
-\node[clab] at (10.75,4.05) {ordenar $k$ por puja y};
-\node[clab] at (10.75,3.62) {acumular hasta cubrir $m_k$;};
-\node[clab] at (10.75,3.19) {lo que sobra es redundante};
-\node[clab] at (10.75,2.80) {y libera};
-\draw[cflow] (3.20,3.65) -- (3.55,3.65);
-\draw[cflow] (6.70,3.65) -- (7.05,3.65);
-\draw[cflow] (10.20,3.65) -- (10.55,3.65);
-% barrera: el lazo que cierra
-\draw[cstage,fill=SPRed!07] (3.55,0.35) rectangle (10.20,1.95);
-\node[cttl] at (3.75,1.80) {Barrera de retorno (lo que N3 añade)};
-\node[clab] at (3.75,1.22) {Si $i$ queda fuera del prefijo de $k$: barrera$_i[k]\leftarrow\max\{$barrera$_i[k],\,b_{ik}\}$ y libera.};
-\node[clab] at (3.75,0.72) {Solo vuelve a $k$ con una puja estrictamente mejor. La barrera nunca decrece.};
-\draw[cbar] (12.00,2.55) -- (12.00,1.15) -- (10.20,1.15);
-\draw[cbar] (3.55,1.15) -- (1.62,1.15) -- (1.62,2.55);
-\node[font=\fontsize{6.4}{7.0}\selectfont\sffamily,anchor=west,text=SPRed] at (10.35,1.95) {desplazado};
-\node[font=\fontsize{6.4}{7.0}\selectfont\sffamily,anchor=east,text=SPRed] at (3.40,1.95) {vuelve a estimar};
+% fila superior: los cuatro pasos de la adaptación multi-ganador
+\draw[cstage] (0.05,3.00) rectangle (3.20,5.45);
+\node[cttl] at (0.25,5.30) {1 · Estimar};
+\node[clab] at (0.25,4.72) {De la tabla local:};
+\node[clab] at (0.25,4.27) {$r_{ik}=[m_k-\!\!\sum\limits_{j\in\widehat C_{ik}}\!\! c_j]_+$};
+\node[clab] at (0.25,3.60) {déficit que falta en $k$};
+\draw[cstage] (3.55,3.00) rectangle (6.70,5.45);
+\node[cttl] at (3.75,5.30) {2 · Pujar};
+\node[clab] at (3.75,4.72) {$\Delta D_{ik}=\min\{c_i,r_{ik}\}$};
+\node[clab] at (3.75,4.22) {$b_{ik}=(\Delta D_{ik},-d_{ik},-\tau_i)$};
+\node[clab] at (3.75,3.62) {solo si $b_{ik}>$ barrera$_i[k]$};
+\draw[cstage] (7.05,3.00) rectangle (10.20,5.45);
+\node[cttl] at (7.25,5.30) {3 · Consenso};
+\node[clab] at (7.25,4.72) {difundir los registros};
+\node[clab] at (7.25,4.29) {con versión nueva;};
+\node[clab] at (7.25,3.86) {aceptar solo versión mayor;};
+\node[clab] at (7.25,3.43) {refresco completo cada $N$};
+\draw[cstage] (10.55,3.00) rectangle (13.45,5.45);
+\node[cttl] at (10.75,5.30) {4 · Prefijo};
+\node[clab] at (10.75,4.72) {ordenar por puja y acumular};
+\node[clab] at (10.75,4.29) {hasta cubrir $m_k$; lo que};
+\node[clab] at (10.75,3.86) {sobra es redundante};
+\node[clab] at (10.75,3.43) {y libera};
+\draw[cflow] (3.20,4.30) -- (3.55,4.30);
+\draw[cflow] (6.70,4.30) -- (7.05,4.30);
+\draw[cflow] (10.20,4.30) -- (10.55,4.30);
+% corredor libre entre filas: el lazo que cierra el ciclo
+\draw[cbar] (12.00,3.00) -- (12.00,2.45) -- (1.62,2.45) -- (1.62,3.00);
+\node[ctag,fill=white,inner sep=1.3pt] at (10.75,2.45) {desplazado};
+\node[ctag,fill=white,inner sep=1.3pt] at (3.35,2.45) {vuelve a estimar};
+% fila inferior: la barrera, a ancho completo para que su texto quepa
+\draw[cbarbox] (0.05,0.30) rectangle (13.45,2.15);
+\node[cttl,text=VIUOrange] at (0.25,2.00) {Barrera de retorno · lo que N3 añade};
+\node[clab] at (0.25,1.35) {Si $i$ queda fuera del prefijo de $k$: \ barrera$_i[k]\leftarrow\max\{$barrera$_i[k],\,b_{ik}\}$ \ y libera el compromiso.};
+\node[clab] at (0.25,0.85) {Solo vuelve a $k$ con una puja estrictamente mejor. La barrera nunca decrece y el espacio de pujas es finito.};
 \end{tikzpicture}}
 \endgroup
 \caption{Capacity-CBBA-RB. Los cuatro pasos superiores son la adaptación
@@ -1719,26 +1737,35 @@ proceso de liberar y volver a pujar no termina.}
 \viuownsource
 \end{figure}
 
-\begin{n3alg}{Capacity-CBBA-RB, ronda $t$ del robot $i$}
-\algline{\textbf{estado:} tabla$[j]=(k_j,c_j,\Delta D_j,-d_j,\tau_j,v_j)$; enviado$[u][j]$; barrera$[k]$}
-\algline{1\ \ \textbf{si} $t \bmod N = 0$ \textbf{entonces} enviado $\leftarrow\emptyset$ \ \ \% refresco: nadie acusa recibo}
-\algline{2\ \ \textbf{para} cada registro $r$ recibido \textbf{hacer}}
-\algline[2.4]{3\ \ \textbf{si} $r.\mathrm{robot}\neq i$ \textbf{y} $r.v > $ tabla$[r.\mathrm{robot}].v$ \textbf{entonces} tabla$[r.\mathrm{robot}]\leftarrow r$}
-\algline{4\ \ $k \leftarrow$ objetivo actual de $i$}
-\algline{5\ \ \textbf{si} $k\geq0$ \textbf{y} $i\notin\textsc{prefijo}(\{j:\text{tabla}[j].k=k\},\,m_k)$ \textbf{entonces}}
-\algline[2.4]{6\ \ barrera$[k]\leftarrow\max\{$barrera$[k],\,b_{ik}\}$;\ \ $k\leftarrow-1$ \ \ \% desplazado}
-\algline{7\ \ \textbf{si} $k<0$ \textbf{entonces} $k \leftarrow \arg\max_{k'}\, b_{ik'}$ sobre $\{k': r_{ik'}>0 \wedge b_{ik'}>$barrera$[k']\}$}
-\algline{8\ \ \textbf{si no} conservar $b_{ik}$ sin recalcular \ \ \% puja congelada mientras dure el compromiso}
-\algline{9\ \ \textbf{si} algo cambió \textbf{entonces} $v_i \leftarrow v_i+1$}
-\algline{10\ \textbf{para} cada vecino $u$ \textbf{hacer} enviar $\{r:\ r.v>$ enviado$[u][r.\mathrm{robot}]\}$}
-\algline{\textbf{devuelve} el compromiso propio; el observador verifica el certificado \emph{post hoc}}
-\end{n3alg}
+\begin{algorithm}[H]
+\caption{Capacity-CBBA-RB: ronda $t$ del robot $i$.}
+\label{alg:n3-cbba}
+\begin{algorithmic}[1]
+\Require tabla$[j]=(k_j,c_j,\Delta D_j,-d_j,\tau_j,v_j)$, enviado$[u][j]$, barrera$[k]$
+\Ensure el compromiso propio $k$, verificable \emph{post hoc} por el observador
+\If{$t \bmod N = 0$} enviado $\gets \emptyset$
+  \Comment{nadie acusa recibo: refresco periódico}
+\EndIf
+\ForAll{registro $r$ recibido}
+  \If{$r.\text{robot} \neq i$ \textbf{y} $r.v > \text{tabla}[r.\text{robot}].v$}
+    tabla$[r.\text{robot}] \gets r$
+  \EndIf
+\EndFor
+\State $k \gets$ objetivo actual de $i$
+\If{$k \geq 0$ \textbf{y} $i \notin \textsc{Prefijo}(\{j : \text{tabla}[j].k = k\},\, m_k)$}
+  \State barrera$[k] \gets \max\{\text{barrera}[k],\, b_{ik}\}$;\quad $k \gets -1$
+    \Comment{desplazado}
+\EndIf
+\If{$k < 0$}
+  \State $k \gets \arg\max_{k'} b_{ik'}$ sobre $\{k' : r_{ik'} > 0 \ \wedge\ b_{ik'} > \text{barrera}[k']\}$
+\Else
+  \State conservar $b_{ik}$ sin recalcular \Comment{puja congelada}
+\EndIf
+\If{algo cambió} $v_i \gets v_i + 1$ \EndIf
+\ForAll{vecino $u$} enviar $\{r : r.v > \text{enviado}[u][r.\text{robot}]\}$ \EndFor
+\end{algorithmic}
+\end{algorithm}
 
-Los pasos 6 y 8 son los que N3 añade y los que hacen que el proceso termine. Sin
-ellos la puja de un robot flota con el residual estimado, el prefijo se reordena
-sin que nadie puje y el sistema cicla: el piloto lo midió antes de abrir la
-campaña. Con ellos la barrera no decrece y el espacio de pujas es finito, luego
-el número de reentradas por carga está acotado.
 
 \clearpage
 
@@ -1766,7 +1793,7 @@ cada época aplica \emph{una} mejora sobre un perfil que todos comparten.
 \begingroup
 \pgfmathsetlengthmacro{\spxunitg}{\linewidth/13.5}
 \scalebox{1.00}{%
-\begin{tikzpicture}[x=\spxunitg,y=0.82cm]
+\begin{tikzpicture}[x=\spxunitg,y=0.70cm]
 \tikzset{
   gstage/.style={draw=SPGrid!85,fill=SPFloor!45,line width=0.55pt,rounded corners=1.2pt},
   gttl/.style={font=\fontsize{7.4}{8.2}\selectfont\sffamily\bfseries,anchor=north west},
@@ -1802,7 +1829,7 @@ cada época aplica \emph{una} mejora sobre un perfil que todos comparten.
 \draw[gflow] (7.00,3.60) -- (7.35,3.60);
 \draw[gflow] (10.35,3.60) -- (10.70,3.60);
 \draw[gflow] (12.10,2.45) -- (12.10,1.95) -- (5.35,1.95) -- (5.35,2.45);
-\node[font=\fontsize{6.4}{7.0}\selectfont\sffamily,anchor=west] at (5.55,2.06) {siguiente época};
+\node[font=\fontsize{6.4}{7.0}\selectfont\sffamily,fill=white,inner sep=1.3pt] at (8.70,1.95) {siguiente época};
 \draw[gstage,fill=SPGreen!07] (0.05,0.05) rectangle (13.45,1.55);
 \node[gttl] at (0.25,1.40) {Sin movimiento: dos lecturas distintas};
 \node[glab] at (0.25,0.85) {Fase 0 (solo unilateral) $\rightarrow$ equilibrio unilateral alcanzado: \textbf{Pair-GRAPE} pasa a fase 1 y habilita};
@@ -1817,24 +1844,37 @@ $N$ nodos nunca los supera, así que todos cierran la época con el mismo ganado
 \viuownsource
 \end{figure}
 
-\begin{n3alg}{Weighted-GRAPE, época $e$; Pair-GRAPE añade la fase 1}
-\algline{\textbf{estado:} cobertura$[k]$; acciones$[j]$; vecinos$(c,\tau,d)$; mejor; fase $\in\{0,1\}$}
-\algline{1\ \ \textbf{local} $=0$: mejor $\leftarrow$ \textsc{mejorDesviación}(fase);\ \ difundir}
-\algline{2\ \ \textbf{local} $\in[1,N{-}2]$: fusionar entrantes por orden total; difundir con hasta 4 reintentos}
-\algline{3\ \ \textbf{local} $=N{-}1$: \textbf{si} mejor $=\varnothing$ \textbf{entonces}}
-\algline[2.4]{4\ \ \textbf{si} pares habilitados \textbf{y} fase $=0$ \textbf{entonces} fase $\leftarrow1$ \ \ \% refinar, no reiniciar}
-\algline[2.4]{5\ \ \textbf{si no} terminar \ \ \% certificado distribuido: todos lo ven a la vez}
-\algline{6\ \ \textbf{si no} aplicar(mejor) en la copia propia; $e \leftarrow e+1$}
-\algline{}
-\algline{\textsc{mejorDesviación}(fase):}
-\algline[1.2]{$a_i' \in \{\text{ocioso}\} \cup \{0..K{-}1\}$ \ \ \% unilateral}
-\algline[1.2]{\textbf{si} fase $=1$: además $(a_i',a_j')$ con cada vecino $j$ \ \ \% conjunta y general}
-\algline[1.2]{aceptar si $D(y')<D(y)$, o si $D(y')=D(y)$ y $J(y')<J(y)$}
-\algline[1.2]{devolver el máximo por $(\Delta D,\Delta J,-\tau)$, canonizado al formato de cable}
-\end{n3alg}
+\begin{algorithm}[H]
+\caption{Weighted-GRAPE: época $e$ del robot $i$. Pair-GRAPE añade la fase 1.}
+\label{alg:n3-grape}
+\begin{algorithmic}[1]
+\Require cobertura$[k]$, acciones$[j]$, vecinos $(c,\tau,d)$, mejor, fase $\in\{0,1\}$
+\Ensure la acción propia $a_i$ sobre un perfil compartido por todos
+\If{local $= 0$} mejor $\gets \textsc{MejorDesviación}(\text{fase})$; difundir \EndIf
+\If{local $\in [1, N{-}2]$}
+  \State fusionar entrantes por orden total; difundir con hasta 4 reintentos
+\EndIf
+\If{local $= N{-}1$}
+  \If{mejor $= \varnothing$}
+    \If{pares habilitados \textbf{y} fase $= 0$} fase $\gets 1$
+      \Comment{refinar, no reiniciar}
+    \Else{} terminar \Comment{todos lo ven a la vez}
+    \EndIf
+  \Else{} aplicar(mejor) en la copia propia; $e \gets e + 1$
+  \EndIf
+\EndIf
+\Statex
+\Function{MejorDesviación}{fase}
+  \State $a_i' \in \{\text{ocioso}\} \cup \{0,\dots,K{-}1\}$ \Comment{unilateral}
+  \If{fase $= 1$} además $(a_i', a_j')$ con cada vecino $j$
+    \Comment{conjunta y general}
+  \EndIf
+  \State aceptar si $D(y') < D(y)$, o si $D(y') = D(y)$ y $J(y') < J(y)$
+  \State \Return el máximo por $(\Delta D, \Delta J, -\tau)$, canonizado al formato de cable
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
 
-Cada época aplica una mejora estricta sobre un perfil compartido: $(D,J)$
-decrece, ningún perfil se repite y el proceso termina bajo entrega fiable.
 
 \clearpage
 
