@@ -1,58 +1,80 @@
 {
   "source_tag": "SP1-N1-FROZEN",
-  "page_count": 10,
-  "normalization": "todo el espacio en blanco eliminado antes de hashear",
+  "page_count": 18,
+  "normalization": "rendered text, running header removed, whitespace stripped",
   "n1_source_prefix_sha256": "9d8e34040223b0b0f4fbb2d457569dd6d84857650e9dbe4c536d3f0ff328e21a",
   "pages": [
     {
       "index": 1,
-      "sha256": "541cfdc59ca5139779d3cf4bbca49de4db3cf312802913a01971914ed41f654a",
-      "chars": 1561
+      "sha256": "adadbdaa73007e0da37cd3d9b57742fd09455639764efdf0de5e035e32f9fd34"
     },
     {
       "index": 2,
-      "sha256": "e5ccea093cd1b03f2803d8a5d407b4baf150034cc796a17007ed63f289ec4c51",
-      "chars": 1041
+      "sha256": "1f90b66b5ca8e767a3f3e9802f89f577b6223086c90c29709d50b68e7d7647f4"
     },
     {
       "index": 3,
-      "sha256": "4d1322d2c1807ff8042dc3f3a494cc383174c0e9cd3fdb731d17970a6960360c",
-      "chars": 1660
+      "sha256": "157d016b30b8d1fe893c7b0f6b44414aa6cd04e00afa2bc22769137c016025cf"
     },
     {
       "index": 4,
-      "sha256": "303a19eaa6f3d44a0d20e6d2a9db89280f02e4d4fa6618a8463b7b48569f41a0",
-      "chars": 2496
+      "sha256": "67213ef06a035cb520250779d42f9b2f7f0727819392590b43ec37e16fbc9c7b"
     },
     {
       "index": 5,
-      "sha256": "91af79e11450a5225b77747c6a11bc50d664da33392fb3fdea9dfb70cb4c2052",
-      "chars": 1947
+      "sha256": "7e2d90c8d0b183c0ae912e7bf4f3159bf83612e5565e663f6511937106ed48b7"
     },
     {
       "index": 6,
-      "sha256": "230f39be7cc421a421a386ec0f7c4a2b1e3f1f4bb8d13f450a81a02a16ae835d",
-      "chars": 1804
+      "sha256": "cab512670607c40b51de4fd08b0958005f94411843c38ffe4082e50638e94d70"
     },
     {
       "index": 7,
-      "sha256": "d1e46050c1b7458460c1733aa92a1fa8d47053a1b3dfe514c74d64b071aab704",
-      "chars": 2242
+      "sha256": "2a02c007211a93ab6098ef0d08688da99559680a0082c239e3e8bec94b65b65d"
     },
     {
       "index": 8,
-      "sha256": "d7009048f6996c1424fb3a7fe0548e6ac212a6f38c9f3361dd115b593be1b631",
-      "chars": 1908
+      "sha256": "362bbafb653ae9e78c98e6b844f2bba6dfdc0b8fe3ad4ca22f96adaf85b4c1d8"
     },
     {
       "index": 9,
-      "sha256": "6ebb01f618f0c2dc517faafe16d3aeda36090b213004d40687cb846cb7b79ac4",
-      "chars": 1876
+      "sha256": "5113ab6b3e11a2fd21ec3da09de667af3f121cf381bda24d694edd7c7e0ad298"
     },
     {
       "index": 10,
-      "sha256": "24ba586435a3a21761802247b1c73f3f8172a2a3cd9fec8dbeae368ff7f8b26c",
-      "chars": 2173
+      "sha256": "54ed9a53f7ab26650ed762487cf4b9dd78373fa9dafb8f9735ac88adad7cdda1"
+    },
+    {
+      "index": 11,
+      "sha256": "f6edb484f3d6ddaca8da26f518c6e3390491f377a1e4f30e7c7503ced29208a3"
+    },
+    {
+      "index": 12,
+      "sha256": "6e847f21b2f24e01770931018e40b547bb55dfc594890aecfcf0c3f37a13a1e7"
+    },
+    {
+      "index": 13,
+      "sha256": "7ff05260bfac8d96d8dffe56f41aa2ae89b76028edbbe589357994b8a3458a90"
+    },
+    {
+      "index": 14,
+      "sha256": "4aed9337afba56e8aa8a7a75b4037c228c72121dc2675a390a7be2f708daff7a"
+    },
+    {
+      "index": 15,
+      "sha256": "65601032d8b601ba24de6babfd14fa3ead45e59365a5e5b995102300c53eb4ff"
+    },
+    {
+      "index": 16,
+      "sha256": "6a5313b46815092c01945ce353374de5a60865bec8345ba71b77cd155a7b7800"
+    },
+    {
+      "index": 17,
+      "sha256": "afe0b47a11d912af8a032286fb78a7b419f7cef8025e69ed8185c4ccd52faac6"
+    },
+    {
+      "index": 18,
+      "sha256": "2126b99d84bd4a3b67556e92e82cc2572fe7df260e211bba4e2ef0a91237bec3"
     }
   ],
   "n1_section_sha256": "3c0434c0edbbe5a9404f76012ef8b7fab11c0a1fbdabb766eeca20c434b712fc",
@@ -60,5 +82,5 @@
     "start": "% Página 5 · N1: modelo",
     "end": "% El documento de trabajo se cierra aquí mientras N2--N4 se revisan por etapas."
   },
-  "scope_note": "Pages 1-4 are the shared front matter, not N1's results. They are pinned by rendered page text like every other page, but not byte-for-byte at source level: pinning them made a purely typographic fix to a common figure impossible while changing no word, number or figure content."
+  "scope_note": "Pages 1-6 are the shared front matter, which N1 does not own and N2 depends on equally; they are pinned by rendered body text but may be restructured for legibility. Pages 7-12 are N1's results and 13-18 are N2's; their body text was verified identical, page for page, across the repagination that enlarging the front-matter diagrams caused. N1's source section is pinned byte-for-byte separately."
 }

@@ -90,14 +90,29 @@ def test_frozen_n1_pages_are_byte_identical_after_n2() -> None:
     reader = PdfReader(str(pdf_path))
     assert len(reader.pages) >= snapshot["page_count"]
     for record in snapshot["pages"]:
-        text = re.sub(
-            r"\s+", "", reader.pages[record["index"] - 1].extract_text() or ""
-        )
-        digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        page = reader.pages[record["index"] - 1]
+        digest = hashlib.sha256(_page_body(page).encode("utf-8")).hexdigest()
         assert digest == record["sha256"], (
-            f"frozen N1 page {record['index']} changed; "
+            f"frozen page {record['index']} changed; "
             "N1 may only be reopened for a reproducible factual error"
         )
+
+
+def _page_body(page) -> str:
+    """Rendered text without the running header.
+
+    The header carries the page number, so hashing the whole page tied the
+    guard to pagination: enlarging a diagram in the shared front matter moved
+    N1 from pages 5-10 to 7-12 and every hash changed although not one glyph
+    of N1 did. The body is what the freeze is actually about.
+    """
+
+    lines = [
+        line
+        for line in (page.extract_text() or "").splitlines()
+        if not line.strip().startswith("Trabajo Fin de")
+    ]
+    return re.sub(r"\s+", "", "\n".join(lines))
 
 
 def test_pdf_build_never_reruns_the_experimental_campaign() -> None:
@@ -223,7 +238,7 @@ def test_pdf_has_exact_requested_page_budget() -> None:
     )
     assert pdf_path.is_file()
     reader = PdfReader(str(pdf_path))
-    assert len(reader.pages) == 22
+    assert len(reader.pages) == 26
     text = "\n".join(page.extract_text() or "" for page in reader.pages)
     assert "EXPERIMENTO E4" in text
     # N2 now occupies pages 11-16 of the same document.

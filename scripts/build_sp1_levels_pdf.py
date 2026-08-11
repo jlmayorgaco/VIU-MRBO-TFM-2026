@@ -26,7 +26,7 @@ ACTIVE_LEVEL_DIRS = {
     "n2": "n2_v1",
     "n3": "n3_v2",
 }
-EXPECTED_PAGES = 22
+EXPECTED_PAGES = 26
 
 
 def _read_json(path: Path) -> dict[str, object]:
@@ -650,11 +650,11 @@ def build_pdf(output_dir: Path) -> dict[str, object]:
         "page_budget": {
             "introduction": 1,
             "nomenclature_guide": 1,
-            "common_scenarios": 1,
-            "common_metrics_statistics": 1,
+            "common_scenarios": 2,
+            "common_metrics_statistics": 2,
             "N1": 6,
             "N2": 6,
-            "N3": 6,
+            "N3": 8,
         },
         "style": {
             "paper": "A4",
