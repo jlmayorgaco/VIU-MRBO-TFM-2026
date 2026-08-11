@@ -67,5 +67,17 @@
   "note": "The oracle is the frozen N2 MILP; the methods are the N3 baselines. No recovery, no packet loss, no delay.",
   "runs_solvers": true,
   "schema_version": "sp1-n3-campaign-v1",
-  "smoke": false
+  "smoke": false,
+  "supersedes": {
+    "invalidated_campaign_id": "SP1_N3_DISTRIBUTED_BASELINES_v1",
+    "invalidated_commit": "64553c2835df03b6012336752a354c9ba2e07328",
+    "invalidated_config": "experiments/configs/sp1_n3_confirmatory_v1.yaml",
+    "invalidated_raw": "scripts/results/sp1_levels/n3_v1_INVALIDATED/",
+    "reason": "The observer's profile signature ignored the protocol phase, so Pair-GRAPE's phase boundary -- which moves nobody -- was recorded as a cycle on every run, with a period of exactly one epoch. The defect was confined to an observational column, but it reached a reported column, so the run was discarded in full rather than annotated.",
+    "fixed_in_commit": "239348a418ac",
+    "replacement_campaign_id": "SP1_N3_DISTRIBUTED_BASELINES_v2",
+    "replacement_config_sha256": "4ca17130da58a323590907c5555c0c159ba9414b41c860e82f161b0db6cdfc37",
+    "replacement_commit": "239348a418ac98440396fcdff26993b54f290d3e",
+    "rows_never_mixed": true
+  }
 }

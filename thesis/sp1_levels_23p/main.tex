@@ -1644,17 +1644,21 @@ la coalición, que solo un protocolo que la pague puede dar.
 
 \begin{n1lema}[Imposibilidad bajo partición permanente]
 \label{lema:n3-partition}
-En un grafo permanentemente desconectado, ningún algoritmo que use solo
-información de su componente garantiza una asignación globalmente factible en
-toda instancia donde robots de componentes distintas compiten por cargas comunes.
+Bajo el contrato de N3 y con el grafo permanentemente desconectado, ninguna
+política determinista que decida solo con el estado local y el catálogo
+garantiza una asignación factible en toda instancia que sí la admite.
 \end{n1lema}
 
 {\small
 \begin{proof}
-Sean dos mundos indistinguibles desde $\mathcal A$ que difieren en la capacidad
-de un robot de $\mathcal B$, de modo que en uno la cobertura de $k$ exige que
-$\mathcal A$ aporte y en el otro que no. Los robots de $\mathcal A$ ejecutan la
-misma secuencia en ambos, luego toman el mismo compromiso, incorrecto en uno.
+Sean dos cargas con $m_1=m_2=1$ y dos componentes aisladas, cada una con un
+robot de capacidad $1$. Una política determinista asigna a cada estado local
+$s$ una elección $f(s)\in\{k_1,k_2,\varnothing\}$. Como el catálogo es común y
+el estado local admite más de dos valores, existen dos estados admisibles
+$s_a\neq s_b$ con $f(s_a)=f(s_b)=k_j$. El mundo formado por esos dos robots
+admite la partición factible uno a uno, pero ambos eligen $k_j$ y la otra carga
+queda descubierta. Para políticas aleatorizadas el enunciado se limita a que la
+probabilidad de fallo es estrictamente positiva.
 \end{proof}
 }
 
@@ -1664,7 +1668,7 @@ misma secuencia en ambos, luego toman el mismo compromiso, incorrecto en uno.
 % N3.1 - Capacity-CBBA-RB: como funciona
 % --------------------------------------------------------------------------
 \leveltag{RESULTADOS SP1 · N3.1 · CAPACITY-CBBA-RB}
-\section*{SP1.N3.1: subasta con consenso y barrera de retorno}
+\section*{\hyphenpenalty=10000\exhyphenpenalty=10000 SP1.N3.1: subasta con consenso y barrera de retorno}
 
 El CBBA original~\parencite{choiBrunetHow2009CBBA} asigna \emph{una} tarea a
 \emph{un} agente: cada robot puja, los vecinos alcanzan consenso sobre el mejor
@@ -1674,9 +1678,11 @@ tres cosas. La puja deja de medir utilidad y mide reducción del déficit que
 queda por cubrir; cada carga admite varios ganadores, los que hacen falta para
 alcanzar $m_k$; y el desempate usa un testigo intrínseco al robot. Con esos
 cambios ninguna garantía del artículo original se transporta: no hay cota de
-rondas ni argumento de ganancias marginales decrecientes. La barrera de retorno
-y la puja congelada del Algoritmo~\ref{alg:n3-cbba} son lo que hace que
-termine.
+rondas ni argumento de ganancias marginales decrecientes. En los pilotos la
+variante sin barrera exhibió ciclos; la barrera de retorno y la puja congelada
+del Algoritmo~\ref{alg:n3-cbba} los eliminaron y todas las ejecuciones de la
+campaña terminaron dentro del presupuesto, sin que de ello se siga una garantía
+universal.
 
 \begin{figure}[H]
 \centering
@@ -1727,12 +1733,12 @@ termine.
 \draw[cbarbox] (0.05,0.30) rectangle (13.45,2.15);
 \node[cttl,text=VIUOrange] at (0.25,2.00) {Barrera de retorno · lo que N3 añade};
 \node[clab] at (0.25,1.35) {Si $i$ queda fuera del prefijo de $k$: \ barrera$_i[k]\leftarrow\max\{$barrera$_i[k],\,b_{ik}\}$ \ y libera el compromiso.};
-\node[clab] at (0.25,0.85) {Solo vuelve a $k$ con una puja estrictamente mejor. La barrera nunca decrece y el espacio de pujas es finito.};
+\node[clab] at (0.25,0.85) {Solo vuelve a $k$ con una puja estrictamente mejor. Introducida tras observar ciclos en el piloto.};
 \end{tikzpicture}}
 \endgroup
 \caption{Capacity-CBBA-RB. Los cuatro pasos superiores son la adaptación
-multi-ganador; el lazo inferior es la barrera de retorno, sin la cual el
-proceso de liberar y volver a pujar no termina.}
+multi-ganador; el lazo inferior es la barrera de retorno, introducida tras
+observar en el piloto que el ciclo de liberar y volver a pujar no se detenía.}
 \label{fig:n3-cbba}
 \viuownsource
 \end{figure}
@@ -1773,18 +1779,19 @@ proceso de liberar y volver a pujar no termina.}
 % N3.2 - Weighted-GRAPE: como funciona
 % --------------------------------------------------------------------------
 \leveltag{RESULTADOS SP1 · N3.2 · WEIGHTED-GRAPE}
-\section*{SP1.N3.2: juego hedónico con selección serial distribuida}
+\section*{\hyphenpenalty=10000\exhyphenpenalty=10000 SP1.N3.2: mejor respuesta con selección serial distribuida}
 
 GRAPE~\parencite{jangShinTsourdos2018GRAPE} modela la asignación como un juego
-hedónico anónimo: cada agente elige coalición por preferencia propia y el proceso
-se detiene en una partición Nash-estable en el sentido de
-\textcite{bogomolnaiaJackson2002Hedonic}. La adaptación conserva la desviación
-unilateral y cambia el criterio: en vez de una utilidad escalar compara $(D,J)$
-en orden lexicográfico, así que la factibilidad se resuelve antes que la
-distancia y no hay pesos que ajustar.
+hedónico anónimo, donde cada agente elige coalición por preferencia propia y el
+proceso se detiene en una partición estable en el sentido de
+\textcite{bogomolnaiaJackson2002Hedonic}. Lo que se usa aquí es una
+\emph{adaptación distribuida de mejor respuesta inspirada en GRAPE}: conserva la
+desviación unilateral pero sustituye la utilidad escalar por el par $(D,J)$ en
+orden lexicográfico. Con otras preferencias, las propiedades del juego hedónico
+original no se heredan y aquí no se invocan.
 
-El cambio de fondo es de protocolo. Aplicar cada mejora en cuanto se encuentra no
-conserva el argumento del potencial: dos robots que cubren el mismo déficit
+El cambio de fondo es de protocolo. Aplicar cada mejora en cuanto se encuentra
+no conserva el argumento del potencial: dos robots que cubren el mismo déficit
 contra vistas desactualizadas creen ambos eliminarlo y solo uno lo hace. Por eso
 cada época aplica \emph{una} mejora sobre un perfil que todos comparten.
 
@@ -1882,10 +1889,13 @@ $N$ nodos nunca los supera, así que todos cierran la época con el mismo ganado
 % Pagina 19 - N3: verificacion y diseno
 % --------------------------------------------------------------------------
 \leveltag{RESULTADOS SP1 · N3 · EXPERIMENTO E1 Y DISEÑO}
-\section*{SP1.N3 · E1: comprobar que de verdad es distribuido}
+\section*{\hyphenpenalty=10000\exhyphenpenalty=10000 SP1.N3 · E1: comprobar que de verdad es distribuido}
 
 La conectividad es, entonces, un supuesto del método y no un detalle del
-simulador; y la terminación que Weighted-GRAPE sí demuestra está condicionada a
+simulador. Lo que sí se demuestra para la adaptación es que cada movimiento
+aplicado cumple $\Psi(y^{t+1})<_{\mathrm{lex}}\Psi(y^{t})$ con $\Psi=(D,J)$, de
+modo que en un espacio finito termina y su punto fijo es estable respecto de la
+vecindad evaluada, no óptimo social; y esa terminación está condicionada a
 entrega fiable, porque el acuerdo exacto sobre enlaces que pierden mensajes no es
 alcanzable en general~\parencite{halpernMoses1990Knowledge}. Ambas cosas son
 comprobables, y E1 las comprueba.
@@ -1902,11 +1912,12 @@ componentes. La regresión decisiva compara el generador de N3 con el de N2:
 capacidades, demandas y distancias byte a byte idénticas, porque N3 debe correr
 sobre los mundos de N2 y no sobre mundos que se les parezcan.
 
-La batería encontró cuatro defectos que habrían contaminado la campaña, y el
-último la invalidó de hecho: la transición de fase de Pair-GRAPE no mueve a
-nadie, y el observador leía ese perfil intacto como un ciclo. Se corrigió, se
-descartó la campaña completa y se repitió con configuración e identificador
-nuevos, sin tocar la rejilla.
+La ejecución inicial se invalidó íntegramente antes de cualquier análisis, por
+un defecto que E1 detectó en la transición de fase de Pair-GRAPE: no mueve a
+nadie, y el observador leía ese perfil intacto como un ciclo. La campaña que se
+reporta procede de una ejecución completa posterior, con identificador y
+configuración congelados propios; las dos nunca se mezclan y el manifiesto
+registra ambos.
 
 El protocolo se congeló antes de ejecutar. Sobre \NThreeWorlds{} mundos de
 $N=16$, $K=5$, con $\mathrm{CV}\in\{0;\,0{,}35;\,0{,}65;\,1\}$,
@@ -1916,6 +1927,8 @@ oráculo congelado de N2 resolvió \NThreeOracleFeasible{} y certificó el ópti
 denominador y se reportan aparte; ninguno fue declarado factible por método
 alguno (\NThreeFalseFeasible{} casos). La brecha solo existe donde el óptimo fue
 certificado y el método factible, nunca contra un incumbente sin certificar.
+Durante la campaña ninguna ejecución agotó su presupuesto de rondas y ninguna
+variante de GRAPE terminó con perfiles divergentes (\NThreeInconsistent{} casos).
 
 \clearpage
 
@@ -1930,37 +1943,43 @@ certificado y el método factible, nunca contra un incumbente sin certificar.
 \includegraphics[width=0.92\linewidth]{../scripts/results/sp1_levels/n3_v2/figures/n3_quality.pdf}
 \caption{E2 sobre \NThreeOracleFeasible{} mundos con solución. (a) Factibilidad
 RAW condicionada a que el oráculo encontrara alguna, con intervalos de Wilson al
-95\,\%. (b) Brecha mediana frente al MILP donde el óptimo fue certificado, con
-intervalo \emph{bootstrap} por mundo.}
+95\,\%; el denominador es el mismo para los tres métodos. (b) Brecha mediana
+frente al MILP, calculada solo donde el oráculo certificó el óptimo, con
+intervalo \emph{bootstrap} por mundo. Las cifras comparativas que cita el texto
+proceden del soporte común de \NThreeCommonSupport{} mundos en los que los tres
+métodos son factibles; las barras de (b) usan cada una sus propios mundos
+factibles y por eso no deben leerse como una comparación directa.}
 \label{fig:n3-quality}
 \viuownsource
 \end{figure}
 
 La separación es de factibilidad antes que de calidad. Capacity-CBBA-RB alcanza
-una partición atómica estricta en el \NThreeFeasPctCbba\,\% de los mundos que
-tienen solución, mientras Weighted-GRAPE llega al \NThreeFeasPctGrape\,\% y su
-refinamiento por pares al \NThreeFeasPctPair\,\%. La prueba de Cochran sobre los
-tres métodos pareados rechaza la igualdad ($p=\NThreeCochranP$), y los McNemar
-exactos con Holm separan a CBBA-RB de ambas variantes de GRAPE con una diferencia
-pareada cercana a 24 puntos porcentuales; entre GRAPE y su refinamiento no hay
-diferencia de factibilidad, solo dos mundos discordantes de
-\NThreeOracleFeasible.
+una partición atómica estricta en el \NThreeFeasPctCbba\,\% de los mundos con
+solución, Weighted-GRAPE en el \NThreeFeasPctGrape\,\% y su refinamiento por
+pares en el \NThreeFeasPctPair\,\%. Cochran rechaza la igualdad
+($Q=\NThreeCochranQ$, $p=\NThreeCochranP$), pero lo que importa es el efecto:
+frente a CBBA-RB, GRAPE gana \NThreeDiffGrapeCbbaPct{} puntos porcentuales
+(IC 95\,\%: \NThreeDiffGrapeCbbaLowPct--\NThreeDiffGrapeCbbaHighPct) y el
+refinamiento \NThreeDiffPairCbbaPct{}
+(\NThreeDiffPairCbbaLowPct--\NThreeDiffPairCbbaHighPct), ambos con
+$p=\NThreeMcNemarP$ tras Holm; entre GRAPE y su refinamiento la diferencia es
+\NThreeDiffPairGrapePct{} puntos
+(\NThreeDiffPairGrapeLowPct--\NThreeDiffPairGrapeHighPct;
+$p=\NThreeMcNemarPairP$), dos mundos discordantes.
 
 En calidad el orden es el mismo pero por otro motivo. Sobre los
-\NThreeCommonSupport{} mundos del soporte común —donde el oráculo certificó el
-óptimo \emph{y} los tres métodos fueron factibles, de modo que ninguno se mide
-solo en los mundos que le resultan fáciles— la brecha mediana es
+\NThreeCommonSupport{} mundos del soporte común —óptimo certificado y los tres
+métodos factibles, de modo que ninguno se mide solo en los mundos que le
+resultan fáciles— la brecha mediana es
 \NThreeCommonGapPctCbba\,\% para CBBA-RB, \NThreeCommonGapPctGrape\,\% para
 Weighted-GRAPE y \NThreeCommonGapPctPair\,\% para el refinamiento por pares
-($p_{\mathrm{Friedman}}=\NThreeFriedmanP$). El coste de comunicación ordena al
-revés: \NThreeBytesCbba{} bytes por agente para CBBA-RB frente a
-\NThreeBytesGrape{} y \NThreeBytesPair. Weighted-GRAPE compra su calidad
-reconstruyendo el perfil, y esa reconstrucción se paga.
-
-Ninguna ejecución agotó el presupuesto de rondas. CBBA-RB revisita alguna
-configuración por el camino en las \NThreeCyclesObserved{} ejecuciones —la
-barrera hace que termine, no que no dé rodeos— y ninguna de las dos variantes de
-GRAPE acabó con perfiles divergentes (\NThreeInconsistent{} casos).
+($p_{\mathrm{Friedman}}=\NThreeFriedmanP$). La comunicación ordena al revés, y
+conviene decir en qué unidad: \NThreeBytesCbba{} bytes por agente frente a
+\NThreeBytesGrape{} y \NThreeBytesPair, esto es
+$\NThreeRatioBytesGrape\times$ y $\NThreeRatioBytesPair\times$; en mensajes la
+distancia es de $\NThreeRatioMsgGrape\times$ y $\NThreeRatioMsgPair\times$,
+porque GRAPE inunda propuestas pequeñas muchas veces y CBBA-RB manda pocos
+registros grandes.
 
 \clearpage
 
@@ -1982,13 +2001,17 @@ conexo de cada método.}
 \end{figure}
 
 La pregunta no es si el grafo completo gana, sino qué se conserva al comunicar
-menos. Para Weighted-GRAPE la respuesta es tajante: factibilidad y brecha son
-\emph{idénticas} en los cuatro regímenes conexos, y lo único que cambia son los
-bytes, que caen a menos de la mitad entre el grafo completo y el umbral de
-conectividad. Su época serializa una única mejora sobre un perfil consistente,
-así que la topología altera el precio y no el resultado. Pair-GRAPE sí paga en
-calidad: sus movimientos conjuntos están restringidos a vecinos, y la brecha
-mediana crece al ralear la red.
+menos. Para Weighted-GRAPE la invariancia es exacta: sobre
+\NThreeGrapeCertWorlds{} mundos, los cuatro regímenes conexos dan el mismo
+certificado en \NThreeGrapeCertAgree{} y el mismo $J$ hasta el último dígito en
+\NThreeGrapeCostIdentical, con dispersión nula; solo cambian los bytes. Su época
+serializa una única mejora sobre un perfil consistente, así que la topología
+altera el precio y no la decisión. Pair-GRAPE no la comparte —coinciden
+\NThreePairCostIdentical{} mundos, con dispersión de hasta
+\NThreePairMaxSpread\,m— porque sus pares están restringidos a vecinos: su
+brecha pasa de \NThreeGapCompletePair\,\% a \NThreeGapDensePair\,\%,
+\NThreeGapMediumPair\,\% y \NThreeGapThresholdPair\,\% al ralear, mientras la de
+GRAPE se queda en \NThreeGapCompleteGrape\,\%.
 
 Capacity-CBBA-RB va al revés de lo esperable: su factibilidad sube del
 \NThreeCompletePctCbba\,\% en el grafo completo al \NThreeThresholdPctCbba\,\% en
@@ -1998,15 +2021,12 @@ fallos son por poco en ambos: una carga sin cubrir y un déficit mediano de un
 kilogramo sobre unos 68 de oferta. Registramos el efecto sin atribuirle
 mecanismo.
 
-El control negativo separa con holgura. Con partición permanente la factibilidad
-máxima de cualquier método es \NThreeControlRateMaxPct\,\%, frente a un mínimo de
-\NThreeConnectedRateMinPct\,\% en los conexos, sobre una mediana de
-\NThreePartitionComponents{} componentes. Y la separación aparece también en el
-protocolo, no solo en el resultado: las dos variantes de GRAPE terminan en
-\textsc{diverged} en los 300 mundos partidos, porque el invariante detecta que
-los robots no sostienen el mismo perfil. Es el Lema~\ref{lema:n3-partition}
-convertido en medida. El régimen partido no entra en el frente de Pareto de los
-conexos.
+El control negativo separa sin elegir régimen: bajo partición la factibilidad
+máxima de cualquier método es \NThreeControlRateMaxPct\,\%, frente a un mínimo
+de \NThreeConnectedRateMinPct\,\% entre los conexos, y las dos variantes de
+GRAPE terminan en \textsc{diverged} en los 300 mundos partidos. Esto
+\emph{ilustra} el Lema~\ref{lema:n3-partition} sin demostrarlo: el lema niega la
+garantía universal, no que toda instancia partida sea infactible.
 
 \clearpage
 
@@ -2022,8 +2042,8 @@ factibilidad, calidad y comunicación, y esa separación es el resultado.
 Capacity-CBBA-RB decide con información incremental y barata —decenas de mensajes
 por agente— y lo paga en factibilidad y en distancia. Weighted-GRAPE reconstruye
 una instantánea consistente del perfil por inundación, alcanza casi siempre una
-partición factible y una brecha menor, y lo paga en un orden de magnitud de
-comunicación. Su refinamiento por pares mejora la distancia sin coste adicional
+partición factible y una brecha menor, y lo paga en $\NThreeRatioBytesGrape\times$
+los bytes por agente y en torno a $\NThreeRatioMsgGrape\times$ los mensajes. Su refinamiento por pares mejora la distancia sin coste adicional
 de factibilidad, y es el único cuya calidad se degrada al ralear la red.
 
 Lo que N3 \emph{no} establece conviene decirlo con la misma claridad. No hay

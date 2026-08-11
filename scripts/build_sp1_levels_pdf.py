@@ -51,6 +51,23 @@ def _tex_scientific(value: object, decimals: int = 2) -> str:
     return rf"{formatted}\times10^{{{exponent}}}"
 
 
+def _tex_pvalue(value: object) -> str:
+    """A p-value never prints as 0,0000.
+
+    Below the resolution worth quoting it becomes an upper bound; otherwise it
+    is written in scientific notation with the exponent it actually has.
+    """
+
+    numeric = float(value)
+    if numeric <= 0.0 or numeric < 1e-300:
+        return r"<10^{-300}"
+    if numeric >= 1e-4:
+        return _tex_float(numeric, 4)
+    exponent = int(math.floor(math.log10(numeric)))
+    mantissa = numeric / (10**exponent)
+    return rf"{_tex_float(mantissa, 1)}\times10^{{{exponent}}}"
+
+
 def _tex_text(value: object) -> str:
     text = str(value)
     for source, replacement in (
@@ -413,6 +430,67 @@ def generate_metrics_tex() -> Path:
             "NThreeInconsistent": _tex_integer(n3["e2_inconsistent"]),
         }
     )
+    macros.update(
+        {
+            "NThreeCochranQ": _tex_float(n3["e2_cochran_q"], 1),
+            "NThreeCochranP": _tex_pvalue(n3["e2_cochran_p"]),
+            "NThreeFriedmanQ": _tex_float(n3["e2_friedman_stat"], 1),
+            "NThreeFriedmanP": _tex_pvalue(n3["e2_friedman_p"]),
+            "NThreeMcNemarP": _tex_pvalue(
+                max(n3["e2_mcnemar_holm"]["capacity_cbba_rb|weighted_grape"],
+                    n3["e2_mcnemar_holm"]["capacity_cbba_rb|weighted_pair_grape"])
+            ),
+            "NThreeMcNemarPairP": _tex_float(
+                n3["e2_mcnemar_holm"]["weighted_grape|weighted_pair_grape"], 2
+            ),
+            "NThreeRatioBytesGrape": _tex_float(
+                n3["e2_ratio_bytes_per_agent_weighted_grape"], 2
+            ),
+            "NThreeRatioBytesPair": _tex_float(
+                n3["e2_ratio_bytes_per_agent_weighted_pair_grape"], 2
+            ),
+            "NThreeRatioMsgGrape": _tex_float(
+                n3["e2_ratio_messages_per_agent_weighted_grape"], 1
+            ),
+            "NThreeRatioMsgPair": _tex_float(
+                n3["e2_ratio_messages_per_agent_weighted_pair_grape"], 1
+            ),
+            "NThreeGrapeCertAgree": _tex_integer(n3["e3_cert_agree_weighted_grape"]),
+            "NThreeGrapeCertWorlds": _tex_integer(n3["e3_cert_worlds_weighted_grape"]),
+            "NThreeGrapeCostIdentical": _tex_integer(
+                n3["e3_cost_identical_weighted_grape"]
+            ),
+            "NThreePairCostIdentical": _tex_integer(
+                n3["e3_cost_identical_weighted_pair_grape"]
+            ),
+            "NThreePairMaxSpread": _tex_float(
+                n3["e3_cost_maxspread_weighted_pair_grape"], 1
+            ),
+        }
+    )
+    for regime in ("complete", "dense", "medium", "threshold"):
+        name = regime.capitalize()
+        macros[f"NThreeGap{name}Pair"] = _tex_float(
+            100.0 * n3[f"e3_gap_{regime}_weighted_pair_grape"], 1
+        )
+        macros[f"NThreeGap{name}Grape"] = _tex_float(
+            100.0 * n3[f"e3_gap_{regime}_weighted_grape"], 1
+        )
+    for left, right, tag in (
+        ("weighted_grape", "capacity_cbba_rb", "GrapeCbba"),
+        ("weighted_pair_grape", "capacity_cbba_rb", "PairCbba"),
+        ("weighted_pair_grape", "weighted_grape", "PairGrape"),
+    ):
+        key = f"{left}_minus_{right}"
+        macros[f"NThreeDiff{tag}Pct"] = _tex_float(
+            100.0 * n3[f"e2_feas_diff_{key}"], 2
+        )
+        macros[f"NThreeDiff{tag}LowPct"] = _tex_float(
+            100.0 * n3[f"e2_feas_diff_low_{key}"], 2
+        )
+        macros[f"NThreeDiff{tag}HighPct"] = _tex_float(
+            100.0 * n3[f"e2_feas_diff_high_{key}"], 2
+        )
     for method, tag in short.items():
         macros[f"NThreeFeasPct{tag}"] = _tex_float(
             100.0 * n3[f"e2_feasible_rate_{method}"], 1

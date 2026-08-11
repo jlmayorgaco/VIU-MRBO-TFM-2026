@@ -41,6 +41,14 @@ COLORS = {
     "weighted_pair_grape": "#2E8B57",
 }
 MARKERS = {"capacity_cbba_rb": "o", "weighted_grape": "s", "weighted_pair_grape": "^"}
+# Truncated English ("comp", "thre") told the reader nothing.
+REGIME_LABELS = {
+    "complete": "Completo",
+    "dense": "Denso",
+    "medium": "Medio",
+    "threshold": "Umbral",
+    "partitioned": "Partido",
+}
 
 
 # ------------------------------------------------------------------ helpers
@@ -321,7 +329,7 @@ def plot_e3(summary: pd.DataFrame, path: Path) -> list[Path]:
         )
         for _, row in block.iterrows():
             axes[0].annotate(
-                row["graph_regime"][:4],
+                REGIME_LABELS[row["graph_regime"]],
                 (row["bytes_per_agent"], row["rate"]),
                 xytext=(3, 3), textcoords="offset points", fontsize=6.2, color="#444",
             )
@@ -370,6 +378,93 @@ def _save(figure, path: Path) -> list[Path]:
     return written
 
 
+def _paired_difference_ci(
+    wide: pd.DataFrame, left: str, right: str, resamples: int, seed: int
+) -> tuple[float, float, float]:
+    """Bootstrap the paired difference in feasibility, resampling worlds.
+
+    The world is the independent unit: every method saw the same ones, so the
+    interval has to be built by resampling worlds rather than rows.
+    """
+
+    difference = wide[left].to_numpy() - wide[right].to_numpy()
+    rng = np.random.default_rng(seed)
+    draws = rng.choice(difference, size=(resamples, difference.size), replace=True)
+    means = draws.mean(axis=1)
+    return (
+        float(difference.mean()),
+        float(np.quantile(means, 0.025)),
+        float(np.quantile(means, 0.975)),
+    )
+
+
+def _audit_quantities(
+    e2: pd.DataFrame, e3: pd.DataFrame, resamples: int
+) -> dict[str, Any]:
+    """Effects, ratios and the invariance certificate, straight from RAW."""
+
+    out: dict[str, Any] = {}
+
+    # --- paired feasibility differences, with intervals rather than p-values
+    solvable = e2.loc[e2["oracle_feasible"]]
+    wide = (
+        solvable.assign(ok=(solvable["raw_certificate"] == "FEASIBLE").astype(float))
+        .pivot_table(index="world_key", columns="method", values="ok")
+        .dropna()
+    )
+    for index, (left, right) in enumerate(itertools.combinations(METHODS, 2)):
+        point, low, high = _paired_difference_ci(
+            wide, right, left, resamples, seed=101 + index
+        )
+        tag = f"{right}_minus_{left}"
+        out[f"e2_feas_diff_{tag}"] = point
+        out[f"e2_feas_diff_low_{tag}"] = low
+        out[f"e2_feas_diff_high_{tag}"] = high
+
+    # --- communication: bytes and messages disagree about the magnitude
+    base = "capacity_cbba_rb"
+    for method in METHODS:
+        if method == base:
+            continue
+        for what in ("bytes_per_agent", "messages_per_agent"):
+            ratio = (
+                e2.loc[e2["method"] == method, what].median()
+                / e2.loc[e2["method"] == base, what].median()
+            )
+            out[f"e2_ratio_{what}_{method}"] = float(ratio)
+
+    # --- what "identical across connected graphs" actually means
+    connected = e3.loc[e3["graph_regime"].isin(CONNECTED_REGIMES)]
+    for method in METHODS:
+        block = connected.loc[connected["method"] == method]
+        certificates = block.pivot_table(
+            index="world_key", columns="graph_regime",
+            values="raw_certificate", aggfunc="first",
+        ).dropna()
+        agree = int((certificates.nunique(axis=1) == 1).sum())
+        costs = block.pivot_table(
+            index="world_key", columns="graph_regime", values="distance_cost"
+        ).dropna()
+        spread = (costs.max(axis=1) - costs.min(axis=1)).abs()
+        out[f"e3_cert_agree_{method}"] = agree
+        out[f"e3_cert_worlds_{method}"] = int(len(certificates))
+        out[f"e3_cost_identical_{method}"] = int((spread <= 1e-9).sum())
+        out[f"e3_cost_maxspread_{method}"] = float(spread.max())
+
+    # --- Pair-GRAPE quality against topology, the claim that needs numbers
+    for regime in CONNECTED_REGIMES:
+        for method in ("weighted_grape", "weighted_pair_grape"):
+            block = e3.loc[
+                (e3["graph_regime"] == regime)
+                & (e3["method"] == method)
+                & (e3["raw_certificate"] == "FEASIBLE")
+                & np.isfinite(e3["optimality_gap"])
+            ]
+            if not block.empty:
+                out[f"e3_gap_{regime}_{method}"] = float(block["optimality_gap"].median())
+    return out
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input-dir", type=Path, default=DEFAULT_INPUT)
@@ -405,6 +500,7 @@ def main() -> None:
         metrics[f"{tag}_cycle_observed"] = int(frame["cycle_observed"].sum())
         metrics[f"{tag}_max_rounds"] = int((frame["algorithm_status"] == "MAX_ROUNDS").sum())
         metrics[f"{tag}_inconsistent"] = int((~frame["consistent"]).sum())
+    metrics.update(_audit_quantities(e2, e3, resamples))
     write_json(args.input_dir / "key_metrics.json", metrics)
     print(summary_e2.to_string(index=False))
     print()
