@@ -1,0 +1,71 @@
+{
+  "base_seed": 2026080901,
+  "campaign_id": "SP1_N3_DISTRIBUTED_BASELINES_v2",
+  "config_sha256": "4ca17130da58a323590907c5555c0c159ba9414b41c860e82f161b0db6cdfc37",
+  "contract": {
+    "central_repair": "forbidden",
+    "global_robot_table": "forbidden",
+    "hidden_from_algorithms": [
+      "adjacency",
+      "diameter",
+      "lambda_2",
+      "rounds_remaining",
+      "global_profile"
+    ],
+    "load_catalog": "announced to every robot at t=0, immutable",
+    "milp_at_runtime": "forbidden",
+    "name": "distributed decision, globally announced tasks, neighbour-only robot state",
+    "observer": "records metrics only; never decides, stops or repairs",
+    "other_robot_state": "only via counted messages over edges of G",
+    "own_state": "capacity and position, private",
+    "public_constants": [
+      "n_robots",
+      "n_loads",
+      "max_rounds"
+    ],
+    "rounds": "synchronous; a message emitted at t cannot influence any decision before t+1"
+  },
+  "environment": {
+    "numpy": "2.3.5",
+    "pandas": "2.3.3",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "protocol": "sp1-n3-1.1",
+    "python": "3.13.9",
+    "scipy": "1.16.3"
+  },
+  "frozen_raw": {
+    "e2_runs": {
+      "path": "scripts/results/sp1_levels/n3_v2/raw/e2_runs.csv",
+      "rows": 3600,
+      "sha256": "43082e44121e3103b0f9bfc50217c34348e53e946ddccc2f3998b51afb230a15"
+    },
+    "e3_runs": {
+      "path": "scripts/results/sp1_levels/n3_v2/raw/e3_runs.csv",
+      "rows": 4500,
+      "sha256": "0126fba32892c59fcbb159bd3478db5d529c4680c71624a824fc94fb0f840d3b"
+    },
+    "graph_instances": {
+      "path": "scripts/results/sp1_levels/n3_v2/raw/graph_instances.csv",
+      "rows": 2700,
+      "sha256": "81a7f988e0b1d74d3ca07db5eec7a5597c864d9b1233f590fd036dc904c1bb92"
+    },
+    "oracle_runs": {
+      "path": "scripts/results/sp1_levels/n3_v2/raw/oracle_runs.csv",
+      "rows": 1500,
+      "sha256": "518d9a99ba4fcb703e345ff5d2e3f71fed1f2667bae59ff44ad7a4f0aafe749e"
+    },
+    "worlds": {
+      "path": "scripts/results/sp1_levels/n3_v2/raw/worlds.csv",
+      "rows": 1500,
+      "sha256": "b649d64706afd644e9d6e77cab232dc0af9e0e6095dbe3cba50e0d15122bf5c3"
+    }
+  },
+  "git": {
+    "commit": "239348a418ac98440396fcdff26993b54f290d3e",
+    "tree_dirty": true
+  },
+  "note": "The oracle is the frozen N2 MILP; the methods are the N3 baselines. No recovery, no packet loss, no delay.",
+  "runs_solvers": true,
+  "schema_version": "sp1-n3-campaign-v1",
+  "smoke": false
+}

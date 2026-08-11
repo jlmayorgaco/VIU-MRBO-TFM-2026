@@ -1472,5 +1472,308 @@ todavía no se ha tocado es la arquitectura: \eqref{eq:n2-milp} necesita conocer
 simultáneamente todas las posiciones, capacidades y demandas. N3 conserva
 exactamente este problema y retira esa dependencia global.
 
+\clearpage
+
+% --------------------------------------------------------------------------
+% Pagina 17 - N3: se retira el coordinador
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 3 DE 4 · DECISIÓN DISTRIBUIDA}
+\section*{SP1.N3: el mismo problema sin coordinador}
+
+N3 conserva \eqref{eq:n2-milp} intacta y cambia una sola cosa: quién puede saber
+qué. El catálogo de cargas $(k,\ell_k,m_k)$ se anuncia a todos y no cambia; cada
+robot conoce su propia $c_i^{\mathrm{pay}}$ y su posición; cualquier dato sobre
+otro robot debe llegar por una arista del grafo de comunicación y se
+contabiliza. No hay MILP en ejecución, no hay tabla global gratuita y no hay
+reparación central. El observador mide y no decide: no elige, no detiene y no
+repara.
+
+Esa frontera no se declara, se hace inalcanzable. La función de paso de cada
+método es una función pura de una vista que contiene el estado propio, la lista
+de vecinos propia, el buzón y el catálogo. La adyacencia completa, el diámetro,
+$\lambda_2$ y el perfil global no son campos de esa vista, así que ningún método
+puede leerlos aunque quiera. La distinción importa: las implementaciones del
+piloto histórico calculaban un máximo global y facturaban rondas simuladas, y
+superaban una lectura del código pero no una prueba estructural.
+
+Reconstruir información no local \emph{mediante mensajes} sí está permitido, y
+Weighted-GRAPE lo hace. Lo prohibido es recibirla gratis. Cada byte que cuesta
+esa reconstrucción aparece en el coste de comunicación.
+
+\begin{figure}[H]
+\centering
+\begingroup
+\pgfmathsetlengthmacro{\spxunitn}{\linewidth/13.5}
+\scalebox{0.88}{%
+\begin{tikzpicture}[x=\spxunitn,y=0.86cm]
+\tikzset{
+  n3box/.style={draw=SPGrid!82,fill=SPFloor!30,line width=0.55pt,rounded corners=1.1pt},
+  n3rob/.style={draw=SPBlue,fill=SPBlue!12,circle,minimum size=6.4mm,inner sep=0pt,
+    font=\fontsize{6.6}{7.2}\selectfont\sffamily},
+  n3lab/.style={font=\fontsize{7.0}{7.8}\selectfont\sffamily,anchor=west},
+  n3ttl/.style={font=\fontsize{7.6}{8.4}\selectfont\sffamily\bfseries,anchor=west},
+  n3edge/.style={draw=VIUDark!55,line width=0.7pt},
+}
+\draw[n3box] (0.05,3.55) rectangle (13.45,4.62);
+\node[n3ttl] at (0.30,4.32) {Catálogo de cargas: anunciado a todos, inmutable};
+\node[n3lab] at (0.30,3.88) {$(k,\ \ell_k,\ m_k)$ para $k=1,\dots,K$; único dato compartido de origen.};
+\draw[n3box] (0.05,0.75) rectangle (8.60,3.25);
+\node[n3ttl] at (0.30,2.98) {Estado de robots: privado, viaja solo por aristas};
+\node[n3rob] (r1) at (1.55,1.95) {$r_1$};
+\node[n3rob] (r2) at (3.45,2.45) {$r_2$};
+\node[n3rob] (r3) at (3.10,1.25) {$r_3$};
+\node[n3rob] (r4) at (5.40,1.85) {$r_4$};
+\node[n3rob] (r5) at (7.20,2.35) {$r_5$};
+\draw[n3edge] (r1)--(r2); \draw[n3edge] (r1)--(r3); \draw[n3edge] (r2)--(r3);
+\draw[n3edge] (r2)--(r4); \draw[n3edge] (r3)--(r4); \draw[n3edge] (r4)--(r5);
+\draw[-{Latex[length=1.7mm]},draw=SPRed,line width=0.8pt] (4.05,2.28) -- (4.85,2.05);
+\node[font=\fontsize{6.2}{6.8}\selectfont\sffamily,anchor=south,text=SPRed] at (4.45,2.30)
+  {mensaje contado};
+\node[n3lab] at (0.30,1.02) {$c_i^{\mathrm{pay}},\ p_i$ privados. Grafo $R$-disk sobre las posiciones de N2.};
+\draw[n3box,dashed] (8.95,0.75) rectangle (13.45,3.25);
+\node[n3ttl] at (9.20,2.98) {Observador};
+\node[n3lab] at (9.20,2.50) {registra rondas, mensajes y bytes;};
+\node[n3lab] at (9.20,2.10) {verifica el certificado \emph{post hoc};};
+\node[n3lab] at (9.20,1.70) {\textbf{no} decide, \textbf{no} detiene,};
+\node[n3lab] at (9.20,1.30) {\textbf{no} repara.};
+\node[n3lab] at (9.20,0.98) {Queda fuera del lazo de decisión.};
+\draw[n3box] (0.05,-1.05) rectangle (13.45,0.42);
+\node[n3ttl] at (0.30,0.12) {Ronda síncrona $t$};
+\node[n3lab] at (0.30,-0.68) {$(\mathrm{estado}_i^{t+1},\ \mathrm{salida}_i^{t}) = F_i(\mathrm{estado}_i^{t},\ \mathrm{buz\acute{o}n}_i^{t},\ \mathrm{cat\acute{a}logo})$; lo emitido en $t$ no llega antes de $t+1$.};
+\end{tikzpicture}}
+\endgroup
+\caption{Contrato de información de N3, heredado sin cambios por N4. El catálogo
+es común; el estado de los robots solo cruza aristas y se contabiliza; el
+observador queda fuera del lazo de decisión.}
+\label{fig:n3-contract}
+\viuownsource
+\end{figure}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Pagina 18 - N3: metodos y garantias
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N3 · MÉTODOS Y GARANTÍAS}
+\section*{SP1.N3: dos baselines y lo que no se demuestra}
+
+\textbf{N3.1 · Capacity-CBBA-RB.} Adaptación multi-ganador: paquete unitario y
+puja igual a la reducción marginal del déficit residual estimado localmente,
+$\Delta D_{ik}=\min\{c_i,r_{ik}\}$ con
+$r_{ik}=[m_k-\sum_{j\in\widehat C_{ik}}c_j]_+$, ordenada por
+$(\Delta D_{ik},-d_{ik},-\tau_i)$ y con $\tau_i$ derivado de la capacidad y la
+posición, no del índice de fila. El sufijo RB no es decorativo: sin
+\emph{barrera de retorno} —solo se vuelve a una carga perdida con una puja
+estrictamente mejor— el proceso no termina, según midió el piloto. La barrera usa
+solo la tabla propia y los mensajes recibidos; ninguna garantía canónica de CBBA
+se hereda y la terminación se reporta como observada.
+
+\textbf{N3.2 · Weighted-GRAPE.} Baseline distribuido de información rica: cada
+robot reconstruye una instantánea consistente del perfil inundando propuestas por
+el grafo, y paga por ello en rondas, mensajes y bytes. La mejora es lexicográfica
+y sin pesos que ajustar, con $D(y)=\sum_k[m_k-Q_k(y)]_+$ y
+$J(y)=\sum_{i,k}d_{ik}y_{ik}$: se acepta $y'$ si $D(y')<D(y)$, o si $D(y')=D(y)$
+y $J(y')<J(y)$. Primero factibilidad, después distancia.
+\textbf{Weighted-Pair-GRAPE} arranca del equilibrio unilateral y habilita
+desviaciones conjuntas con un vecino —reclutar un ocioso, salir a ocioso, cambiar
+de carga, intercambiar—, así que es un refinamiento y no un tercer baseline.
+
+\begin{n1prop}[Descomposición del certificado de factibilidad]
+\label{prop:n3-cert}
+Sean $D(y)=\sum_k[m_k-Q_k(y)]_+$ y $C(y)=\sum_i[\sum_ky_{ik}-1]_+$. Entonces $y$ es
+factible si y solo si $D(y)=0$ y $C(y)=0$.
+\end{n1prop}
+
+Ambas son sumas de términos no negativos, luego cada una se anula si y solo si lo
+hace cada término, que es cada familia de restricciones de \eqref{eq:n2-milp}. La
+verdad final la calcula el observador \emph{post hoc}: no es un certificado local,
+porque verificar $Q_k$ en ejecución exigiría una vista consistente y completa de
+la coalición, que solo un protocolo que la pague puede dar.
+
+\begin{n1lema}[Imposibilidad bajo partición permanente]
+\label{lema:n3-partition}
+En un grafo permanentemente desconectado, ningún algoritmo que use solo
+información de su componente garantiza una asignación globalmente factible en
+toda instancia donde robots de componentes distintas compiten por cargas comunes.
+\end{n1lema}
+
+{\small
+\begin{proof}
+Sean dos mundos indistinguibles desde $\mathcal A$ que difieren en la capacidad
+de un robot de $\mathcal B$, de modo que en uno la cobertura de $k$ exige que
+$\mathcal A$ aporte y en el otro que no. Los robots de $\mathcal A$ ejecutan la
+misma secuencia en ambos, luego toman el mismo compromiso, incorrecto en uno.
+\end{proof}
+}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Pagina 19 - N3: verificacion y diseno
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N3 · EXPERIMENTO E1 Y DISEÑO}
+\section*{SP1.N3 · E1: comprobar que de verdad es distribuido}
+
+La conectividad es, entonces, un supuesto del método y no un detalle del
+simulador; y la terminación que Weighted-GRAPE sí demuestra —una mejora por época
+sobre un perfil consistente, con $(D,J)$ decreciente en un espacio finito— está
+condicionada a entrega fiable. Ambas cosas son comprobables, y E1 las comprueba.
+
+E1 no usa semillas ni contrastes: es una batería de invariantes y una condición
+de entrada. Fija la forma exacta de la vista y la ausencia de campos globales;
+que un mensaje emitido en $t$ no se observe antes de $t+1$; que enviar a un no
+vecino sea un error; que los bytes reportados sean la suma de las transmisiones
+reales; que la barrera de CBBA-RB se construya solo con estado local; que cada
+movimiento de GRAPE reduzca estrictamente $(D,J)$; que Pair-GRAPE nunca empeore
+el par lexicográfico del unilateral; que permutar el almacenamiento no cambie la
+decisión física; y que en un grafo partido \textbf{cero} mensajes crucen entre
+componentes. La regresión decisiva compara el generador de N3 con el de N2:
+capacidades, demandas y distancias byte a byte idénticas, porque N3 debe correr
+sobre los mundos de N2 y no sobre mundos que se les parezcan.
+
+La batería encontró cuatro defectos que habrían contaminado la campaña, y el
+último la invalidó de hecho: la transición de fase de Pair-GRAPE no mueve a
+nadie, y el observador leía ese perfil intacto como un ciclo. Se corrigió, se
+descartó la campaña completa y se repitió con configuración e identificador
+nuevos, sin tocar la rejilla.
+
+El protocolo se congeló antes de ejecutar. Sobre \NThreeWorlds{} mundos de
+$N=16$, $K=5$, con $\mathrm{CV}\in\{0;\,0{,}35;\,0{,}65;\,1\}$,
+$\rho\in\{0{,}70;\,0{,}85\}$, las cinco geometrías y 30 semillas por celda, el
+oráculo congelado de N2 resolvió \NThreeOracleFeasible{} y certificó el óptimo en
+\NThreeOracleCertified. Los \NThreeOracleInfeasible{} imposibles no entran en el
+denominador y se reportan aparte; ninguno fue declarado factible por método
+alguno (\NThreeFalseFeasible{} casos). La brecha solo existe donde el óptimo fue
+certificado y el método factible, nunca contra un incumbente sin certificar.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Pagina 20 - N3: factibilidad y calidad
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N3 · EXPERIMENTO E2}
+\section*{SP1.N3 · E2: qué cuesta perder al coordinador}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\linewidth]{../scripts/results/sp1_levels/n3_v2/figures/n3_quality.pdf}
+\caption{E2 sobre \NThreeOracleFeasible{} mundos con solución. (a) Factibilidad
+RAW condicionada a que el oráculo encontrara alguna, con intervalos de Wilson al
+95\,\%. (b) Brecha mediana frente al MILP donde el óptimo fue certificado, con
+intervalo \emph{bootstrap} por mundo.}
+\label{fig:n3-quality}
+\viuownsource
+\end{figure}
+
+La separación es de factibilidad antes que de calidad. Capacity-CBBA-RB alcanza
+una partición atómica estricta en el \NThreeFeasPctCbba\,\% de los mundos que
+tienen solución, mientras Weighted-GRAPE llega al \NThreeFeasPctGrape\,\% y su
+refinamiento por pares al \NThreeFeasPctPair\,\%. La prueba de Cochran sobre los
+tres métodos pareados rechaza la igualdad ($p=\NThreeCochranP$), y los McNemar
+exactos con Holm separan a CBBA-RB de ambas variantes de GRAPE con una diferencia
+pareada cercana a 24 puntos porcentuales; entre GRAPE y su refinamiento no hay
+diferencia de factibilidad, solo dos mundos discordantes de
+\NThreeOracleFeasible.
+
+En calidad el orden es el mismo pero por otro motivo. Sobre los
+\NThreeCommonSupport{} mundos del soporte común —donde el oráculo certificó el
+óptimo \emph{y} los tres métodos fueron factibles, de modo que ninguno se mide
+solo en los mundos que le resultan fáciles— la brecha mediana es
+\NThreeCommonGapPctCbba\,\% para CBBA-RB, \NThreeCommonGapPctGrape\,\% para
+Weighted-GRAPE y \NThreeCommonGapPctPair\,\% para el refinamiento por pares
+($p_{\mathrm{Friedman}}=\NThreeFriedmanP$). El coste de comunicación ordena al
+revés: \NThreeBytesCbba{} bytes por agente para CBBA-RB frente a
+\NThreeBytesGrape{} y \NThreeBytesPair. Weighted-GRAPE compra su calidad
+reconstruyendo el perfil, y esa reconstrucción se paga.
+
+Ninguna ejecución agotó el presupuesto de rondas. CBBA-RB revisita alguna
+configuración por el camino en las \NThreeCyclesObserved{} ejecuciones —la
+barrera hace que termine, no que no dé rodeos— y ninguna de las dos variantes de
+GRAPE acabó con perfiles divergentes (\NThreeInconsistent{} casos).
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Pagina 21 - N3: precio de la localidad
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N3 · EXPERIMENTO E3}
+\section*{SP1.N3 · E3: cuánto cuesta ralear el grafo}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\linewidth]{../scripts/results/sp1_levels/n3_v2/figures/n3_locality.pdf}
+\caption{E3 sobre los mismos mundos bajo cinco topologías, elegidas solo por
+métricas de grafo. (a) Frente comunicación--factibilidad en los cuatro regímenes
+conexos. (b) El régimen partido, control negativo, frente al mejor régimen
+conexo de cada método.}
+\label{fig:n3-locality}
+\viuownsource
+\end{figure}
+
+La pregunta no es si el grafo completo gana, sino qué se conserva al comunicar
+menos. Para Weighted-GRAPE la respuesta es tajante: factibilidad y brecha son
+\emph{idénticas} en los cuatro regímenes conexos, y lo único que cambia son los
+bytes, que caen a menos de la mitad entre el grafo completo y el umbral de
+conectividad. Su época serializa una única mejora sobre un perfil consistente,
+así que la topología altera el precio y no el resultado. Pair-GRAPE sí paga en
+calidad: sus movimientos conjuntos están restringidos a vecinos, y la brecha
+mediana crece al ralear la red.
+
+Capacity-CBBA-RB va al revés de lo esperable: su factibilidad sube del
+\NThreeCompletePctCbba\,\% en el grafo completo al \NThreeThresholdPctCbba\,\% en
+el umbral. Sobre los mismos 300 mundos pareados, 60 son factibles solo en el
+régimen ralo y 22 solo en el completo. Es un contraste \emph{post hoc}, y los
+fallos son por poco en ambos: una carga sin cubrir y un déficit mediano de un
+kilogramo sobre unos 68 de oferta. Registramos el efecto sin atribuirle
+mecanismo.
+
+El control negativo separa con holgura. Con partición permanente la factibilidad
+máxima de cualquier método es \NThreeControlRateMaxPct\,\%, frente a un mínimo de
+\NThreeConnectedRateMinPct\,\% en los conexos, sobre una mediana de
+\NThreePartitionComponents{} componentes. Y la separación aparece también en el
+protocolo, no solo en el resultado: las dos variantes de GRAPE terminan en
+\textsc{diverged} en los 300 mundos partidos, porque el invariante detecta que
+los robots no sostienen el mismo perfil. Es el Lema~\ref{lema:n3-partition}
+convertido en medida. El régimen partido no entra en el frente de Pareto de los
+conexos.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Pagina 22 - N3: sintesis y transicion
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N3 · SÍNTESIS Y TRANSICIÓN A N4}
+\section*{SP1.N3: la frontera distribuida de referencia}
+
+N3 no corona un ganador. Al retirar el coordinador conservando el problema
+heterogéneo, los dos baselines ocupan regiones distintas del compromiso entre
+factibilidad, calidad y comunicación, y esa separación es el resultado.
+Capacity-CBBA-RB decide con información incremental y barata —decenas de mensajes
+por agente— y lo paga en factibilidad y en distancia. Weighted-GRAPE reconstruye
+una instantánea consistente del perfil por inundación, alcanza casi siempre una
+partición factible y una brecha menor, y lo paga en un orden de magnitud de
+comunicación. Su refinamiento por pares mejora la distancia sin coste adicional
+de factibilidad, y es el único cuya calidad se degrada al ralear la red.
+
+Lo que N3 \emph{no} establece conviene decirlo con la misma claridad. No hay
+prueba de convergencia para la adaptación de CBBA: hay una barrera que la hace
+terminar y una terminación observada bajo un presupuesto declarado. La
+terminación de GRAPE sí está demostrada, pero condicionada a entrega fiable, y el
+invariante de divergencia existe precisamente porque esa condición puede fallar.
+El punto final de ambas variantes es estable respecto a la vecindad admitida, no
+óptimo social. Y toda la campaña asume enlaces fiables: la pérdida de paquetes y
+el retardo se reservan para una campaña de estrés compartida con N4, bajo
+realizaciones de canal pareadas, de modo que todos los métodos afronten la misma
+red en lugar de repetir N3 más tarde.
+
+La transición queda entonces limpia. N4 conserva exactamente el contrato de la
+Figura~\ref{fig:n3-contract}, los mismos mundos, los mismos grafos, la misma
+semántica de mensajes y de bytes, los mismos presupuestos, el mismo oráculo
+congelado de N2 y las mismas métricas, y sustituye únicamente el mecanismo de
+decisión por Geo-QPG. La pregunta que N4 debe responder ya no es si pierde frente
+al MILP —eso lo pierde cualquier método local, y ahora sabemos cuánto— sino si
+consigue situarse fuera de la frontera que estos dos baselines acaban de trazar,
+o mejorar alguna de sus regiones, bajo condiciones idénticas.
+
 % N1 permanece congelado en SP1-N1-FROZEN; N2 solo anade paginas.
 \end{document}
