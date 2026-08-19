@@ -1,0 +1,107 @@
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,
+ band/.style={draw=SPGrid,rounded corners=1.2mm,fill=SPFloor,
+  minimum width=11.40cm,minimum height=2.48cm},
+ card/.style={draw=black!23,rounded corners=.9mm,fill=white,
+  minimum width=2.35cm,minimum height=1.18cm,align=center,font=\tiny},
+ stage/.style={draw=black!23,rounded corners=.9mm,fill=white,
+  minimum width=2.12cm,minimum height=1.18cm,align=center,font=\tiny},
+ arrow/.style={->,thick,draw=VIUOrange},
+ down/.style={->,thick,draw=black!40}]
+
+\node[font=\scriptsize\bfseries,text=black!70] at (0,4.80)
+ {MISMO MUNDO FÍSICO; TRES ESTADOS ESTRATÉGICOS};
+\node[font=\tiny,text=black!55] at (0,4.49)
+ {$a$ es ejecutable; $x$ y $(x,\lambda)$ pasan por $\mathcal R$; F-IV produce una secuencia $a_t$};
+
+% ================================================================ F-II
+\node[band] (fii) at (0,3.12) {};
+\node[anchor=north west,font=\scriptsize\bfseries,text=SPBlue]
+ at ($(fii.north west)+(.18,-.13)$) {F-II · INTENCIÓN CONTINUA $x_i\in\Delta_i$};
+\node[card] (rep) at (-4.12,3.14)
+ {\textbf{Replicator}\\[.6mm]
+  $x_i=(.7,.3,0)$\\
+  una componente en cero\\
+  no se reactiva};
+\node[card] (smith) at (-1.38,3.14)
+ {\textbf{Smith}\\[.6mm]
+  $k_1\rightleftarrows k_2$\\
+  transfiere masa según\\
+  diferencias de fitness};
+\node[card] (bnn) at (1.38,3.14)
+ {\textbf{BNN}\\[.6mm]
+  $\widehat F_{ik}=[F_{ik}-\bar F_i]_+$\\
+  entra masa donde el\\
+  exceso es positivo};
+\node[card] (logit) at (4.12,3.14)
+ {\textbf{Logit}\\[.6mm]
+  $x_i^+\propto\exp(F_i/\tau)$\\
+  softmax difuso; $\tau$\\
+  regula exploración};
+\node[draw=VIUOrange,rounded corners=.8mm,fill=VIUOrange!4,
+ minimum width=4.15cm,minimum height=.46cm,font=\tiny\bfseries] (closure) at (0,2.05)
+ {$x^\star\quad\xrightarrow{\ \mathcal R\ }\quad a^\star$ entero};
+\foreach \n in {rep,smith,bnn,logit}{\draw[down] (\n.south)--(closure.north);}
+\node[font=\fontsize{5.3}{5.6}\selectfont,text=SPRed] at (0,1.53)
+ {las cuatro dinámicas comparten $F$ y el cierre; el ranking puede cambiar después de $\mathcal R$};
+
+% ================================================================ F-III
+\node[band] (fiii) at (0,.00) {};
+\node[anchor=north west,font=\scriptsize\bfseries,text=SPGreen!70!black]
+ at ($(fiii.north west)+(.18,-.13)$) {F-III · CUOTAS COMO RESTRICCIÓN COMPARTIDA};
+\node[stage,draw=VIUOrange!70] (scarcity) at (-4.18,.02)
+ {\textbf{1 · escasez}\\[.6mm]
+  carga $k_1$\\
+  $Q_1/m_1=2/5$\\
+  $g_1(x)>0$};
+\node[stage,draw=SPRed!60] (price) at (-1.40,.02)
+ {\textbf{2 · precio}\\[.6mm]
+  $\lambda_1\uparrow$\\
+  $c_i\lambda_1-d_{i1}$\\
+  atrae capacidad};
+\node[stage,draw=SPPurple!60] (consensus) at (1.40,.02)
+ {\textbf{3 · consenso}\\[.6mm]
+  $\lambda_{11}\leftrightarrow\lambda_{21}$\\
+  $\leftrightarrow\lambda_{31}$\\
+  copias vecinales};
+\node[stage,draw=SPGreen!65] (physical) at (4.18,.02)
+ {\textbf{4 · salida}\\[.6mm]
+  $(x^\star,\lambda^\star)$\\
+  $\mathcal R(x^\star)=a^\star$\\
+  coalición atómica};
+\draw[arrow] (scarcity.east)--(price.west);
+\draw[arrow] (price.east)--(consensus.west);
+\draw[arrow] (consensus.east)--(physical.west);
+\node[font=\tiny,text=black!55] at (0,-1.00)
+ {aceptación numérica: residual primal + dual + complementariedad + estación + consenso};
+
+% ================================================================ F-IV
+\node[band] (fiv) at (0,-3.12) {};
+\node[anchor=north west,font=\scriptsize\bfseries,text=SPPurple]
+ at ($(fiv.north west)+(.18,-.13)$) {F-IV · RECLUTAMIENTO BAJO EVENTOS};
+\node[stage] (t0) at (-4.18,-3.10)
+ {\textbf{$t_0$ · servicio}\\[.6mm]
+  cargas activas\\
+  robots disponibles\\
+  coalición $a_t$};
+\node[stage,draw=VIUOrange!65] (t1) at (-1.40,-3.10)
+ {\textbf{$t_1$ · llegada}\\[.6mm]
+  aparece $k_{\rm new}$\\
+  cambia la demanda\\
+  estado $s_{t+1}$};
+\node[stage,draw=SPRed!65] (t2) at (1.40,-3.10)
+ {\textbf{$t_2$ · fallo}\\[.6mm]
+  $r_j$ deja de estar\\
+  disponible\\
+  se invalida parte de $a_t$};
+\node[stage,draw=SPGreen!65] (t3) at (4.18,-3.10)
+ {\textbf{$t_3$ · política}\\[.6mm]
+  reactiva / inicialización previa\\
+  oráculo escalar finito\\
+  nueva asignación $a_{t+1}$};
+\draw[arrow] (t0.east)--node[above,font=\tiny] {evento}(t1.west);
+\draw[arrow] (t1.east)--node[above,font=\tiny] {$T(s,u,e)$}(t2.west);
+\draw[arrow] (t2.east)--node[above,font=\tiny] {decisión}(t3.west);
+\node[font=\tiny,text=SPRed] at (0,-4.14)
+ {estudio temporal con eventos exógenos; sin garantía de potencial de Markov};
+
+\end{tikzpicture}

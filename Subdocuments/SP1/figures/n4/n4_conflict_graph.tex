@@ -1,0 +1,32 @@
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,
+ load/.style={draw=VIUOrange,rounded corners=.6mm,fill=VIUOrange!5,
+  minimum width=8mm,minimum height=6mm,font=\scriptsize},
+ prop/.style={circle,draw=SPBlue,fill=white,minimum size=7mm,font=\scriptsize},
+ chosen/.style={circle,draw=SPGreen!80!black,fill=SPGreen!10,very thick,
+  minimum size=7mm,font=\scriptsize},
+ arr/.style={->,thick,draw=VIUOrange}]
+\node[font=\footnotesize\bfseries] at (-3.4,1.75) {propuestas físicas};
+\node[load] (k1) at (-4.45,.55) {$k_1$};
+\node[load] (k2) at (-2.35,.55) {$k_2$};
+\node[prop] (rp1) at (-4.45,-.7) {$p_1$};
+\node[prop] (rp2) at (-3.55,-.7) {$p_2$};
+\node[prop] (rp3) at (-2.35,-.7) {$p_3$};
+\node[prop] (rp4) at (-1.45,-.7) {$p_4$};
+\draw[arr] (rp1)--(k1); \draw[arr] (rp2)--(k1);
+\draw[arr] (rp3)--(k2); \draw[arr] (rp4)--(k2);
+% La etiqueta iba justo bajo el segmento y quedaba sobre los círculos p2 y p3.
+\draw[dashed,draw=SPRed,thick] (rp2)--(rp3);
+\node[font=\tiny,fill=white,inner sep=.7pt,below=3.2mm] at ($(rp2)!.5!(rp3)$)
+  {robot compartido};
+
+\node[font=\footnotesize\bfseries] at (3.2,1.75) {grafo de conflictos $\mathcal G_C$};
+\node[chosen] (p1) at (1.35,.65) {$p_1$};
+\node[prop] (p2) at (3.0,1.1) {$p_2$};
+\node[prop] (p3) at (3.0,-.25) {$p_3$};
+\node[chosen] (p4) at (4.65,.65) {$p_4$};
+\draw[thick,draw=SPRed] (p1)--(p2)--(p3)--(p4);
+\draw[thick,draw=SPRed] (p2)--(p4);
+\node[draw=SPGreen!70,rounded corners=.8mm,fill=SPGreen!5,
+ font=\scriptsize,minimum width=3.3cm,minimum height=.58cm] at (3,-1.25)
+ {$\mathcal B=\{p_1,p_4\}$: independiente, no necesariamente máximo};
+\end{tikzpicture}

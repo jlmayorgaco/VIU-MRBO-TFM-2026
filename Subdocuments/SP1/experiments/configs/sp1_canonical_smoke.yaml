@@ -1,0 +1,26 @@
+experiment_id: SP1_CANONICAL_SMOKE_v1
+protocol_family: sp1_distributed_role_formation_v1
+output_dir: results/sp1_canonical/SP1_CANONICAL_SMOKE_v1
+regimes: [abundant, tight]
+fleet_sizes: [8]
+load_counts: [2]
+seeds: [9100, 9101]
+network_cases:
+  - name: nominal
+    radius_m: 5.0
+    gossip_rounds: 3
+methods:
+  - local_gossip
+  - local_no_gossip
+  - local_no_switch_penalty
+  - global_greedy
+  - central_milp
+cost_weights:
+  distance: 0.55
+  battery: 0.25
+  switch_penalty: 0.20
+  join: 0.04
+  minimum_battery: 0.20
+oracle_time_limit_s: 5.0
+bootstrap_resamples: 500
+fail_on_audit: true

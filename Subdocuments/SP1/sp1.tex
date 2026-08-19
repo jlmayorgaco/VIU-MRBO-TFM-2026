@@ -1,0 +1,1273 @@
+
+\PassOptionsToPackage{draft}{hyperref}
+\documentclass[12pt,a4paper]{article}
+
+% Compilar con LuaLaTeX + Biber.
+\usepackage{viu-mrob-thesis}
+\usepackage{csquotes}
+\usepackage[
+  backend=biber,
+  style=apa,
+  natbib=true,
+  hyperref=false,
+  sorting=nyt,
+  sortcites=true
+]{biblatex}
+\addbibresource{references.bib}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[export]{adjustbox}
+\usepackage{subcaption}
+\usepackage{array}
+\usepackage{tabularx}
+
+\floatname{algorithm}{Algoritmo}
+\renewcommand{\algorithmicrequire}{\textbf{\textcolor{VIUOrange}{Entrada:}}}
+\renewcommand{\algorithmicensure}{\textbf{\textcolor{VIUOrange}{Salida:}}}
+\algrenewcommand\algorithmicif{\textcolor{VIUOrange}{\textbf{si}}}
+\algrenewcommand\algorithmicthen{\textcolor{VIUOrange}{\textbf{entonces}}}
+\algrenewcommand\algorithmicelse{\textcolor{VIUOrange}{\textbf{si no}}}
+\algrenewcommand\algorithmicfor{\textcolor{VIUOrange}{\textbf{para}}}
+\algrenewcommand\algorithmicforall{\textcolor{VIUOrange}{\textbf{para cada}}}
+\algrenewcommand\algorithmicreturn{\textcolor{VIUOrange}{\textbf{devolver}}}
+\algrenewcommand\algorithmicfunction{\textcolor{VIUOrange}{\textbf{función}}}
+\algrenewcommand\alglinenumber[1]{\scriptsize\textcolor{VIUGray}{#1:}}
+\algrenewcommand\algorithmiccomment[1]{\hfill\textcolor{VIUGray}{\itshape\% #1}}
+\algtext*{EndIf}
+\algtext*{EndFor}
+\algtext*{EndFunction}
+
+\makeatletter
+\renewcommand{\ALG@beginalgorithmic}{\fontsize{7.2}{8.3}\selectfont}
+\makeatother
+
+\input{generated/metrics.tex}
+\InputIfFileExists{generated/n4_v3_results_macros.tex}{}{}
+\InputIfFileExists{generated/n4_v4_results_macros.tex}{}{}
+
+\hypersetup{
+  pdftitle={Resultados SP1 compactados},
+  pdfauthor={Jorge Luis Mayorga Taborda},
+  pdfsubject={SP1: reclutamiento multi-robot, versión compacta para TFM VIU}
+}
+
+% --------------------------------------------------------------------------
+% Ajustes editoriales: 12 pt en cuerpo, pero menos aire entre objetos.
+% La compactación procede de síntesis multipanel, no de reducir la legibilidad.
+% --------------------------------------------------------------------------
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2.2pt}
+\setlength{\textfloatsep}{5pt plus 1pt minus 1pt}
+\setlength{\floatsep}{4pt plus 1pt minus 1pt}
+\setlength{\intextsep}{4pt plus 1pt minus 1pt}
+\setlength{\abovedisplayskip}{4.5pt}
+\setlength{\belowdisplayskip}{4.5pt}
+\setlength{\abovedisplayshortskip}{3pt}
+\setlength{\belowdisplayshortskip}{3pt}
+\setlength{\tabcolsep}{3.2pt}
+\captionsetup{font=footnotesize,skip=2pt}
+
+\renewcommand{\viuownsource}{%
+  \par\vspace{0.4mm}\noindent
+  \makebox[\linewidth][c]{\scriptsize\itshape Elaboración propia.}\par
+}
+
+\newcommand{\leveltag}[1]{%
+  \noindent\colorbox{VIUDark}{%
+    \parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
+      \color{white}\sffamily\bfseries\small #1}}\par\vspace{1.2mm}
+}
+
+\newcommand{\spheading}[2]{%
+  \leveltag{#1}%
+  {\color{VIUOrange}\sffamily\bfseries\Large #2\par}\vspace{1.5mm}
+}
+
+\newcommand{\compactsource}{%
+  {\centering\scriptsize\itshape Elaboración propia a partir de los datos experimentales.\par}
+}
+
+\newtheorem{n1prop}{Proposición}
+\newtheorem{n1lema}{Lema}
+\theoremstyle{remark}
+\newtheorem{n1obs}{Observación}
+\theoremstyle{plain}
+
+% Panel de figura PDF. El segundo argumento es la altura MÁXIMA admitida, no una
+% reserva fija: una minipage de altura fija dejaba una banda vacía cada vez que el
+% asset resultaba limitado por el ancho, que es el caso de casi todas las figuras
+% anchas y bajas de este capítulo.
+\newcommand{\pdfpanel}[4]{%
+  \begin{minipage}[t]{#1}
+    \centering
+    {\scriptsize\bfseries #4\par\vspace{0.5mm}}
+    \IfFileExists{#3}{%
+      \includegraphics[max width=\linewidth,max totalheight=#2]{#3}%
+    }{%
+      \fbox{\parbox[c][\dimexpr#2-8mm\relax][c]{.92\linewidth}{%
+        \centering\scriptsize Asset pendiente:\\\texttt{\detokenize{#3}}}}%
+    }
+  \end{minipage}%
+}
+
+\newcommand{\tikzpanel}[4]{%
+  \begin{minipage}[t]{#1}
+    \centering
+    {\scriptsize\bfseries #4\par\vspace{0.5mm}}
+    % Compatibilidad con los TikZ heredados de la versión larga.
+    % protocol_pipeline.tex espera \spxunitstat y n2_model_boundary.tex
+    % espera \spxunitntwo definidos por el documento padre.
+    \pgfmathsetlengthmacro{\spxunitstat}{\linewidth/13.5}%
+    \pgfmathsetlengthmacro{\spxunitntwo}{\linewidth/13.5}%
+    \IfFileExists{#3}{%
+      \adjustbox{max width=\linewidth,max totalheight=#2}{\input{#3}}%
+    }{%
+      \fbox{\parbox[c][\dimexpr#2-8mm\relax][c]{.92\linewidth}{%
+        \centering\scriptsize TikZ pendiente:\\\texttt{\detokenize{#3}}}}%
+    }
+  \end{minipage}%
+}
+
+% Variante para diagramas cuya fuente TikZ es menor que la caja de texto.
+% \tikzpanel solo reduce; esta versión amplía de forma uniforme hasta el ancho
+% disponible y evita que las etiquetas queden pequeñas en páginas dedicadas.
+\newcommand{\tikzpanelfit}[4]{%
+  \begin{minipage}[t]{#1}
+    \centering
+    {\scriptsize\bfseries #4\par\vspace{0.5mm}}
+    \IfFileExists{#3}{%
+      \resizebox{\linewidth}{!}{\input{#3}}%
+    }{%
+      \fbox{\parbox[c][\dimexpr#2-8mm\relax][c]{.92\linewidth}{%
+        \centering\scriptsize TikZ pendiente:\\\texttt{\detokenize{#3}}}}%
+    }
+  \end{minipage}%
+}
+
+\newcommand{\tightcaption}[1]{%
+  \vspace{1mm}{\footnotesize #1\par}\viuownsource
+}
+
+\newcommand{\proofsketch}[1]{%
+  {\small\textit{Demostración (síntesis).} #1\hfill$\square$\par}
+}
+
+\begin{document}
+\viuromanfoliofalse
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% ==========================================================================
+% PÁGINA 1/20 · Problema + escalera N1--N4
+% ==========================================================================
+\spheading{RESULTADOS SP1 · PROBLEMA Y MAPA DE NIVELES}
+{SP1: formación de coaliciones de AMR}
+
+Antes de iniciar el transporte, SP1 determina qué robots móviles autónomos (AMR)
+forman la coalición asignada a cada carga. El capítulo responde una pregunta única:
+
+{\small\begin{tcolorbox}[
+  colback=VIUOrange!5,colframe=VIUOrange!75,boxrule=.7pt,arc=1mm,
+  left=2.6mm,right=2.6mm,top=1.4mm,bottom=1.4mm]
+\textbf{¿Cómo cambia el reclutamiento de coaliciones de AMR cuando se eliminan
+progresivamente la homogeneidad de capacidad, la disponibilidad de información
+global y la restricción a desviaciones unilaterales?}
+\end{tcolorbox}}
+
+Cada nivel aísla y elimina una fuente distinta de dificultad, y cada uno responde
+una subpregunta: \textbf{N1}, ¿cuándo basta la cardinalidad?; \textbf{N2}, ¿cuándo
+importa la capacidad individual de cada AMR?; \textbf{N3}, ¿qué cuesta eliminar la
+vista global?; \textbf{N4}, ¿qué orden local permite escapar de los mínimos
+unilaterales? N1--N3 delimitan las fronteras del problema; N4 contiene la
+contribución metodológica principal de SP1: una formulación de reclutamiento
+atómico mediante potencial local, jerarquía de desviaciones y confirmación vecinal.
+El movimiento físico comienza en SP2.
+
+{\small
+\begin{minipage}[t]{.49\linewidth}
+\textbf{Homogéneo: expansión por puestos.}
+\begin{equation}
+\label{eq:sp1-homogeneous-model}
+\begin{aligned}
+\min_x\;&\sum_{i\in\mathcal I}\sum_{h\in\mathcal H}d_{ih}x_{ih}\\
+\mathrm{s.a.}\;&\sum_hx_{ih}\le1,\quad
+\sum_ix_{ih}=1,\quad x_{ih}\in\{0,1\}.
+\end{aligned}
+\tag{1}
+\end{equation}
+$|\mathcal H_k|=\lceil m_k/\bar c^{\mathrm{pay}}\rceil$ y
+$c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$.
+\end{minipage}\hfill
+\begin{minipage}[t]{.49\linewidth}
+\textbf{Heterogéneo: MILP.}
+\begin{equation}
+\label{eq:sp1-heterogeneous-model}
+\begin{aligned}
+\min_{x,e}\;&\sum_{i,k}d_{ik}x_{ik}
++\lambda_e\sum_ke_k+\lambda_n\sum_{i,k}x_{ik}\\
+\mathrm{s.a.}\;&\sum_kx_{ik}\le1,\quad
+e_k=\sum_ic_i^{\mathrm{pay}}x_{ik}-m_k\ge0,\\
+&x_{ik}\in\{0,1\}.
+\end{aligned}
+\tag{2}
+\end{equation}
+En el diagnóstico N1.E4, $\lambda_e=0{,}25$ m/kg y
+$\lambda_n=10^{-3}$ m/AMR.
+\end{minipage}
+}
+
+\vspace{1mm}
+\begin{figure}[H]\centering
+\tikzpanel{.98\linewidth}{8.0cm}{figures/compact/fig01_model_boundary.tex}
+{(a) Cardinalidad frente a capacidad individual}
+\caption{Frontera de modelado de SP1: la expansión por puestos solo representa
+exactamente el caso homogéneo; el MILP conserva la capacidad individual.}
+\label{fig:sp1-overview}
+\viuownsource
+\end{figure}
+
+\newpage
+
+\spheading{RESULTADOS SP1 · MAPA DE NIVELES}
+{Jerarquía de modelado N1--N4}
+
+\begin{figure}[H]\centering
+\tikzpanel{.96\linewidth}{16.5cm}{figures/compact/fig02_level_guide.tex}
+{(b) Escalera N1--N4}
+\caption{Recorrido experimental de SP1. La salida de cada nivel sigue siendo una
+coalición; solo SP2 inicia transporte y dinámica física.}
+\viuownsource
+\end{figure}
+
+\newpage
+
+% ==========================================================================
+% PÁGINA 2/20 · Protocolo común
+% ==========================================================================
+\spheading{RESULTADOS SP1 · PROTOCOLO EXPERIMENTAL}
+{Mundos, generadores y contraste pareado}
+
+La unidad independiente es el mundo-semilla. Dentro de cada mundo, todos los
+métodos reciben los mismos AMR, cargas y parámetros; el \emph{bootstrap}
+remuestrea mundos completos por celda. Fallos y límites temporales permanecen
+visibles y Holm corrige cada familia de contrastes.
+
+\begin{figure}[H]\centering
+\tikzpanel{.98\linewidth}{9.8cm}{figures/compact/fig03_scenarios.tex}
+{(a) Cinco geometrías y tratamiento de fallo}
+\caption{Geometrías normalizadas y tratamiento de fallo usados para construir
+mundos pareados.}
+\viuownsource
+\end{figure}
+
+\begin{minipage}[t]{.57\linewidth}
+{\footnotesize
+\textbf{Tabla 1. Generadores espaciales.}\par
+\renewcommand{\arraystretch}{1.08}
+\begin{tabularx}{\linewidth}{@{}p{1.55cm}p{3.25cm}X@{}}
+\toprule
+\textbf{Geo.}&\textbf{Robots}&\textbf{Cargas}\\
+\midrule
+Aleatorio&$U([0,L_x]\!\times\![0,L_y])$&igual\\
+Agrupado&uniforme&dos centros + $\mathcal N(0,\Sigma)$\\
+Separado&$x\le.35L_x$&$x\ge.65L_x$\\
+Anillo&$r\in[.36,.48]L$&$r\in[.04,.22]L$\\
+Pasillo&$\sigma_y=.04L_y$&$\sigma_y=.08L_y$\\
+\bottomrule
+\end{tabularx}
+\par\smallskip
+Agrupado, Anillo y Pasillo aplican \texttt{clip}; Fallo conserva la geometría
+Aleatorio.
+}
+\end{minipage}\hfill
+\begin{minipage}[t]{.39\linewidth}
+{\footnotesize
+\textbf{Tabla 2. Regla estadística común.}\par
+\renewcommand{\arraystretch}{1.08}
+\begin{tabularx}{\linewidth}{@{}p{2.0cm}>{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Respuesta}&\textbf{Inferencia}\\
+\midrule
+Binaria&riesgo pareado; \mbox{McNemar}\\
+Continua&mediana + IC \emph{bootstrap}; signo\\
+Tres o más&Friedman + Kendall $W$\\
+Censura&tiempo truncado; \mbox{supervivencia}\\
+\bottomrule
+\end{tabularx}
+}
+\end{minipage}
+
+\newpage
+
+\spheading{RESULTADOS SP1 · PROTOCOLO EXPERIMENTAL}
+{Protocolo Monte Carlo y trazabilidad estadística}
+
+\begin{figure}[H]\centering
+\tikzpanel{.98\linewidth}{16.0cm}{figures/protocol_pipeline.tex}
+{(b) Diseño $\rightarrow$ registro $\rightarrow$ pareamiento $\rightarrow$ inferencia}
+\caption{Protocolo Monte Carlo. Significancia estadística y relevancia práctica se
+evalúan por separado cuando ambas condiciones fueron preespecificadas.}
+\viuownsource
+\end{figure}
+
+\newpage
+
+% ==========================================================================
+% PÁGINA 3/20 · N1 teoría
+% ==========================================================================
+\spheading{RESULTADOS SP1 · N1 · TEORÍA Y DISEÑO}
+{N1: dominio de validez de la cardinalidad}
+
+% Página densa en teoría: se comprime el aire entre displays, no el cuerpo.
+\setlength{\abovedisplayskip}{2.5pt}\setlength{\belowdisplayskip}{2.5pt}
+
+SP1 se sitúa en la clase de asignación multi-robot con tareas que requieren
+varios agentes \citep{korsahStentzDias2013iTax}. Con capacidad común, cubrir
+$m_k$ equivale a reclutar
+$n_k=\lceil m_k/\bar c^{\mathrm{pay}}\rceil$ AMR:
+\begin{equation}
+\label{eq:n1-cardinal}
+\min_{y\in\{0,1\}^{N\times K}}\sum_{i,k}d_{ik}y_{ik},
+\qquad \sum_ky_{ik}\le1,\quad \sum_iy_{ik}=n_k .
+\tag{3}
+\end{equation}
+La expansión en $M=\sum_kn_k$ puestos intercambiables produce:
+\begin{equation}
+\label{eq:n1-lsap}
+\min_{x\in\{0,1\}^{N\times M}}\sum_{i,h}d_{ih}x_{ih},
+\qquad \sum_ix_{ih}=1,\quad \sum_hx_{ih}\le1 .
+\tag{4}
+\end{equation}
+
+\begin{n1prop}[Equivalencia exacta de la expansión por puestos]
+Si $c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$, los costes se replican por puesto y
+$M\le N$, \eqref{eq:n1-cardinal} y \eqref{eq:n1-lsap} tienen igual factibilidad y
+valor óptimo.
+\end{n1prop}
+\proofsketch{Una biyección entre cada coalición $S_k$ y sus puestos conserva coste;
+la suma inversa $y_{ik}=\sum_{h\in\mathcal H_k}x_{ih}$ recupera la coalición.}
+
+\begin{n1lema}[Ventana de validez de la cardinalidad]
+Para $\mathcal A_k$, $c_{\min}=\min c_i^{\mathrm{pay}}$ y
+$c_{\max}=\max c_i^{\mathrm{pay}}$, basta
+\begin{equation}
+(n_k-1)c_{\max}<m_k\le n_kc_{\min}.
+\tag{5}
+\end{equation}
+Entonces toda coalición de $n_k$ AMR cubre y ninguna de $n_k-1$ puede hacerlo.
+\end{n1lema}
+La ventana es suficiente, no necesaria. Su amplitud en $m_k$ vale $c_{\max}-n_k(c_{\max}-c_{\min})$ y
+decrece linealmente con $n_k$ hasta anularse. Exigirla positiva delimita la
+heterogeneidad admisible: con dispersión relativa $\delta=(c_{\max}-c_{\min})/c_{\max}$,
+la ventana es no vacía si y solo si
+\begin{equation}
+\label{eq:n1-spread}
+\delta<\frac{1}{n_k}.
+\tag{5b}
+\end{equation}
+La magnitud que decae como $O(1/n_k)$ es, por tanto, la tolerancia relativa a la
+heterogeneidad, no la amplitud absoluta de la ventana. Cuanto mayor es la
+cardinalidad requerida, menor es la dispersión relativa de capacidad bajo la cual la
+cardinalidad sigue siendo un certificado suficiente. Conviene no leer
+\eqref{eq:n1-spread} como una caracterización exacta: es la condición para que esta
+ventana suficiente y uniforme sea no vacía, y pueden existir instancias concretas
+fuera de ella en las que una coalición particular sí cubra.
+
+Conviene señalar de dónde procede la facilidad de N1, porque determina cuándo
+desaparece: la matriz de incidencia de \eqref{eq:n1-lsap} es bipartita y totalmente
+unimodular, así que su relajación lineal $x_{ih}\in[0,1]$ alcanza el óptimo en un
+vértice entero:
+\begin{equation}
+\label{eq:n1-lp-integral}
+x^\star_{\rm LP}\in\{0,1\}^{N\times M},
+\qquad J_{\rm LP}=J_{\rm LSAP}=J_{\rm MILP}.
+\tag{5c}
+\end{equation}
+El caso homogéneo no es sencillo por disponer de un algoritmo eficiente, sino porque
+no hay brecha entre relajación y coalición entera: el método húngaro
+\citep{kuhn1955Hungarian} y sus variantes de camino aumentante
+\citep{jonkerVolgenant1987Shortest,crouse2016Rectangular} explotan esa
+estructura, no la crean. Al introducir capacidades individuales deja de existir, en
+general, una representación por puestos equivalente, y la formulación ponderada
+resultante puede admitir soluciones fraccionarias.
+
+{\scriptsize
+\textbf{Tabla 3. Contrastes principales de N1.}\par
+\renewcommand{\arraystretch}{1.02}
+\begin{tabularx}{\linewidth}{@{}p{1.1cm}p{2.7cm}p{3.15cm}X@{}}
+\toprule
+&\textbf{Diseño}&\textbf{Estimando}&\textbf{Decisión}\\
+\midrule
+N1.E1&$5\times3\times3\times100$&ahorro frente a heurística voraz&LCB$_{95}>5\%$ + signo/Holm\\
+N1.E4&$2\times5\times30$, 5 perfiles&falso positivo / déficit&McNemar + GEE\\
+\bottomrule
+\end{tabularx}
+}
+La campaña conserva \NOneRows{} resultados.
+\setlength{\abovedisplayskip}{4.5pt}\setlength{\belowdisplayskip}{4.5pt}
+
+\newpage
+
+% ==========================================================================
+% N1 · evidencia decisiva
+% ==========================================================================
+\spheading{RESULTADOS SP1 · N1 · CONTRASTES PRINCIPALES}
+{Validez empírica de la reducción por cardinalidad}
+
+\begin{figure}[H]\centering
+\pdfpanel{.92\linewidth}{6.0cm}{assets/figures/n1/n1_quality_scenarios.pdf}
+{(a) N1.E1 · LSAP frente a heurística voraz}
+\par\vspace{.8mm}
+\pdfpanel{.92\linewidth}{6.0cm}{assets/figures/n1/n1_heterogeneity_boundary.pdf}
+{(b) N1.E4 · frontera de heterogeneidad}
+\caption{Los dos controles que delimitan N1. N1.E1 compara el LSAP con una heurística
+voraz sobre mundos pareados; N1.E4 localiza dónde contar AMR deja de representar
+la capacidad disponible.}
+\viuownsource
+\end{figure}
+
+El ahorro agregado de N1.E1 fue \NOneSavingPct\,\%
+(IC 95\,\%: \NOneSavingLowPct--\NOneSavingHighPct\,\%). Aleatorio,
+Agrupado y Pasillo superaron el margen práctico del 5\,\%; Separado y Anillo no.
+Aleatorizar el orden de la heurística voraz redujo la mediana agregada a
+\NOneOrderOverallPct\,\%. La ventaja medida depende de esa heurística y del orden en que recorre las
+cargas; no cabe leerla como superioridad general del LSAP.
+
+N1.E4 localiza la frontera del modelo. Se cuenta como falso positivo de
+factibilidad toda coalición aceptada por el modelo de cardinalidad que incumple
+la restricción real de capacidad agregada. Su proporción pasó de 0\,\% a
+\NOneLowFalsePct, \NOneModerateFalsePct, \NOneHighFalsePct{} y
+\NOneExtremeFalsePct\,\%. La GEE logística estimó
+$\beta_{\rm CV}=\NOneTrendSlope$ en escala logit
+(IC 95\,\%: \NOneTrendLow--\NOneTrendHigh). Cuando las capacidades dejan de ser
+intercambiables, N2 debe conservar la identidad y $c_i^{\rm pay}$ de cada AMR.
+
+\newpage
+
+% ==========================================================================
+% PÁGINA 6/20 · N2 teoría
+% ==========================================================================
+\spheading{RESULTADOS SP1 · N2 · MODELO Y RESULTADOS FORMALES}
+{N2: la coalición depende de quién participa}
+
+La formulación entera conserva la identidad de cada AMR:
+\begin{equation}
+\label{eq:n2-milp}
+\min_{y\in\{0,1\}^{N\times K}}\sum_{i,k}d_{ik}y_{ik},
+\qquad \sum_ky_{ik}\le1,\quad
+\sum_ic_i^{\mathrm{pay}}y_{ik}\ge m_k .
+\tag{6}
+\end{equation}
+
+\begin{n1prop}[N1 como caso particular de N2]
+Si $c_i^{\rm pay}=\bar c^{\rm pay}$, $d_{ik}>0$ y $\sum_kn_k\le N$, el óptimo
+de \eqref{eq:n2-milp} recluta exactamente $n_k$ AMR y coincide con el LSAP.
+\end{n1prop}
+
+\begin{n1obs}[Mismo entero, distinta relajación]
+Relajar \eqref{eq:n2-milp} permite cubrir la fracción
+$m_k/\bar c^{\rm pay}$; la formulación extendida por puestos sigue siendo integral.
+\end{n1obs}
+La observación es más fuerte de lo que parece y conviene leerla junto a
+\eqref{eq:n1-lp-integral}: la integralidad no depende de que las capacidades sean
+iguales, sino de que el problema pueda escribirse por puestos. La cobertura
+ponderada de \eqref{eq:n2-milp} ya es fraccionaria \emph{incluso con capacidades
+homogéneas} --- la brecha mediana medida en ese régimen fue
+\NTwoGapHomogeneousPct\,\% --- porque un AMR puede repartirse entre cuotas. La
+heterogeneidad no rompe la integralidad: rompe la posibilidad de construir los
+puestos que la producían.
+
+\begin{n1lema}[Capacidad agregada]
+$\sum_i c_i^{\rm pay}\ge\sum_km_k$ es necesaria, no suficiente.
+\end{n1lema}
+
+\begin{n1lema}[Relajación no realizable]
+Permitir $x_{ik}\in[0,1]$ puede reducir estrictamente el óptimo y volver factible
+una instancia sin solución atómica.
+\end{n1lema}
+
+La cobertura ponderada destruye, en general, la estructura de incidencia
+bipartita totalmente unimodular. No se afirma una reducción de la dureza del problema entero que no
+haya sido demostrada para esta formulación.
+
+\begin{center}
+\tikzpanel{.98\linewidth}{5.5cm}{figures/n2_model_boundary.tex}
+{Dos contraejemplos mínimos}
+\end{center}
+
+\newpage
+
+% ==========================================================================
+% PÁGINA 7/20 · N2 E1--E2
+% ==========================================================================
+\spheading{RESULTADOS SP1 · N2 · CONTRASTES PRINCIPALES}
+{Validación del oráculo y brecha de integralidad}
+
+\begin{figure}[H]\centering
+\pdfpanel{.92\linewidth}{6.0cm}{assets/figures/n2/n2_oracle_validation.pdf}
+{(a) N2.E1 · HiGHS frente a enumeración}
+\par\vspace{.8mm}
+\pdfpanel{.92\linewidth}{6.0cm}{assets/figures/n2/n2_atomicity.pdf}
+{(b) N2.E2 · LP frente a MILP}
+\caption{Comprobaciones centrales de N2. El oráculo entero se contrasta con
+enumeración en mundos pequeños; después se mide qué cambia al permitir AMR
+fraccionarios.}
+\viuownsource
+\end{figure}
+
+El oráculo entero se resolvió con HiGHS \citep{huangfuHall2018Highs}. Sobre
+\NTwoOracleRows{} mundos de N2.E1, de hasta
+\NTwoOracleMaxStates{} asignaciones, HiGHS y enumeración coincidieron en la
+clase de solución el \NTwoOracleAgreementPct\,\%; entre las
+\NTwoOracleComparable{} comparables el error máximo fue
+$\NTwoOracleMaxError$ m. El límite homogéneo reprodujo N1 en
+\NTwoHomogeneousRows{}/\NTwoHomogeneousRows{} mundos.
+
+El resultado cambia al relajar la atomicidad. En N2.E2, el LP fue fraccionario en
+el \NTwoFractionalAllPct\,\% de
+\NTwoAtomicityRows{} mundos. En los \NTwoAtomicityComparable{} pares resolubles,
+la brecha fue siempre positiva: mediana \NTwoGapPct\,\%
+(IC 95\,\%: \NTwoGapLowPct--\NTwoGapHighPct\,\%), P95
+\NTwoGapPninetyfivePct\,\%; en \NTwoLpOnlyCount{} mundos el LP fue factible y
+el MILP infactible. La solución continua puede servir como cota, pero no representa
+una coalición ejecutable.
+
+N1 y N2 comparten un supuesto que hasta aquí no se ha puesto en duda: existe un
+resolutor que observa simultáneamente todos los AMR y todas las cargas, y el
+coste de reunir esa información no se contabiliza. En planta ese supuesto exige un
+nodo central con estado completo y conectividad permanente con toda la flota. N3
+retira esa gratuidad y convierte la información en un recurso medido en bytes y en
+rondas.
+
+\newpage
+
+% ==========================================================================
+% PÁGINA 9/20 · N3 contrato y frontera teórica
+% ==========================================================================
+\spheading{RESULTADOS SP1 · N3 · CONTRATO DE INFORMACIÓN}
+{N3: localidad informativa sin coordinador global}
+
+Cada AMR conoce su capacidad y posición; cualquier dato de otro AMR debe
+cruzar una arista y queda contabilizado. El catálogo de cargas es público. El
+observador registra, pero no decide, detiene ni repara.
+
+\begin{center}
+\tikzpanelfit{.99\linewidth}{6.5cm}{figures/compact/fig14_n3_contract.tex}
+{Contrato vecinal heredado por N4}
+\end{center}
+
+Bajo ese contrato la factibilidad admite una verificación exacta a partir de dos
+agregados: el déficit de capacidad y el exceso de compromiso.
+
+\begin{n1prop}[Certificado de factibilidad]
+Con $D(y)=\sum_k[m_k-Q_k(y)]_+$ y $C(y)=\sum_i[\sum_ky_{ik}-1]_+$, la asignación
+$y$ es factible si y solo si $D(y)=C(y)=0$.
+\end{n1prop}
+
+El mismo contrato impone un límite que ninguna regla de decisión puede sortear.
+
+\begin{n1lema}[Indistinguibilidad local]
+Con un grafo permanentemente desconectado, ninguna política determinista basada
+solo en la vista de su componente garantiza el óptimo global en todas las
+instancias factibles.
+\end{n1lema}
+\proofsketch{Dos mundos pueden inducir idéntica vista en una componente y exigir
+decisiones opuestas para alcanzar el óptimo social.}
+
+Sobre este contrato se evaluaron \NThreeWorlds{} mundos con $N=16$ y $K=5$: el
+oráculo certificó \NThreeOracleCertified{} y demostró la infactibilidad de
+\NThreeOracleInfeasible.
+
+\newpage
+
+% ==========================================================================
+% PÁGINA 10/20 · N3 métodos y algoritmos
+% ==========================================================================
+\spheading{RESULTADOS SP1 · N3 · MÉTODOS}
+{CBBA-RB y Weighted-GRAPE}
+
+Ambos métodos adaptan familias distintas de decisión distribuida: la subasta con
+consenso de CBBA \citep{choiBrunetHow2009CBBA,johnson2011acbba} y la formación
+hedónica de GRAPE \citep{jangShinTsourdos2018GRAPE,dutta2021hedonic}. Lo propio
+aquí es la barrera de retorno y la cobertura ponderada por capacidad.
+
+\begin{figure}[H]\centering
+\tikzpanel{.96\linewidth}{4.75cm}{figures/compact/fig15_n3_cbba.tex}
+{(a) Capacity-CBBA-RB}
+\par\vspace{.5mm}
+\tikzpanel{.96\linewidth}{4.75cm}{figures/compact/fig16_n3_grape.tex}
+{(b) Weighted-GRAPE / Pair-GRAPE}
+\caption{Dos formas de distribuir la decisión. CBBA-RB conserva estado incremental;
+Weighted-GRAPE reconstruye un perfil común y paga esa información en tráfico.}
+\viuownsource
+\end{figure}
+
+\begin{minipage}[t]{.49\linewidth}
+{\scriptsize\textbf{Algoritmo 1. Capacity-CBBA-RB.}\par
+\begin{algorithmic}[1]
+\Require tabla local $R_i$, barreras $h_i[k]$, versión $v_i$
+\State recibir $(k,b,C,v,\tau)$ y descartar versiones antiguas
+\State fusionar ganadores por $(\Delta D,-d,-\tau)$
+\State reconstruir el prefijo de cada $k$ hasta cubrir $m_k$
+\If{$i$ queda fuera del prefijo de $k$}
+  \State $h_i[k]\gets\max\{h_i[k],b_{ik}\}$; liberar $k$
+\EndIf
+\State calcular $r_{ik}=[m_k-\sum_{j\in\widehat C_{ik}}c_j]_+$
+\If{$i$ está libre}
+  \State elegir $k^\star=\arg\max_k(\min\{c_i,r_{ik}\},-d_{ik},-\tau_i)$
+  \State pujar solo si $b_{ik^\star}>h_i[k^\star]$; elevar $v_i$
+\Else
+  \State conservar el registro vigente
+\EndIf
+\State difundir cambios; refresco completo cada $N$ activaciones
+\Ensure coalición candidata, versiones y bytes emitidos
+\end{algorithmic}}
+\end{minipage}\hfill
+\begin{minipage}[t]{.49\linewidth}
+{\scriptsize\textbf{Algoritmo 2. Weighted-/Pair-GRAPE.}\par
+\begin{algorithmic}[1]
+\Require perfil común $a$, fase $q\in\{0,1\}$, contador local
+\State intercambiar $(c_i,d_i[\cdot],v_i)$ y verificar el hash de $a$
+\State calcular la mejor desviación que reduzca $(D,J)$
+\State proponer $(\Delta D,\Delta J,i,a_i',v_i)$ o propuesta nula
+\For{$\ell=1,\ldots,N-2$}
+  \State inundar el máximo por orden total; reintentar hasta 4 veces
+\EndFor
+\State en $\ell=N-1$, aplicar una única propuesta en todos los nodos
+\State incrementar época y difundir versión y hash del perfil
+\If{no hay propuesta y $q=0$ en Pair-GRAPE}
+  \State fijar $q\gets1$; enumerar pares con un vecino
+\ElsIf{no hay propuesta}
+  \State terminar y verificar coincidencia de perfiles
+\Else
+  \State volver a la etapa de propuesta
+\EndIf
+\Ensure perfil terminal común o fallo operacional por desacuerdo
+\end{algorithmic}}
+\end{minipage}
+
+{\footnotesize La ventana sin cambios de CBBA-RB funciona como criterio operacional
+de parada; CBBA no transfiere aquí ninguna garantía. Weighted-GRAPE tiene mejora finita con entrega fiable:
+cada perfil aceptado reduce estrictamente $(D,J)$.}
+
+\newpage
+
+% ==========================================================================
+% PÁGINA 11/20 · N3 resultados
+% ==========================================================================
+\spheading{RESULTADOS SP1 · N3 · RESULTADOS}
+{Calidad, comunicación y conectividad}
+
+\begin{figure}[H]\centering
+\pdfpanel{.86\linewidth}{5.4cm}{assets/figures/n3/n3_quality.pdf}
+{(a) N3.E2 · factibilidad y brecha}
+\par\vspace{.3mm}
+\pdfpanel{.86\linewidth}{5.4cm}{assets/figures/n3/n3_locality.pdf}
+{(b) N3.E3 · topología y partición}
+\caption{N3. El soporte común evita comparar métodos solo en sus casos favorables;
+la partición permanente funciona como control negativo.}
+\viuownsource
+\end{figure}
+
+CBBA-RB fue factible en \NThreeFeasPctCbba\,\% de los mundos con solución;
+Weighted-GRAPE en \NThreeFeasPctGrape\,\% y Pair-GRAPE en
+\NThreeFeasPctPair\,\%. En el soporte común, las brechas medianas fueron
+\NThreeCommonGapPctCbba, \NThreeCommonGapPctGrape{} y
+\NThreeCommonGapPctPair\,\%
+($Q_{\rm Friedman}=\NThreeFriedmanQ$,
+$p_{\rm Friedman}=\NThreeFriedmanP$, $W=\NThreeKendallW$).
+
+La comunicación invirtió el orden: \NThreeBytesCbba{} bytes/AMR frente a
+\NThreeBytesGrape{} y \NThreeBytesPair. En partición, las variantes GRAPE
+terminaron con perfiles locales no coincidentes; su último perfil puede medirse
+\emph{post hoc}, pero no cuenta como éxito operacional.
+
+N4 conserva este contrato y cambia la pregunta. Los métodos de N3 revisan la
+asignación AMR a AMR, y cuando ninguno puede mejorar por su cuenta la dan por
+terminada. Eso no significa que sea buena: puede existir un intercambio entre dos
+AMR que reduzca el coste total y que ninguno de los dos alcance por separado,
+porque el primer paso de cualquiera de ellos empeora la cobertura. Esa es la
+barrera estratégica. N4 pregunta cuántos AMR deben revisar a la vez para
+superarla.
+
+\newpage
+
+% ==========================================================================
+% PÁGINA 12/20 · N4 problema, taxonomía y atlas
+% ==========================================================================
+\spheading{RESULTADOS SP1 · N4 · PROBLEMA Y TAXONOMÍA}
+{N4: localidad estratégica en reclutamiento atómico}
+
+La asignación entera $a$ debe cubrir toda carga activa:
+\begin{equation}
+\label{eq:n4-common-problem}
+\begin{gathered}
+a_i\in\{0,1,\ldots,K\},\quad
+Q_k(a)=\sum_i c_i^{\rm pay}\mathbf1\{a_i=k\},\\
+D_4(a)=\sum_{k\in\mathcal K_{\rm act}}[m_k-Q_k(a)]_+,\quad
+J_4(a)=\sum_{i:a_i\ne0}d_{i,a_i},\\
+D_4(a)=0,\qquad J_4(a)\to\min .
+\end{gathered}
+\tag{7}
+\end{equation}
+F-I (Geo-QPG atómico) es la propuesta principal: es la única familia que entrega
+directamente la variable entera del contrato de salida. F-II y F-III deciden en un
+espacio continuo y necesitan el cierre común $\mathcal R$; F-IV queda como frontera
+temporal.
+
+\begin{figure}[H]\centering
+\tikzpanelfit{.78\linewidth}{11.2cm}{figures/n4/n4_taxonomy.tex}
+{(a) Familias F-I--F-IV}
+\caption{Atlas N4: cuatro familias decisionales, su información compartida y el
+contrato físico común con SP2.}
+\viuownsource
+\end{figure}
+
+{\scriptsize
+\textbf{Tabla 4. Qué aporta y qué limita cada familia de N4.}\par
+\nopagebreak
+\renewcommand{\arraystretch}{1.0}
+\begin{tabularx}{\linewidth}{@{}p{.85cm}XXp{.95cm}@{}}
+\toprule
+&\textbf{Ventaja}&\textbf{Límite}&\textbf{Ev.}\\
+\midrule
+F-I&Decide la variable entera que recibe SP2; potencial exacto en desviaciones
+unilaterales y terminación demostrada.&Mínimo $h$-local, no global; la etiqueta exige
+búsqueda no truncada y aquí se truncó en $h=3$.&N4.E4, N4.E9\\
+F-II&Iteración de coste bajo sobre un campo común; compara cuatro dinámicas sin
+cambiar el objetivo.&El estado continuo no es una coalición y exige $\mathcal R$;
+tras el cierre el orden de mérito cambia en el 74,8\,\%.&N4.E7\\
+F-III&Cuotas como restricción compartida, con criterio de aceptación numérico
+explícito.&Las KKT motivan el objetivo vGNE sin demostrar convergencia de la
+discretización; depende de $\mathcal R$.&N4.E7\\
+F-IV&Añade llegadas y fallos en horizonte, más próximo a la operación real.&Banco
+reducido y oráculo con información futura: frontera declarada, no contraste
+válido.&piloto\\
+\bottomrule
+\end{tabularx}
+}
+
+\spheading{RESULTADOS SP1 · N4 · ATLAS UNILATERAL}
+{Reglas de revisión sobre una vecindad unilateral fija}
+
+\begin{figure}[H]\centering
+\tikzpanelfit{.98\linewidth}{11.2cm}{figures/n4/n4_algorithm_atlas_fi.tex}
+{(b) BR, Geo-ASR y Geo-LLL}
+\caption{Reglas de revisión unilateral de F-I. BR, Geo-ASR y Geo-LLL cambian la regla de
+selección, pero mantienen la misma vecindad unilateral $\mathcal V_1(a)$.}
+\viuownsource
+\end{figure}
+
+Sobre un mismo mundo, explorar o sortear una revisión produce un efecto distinto
+que coordinar dos o más AMR. Geo-LLL admite estados transitorios peores, y aun
+así una barrera bilateral sigue siendo inaccesible a cualquier mejora unilateral.
+
+\newpage
+
+\spheading{RESULTADOS SP1 · N4 · ATLAS COALICIONAL}
+{Revisiones coalicionales y concurrencia segura}
+
+\begin{figure}[H]\centering
+\tikzpanelfit{.98\linewidth}{11.2cm}{figures/n4/n4_algorithm_atlas_coalitional.tex}
+{(c) 2BR, C3 y DMIS+TX}
+\caption{Revisiones coalicionales de F-I. 2BR y C3 amplían el orden de la revisión;
+DMIS+TX conserva revisiones locales concurrentes mediante conflictos, versiones
+y confirmación transaccional.}
+\viuownsource
+\end{figure}
+
+La ampliación de $h$ cambia qué grupos pueden escapar de un terminal unilateral.
+DMIS+TX resuelve otro problema: permite concurrencia sin introducir un coordinador
+global de decisiones; no modifica la utilidad ni el orden estratégico $h$. El
+arbitraje reutiliza la selección distribuida de conjuntos independientes maximales
+\citep{luby1986MIS}.
+
+Un perfil continuo no es todavía una coalición, y una política temporal tampoco
+ejecuta transporte: el atlas equivalente para F-II--F-IV sobre este mismo mundo se
+recoge en el anexo, y sus formulaciones se desarrollan más adelante.
+
+\newpage
+
+% ==========================================================================
+% PÁGINA 13/20 · N4 F-I potencial, vecindad y revisión
+% ==========================================================================
+\spheading{RESULTADOS SP1 · N4 · F-I · POTENCIAL Y ORDEN}
+{Geo-QPG: mejora marginal y jerarquía $h$-local}
+
+Geo-QPG compara lexicográficamente:
+\begin{equation}
+\Psi_4(a)=\bigl(D_4(a),J_4(a)\bigr).
+\tag{8}
+\end{equation}
+Para una desviación unilateral $i:r\to s$:
+\begin{equation}
+\begin{aligned}
+\Delta_iD={}&[m_r-(Q_r-c_i^{\rm pay})]_+
++[m_s-(Q_s+c_i^{\rm pay})]_+\\[-1mm]
+&-[m_r-Q_r]_+-[m_s-Q_s]_+,\qquad
+\Delta_iJ=d_{is}-d_{ir}.
+\end{aligned}
+\tag{9}
+\end{equation}
+Definiendo $\Phi_Q=-D_4$ y $\Phi_G=-J_4$:
+\begin{equation}
+u_i^X(a)=\Phi_X(a)-\Phi_X(0,a_{-i}),\qquad X\in\{Q,G\}.
+\tag{10}
+\end{equation}
+La construcción instancia la de los juegos potenciales exactos
+\citep{monderer1996potential} sobre cuotas heterogéneas.
+\begin{n1prop}[Potencial exacto unilateral]
+Dentro de una misma fase, la diferencia de utilidad coincide exactamente con la
+diferencia de $\Phi_X$; para $h>1$ se habla de búsqueda coalicional finita.
+\end{n1prop}
+
+La vecindad estratégica es
+\begin{equation}
+\mathcal V_h(a)=\{a':1\le|\{i:a_i'\ne a_i\}|\le h\},
+\qquad
+\mathcal V_1\subseteq\mathcal V_2\subseteq\mathcal V_3 .
+\tag{11}
+\end{equation}
+Las reglas unilaterales ejecutadas fueron, con LLL en la forma log-lineal
+habitual \citep{mardenShamma2012LogLinear},
+\begin{equation}
+\begin{aligned}
+\mathrm{BR}:&\quad k^\star\in\arg\max_k g_i^X(k),\ g_i^X(k^\star)>0,\\
+\mathrm{ASR}:&\quad
+\Pr(k)=\frac{[g_i^X(k)]_+}{\sum_q[g_i^X(q)]_+},\\
+\mathrm{LLL}:&\quad
+\Pr(k)=\frac{e^{\beta u_i^X(k,a_{-i})}}{\sum_qe^{\beta u_i^X(q,a_{-i})}}.
+\end{aligned}
+\tag{12}
+\end{equation}
+
+\newpage
+
+\spheading{RESULTADOS SP1 · N4 · F-I · LECTURA LOCAL}
+{Agregados afectados, orden estratégico y revisión}
+
+\begin{figure}[H]\centering
+\tikzpanelfit{.98\linewidth}{6.8cm}{figures/n4/n4_marginal_move.tex}
+{(a) Suficiencia de agregados locales}
+\par\vspace{.5mm}
+\tikzpanelfit{.98\linewidth}{8.4cm}{figures/n4/n4_order_revision.tex}
+{(b) Orden $h$ frente a regla de revisión}
+\caption{F-I. La evaluación de una propuesta solo toca cargas afectadas; ampliar
+$h$ no es lo mismo que cambiar la regla de revisión.}
+\viuownsource
+\end{figure}
+
+\newpage
+
+% ==========================================================================
+% PÁGINA 14/20 · N4 barreras, refinamiento y commit
+% ==========================================================================
+\spheading{RESULTADOS SP1 · N4 · F-I · BARRERAS Y CONCURRENCIA}
+{Barrera bilateral, refinamiento y terminación}
+
+El orden mínimo general y el conectado medido en N4.E9 son:
+\begin{equation}
+h^\star(a)=\min\{h:\exists a'\in\mathcal V_h(a),\,
+\Psi_4(a')<_{\rm lex}\Psi_4(a)\}.
+\tag{13}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\mathcal V_h^{\rm c}(a)&=\{a'\in\mathcal V_h(a):
+G[\{i:a_i'\ne a_i\}]\ {\rm conexo}\},\\
+h_c^\star(a)&=\min\{h:\exists a'\in\mathcal V_h^{\rm c}(a),\
+\Psi_4(a')<_{\rm lex}\Psi_4(a)\}.
+\end{aligned}
+\tag{14}
+\end{equation}
+Una barrera bilateral suficiente satisface:
+\begin{equation}
+\label{eq:n4-bilateral-barrier-compact}
+\begin{gathered}
+Q_r-c_i^{\rm pay}<m_r,\quad Q_s-c_j^{\rm pay}<m_s,\\
+Q_r-c_i^{\rm pay}+c_j^{\rm pay}\ge m_r,\quad
+Q_s-c_j^{\rm pay}+c_i^{\rm pay}\ge m_s,\\
+d_{is}+d_{jr}<d_{ir}+d_{js}.
+\end{gathered}
+\tag{15}
+\end{equation}
+
+\begin{n1lema}[Barrera unilateral y escape bilateral]
+Bajo \eqref{eq:n4-bilateral-barrier-compact}, los movimientos individuales crean
+déficit y el intercambio mantiene cobertura con menor $J_4$.
+\end{n1lema}
+
+\begin{minipage}[t]{.49\linewidth}
+{\scriptsize\textbf{Algoritmo 3. Refinamiento progresivo.}
+\begin{algorithmic}[1]
+\For{$h=1,\ldots,h_{\max}$}
+\State aceptar mejoras estrictas de $\mathcal V_h$ hasta agotamiento o límite
+\EndFor
+\State \Return $a^{(h_{\max})}$
+\end{algorithmic}}
+\end{minipage}\hfill
+\begin{minipage}[t]{.49\linewidth}
+\begin{n1prop}[Terminación sin truncamiento]
+Si todos los candidatos se examinan y cada \emph{commit} reduce $\Psi_4$, el
+espacio finito termina en un mínimo $h$-local.
+\end{n1prop}
+\begin{n1prop}[Composición]
+Propuestas sin AMR ni carga compartidos suman sus variaciones; si todas mejoran,
+el lote también reduce $\Psi_4$.
+\end{n1prop}
+\end{minipage}
+
+{\scriptsize Asignación atómica = AMR indivisible; \emph{commit} atómico =
+escritura todo-o-nada. DMIS+TX elimina el orden global de confirmación y conserva
+el resto de la infraestructura lógica; pérdida, retardo, partición y fallos
+bizantinos quedan fuera.}
+
+\begin{tcolorbox}[
+  colback=VIUDark!3,colframe=VIUDark!55,boxrule=.6pt,arc=1mm,
+  left=2.6mm,right=2.6mm,top=1.6mm,bottom=1.6mm]
+{\footnotesize
+\textbf{Balance teórico de N4.}
+\textit{Demostrado:} potencial exacto en desviaciones unilaterales dentro de una fase
+(Prop.~4); terminación en mínimo $h$-local sin truncar candidatos (Prop.~5);
+composición de propuestas disjuntas (Prop.~6); suficiencia de
+\eqref{eq:n4-bilateral-barrier-compact} para una barrera unilateral con escape
+bilateral (Lema~5); certificado local de factibilidad (Prop.~3).
+\textit{Medido, no demostrado:} que el primer escape conectado sea bilateral en
+$1\,156$ de $1\,200$ mundos es una propiedad del banco con búsqueda truncada en
+$h=3$, no un teorema; la ventana sin cambios de CBBA-RB es un criterio de parada; el
+sobrecoste de DMIS+TX es nominal.
+\textit{No afirmado:} optimalidad global, reducción de dureza, ni convergencia global
+de la discretización de F-III.
+}
+\end{tcolorbox}
+
+\newpage
+
+\spheading{RESULTADOS SP1 · N4 · F-I · CONCURRENCIA}
+{Confirmación versionada de propuestas vecinales}
+
+\begin{figure}[H]\centering
+\tikzpanel{.90\linewidth}{5.5cm}{figures/n4/n4_barrier_refinement.tex}
+{(a) Barrera y refinamiento}
+\par\vspace{.4mm}
+\tikzpanel{.90\linewidth}{5.5cm}{figures/n4/n4_conflict_graph.tex}
+{(b) Grafo de conflictos}
+\par\vspace{.4mm}
+\tikzpanel{.90\linewidth}{5.5cm}{figures/n4/n4_tx_flow.tex}
+{(c) READ-DMIS-COMMIT}
+\caption{F-I. El orden local determina qué propuestas existen; DMIS+TX decide
+qué propuestas no conflictivas pueden confirmarse concurrentemente.}
+\viuownsource
+\end{figure}
+
+\newpage
+
+% ==========================================================================
+% PÁGINA 15/20 · F-II y F-III
+% ==========================================================================
+\spheading{RESULTADOS SP1 · N4 · F-II--F-III}
+{Relajaciones continuas y cierre atómico común}
+
+\begin{minipage}[t]{.49\linewidth}
+\textbf{F-II · dinámica poblacional}
+\citep{sandholm2010population,quijano2017population}.
+Con $x_i\in\Delta_i$, $r_k=[1-Q_k(x)/m_k]_+$:
+\begin{equation}
+\begin{aligned}
+\widetilde\Phi(x)&=-\frac{\alpha}{2}\sum_kr_k(x)^2
+-\frac{\beta}{N}\sum_{i,k}\bar d_{ik}x_{ik},\\[-1mm]
+F_{ik}&=\partial_{x_{ik}}\widetilde\Phi .
+\end{aligned}
+\tag{16}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\dot x_{ik}^{\rm Rep}&=x_{ik}(F_{ik}-\bar F_i),\\
+\dot x_{ik}^{\rm Smith}&=\sum_qx_{iq}[F_{ik}-F_{iq}]_+
+\\[-1mm]&\quad-x_{ik}\sum_q[F_{iq}-F_{ik}]_+,\\
+\dot x_{ik}^{\rm BNN}&=[F_{ik}-\bar F_i]_+
+\\[-1mm]&\quad-x_{ik}\sum_q[F_{iq}-\bar F_i]_+,\\
+\dot x_{ik}^{\rm Logit}&=
+\frac{e^{F_{ik}/\tau}}{\sum_qe^{F_{iq}/\tau}}-x_{ik}.
+\end{aligned}
+\tag{17}
+\end{equation}
+\end{minipage}\hfill
+\begin{minipage}[t]{.49\linewidth}
+\textbf{F-III · restricción compartida.}
+\begin{equation}
+\begin{aligned}
+g_k(x)&=1-\frac{Q_k(x)}{m_k}\le0,\\[-1mm]
+J_i&=\frac1N\sum_k\bar d_{ik}x_{ik}+\frac\epsilon2\|x_i\|^2 .
+\end{aligned}
+\tag{18}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\min_{x_i\in\Delta_i}\quad&J_i(x_i)\\[-1mm]
+\mathrm{s.a.}\quad&g(x)\le0,\qquad i=1,\ldots,N .
+\end{aligned}
+\tag{19}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\dot x_i&=\Pi_{T_{\Delta_i}}[-\nabla_{x_i}\mathcal L_i],\\[-1mm]
+\dot\lambda_k&=\Pi_{T_{\mathbb R_+}}[g_k(x)] .
+\end{aligned}
+\tag{20}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\dot\lambda_{ik}&=\Pi_{T_{\mathbb R_+}}
+\!\bigl[\widehat g_{ik}\\[-1mm]
+&\qquad-\gamma\!\sum_{j\in\mathcal N_i}
+(\lambda_{ik}-\lambda_{jk})\bigr].
+\end{aligned}
+\tag{21}
+\end{equation}
+\begin{equation}
+\begin{gathered}
+0\in\mathbf F(x^\star)+\nabla g(x^\star)^\top\lambda^\star
++N_{\mathcal X}(x^\star),\\
+g(x^\star)\le0,\ \lambda^\star\ge0,\ 
+{\lambda^\star}^{\!\top}g(x^\star)=0 .
+\end{gathered}
+\tag{22}
+\end{equation}
+\end{minipage}
+
+\begin{center}
+\tikzpanel{.82\linewidth}{3.8cm}{figures/n4/n4_population.tex}
+{(a) Estado continuo $\rightarrow\mathcal R(x^\star)$}
+\par\vspace{.4mm}
+\tikzpanel{.82\linewidth}{3.8cm}{figures/n4/n4_primal_dual.tex}
+{(b) Primal--dual orientado a vGNE}
+\end{center}
+
+El esquema primal-dual con consenso sobre multiplicadores sigue la línea de
+búsqueda de equilibrios generalizados de Nash \citep{yi2019operatorGNE}.
+F-II y F-III terminan con el mismo cierre central $\mathcal R$. La comparación cubre una intención distribuida seguida de recuperación atómica
+central, de modo que no describe una solución distribuida extremo a extremo. En F-III, las KKT motivan el objetivo
+vGNE; no se afirma convergencia global de la discretización.
+
+\newpage
+
+% ==========================================================================
+% PÁGINA 17/20 · F-I resultados E4/E9
+% ==========================================================================
+\spheading{RESULTADOS SP1 · N4 · F-I · E4}
+{Efecto del orden estratégico sobre la brecha}
+
+\begin{figure}[H]\centering
+\pdfpanel{.98\linewidth}{11.0cm}{assets/figures/n4-v2/n4_family_comparison.pdf}
+{N4.E4 · BR--2BR--C3 y coste de vecindad}
+\caption{Comparación confirmatoria de F-I. N4.E4 separa el efecto de la regla de
+revisión, el orden coalicional y la arquitectura de ejecución.}
+\viuownsource
+\end{figure}
+
+La brecha mediana cayó de 55,7\,\% (BR) a 14,8\,\% (2BR) y 3,2\,\% (C3); C3--BR fue
+$-49,2$ puntos (IC 95\,\%: $-53,1$ a $-45,9$). Cambiar solo la revisión unilateral
+(ASR/LLL) no reprodujo esa mejora: procede de ampliar qué revisiones conjuntas pueden
+aceptarse.
+
+{\scriptsize
+\textbf{Tabla 5. Familia F-I.} BR: $h=1$; 2BR: $h=2$; C3: $h=3$; Geo-ASR/LLL cambian
+revisión, no orden; CF conserva orden global de confirmación; DMIS+TX usa conflictos
+y versiones. La etiqueta $h$-local solo aplica si la búsqueda no se trunca.
+}
+
+N4.E4 muestra que ampliar el orden reduce la brecha; N4.E9 evalúa si esa mejora
+coincide con el orden mínimo conectado para abandonar el terminal BR.
+
+\newpage
+
+\spheading{RESULTADOS SP1 · N4 · F-I · E9}
+{Distribución del primer escape conectado}
+
+\begin{figure}[H]\centering
+\pdfpanel{.96\linewidth}{6.2cm}{assets/figures/n4-v4/n4_hstar_distribution.pdf}
+{(a) Distribución confirmatoria de $h_c^\star$}
+\par\vspace{.8mm}
+\pdfpanel{.96\linewidth}{6.2cm}{assets/figures/n4-v4/n4_hstar_ratio_sensitivity.pdf}
+{(b) Sensibilidad a la relación $N/K$}
+\caption{Orden mínimo del primer escape conectado tras agotar BR. La búsqueda se
+truncó en $h=3$ y la sensibilidad se reporta por relación $N/K$.}
+\viuownsource
+\end{figure}
+
+El primer escape conectado fue bilateral en 1\,156 de 1\,200 mundos (96,3\,\%) y
+trilateral en cuatro (0,3\,\%); en los 40 restantes (3,3\,\%) no se halló escape
+hasta $h=3$. La cifra indica en qué fracción de terminales BR ese primer escape fue
+bilateral; $h_c^\star$ localiza el primer orden en el que existe una mejora, y no
+mide su magnitud. El patrón es por tanto \emph{consistente} con que $h=2$ capture
+una parte importante de la mejora disponible, sin establecerlo por sí solo. N4.E4
+confirma esa asociación en el banco estudiado: la brecha cae 40,9 puntos entre BR y
+2BR y solo 11,6 más entre 2BR y C3. Ambas observaciones, tomadas juntas, sostienen
+$h=2$ como punto de operación de F-I dentro de este dominio.
+
+\newpage
+
+% ==========================================================================
+% N4 · mecanismo y arquitectura
+% ==========================================================================
+\spheading{RESULTADOS SP1 · N4 · MECANISMO Y ARQUITECTURA}
+{Relación entre orden de escape, mejora y coste de ejecución distribuida}
+
+\begin{figure}[H]\centering
+\pdfpanel{.90\linewidth}{4.2cm}{assets/figures/n4-v4/n4_hstar_gap_link.pdf}
+{(a) Orden conectado frente a mejora}
+\par\vspace{.6mm}
+\pdfpanel{.90\linewidth}{4.2cm}{assets/figures/n4-v4/n4_fi_representative_trace.pdf}
+{(b) Traza F-I}
+\par\vspace{.6mm}
+\pdfpanel{.90\linewidth}{4.2cm}{assets/figures/n4-v2/n4_architecture_ablation.pdf}
+{(c) CF frente a DMIS+TX}
+\caption{Mecanismo y arquitectura. La relación entre $h_c^\star$ y mejora se
+calcula sobre soporte común; la ablación separa el orden lógico de su ejecución
+distribuida.}
+\viuownsource
+\end{figure}
+
+La relación entre $h_c^\star$ y la mejora se calcula sobre los 1\,133 mundos en que
+BR produjo salida factible y las tres brechas quedan definidas. El filtro no es
+neutro: conserva 1\,128 de los 1\,156 terminales con $h_c^\star=2$ y los cuatro con
+$h_c^\star=3$, pero solo 1 de los 40 sin escape hasta $h=3$. Los mundos sin escape
+son precisamente aquellos en que BR no suele alcanzar factibilidad, así que el panel
+describe el subconjunto favorable, no el banco completo.
+
+Sobre ese soporte, 2BR aprovechó los escapes bilaterales y los cuatro casos con
+$h_c^\star=3$ necesitaron C3. La traza aclara además la prioridad lexicográfica:
+$J_4$ puede aumentar mientras todavía disminuye el déficit. Sustituir el orden global por DMIS+TX
+conservó factibilidad y brecha, con 1\,282 bytes/AMR de sobrecoste
+(IC 95\,\%: 1\,258--1\,318).
+
+\newpage
+
+% ==========================================================================
+% N4 · comparadores continuos
+% ==========================================================================
+\spheading{RESULTADOS SP1 · N4 · COMPARADORES CONTINUOS}
+{Efecto del cierre entero sobre el ordenamiento de las dinámicas continuas}
+
+\begin{figure}[H]\centering
+\pdfpanel{.94\linewidth}{6.8cm}{assets/figures/n4-v3/n4_fii_continuous_atomic.pdf}
+{(a) N4.E7 · F-II antes y después de $\mathcal R$}
+\par\vspace{.8mm}
+\pdfpanel{.94\linewidth}{6.8cm}{assets/figures/n4-v3/n4_fiii_residuals.pdf}
+{(b) N4.E7 · F-III: residual continuo y coalición cerrada}
+\caption{Comparadores continuos bajo el mismo cierre entero. Los bytes de F-II y
+F-III cubren la fase decisional y excluyen la operación central $\mathcal R$.}
+\viuownsource
+\end{figure}
+
+En F-II, la dinámica ganadora antes del cierre difirió de la ganadora después de
+$\mathcal R$ en 898 de 1\,200 mundos (74,8\,\%); el criterio compara únicamente el
+método mejor clasificado, no el ordenamiento completo. Las tasas enteras de las
+cuatro dinámicas quedaron entre 96,1 y 96,8\,\%. En F-III, el mecanismo
+primal-dual orientado a la búsqueda de vGNE cruzó el criterio conjunto en el
+91,9\,\% de los 1\,200 mundos. Tras el cierre, su variante distribuida fue
+factible en 1\,155 de los 1\,160 mundos que el oráculo declaró factibles y
+certificó (99,57\,\%), con brecha mediana del 9,04\,\% sobre esos 1\,155 casos.
+
+\newpage
+
+\spheading{RESULTADOS SP1 · LIMITACIONES Y TRAZABILIDAD}
+{Alcance de lo demostrado y correspondencia con las hipótesis}
+
+\textbf{Alcance físico.} SP1 decide coaliciones y termina al verificarlas: no evalúa
+transporte, reparto de \emph{wrench}, contacto ni dinámica de manipulación, y los
+mundos son planos y estáticos. Un reclutamiento verificado aquí no anticipa que el
+transporte correspondiente sea ejecutable; esa capa pertenece a SP2.
+
+\textbf{Supuestos de comunicación.} Todas las campañas suponen entrega fiable.
+Pérdida, retardo, partición transitoria y fallos bizantinos quedan fuera del modelo, y
+la partición permanente se empleó solo como control negativo en N3.E3. El sobrecoste
+de 1\,282 bytes/AMR atribuido a DMIS+TX es por tanto nominal y no acota lo que
+costaría bajo un canal degradado.
+
+\textbf{Alcance de las garantías.} Geo-QPG alcanza mínimos $h$-locales y no certifica
+optimalidad global. La búsqueda de N4.E9 se truncó en $h=3$, así que $h_c^\star$ es el
+primer escape conectado \emph{detectado}; el 96,3\,\% describe en qué fracción de
+terminales BR ese escape fue bilateral, no qué fracción del beneficio aportan los
+pares. El oráculo entero operó con límite de \NOneMilpTimeLimitSec\,s y dejó
+\NOneMilpUncertifiedCount{} de \NOneMilpAudits{} instancias sin certificar.
+
+\textbf{Alcance de los comparadores.} F-II y F-III dependen del cierre central
+$\mathcal R$ y los bytes informados lo excluyen: describen una intención distribuida
+con recuperación atómica común, no una solución extremo a extremo. F-IV es
+exploratoria y no sostiene comparación válida (banco menor, oráculo con información
+futura). La ventaja medida en N1.E1 queda condicionada a la heurística voraz
+empleada y al orden en que recorre las cargas.
+
+{\footnotesize Las configuraciones y semillas quedaron congeladas antes de la revisión
+editorial; guiones y configuraciones se recogen en el anexo de reproducibilidad.}
+
+\vspace{1mm}
+{\scriptsize
+\textbf{Tabla 6. Trazabilidad de SP1: pregunta, evidencia, resultado y límite.}\par
+\renewcommand{\arraystretch}{1.0}
+\begin{tabularx}{\linewidth}{@{}p{.5cm}p{1.6cm}p{.95cm}p{1.4cm}XX@{}}
+\toprule
+&\textbf{Pregunta}&\textbf{RQ/H}&\textbf{Evidencia}&\textbf{Resultado}&\textbf{Límite}\\
+\midrule
+N1&¿cuántos?&RQ1, H1&N1.E1, N1.E4&LP por puestos integral; cardinalidad exacta bajo
+homogeneidad&deja de representar la capacidad al crecer CV\\
+N2&¿quién?&RQ1, H1&N2.E1, N2.E2&la composición entera es necesaria; el LP no es
+ejecutable&certificación con límite temporal\\
+N3&¿quién decide?&RQ5, H1&N3.E2, N3.E3&calidad y comunicación se intercambian&canal
+fiable; conectividad condiciona el éxito\\
+N4&¿qué orden?&RQ1, H1&N4.E4, N4.E9&$h=2$ captura la mayor parte de la mejora&mínimo
+$h$-local; truncado en $h=3$\\
+\bottomrule
+\end{tabularx}
+\par\smallskip
+La evidencia respalda \textbf{H1} en el alcance declarado ---cobertura sin exceso
+persistente cuando la instancia es factible---, con la salvedad de que en N1 solo vale
+bajo homogeneidad. \textbf{H5} queda parcialmente abordada: se mide el coste
+comunicativo frente al oráculo, pero el escalado no forma parte de este capítulo.
+}
+
+\newpage
+
+% ==========================================================================
+% PÁGINA 20/20 · síntesis final
+% ==========================================================================
+\spheading{RESULTADOS SP1 · SÍNTESIS}
+{Síntesis, trazabilidad y contrato de salida de SP1}
+
+\begin{figure}[H]\centering
+\pdfpanel{.94\linewidth}{6.6cm}{assets/figures/n4-v3/n4_cross_family_pareto.pdf}
+{Calidad, comunicación y factibilidad}
+\caption{Síntesis transversal. Los métodos N3 y N4 se interpretan con la
+procedencia de campaña y frontera contable declaradas; $\mathcal R$ no se incluye
+en los bytes de F-II/F-III.}
+\viuownsource
+\end{figure}
+
+{\small\textbf{Contrato de salida.} SP1 entrega a SP2 únicamente una coalición entera
+cuya cobertura de capacidad ha sido verificada; las restantes ejecuciones se registran
+como no factibles.}
+
+\begin{tcolorbox}[
+  colback=VIUOrange!4,colframe=VIUOrange!80,boxrule=.7pt,arc=1mm,
+  left=3mm,right=3mm,top=2mm,bottom=2mm]
+\textbf{Conclusión de SP1.}
+La cardinalidad representa exactamente el caso homogéneo de N1, pero deja de ser
+suficiente cuando cada AMR aporta una capacidad distinta. N2 conserva entonces la
+composición entera, y N3 hace visible el coste informativo de decidir sin acceso
+global sin coste.
+
+La aportación principal aparece en N4. Dentro de la búsqueda truncada en $h=3$,
+1\,156 de 1\,200 terminales BR tuvieron un primer escape conectado bilateral.
+Ampliar el orden local redujo la brecha; DMIS+TX reemplazó la confirmación global
+por arbitraje vecinal a cambio de más tráfico. Los comparadores F-II/F-III también
+advierten que el ordenamiento continuo puede cambiar tras el cierre entero, mientras
+F-IV deja delimitada la extensión temporal.
+
+SP1 termina al verificar una coalición entera. El acoplamiento, el reparto de
+\emph{wrench}, la dinámica de transporte y el canal degradado pertenecen a SP2.
+\end{tcolorbox}
+
+\end{document}

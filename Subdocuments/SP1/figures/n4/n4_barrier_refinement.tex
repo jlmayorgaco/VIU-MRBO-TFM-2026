@@ -1,0 +1,49 @@
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,
+ panel/.style={draw=SPGrid,rounded corners=1mm,fill=SPFloor,
+  minimum width=2.55cm,minimum height=2.12cm,align=center,font=\scriptsize},
+ load/.style={draw=VIUOrange,rounded corners=.6mm,fill=VIUOrange!6,
+  minimum width=7mm,minimum height=5.5mm,font=\tiny},
+ rob/.style={circle,draw=SPBlue,fill=white,minimum size=5.3mm,font=\tiny},
+ good/.style={->,very thick,draw=SPGreen},bad/.style={->,thick,draw=SPRed,dashed}]
+\foreach \x/\name/\title in {-4.35/a/{A · bloqueado},-1.45/b/{B · intento unilateral},1.45/c/{C · propuesta bilateral},4.35/d/{D · perfil aceptado}}{
+  \node[panel] (\name) at (\x,.75) {};
+  % A \scriptsize los títulos medían más que el panel (2,55 cm) e invadían el vecino.
+  \node[font=\tiny\bfseries,anchor=north]
+    at ($(\name.center)+(0,.93)$) {\title};
+  \node[load] (\name-r) at ($(\name.center)+(-.65,-.35)$) {$r$};
+  \node[load] (\name-s) at ($(\name.center)+(.65,-.35)$) {$s$};
+}
+\node[rob] (ai) at ($(a.center)+(-.65,.35)$) {$i$};
+\node[rob] (aj) at ($(a.center)+(.65,.35)$) {$j$};
+\draw[->,thin,draw=SPBlue] (ai)--(a-r); \draw[->,thin,draw=SPBlue] (aj)--(a-s);
+\node[rob] (bi) at ($(b.center)+(-.65,.35)$) {$i$};
+\node[rob] (bj) at ($(b.center)+(.65,.35)$) {$j$};
+\draw[bad] (bi) to[bend left=18] (b-s);
+\node[font=\tiny,fill=white,inner sep=.7pt] at (-1.46,.76) {$D>0$};
+\draw[->,thin,draw=SPBlue] (bj)--(b-s);
+\node[rob] (ci) at ($(c.center)+(-.65,.35)$) {$i$};
+\node[rob] (cj) at ($(c.center)+(.65,.35)$) {$j$};
+\draw[good] (ci) to[bend left=18] (c-s);
+\draw[good] (cj) to[bend right=18] (c-r);
+\node[font=\tiny,text=SPGreen!80!black] at ($(c.center)+(0,-.83)$) {$\Delta D=0,\ \Delta J<0$};
+\node[rob] (di) at ($(d.center)+(.65,.35)$) {$i$};
+\node[rob] (dj) at ($(d.center)+(-.65,.35)$) {$j$};
+\draw[->,thin,draw=SPGreen] (di)--(d-s); \draw[->,thin,draw=SPGreen] (dj)--(d-r);
+\draw[->,thick,draw=black!50] (a.east)--(b.west);
+\draw[->,thick,draw=black!50] (b.east)--(c.west);
+\draw[->,thick,draw=black!50] (c.east)--(d.west);
+
+\node[draw=SPBlue!65,rounded corners=.8mm,fill=SPBlue!4,
+ minimum width=2.55cm,minimum height=.62cm,font=\scriptsize] (h1) at (-3.4,-1.25)
+ {$a^{(1)}$: agotar $h=1$};
+\node[draw=SPGreen!65,rounded corners=.8mm,fill=SPGreen!4,
+ minimum width=2.55cm,minimum height=.62cm,font=\scriptsize] (h2) at (0,-1.25)
+ {$a^{(2)}$: refinar con $h=2$};
+\node[draw=VIUOrange!75,rounded corners=.8mm,fill=VIUOrange!4,
+ minimum width=2.55cm,minimum height=.62cm,font=\scriptsize] (h3) at (3.4,-1.25)
+ {$a^{(3)}$: refinar con $h=3$};
+\draw[->,thick,draw=VIUOrange] (h1)--(h2);
+\draw[->,thick,draw=VIUOrange] (h2)--(h3);
+\node[font=\tiny,text=black!55] at (0,-1.98)
+ {$\Psi_4(a^{(3)})\leq_{\rm lex}\Psi_4(a^{(2)})\leq_{\rm lex}\Psi_4(a^{(1)})$ bajo mejora estricta y búsqueda justa};
+\end{tikzpicture}

@@ -1,0 +1,72 @@
+schema_version: sp1-n4-confirmatory-v1
+campaign_id: SP1_N4_ATOMIC_GEO_QPG_v1
+status: frozen_before_run
+created_utc: 2026-08-13
+
+# N3 is replayed only to place N4 on the already observed frontier.  The
+# inferential block uses a disjoint seed stream fixed here before execution.
+replay:
+  source_campaign: SP1_N3_DISTRIBUTED_BASELINES_v2
+  source_dir: scripts/results/sp1_levels/n3_v2
+  interpretation: descriptive_only
+
+confirmatory:
+  base_seed: 2026081401
+  q_bar_kg: 5.0
+  workspace_m: [100.0, 100.0]
+  capacity_cv: [0.00, 0.35, 0.65, 1.00]
+  pressure: [0.70, 0.85]
+  scenarios: [uniform, clustered, separated, ring, corridor]
+  seeds_per_cell: 30
+  robot_count: 16
+  load_count: 5
+  demand_split_alpha: 3.0
+  graph_regime: medium
+  oracle_time_limit_s: 30.0
+  max_rounds_qpg: 2048
+
+methods:
+  baselines: [capacity_cbba_rb, weighted_grape, weighted_pair_grape]
+  proposed: [geo_qpg_u, geo_qpg_p, geo_qpg_cf]
+  primary: geo_qpg_cf
+  comparator: weighted_grape
+
+protocol:
+  action_domain: atomic; one load or idle per robot
+  phase_q: accept only strict decreases of total capacity deficit
+  phase_g: after zero deficit, preserve zero deficit and strictly reduce distance
+  register: per-load aggregate capacity plus monotone version
+  commit: atomic compare-and-swap on all affected versions
+  delivery: reliable and ordered
+  parallel_rule: affected load sets must be disjoint
+  post_hoc_observer: measures and certifies; never repairs or selects a move
+
+hypotheses:
+  primary_joint:
+    id: H-N4.J
+    statement: >-
+      Geo-QPG-CF is noninferior to Weighted-GRAPE in feasibility within 0.02
+      and uses fewer bytes per agent on the same oracle-feasible worlds.
+    feasibility_margin: 0.02
+    feasibility_estimand: paired risk difference QPG-CF minus Weighted-GRAPE
+    communication_estimand: paired median difference in bytes per agent
+    success_rule: lower CI of risk difference >= -0.02 and upper CI of byte difference < 0
+  quality:
+    id: H-N4.Q
+    interpretation: secondary
+    estimand: MILP gap on worlds with certified optimum and all six methods feasible
+
+analysis:
+  confidence_level: 0.95
+  bootstrap_resamples: 4000
+  bootstrap_seed: 2026081499
+  independent_unit: world_seed
+  feasibility_denominator: oracle has an incumbent
+  gap_denominator: oracle certified optimum and all compared methods feasible
+  failures_and_timeouts: remain in denominator
+
+limitations:
+  - The terminal point is local to the admitted unilateral or neighbour-pair neighbourhood.
+  - A feasible MILP instance need not be reached by a strict-improvement path from idle.
+  - Atomic multi-register commit and reliable ordered broadcasts are protocol assumptions.
+  - No result in this campaign establishes transport, contact, physical safety or global optimality.

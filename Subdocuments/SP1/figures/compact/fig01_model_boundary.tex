@@ -1,0 +1,90 @@
+\begingroup
+		\pgfmathsetlengthmacro{\spxunitintro}{.90*\linewidth/13.5}
+		\begin{tikzpicture}[x=\spxunitintro,y=.90cm]
+			\spdrawarena{Asignación multi-robot: método húngaro por puestos frente a MILP heterogéneo}
+			\draw[draw=SPGrid,line width=0.8pt] (6.75,0.75) -- (6.75,4.65);
+			
+			\node[sptitle,fill=SPBlue!9,anchor=west] at (0.35,4.35)
+			{Robots homogéneos · método húngaro};
+			\node[spmuted,anchor=west] at (0.35,3.92)
+			{$c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$, pero $m_1\neq m_2$};
+			\draw[spcoalition] (0.45,1.66) rectangle (1.55,3.69);
+			\node[sprobot,minimum size=6.4mm,font=\tiny\bfseries]
+			(hr1) at (1.00,3.38) {$r_1$};
+			\node[sprobot,minimum size=6.4mm,font=\tiny\bfseries]
+			(hr2) at (1.00,2.70) {$r_2$};
+			\node[sprobot,minimum size=6.4mm,font=\tiny\bfseries]
+			(hr3) at (1.00,2.02) {$r_3$};
+			\node[sprobot,minimum size=6.4mm,font=\tiny\bfseries]
+			(hr4) at (1.00,1.25) {$r_4$};
+			% Etiqueta situada en el corredor libre entre las flechas y=3.38 e y=2.70,
+			% para no pisar el subtítulo del panel.
+			\node[spannotation] at (2.45,3.04) {coalición $k_1$};
+
+			\draw[spfootprint] (3.40,1.66) rectangle (6.62,3.69);
+			\node[spload,minimum width=0.62cm,minimum height=0.44cm,
+			inner sep=1pt,font=\tiny\bfseries]
+			(hs11) at (3.84,3.38) {$h_{11}$};
+			\node[spload,minimum width=0.62cm,minimum height=0.44cm,
+			inner sep=1pt,font=\tiny\bfseries]
+			(hs12) at (3.84,2.70) {$h_{12}$};
+			\node[spload,minimum width=0.62cm,minimum height=0.44cm,
+			inner sep=1pt,font=\tiny\bfseries]
+			(hs13) at (3.84,2.02) {$h_{13}$};
+			\node[splabel] at (5.48,2.70)
+			{\textbf{una carga $k_1$}\\demanda $m_1$\\$n_1=3$ puestos};
+
+			\draw[spfootprint] (3.40,0.94) rectangle (6.62,1.56);
+			\node[spload,minimum width=0.62cm,minimum height=0.42cm,
+			inner sep=1pt,font=\tiny\bfseries]
+			(hs21) at (3.84,1.25) {$h_{21}$};
+			\node[splabel] at (5.48,1.25)
+			{\textbf{carga $k_2$}: $n_2=1$};
+			
+			\draw[spassign] (hr1) -- (hs11);
+			\draw[spassign] (hr2) -- (hs12);
+			\draw[spassign] (hr3) -- (hs13);
+			\draw[spassign] (hr4) -- (hs21);
+			
+			\node[sptitle,fill=SPGreen!9,anchor=west] at (7.05,4.35)
+			{Robots y cargas heterogéneos · MILP};
+			\node[spmuted,anchor=west] at (7.05,3.92)
+			{$c^{\mathrm{pay}}=(1,1,2,2)$;\quad $m=(4,2)$};
+			\draw[spcoalition] (7.20,1.83) rectangle (8.20,3.72);
+			\node[sprobot,minimum size=5.4mm,font=\tiny\bfseries]
+			(gr1) at (7.70,3.42) {$1$};
+			\node[sprobot,minimum size=5.4mm,font=\tiny\bfseries]
+			(gr2) at (7.70,2.84) {$1$};
+			\node[sprobot,minimum size=7.2mm,font=\tiny\bfseries]
+			(gr3) at (7.70,2.20) {$2$};
+			\draw[spcoalitiongreen] (7.20,0.97) rectangle (8.20,1.62);
+			\node[sprobotgreen,minimum size=7.2mm,font=\tiny\bfseries]
+			(gr4) at (7.70,1.29) {$2$};
+			
+			\node[spload,minimum width=1.12cm,minimum height=0.64cm,
+			inner sep=1.2pt,font=\tiny\bfseries] (gk1)
+			at (11.78,2.88) {carga $k_1$\\demanda $4$};
+			\node[spload,minimum width=1.12cm,minimum height=0.64cm,
+			inner sep=1.2pt,font=\tiny\bfseries] (gk2)
+			at (11.78,1.29) {carga $k_2$\\demanda $2$};
+			
+			\draw[spassign] (gr1) -- (gk1);
+			\draw[spassign] (gr2) -- (gk1);
+			\draw[spassign] (gr3) -- (gk1);
+			\draw[spassign,draw=SPGreen] (gr4) -- (gk2);
+			\node[spannotation] at (9.72,3.48) {$1+1+2=4$};
+			\node[spannotation] at (9.72,1.70) {$2=2$};
+			% Separada del borde de la coalición y de la flecha gr3--gk1.
+			\node[spmuted] at (10.20,2.26) {coaliciones sin exceso};
+			
+			\draw[spassign] (0.35,0.34) -- (1.05,0.34);
+			\node[splegend,anchor=west,font=\fontsize{6.3}{6.9}\selectfont]
+			at (1.18,0.34) {asignación};
+			\draw[draw=SPGrid,line width=.4pt] (2.42,0.10) -- (2.42,0.58);
+			\node[splegend,anchor=center,font=\fontsize{6.3}{6.9}\selectfont]
+			at (5.15,0.34) {\textbf{Método húngaro:} $3$ puestos $\to k_1$; $1\to k_2$};
+			\draw[draw=SPGrid,line width=.4pt] (8.05,0.10) -- (8.05,0.58);
+			\node[splegend,anchor=center,font=\fontsize{6.3}{6.9}\selectfont]
+			at (10.42,0.34) {\textbf{MILP:} exceso $0$};
+		\end{tikzpicture}
+		\endgroup

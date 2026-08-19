@@ -1,0 +1,34 @@
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,
+ panel/.style={draw=SPGrid,rounded corners=1mm,fill=SPFloor,
+  text width=3.05cm,minimum height=1.70cm,align=center,font=\scriptsize},
+ rob/.style={circle,draw=SPBlue,fill=white,minimum size=5.2mm,font=\tiny},
+ load/.style={draw=VIUOrange,rounded corners=.6mm,fill=VIUOrange!5,
+  minimum width=6mm,minimum height=5mm,font=\tiny},
+ rule/.style={draw=SPGrid,rounded corners=1mm,text width=3.05cm,
+  minimum height=1.52cm,align=center,inner sep=1.6mm,font=\scriptsize}]
+\node[font=\footnotesize\bfseries,anchor=west] at (-5.25,2.15)
+ {A · orden estratégico: cuántos robots pueden cambiar juntos};
+\foreach \x/\title/\h in {-3.75/{BR}/1,0/{2BR}/2,3.75/{C3}/3}{
+  \node[panel] (p\h) at (\x,.95) {};
+  \node[font=\scriptsize\bfseries] at ($(p\h.center)+(0,.58)$) {\title\quad $h=\h$};
+  \node[load] at ($(p\h.center)+(-.9,-.48)$) {$k_1$};
+  \node[load] at ($(p\h.center)+(.9,-.48)$) {$k_2$};
+  \foreach \j in {1,...,3}{\node[rob] at ($(p\h.center)+(-.7+.7*\j,.08)$) {$\j$};}
+}
+\draw[very thick,draw=SPBlue] ($(p1.center)+(-.02,.08)$) circle (3.1mm);
+\draw[very thick,draw=SPGreen] ($(p2.center)+(.35,.08)$) ellipse (7.4mm and 3.6mm);
+\draw[very thick,draw=VIUOrange] ($(p3.center)+(.7,.08)$) ellipse (10.8mm and 3.6mm);
+\draw[->,thick,draw=VIUOrange] ($(p1.east)+(0,.48)$)--node[above,font=\tiny] {$\mathcal V_1(a)\subseteq\mathcal V_2(a)$}($(p2.west)+(0,.48)$);
+\draw[->,thick,draw=VIUOrange] ($(p2.east)+(0,.48)$)--node[above,font=\tiny] {$\mathcal V_2(a)\subseteq\mathcal V_3(a)$}($(p3.west)+(0,.48)$);
+
+\node[font=\footnotesize\bfseries,anchor=west] at (-5.25,-.40)
+ {B · regla de revisión: cómo se elige dentro de la misma $\mathcal V_1(a)$};
+\node[rule,draw=SPBlue!70,fill=SPBlue!4] (br) at (-3.75,-1.65)
+ {\textbf{BR}\\elige $\arg\max_k g_i(k)$\\si $g_i(k)>0$};
+\node[rule,draw=SPGreen!70,fill=SPGreen!4] (asr) at (0,-1.65)
+ {\textbf{Geo-ASR}\\sortea mejoras\\con peso $[g_i(k)]_+$};
+\node[rule,draw=VIUOrange!80,fill=VIUOrange!4] (lll) at (3.75,-1.65)
+ {\textbf{Geo-LLL}\\respuesta de Gibbs;\\admite peores\\transitorias};
+\node[font=\scriptsize,text=black!55] at (0,-2.72)
+ {cambiar la regla explora de otra forma; no aumenta el número de robots coordinados};
+\end{tikzpicture}

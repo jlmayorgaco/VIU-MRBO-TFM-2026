@@ -1,0 +1,901 @@
+"""Build and validate the VIU SP1 levels working document (N1--N4)."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import math
+import shutil
+import subprocess
+from pathlib import Path
+
+from pypdf import PdfReader
+
+from sp1_levels_common import (
+    LEVELS_OUTPUT_ROOT,
+    REPOSITORY_ROOT,
+    sha256_file,
+    write_json,
+)
+
+
+SOURCE_DIR = REPOSITORY_ROOT / "thesis" / "sp1_levels_23p"
+DEFAULT_OUTPUT_DIR = REPOSITORY_ROOT / "output" / "pdf" / "sp1_levels"
+ACTIVE_LEVEL_DIRS = {
+    "n1": "n1_v2",
+    "n2": "n2_v1",
+    "n3": "n3_v2",
+    "n4": "n4_v2",
+}
+EXPECTED_PAGES = 48
+
+
+def _read_json(path: Path) -> dict[str, object]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _tex_integer(value: object) -> str:
+    return f"{int(value):,}".replace(",", r"\,")
+
+
+def _tex_float(value: object, decimals: int = 3) -> str:
+    return f"{float(value):.{decimals}f}".replace(".", r"{,}")
+
+
+def _tex_scientific(value: object, decimals: int = 2) -> str:
+    numeric = float(value)
+    if numeric == 0.0:
+        return "0"
+    exponent = int(math.floor(math.log10(abs(numeric))))
+    mantissa = numeric / (10**exponent)
+    formatted = f"{mantissa:.{decimals}f}".replace(".", r"{,}")
+    return rf"{formatted} \times 10^{{{exponent}}}"
+
+
+def _tex_pvalue(value: object) -> str:
+    """A p-value never prints as 0,0000.
+
+    Below the resolution worth quoting it becomes an upper bound; otherwise it
+    is written in scientific notation with the exponent it actually has.
+    """
+
+    numeric = float(value)
+    if numeric <= 0.0 or numeric < 1e-300:
+        return r"<10^{-300}"
+    if numeric >= 1e-4:
+        return _tex_float(numeric, 4)
+    exponent = int(math.floor(math.log10(numeric)))
+    mantissa = numeric / (10**exponent)
+    return rf"{_tex_float(mantissa, 1)} \times 10^{{{exponent}}}"
+
+
+def _tex_text(value: object) -> str:
+    text = str(value)
+    for source, replacement in (
+        ("\\", r"\textbackslash{}"),
+        ("&", r"\&"),
+        ("%", r"\%"),
+        ("#", r"\#"),
+        ("_", r"\_"),
+    ):
+        text = text.replace(source, replacement)
+    return text
+
+
+def generate_metrics_tex() -> Path:
+    """Generate the N1 quantitative macros from processed artifacts."""
+
+    n1 = _read_json(LEVELS_OUTPUT_ROOT / "n1_v2" / "key_metrics.json")
+    n1_manifest = _read_json(LEVELS_OUTPUT_ROOT / "n1_v2" / "manifest.json")
+    n2 = _read_json(LEVELS_OUTPUT_ROOT / "n2_v1" / "key_metrics.json")
+    environment = n1_manifest["environment"]
+
+    macros = {
+        "NOneRows": _tex_integer(n1["raw_rows"]),
+        "NOneMaxN": _tex_integer(n1["max_n"]),
+        "NOneExponent": _tex_float(n1["solver_power_exponent"], 2),
+        "NOneRSquared": _tex_float(n1["solver_power_r_squared"], 3),
+        "NOneGreedyRatio": _tex_float(
+            n1["median_greedy_to_hungarian_ratio"], 3
+        ),
+        "NOneWorlds": _tex_integer(n1["independent_worlds"]),
+        "NOneQualityRows": _tex_integer(n1["quality_rows"]),
+        "NOneSavingPct": _tex_float(
+            100.0 * n1["overall_saving_median"], 2
+        ),
+        "NOneSavingLowPct": _tex_float(
+            100.0 * n1["overall_saving_ci_low"], 2
+        ),
+        "NOneSavingHighPct": _tex_float(
+            100.0 * n1["overall_saving_ci_high"], 2
+        ),
+        "NOneScenarioGates": _tex_integer(n1["scenario_gates_passed"]),
+        "NOneCellsPerScenario": _tex_integer(
+            n1["quality_cells_per_scenario"]
+        ),
+        "NOneUniformCellsAbove": _tex_integer(
+            n1["quality_uniform_cells_above_threshold"]
+        ),
+        "NOneClusteredCellsAbove": _tex_integer(
+            n1["quality_clustered_cells_above_threshold"]
+        ),
+        "NOneSeparatedCellsAbove": _tex_integer(
+            n1["quality_separated_cells_above_threshold"]
+        ),
+        "NOneRingCellsAbove": _tex_integer(
+            n1["quality_ring_cells_above_threshold"]
+        ),
+        "NOneCorridorCellsAbove": _tex_integer(
+            n1["quality_corridor_cells_above_threshold"]
+        ),
+        "NOneCorridorSmallExtremePct": _tex_float(
+            100.0 * n1["corridor_small_extreme_saving_median"], 2
+        ),
+        "NOneQualityPHolmBound": _tex_scientific(
+            n1["quality_supported_max_p_holm"]
+        ),
+        "NOneUniformSavingPct": _tex_float(
+            100.0 * n1["saving_uniform_median"], 2
+        ),
+        "NOneClusteredSavingPct": _tex_float(
+            100.0 * n1["saving_clustered_median"], 2
+        ),
+        "NOneSeparatedSavingPct": _tex_float(
+            100.0 * n1["saving_separated_median"], 2
+        ),
+        "NOneRingSavingPct": _tex_float(
+            100.0 * n1["saving_ring_median"], 2
+        ),
+        "NOneCorridorSavingPct": _tex_float(
+            100.0 * n1["saving_corridor_median"], 2
+        ),
+        "NOneExponentLow": _tex_float(n1["solver_power_ci_low"], 2),
+        "NOneExponentHigh": _tex_float(n1["solver_power_ci_high"], 2),
+        "NOneScalingPninetyfiveMs": _tex_float(
+            n1["balanced_p95_solver_ms_at_max_n"], 1
+        ),
+        "NOneScalingCompleted": _tex_integer(n1["scaling_completed_count"]),
+        "NOneScalingFailed": _tex_integer(n1["scaling_failed_count"]),
+        "NOneProcessor": _tex_text(
+            environment["processor"].replace("(R)", "").replace("(TM)", "")
+        ),
+        "NOneLogicalCPU": _tex_integer(environment["logical_cpu_count"]),
+        "NOnePythonVersion": _tex_text(environment["python"]),
+        "NOneSciPyVersion": _tex_text(environment["scipy"]),
+        "NOneFailureRows": _tex_integer(n1["failure_rows"]),
+        "NOneFailureWorlds": _tex_integer(n1["failure_independent_worlds"]),
+        "NOneFailureAgreementPct": _tex_float(
+            100.0 * n1["failure_theory_agreement_rate"], 1
+        ),
+        "NOneHeteroRows": _tex_integer(n1["heterogeneity_rows"]),
+        "NOneHeteroWorlds": _tex_integer(
+            n1["heterogeneity_independent_worlds"]
+        ),
+        "NOneLowFalsePct": _tex_float(
+            100.0 * n1["false_feasible_low_rate"], 1
+        ),
+        "NOneModerateFalsePct": _tex_float(
+            100.0 * n1["false_feasible_moderate_rate"], 1
+        ),
+        "NOneHighFalsePct": _tex_float(
+            100.0 * n1["false_feasible_high_rate"], 1
+        ),
+        "NOneExtremeFalsePct": _tex_float(
+            100.0 * n1["extreme_false_feasible_rate"], 1
+        ),
+        "NOneMilpCertifiedPct": _tex_float(
+            100.0 * n1["milp_certification_rate"], 2
+        ),
+        "NOneMilpAudits": _tex_integer(n1["milp_audit_count"]),
+        "NOneMilpFeasibleIncumbents": _tex_integer(
+            n1["milp_feasible_incumbent_count"]
+        ),
+        "NOneMilpCertifiedCount": _tex_integer(n1["milp_certified_count"]),
+        "NOneMilpUncertifiedCount": _tex_integer(
+            n1["milp_uncertified_count"]
+        ),
+        "NOneFalseFeasibleCount": _tex_integer(n1["false_feasible_count"]),
+        # Feasible repair and certified repair are separate counts on purpose.
+        "NOneMilpFeasibleAmongFalse": _tex_integer(
+            n1["milp_feasible_among_false_count"]
+        ),
+        "NOneMilpCertifiedAmongFalse": _tex_integer(
+            n1["milp_certified_among_false_count"]
+        ),
+        "NOneMilpUncertifiedFalseCount": _tex_integer(
+            n1["milp_uncertified_false_count"]
+        ),
+        "NOneMilpGapMinPct": _tex_float(
+            100.0 * n1["milp_uncertified_gap_min"], 2
+        ),
+        "NOneMilpGapMaxPct": _tex_float(
+            100.0 * n1["milp_uncertified_gap_max"], 2
+        ),
+        "NOneMilpTimeLimitSec": _tex_float(n1["milp_time_limit_s"], 0),
+        "NOneHeteroPHolmBound": _tex_scientific(
+            n1["heterogeneity_supported_max_p_holm"]
+        ),
+        "NOneHeteroContrastsSupported": _tex_integer(
+            n1["heterogeneity_contrasts_supported"]
+        ),
+        # E1 · relevancia práctica y control de orden del comparador.
+        "NOneShareUniform": _tex_float(
+            100.0 * n1["share_above_threshold_uniform"], 1
+        ),
+        "NOneShareClustered": _tex_float(
+            100.0 * n1["share_above_threshold_clustered"], 1
+        ),
+        "NOneShareCorridor": _tex_float(
+            100.0 * n1["share_above_threshold_corridor"], 1
+        ),
+        "NOneShareSeparated": _tex_float(
+            100.0 * n1["share_above_threshold_separated"], 1
+        ),
+        "NOneShareRing": _tex_float(100.0 * n1["share_above_threshold_ring"], 1),
+        "NOneOrderOverallPct": _tex_float(
+            100.0 * n1["quality_shuffled_order_overall_median"], 2
+        ),
+        "NOneOrderUniformPct": _tex_float(
+            100.0 * n1["shuffled_order_uniform_median"], 2
+        ),
+        "NOneOrderCorridorPct": _tex_float(
+            100.0 * n1["shuffled_order_corridor_median"], 2
+        ),
+        "NOneOrderCorridorLowPct": _tex_float(
+            100.0 * n1["shuffled_order_corridor_ci_low"], 2
+        ),
+        # E3 · resultado empírico posterior a la retirada.
+        "NOneFailureCostSharePct": _tex_float(
+            100.0 * n1["failure_cost_increase_share"], 1
+        ),
+        "NOneFailureCostRows": _tex_integer(n1["failure_cost_increase_rows"]),
+        "NOneMaxTestedFailureFraction": _tex_float(
+            n1["max_tested_failure_fraction"], 2
+        ),
+        "NOneFailureCostMaxPct": _tex_float(
+            100.0 * n1["failure_max_fraction_cost_median"], 1
+        ),
+        # E4 · severidad, tendencia y certificado de cardinalidad.
+        "NOneDeficitLowPct": _tex_float(100.0 * n1["deficit_low_median"], 1),
+        "NOneDeficitModeratePct": _tex_float(
+            100.0 * n1["deficit_moderate_median"], 1
+        ),
+        "NOneDeficitHighPct": _tex_float(100.0 * n1["deficit_high_median"], 1),
+        "NOneDeficitExtremePct": _tex_float(
+            100.0 * n1["deficit_extreme_median"], 1
+        ),
+        "NOneDeficitExtremeLowPct": _tex_float(
+            100.0 * n1["deficit_extreme_ci_low"], 1
+        ),
+        "NOneDeficitExtremeHighPct": _tex_float(
+            100.0 * n1["deficit_extreme_ci_high"], 1
+        ),
+        "NOneTrendSlope": _tex_float(n1["trend_slope"], 2),
+        "NOneTrendLow": _tex_float(n1["trend_ci_low"], 2),
+        "NOneTrendHigh": _tex_float(n1["trend_ci_high"], 2),
+        "NOneTrendOdds": _tex_float(n1["trend_odds_ratio_per_decile"], 2),
+        "NOneTrendClusters": _tex_integer(n1["trend_clusters"]),
+        "NOneTiebreakAgreementPct": _tex_float(
+            100.0 * n1["tiebreak_verdict_agreement"], 1
+        ),
+        "NOneCrossLoadTies": _tex_integer(n1["cross_load_cost_ties_total"]),
+        "NOneCertificateWorlds": _tex_integer(n1["certificate_worlds_count"]),
+        "NOneCertificateFalse": _tex_integer(
+            n1["certificate_false_feasible_count"]
+        ),
+        "NOneUncertifiedWorlds": _tex_integer(n1["uncertified_worlds_count"]),
+        "NOneUncertifiedFalse": _tex_integer(
+            n1["uncertified_false_feasible_count"]
+        ),
+        # ---------------- N2 ------------------------------------------------
+        "NTwoRows": _tex_integer(n2["raw_rows"]),
+        # E1 · oracle validation
+        "NTwoOracleRows": _tex_integer(n2["oracle_rows"]),
+        "NTwoOracleAgreementPct": _tex_float(
+            100.0 * n2["oracle_status_agreement"], 1
+        ),
+        "NTwoOracleDisagreements": _tex_integer(n2["oracle_status_disagreements"]),
+        "NTwoOracleComparable": _tex_integer(n2["oracle_comparable_rows"]),
+        "NTwoOracleInfeasible": _tex_integer(n2["oracle_infeasible_rows"]),
+        "NTwoOracleMaxError": _tex_scientific(n2["oracle_max_absolute_error"]),
+        "NTwoOracleMaxStates": _tex_integer(n2["oracle_max_states"]),
+        "NTwoHomogeneousRows": _tex_integer(n2["homogeneous_rows"]),
+        "NTwoHomogeneousAgreementPct": _tex_float(
+            100.0 * n2["homogeneous_feasibility_agreement"], 1
+        ),
+        "NTwoHomogeneousMaxError": _tex_scientific(
+            n2["homogeneous_max_distance_error"]
+        ),
+        "NTwoHomogeneousCardinality": _tex_integer(
+            n2["homogeneous_cardinality_matches"]
+        ),
+        # E2 · price of atomicity
+        "NTwoAtomicityRows": _tex_integer(n2["atomicity_rows"]),
+        "NTwoAtomicityComparable": _tex_integer(n2["atomicity_comparable_rows"]),
+        "NTwoGapPct": _tex_float(100.0 * n2["atomicity_gap_median"], 1),
+        "NTwoGapLowPct": _tex_float(100.0 * n2["atomicity_gap_ci_low"], 1),
+        "NTwoGapHighPct": _tex_float(100.0 * n2["atomicity_gap_ci_high"], 1),
+        "NTwoGapPninetyfivePct": _tex_float(100.0 * n2["atomicity_gap_p95"], 1),
+        "NTwoGapMaxPct": _tex_float(100.0 * n2["atomicity_gap_max"], 1),
+        "NTwoGapMinPct": _tex_float(100.0 * n2["atomicity_gap_min"], 1),
+        "NTwoFractionalPct": _tex_float(
+            100.0 * n2["atomicity_fractional_rate"], 1
+        ),
+        "NTwoFractionalLowPct": _tex_float(
+            100.0 * n2["atomicity_fractional_ci_low"], 1
+        ),
+        "NTwoNegativeGaps": _tex_integer(n2["atomicity_negative_gaps"]),
+        "NTwoStrictGapRows": _tex_integer(n2["atomicity_strict_gap_rows"]),
+        "NTwoLpOnlyCount": _tex_integer(
+            n2["atomicity_lp_feasible_milp_infeasible"]
+        ),
+        "NTwoLpOptimalRows": _tex_integer(n2["atomicity_lp_optimal_rows"]),
+        "NTwoOtherStatusRows": _tex_integer(n2["atomicity_other_status_rows"]),
+        "NTwoFractionalAllPct": _tex_float(
+            100.0 * n2["atomicity_fractional_over_all_lp"], 1
+        ),
+        "NTwoSpearman": _tex_float(n2["atomicity_cv_spearman"], 3),
+        "NTwoGapHomogeneousPct": _tex_float(
+            100.0 * n2["atomicity_gap_median_cv000"], 1
+        ),
+        "NTwoGapMidPct": _tex_float(100.0 * n2["atomicity_gap_median_cv035"], 1),
+        "NTwoGapExtremePct": _tex_float(
+            100.0 * n2["atomicity_gap_median_cv100"], 1
+        ),
+        # E3 · phase diagram
+        "NTwoPhaseRows": _tex_integer(n2["phase_rows"]),
+        "NTwoPhaseWorlds": _tex_integer(n2["phase_worlds"]),
+        "NTwoPhaseCensored": _tex_integer(n2["phase_censored"]),
+        "NTwoSlackRows": _tex_integer(n2["phase_slack_rows"]),
+        "NTwoSlackInfeasible": _tex_integer(n2["phase_slack_infeasible"]),
+        "NTwoSlackInfeasiblePct": _tex_float(
+            100.0 * n2["phase_slack_infeasible_rate"], 1
+        ),
+        "NTwoTrendCv": _tex_float(n2["phase_trend_cv"], 2),
+        "NTwoTrendCvLow": _tex_float(n2["phase_trend_cv_low"], 2),
+        "NTwoTrendCvHigh": _tex_float(n2["phase_trend_cv_high"], 2),
+        "NTwoTrendPressure": _tex_float(n2["phase_trend_pressure"], 1),
+        "NTwoTrendPressureLow": _tex_float(n2["phase_trend_pressure_low"], 1),
+        "NTwoTrendPressureHigh": _tex_float(n2["phase_trend_pressure_high"], 1),
+        "NTwoPhaseHomogeneousPct": _tex_float(
+            100.0 * n2["phase_homogeneous_feasible_rate"], 1
+        ),
+        "NTwoPhaseExtremePct": _tex_float(
+            100.0 * n2["phase_extreme_feasible_rate"], 1
+        ),
+        "NTwoBandHomogeneousPct": _tex_float(
+            100.0 * n2["phase_band_homogeneous_rate"], 1
+        ),
+        "NTwoBandMiddlePct": _tex_float(100.0 * n2["phase_band_middle_rate"], 1),
+        "NTwoBandExtremePct": _tex_float(
+            100.0 * n2["phase_band_extreme_rate"], 1
+        ),
+        "NTwoBandPairs": _tex_integer(n2["phase_band_pairs"]),
+        "NTwoBandMiddleCv": _tex_float(n2["phase_band_middle_level"], 2),
+        "NTwoBandMiddleOnly": _tex_integer(n2["phase_band_middle_only"]),
+        "NTwoBandExtremeOnly": _tex_integer(n2["phase_band_extreme_only"]),
+        "NTwoBandMcNemarP": _tex_float(n2["phase_band_mcnemar_p"], 4),
+        "NTwoPlateauLow": _tex_float(min(n2["phase_plateau_levels"]), 2),
+        "NTwoPlateauHigh": _tex_float(max(n2["phase_plateau_levels"]), 2),
+        # E4 · certification frontier
+        "NTwoCertRows": _tex_integer(n2["certification_rows"]),
+        "NTwoCertMinN": _tex_integer(n2["certification_min_n"]),
+        "NTwoCertMaxN": _tex_integer(n2["certification_max_n"]),
+        "NTwoIncumbentPct": _tex_float(
+            100.0 * n2["certification_incumbent_rate"], 1
+        ),
+        "NTwoCertNTwenty": _tex_float(100.0 * n2["certification_rate_n20"], 1),
+        "NTwoCertNForty": _tex_float(100.0 * n2["certification_rate_n40"], 1),
+        "NTwoCertNFifty": _tex_float(100.0 * n2["certification_rate_n50"], 1),
+        "NTwoCertNSixty": _tex_float(100.0 * n2["certification_rate_n60"], 1),
+        "NTwoCertNEighty": _tex_float(100.0 * n2["certification_rate_n80"], 1),
+        "NTwoCensoredRows": _tex_integer(n2["certification_censored_rows"]),
+        "NTwoGapCertMinPct": _tex_float(100.0 * n2["certification_gap_min"], 1),
+        "NTwoGapCertMedPct": _tex_float(
+            100.0 * n2["certification_gap_median"], 1
+        ),
+        "NTwoGapCertPninetyfivePct": _tex_float(
+            100.0 * n2["certification_gap_p95"], 1
+        ),
+        "NTwoGapCertMaxPct": _tex_float(100.0 * n2["certification_gap_max"], 1),
+    }
+
+    # ------------------------------------------------------------------ N3
+    n3 = _read_json(LEVELS_OUTPUT_ROOT / "n3_v2" / "key_metrics.json")
+    short = {
+        "capacity_cbba_rb": "Cbba",
+        "weighted_grape": "Grape",
+        "weighted_pair_grape": "Pair",
+    }
+    macros.update(
+        {
+            "NThreeWorlds": _tex_integer(n3["e2_worlds"]),
+            "NThreeRows": _tex_integer(n3["e2_rows"]),
+            "NThreeOracleFeasible": _tex_integer(n3["e2_oracle_feasible_worlds"]),
+            "NThreeOracleInfeasible": _tex_integer(n3["e2_oracle_infeasible_worlds"]),
+            "NThreeOracleCertified": _tex_integer(n3["e2_oracle_certified_worlds"]),
+            "NThreeFalseFeasible": _tex_integer(n3["e2_false_feasible_on_infeasible"]),
+            "NThreeCommonSupport": _tex_integer(n3["e2_common_support_worlds"]),
+            "NThreeCochranP": _tex_float(n3.get("e2_cochran_p", float("nan")), 4),
+            "NThreeFriedmanP": _tex_float(n3.get("e2_friedman_p", float("nan")), 4),
+            "NThreePartitionComponents": _tex_float(
+                n3["e3_partition_components_median"], 1
+            ),
+            "NThreeControlRateMaxPct": _tex_float(
+                100.0 * n3["e3_control_rate_max"], 1
+            ),
+            "NThreeConnectedRateMinPct": _tex_float(
+                100.0 * n3["e3_connected_rate_min"], 1
+            ),
+            "NThreeCyclesObserved": _tex_integer(n3["e2_cycle_observed"]),
+            "NThreeInconsistent": _tex_integer(n3["e2_inconsistent"]),
+        }
+    )
+    macros.update(
+        {
+            "NThreeCochranQ": _tex_float(n3["e2_cochran_q"], 1),
+            "NThreeCochranP": _tex_pvalue(n3["e2_cochran_p"]),
+            "NThreeFriedmanQ": _tex_float(n3["e2_friedman_stat"], 1),
+            "NThreeFriedmanP": _tex_pvalue(n3["e2_friedman_p"]),
+            "NThreeKendallW": _tex_float(
+                n3["e2_friedman_stat"]
+                / (n3["e2_common_support_worlds"] * (3 - 1)),
+                3,
+            ),
+            "NThreeMcNemarP": _tex_pvalue(
+                max(n3["e2_mcnemar_holm"]["capacity_cbba_rb|weighted_grape"],
+                    n3["e2_mcnemar_holm"]["capacity_cbba_rb|weighted_pair_grape"])
+            ),
+            "NThreeMcNemarPairP": _tex_float(
+                n3["e2_mcnemar_holm"]["weighted_grape|weighted_pair_grape"], 2
+            ),
+            "NThreeRatioBytesGrape": _tex_float(
+                n3["e2_ratio_bytes_per_agent_weighted_grape"], 2
+            ),
+            "NThreeRatioBytesPair": _tex_float(
+                n3["e2_ratio_bytes_per_agent_weighted_pair_grape"], 2
+            ),
+            "NThreeRatioMsgGrape": _tex_float(
+                n3["e2_ratio_messages_per_agent_weighted_grape"], 1
+            ),
+            "NThreeRatioMsgPair": _tex_float(
+                n3["e2_ratio_messages_per_agent_weighted_pair_grape"], 1
+            ),
+            "NThreeGrapeCertAgree": _tex_integer(n3["e3_cert_agree_weighted_grape"]),
+            "NThreeGrapeCertWorlds": _tex_integer(n3["e3_cert_worlds_weighted_grape"]),
+            "NThreeGrapeCostIdentical": _tex_integer(
+                n3["e3_cost_identical_weighted_grape"]
+            ),
+            "NThreePairCostIdentical": _tex_integer(
+                n3["e3_cost_identical_weighted_pair_grape"]
+            ),
+            "NThreePairMaxSpread": _tex_float(
+                n3["e3_cost_maxspread_weighted_pair_grape"], 1
+            ),
+        }
+    )
+    for regime in ("complete", "dense", "medium", "threshold"):
+        name = regime.capitalize()
+        macros[f"NThreeGap{name}Pair"] = _tex_float(
+            100.0 * n3[f"e3_gap_{regime}_weighted_pair_grape"], 1
+        )
+        macros[f"NThreeGap{name}Grape"] = _tex_float(
+            100.0 * n3[f"e3_gap_{regime}_weighted_grape"], 1
+        )
+    for left, right, tag in (
+        ("weighted_grape", "capacity_cbba_rb", "GrapeCbba"),
+        ("weighted_pair_grape", "capacity_cbba_rb", "PairCbba"),
+        ("weighted_pair_grape", "weighted_grape", "PairGrape"),
+    ):
+        key = f"{left}_minus_{right}"
+        macros[f"NThreeDiff{tag}Pct"] = _tex_float(
+            100.0 * n3[f"e2_feas_diff_{key}"], 2
+        )
+        macros[f"NThreeDiff{tag}LowPct"] = _tex_float(
+            100.0 * n3[f"e2_feas_diff_low_{key}"], 2
+        )
+        macros[f"NThreeDiff{tag}HighPct"] = _tex_float(
+            100.0 * n3[f"e2_feas_diff_high_{key}"], 2
+        )
+    for method, tag in short.items():
+        macros[f"NThreeFeasPct{tag}"] = _tex_float(
+            100.0 * n3[f"e2_feasible_rate_{method}"], 1
+        )
+        macros[f"NThreeGapPct{tag}"] = _tex_float(
+            100.0 * n3[f"e2_gap_median_{method}"], 1
+        )
+        macros[f"NThreeCommonGapPct{tag}"] = _tex_float(
+            100.0 * n3.get(f"e2_common_gap_median_{method}", float("nan")), 1
+        )
+        macros[f"NThreeBytes{tag}"] = _tex_integer(
+            round(n3[f"e2_bytes_per_agent_{method}"])
+        )
+        macros[f"NThreeRounds{tag}"] = _tex_integer(round(n3[f"e2_rounds_{method}"]))
+        for regime in ("complete", "medium", "threshold", "partitioned"):
+            key = f"e3_rate_{regime}_{method}"
+            if key in n3:
+                macros[f"NThree{regime.capitalize()}Pct{tag}"] = _tex_float(
+                    100.0 * n3[key], 1
+                )
+
+    # ------------------------------------------------------------------ N4
+    n4 = _read_json(LEVELS_OUTPUT_ROOT / "n4_v2" / "key_metrics.json")
+    n4_short = {
+        "capacity_cbba_rb": "Cbba",
+        "weighted_grape": "Grape",
+        "weighted_pair_grape": "PairGrape",
+        "geo_qpg_u": "QpgU",
+        "geo_qpg_smith": "Smith",
+        "geo_qpg_lll": "Lll",
+        "geo_qpg_p": "QpgP",
+        "geo_qpg_c3": "CThree",
+        "geo_qpg_cf": "QpgCf",
+        "geo_qpg_d": "QpgD",
+    }
+    family = n4["family_summary"]
+    contrasts = {
+        (row["left"], row["right"], row["metric"]): row
+        for row in n4["paired_contrasts"]
+    }
+    risks = {
+        (row["left"], row["right"]): row
+        for row in n4["risk_differences"]
+    }
+    c3_gap = contrasts[("geo_qpg_c3", "geo_qpg_u", "optimality_gap")]
+    smith_gap = contrasts[("geo_qpg_smith", "geo_qpg_u", "optimality_gap")]
+    lll_gap = contrasts[("geo_qpg_lll", "geo_qpg_u", "optimality_gap")]
+    d_gap = contrasts[("geo_qpg_d", "geo_qpg_cf", "optimality_gap")]
+    d_bytes = contrasts[("geo_qpg_d", "geo_qpg_cf", "bytes_per_agent")]
+    d_runtime = contrasts[("geo_qpg_d", "geo_qpg_cf", "runtime_ms")]
+    c3_risk = risks[("geo_qpg_c3", "geo_qpg_u")]
+    d_risk = risks[("geo_qpg_d", "geo_qpg_cf")]
+    scale_d = n4["scaling_fits"]["geo_qpg_d"]
+    scale_u = n4["scaling_fits"]["geo_qpg_u"]
+    scale_rows = {
+        (row["method"], int(row["N"])): row for row in n4["scaling_summary"]
+    }
+    pop_rows = {
+        (row["method"], int(row["n_robots"])): row
+        for row in n4["population_context"]
+    }
+    macros.update(
+        {
+            "NFourWorlds": _tex_integer(n4["family_worlds"]),
+            "NFourRows": _tex_integer(n4["family_rows"]),
+            "NFourCThreeGapDiffPct": _tex_float(100.0 * c3_gap["median_difference"], 1),
+            "NFourCThreeGapDiffLowPct": _tex_float(100.0 * c3_gap["ci_low"], 1),
+            "NFourCThreeGapDiffHighPct": _tex_float(100.0 * c3_gap["ci_high"], 1),
+            "NFourCThreeGapP": _tex_pvalue(c3_gap["wilcoxon_p"]),
+            "NFourCThreeRiskPct": _tex_float(100.0 * c3_risk["risk_difference"], 2),
+            "NFourCThreeRiskLowPct": _tex_float(100.0 * c3_risk["ci_low"], 2),
+            "NFourCThreeRiskHighPct": _tex_float(100.0 * c3_risk["ci_high"], 2),
+            "NFourSmithGapDiffPct": _tex_float(100.0 * smith_gap["median_difference"], 1),
+            "NFourLllGapDiffPct": _tex_float(100.0 * lll_gap["median_difference"], 1),
+            "NFourDGapDiffPct": _tex_float(100.0 * d_gap["median_difference"], 2),
+            "NFourDRiskPct": _tex_float(100.0 * d_risk["risk_difference"], 2),
+            "NFourDByteDiff": _tex_integer(round(d_bytes["median_difference"])),
+            "NFourDByteDiffLow": _tex_integer(round(d_bytes["ci_low"])),
+            "NFourDByteDiffHigh": _tex_integer(round(d_bytes["ci_high"])),
+            "NFourDRuntimeDiff": _tex_float(d_runtime["median_difference"], 1),
+            "NFourDpopWorlds": _tex_integer(n4["dpop"]["worlds"]),
+            "NFourDpopMatches": _tex_integer(n4["dpop"]["feasibility_matches"]),
+            "NFourDpopMaxError": _tex_scientific(n4["dpop"]["max_absolute_objective_error"], 2),
+            "NFourDpopMaxEntries": _tex_integer(n4["dpop"]["max_utility_entries"]),
+            "NFourDpopMaxBytes": _tex_integer(n4["dpop"]["max_payload_bytes"]),
+            "NFourScaleSlopeD": _tex_float(scale_d["runtime_ms_median"]["slope"], 2),
+            "NFourScaleSlopeDLow": _tex_float(scale_d["runtime_ms_median"]["ci_low"], 2),
+            "NFourScaleSlopeDHigh": _tex_float(scale_d["runtime_ms_median"]["ci_high"], 2),
+            "NFourScaleRSquaredD": _tex_float(scale_d["runtime_ms_median"]["r_squared"], 3),
+            "NFourScaleSlopeU": _tex_float(scale_u["runtime_ms_median"]["slope"], 2),
+            "NFourScaleSlopeULow": _tex_float(scale_u["runtime_ms_median"]["ci_low"], 2),
+            "NFourScaleSlopeUHigh": _tex_float(scale_u["runtime_ms_median"]["ci_high"], 2),
+            "NFourScaleRSquaredU": _tex_float(scale_u["runtime_ms_median"]["r_squared"], 3),
+            "NFourScaleRuntimeDMax": _tex_float(scale_rows[("geo_qpg_d", 64)]["runtime_ms_median"], 1),
+            "NFourScaleRuntimeUMax": _tex_float(scale_rows[("geo_qpg_u", 64)]["runtime_ms_median"], 1),
+            "NFourScaleBytesDMax": _tex_integer(round(scale_rows[("geo_qpg_d", 64)]["bytes_per_agent_median"])),
+            "NFourScaleBytesUMax": _tex_integer(round(scale_rows[("geo_qpg_u", 64)]["bytes_per_agent_median"])),
+            "NFourPopLogitHundredPct": _tex_float(100.0 * pop_rows[("Logit-D-annealed", 100)]["convergence_rate"], 1),
+            "NFourPopBnnHundredPct": _tex_float(100.0 * pop_rows[("BNN-D-preconditioned", 100)]["convergence_rate"], 1),
+            "NFourPopRepHundredPct": _tex_float(100.0 * pop_rows[("Replicator-D-preconditioned", 100)]["convergence_rate"], 1),
+            "NFourPopSmithHundredPct": _tex_float(100.0 * pop_rows[("Smith-D-preconditioned", 100)]["convergence_rate"], 1),
+        }
+    )
+    for method, tag in n4_short.items():
+        macros[f"NFourFeasPct{tag}"] = _tex_float(
+            100.0 * family[method]["feasibility"], 1
+        )
+        macros[f"NFourGapPct{tag}"] = _tex_float(
+            100.0 * family[method]["gap_median"], 1
+        )
+        macros[f"NFourBytes{tag}"] = _tex_integer(
+            round(family[method]["bytes_per_agent_median"])
+        )
+        macros[f"NFourRounds{tag}"] = _tex_integer(
+            round(family[method]["rounds_median"])
+        )
+        macros[f"NFourRuntime{tag}"] = _tex_float(
+            family[method]["runtime_ms_median"], 1
+        )
+    lines = [
+        "% Generated by scripts/build_sp1_levels_pdf.py; do not edit.",
+    ]
+    lines.extend(
+        rf"\newcommand{{\{name}}}{{{value}}}" for name, value in macros.items()
+    )
+    path = SOURCE_DIR / "generated" / "metrics.tex"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return path
+
+
+def _run_lualatex(output_dir: Path) -> Path:
+    executable = shutil.which("lualatex")
+    if executable is None:
+        raise RuntimeError("lualatex is required to build the VIU artifact.")
+    biber = shutil.which("biber")
+    if biber is None:
+        raise RuntimeError("biber is required to resolve the SP1 citations.")
+    # LuaLaTeX resolves a relative output directory from ``thesis/`` because
+    # that is the compilation working directory.  Resolve it here so the
+    # builder, Biber and the post-build checks all address the same artifact.
+    output_dir = output_dir.resolve()
+    command = [
+        executable,
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "-file-line-error",
+        "-jobname=SP1_levels_N1_N2_N3_N4",
+        f"-output-directory={output_dir}",
+        "sp1_levels_23p/main.tex",
+    ]
+    logs: list[str] = []
+
+    def run_latex(pass_index: int) -> None:
+        completed = subprocess.run(
+            command,
+            cwd=REPOSITORY_ROOT / "thesis",
+            text=True,
+            capture_output=True,
+            encoding="utf-8",
+            errors="replace",
+            check=False,
+        )
+        logs.append(
+            f"===== LuaLaTeX pass {pass_index} =====\n"
+            f"{completed.stdout}\n{completed.stderr}"
+        )
+        if completed.returncode != 0:
+            (output_dir / "build.log").write_text(
+                "\n".join(logs),
+                encoding="utf-8",
+            )
+            raise RuntimeError(
+                f"LuaLaTeX pass {pass_index} failed; see "
+                f"{output_dir / 'build.log'}."
+            )
+    run_latex(1)
+
+    biber_command = [
+        biber,
+        "--input-directory",
+        str(output_dir),
+        "--output-directory",
+        str(output_dir),
+        "SP1_levels_N1_N2_N3_N4",
+    ]
+    completed = subprocess.run(
+        biber_command,
+        cwd=REPOSITORY_ROOT / "thesis",
+        text=True,
+        capture_output=True,
+        encoding="utf-8",
+        errors="replace",
+        check=False,
+    )
+    logs.append(
+        "===== Biber =====\n"
+        f"{completed.stdout}\n{completed.stderr}"
+    )
+    if completed.returncode != 0:
+        (output_dir / "build.log").write_text(
+            "\n".join(logs),
+            encoding="utf-8",
+        )
+        raise RuntimeError(
+            f"Biber failed; see {output_dir / 'build.log'}."
+        )
+
+    run_latex(2)
+    run_latex(3)
+    (output_dir / "build.log").write_text(
+        "\n".join(logs),
+        encoding="utf-8",
+    )
+    built = output_dir / "SP1_levels_N1_N2_N3_N4.pdf"
+    if not built.is_file():
+        raise RuntimeError(
+            "LuaLaTeX completed without producing SP1_levels_N1_N2_N3_N4.pdf."
+        )
+    return built
+
+
+def _render_pdf(pdf_path: Path, render_dir: Path) -> int:
+    renderer = shutil.which("pdftoppm")
+    if renderer is None:
+        raise RuntimeError("pdftoppm is required for visual PDF validation.")
+    renderer_path = Path(renderer)
+    if renderer_path.suffix.lower() == ".cmd":
+        dependency_root = renderer_path.parents[2]
+        native_renderer = (
+            dependency_root
+            / "native"
+            / "poppler"
+            / "Library"
+            / "bin"
+            / "pdftoppm.exe"
+        )
+        if native_renderer.is_file():
+            renderer = str(native_renderer)
+    render_dir.mkdir(parents=True, exist_ok=True)
+    for stale_page in render_dir.glob("page-*.png"):
+        stale_page.unlink()
+    prefix = render_dir / "page"
+    completed = subprocess.run(
+        [
+            renderer,
+            "-png",
+            "-r",
+            "130",
+            str(pdf_path),
+            str(prefix),
+        ],
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if completed.returncode != 0:
+        raise RuntimeError(
+            f"pdftoppm failed: {completed.stdout}\n{completed.stderr}"
+        )
+    return len(list(render_dir.glob("page-*.png")))
+
+
+def verify_frozen_raw() -> dict[str, str]:
+    """Fail unless the RAW recorded in each manifest is still byte-identical.
+
+    This build never runs a solver: it only typesets numbers that the campaign
+    already produced. The check makes that contract enforceable, so a PDF can
+    never quote a figure computed from a campaign that has since been rerun.
+    """
+
+    digests: dict[str, str] = {}
+    for directory in ACTIVE_LEVEL_DIRS.values():
+        manifest_path = LEVELS_OUTPUT_ROOT / directory / "manifest.json"
+        manifest = _read_json(manifest_path)
+        frozen = manifest.get("frozen_raw")
+        if not frozen:
+            raise RuntimeError(
+                f"{manifest_path} has no frozen_raw section; rerun sp1_n1.py "
+                "so the campaign records the hashes its analysis used."
+            )
+        for name, record in frozen.items():  # type: ignore[union-attr]
+            path = REPOSITORY_ROOT / str(record["path"])
+            if not path.is_file():
+                raise FileNotFoundError(f"Frozen RAW is missing: {path}")
+            digest = sha256_file(path)
+            if digest != record["sha256"]:
+                raise RuntimeError(
+                    f"{path} changed since the analysis ran "
+                    f"({record['sha256'][:12]} -> {digest[:12]}). Rerun "
+                    "sp1_n1.py before rebuilding the PDF."
+                )
+            digests[f"{directory}/{name}"] = digest
+    return digests
+
+
+def build_pdf(output_dir: Path) -> dict[str, object]:
+    """Compile, enforce the page budget and render all pages."""
+
+    required = [
+        LEVELS_OUTPUT_ROOT / directory / "manifest.json"
+        for directory in ACTIVE_LEVEL_DIRS.values()
+    ]
+    missing = [str(path) for path in required if not path.is_file()]
+    if missing:
+        raise FileNotFoundError(
+            "Run sp1_n1.py first. Missing: "
+            + ", ".join(missing)
+        )
+    frozen_digests = verify_frozen_raw()
+    output_dir.mkdir(parents=True, exist_ok=True)
+    metrics_path = generate_metrics_tex()
+    built = _run_lualatex(output_dir)
+    final_pdf = output_dir / "SP1_levels_N1_N2_N3_N4.pdf"
+    if built.resolve() != final_pdf.resolve():
+        shutil.copy2(built, final_pdf)
+    reader = PdfReader(str(final_pdf))
+    page_count = len(reader.pages)
+    if page_count != EXPECTED_PAGES:
+        raise RuntimeError(
+            f"Expected exactly {EXPECTED_PAGES} pages, but the PDF has "
+            f"{page_count}."
+        )
+    rendered_pages = _render_pdf(final_pdf, output_dir / "rendered")
+    if rendered_pages != page_count:
+        raise RuntimeError(
+            f"Rendered {rendered_pages} pages for a {page_count}-page PDF."
+        )
+    manifest = {
+        "schema_version": "sp1-levels-pdf-v1",
+        "pdf": {
+            "path": final_pdf.relative_to(REPOSITORY_ROOT).as_posix(),
+            "bytes": final_pdf.stat().st_size,
+            "sha256": sha256_file(final_pdf),
+            "pages": page_count,
+            "rendered_pages": rendered_pages,
+        },
+        "page_budget": {
+            "introduction": 1,
+            "nomenclature_guide": 1,
+            "common_scenarios": 2,
+            "common_metrics_statistics": 2,
+            "N1": 6,
+            "N2": 6,
+            "N3": 8,
+            "N4": 22,
+        },
+        "style": {
+            "paper": "A4",
+            "font": "Arial 12 pt",
+            "line_spacing": 1.5,
+            "margins_cm": {
+                "top": 2.5,
+                "bottom": 2.5,
+                "left": 3.0,
+                "right": 3.0,
+            },
+            "source_style": "thesis/viu-mrob-thesis.sty",
+        },
+        "metrics_tex": {
+            "path": metrics_path.relative_to(REPOSITORY_ROOT).as_posix(),
+            "sha256": sha256_file(metrics_path),
+        },
+        "level_manifests": {
+            level.upper(): sha256_file(
+                LEVELS_OUTPUT_ROOT / directory / "manifest.json"
+            )
+            for level, directory in ACTIVE_LEVEL_DIRS.items()
+        },
+        # The campaign is upstream of this build; these are the exact RAW
+        # files the typeset numbers came from.
+        "frozen_raw_sha256": frozen_digests,
+        "runs_solvers": False,
+    }
+    write_json(output_dir / "manifest.json", manifest)
+    return manifest
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Build the exact 48-page VIU SP1 levels PDF (N1--N4)."
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=DEFAULT_OUTPUT_DIR,
+    )
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    manifest = build_pdf(args.output_dir)
+    print(
+        "SP1 levels PDF: "
+        f"{(REPOSITORY_ROOT / manifest['pdf']['path']).resolve()} "
+        f"({manifest['pdf']['pages']} pages)"
+    )
+
+
+if __name__ == "__main__":
+    main()

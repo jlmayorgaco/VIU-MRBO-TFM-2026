@@ -1,0 +1,215 @@
+{
+  "schema_version": "sp1-level-package-v1",
+  "level": "N1",
+  "description": "Confirmatory homogeneous Hungarian campaign: spatial quality, controlled scaling, static post-failure re-allocation and an out-of-domain heterogeneous-capacity audit.",
+  "generated_at_utc": "2026-08-16T01:02:49.584009+00:00",
+  "environment": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel(R) Core(TM) Ultra 9 185H",
+    "machine": "AMD64",
+    "logical_cpu_count": 22,
+    "pandas": "2.3.3",
+    "numpy": "2.3.5",
+    "matplotlib": "3.10.8",
+    "scipy": "1.16.3"
+  },
+  "git_commit": "aaf0034483928598f2d81c71624ba12d9548f4f0",
+  "git_tree_dirty": true,
+  "sources": [
+    {
+      "path": "experiments/configs/sp1_n1_confirmatory_v2.yaml",
+      "bytes": 2431,
+      "sha256": "73c426b0e39d4b6d76c274355cb5665cbc69d289402a2ff62bd91c167231c4b4"
+    },
+    {
+      "path": "scripts/sp1_n1.py",
+      "bytes": 115774,
+      "sha256": "48ed807cb4a6786c84128deabc5ac383f5c3d9d57b56caac3a70cfc159f25523"
+    },
+    {
+      "path": "scripts/sp1_levels_common.py",
+      "bytes": 15468,
+      "sha256": "409fda4e86b6d232d03320557b5281b986c5e89767319d3cc7cb87fb9ac0b427"
+    },
+    {
+      "path": "scripts/sp1_a1_hungarian.py",
+      "bytes": 150174,
+      "sha256": "b2b7e8b4fb4e8b7b043ca392800a8e4f8447ddad881fe3fc7010d15195c11db1"
+    },
+    {
+      "path": "scripts/sp1_a2_milp.py",
+      "bytes": 212684,
+      "sha256": "6328a7241c3f71af005cc9d9638cbe7370693a4ccc66a2ac5a0f8aa009699114"
+    },
+    {
+      "path": "scripts/results/sp1_levels/n1_v2/raw/quality_runs.csv",
+      "bytes": 1168266,
+      "sha256": "278a5570e2ff41c6ce34a5fe047af1095f9a0b1b2d26b5d85c3822861f115bff"
+    },
+    {
+      "path": "scripts/results/sp1_levels/n1_v2/raw/scaling_runs.csv",
+      "bytes": 70874,
+      "sha256": "e57816423f364dec4756f349d302bf4fa1a4543e2ca00ab09f524b852278817f"
+    },
+    {
+      "path": "scripts/results/sp1_levels/n1_v2/raw/failure_runs.csv",
+      "bytes": 876747,
+      "sha256": "0d4153ab8ebeefdb155596fea9c0b1d983799ddd3af7179779f190100df39297"
+    },
+    {
+      "path": "scripts/results/sp1_levels/n1_v2/raw/heterogeneity_runs.csv",
+      "bytes": 386216,
+      "sha256": "15ae1ebb67dbfeb46f046fd995db3bce3aa717f4af6b05a1d34adbe68de6a292"
+    }
+  ],
+  "frozen_raw": {
+    "failure": {
+      "path": "scripts/results/sp1_levels/n1_v2/raw/failure_runs.csv",
+      "bytes": 876747,
+      "sha256": "0d4153ab8ebeefdb155596fea9c0b1d983799ddd3af7179779f190100df39297"
+    },
+    "heterogeneity": {
+      "path": "scripts/results/sp1_levels/n1_v2/raw/heterogeneity_runs.csv",
+      "bytes": 386216,
+      "sha256": "15ae1ebb67dbfeb46f046fd995db3bce3aa717f4af6b05a1d34adbe68de6a292"
+    },
+    "quality": {
+      "path": "scripts/results/sp1_levels/n1_v2/raw/quality_runs.csv",
+      "bytes": 1168266,
+      "sha256": "278a5570e2ff41c6ce34a5fe047af1095f9a0b1b2d26b5d85c3822861f115bff"
+    },
+    "scaling": {
+      "path": "scripts/results/sp1_levels/n1_v2/raw/scaling_runs.csv",
+      "bytes": 70874,
+      "sha256": "e57816423f364dec4756f349d302bf4fa1a4543e2ca00ab09f524b852278817f"
+    }
+  },
+  "row_counts": {
+    "quality_runs": 4500,
+    "scaling_runs": 630,
+    "failure_runs": 6000,
+    "heterogeneity_runs": 1500,
+    "quality_summary": 5,
+    "quality_cell_diagnostic": 45,
+    "scaling_summary": 21,
+    "failure_summary": 20,
+    "heterogeneity_summary": 25,
+    "heterogeneity_contrasts": 4,
+    "heterogeneity_severity": 5
+  },
+  "claims": [
+    "Hungarian is exact for the homogeneous robot-slot reduction.",
+    "Its practical saving against sequential greedy is scenario dependent.",
+    "The measured runtime slope is descriptive and strictly positive in the tested interval.",
+    "Heterogeneous capacities create false-feasible slot assignments and motivate N2."
+  ],
+  "limitations": [
+    "Robot poses parameterize recruitment distance; physical transport is not simulated.",
+    "Failure recovery is a centralized static re-solve.",
+    "Log-log fits describe only the measured interval.",
+    "The heterogeneous MILP is an external validity auditor, not an N1 competitor."
+  ],
+  "artifacts": {
+    "figures/n1_central_scaling.pdf": {
+      "bytes": 58654,
+      "sha256": "d04b1c021199275dc55660b952bea471ea9a47569cb43d4dc8d2cd221441f92d"
+    },
+    "figures/n1_central_scaling.png": {
+      "bytes": 458811,
+      "sha256": "7d1fe6e86d66551a4d9effa86b63c8119d666991a3315ff4e91f65e8bc8d8b80"
+    },
+    "figures/n1_failure_recovery.pdf": {
+      "bytes": 52055,
+      "sha256": "03cc092f067608431f6247c25bb4d6313c143b6a4f5226d831381c37fc9f98ee"
+    },
+    "figures/n1_failure_recovery.png": {
+      "bytes": 302480,
+      "sha256": "22471c5cd991a1caf76d8fb4a3c10618314b4a6846398ee6130bd4241fdc2c5f"
+    },
+    "figures/n1_heterogeneity_boundary.pdf": {
+      "bytes": 60992,
+      "sha256": "54d3dd1929a262a83ec2d71e1c1d017b2280c1195c79cdc2a17fbd7ae7531ace"
+    },
+    "figures/n1_heterogeneity_boundary.png": {
+      "bytes": 318259,
+      "sha256": "25ce489a885ebac02fb278aace8ed6b3913d911da700c49ce76737281b4e6720"
+    },
+    "figures/n1_operating_envelope.pdf": {
+      "bytes": 65264,
+      "sha256": "3c242592b1f3e62e94b3d182a58184cefbd81178954db3ad50e7b496701ec4fa"
+    },
+    "figures/n1_operating_envelope.png": {
+      "bytes": 413548,
+      "sha256": "79d166f23617d78373e5187323a5e7baf37c062e99e8f86577fef939a33d8235"
+    },
+    "figures/n1_quality_scenarios.pdf": {
+      "bytes": 69008,
+      "sha256": "b3788bf387cd4203f669cffc11b137bf1024dd3a9b61aff10cf46519a4b3dce8"
+    },
+    "figures/n1_quality_scenarios.png": {
+      "bytes": 388695,
+      "sha256": "a67026a1be9bc3271a767d717c65cf9293df7428585659f72124ed0b04cdf72e"
+    },
+    "figures/n1_validity_boundary.pdf": {
+      "bytes": 66037,
+      "sha256": "4a7e94516d0d04d8c9a9b74dc988edef1f4d85f5b61d65c00ea3c1ab1de8beef"
+    },
+    "figures/n1_validity_boundary.png": {
+      "bytes": 406823,
+      "sha256": "417d6cad524563282d8385f7c11e20d0aa1bd0e0f84dcdb47b710cd63649ac7f"
+    },
+    "key_metrics.json": {
+      "bytes": 7319,
+      "sha256": "4c3be6611ea6e63a09c4db76099598eecfd5a97d250ef2f6789c3b1c4c8c8335"
+    },
+    "processed/failure_summary.csv": {
+      "bytes": 2578,
+      "sha256": "65002df2d82a7aad0f510bf2c9446083cd4abe0576876d74ffe263dcc92b62d9"
+    },
+    "processed/heterogeneity_contrasts.csv": {
+      "bytes": 396,
+      "sha256": "04517c626120664a5e5a76b2968792868d779d641499c3dac87ea4c7e9b6484d"
+    },
+    "processed/heterogeneity_severity.csv": {
+      "bytes": 860,
+      "sha256": "b6274e3a98e6363497dcbfcad58944dec21444115dc8ae1e2ecb4744e6295df5"
+    },
+    "processed/heterogeneity_summary.csv": {
+      "bytes": 5282,
+      "sha256": "d5875f1765c23f739d1a7afb9be2e81aa99eb89ebe9a9fed2662a1041266c3b0"
+    },
+    "processed/quality_cell_diagnostic.csv": {
+      "bytes": 3221,
+      "sha256": "902f17b88447fcba4367a633b3b78f79834370d4b63e6785937c8d22b644bcf4"
+    },
+    "processed/quality_scenario_summary.csv": {
+      "bytes": 2733,
+      "sha256": "102869a95b43e48f2ce88172bc515581365bf7478ecc678c4d378181e366f28e"
+    },
+    "processed/scaling_summary.csv": {
+      "bytes": 1657,
+      "sha256": "cdda024f18f98aaa760066c14d9a15ce355e7baa93207408c29c46ed489e8183"
+    },
+    "raw/failure_runs.csv": {
+      "bytes": 876747,
+      "sha256": "0d4153ab8ebeefdb155596fea9c0b1d983799ddd3af7179779f190100df39297"
+    },
+    "raw/heterogeneity_runs.csv": {
+      "bytes": 386216,
+      "sha256": "15ae1ebb67dbfeb46f046fd995db3bce3aa717f4af6b05a1d34adbe68de6a292"
+    },
+    "raw/quality_runs.csv": {
+      "bytes": 1168266,
+      "sha256": "278a5570e2ff41c6ce34a5fe047af1095f9a0b1b2d26b5d85c3822861f115bff"
+    },
+    "raw/scaling_runs.csv": {
+      "bytes": 70874,
+      "sha256": "e57816423f364dec4756f349d302bf4fa1a4543e2ca00ab09f524b852278817f"
+    },
+    "REPORT.md": {
+      "bytes": 1434,
+      "sha256": "7530101e69914cad81755106cad9d5e1a8c21f657a37e48ddcac5475dad39746"
+    }
+  }
+}

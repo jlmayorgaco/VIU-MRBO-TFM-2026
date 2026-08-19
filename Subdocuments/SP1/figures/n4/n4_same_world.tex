@@ -1,0 +1,35 @@
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,
+ panel/.style={draw=SPGrid,rounded corners=1mm,fill=SPFloor,
+  minimum width=5.15cm,minimum height=2.55cm,align=center,font=\scriptsize},
+ robot/.style={circle,draw=SPBlue,fill=white,minimum size=5mm,font=\tiny},
+ load/.style={draw=VIUOrange,rounded corners=.6mm,fill=VIUOrange!5,
+  minimum width=6.5mm,minimum height=5mm,font=\tiny},
+ arr/.style={->,thick,draw=VIUOrange}]
+\foreach \x/\y/\name/\title in {-2.8/1.55/f1/{F-I · entero},2.8/1.55/f2/{F-II · intención},-2.8/-1.35/f3/{F-III · precio},2.8/-1.35/f4/{F-IV · evento}}{
+  \node[panel] (\name) at (\x,\y) {};
+  \node[font=\scriptsize\bfseries,anchor=north west] at ($(\name.north west)+(.18,-.15)$) {\title};
+  \node[robot] (\name-r1) at ($(\name.center)+(-1.45,.35)$) {$1$};
+  \node[robot] (\name-r2) at ($(\name.center)+(-.15,.65)$) {$2$};
+  \node[robot] (\name-r3) at ($(\name.center)+(.15,-.45)$) {$3$};
+  \node[load] (\name-k1) at ($(\name.center)+(1.25,.35)$) {$k_1$};
+  \node[load] (\name-k2) at ($(\name.center)+(1.65,-.45)$) {$k_2$};
+}
+\draw[arr] (f1-r1)--(f1-k1); \draw[arr] (f1-r2)--(f1-k1); \draw[arr] (f1-r3)--(f1-k2);
+\node[font=\tiny,text=SPBlue] at ($(f1.center)+(0,-.92)$) {$a_i$ permanece indivisible};
+
+\draw[arr,dashed] (f2-r1)--node[pos=.25,above,sloped,fill=white,inner sep=.2mm,font=\tiny] {$0{,}7$}(f2-k1);
+\draw[arr,dashed] (f2-r1)--node[pos=.27,below,sloped,fill=white,inner sep=.2mm,font=\tiny] {$0{,}3$}(f2-k2);
+\draw[arr,dashed] (f2-r2)--(f2-k1); \draw[arr,dashed] (f2-r3)--(f2-k2);
+\node[font=\tiny,text=SPGreen!70!black] at ($(f2.center)+(0,-.92)$) {$x^\star\xrightarrow{\mathcal R}a$};
+
+\node[font=\tiny,text=SPPurple] at ($(f3-k1.north)+(0,.18)$) {$\lambda_1\uparrow$};
+\node[font=\tiny,text=SPPurple] at ($(f3-k2.north)+(0,.18)$) {$\lambda_2$};
+\draw[dashed,draw=SPPurple] (f3-r1)--(f3-r2)--(f3-r3);
+\draw[arr] (f3-r1)--(f3-k1); \draw[arr] (f3-r2)--(f3-k1); \draw[arr] (f3-r3)--(f3-k2);
+\node[font=\tiny,text=SPPurple] at ($(f3.center)+(0,-.92)$) {primal--dual $\rightarrow$ vGNE $\rightarrow\mathcal R$};
+
+\node[robot,draw=SPRed] (failed) at (f4-r2) {$\times$};
+\node[load,draw=SPRed,dashed] (new) at ($(f4.center)+(.70,-.45)$) {$k_3$};
+\draw[arr] (f4-r1)--(f4-k1); \draw[arr] (f4-r3)--(new);
+\node[font=\tiny,text=SPRed] at ($(f4.center)+(0,-1.02)$) {$t_0\rightarrow$ fallo/llegada $\rightarrow t_1$: nueva política};
+\end{tikzpicture}

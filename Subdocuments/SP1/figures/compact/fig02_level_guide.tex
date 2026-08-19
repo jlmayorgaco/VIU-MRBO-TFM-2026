@@ -1,0 +1,237 @@
+\begingroup
+		\pgfmathsetlengthmacro{\spxunitguide}{\linewidth/13.5}
+		\scalebox{1.00}{%
+			\begin{tikzpicture}[x=\spxunitguide,y=1.10cm]
+				\tikzset{
+					guideflow/.style={-{Latex[length=1.9mm]},draw=VIUDark!68,
+						line width=0.82pt,shorten >=2pt,shorten <=2pt},
+					guidewire/.style={draw=VIUDark!68,line width=0.82pt,
+						shorten >=2pt,shorten <=2pt},
+					guideblue/.style={-{Latex[length=1.7mm]},draw=SPBlue!82,
+						line width=0.72pt,shorten >=1.5pt,shorten <=1.5pt},
+					guidegreen/.style={-{Latex[length=1.7mm]},draw=SPGreen!88,
+						line width=0.76pt,shorten >=1.5pt,shorten <=1.5pt},
+					guidepurple/.style={-{Latex[length=1.7mm]},draw=SPPurple!88,
+						line width=0.76pt,shorten >=1.5pt,shorten <=1.5pt},
+					guideheader/.style={sptitle,text width=4.70cm,align=left,
+						inner xsep=6pt,inner ysep=3.2pt},
+					guidebadge/.style={sppanel,fill=white,align=center,
+						font=\fontsize{6.2}{7.2}\selectfont\bfseries,
+						inner xsep=5pt,inner ysep=3pt,minimum height=0.52cm},
+					guideflowlabel/.style={sppanel,fill=white,align=center,
+						font=\fontsize{6.2}{7.2}\selectfont\bfseries,
+						inner xsep=4pt,inner ysep=3pt},
+					guidechange/.style={sppanel,align=center,
+						font=\fontsize{5.9}{6.7}\selectfont\bfseries,
+						inner xsep=4pt,inner ysep=3.2pt,line width=0.75pt},
+					guideoutcome/.style={sppanel,fill=white,align=center,
+						font=\fontsize{6.0}{7.0}\selectfont,
+						inner xsep=6pt,inner ysep=3pt},
+					guidesum/.style={sppanel,fill=white,align=center,
+						font=\fontsize{6.0}{7.0}\selectfont\bfseries,
+						inner xsep=4pt,inner ysep=3pt},
+					guidemethod/.style={sppanel,fill=white,align=center,
+						inner xsep=5pt,inner ysep=4pt}
+				}
+				\fill[SPFloor] (0.01,0.10) rectangle (13.49,14.35);
+				\draw[sparena] (0.01,0.10) rectangle (13.49,14.35);
+				
+				\node[sppanel,fill=VIUDark,text=white,minimum width=11.6cm,
+				minimum height=0.78cm,font=\small\bfseries] at (6.75,13.83)
+				{SP1 \textbar\ evolución del reclutamiento: del oráculo global a la decisión vecinal};
+				
+				\node[sppanel,fill=SPBlue!4,minimum width=5.90cm,
+				minimum height=5.65cm] (n1) at (3.14,10.70) {};
+				\node[sppanel,fill=SPGreen!4,minimum width=5.90cm,
+				minimum height=5.65cm] (n2) at (10.36,10.70) {};
+				\node[sppanel,fill=SPPurple!4,minimum width=5.90cm,
+				minimum height=5.40cm] (n3) at (3.14,4.55) {};
+				\node[sppanel,fill=VIUOrange!4,minimum width=5.90cm,
+				minimum height=5.40cm] (n4) at (10.36,4.55) {};
+				
+				\node[guideheader,fill=SPBlue!13]
+				at (3.14,12.65) {N1 \textbar\ Cardinalidad};
+				\node[guideheader,fill=SPGreen!13]
+				at (10.36,12.65) {N2 \textbar\ Capacidad individual};
+				\node[guideheader,fill=SPPurple!13]
+				at (3.14,6.50) {N3 \textbar\ Localidad informativa};
+				\node[guideheader,fill=VIUOrange!15]
+				at (10.36,6.50) {N4 \textbar\ Localidad estratégica};
+				
+				\node[guidebadge,text width=1.32cm]
+				at (1.55,11.90) {HÚNGARO\\LSAP};
+				\node[guidebadge,text width=1.00cm]
+				at (4.73,11.90) {GLOBAL};
+				\node[guidebadge,text width=1.24cm]
+				at (8.75,11.90) {MILP\\HiGHS};
+				\node[guidebadge,text width=1.00cm]
+				at (11.98,11.90) {GLOBAL};
+				\node[guidebadge,text width=1.28cm]
+				at (1.55,5.78) {CBBA / GRAPE};
+				\node[guidebadge,text width=1.18cm]
+				at (4.73,5.78) {VECINAL};
+				\node[guidebadge,text width=1.46cm]
+				at (8.75,5.78) {POTENCIAL\\LOCAL};
+				\node[guidebadge,text width=1.18cm]
+				at (11.98,5.78) {VECINAL};
+				
+				% Cada cambio de nivel es un nodo del flujo: las líneas terminan en su borde.
+				\node[guidechange,fill=SPGreen!8,text width=1.12cm]
+				(change12) at (6.75,10.70)
+				{Añade\\capacidad\\individual};
+				\draw[guidewire] (n1.east) -- (change12.west);
+				\draw[guideflow] (change12.east) -- (n2.west);
+				
+				\node[guidechange,fill=white,text width=1.28cm]
+				(change23) at (6.75,7.65)
+				{Elimina\\coordinador\\global};
+				\draw[guidewire,rounded corners=3pt]
+				(n2.south) -- (10.36,7.65) -- (change23.east);
+				\draw[guideflow,rounded corners=3pt]
+				(change23.west) -- (3.14,7.65) -- (n3.north);
+				
+				\node[guidechange,fill=VIUOrange!9,text width=1.18cm]
+				(change34) at (6.75,4.55)
+				{Aumenta\\el orden\\local};
+				\draw[guidewire] (n3.east) -- (change34.west);
+				\draw[guideflow] (change34.east) -- (n4.west);
+				
+				% N1: cinco trayectorias paralelas; ninguna atraviesa otro robot o slot.
+				\node[sprobot,minimum size=4.8mm,font=\tiny\bfseries] (n1r1) at (1.20,11.20) {$1$};
+				\node[sprobot,minimum size=4.8mm,font=\tiny\bfseries] (n1r2) at (1.20,10.70) {$1$};
+				\node[sprobot,minimum size=4.8mm,font=\tiny\bfseries] (n1r3) at (1.20,10.20) {$1$};
+				\node[sprobot,minimum size=4.8mm,font=\tiny\bfseries] (n1r4) at (1.40,9.55) {$1$};
+				\node[sprobot,minimum size=4.8mm,font=\tiny\bfseries] (n1r5) at (1.40,9.05) {$1$};
+				\draw[spfootprint,fill=VIUOrange!4] (3.62,9.95) rectangle (4.78,11.46);
+				\node[spload,minimum width=4.0mm,minimum height=4.0mm,
+				inner sep=0pt] (n1s11) at (4.03,11.20) {};
+				\node[spload,minimum width=4.0mm,minimum height=4.0mm,
+				inner sep=0pt] (n1s12) at (4.03,10.70) {};
+				\node[spload,minimum width=4.0mm,minimum height=4.0mm,
+				inner sep=0pt] (n1s13) at (4.03,10.20) {};
+				\node[spannotation,anchor=west,inner xsep=3pt,inner ysep=2pt]
+				at (4.82,10.70) {$k_1$};
+				\draw[spfootprint,fill=VIUOrange!4] (3.62,8.78) rectangle (4.78,9.75);
+				\node[spload,minimum width=4.0mm,minimum height=4.0mm,
+				inner sep=0pt] (n1s21) at (4.03,9.55) {};
+				\node[spload,minimum width=4.0mm,minimum height=4.0mm,
+				inner sep=0pt] (n1s22) at (4.03,9.05) {};
+				\node[spannotation,anchor=west,inner xsep=3pt,inner ysep=2pt]
+				at (4.82,9.30) {$k_2$};
+				\draw[guideblue] (n1r1) -- (n1s11);
+				\draw[guideblue] (n1r2) -- (n1s12);
+				\draw[guideblue] (n1r3) -- (n1s13);
+				\draw[guideblue] (n1r4) -- (n1s21);
+				\draw[guideblue] (n1r5) -- (n1s22);
+				\node[guideoutcome,text width=4.05cm,minimum height=0.48cm]
+				at (3.14,8.48)
+				{\textcolor{SPBlue}{\textbf{EXACTO POR SLOTS}}};
+				
+				% N2: cada coalición se agrega antes de comprobar la demanda de la carga.
+				\draw[spcoalitiongreen] (7.90,10.34) rectangle (9.55,11.36);
+				\node[sprobotgreen,minimum size=4.8mm,font=\tiny\bfseries] (n2r1) at (8.20,10.83) {$1$};
+				\node[sprobotgreen,minimum size=4.8mm,font=\tiny\bfseries] (n2r2) at (8.75,10.83) {$1$};
+				\node[sprobotgreen,minimum size=6.0mm,font=\tiny\bfseries] (n2r3) at (9.25,10.83) {$2$};
+				\node[guidesum,text width=0.72cm,minimum height=0.48cm]
+				(n2sum1) at (10.35,10.83)
+				{$\sum c_i=4$};
+				\node[spload,minimum width=0.88cm,minimum height=0.50cm,
+				inner xsep=3pt,inner ysep=2.5pt,font=\tiny\bfseries]
+				(n2k1) at (11.90,10.83)
+				{$k_1$\; $m_1=4$};
+				\draw[guidegreen] (9.58,10.83) -- (n2sum1.west);
+				\draw[guidegreen] (n2sum1.east) -- (n2k1.west);
+				
+				\draw[spcoalitiongreen] (8.10,9.12) rectangle (9.30,9.88);
+				\node[sprobotgreen,minimum size=6.0mm,font=\tiny\bfseries] (n2r4) at (8.70,9.50) {$2$};
+				\node[guidesum,text width=0.72cm,minimum height=0.48cm]
+				(n2sum2) at (10.35,9.50)
+				{$\sum c_i=2$};
+				\node[spload,minimum width=0.88cm,minimum height=0.50cm,
+				inner xsep=3pt,inner ysep=2.5pt,font=\tiny\bfseries]
+				(n2k2) at (11.90,9.50)
+				{$k_2$\; $m_2=2$};
+				\draw[guidegreen] (9.33,9.50) -- (n2sum2.west);
+				\draw[guidegreen] (n2sum2.east) -- (n2k2.west);
+				\node[guideoutcome,text width=4.05cm,minimum height=0.48cm]
+				at (10.36,8.48)
+				{\textcolor{SPGreen}{\textbf{FACTIBLE; ÓPTIMO SI CERTIFICA}}};
+				
+				% N3: cada rama dispone de su propia columna y de un carril de entrada.
+				\node[sprobotpurple,minimum size=4.6mm] (n3r1) at (1.04,4.58) {};
+				\node[sprobotpurple,minimum size=4.6mm] (n3r2) at (1.46,5.05) {};
+				\node[sprobotpurple,minimum size=4.6mm] (n3r3) at (2.02,4.88) {};
+				\node[sprobotpurple,minimum size=4.6mm] (n3r4) at (1.26,3.98) {};
+				\node[sprobotpurple,minimum size=4.6mm] (n3r5) at (1.86,3.91) {};
+				\draw[spcomm,draw=SPPurple!75] (n3r1) -- (n3r2);
+				\draw[spcomm,draw=SPPurple!75] (n3r2) -- (n3r3);
+				\draw[spcomm,draw=SPPurple!75] (n3r1) -- (n3r4);
+				\draw[spcomm,draw=SPPurple!75] (n3r2) -- (n3r5);
+				\draw[spcomm,draw=SPPurple!75] (n3r3) -- (n3r5);
+				\draw[spcomm,draw=SPPurple!75] (n3r4) -- (n3r5);
+				\node[diamond,aspect=1.35,draw=SPPurple,fill=white,line width=0.75pt,
+				minimum size=4.4mm,inner sep=0pt] (n3split) at (2.62,4.97) {};
+				\draw[guidepurple] (n3r3.east) -- (n3split.west);
+				\node[sppanel,fill=white,text width=1.05cm,minimum height=0.70cm,
+				inner sep=2.5pt,align=center,
+				font=\fontsize{6.0}{7.0}\selectfont\bfseries] (n31) at (3.45,4.30)
+				{N3.1\\CBBA};
+				\node[sppanel,fill=white,text width=1.05cm,minimum height=0.70cm,
+				inner sep=2.5pt,align=center,
+				font=\fontsize{6.0}{7.0}\selectfont\bfseries] (n32) at (4.85,4.30)
+				{N3.2\\GRAPE};
+				\draw[guidepurple] (n3split.east) -- (n31.north west);
+				\draw[guidepurple,rounded corners=2pt]
+				(n3split.north) -- (2.62,5.27) -- (4.85,5.27) -- (n32.north);
+				\node[guideoutcome,fill=SPPurple!8,text width=3.52cm,
+				minimum height=0.68cm] (n3out) at (4.12,3.00)
+				{\textcolor{SPPurple}{\textbf{ATÓMICO $\rightarrow$\\VERIFICADO \emph{POST HOC}}}};
+				\draw[guidepurple] (n31.south) -- (n31.south |- n3out.north);
+				\draw[guidepurple] (n32.south) -- (n32.south |- n3out.north);
+				
+				% N4: señal, decisión y coalición se leen sobre un único eje horizontal.
+				\node[sprobotgreen,minimum size=4.8mm] (n4r1) at (8.05,4.63) {};
+				\node[sprobotgreen,minimum size=4.8mm] (n4r2) at (8.55,5.13) {};
+				\node[sprobotgreen,minimum size=4.8mm] (n4r3) at (9.05,4.63) {};
+				\node[sprobotgreen,minimum size=4.8mm] (n4r4) at (8.55,3.93) {};
+				\draw[spcomm,draw=SPGreen!75] (n4r1) -- (n4r2);
+				\draw[spcomm,draw=SPGreen!75] (n4r2) -- (n4r3);
+				\draw[spcomm,draw=SPGreen!75] (n4r1) -- (n4r4);
+				\draw[spcomm,draw=SPGreen!75] (n4r3) -- (n4r4);
+				\node[spannotation,inner xsep=4pt,inner ysep=2pt]
+				at (8.55,3.37) {señal $\Delta\Psi_4$};
+				\node[guidemethod,text width=1.05cm,minimum height=0.76cm,
+				font=\scriptsize\bfseries] (n4phi) at (10.30,4.63)
+				{$\Phi\!\uparrow$\\Geo-QPG};
+				\draw[guidegreen] (n4r3.east) -- (n4phi.west);
+				
+				\draw[spcoalitiongreen] (11.45,3.87) rectangle (12.75,5.30);
+				\node[spload,minimum width=0.62cm,minimum height=0.50cm,
+				inner sep=1pt,font=\tiny\bfseries] (n4load) at (12.10,4.63) {$k$};
+				\node[sprobotgreen,minimum size=4.7mm] (n4c1) at (11.75,5.00) {};
+				\node[sprobotgreen,minimum size=4.7mm] (n4c2) at (12.45,5.00) {};
+				\node[sprobotgreen,minimum size=4.7mm] (n4c3) at (12.10,4.13) {};
+				\draw[spassign,draw=VIUOrange] (n4c1) -- (n4load);
+				\draw[spassign,draw=VIUOrange] (n4c2) -- (n4load);
+				\draw[spassign,draw=VIUOrange] (n4c3) -- (n4load);
+				\draw[guidegreen] (n4phi.east) -- (11.40,4.63);
+				\node[guideoutcome,fill=VIUOrange!12,text width=1.54cm,
+				minimum height=0.48cm,font=\fontsize{6.0}{7.0}\selectfont\bfseries]
+				at (12.10,3.33) {COMMIT\\VERSIONADO};
+				\node[guideoutcome,text width=4.05cm,minimum height=0.48cm]
+				at (10.36,2.55)
+				{transporte físico $\rightarrow$ SP2};
+				
+				% Notación en cuatro módulos alineados, sin una frase corrida de extremo a extremo.
+				\draw[splegendbox,fill=white] (0.42,0.35) rectangle (13.08,1.25);
+				\node[font=\scriptsize\bfseries\sffamily] at (2.15,0.80)
+				{SP1.N3.1 / SP1.N3.2};
+				\draw[draw=SPGrid,line width=0.55pt] (4.22,0.49) -- (4.22,1.11);
+				\node[font=\scriptsize\sffamily] at (5.67,0.80)
+				{\textbf{SP1} = subproblema};
+				\node[font=\scriptsize\sffamily] at (8.43,0.80)
+				{\textbf{N3} = nivel};
+				\node[font=\scriptsize\sffamily] at (11.20,0.80)
+				{\textbf{.1/.2} = rama de método};
+		\end{tikzpicture}}
+		\endgroup

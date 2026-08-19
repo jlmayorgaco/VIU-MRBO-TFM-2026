@@ -1,0 +1,50 @@
+\begingroup
+		\pgfmathsetlengthmacro{\spxunitc}{\linewidth/13.5}
+		\scalebox{0.98}{%
+			\begin{tikzpicture}[x=\spxunitc,y=0.88cm]
+				\tikzset{
+					cstage/.style={draw=SPGrid!85,fill=SPFloor!45,line width=0.55pt,rounded corners=1.2pt},
+					cbarbox/.style={draw=VIUOrange!60,fill=VIUOrange!07,line width=0.7pt,rounded corners=1.2pt},
+					cttl/.style={font=\fontsize{8.0}{9.0}\selectfont\sffamily\bfseries,anchor=north west},
+					clab/.style={font=\fontsize{7.2}{8.1}\selectfont\sffamily,anchor=north west},
+					cflow/.style={-{Latex[length=2.0mm]},draw=VIUDark!70,line width=0.9pt},
+					cbar/.style={-{Latex[length=2.0mm]},draw=VIUOrange,line width=1.0pt},
+					ctag/.style={font=\fontsize{6.9}{7.6}\selectfont\sffamily,text=VIUOrange},
+				}
+				% fila superior: los cuatro pasos de la adaptación multi-ganador
+				\draw[cstage] (0.05,2.70) rectangle (3.20,5.45);
+				\node[cttl] at (0.25,5.30) {1 · Estimar};
+				\node[clab] at (0.25,4.70) {De la tabla local:};
+				\node[clab] at (0.25,4.30) {$r_{ik}=[m_k-\!\!\sum\limits_{j\in\widehat C_{ik}}\!\! c_j]_+$};
+				\node[clab] at (0.25,3.40) {déficit que falta en $k$};
+				\draw[cstage] (3.55,2.70) rectangle (6.70,5.45);
+				\node[cttl] at (3.75,5.30) {2 · Pujar};
+				\node[clab] at (3.75,4.72) {$\Delta D_{ik}=\min\{c_i,r_{ik}\}$};
+				\node[clab] at (3.75,4.22) {$b_{ik}=(\Delta D_{ik},-d_{ik},-\tau_i)$};
+				\node[clab] at (3.75,3.62) {solo si $b_{ik}>$ barrera$_i[k]$};
+				\draw[cstage] (7.05,2.70) rectangle (10.20,5.45);
+				\node[cttl] at (7.25,5.30) {3 · Consenso};
+				\node[clab] at (7.25,4.72) {difundir los registros};
+				\node[clab] at (7.25,4.29) {con versión nueva;};
+				\node[clab] at (7.25,3.86) {aceptar solo versión mayor;};
+				\node[clab] at (7.25,3.43) {refresco completo cada $N$};
+				\draw[cstage] (10.55,2.70) rectangle (13.45,5.45);
+				\node[cttl] at (10.75,5.30) {4 · Prefijo};
+				\node[clab] at (10.75,4.72) {ordenar por puja y acumular};
+				\node[clab] at (10.75,4.29) {hasta cubrir $m_k$; lo que};
+				\node[clab] at (10.75,3.86) {sobra es redundante};
+				\node[clab] at (10.75,3.43) {y libera};
+				\draw[cflow] (3.20,4.30) -- (3.55,4.30);
+				\draw[cflow] (6.70,4.30) -- (7.05,4.30);
+				\draw[cflow] (10.20,4.30) -- (10.55,4.30);
+				% corredor libre entre filas: el lazo que cierra el ciclo
+				\draw[cbar] (12.00,2.70) -- (12.00,2.42) -- (1.62,2.42) -- (1.62,2.70);
+				\node[ctag,fill=white,inner sep=1.3pt] at (10.75,2.42) {desplazado};
+				\node[ctag,fill=white,inner sep=1.3pt] at (3.35,2.42) {vuelve a estimar};
+				% fila inferior: la barrera, a ancho completo para que su texto quepa
+				\draw[cbarbox] (0.05,0.10) rectangle (13.45,2.12);
+				\node[cttl,text=VIUOrange] at (0.25,2.00) {Barrera de retorno · lo que N3 añade};
+				\node[clab] at (0.25,1.35) {Si $i$ queda fuera del prefijo de $k$: \ barrera$_i[k]\leftarrow\max\{$barrera$_i[k],\,b_{ik}\}$ \ y libera el compromiso.};
+				\node[clab] at (0.25,0.85) {Solo vuelve a $k$ con una puja estrictamente mejor; así se evita repetir el ciclo.};
+		\end{tikzpicture}}
+		\endgroup

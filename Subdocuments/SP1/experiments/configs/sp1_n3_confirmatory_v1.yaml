@@ -1,0 +1,136 @@
+schema_version: sp1-n3-confirmatory-v1
+campaign_id: SP1_N3_DISTRIBUTED_BASELINES_v1
+status: frozen_before_run
+created_utc: 2026-08-09
+base_seed: 2026080901
+
+# N3 keeps the frozen N2 problem and removes only the coordinator. Worlds are
+# therefore N2 worlds: the generator is replayed from the same seed stream and
+# a regression test proves capacities, demands and distances byte-identical.
+# What changes is who may know what, never the problem being solved.
+q_bar_kg: 5.0
+workspace_m: [100.0, 100.0]
+
+generator:
+  capacity_distribution: lognormal_renormalized
+  demand_split_alpha: 3.0
+  source: sp1_n2_confirmatory.make_world  # replayed, not reimplemented
+
+# The frozen N2 objective. No penalty weights: GRAPE orders candidates
+# lexicographically by (deficit, distance), so nothing needs tuning and the
+# problem solved stays exactly N2's.
+objective:
+  lambda_excess: 0.0
+  lambda_robot: 0.0
+
+# The information contract, inherited unchanged by N4.
+contract:
+  name: distributed decision, globally announced tasks, neighbour-only robot state
+  load_catalog: announced to every robot at t=0, immutable
+  own_state: capacity and position, private
+  other_robot_state: only via counted messages over edges of G
+  global_robot_table: forbidden
+  milp_at_runtime: forbidden
+  central_repair: forbidden
+  public_constants: [n_robots, n_loads, max_rounds]
+  hidden_from_algorithms: [adjacency, diameter, lambda_2, rounds_remaining, global_profile]
+  observer: records metrics only; never decides, stops or repairs
+  rounds: synchronous; a message emitted at t cannot influence any decision before t+1
+
+methods:
+  - capacity_cbba_rb       # multi-winner, deficit bid, frozen commitment, return barrier
+  - weighted_grape         # epoch-serialized lexicographic improvement
+  - weighted_pair_grape    # sensitivity: general joint deviations with a neighbour
+
+# Graph regimes are chosen on connectivity metrics alone. r_c is the largest
+# edge of the Euclidean MST, i.e. the exact R-disk connectivity threshold.
+graph:
+  kind: r_disk
+  regimes:
+    complete: null
+    dense: 2.00
+    medium: 1.50
+    threshold: 1.05
+    partitioned: 0.95   # negative control; never in the connected Pareto front
+
+hypotheses:
+  locality:
+    id: H-N3.L
+    alternative: >-
+      each step function reads only its own state, its own edge list, the
+      announced catalogue and delivered messages
+    test: structural assertions on RobotView plus the E1 invariant battery
+  feasibility:
+    id: H-N3.F
+    alternative: >-
+      distributed baselines reach a strictly feasible atomic partition less
+      often than the central oracle on the same worlds
+    test: >-
+      P(raw_feasible | oracle feasible) per method, Wilson intervals, and
+      Cochran Q across the three methods followed by McNemar-Holm pairs
+  quality:
+    id: H-N3.Q
+    alternative: >-
+      where a baseline is feasible and the oracle certified the optimum, its
+      distance cost exceeds the optimum
+    test: >-
+      paired gap on the common support where all three methods are feasible;
+      Friedman across methods, bootstrap by world for the interval
+  locality_price:
+    id: H-N3.C
+    alternative: >-
+      sparser graphs cost rounds and bytes, and may cost feasibility
+    test: descriptive per regime, paired within world; no causal claim
+
+# E1 is the invariant battery, executed as the test suite rather than as a
+# seeded campaign; it needs no p-values.
+e1_whitebox:
+  source: tests/test_sp1_n3_contract.py, tests/test_sp1_n3_invariants.py
+  reported_as: pass/fail table with the invariant each test pins
+
+e2_quality:
+  robot_count: 16
+  load_count: 5
+  capacity_cv: [0.00, 0.35, 0.65, 1.00]
+  pressure: [0.70, 0.85]
+  scenarios: [uniform, clustered, separated, ring, corridor]
+  seeds_per_cell: 30
+  graph_regime: medium
+  oracle_time_limit_s: 30.0
+
+e3_locality:
+  robot_count: 16
+  load_count: 5
+  capacity_cv: [0.35, 0.65]
+  pressure: [0.85]
+  scenarios: [uniform, clustered, separated, ring, corridor]
+  seeds_per_cell: 30
+  regimes: [complete, dense, medium, threshold, partitioned]
+
+analysis:
+  confidence_level: 0.95
+  bootstrap_resamples: 4000
+  gap_requires: oracle_status == OPTIMAL and method raw_feasible
+  quality_comparison_support: worlds where all three methods are raw feasible
+
+endpoints:
+  primary: raw_feasible          # RAW is the primary endpoint in v1
+  recovery: not_implemented      # a shared local repair is a separate extension
+  reported_separately: [algorithm_status, raw_certificate, oracle_status]
+
+limitations:
+  - The baselines are adaptations; no published guarantee transfers to them.
+  - Capacity-CBBA-RB is the adaptation *with a local return barrier*. Without
+    it the pilot showed the process never settles, so the barrier is part of
+    the method's definition and not a fix applied after seeing results. It uses
+    only this robot's own losing bid, remembered per load; it reads no global
+    deficit, no global assignment, no oracle and no observer.
+  - Weighted-Pair-GRAPE starts from the unilateral equilibrium rather than from
+    scratch, so it is a refinement of Weighted-GRAPE and reported as its
+    sensitivity, never as an independent third baseline.
+  - Weighted-GRAPE's termination proof assumes reliable delivery; outside that
+    condition the divergence invariant reports DIVERGED instead of CONVERGED.
+  - Weighted-GRAPE reconstructs the full profile from counted messages, so it
+    sits at the informed end of the distributed spectrum by construction.
+  - Packet loss, delay and scale (E4) are deferred; v1 uses reliable links.
+  - Static coalition formation only; no transport, contact or wrench.

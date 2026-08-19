@@ -1,0 +1,210 @@
+\begingroup
+		\pgfmathsetlengthmacro{\spxunitscen}{\linewidth/20.35}
+		\pgfmathsetlengthmacro{\spxplotscen}{3.40*\spxunitscen}
+		\scalebox{1.00}{%
+			\begin{tikzpicture}[x=\spxunitscen,y=\spxunitscen]
+				\tikzset{
+					scenecard/.style={draw=SPGrid!82,fill=SPFloor!34,line width=0.55pt,
+						rounded corners=1.5pt},
+					scenetitle/.style={font=\fontsize{8.4}{9.4}\selectfont\sffamily\bfseries,
+						text=VIUDark,anchor=west},
+					scenedesc/.style={font=\fontsize{7.0}{7.8}\selectfont\sffamily,
+						text=VIUGray,anchor=west,align=left},
+					minirobot/.style={sprobot,circle,aspect=1,minimum size=5.2mm,inner sep=0pt,
+						font=\fontsize{7.7}{8.3}\selectfont\bfseries},
+					miniload/.style={spload,minimum width=5.9mm,minimum height=4.7mm,
+						inner sep=1pt,font=\fontsize{7.7}{8.3}\selectfont\bfseries},
+					plotframe/.style={draw=VIUGray!82,line width=0.65pt},
+					plotgrid/.style={draw=SPGrid!34,line width=0.18pt},
+					plotmajor/.style={draw=SPGrid!62,line width=0.32pt},
+					plotaxis/.style={-{Latex[length=1.35mm]},draw=VIUGray!92,line width=0.68pt},
+					plottick/.style={font=\fontsize{7.0}{7.6}\selectfont\sffamily,
+						text=VIUGray},
+					plotnote/.style={draw=SPGrid!72,fill=white,rounded corners=0.8pt,
+						inner xsep=2.3pt,inner ysep=1.4pt,
+						font=\fontsize{7.0}{7.8}\selectfont\sffamily,text=VIUDark},
+					zonelabel/.style={font=\fontsize{7.0}{7.8}\selectfont\sffamily\bfseries,
+						text=VIUGray}
+				}
+				\newcommand{\scenarioaxes}{%
+					\fill[white] (0,0) rectangle (1,1);
+					\draw[step=0.20,plotgrid] (0,0) grid (1,1);
+					\draw[plotmajor] (0.5,0) -- (0.5,1);
+					\draw[plotmajor] (0,0.5) -- (1,0.5);
+					\draw[plotframe] (0,0) rectangle (1,1);
+					\draw[plotaxis] (0,0) -- (1.08,0);
+					\draw[plotaxis] (0,0) -- (0,1.08);
+					\node[plottick,anchor=south east,text=VIUDark] at (0.96,0.035)
+					{$\tilde x$};
+					\node[plottick,anchor=north west,text=VIUDark] at (0.035,0.96)
+					{$\tilde y$};
+					\draw[VIUGray!75,line width=0.45pt] (0.5,0) -- (0.5,-0.025);
+					\draw[VIUGray!75,line width=0.45pt] (1,0) -- (1,-0.025);
+					\draw[VIUGray!75,line width=0.45pt] (0,0.5) -- (-0.025,0.5);
+					\draw[VIUGray!75,line width=0.45pt] (0,1) -- (-0.025,1);
+					\node[plottick,anchor=north east] at (-0.015,-0.015) {0};
+					\node[plottick,anchor=north] at (0.5,-0.025) {0,5};
+					\node[plottick,anchor=north] at (1,-0.025) {1};
+					\node[plottick,anchor=east] at (-0.025,0.5) {0,5};
+					\node[plottick,anchor=east] at (-0.025,1) {1};
+				}
+				
+				% Fila 1: tres escenarios; cada tarjeta dispone de más ancho físico
+				\draw[scenecard] (0.08,5.979427) rectangle (6.50,11.020573);
+				\node[scenetitle] at (0.40,10.670573) {1 · Aleatorio};
+				\node[scenedesc] at (0.40,10.250573) {robots y cargas uniformes};
+				\begin{scope}[shift={(1.63,6.199427)},x=\spxplotscen,y=\spxplotscen]
+					\scenarioaxes
+					\fill[SPBlue!5,opacity=0.42] (0.015,0.015) rectangle (0.985,0.985);
+					\node[plotnote,anchor=north east] at (0.97,0.97) {uniforme};
+					\node[minirobot] at (0.10,0.18) {$r_1$};
+					\node[minirobot] at (0.28,0.78) {$r_2$};
+					\node[minirobot] at (0.55,0.30) {$r_3$};
+					\node[minirobot] at (0.86,0.70) {$r_4$};
+					\node[miniload] at (0.13,0.58) {$k_1$};
+					\node[miniload] at (0.65,0.59) {$k_2$};
+					\node[miniload] at (0.88,0.16) {$k_3$};
+				\end{scope}
+				
+				\draw[scenecard] (6.92,5.979427) rectangle (13.34,11.020573);
+				\node[scenetitle] at (7.24,10.670573) {2 · Agrupado};
+				\node[scenedesc] at (7.24,10.250573) {robots uniformes; cargas agrupadas};
+				\begin{scope}[shift={(8.47,6.199427)},x=\spxplotscen,y=\spxplotscen]
+					\scenarioaxes
+					\node[circle,aspect=1,minimum size=9.52mm,inner sep=0pt,
+					fill=VIUOrange!13,fill opacity=0.75,draw=VIUOrange!62,
+					dashed,line width=0.65pt] at (0.25,0.30) {};
+					\node[circle,aspect=1,minimum size=9.52mm,inner sep=0pt,
+					fill=VIUOrange!13,fill opacity=0.75,draw=VIUOrange!62,
+					dashed,line width=0.65pt] at (0.75,0.70) {};
+					\node[font=\fontsize{8}{8}\selectfont\bfseries,text=VIUOrange]
+					at (0.25,0.30) {$+$};
+					\node[font=\fontsize{8}{8}\selectfont\bfseries,text=VIUOrange]
+					at (0.75,0.70) {$+$};
+					\node[minirobot] at (0.10,0.82) {$r_1$};
+					\node[minirobot] at (0.43,0.58) {$r_2$};
+					\node[minirobot] at (0.66,0.14) {$r_3$};
+					\node[minirobot] at (0.91,0.36) {$r_4$};
+					\node[miniload] at (0.18,0.23) {$k_1$};
+					\node[miniload] at (0.67,0.62) {$k_2$};
+					\node[miniload] at (0.83,0.79) {$k_3$};
+				\end{scope}
+				
+				\draw[scenecard] (13.76,5.979427) rectangle (20.18,11.020573);
+				\node[scenetitle] at (14.08,10.670573) {3 · Separado};
+				\node[scenedesc] at (14.08,10.250573)
+				{robots: $\tilde x\leq0{,}35$; cargas: $\tilde x\geq0{,}65$};
+				\begin{scope}[shift={(15.31,6.199427)},x=\spxplotscen,y=\spxplotscen]
+					\scenarioaxes
+					\fill[SPBlue!12,opacity=0.72] (0,0) rectangle (0.35,1);
+					\fill[VIUOrange!12,opacity=0.72] (0.65,0) rectangle (1,1);
+					\draw[SPBlue!58,dashed,line width=0.65pt] (0.35,0) -- (0.35,1);
+					\draw[VIUOrange!60,dashed,line width=0.65pt] (0.65,0) -- (0.65,1);
+					\node[zonelabel] at (0.17,0.06) {robots};
+					\node[zonelabel] at (0.76,0.06) {cargas};
+					\node[minirobot] at (0.10,0.18) {$r_1$};
+					\node[minirobot] at (0.23,0.70) {$r_2$};
+					\node[minirobot] at (0.31,0.34) {$r_3$};
+					\node[miniload] at (0.69,0.70) {$k_1$};
+					\node[miniload] at (0.81,0.23) {$k_2$};
+					\node[miniload] at (0.93,0.73) {$k_3$};
+				\end{scope}
+				
+				% Fila 2: tres escenarios
+				\draw[scenecard] (0.08,0.45) rectangle (6.50,5.491146);
+				\node[scenetitle] at (0.40,5.141146) {4 · Anillo};
+				\node[scenedesc] at (0.40,4.721146) {bandas radiales distintas};
+				\begin{scope}[shift={(1.63,0.67)},x=\spxplotscen,y=\spxplotscen]
+					\scenarioaxes
+					% Nodos circulares con medidas físicas: la relación 1:1 no depende del scope.
+					% Robot: r in [0.36,0.48] -> centro 14.28 mm y banda 4.08 mm.
+					\node[circle,aspect=1,minimum size=22.85mm,inner sep=0pt,
+					draw=SPBlue!20,line width=3.26mm,opacity=0.78] at (0.50,0.50) {};
+					% Carga: r in [0.04,0.22] -> centro 4.42 mm y banda 6.12 mm.
+					\node[circle,aspect=1,minimum size=7.07mm,inner sep=0pt,
+					draw=VIUOrange!22,line width=4.90mm,opacity=0.82] at (0.50,0.50) {};
+					\node[circle,aspect=1,minimum size=26.11mm,inner sep=0pt,
+					draw=SPBlue!58,dashed,line width=0.65pt] at (0.50,0.50) {};
+					\node[circle,aspect=1,minimum size=19.58mm,inner sep=0pt,
+					draw=SPBlue!48,dashed,line width=0.55pt] at (0.50,0.50) {};
+					\node[circle,aspect=1,minimum size=11.97mm,inner sep=0pt,
+					draw=VIUOrange!62,dashed,line width=0.55pt] at (0.50,0.50) {};
+					\node[minirobot] at (0.08,0.50) {$r_1$};
+					\node[minirobot] at (0.50,0.94) {$r_2$};
+					\node[minirobot] at (0.92,0.50) {$r_3$};
+					\node[minirobot] at (0.50,0.10) {$r_4$};
+					\node[miniload] at (0.34,0.50) {$k_1$};
+					\node[miniload] at (0.66,0.52) {$k_2$};
+					\node[miniload] at (0.50,0.68) {$k_3$};
+					% El anillo se dibuja sobre los ejes: se reponen las etiquetas encima.
+					\node[plottick,anchor=south east,text=VIUDark] at (0.96,0.035) {$\tilde x$};
+					\node[plottick,anchor=north west,text=VIUDark] at (0.035,0.96) {$\tilde y$};
+				\end{scope}
+				
+				\draw[scenecard] (6.92,0.45) rectangle (13.34,5.491146);
+				\node[scenetitle] at (7.24,5.141146) {5 · Pasillo};
+				\node[scenedesc] at (7.24,4.721146)
+				{carga: banda ancha; robot: estrecha};
+				\begin{scope}[shift={(8.47,0.67)},x=\spxplotscen,y=\spxplotscen]
+					\scenarioaxes
+					\fill[VIUOrange!13,opacity=0.70] (0,0.34) rectangle (1,0.66);
+					\fill[SPBlue!14,opacity=0.78] (0,0.42) rectangle (1,0.58);
+					\draw[VIUGray!68,densely dashed,line width=0.65pt] (0,0.50) -- (1,0.50);
+					\node[minirobot] at (0.10,0.47) {$r_1$};
+					\node[minirobot] at (0.31,0.54) {$r_2$};
+					\node[minirobot] at (0.67,0.44) {$r_3$};
+					\node[miniload] at (0.49,0.60) {$k_1$};
+					\node[miniload] at (0.86,0.37) {$k_2$};
+				\end{scope}
+				
+				\draw[scenecard] (13.76,0.45) rectangle (20.18,5.491146);
+				\node[scenetitle] at (14.08,5.141146) {Tratamiento F · Fallo};
+				\node[scenedesc] at (14.08,4.721146) {fallo crítico de un robot asignado};
+				\begin{scope}[shift={(15.31,0.67)},x=\spxplotscen,y=\spxplotscen]
+					\scenarioaxes
+					\fill[VIUGray!13,opacity=0.62]
+					(0.10,0.24) -- (0.28,0.72) -- (0.61,0.79) -- (0.84,0.55)
+					-- (0.48,0.36) -- cycle;
+					\draw[VIUGray!65,dashed,line width=0.65pt]
+					(0.10,0.24) -- (0.28,0.72) -- (0.61,0.79) -- (0.84,0.55)
+					-- (0.48,0.36) -- cycle;
+					\coordinate (loadfail) at (0.84,0.55);
+					\draw[VIUGray!75,dashed,line width=0.65pt] (0.10,0.24) -- (loadfail);
+					\draw[VIUGray!75,dashed,line width=0.65pt] (0.28,0.72) -- (loadfail);
+					\draw[VIUGray!75,dashed,line width=0.65pt] (0.61,0.79) -- (loadfail);
+					\draw[SPRed!78,densely dotted,line width=0.90pt] (0.48,0.36) -- (loadfail);
+					\node[plotnote,anchor=south west] at (0.03,0.03) {asignación previa};
+					\node[minirobot] at (0.10,0.24) {$r_1$};
+					\node[minirobot] at (0.28,0.72) {$r_2$};
+					\node[sprobotinactive,circle,aspect=1,minimum size=5.2mm,inner sep=0pt,
+					font=\fontsize{7.7}{8.3}\selectfont\bfseries]
+					(failed) at (0.48,0.36) {$r_3$};
+					\draw[draw=SPRed,line width=1.0pt]
+					([xshift=-1.7mm,yshift=-1.7mm]failed.center) --
+					([xshift=1.7mm,yshift=1.7mm]failed.center);
+					\draw[draw=SPRed,line width=1.0pt]
+					([xshift=-1.7mm,yshift=1.7mm]failed.center) --
+					([xshift=1.7mm,yshift=-1.7mm]failed.center);
+					\node[minirobot] at (0.61,0.79) {$r_4$};
+					\node[miniload] at (loadfail) {$k_1$};
+				\end{scope}
+				
+				% Leyenda mínima
+				\node[minirobot] (legendrobot) at (7.40,-0.03) {};
+				\node[font=\fontsize{7.5}{8.3}\selectfont\sffamily,anchor=west]
+				at (7.70,-0.03) {robot $r_i$};
+				\node[miniload] (legendload) at (10.10,-0.03) {};
+				\node[font=\fontsize{7.5}{8.3}\selectfont\sffamily,anchor=west]
+				at (10.44,-0.03) {carga $k_j$};
+				\node[sprobotinactive,circle,aspect=1,minimum size=5.2mm,inner sep=0pt]
+				(legendfailed) at (13.05,-0.03) {};
+				\draw[draw=SPRed,line width=0.95pt]
+				([xshift=-1.7mm,yshift=-1.7mm]legendfailed.center) --
+				([xshift=1.7mm,yshift=1.7mm]legendfailed.center);
+				\draw[draw=SPRed,line width=0.95pt]
+				([xshift=-1.7mm,yshift=1.7mm]legendfailed.center) --
+				([xshift=1.7mm,yshift=-1.7mm]legendfailed.center);
+				\node[font=\fontsize{7.5}{8.3}\selectfont\sffamily,anchor=west]
+				at (13.38,-0.03) {robot fallido};
+		\end{tikzpicture}}
+		\endgroup

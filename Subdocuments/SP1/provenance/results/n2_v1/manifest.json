@@ -1,0 +1,187 @@
+{
+  "schema_version": "sp1-level-package-v1",
+  "level": "N2",
+  "description": "Confirmatory heterogeneous-capacity campaign: oracle validation, the price of atomicity, a pressure-by-heterogeneity phase diagram and the certification frontier of the central solver.",
+  "generated_at_utc": "2026-08-16T00:57:10.908482+00:00",
+  "environment": {
+    "python": "3.13.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel(R) Core(TM) Ultra 9 185H",
+    "machine": "AMD64",
+    "logical_cpu_count": 22,
+    "pandas": "2.3.3",
+    "numpy": "2.3.5",
+    "matplotlib": "3.10.8",
+    "scipy": "1.16.3"
+  },
+  "git_commit": "aaf0034483928598f2d81c71624ba12d9548f4f0",
+  "git_tree_dirty": true,
+  "sources": [
+    {
+      "path": "experiments/configs/sp1_n2_confirmatory_v1.yaml",
+      "bytes": 3182,
+      "sha256": "97450e2b27eca47be7dbaa2310b71838b8f9f5900abe0e9dc624f4ea416f947c"
+    },
+    {
+      "path": "scripts/sp1_n2_confirmatory.py",
+      "bytes": 24153,
+      "sha256": "9884890c0d2237b048622de947da3876c619ef27855791cb0ddcbe888d752cae"
+    },
+    {
+      "path": "scripts/sp1_n2_oracle.py",
+      "bytes": 13420,
+      "sha256": "ca68e4673f6f1dfd14a7530e0e1ad3e6ae03bb44d56723e6ec8b9c73b2ae8e3e"
+    },
+    {
+      "path": "scripts/sp1_n2_analysis.py",
+      "bytes": 33434,
+      "sha256": "0197d36c539b2a5e2ca402ef5e2d6e232a5f5e60aafce79484044bb2b64573f4"
+    },
+    {
+      "path": "scripts/results/sp1_levels/n2_v1/raw/oracle_validation_runs.csv",
+      "bytes": 136489,
+      "sha256": "5fab15575e45d195df61da542972b023a136cf992a5e446daa31befef4fa57eb"
+    },
+    {
+      "path": "scripts/results/sp1_levels/n2_v1/raw/homogeneous_limit_runs.csv",
+      "bytes": 43389,
+      "sha256": "23d717c7510fac5abb56f78867419fcb7242048533c50bd7c784aedb4e988e66"
+    },
+    {
+      "path": "scripts/results/sp1_levels/n2_v1/raw/atomicity_runs.csv",
+      "bytes": 397854,
+      "sha256": "4bcb32436df9686a575d1252c1ea7ac9c4f664cd14b205de72af5136dba3b013"
+    },
+    {
+      "path": "scripts/results/sp1_levels/n2_v1/raw/phase_diagram_runs.csv",
+      "bytes": 386423,
+      "sha256": "3e2fcbaae2a019bddee73f10f07c4240f2727f26c309bfa7b0e2eb3e272f2be8"
+    },
+    {
+      "path": "scripts/results/sp1_levels/n2_v1/raw/certification_runs.csv",
+      "bytes": 31008,
+      "sha256": "25d36554cab785a87de2ae9c721de77af9592b12e726544e139592663f211bc8"
+    }
+  ],
+  "frozen_raw": {
+    "atomicity": {
+      "path": "scripts/results/sp1_levels/n2_v1/raw/atomicity_runs.csv",
+      "bytes": 397854,
+      "sha256": "4bcb32436df9686a575d1252c1ea7ac9c4f664cd14b205de72af5136dba3b013"
+    },
+    "certification": {
+      "path": "scripts/results/sp1_levels/n2_v1/raw/certification_runs.csv",
+      "bytes": 31008,
+      "sha256": "25d36554cab785a87de2ae9c721de77af9592b12e726544e139592663f211bc8"
+    },
+    "homogeneous_limit": {
+      "path": "scripts/results/sp1_levels/n2_v1/raw/homogeneous_limit_runs.csv",
+      "bytes": 43389,
+      "sha256": "23d717c7510fac5abb56f78867419fcb7242048533c50bd7c784aedb4e988e66"
+    },
+    "oracle_validation": {
+      "path": "scripts/results/sp1_levels/n2_v1/raw/oracle_validation_runs.csv",
+      "bytes": 136489,
+      "sha256": "5fab15575e45d195df61da542972b023a136cf992a5e446daa31befef4fa57eb"
+    },
+    "phase_diagram": {
+      "path": "scripts/results/sp1_levels/n2_v1/raw/phase_diagram_runs.csv",
+      "bytes": 386423,
+      "sha256": "3e2fcbaae2a019bddee73f10f07c4240f2727f26c309bfa7b0e2eb3e272f2be8"
+    }
+  },
+  "row_counts": {
+    "oracle_validation_runs": 750,
+    "homogeneous_limit_runs": 250,
+    "atomicity_runs": 1500,
+    "phase_diagram_runs": 1800,
+    "certification_runs": 180
+  },
+  "claims": [
+    "HiGHS reproduces exhaustive enumeration on the enumerable sizes.",
+    "With equal capacities the N2 optimum equals the frozen N1 LSAP.",
+    "The LP relaxation is strictly cheaper than any atomic coalition.",
+    "Feasibility depends on pressure and on capacity dispersion.",
+    "Certified optimality degrades with instance size under a budget."
+  ],
+  "limitations": [
+    "The oracle needs global knowledge of positions, capacities and demands.",
+    "Certified optimality is a solver property under a wall-clock budget.",
+    "The LP relaxation bounds the objective; it is not a physical plan.",
+    "Transport, contact and wrench remain out of scope until SP2."
+  ],
+  "artifacts": {
+    "figures/n2_atomicity.pdf": {
+      "bytes": 59434,
+      "sha256": "5deaf94c5a1f88d411ec81b786cb5f299a9aa1a71a6cf8fc7303582cccf8f0d0"
+    },
+    "figures/n2_atomicity.png": {
+      "bytes": 223736,
+      "sha256": "3334ce55ac5da5ee8e150db728a999c89ebf5e469eaeb7fa4f2b80df7f9fec3e"
+    },
+    "figures/n2_certification.pdf": {
+      "bytes": 50963,
+      "sha256": "2d5907499c9584d8267c1866713ef494b12cec83c761b636d9c68ba865b387e0"
+    },
+    "figures/n2_certification.png": {
+      "bytes": 269689,
+      "sha256": "a718f62ef5badfa87d5c617c3573281ae58819a82dae2917ff2ef103444c698b"
+    },
+    "figures/n2_oracle_validation.pdf": {
+      "bytes": 64438,
+      "sha256": "b945fef34d5a0bb69a9e3e97bdb76d36c09d86f1d026f1f8d2099884319b07ba"
+    },
+    "figures/n2_oracle_validation.png": {
+      "bytes": 222280,
+      "sha256": "784e9adcf99ff4db3162847869358e7c62741ea1eeaba747bcb8ff366de45202"
+    },
+    "figures/n2_phase_diagram.pdf": {
+      "bytes": 59700,
+      "sha256": "7dff2e0528dd6a1c44f6dd11a38661d844a2b41e9de517c237d842bc9d425827"
+    },
+    "figures/n2_phase_diagram.png": {
+      "bytes": 317065,
+      "sha256": "2895362df9f07b43c5a7dc44b1cc84242ac933ed3f4da31153835246a0763d69"
+    },
+    "key_metrics.json": {
+      "bytes": 4023,
+      "sha256": "c6f030084fe5ab94f3d5004dc2f5f52140955106f6cc4b2786ca1e2e00314897"
+    },
+    "processed/atomicity_summary.csv": {
+      "bytes": 925,
+      "sha256": "29d5e1253da636e14bbcb536244a17b28c6d9f1237d8273047c4919b5ed08040"
+    },
+    "processed/certification_summary.csv": {
+      "bytes": 1784,
+      "sha256": "74a34d6258904f2b808131938c823a0a6e54cc77a4ef622ed49b63f3c7a6898e"
+    },
+    "processed/oracle_summary.csv": {
+      "bytes": 348,
+      "sha256": "3545881d86dc2eb8e8779cd6ee7b3e5b0583ea16d4003538ded7c4f74caf2e30"
+    },
+    "processed/phase_summary.csv": {
+      "bytes": 3336,
+      "sha256": "b7c0cc5fcb163a84c8e2839da483306a880ffe17284fbbaaa60cc9cc3f5293e2"
+    },
+    "raw/atomicity_runs.csv": {
+      "bytes": 397854,
+      "sha256": "4bcb32436df9686a575d1252c1ea7ac9c4f664cd14b205de72af5136dba3b013"
+    },
+    "raw/certification_runs.csv": {
+      "bytes": 31008,
+      "sha256": "25d36554cab785a87de2ae9c721de77af9592b12e726544e139592663f211bc8"
+    },
+    "raw/homogeneous_limit_runs.csv": {
+      "bytes": 43389,
+      "sha256": "23d717c7510fac5abb56f78867419fcb7242048533c50bd7c784aedb4e988e66"
+    },
+    "raw/oracle_validation_runs.csv": {
+      "bytes": 136489,
+      "sha256": "5fab15575e45d195df61da542972b023a136cf992a5e446daa31befef4fa57eb"
+    },
+    "raw/phase_diagram_runs.csv": {
+      "bytes": 386423,
+      "sha256": "3e2fcbaae2a019bddee73f10f07c4240f2727f26c309bfa7b0e2eb3e272f2be8"
+    }
+  }
+}

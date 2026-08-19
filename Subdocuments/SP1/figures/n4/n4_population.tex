@@ -1,0 +1,38 @@
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,
+ box/.style={draw=SPGrid,rounded corners=1mm,fill=SPFloor,
+  minimum height=1.55cm,align=center,font=\scriptsize},
+ robot/.style={circle,draw=SPBlue,fill=white,minimum size=5.5mm,font=\tiny},
+ load/.style={draw=VIUOrange,rounded corners=.6mm,fill=VIUOrange!5,
+  minimum width=7mm,minimum height=5.5mm,font=\tiny},
+ arr/.style={->,very thick,draw=VIUOrange}]
+\node[box,text width=2.25cm,draw=SPBlue!65] (world) at (-4.55,.55)
+ {\textbf{mundo físico}\\[1mm]
+  \tikz[baseline=-.6ex]{\node[robot] {$r_1$};}\quad
+  \tikz[baseline=-.6ex]{\node[robot] {$r_2$};}\quad
+  \tikz[baseline=-.6ex]{\node[robot] {$r_3$};}\\[-.2mm]
+  \tikz[baseline=-.5ex]{\node[load] {$k_1$};}\qquad
+  \tikz[baseline=-.5ex]{\node[load] {$k_2$};}};
+
+\node[box,text width=2.65cm,draw=SPGreen!70] (simplex) at (-1.55,.55)
+ {\textbf{intenciones $x_i$}\\[-.2mm]
+  \begin{tikzpicture}[x=.16cm,y=.16cm]
+   \fill[SPBlue!65] (0,4) rectangle (7,5.5); \fill[SPGreen!65] (7,4) rectangle (12,5.5);
+   \fill[SPBlue!65] (0,1.5) rectangle (3,3); \fill[SPGreen!65] (3,1.5) rectangle (12,3);
+   \fill[SPBlue!65] (0,-1) rectangle (6,-.5); \fill[SPGreen!65] (6,-1) rectangle (12,-.5);
+   \draw (0,-1) rectangle (12,5.5);
+  \end{tikzpicture}};
+
+\node[box,text width=2.45cm,draw=SPPurple!70] (flow) at (1.45,.55)
+ {\textbf{mismo campo $F$}\\Replicator · Smith\\BNN · Logit\\$x(t)\rightarrow x^\star$};
+
+\node[box,text width=2.45cm,draw=VIUOrange!80] (closure) at (4.45,.55)
+ {\textbf{cierre común}\\$a^\star=\mathcal R(x^\star)$\\[1mm]
+  \tikz[baseline=-.6ex]{\node[robot,draw=SPGreen] {$r_1$};}
+  $\rightarrow$
+  \tikz[baseline=-.5ex]{\node[load,draw=SPGreen] {$k_1$};}\\coalición entera};
+
+\draw[arr] (world)--(simplex); \draw[arr] (simplex)--(flow); \draw[arr] (flow)--(closure);
+\node[draw=SPRed!65,rounded corners=.8mm,fill=SPRed!3,
+ text width=8.7cm,minimum height=.62cm,align=center,font=\scriptsize] at (1.45,-1.10)
+ {$x_{ik}$ es masa/probabilidad; \textbf{frontera de evidencia:} converger en el símplex no implica calidad después de $\mathcal R$};
+\end{tikzpicture}

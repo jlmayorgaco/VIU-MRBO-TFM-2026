@@ -1,0 +1,40 @@
+\begingroup
+		\pgfmathsetlengthmacro{\spxunitn}{\linewidth/13.5}
+		\scalebox{1.00}{%
+			\begin{tikzpicture}[x=\spxunitn,y=0.86cm]
+				\tikzset{
+					n3box/.style={draw=SPGrid!82,fill=SPFloor!30,line width=0.55pt,rounded corners=1.1pt},
+					n3rob/.style={draw=SPBlue,fill=SPBlue!12,circle,minimum size=6.4mm,inner sep=0pt,
+						font=\fontsize{6.6}{7.2}\selectfont\sffamily},
+					n3lab/.style={font=\fontsize{7.0}{7.8}\selectfont\sffamily,anchor=west},
+					n3ttl/.style={font=\fontsize{7.6}{8.4}\selectfont\sffamily\bfseries,anchor=west},
+					n3edge/.style={draw=VIUDark!55,line width=0.7pt},
+				}
+				\draw[n3box] (0.05,3.55) rectangle (13.45,4.62);
+				\node[n3ttl] at (0.30,4.32) {Datos públicos: tamaños y catálogo inmutable};
+				\node[n3lab] at (0.30,3.88) {$N,K$ y $(k,\ \ell_k,\ m_k)$ para $k=1,\dots,K$; no incluyen estados de otros robots.};
+				\draw[n3box] (0.05,0.55) rectangle (8.60,3.25);
+				\node[n3ttl] at (0.30,2.98) {Estado de robots: privado, viaja solo por aristas};
+				\node[n3rob] (r1) at (1.55,1.95) {$r_1$};
+				\node[n3rob] (r2) at (3.45,2.45) {$r_2$};
+				\node[n3rob] (r3) at (2.80,1.58) {$r_3$};
+				\node[n3rob] (r4) at (5.40,1.85) {$r_4$};
+				\node[n3rob] (r5) at (7.20,2.35) {$r_5$};
+				\draw[n3edge] (r1)--(r2); \draw[n3edge] (r1)--(r3); \draw[n3edge] (r2)--(r3);
+				\draw[n3edge] (r2)--(r4); \draw[n3edge] (r3)--(r4); \draw[n3edge] (r4)--(r5);
+				\draw[-{Latex[length=1.7mm]},draw=SPRed,line width=0.8pt] (4.05,2.28) -- (4.85,2.05);
+				\node[font=\fontsize{6.2}{6.8}\selectfont\sffamily,anchor=south,text=SPRed] at (4.45,2.30)
+				{mensaje contado};
+				\node[n3lab] at (0.30,0.95) {$c_i^{\mathrm{pay}},\ p_i$ privados. Grafo $R$-disk sobre las posiciones de N2.};
+				\draw[n3box,dashed] (8.95,0.55) rectangle (13.45,3.25);
+				\node[n3ttl] at (9.20,2.98) {Observador};
+				\node[n3lab] at (9.20,2.50) {registra rondas, mensajes y bytes;};
+				\node[n3lab] at (9.20,2.10) {verifica el certificado \emph{post hoc};};
+				\node[n3lab] at (9.20,1.70) {\textbf{no} decide, \textbf{no} detiene,};
+				\node[n3lab] at (9.20,1.30) {\textbf{no} repara.};
+				\node[n3lab] at (9.20,0.95) {Queda fuera del lazo de decisión.};
+				\draw[n3box] (0.05,-1.25) rectangle (13.45,0.22);
+				\node[n3ttl] at (0.30,-0.08) {Ronda síncrona $t$};
+				\node[n3lab] at (0.30,-0.88) {$(\mathrm{estado}_i^{t+1},\ \mathrm{salida}_i^{t}) = F_i(\mathrm{estado}_i^{t},\ \mathrm{buz\acute{o}n}_i^{t},\ \mathrm{cat\acute{a}logo})$; lo emitido en $t$ no llega antes de $t+1$.};
+		\end{tikzpicture}}
+		\endgroup

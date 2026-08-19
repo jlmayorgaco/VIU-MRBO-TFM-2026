@@ -1,0 +1,26 @@
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,
+ market/.style={draw=VIUOrange!80,rounded corners=1mm,fill=VIUOrange!5,
+  minimum width=1.9cm,minimum height=1.15cm,align=center,font=\scriptsize},
+ robot/.style={circle,draw=SPBlue,fill=white,minimum size=6.2mm,font=\scriptsize},
+ box/.style={draw=SPGrid,rounded corners=1mm,fill=SPFloor,
+  minimum height=1.25cm,align=center,font=\scriptsize},
+ arr/.style={->,thick,draw=VIUOrange}]
+\node[market] (k1) at (-3.9,1.35) {carga $k_1$\\$g_1>0\Rightarrow\lambda_1\uparrow$};
+\node[market] (k2) at (0,1.35) {carga $k_2$\\$g_2\simeq0$};
+\node[market] (k3) at (3.9,1.35) {carga $k_3$\\$g_3<0$};
+\node[robot] (r1) at (-3.1,-.15) {$i$};
+\node[robot] (r2) at (-1.05,-.15) {$j$};
+\node[robot] (r3) at (1.05,-.15) {$\ell$};
+\node[robot] (r4) at (3.1,-.15) {$q$};
+\draw[dashed,draw=SPPurple,thick] (r1)--(r2)--(r3)--(r4);
+\node[font=\tiny,text=SPPurple] at (0,-.72)
+ {consenso/DAC entre copias locales $\lambda_{ik}$ y estimaciones $\widehat g_{ik}$};
+\foreach \r/\k in {r1/k1,r2/k1,r2/k2,r3/k2,r3/k3,r4/k3}{\draw[arr] (\r)--(\k);}
+\node[box,text width=3.05cm,draw=SPPurple!70] (pd) at (-2.1,-1.55)
+ {\textbf{mecanismo primal--dual}\\$-d_{ik}+c_i^{\rm pay}\lambda_{ik}$};
+\node[box,text width=2.15cm,draw=SPGreen!70] (vgne) at (1.0,-1.55)
+ {\textbf{objetivo}\\vGNE continuo $(x^\star,\lambda^\star)$};
+\node[box,text width=2.15cm,draw=VIUOrange!80] (close) at (4.0,-1.55)
+ {\textbf{salida física}\\$\mathcal R(x^\star)=a^\star$};
+\draw[arr] (pd)--(vgne); \draw[arr] (vgne)--(close);
+\end{tikzpicture}

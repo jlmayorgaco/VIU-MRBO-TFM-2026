@@ -1,0 +1,26 @@
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,
+ load/.style={draw=VIUOrange!85,rounded corners=1mm,fill=VIUOrange!5,
+  minimum width=2.35cm,minimum height=1.35cm,align=center,font=\footnotesize},
+ reg/.style={draw=SPGreen!70,rounded corners=.8mm,fill=SPGreen!5,
+  minimum width=1.65cm,minimum height=.62cm,align=center,font=\scriptsize},
+ own/.style={draw=SPBlue!70,rounded corners=.8mm,fill=SPBlue!5,
+  minimum width=2.55cm,minimum height=.82cm,align=center,font=\scriptsize},
+ robot/.style={circle,draw=SPBlue,fill=white,minimum size=6.4mm,font=\scriptsize},
+ arr/.style={->,very thick,draw=VIUOrange}]
+\node[load] (r) at (-3.75,.65) {carga $r$\\demanda $m_r$};
+\node[load] (s) at (3.75,.65) {carga $s$\\demanda $m_s$};
+\node[reg] (qr) at (-3.75,-.52) {$z_r=(Q_r,v_r)$};
+\node[reg] (qs) at (3.75,-.52) {$z_s=(Q_s,v_s)$};
+\node[robot] (i) at (-1.82,.65) {$i$};
+\node[own] (state) at (0,-1.05)
+ {estado propio: $c_i^{\mathrm{pay}},\ d_{ir},\ d_{is}$};
+\node[draw=SPPurple!70,rounded corners=1mm,fill=SPPurple!5,
+ minimum width=2.5cm,minimum height=.9cm,align=center,font=\footnotesize] (delta) at (0,1.55)
+ {evaluación exacta\\$(\Delta_iD,\Delta_iJ)$};
+\draw[arr] (i) to[bend right=10] node[below,font=\scriptsize] {$i:r\rightarrow s$} (s);
+\draw[->,thin,draw=SPGreen!80] (qr)--(delta);
+\draw[->,thin,draw=SPGreen!80] (qs)--(delta);
+\draw[->,thin,draw=SPBlue!80] (state)--(delta);
+\node[font=\scriptsize,align=center,text=black!55] at (0,-1.85)
+ {las cargas no afectadas se cancelan; las versiones sí deben llegar por la red};
+\end{tikzpicture}

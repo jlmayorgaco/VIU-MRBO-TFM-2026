@@ -1,0 +1,65 @@
+\pgfdeclarelayer{n4taxonomyback}
+\pgfsetlayers{n4taxonomyback,main}
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,
+ % anchor=north: las cuatro familias tienen alturas de contenido distintas; al
+ % centrarlas en y quedaban escalonadas y su borde superior invadía la barra.
+ family/.style={draw=SPGrid,rounded corners=1.1mm,text width=2.42cm,
+  minimum height=2.75cm,align=center,inner sep=1.6mm,font=\scriptsize,
+  anchor=north,
+  % Cajas estrechas: sin esto TeX parte POBLACIONAL, RESTRINGIDA o coalición.
+  execute at begin node={\hyphenpenalty=10000\exhyphenpenalty=10000\relax}},
+ bar/.style={draw=SPGrid,rounded corners=1mm,fill=SPFloor,text width=10.65cm,
+  minimum height=.95cm,align=center,font=\footnotesize},
+ arr/.style={->,thick,draw=VIUOrange,shorten >=1.0mm}]
+\node[bar,draw=SPBlue!65,fill=SPBlue!4] (problem) at (0,4.05)
+ {\textbf{Mismo problema físico}\\[-.4mm]
+  cuotas heterogéneas: $D(a)=0$; después minimizar $J(a)$};
+
+\node[family,draw=SPBlue!70,fill=SPBlue!4] (f1) at (-4.35,2.62)
+ {\textbf{F-I · ATÓMICA}\\[-1mm]
+  \rule{2.15cm}{.2pt}\\
+  \textbf{variable}\ $a_i$ entero\\
+  \textbf{evolución}\ mejoras $h$-locales\\
+  \textbf{objetivo}\ mínimo local de $\Psi_4$\\
+  \textbf{salida}\ coalición directa\\
+  \textcolor{SPGreen}{E4--E6/E9:\\[-.4mm]validada}};
+\node[family,draw=SPGreen!70,fill=SPGreen!4] (f2) at (-1.45,2.62)
+ {\textbf{F-II · POBLACIONAL}\\[-1mm]
+  \rule{2.15cm}{.2pt}\\
+  \textbf{variable}\ $x_i\in\Delta_i$\\
+  \textbf{evolución}\ Replicator/Smith\\BNN/Logit\\
+  \textbf{objetivo}\ estado estacionario\\
+  \textbf{salida}\ $\mathcal R(x)$\\
+  \textcolor{SPGreen}{E7: contrastada}};
+\node[family,draw=SPPurple!70,fill=SPPurple!4] (f3) at (1.45,2.62)
+ {\textbf{F-III · RESTRINGIDA}\\[-1mm]
+  \rule{2.15cm}{.2pt}\\
+  \textbf{variable}\ $(x,\lambda)$\\
+  \textbf{evolución}\ primal--dual + consenso\\
+  \textbf{objetivo}\ vGNE\\
+  \textbf{salida}\ $\mathcal R(x)$\\
+  \textcolor{SPGreen}{E7: contrastada}};
+\node[family,draw=VIUOrange!80,fill=VIUOrange!4] (f4) at (4.35,2.62)
+ {\textbf{F-IV · TEMPORAL}\\[-1mm]
+  \rule{2.15cm}{.2pt}\\
+  \textbf{variable}\ $(s_t,u_t)$\\
+  \textbf{evolución}\ transición + política\\
+  \textbf{objetivo}\ coste finito recurrente\\
+  \textbf{salida}\ coalición recurrente\\
+  \textcolor{SPGreen}{E8: ESTUDIO TEMPORAL}};
+
+\node[bar,draw=SPGreen!65,fill=SPGreen!4] (info) at (0,-2.95)
+ {\textbf{Información}\quad registros versionados · flooding · DAC/consenso};
+\node[bar,draw=VIUOrange!75,fill=VIUOrange!4] (out) at (0,-4.15)
+ {\textbf{Contrato físico}\quad asignación entera válida $a$ $\longrightarrow$ entrada de SP2};
+
+\begin{pgfonlayer}{n4taxonomyback}
+  \foreach \n in {f1,f2,f3,f4}{
+    % Antes apuntaba a la esquina superior derecha, lo que producía una diagonal
+    % suelta junto a F-IV. La flecha baja recta al centro de cada familia.
+    \draw[arr] (problem.south -| \n.north) -- (\n.north);
+    \draw[arr] (\n.south) -- (\n.south |- info.north);
+  }
+  \draw[arr] (info)--(out);
+\end{pgfonlayer}
+\end{tikzpicture}

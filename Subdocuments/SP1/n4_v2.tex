@@ -1,0 +1,1202 @@
+% SP1.N4. Las cifras proceden de las campañas N4 v1--v4.
+
+\input{generated/n4_v3_results_macros.tex}
+\input{generated/n4_v4_results_macros.tex}
+
+% --------------------------------------------------------------------------
+% Página 27 - problema común y taxonomía
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · NIVEL 4 DE 4 · PROBLEMA Y TAXONOMÍA}
+\section*{SP1.N4: localidad estratégica en el reclutamiento atómico}
+\enlargethispage{5\baselineskip}
+
+N4 comienza en el punto donde termina N3: una asignación entera obtenida con
+información vecinal puede ser factible y, aun así, quedar atrapada en un mínimo
+local. N3 estudió la información disponible; aquí se pregunta cuántos robots
+deben cambiar juntos para mejorar la decisión.
+
+La salida física no cambia. Cada robot debe terminar inactivo o asociado a una
+sola carga, y toda carga activa $k\in\mathcal K_{\mathrm{act}}$ debe reunir
+capacidad suficiente. En las campañas estáticas,
+$\mathcal K_{\mathrm{act}}=\{1,\ldots,K\}$:
+\begin{equation}
+\label{eq:n4-common-problem}
+\begin{gathered}
+\begin{aligned}
+a_i&\in\{0,1,\ldots,K\}, &
+Q_k(a)&=\sum_i c_i^{\mathrm{pay}}\mathbf 1\{a_i=k\},\\[-1mm]
+D_4(a)&=\sum_{k\in\mathcal K_{\mathrm{act}}}[m_k-Q_k(a)]_+, &
+J_4(a)&=\sum_{i:a_i\ne0}d_{i,a_i}.
+\end{aligned}
+\\[-1mm]
+D_4(a)=0,\qquad J_4(a)\rightarrow\min .
+\end{gathered}
+\end{equation}
+
+El subíndice identifica los funcionales de N4 sobre asignaciones enteras $a$.
+La propuesta principal es el juego potencial geométrico de cuotas (Geo-QPG,
+\emph{geometric quota-potential game}); QPG designa su juego base.
+
+F-I, el juego atómico Geo-QPG, constituye la contribución principal. El
+resultado central del nivel reúne la identidad de potencial, el refinamiento
+BR--2BR--C3 y la medición del primer orden que permite escapar. F-II y F-III son
+comparadores continuos a los que se aplica el mismo cierre entero; F-IV estudia
+por separado la decisión temporal.
+De los 1\,200 terminales BR examinados en E9, 1\,156 admitieron primero una
+mejora bilateral. El dato identifica el orden del primer escape, no cuánto
+beneficio producen los pares ni qué ocurre por encima de tres robots. La
+Figura~\ref{fig:n4-family-taxonomy} ordena estas funciones y sus límites.
+
+\begin{figure}[H]
+\centering
+\scalebox{.70}{\input{figures/n4/n4_taxonomy.tex}}
+\caption{Taxonomía de N4: variable, evolución, objetivo, salida física y nivel
+de evidencia de las cuatro familias.}
+\label{fig:n4-family-taxonomy}
+\viuownsource
+\end{figure}
+\vspace{-3mm}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Atlas estratégico A - variantes atómicas
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · ATLAS ESTRATÉGICO · F-I}
+\section*{F-I: tres revisiones unilaterales sobre el mismo mundo}
+
+Capacidades, demandas y agregados permanecen fijos en la
+Figura~\ref{fig:n4-atlas-fi}; solo cambia la regla que selecciona la siguiente
+acción. La mejor respuesta (BR) toma la mayor mejora; la revisión Smith atómica
+asíncrona (ASR) sortea entre mejoras; y el aprendizaje log-lineal (LLL) conserva
+una probabilidad positiva de aceptar un paso peor
+\parencite{mardenShamma2012LogLinear}. La versión finita y bifásica evaluada
+aquí no hereda automáticamente las garantías asintóticas de esa referencia. Las
+tres reglas siguen operando en $\mathcal V_1$.
+
+\begin{figure}[H]
+\centering
+\scalebox{.98}{\input{figures/n4/n4_algorithm_atlas_fi.tex}}
+\caption{Revisiones unilaterales de F-I sobre un mundo común. Los agregados
+$Q_k/m_k$ incluyen los robots que permanecen fijos y aíslan el efecto del único
+robot que cambia.}
+\label{fig:n4-atlas-fi}
+\viuownsource
+\end{figure}
+
+Cambiar la revisión amplía las acciones probadas, pero no el número de robots
+que puede coordinarse. Por eso ASR y LLL no sustituyen una desviación de orden
+dos o tres.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Atlas estratégico A2 - coordinación y scheduler
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · ATLAS ESTRATÉGICO · COORDINACIÓN}
+\section*{Orden local y ejecución concurrente}
+
+El orden de una desviación y la ejecución concurrente son decisiones diferentes
+(Figura~\ref{fig:n4-atlas-coalitional}). La mejor
+respuesta bilateral (2BR) examina todas las desviaciones conjuntas de hasta dos
+robots, incluidos los intercambios; C3 amplía la enumeración a grupos de hasta
+tres, incluidos los ciclos. El conjunto independiente maximal distribuido con
+\emph{commit} transaccional (DMIS+TX) recibe propuestas ya evaluadas, construye
+el grafo de conflictos y confirma un conjunto independiente con versiones.
+
+\begin{figure}[H]
+\centering
+\scalebox{.98}{\input{figures/n4/n4_algorithm_atlas_coalitional.tex}}
+\caption{Extensiones coalicionales y transaccionales de F-I sobre el mismo
+mundo. El halo identifica los robots que deben cambiar juntos; el último panel
+opera sobre propuestas, no sobre una utilidad distinta.}
+\label{fig:n4-atlas-coalitional}
+\viuownsource
+\end{figure}
+
+La distinción será visible en resultados: aumentar $h$ puede mejorar el mínimo
+local; DMIS+TX cambia concurrencia y tráfico. Ninguna de las dos propiedades se
+deduce de la otra.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Atlas estratégico B - formulaciones continuas y temporal
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · ATLAS ESTRATÉGICO · F-II--F-IV}
+\section*{Variables estratégicas y salida física}
+
+Tres variables estratégicas distintas pueden referirse al mismo mundo
+(Figura~\ref{fig:n4-atlas-continuous}). F-II mueve intención sobre un símplex; F-III
+añade precios de las cuotas compartidas; F-IV reacciona a una secuencia de
+eventos. Solo $a$ puede entregarse directamente a SP2. Los estados continuos
+pasan por el mismo cierre $\mathcal R$, y la rama temporal produce una secuencia
+de asignaciones $a_t$.
+
+\begin{figure}[H]
+\centering
+\scalebox{.98}{\input{figures/n4/n4_algorithm_atlas_continuous.tex}}
+\caption{Atlas estratégico de F-II--F-IV: estado, actualización y conversión a una
+salida atómica. La comparación estática termina en $a^\star$; la temporal se
+evalúa sobre la secuencia completa.}
+\label{fig:n4-atlas-continuous}
+\viuownsource
+\end{figure}
+
+El atlas fija también qué significa ``converger''. En F-II es un criterio
+numérico de la dinámica y del estimador; en F-III deben cruzarse conjuntamente
+los residuos de Karush--Kuhn--Tucker (KKT) y de consenso. En F-IV no hay un
+equilibrio estático único:
+se compara coste acumulado, servicio y cambios de coalición bajo los mismos
+eventos.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 28 - F-I, potencial y suficiencia marginal
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · F-I · JUEGO POTENCIAL ATÓMICO}
+\section*{F-I: una mejora local no necesita el perfil completo}
+\enlargethispage{2\baselineskip}
+
+Geo-QPG opera sobre $a$ y evita sumar kg y metros con un peso arbitrario. Compara
+\begin{equation}
+\label{eq:n4-state-v2}
+\Psi_4(a)=\bigl(D_4(a),J_4(a)\bigr)
+\end{equation}
+en orden lexicográfico: primero reduce déficit y, con $D_4=0$, conserva cobertura
+y reduce distancia. El MILP de N2 obtiene el mínimo global; F-I busca descensos
+locales con los registros que toca cada propuesta.
+
+Sea $p:i:r\rightarrow s$ una desviación unilateral y $d_{i0}=0$. Al omitir la
+carga inactiva, la variación exacta es
+\begin{equation}
+\label{eq:n4-unilateral-delta}
+\begin{aligned}
+\Delta_iD={}&[m_r-(Q_r-c_i^{\mathrm{pay}})]_+
+ +[m_s-(Q_s+c_i^{\mathrm{pay}})]_+\\[-1mm]
+&-[m_r-Q_r]_+-[m_s-Q_s]_+,\\
+\Delta_iJ={}&d_{is}-d_{ir}.
+\end{aligned}
+\end{equation}
+
+Para valorar $i:r\rightarrow s$ bastan $Q_r,Q_s,c_i^{\mathrm{pay}},d_{ir}$ y
+$d_{is}$. La identidad se derivó algebraicamente y se comprobó por enumeración.
+Una propuesta coalicional añade únicamente sus participantes y las cargas que
+modifica.
+
+\begin{figure}[H]
+\centering
+\scalebox{.88}{\input{figures/n4/n4_marginal_move.tex}}
+\caption{Una desviación se evalúa con estado propio y registros versionados de
+las cargas afectadas; el resto del perfil se cancela.}
+\label{fig:n4-sufficient-information}
+\viuownsource
+\end{figure}
+
+Los agregados y sus versiones aún deben llegar por la red. Con $\Phi_Q=-D_4$ y,
+sobre $\mathcal F=\{a:D_4(a)=0\}$, $\Phi_G=-J_4$, se define
+\begin{equation}
+\label{eq:n4-wonderful-life}
+u_i^X(a)=\Phi_X(a)-\Phi_X(0,a_{-i}),\qquad X\in\{Q,G\}.
+\end{equation}
+
+\begin{n1prop}[Potencial exacto unilateral]
+Dentro de una misma fase,
+$u_i^X(a_i',a_{-i})-u_i^X(a_i,a_{-i})
+=\Phi_X(a_i',a_{-i})-\Phi_X(a_i,a_{-i})$.
+\end{n1prop}
+El término de referencia se cancela~\parencite{monderer1996potential}. Para
+$h>1$ se hablará de búsqueda finita coalicional, no de potencial exacto.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 29 - jerarquía h-local y reglas de revisión
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · F-I · ORDEN ESTRATÉGICO Y REVISIÓN}
+\section*{Orden de coordinación y regla de revisión}
+\enlargethispage{4\baselineskip}
+
+La vecindad
+\begin{equation}
+\label{eq:n4-h-neighbourhood}
+\mathcal V_h(a)=\left\{a':1\leq
+\left|\{i:a_i'\neq a_i\}\right|\leq h\right\}
+\end{equation}
+contiene los perfiles alcanzables coordinando hasta $h$ robots. Un perfil es
+\emph{$h$-local estable} si ningún $a'\in\mathcal V_h(a)$ reduce
+$\Psi_4$. Así, BR, 2BR y C3 son las etapas $h=1,2,3$ de una sola jerarquía,
+con $\mathcal V_1\subset\mathcal V_2\subset\mathcal V_3$.
+
+La regla de revisión responde a otra pregunta: cuál de las opciones disponibles
+se prueba. Para la ganancia unilateral $g_i^X(k)$, las variantes ejecutadas
+fueron
+\begin{equation}
+\label{eq:n4-revision-rules}
+\begin{aligned}
+\mathrm{BR}:\;&k^\star\in\arg\max_k g_i^X(k),\quad
+g_i^X(k^\star)>0,\\[-1mm]
+\mathrm{Geo\mbox{-}ASR}:\;&
+\Pr(k)=\frac{[g_i^X(k)]_+}{\sum_q[g_i^X(q)]_+},\\[-1mm]
+\mathrm{Geo\mbox{-}LLL}:\;&
+\Pr(k)=\frac{\exp\{\beta u_i^X(k,a_{-i})\}}
+{\sum_q\exp\{\beta u_i^X(q,a_{-i})\}}.
+\end{aligned}
+\end{equation}
+BR no publica una propuesta si la mejor ganancia no es positiva. En ASR, si
+$\sum_q[g_i^X(q)]_+=0$, el robot conserva $a_i$ y no se evalúa la razón.
+
+\begin{figure}[H]
+\centering
+\input{figures/n4/n4_order_revision.tex}
+\caption{El orden estratégico amplía la vecindad; BR, Geo-ASR y Geo-LLL
+cambian cómo se explora la misma vecindad unilateral.}
+\label{fig:n4-order-revision}
+\viuownsource
+\end{figure}
+
+Geo-ASR es una revisión atómica de tipo Smith, no la dinámica continua de F-II.
+Geo-LLL explora durante $\min\{8N,\lfloor T/2\rfloor\}$ activaciones con
+$\beta_t:1\to24$ y después aplica BR. En cobertura admite pasos exploratorios;
+tras alcanzar $D_4=0$, solo admite acciones que lo conservan. El terminal es
+1-local solo si el pulido BR no queda truncado. Ninguna
+de las dos coordina por sí misma a dos robots; por tanto, no puede convertir un
+bloqueo bilateral en una mejora unilateral. Esta distinción fija la lectura del
+experimento E4: primero se compara la revisión dentro de $h=1$ y luego el orden
+$h$.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 30 - barrera y refinamiento progresivo
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · F-I · BARRERAS Y REFINAMIENTO}
+\section*{Orden de escape y refinamiento de la vecindad}
+\enlargethispage{1\baselineskip}
+\begingroup
+\setlength{\abovedisplayskip}{5pt}
+\setlength{\belowdisplayskip}{5pt}
+\setlength{\abovedisplayshortskip}{3pt}
+\setlength{\belowdisplayshortskip}{3pt}
+
+La definición general no impone conectividad:
+\begin{equation}
+\label{eq:n4-escape-order}
+h^\star(a)=\min\{h:\exists a'\in\mathcal V_h(a),\
+\Psi_4(a')<_{\mathrm{lex}}\Psi_4(a)\},
+\end{equation}
+con $h^\star=\infty$ cuando no existe mejora. E9 audita una cantidad más
+restrictiva. Para el grafo vecinal $G$, sea
+\begin{equation}
+\label{eq:n4-connected-escape-order}
+\begin{aligned}
+\mathcal V_h^{\mathrm c}(a)&=\{a'\in\mathcal V_h(a):
+G[\{i:a_i'\ne a_i\}]\ \text{es conexo}\},\\[-1mm]
+h_{\mathrm c}^\star(a)&=\min\{h:\exists a'\in\mathcal V_h^{\mathrm c}(a),\
+\Psi_4(a')<_{\mathrm{lex}}\Psi_4(a)\}.
+\end{aligned}
+\end{equation}
+Para dos cargas $r,s$ y dos
+robots $i,j$, una barrera unilateral con escape bilateral aparece si
+\begin{equation}
+\label{eq:n4-bilateral-barrier-compact}
+\begin{gathered}
+Q_r-c_i^{\mathrm{pay}}<m_r,\quad Q_s-c_j^{\mathrm{pay}}<m_s,\\
+Q_r-c_i^{\mathrm{pay}}+c_j^{\mathrm{pay}}\ge m_r,\quad
+Q_s-c_j^{\mathrm{pay}}+c_i^{\mathrm{pay}}\ge m_s,\\
+d_{is}+d_{jr}<d_{ir}+d_{js}.
+\end{gathered}
+\end{equation}
+
+\begin{n1lema}[Barrera unilateral y escape bilateral]
+Bajo~\eqref{eq:n4-bilateral-barrier-compact}, retirar solo a $i$ o a $j$ crea
+déficit, mientras el intercambio mantiene $D_4=0$ y hace $\Delta J_4<0$. En el
+subproblema de esas dos cargas, $h^\star(a)=2$.
+\end{n1lema}
+
+\begin{figure}[H]
+\centering
+\scalebox{.74}{\input{figures/n4/n4_barrier_refinement.tex}}
+\caption{Barrera bilateral y refinamiento progresivo entre etapas.}
+\label{fig:n4-bilateral-barrier}
+\viuownsource
+\end{figure}
+\vspace{-4mm}
+
+\begin{algorithm}[H]
+\caption{Refinamiento $h$-local de Geo-QPG}
+\label{alg:n4-progressive}
+\footnotesize
+\begin{algorithmic}[1]
+\Require perfil $a$ y orden máximo $h_{\max}$
+\For{$h=1,\ldots,h_{\max}$}
+  \State aceptar mejoras estrictas de $\mathcal V_h(a)$ hasta agotarlas o alcanzar el límite temporal
+  \State $a^{(h)}\gets a$
+\EndFor
+\State \Return $a^{(h_{\max})}$
+\end{algorithmic}
+\end{algorithm}
+\vspace{-2mm}
+
+\begin{n1prop}[Terminación sin truncamiento]
+Si se examinan todos los candidatos, cada \emph{commit} reduce $\Psi_4$ y no hay
+interrupción por presupuesto, el espacio finito de $(K+1)^N$ perfiles garantiza
+la terminación en un mínimo $h$-local.
+\end{n1prop}
+Una ejecución truncada no certifica estabilidad $h$-local ni la terminación
+implica optimalidad global. E9 mide $h_{\mathrm c}^\star$ en el terminal
+unilateral, con búsqueda exacta solo hasta $h=3$.
+\endgroup
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% F-I - conflicto, DMIS y commit
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · F-I · CONCURRENCIA Y TRANSACCIÓN}
+\section*{De la mejora local a una ejecución concurrente}
+\enlargethispage{1\baselineskip}
+
+Sea $\mathcal P$ el conjunto de propuestas de una misma fase y versión. El grafo
+$\mathcal G_C=(\mathcal P,\mathcal E_C)$ enlaza las que comparten robot o carga.
+
+\begin{n1prop}[Composición de propuestas no conflictivas]
+Si $\mathcal B\subseteq\mathcal P$ es independiente, entonces
+$\Delta D_{\mathcal B}=\sum_{p\in\mathcal B}\Delta_pD$ y
+$\Delta J_{\mathcal B}=\sum_{p\in\mathcal B}\Delta_pJ$; si cada propuesta mejora,
+el lote también reduce $\Psi_4$.
+\end{n1prop}
+La independencia garantiza composición segura, aunque no selecciona
+necesariamente el mejor lote.
+
+\begin{figure}[H]
+\centering
+\scalebox{.74}{\input{figures/n4/n4_conflict_graph.tex}}
+\caption{Las propuestas físicas inducen un grafo de conflictos; DMIS selecciona
+un conjunto independiente maximal, no un conjunto máximo.}
+\label{fig:n4-conflict-graph}
+\viuownsource
+\end{figure}
+\vspace{-3mm}
+
+CF conserva un orden global como ablación; DMIS lo sustituye por prioridades
+entre vecinos de conflicto~\parencite{luby1986MIS}. Cada carga usa
+$z_k=(Q_k,v_k^{\mathrm{reg}})$, un registro lógico del simulador. Un
+\emph{keeper} determinista recibe propuestas y propaga cada actualización por
+un árbol vecinal. Los registros viven en el mismo proceso: DMIS+TX elimina el
+orden global, no toda infraestructura lógica.
+
+\begin{figure}[H]
+\centering
+\scalebox{.72}{\input{figures/n4/n4_tx_flow.tex}}
+\caption{Geo-QPG-DMIS+TX separa lectura, propuesta, arbitraje vecinal y
+\emph{commit} versionado.}
+\label{fig:n4-dmis-architecture}
+\viuownsource
+\end{figure}
+\vspace{-3mm}
+
+\begin{tcolorbox}[colback=SPFloor,colframe=black!18,boxrule=.45pt,arc=.8mm,
+ left=2mm,right=2mm,top=.6mm,bottom=.6mm]
+\footnotesize La ejecución sigue cinco operaciones: \texttt{READ} lee
+estado y versiones; \texttt{PROPOSE} publica la mejora; \texttt{DMIS} elige
+ganadores vecinales; \texttt{PREPARE/COMMIT} escribe todo si las versiones siguen
+vigentes; y \texttt{ABORT} no escribe.
+\end{tcolorbox}
+
+El \emph{commit} escribe todo o nada solo con entrega fiable y proponente activo.
+Pérdida, retardo, partición y fallos bizantinos quedan fuera
+\parencite{grayLamport2006Commit}. F-II y F-III recuperan la coalición entera al
+cierre.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 31 - familia poblacional
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · F-II · JUEGOS POBLACIONALES}
+\section*{F-II: intención continua y cierre atómico}
+\enlargethispage{1\baselineskip}
+
+F-II sustituye la acción indivisible por $x_i\in\Delta_i$, con
+$x_{ik}\in[0,1]$ y $\sum_{k=0}^{K}x_{ik}=1$. La capacidad relajada
+$Q_k(x)=\sum_i c_i^{\mathrm{pay}}x_{ik}$ no identifica todavía qué robots
+acudirán. E7 (véase más adelante en este nivel) fija una sola relajación para
+que las cuatro dinámicas vean el mismo campo. Sea
+$r_k(x)=[1-Q_k(x)/m_k]_+$ y
+$\bar d_{ik}=d_{ik}/\max_{r,s}d_{rs}$:
+\begin{equation}
+\label{eq:n4-smooth-potential}
+\widetilde\Phi(x)=
+-\frac{\alpha}{2}\sum_k r_k(x)^2
+-\frac{\beta}{N}\sum_{i,k}\bar d_{ik}x_{ik},
+\qquad
+F_{ik}=\frac{\partial\widetilde\Phi}{\partial x_{ik}}.
+\end{equation}
+La penalización cuadrática de déficit (\emph{squared hinge}) es de clase $C^1$ y
+su gradiente se anula al cubrir la cuota. La normalización hace explícito el
+compromiso $\alpha/\beta$; no reproduce el
+orden lexicográfico de F-I y se trata como una penalización continua.
+
+Replicator, Smith, Brown--von Neumann--Nash (BNN) y Logit cambian la regla de
+revisión, no el campo~\parencite{sandholm2010population,quijano2017population}:
+\begin{equation}
+\label{eq:n4-population-dynamics}
+\begin{aligned}
+\dot x_{ik}^{\mathrm{Rep}}&=x_{ik}(F_{ik}-\bar F_i),
+&\bar F_i&=\sum_qx_{iq}F_{iq},\\[-1mm]
+\dot x_{ik}^{\mathrm{Smith}}&=\sum_qx_{iq}[F_{ik}-F_{iq}]_+
+-x_{ik}\sum_q[F_{iq}-F_{ik}]_+,\\[-1mm]
+\dot x_{ik}^{\mathrm{BNN}}&=[F_{ik}-\bar F_i]_+
+-x_{ik}\sum_q[F_{iq}-\bar F_i]_+,\\[-1mm]
+\dot x_{ik}^{\mathrm{Logit}}&=
+\frac{\exp(F_{ik}/\tau)}{\sum_q\exp(F_{iq}/\tau)}-x_{ik}.
+\end{aligned}
+\end{equation}
+
+\begin{figure}[H]
+\centering
+\input{figures/n4/n4_population.tex}
+\caption{F-II mantiene un estado divisible durante la evolución y requiere un
+cierre común antes de producir robots enteros.}
+\label{fig:n4-population-closure}
+\viuownsource
+\end{figure}
+
+La ejecución distribuida mantiene una estimación mediante consenso de media
+dinámica (DAC) de $Q_k(x)$ y registra su
+error. Replicator conserva soporte; Logit explora mediante $\tau$. La siguiente
+página fija el algoritmo digital y el cierre común empleado en E7.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 32 - familia Nash restringida
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · F-III · PRIMAL--DUAL Y EQUILIBRIO RESTRINGIDO}
+\section*{F-III: el déficit se trata como restricción compartida}
+\enlargethispage{1\baselineskip}
+\begingroup
+\setlength{\abovedisplayskip}{5pt}
+\setlength{\belowdisplayskip}{5pt}
+\setlength{\abovedisplayshortskip}{3pt}
+\setlength{\belowdisplayshortskip}{3pt}
+
+F-III también usa $x$, pero convierte cada cuota en una restricción acoplada
+\begin{equation}
+\label{eq:n4-shared-constraint}
+g_k(x)=1-\frac{Q_k(x)}{m_k}\le0,
+\quad
+J_i(x_i)=\frac1N\sum_k\bar d_{ik}x_{ik}
++\frac{\epsilon}{2}\lVert x_i\rVert^2,
+\quad
+\mathcal L=\sum_iJ_i+\sum_k\lambda_kg_k.
+\end{equation}
+El juego queda definido por los $N$ problemas
+\begin{equation}
+\label{eq:n4-vgne-player-problem}
+\min_{x_i\in\Delta_i}J_i(x_i)
+\quad\text{s.a.}\quad g(x)\leq0,qquad i=1,\ldots,N,
+\end{equation}
+con $\mathcal X=\prod_i\Delta_i$,
+$\mathbf F(x)=\operatorname{col}_i(\nabla_{x_i}J_i)$ y Lagrangiano individual
+$\mathcal L_i=J_i+\lambda^\top g$. Con restricciones compartidas y potencial
+convexo, el vGNE de multiplicador común cumple las KKT del programa asociado.
+$\lambda_k\ge0$ actúa como precio de capacidad: si falta cobertura, el término
+$(c_i^{\mathrm{pay}}/m_k)\lambda_k$ atrae masa hacia $k$. La regularización
+$\epsilon=0{,}02$ hace estrictamente convexo el problema continuo.
+
+La referencia central resuelve el programa convexo. La versión distribuida
+discretiza el mecanismo primal--dual:
+\begin{equation}
+\label{eq:n4-primal-dual-candidate}
+\dot x_i=\Pi_{T_{\Delta_i}(x_i)}[-\nabla_{x_i}\mathcal L_i],
+\qquad
+\dot\lambda_k=\Pi_{T_{\mathbb R_+}(\lambda_k)}[g_k(x)].
+\end{equation}
+Cada robot mantiene $\lambda_{ik}$ y una estimación
+$\widehat g_{ik}$, con un término explícito de consenso:
+\begin{equation}
+\label{eq:n4-distributed-dual-candidate}
+\dot\lambda_{ik}=\Pi_{T_{\mathbb R_+}(\lambda_{ik})}
+\left[\widehat g_{ik}-\gamma\sum_{j\in\mathcal N_i}
+(\lambda_{ik}-\lambda_{jk})\right].
+\end{equation}
+
+\begin{figure}[H]
+\centering
+\vspace{-3mm}
+\scalebox{.58}{\input{figures/n4/n4_primal_dual.tex}}
+\caption{Interpretación de F-III: las cargas deficitarias elevan su precio,
+las copias duales se coordinan y el estado continuo necesita cierre atómico.}
+\label{fig:n4-primal-dual}
+\viuownsource
+\end{figure}
+\vspace{-3mm}
+
+El vGNE con multiplicador común satisface:
+\begin{equation}
+\label{eq:n4-vgne-kkt}
+\begin{gathered}
+0\in\mathbf F(x^\star)+\nabla g(x^\star)^\top\lambda^\star
++N_{\mathcal X}(x^\star),\\[-1mm]
+g(x^\star)\le0,\quad\lambda^\star\ge0,\quad
+{\lambda^\star}^{\!\top}g(x^\star)=0.
+\end{gathered}
+\end{equation}
+
+El criterio numérico reúne las cinco condiciones. La literatura motiva el
+mecanismo~\parencite{cherukuri2016primalDual,yi2019operatorGNE}; no se afirma
+convergencia global de la discretización evaluada.
+\endgroup
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 33 - algoritmos continuos y cierre común
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · F-II--F-III · ALGORITMOS Y CIERRE}
+\section*{Algoritmos continuos y cierre entero común}
+
+La iteración es digital y usa rondas simuladas sobre el grafo estático de N3;
+no se presenta como asíncrona. Los dos mecanismos terminan en el mismo
+$\mathcal R$ para que la comparación no dependa de un redondeo distinto por
+familia.
+
+\begin{tcolorbox}[colback=SPBlue!3,colframe=SPBlue!65,boxrule=.6pt,arc=1mm,
+ left=2mm,right=2mm,top=1.4mm,bottom=1.4mm]
+\textbf{Algoritmo 4 · F-II distribuido con dinámica $M$}
+\begin{algorithmic}[1]
+\Require mundo, grafo $G$, $M\in\{\mathrm{Rep,Smith,BNN,Logit}\}$, $x^0$, $T$
+\State cada robot inicia $z_{ik}^0=(c_i^{\mathrm{pay}}/m_k)x_{ik}^0$ para todo $k$
+\For{$t=0,\ldots,T-1$}
+  \State intercambiar $z_i^t$ con vecinos y actualizar DAC
+  \State calcular $\widehat Q_{ik}^t$ y el mismo fitness $F_{ik}(x^t)$
+  \State obtener $v_i^t=M(x_i^t,F_i^t)$ y proyectar $x_i^{t+1}$ en $\Delta_i$
+  \State corregir $z_i^{t+1}$ con el cambio de contribución local
+  \If{residual de punto fijo y error DAC cruzan sus umbrales} \State \textbf{salir} \EndIf
+\EndFor
+\State \Return $x^\star$, historial y $a^\star=\mathcal R(x^\star)$
+\end{algorithmic}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=SPGreen!3,colframe=SPGreen!65,boxrule=.6pt,arc=1mm,
+ left=2mm,right=2mm,top=1.4mm,bottom=1.4mm]
+\textbf{Algoritmo 5 · F-III primal--dual distribuido}
+\begin{algorithmic}[1]
+\Require mundo, grafo $G$, $x^0$, copias $\lambda_i^0=0$, ganancias y $T$
+\For{$t=0,\ldots,T-1$}
+  \State mezclar por vecinos las copias $\lambda_i^t$ y el estimador de $g_k(x^t)$
+  \State predictor: proyectar el paso primal y actualizar $\lambda_i\ge0$
+  \State corrector: reevaluar gradiente, DAC y copias duales
+  \State calcular residuos primal, dual, complementariedad, estación y consenso
+  \If{la norma conjunta es menor que $5\times10^{-4}$} \State \textbf{salir} \EndIf
+\EndFor
+\State \Return $(x^\star,\lambda^\star)$, historial y $a^\star=\mathcal R(x^\star)$
+\end{algorithmic}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=SPFloor,colframe=VIUOrange!80,boxrule=.6pt,arc=1mm,
+ left=2mm,right=2mm,top=1.3mm,bottom=1.3mm]
+\small
+\textbf{Cierre común $\mathcal R$.} Es un postproceso central del observador,
+común a F-II y F-III, no una fase distribuida. Ordena para cada robot las cargas por
+$x_{ik}$, conserva asignaciones compatibles y aplica cadenas aumentantes
+deterministas hasta cubrir cuotas o agotar límites. Devuelve factibilidad,
+distancia, exceso y operaciones. Es una heurística acotada; el MILP sigue siendo
+el único certificado entero global. Por ello estas ramas comparan una intención
+distribuida seguida del mismo cierre atómico; no son implementaciones
+distribuidas extremo a extremo.
+\end{tcolorbox}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 34 - familia estocástica y mismo mundo
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · F-IV · DECISIÓN RECURRENTE}
+\section*{F-IV: reclutar de nuevo cuando cambia el mundo}
+\enlargethispage{2\baselineskip}
+
+Las tres primeras familias resuelven una instantánea. Cuando llegan trabajos,
+cambia la disponibilidad, cae un robot o termina un servicio, el reclutamiento
+pasa a ser secuencial. E8 usa el modelo mínimo que permite comprobar esa idea
+sin invadir la dinámica física de SP2:
+\begin{equation}
+\label{eq:n4-markov-formulation}
+\begin{aligned}
+s_t&=(a_{t-1},\mathcal J_t,\mathcal A_t,e_t),
+\qquad u_t\in\{0,\ldots,K\}^{N},\\
+s_{t+1}&=T(s_t,u_t,e_{t+1}),\\
+C_t&=w_D\bar D_t+w_d\bar J_t+w_s
+\lVert u_t-a_{t-1}\rVert_0,
+\qquad V^\pi(s_0)=\sum_{t=0}^{T-1}\gamma^tC_t .
+\end{aligned}
+\end{equation}
+Los eventos $e_t$ son llegada, finalización o fallo y se aplican antes de cada
+decisión. Se comparan Geo-QPG desde cero, Geo-QPG activado por evento e
+inicializado desde la solución anterior, y un programa dinámico central que
+conoce la secuencia completa. $T$ es una actualización determinista condicionada
+por el evento observado; no se modela probabilísticamente ni se estima un kernel.
+Franci y
+Grammatico estudian GNE estocástico bajo información parcial
+\parencite{franci2022stochasticGNE}; sus garantías no se transfieren al estudio
+temporal evaluado aquí.
+
+\begin{figure}[H]
+\centering
+\input{figures/n4/n4_same_world.tex}
+\caption{El mismo mundo físico visto por las cuatro familias. F-I mantiene
+robots enteros; F-II y F-III requieren cierre; F-IV añade evolución temporal.}
+\label{fig:n4-same-world}
+\viuownsource
+\end{figure}
+
+\begin{tcolorbox}[colback=SPFloor,colframe=VIUOrange!80,boxrule=.65pt,arc=1mm,
+ left=2.2mm,right=2.2mm,top=1.6mm,bottom=1.6mm]
+\small
+E8 se modela como un juego potencial repetido condicionado por eventos exógenos.
+No se estima un kernel $P$ ni se ha probado una propiedad de potencial de Markov.
+El oráculo del objetivo escalar con información futura es central, de horizonte
+finito y viable solo para el tamaño pequeño enumerado.
+\end{tcolorbox}
+
+La comparación se hace sobre salidas enteras: F-I entrega $a$ directamente,
+F-II y F-III pasan por $\mathcal R$, y F-IV produce una secuencia de perfiles.
+E8 no comparte la instantánea estática de E7 y, por ello, no entra en su ranking.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 35 - información, cadena formal y programa experimental
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · INFORMACIÓN Y PROGRAMA EXPERIMENTAL}
+\section*{Información intercambiada y diseño experimental}
+\enlargethispage{2\baselineskip}
+
+La red transporta estados distintos en cada familia. F-I intercambia $Q_k$, la
+versión y la propuesta sobre las cargas afectadas. F-II estima $Q_k(x)$ y el
+fitness mediante DAC; F-III añade copias de los multiplicadores y consenso
+dual. F-IV transmite eventos y disponibilidad, pero su oráculo temporal sigue
+siendo central. Estos mecanismos determinan qué información está disponible;
+no cambian por sí solos el concepto de solución.
+
+En F-I ya se establecieron la suficiencia de los agregados, el potencial exacto
+unilateral, la terminación en una vecindad finita y la composición de propuestas
+no conflictivas. La confirmación atómica supone entrega fiable. Por ello,
+la cadena formal no cubre optimalidad global, Nash fuerte, fallos de red ni
+transporte físico.
+
+\begin{table}[H]
+\centering
+\caption{Diseño de los experimentos de N4 y variables analizadas.}
+\label{tab:n4-evidence-programme}
+\fontsize{7.7}{8.5}\selectfont
+\setlength{\tabcolsep}{1.8pt}
+\renewcommand{\arraystretch}{1.08}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{.62cm}
+ >{\raggedright\arraybackslash}p{3.15cm}Y
+ >{\raggedright\arraybackslash}p{2.25cm}}
+\toprule
+Estudio & Contraste & Variable principal & Resultado gráfico \\
+\midrule
+E4 & BR--ASR--LLL; después BR--2BR--C3 & brecha, factibilidad y tráfico &
+Fig.~\ref{fig:n4-family-results} \\
+E4 & CF frente a DMIS+TX & efecto del orden global de confirmación &
+Fig.~\ref{fig:n4-architecture-results} \\
+E9 & búsqueda conectada hasta $h=3$ & primer orden conectado $h_{\mathrm c}^\star$ &
+Figs.~\ref{fig:n4-hstar-distribution}--\ref{fig:n4-fi-trace} \\
+E5 & DPOP frente a MILP en tamaño enumerable & exactitud y tamaño de tabla &
+Fig.~\ref{fig:n4-dpop-results} \\
+E6 & BR frente a DMIS+TX, $16\le N\le64$ & tiempo y bytes por agente &
+Fig.~\ref{fig:n4-scaling-results} \\
+E7 & Replicator, Smith, BNN y Logit con el mismo cierre & factibilidad y brecha &
+Fig.~\ref{fig:n4-fii-continuous-atomic} \\
+E7 & primal--dual frente a Smith con el mismo cierre & KKT, factibilidad y tráfico &
+Fig.~\ref{fig:n4-fiii-residuals} \\
+E8 & políticas reactivas y oráculo temporal & coste, servicio y cambios &
+Fig.~\ref{fig:n4-fiv-dynamic} \\
+\bottomrule
+\end{tabularx}
+\viuownsource
+\end{table}
+
+{\small El mundo--semilla es la unidad independiente; los fallos y los límites
+temporales permanecen en el denominador. E4--E6 y E9 estudian F-I, E7 compara
+las tres familias estáticas con salida entera y E8 analiza la decisión temporal.
+El canal degradado queda fuera del dominio experimental de este capítulo.\par}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 36 - resultado de orden y revisión
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · E4 · ORDEN Y REVISIÓN}
+\section*{E4: la mejora provino de aumentar el orden local}
+
+E4 usa un banco confirmatorio disjunto de 1\,200 mundos, generado con los mismos
+factores de N3 pero con una corriente de semillas propia. Los tres baselines de
+N3 y las variantes N4 reciben dentro de cada mundo las mismas capacidades,
+demandas y geometría; en total se obtuvieron \NFourRows{} ejecuciones. Así se
+separan tres intervenciones: el orden $h$, la regla de revisión y la arquitectura
+DMIS+TX (Figura~\ref{fig:n4-family-results}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.90\linewidth]{assets/figures/n4-v2/n4_family_comparison.pdf}
+\caption{E4: calidad y coste al ampliar la vecindad local. Los intervalos se
+calculan sobre mundos con óptimo MILP certificado.}
+\label{fig:n4-family-results}
+\viuownsource
+\end{figure}
+
+Al ampliar el orden local, la brecha (\emph{gap}) mediana bajó de
+\NFourGapPctQpgU\,\% ($h=1$) a \NFourGapPctQpgP\,\% ($h=2$) y
+\NFourGapPctCThree\,\% ($h=3$). C3$-$BR fue \NFourCThreeGapDiffPct{} puntos
+(IC 95\,\%: \NFourCThreeGapDiffLowPct{} a \NFourCThreeGapDiffHighPct{}), elevó
+la factibilidad \NFourCThreeRiskPct{} puntos y costó \NFourBytesCThree{} bytes
+por agente y \NFourRuntimeCThree{} ms.
+
+Con $h=1$, Geo-ASR y Geo-LLL empeoraron la brecha de BR en
+\NFourSmithGapDiffPct{} y \NFourLllGapDiffPct{} puntos. En estos mundos, cambiar
+la regla de revisión no compensó la falta de coordinación entre dos o tres
+robots. E9 examina a continuación cuál fue el primer orden de escape de cada
+terminal BR.
+
+\begin{table}[H]
+\centering
+\caption{Mapa operativo de la familia F-I, con el alcance de cada variante.}
+\label{tab:n4-fi-methods}
+\fontsize{7.2}{7.8}\selectfont
+\setlength{\tabcolsep}{2.1pt}
+\renewcommand{\arraystretch}{0.92}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{1.25cm}c
+ >{\raggedright\arraybackslash}p{1.55cm}
+ >{\raggedright\arraybackslash}p{1.35cm}
+ >{\raggedright\arraybackslash}p{2.35cm}c
+ >{\raggedright\arraybackslash}p{1.55cm}Y}
+\toprule
+Método & $h$ & Revisión & Scheduler & Información & Atómico & Terminal & Coste principal \\
+\midrule
+BR & 1 & mejor respuesta & secuencial & cargas afectadas & sí & 1-local & calidad limitada \\
+2BR & 2 & mejor par & secuencial & cargas + pareja & sí & 2-local & más candidatos \\
+C3 & 3 & mejor triple & secuencial & cargas + triple & sí & 3-local & cómputo y bytes \\
+Geo-ASR & 1 & proporcional & secuencial & cargas afectadas & sí & 1-local & muestreo estocástico \\
+Geo-LLL & 1 & Gibbs + pulido BR & secuencial & cargas afectadas & sí & 1-local si no trunca & explora y después desciende \\
+CF & 1--3 & candidatos QPG & orden global & lote completo & sí & $h$-local & coordinación global \\
+DMIS+TX & 1--3 & candidatos QPG & vecinal & conflictos + versiones & sí & $h$-local & tráfico adicional \\
+\bottomrule
+\end{tabularx}
+\viuownsource
+\end{table}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% E9 - distribución del orden mínimo
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · E9 · ORDEN MÍNIMO DE COORDINACIÓN}
+\section*{E9: en los mundos evaluados, el primer escape conectado fue bilateral}
+\enlargethispage{2\baselineskip}
+
+Después de ejecutar BR desde el perfil ocioso, se reconstruyeron los
+\NFourHStarWorlds{} mundos y se buscó el primer grupo conectado que redujese
+$(D_4,J_4)$. Por construcción, $P(h_{\mathrm c}^\star=1)=0$ comprueba que BR agotó su
+vecindad. La búsqueda terminó en tres; ``$>3$'' solo indica que no encontró una
+mejora dentro de ese corte.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.79\linewidth]{assets/figures/n4-v4/n4_hstar_distribution.pdf}
+\caption{E9: distribución de $h_{\mathrm c}^\star$, el primer orden conectado
+que mejora el terminal BR.
+Cada barra contiene 150 mundos en el panel de presión--heterogeneidad y 240 por
+geometría.}
+\label{fig:n4-hstar-distribution}
+\viuownsource
+\end{figure}
+
+El primer escape fue bilateral en \NFourHStarTwoPct\,\% de los mundos y
+trilateral en \NFourHStarThreePct\,\%; en el
+\NFourHStarGtThreePct\,\% restante no apareció una mejora hasta orden tres. En
+este banco, el bloqueo que dejó BR se resolvió casi siempre mediante un cambio
+de dos robots. La búsqueda comienza en el terminal obtenido desde reposo y se
+detiene en $h=3$, de modo que la última categoría no certifica optimalidad.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.76\linewidth]{assets/figures/n4-v4/n4_hstar_ratio_sensitivity.pdf}
+\caption{Sensibilidad independiente de E9: proporción sin mejora conectada hasta
+$h=3$ al variar $N/K$, presión y heterogeneidad. Este bloque no se mezcla con
+los 1\,200 mundos confirmatorios.}
+\label{fig:n4-hstar-ratio}
+\viuownsource
+\end{figure}
+
+La fracción $h_{\mathrm c}^\star\ge3$ pasó del \NFourHStarHardLowCvPct\,\% con $CV=0$ al
+\NFourHStarHardHighCvPct\,\% con $CV=1$; la categoría $>3$ cayó del
+\NFourHStarGtThreeLowRatioPct\,\% con $N/K=2$ al
+\NFourHStarGtThreeHighRatioPct\,\% con $N/K=4$. Son tendencias del barrido, no
+monotonía ni una ley asintótica.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% E9 - enlace entre barrera, mejora y ejecución
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · E9 · MECANISMO Y TRAZA}
+\section*{E9: orden de escape, coste y traza de ejecución}
+\enlargethispage{4\baselineskip}
+
+El orden de escape también anticipó qué refinamiento podía mejorar el terminal.
+En los mundos con escape bilateral, 2BR redujo la brecha mediana en
+\NFourHStarPairGainPct{} puntos respecto de BR. En los cuatro casos con
+$h_{\mathrm c}^\star=3$, C3 aportó otros \NFourHStarTripleGainPct{} puntos respecto de 2BR.
+Cuando no apareció una mejora hasta tres, ninguno de los dos refinamientos
+redujo el perfil BR.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.84\linewidth]{assets/figures/n4-v4/n4_hstar_gap_link.pdf}
+\caption{Relación entre el orden de escape y la reducción observada de la brecha. La
+línea negra es la mediana; los puntos son mundos y la anchura resume densidad.}
+\label{fig:n4-hstar-gap-link}
+\viuownsource
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.76\linewidth]{assets/figures/n4-v4/n4_fi_representative_trace.pdf}
+\caption{Traza de F-I: déficit y distancia después de cada confirmación,
+orden de las desviaciones aceptadas y tráfico total. La distancia puede crecer
+durante la fase de cuota porque el orden lexicográfico prioriza eliminar déficit.}
+\label{fig:n4-fi-trace}
+\viuownsource
+\end{figure}
+
+C3 alcanzó una distancia menor mediante movimientos de orden dos y tres, pero
+exploró más candidatos y acumuló más bytes; la traza conserva cada cambio
+aceptado. El orden exacto de los 40 casos truncados sigue sin conocerse. Tampoco
+se desprende de E9 que el terminal de C3 sea globalmente óptimo.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 37 - arquitectura y exactitud
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · E4--E5 · ARQUITECTURA Y EXACTITUD}
+\section*{Arquitectura vecinal y exactitud en pequeño}
+\enlargethispage{1\baselineskip}
+
+Aquí se responden dos preguntas distintas. Primero se mantienen los candidatos y
+se retira el orden global de confirmación. Después se contrasta, en tamaños
+enumerables, un método exacto distribuido sobre pseudoárbol
+(DPOP)\parencite{petcuFaltings2005DPOP} con el MILP.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.68\linewidth]{assets/figures/n4-v2/n4_architecture_ablation.pdf}
+\caption{E4: ablación arquitectónica CF frente a DMIS+TX sobre los mismos
+mundos y candidatos.}
+\label{fig:n4-architecture-results}
+\viuownsource
+\end{figure}
+
+En el canal nominal, retirar el orden global conservó la factibilidad y la
+brecha: las diferencias pareadas fueron \NFourDRiskPct{} puntos y
+\NFourDGapDiffPct{}, respectivamente. DMIS+TX añadió \NFourDByteDiff{} bytes por
+agente (IC 95\,\%: \NFourDByteDiffLow{} a \NFourDByteDiffHigh{}). Estas cifras
+son contadores de campos por salto bajo el canal nominal. No se midieron rondas,
+identidad final o latencia física, ni se inyectaron fallos.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.55\linewidth]{assets/figures/n4-v2/n4_dpop_exactness.pdf}
+\caption{E5: exactitud de DPOP y crecimiento de su tabla UTIL.}
+\label{fig:n4-dpop-results}
+\viuownsource
+\end{figure}
+
+DPOP se evaluó con $N\in\{6,8\}$, $K=2$, cinco geometrías,
+$CV\in\{0{,}35,0{,}65\}$, $\rho\in\{0{,}70,0{,}85\}$ y diez semillas por
+celda. La factorización empleó una variable por robot y un factor global de
+cuota; el pseudoárbol siguió ese orden determinista. En esa factorización, el
+factor global induce ancho $N-1$, de modo que el tamaño de UTIL depende del
+pseudoárbol empleado.
+
+DPOP coincidió con la factibilidad del MILP en
+\NFourDpopMatches{}/\NFourDpopWorlds{} mundos y recuperó el óptimo entero en las
+instancias enumeradas. El error objetivo máximo fue $\NFourDpopMaxError{}$ y la
+tabla mayor tuvo \NFourDpopMaxEntries{} entradas. La memoria crece
+exponencialmente con ese ancho; el experimento acredita exactitud en pequeño, no
+escalabilidad.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 38 - escala, tabla maestra, conclusión y SP2
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · E6 · SÍNTESIS Y TRANSICIÓN}
+\section*{E6: coste creciente en el rango medido}
+\enlargethispage{8\baselineskip}
+
+El barrido usa $(N,K)\in\{(16,4),(32,8),(48,12),(64,16)\}$, las geometrías
+aleatoria, agrupada y pasillo, cinco semillas por celda, $CV=0{,}65$,
+$\rho=0{,}80$ y el grafo medio de N3. Cada método dispone de 4.096 activaciones
+como máximo. Son 60 mundos pareados ejecutados en el mismo entorno descrito para
+el resto del capítulo. Se registran por separado el tiempo del proceso y los
+bytes modelados por agente; el ajuste log--log solo describe ese intervalo.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.60\linewidth]{assets/figures/n4-v2/n4_scaling.pdf}
+\caption{E6: escalado observado de BR y DMIS+TX. Los ajustes log--log describen
+$16\leq N\leq64$; no son cotas asintóticas.}
+\label{fig:n4-scaling-results}
+\viuownsource
+\end{figure}
+
+Para DMIS+TX, la pendiente temporal observada fue \NFourScaleSlopeD{} (IC
+95\,\%: \NFourScaleSlopeDLow{} a \NFourScaleSlopeDHigh{};
+$R^2=\NFourScaleRSquaredD$), frente a \NFourScaleSlopeU{} para BR
+(IC 95\,\%: 1,59 a 2,19; $R^2=0{,}997$). En $N=64$,
+DMIS+TX registró \NFourScaleRuntimeDMax{} ms y \NFourScaleBytesDMax{} bytes por
+agente; BR, \NFourScaleRuntimeUMax{} ms y \NFourScaleBytesUMax{}. La curva no se
+aplanó. En este intervalo no hay evidencia de coste fijo ni base para extrapolar
+a una flota ilimitada.
+
+Ampliar $h$ mejoró el mínimo local; DMIS+TX retiró el orden global a cambio de
+tráfico; y DPOP fue exacto solo en pequeño. La Tabla~\ref{tab:n4-family-master}
+separa las propiedades formales de esos resultados experimentales antes de
+comparar F-II y F-III.
+
+\begin{table}[H]
+\centering
+\caption{Resultados formales de F-I y alcance de cada enunciado.}
+\label{tab:n4-family-master}
+\fontsize{7.5}{8.1}\selectfont
+\setlength{\tabcolsep}{1.8pt}
+\renewcommand{\arraystretch}{0.94}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.05cm}
+ >{\raggedright\arraybackslash}p{1.55cm}
+ >{\raggedright\arraybackslash}p{4.35cm}Y}
+\toprule
+Resultado & Soporte & Afirmación & Alcance \\
+\midrule
+Cambio unilateral & identidad~\eqref{eq:n4-unilateral-delta} & El cambio unilateral
+se valora con agregados de las cargas afectadas. & Registros vigentes. \\
+Potencial exacto & Prop.~4 & La utilidad marginal induce un potencial exacto en cada
+fase unilateral. & No cubre $h>1$. \\
+Barrera bilateral & Lema~6 y E9 & Puede existir una barrera bilateral; E9 midió
+el primer escape conectado. & Búsqueda conectada hasta $h=3$. \\
+Terminación local & Prop.~5 & Sin truncamiento, las mejoras estrictas terminan
+en un mínimo $h$-local. & No implica óptimo global. \\
+Composición & Prop.~6 & Las propuestas independientes conservan el descenso de
+$\Psi_4$. & Sin robots ni cargas compartidos. \\
+Atomicidad & canal nominal & La confirmación versionada escribe todo o nada. &
+Solo bajo el canal nominal. \\
+\bottomrule
+\end{tabularx}
+\viuownsource
+\end{table}
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 39 - F-II: estado continuo frente a cierre
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · E7 · F-II POBLACIONAL}
+\section*{F-II: estado continuo y coalición después del cierre}
+
+Las cuatro dinámicas recibieron los mismos \NFourVThreeWorlds{} mundos. No son
+los 1.200 mundos de N3.E2: E7 reutiliza el banco congelado de N4.E4, generado
+con otra corriente de semillas. N3.E2 contiene 1.159 óptimos y 41 infactibles;
+este banco contiene 1.160 y 40, de ahí la diferencia entre denominadores. El
+estado continuo final se evaluó al cruzar la tolerancia o agotar 3\,000 iteraciones;
+después, el mismo $\mathcal R$ produjo la asignación física. No se descartaron
+las ejecuciones que alcanzaron el presupuesto.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.98\linewidth]{assets/figures/n4-v3/n4_fii_continuous_atomic.pdf}
+\caption{E7--F-II: déficit relajado al terminar y brecha después del cierre. La brecha
+se calcula sobre cierres factibles con óptimo MILP certificado; la tasa de
+factibilidad se muestra aparte para no ocultar los fallos.}
+\label{fig:n4-fii-continuous-atomic}
+\viuownsource
+\end{figure}
+
+Smith dejó el mayor potencial terminal en 1\,184 mundos y BNN en 16. Ese orden
+describe el potencial terminal: Logit cruzó el criterio numérico en el 84,5\,\%,
+Replicator en un mundo y Smith/BNN en ninguno. Tras $\mathcal R$, BNN fue el
+mejor resultado entero en 622 mundos, Smith en 300, Logit en 234 y Replicator
+en 44. El ganador cambió en \NFourFiiMismatchPct\,\% y la correlación de rangos
+mediana fue \NFourFiiRankRho.
+
+Entre los 1\,160 mundos con óptimo entero certificado, las cuatro tasas de
+factibilidad quedaron entre 96,1\,\% y 96,8\,\%. Las brechas medianas fueron
+18,17\,\% para BNN, \NFourSmithGapPct\,\% para Smith, 20,88\,\% para Logit y
+21,38\,\% para Replicator. La discrepancia continuo--entero apareció en las
+cinco geometrías.
+
+El potencial continuo y la coalición cerrada no ordenaron igual las dinámicas.
+Lo observado pertenece al conjunto dinámica--DAC--$\mathcal R$. Como
+$\mathcal R$ es heurístico, no se obtiene una garantía de redondeo óptimo.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 40 - F-III: residuos y resultado entero
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · E7 · F-III PRIMAL--DUAL}
+\section*{F-III: cierre entero y coste de comunicación}
+
+La convergencia se acepta solo cuando los residuos KKT y de consenso caen por
+debajo de $5\times10^{-4}$. Un descenso parcial no basta. La
+Figura~\ref{fig:n4-fiii-residuals} conserva la traza de una ejecución y las tasas
+por celda.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.98\linewidth]{assets/figures/n4-v3/n4_fiii_residuals.pdf}
+\caption{E7--F-III: residuos de una ejecución y porcentaje que cruzó
+el criterio conjunto según presión y heterogeneidad.}
+\label{fig:n4-fiii-residuals}
+\viuownsource
+\end{figure}
+
+PD-vGNE distribuido cruzó el umbral en \NFourPdConvergencePct\,\% de los 1\,200
+mundos; la mediana KKT final fue $\NFourPdKktMedian$. La tasa bajó de 97,3\,\%
+con presión 0,70 y $CV=0$ a 86,0\,\% con $CV=1$. Los 97 casos que no cruzaron
+el umbral permanecen en el denominador.
+
+Después de $\mathcal R$, el método distribuido alcanzó 99,57\,\% de factibilidad
+y brecha mediana \NFourPdGapPct\,\% en el soporte certificado. En presión 0,85,
+frente a Smith+$\mathcal R$, la factibilidad aumentó \NFourPdRiskDiffPct{} puntos
+(IC 95\,\%: 3,67 a 7,50; Holm $p=1{,}02 \times 10^{-8}$) y la brecha disminuyó
+7,39 puntos (IC 95\,\%: 5,07 a 9,65; Holm
+$p=2{,}79 \times 10^{-34}$).
+
+La mediana de tráfico fue 2,73 MB modelados por agente, frente a 0,90 MB para
+Smith. El mecanismo primal--dual seguido del mismo cierre produjo más
+asignaciones factibles que Smith+$\mathcal R$, a cambio de sostener DAC y
+consenso dual. Se compararon los dos mecanismos completos; estos datos no aíslan
+el efecto de los precios ni prueban convergencia global del predictor--corrector
+digital. Estos bytes cubren la dinámica distribuida, pero excluyen el
+postproceso central $\mathcal R$; no son un coste extremo a extremo.
+
+Las comparaciones anteriores resuelven una instantánea. E8 añade una secuencia
+de llegadas, finalizaciones y fallos para estudiar la decisión recurrente.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 41 - F-IV: campaña temporal
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · E8 · F-IV TEMPORAL}
+\section*{F-IV: coste descontado y tasa de servicio}
+
+Las \NFourDynamicWorlds{} secuencias se emparejaron por eventos; dentro de cada
+mundo solo cambió la política. El oráculo del objetivo escalar conoce el futuro
+y marca un techo de información para ese coste. Esa ventaja impide interpretar
+su diferencia frente a las políticas
+reactivas como una comparación arquitectónica justa.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.98\linewidth]{assets/figures/n4-v3/n4_fiv_dynamic.pdf}
+\caption{E8--F-IV: coste descontado por mundo, cambios de coalición y mensajes.
+El cero del oráculo del objetivo escalar en mensajes corresponde a su ejecución
+central.}
+\label{fig:n4-fiv-dynamic}
+\viuownsource
+\end{figure}
+
+Las medianas fueron \NFourMyopicCost{} para la resolución reactiva,
+\NFourWarmCost{} para la inicialización desde la solución anterior y
+\NFourOracleCost{} para el oráculo del objetivo escalar. Frente a la
+inicialización anterior, su diferencia pareada fue
+\NFourOracleWarmDiff{} (IC 95\,\%: $-0{,}486$ a $-0{,}329$; Holm
+$p=5{,}59 \times 10^{-9}$). La inicialización anterior empató con la resolución
+reactiva en 15 mundos, ganó en
+12 y perdió en tres; redujo las medianas de cambios de 12,5 a 11,5 y de mensajes
+de 544,5 a 446,5.
+
+El menor coste del oráculo del objetivo escalar no implica dominancia. Su tasa media de servicio fue
+95,6\,\%, frente a 97,8\,\% para las dos políticas Geo-QPG: el objetivo escalar
+aceptó en algunos episodios demanda incumplida para evitar distancia o cambios.
+
+Conocer los eventos futuros redujo el coste definido, pero no aumentó la tasa de
+servicio. El resultado procede de un problema pequeño con eventos exógenos. En
+una aplicación operativa, el servicio tendría que entrar como restricción o como
+primera prioridad lexicográfica.
+
+\clearpage
+
+% --------------------------------------------------------------------------
+% Página 42 - comparación maestra y conclusión
+% --------------------------------------------------------------------------
+\leveltag{RESULTADOS SP1 · N4 · COMPARACIÓN Y CONCLUSIÓN}
+\section*{Síntesis de SP1: del conteo a la coordinación local}
+\enlargethispage{1\baselineskip}
+
+Después del cierre atómico, las tres familias estáticas pueden compararse en el
+mismo plano de brecha, factibilidad y tráfico
+(Figura~\ref{fig:n4-cross-family-pareto}). F-IV queda fuera porque se evaluó con
+secuencias independientes.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.58\linewidth]{assets/figures/n4-v3/n4_cross_family_pareto.pdf}
+\caption{Síntesis transversal de N3--N4 sobre los mundos comparables: brecha
+frente al MILP, factibilidad y tráfico modelado. El tamaño representa
+factibilidad; los bytes cubren la fase decisional y excluyen el cierre central
+$\mathcal R$, por lo que no son un coste extremo a extremo.}
+\label{fig:n4-cross-family-pareto}
+\viuownsource
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Síntesis de N1--N4 y razón de cada transición.}
+\label{tab:sp1-level-synthesis}
+\fontsize{7.1}{7.5}\selectfont
+\setlength{\tabcolsep}{1.7pt}
+\renewcommand{\arraystretch}{0.88}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{.48cm}
+ >{\raggedright\arraybackslash}p{2.00cm}
+ >{\raggedright\arraybackslash}p{1.95cm}
+ >{\raggedright\arraybackslash}p{3.70cm}Y}
+\toprule
+ & Pregunta & Método y arquitectura & Resultado que queda establecido & Frontera \\
+\midrule
+N1 & ¿Cuántos robots? & LSAP central; flota homogénea & Expansión exacta por
+puestos. & Falla al variar la capacidad. \\
+N2 & ¿Quién cubre la carga? & MILP central; estado global & Coalición entera y
+oráculo certificado. & Certificación temporal y coordinador. \\
+N3 & ¿Quién decide? & CBBA-RB / GRAPE; vecinos & GRAPE gana factibilidad;
+CBBA-RB ahorra tráfico. & Conectividad y coste de reconstruir el perfil. \\
+N4 & ¿Qué orden local? & Geo-QPG F-I; vecinos & 1\,156/1\,200 terminales BR
+tuvieron primero un escape bilateral. & $h\le3$, canal nominal y mundo estático. \\
+\bottomrule
+\end{tabularx}
+\viuownsource
+\end{table}
+
+Los pares no explican el 96,3\,\% del beneficio. Ese porcentaje corresponde a
+los 1\,156 terminales BR cuyo primer escape, buscado hasta $h=3$, fue bilateral.
+En este régimen tiene sentido probar pares antes que órdenes superiores. Nada de
+ello cubre un canal degradado ni una ejecución física.
+
+\begin{tcolorbox}[colback=SPFloor,colframe=VIUOrange,boxrule=.7pt,arc=1mm,
+ left=2.3mm,right=2.3mm,top=1.2mm,bottom=1.2mm]
+\footnotesize
+\textbf{Conclusión.} SP1 entrega una coalición entera cuya cobertura se verifica
+antes de SP2; las demás ejecuciones se registran como no factibles. La secuencia
+N1--N4 abandona el recuento homogéneo, incorpora capacidad individual y retira
+el coordinador. En N4, coordinar dos o tres robots mejoró mínimos que no cedían
+al cambiar solo la regla unilateral. Geo-QPG F-I concentra la aportación; F-II y
+F-III son contrastes continuos bajo un cierre común, y F-IV delimita la extensión
+temporal. Acoplamiento, \emph{wrench} y transporte corresponden a SP2.
+\end{tcolorbox}

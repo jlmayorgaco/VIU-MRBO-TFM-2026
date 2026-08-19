@@ -1,0 +1,91 @@
+experiment_id: SP1_FULL_VALIDATION_SMOKE_v1
+protocol_family: sp1_resource_population_validation_e0_e6_v1
+output_dir: results/sp1_validation/SP1_FULL_VALIDATION_SMOKE_v1
+pilot: true
+evidence_level: C-pilot
+fail_on_audit: true
+reserve_energy: 5.0
+oracle_time_limit_s: 10.0
+cost_weights:
+  distance: 0.45
+  time: 0.25
+  energy: 0.30
+dynamics:
+  integrator: mirror_prox
+  step: 0.03
+  max_iterations: 250
+  convergence_residual_mode: relative
+  tolerance: 0.001
+  primal_tolerance: 0.001
+  consensus_tolerance: 0.0001
+  stationarity_tolerance: 0.001
+  comparison_feasibility_tolerance: 0.000001
+  entropy_tau: 0.003
+  consensus_gain: 1.0
+e0:
+  solution_match_tolerance: 0.002
+  dynamics:
+    step: 0.10
+    max_iterations: 50000
+    convergence_residual_mode: absolute
+    primal_tolerance: 0.000001
+    consensus_tolerance: 0.000001
+    stationarity_tolerance: 0.00001
+e1:
+  fleet_sizes: [6, 10]
+  load_counts: [2]
+  seeds: [1200, 1201]
+  dynamics:
+    step: 0.10
+    max_iterations: 20000
+e2:
+  n_robots: 10
+  n_loads: 2
+  seeds: [2200, 2201]
+  topologies: [path, near_disconnect, ring, grid, star, complete]
+  # Literal radii keep the same world/costs while changing only the graph.
+  # All three are connected for the smoke seeds and have distinct spectra.
+  rdisk_radii_m: [10.0, 12.0, 15.0]
+  negative_control_radii_m: [0.5, 1.0]
+  minimum_distinct_lambda2: 5
+  negative_control_max_iterations: 1000
+  dynamics:
+    max_iterations: 20000
+e3:
+  n_robots: 10
+  n_loads: 2
+  seeds: [3200]
+  integrators: [euler_pure, projected_euler, exponential, mirror_prox]
+  step_factors: [0.25, 0.50, 1.00, 1.50, 2.00, 4.00]
+  dynamics:
+    max_iterations: 220
+    entropy_tau: 0.0
+e4:
+  fleet_sizes: [8, 12]
+  load_counts: [2, 3]
+  seeds: [4200, 4201]
+  best_of_samples: [5, 30]
+  dynamics:
+    max_iterations: 350
+e5:
+  fleet_sizes: [10, 20, 40]
+  robots_per_load: 5
+  seeds: [5200]
+  topology: rdisk
+  radius_m: 6.0
+  ensure_connected: true
+  lp_max_n: 40
+  milp_max_n: 20
+  dynamics:
+    max_iterations: 180
+e6:
+  n_robots: 8
+  n_loads: 2
+  seeds: [6200]
+  scenarios: [open, warehouse]
+  topology: complete
+  radius_m: 6.0
+  dt_s: 0.10
+  horizon_s: 80.0
+  dynamics:
+    max_iterations: 350

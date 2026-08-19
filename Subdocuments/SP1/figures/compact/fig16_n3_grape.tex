@@ -1,0 +1,47 @@
+\begingroup
+		\pgfmathsetlengthmacro{\spxunitg}{\linewidth/13.5}
+		\scalebox{1.00}{%
+			\begin{tikzpicture}[x=\spxunitg,y=0.88cm]
+				\tikzset{
+					gstage/.style={draw=SPGrid!85,fill=SPFloor!45,line width=0.55pt,rounded corners=1.2pt},
+					gttl/.style={font=\fontsize{8.0}{9.0}\selectfont\sffamily\bfseries,anchor=north west},
+					glab/.style={font=\fontsize{7.2}{8.1}\selectfont\sffamily,anchor=north west},
+					gflow/.style={-{Latex[length=2.0mm]},draw=VIUDark!70,line width=0.9pt},
+					gph/.style={-{Latex[length=2.0mm]},draw=SPGreen,line width=0.9pt},
+				}
+				\draw[gstage] (0.05,1.95) rectangle (3.35,4.80);
+				\node[gttl] at (0.25,4.65) {Ronda 0 · Saludo};
+				\node[glab] at (0.25,4.10) {a cada vecino:};
+				\node[glab] at (0.25,3.65) {$(c_i,\ \tau_i,\ d_i[\cdot])$};
+				\node[glab] at (0.25,3.05) {lo que un movimiento};
+				\node[glab] at (0.25,2.70) {conjunto necesita saber};
+				\draw[gstage] (3.70,1.95) rectangle (7.00,4.80);
+				\node[gttl] at (3.90,4.65) {Local 0 · Proponer};
+				\node[glab] at (3.90,4.10) {mejor desviación propia};
+				\node[glab] at (3.90,3.65) {contra el perfil común;};
+				\node[glab] at (3.90,3.20) {mejora si $(D,J)$ baja};
+				\node[glab] at (3.90,2.72) {en orden lexicográfico};
+				\draw[gstage] (7.35,1.95) rectangle (10.35,4.80);
+				\node[gttl] at (7.55,4.65) {Local $1..N{-}2$};
+				\node[glab] at (7.55,4.10) {inundar el máximo};
+				\node[glab] at (7.55,3.65) {conocido; reintentar};
+				\node[glab] at (7.55,3.20) {cada propuesta hasta};
+				\node[glab] at (7.55,2.72) {4 veces por vecino};
+				\draw[gstage] (10.70,1.95) rectangle (13.45,4.80);
+				\node[gttl] at (10.90,4.65) {Local $N{-}1$};
+				\node[glab] at (10.90,4.10) {aplicar la única};
+				\node[glab] at (10.90,3.65) {propuesta ganadora;};
+				\node[glab] at (10.90,3.20) {todos la aplican,};
+				\node[glab] at (10.90,2.72) {el perfil sigue común};
+				\draw[gflow] (3.35,3.60) -- (3.70,3.60);
+				\draw[gflow] (7.00,3.60) -- (7.35,3.60);
+				\draw[gflow] (10.35,3.60) -- (10.70,3.60);
+				\draw[gflow] (12.10,1.95) -- (12.10,1.65) -- (5.35,1.65) -- (5.35,1.95);
+				\node[font=\fontsize{6.9}{7.6}\selectfont\sffamily,fill=white,inner sep=1.3pt] at (8.70,1.65) {siguiente época};
+				\draw[gstage,fill=SPGreen!07] (0.05,-0.50) rectangle (13.45,1.35);
+				\node[gttl] at (0.25,1.20) {Sin movimiento: dos lecturas distintas};
+				\node[glab] at (0.25,0.67) {Fase 0 (solo unilateral) $\rightarrow$ equilibrio unilateral alcanzado: \textbf{Pair-GRAPE} pasa a fase 1 y habilita};
+				\node[glab] at (0.25,0.27) {desviaciones conjuntas con un vecino. Fase 1 (o variante unilateral) $\rightarrow$ terminación, y todos lo saben a la vez.};
+				\draw[gph] (11.60,1.95) -- (11.60,1.35);
+		\end{tikzpicture}}
+		\endgroup
