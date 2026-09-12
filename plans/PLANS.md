@@ -171,8 +171,30 @@ auditoría adversarial de solapamiento por ejes SP1–SP3.
 Resultado: 20 análisis totales (16 requeridos), 23 tablas CSV, 20 PNG, triage
 de 94 CORE y 123 ENABLING, y auditoría de novedad sin conclusión final.
 
-### Siguiente compuerta
+### Stage 5 — paquete académico final
 
-Construir Stage 5 en `academic-review/final/`: revisión completa/compacta,
-plan de integración SP1–SP3, claim-source matrix, triage de fuentes,
-limitaciones y manifest de reproducción.
+**Estado: completado y validado el 2026-09-12.**
+
+- [x] Generar revisión completa y compacta de carácter analítico, no
+  narración paper-by-paper.
+- [x] Responder explícitamente las 16 preguntas TFM sobre asignación,
+  coaliciones, transporte físico, comunicación, fallos, baselines y claims.
+- [x] Generar plan de integración SP1–SP3 y matriz claim-source con
+  `candidate_id`, DOI, localización, estado de soporte y uso permitido.
+- [x] Generar triage CORE/ENABLING, exclusiones, limitaciones y manifest de
+  reproducción.
+- [x] Verificar que la tesis canónica y las figuras TikZ protegidas no fueron
+  modificadas.
+- [x] Ejecutar QA final, tests, parsing de CSV/JSONL y búsqueda de límites de
+  novedad.
+
+El paquete contiene 10 archivos finales, 5 filas de trazabilidad de claims y
+mantiene la conclusión de novedad retenida por ausencia de WoS y por el
+carácter estructural del coding.
+
+### Estado final y riesgos abiertos
+
+El pipeline autónomo queda completado bajo `academic-review/`. Permanecen como
+trabajo científico posterior la exportación WoS, la lectura humana cercana de
+prior art, la confirmación de ecuaciones/tablas/figuras y la validación
+experimental del método del TFM.

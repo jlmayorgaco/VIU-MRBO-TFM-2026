@@ -150,4 +150,5 @@ complete Stage 1B screening and recall audit`) y el de Stage 1C es
 `1ffe17e6` (`review: complete Stage 1C query repair`). No se hizo ni se hará
 push. Stage 2 está en `f0757abd` (`review: complete Stage 2 legal full-text
 acquisition`) y Stage 3 en `687d877e0` (`review: complete Stage 3 evidence
-coding`); Stage 4 y Stage 5 se registrarán en commits aislados posteriores.
+coding`); Stage 4 está en `f0ea343ad` (`review: complete Stage 4 synthesis
+and gap audit`); Stage 5 se registrará en un commit aislado posterior.

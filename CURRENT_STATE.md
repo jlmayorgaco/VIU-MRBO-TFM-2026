@@ -1,10 +1,10 @@
 # Estado actual de la revisión bibliográfica
 
-**Etapa:** Stage 4 — síntesis, figuras y auditoría adversarial completadas  
+**Etapa:** Stage 5 — paquete académico final completado  
 **Fecha de ejecución:** 2026-09-12  
 **Repositorio:** `VIU-MRBO-TFM-2026`  
 **Rama:** `sp1-final-refactor`  
-**Commits de implementación:** Stage 1A congelado en `e3bdfb553dc1f2fb32fa4a1f3c721d39200666b3`; Stage 1B en `3a99e1b8`; Stage 1C en `1ffe17e6`; Stage 2 en `f0757abd`; Stage 3 en `687d877e0`; Stage 4 se cerrará en un commit aislado posterior.
+**Commits de implementación:** Stage 1A congelado en `e3bdfb553dc1f2fb32fa4a1f3c721d39200666b3`; Stage 1B en `3a99e1b8`; Stage 1C en `1ffe17e6`; Stage 2 en `f0757abd`; Stage 3 en `687d877e0`; Stage 4 en `f0ea343ad`; Stage 5 se cerrará en un commit aislado posterior.
 
 ## Resumen ejecutivo
 
@@ -180,6 +180,23 @@ mapa explícito de gaps. Se inspeccionaron visualmente figuras representativas
 sin clipping ni solapamientos. Los conteos son descriptivos y no impacto
 científico.
 
+## Resultados Stage 5
+
+| Métrica | Resultado |
+|---|---:|
+| Archivos finales | 10 |
+| Filas de claim-source matrix | 5 |
+| CORE / ENABLING triage | 94 / 123 |
+| Excluidos preservados | 1169 |
+| Preguntas TFM respondidas explícitamente | 16 |
+| Tesis canónica modificada | no |
+| Claim final de novedad | retenido/no emitido |
+
+El paquete final es integración-ready en Markdown/CSV/JSON, con revisión
+analítica completa y compacta, plan SP1–SP3, matriz de trazabilidad, triage,
+limitaciones y reproducción. No se generó una variante LaTeX no compilada ni
+se alteró el manuscrito oficial.
+
 ## Artefactos verificables
 
 - `academic-review/data/processed/candidate_corpus_stage1a.csv`
@@ -233,6 +250,19 @@ científico.
 - `academic-review/figures/analysis_01_selection_flow.png` … `analysis_20_execution_terms.png`
 - `academic-review/reports/stage4_synthesis_qa.md`
 - `academic-review/reports/adversarial_novelty_audit.md`
+- `academic-review/scripts/stage5_finalize.py`
+- `academic-review/tests/test_stage5.py`
+- `academic-review/final/literature_review_full.md`
+- `academic-review/final/literature_review_compact.md`
+- `academic-review/final/tfm_integration_plan.md`
+- `academic-review/final/claim_source_matrix.csv`
+- `academic-review/final/core_papers.csv`
+- `academic-review/final/enabling_papers.csv`
+- `academic-review/final/excluded_papers.csv`
+- `academic-review/final/review_limitations.md`
+- `academic-review/final/reproducibility_manifest.md`
+- `academic-review/final/reproducibility_manifest.json`
+- `academic-review/reports/stage5_final_package_qa.md`
 
 Además se conservaron la semilla legacy, el contrato de alcance, el protocolo
 de búsqueda, el esquema y el validador dentro de `academic-review/`.
@@ -259,6 +289,8 @@ de búsqueda, el esquema y el validador dentro de `academic-review/`.
   por nivel de evidencia y JSONL/CSV generados.
 - Stage 4 — 16 analíticas requeridas, 20 análisis totales, tablas/figuras
   generadas desde CSV/JSONL y auditoría adversarial sin claim final de novedad.
+- Stage 5 — paquete final, 5 claims trazables, 16 preguntas TFM contestadas,
+  limitaciones y reproducción generadas sin modificar el manuscrito.
 
 La advertencia de `requests` sobre versiones de `urllib3`/`charset_normalizer`
 no impidió la ejecución ni produjo fallos HTTP; queda como nota de entorno para
@@ -271,7 +303,7 @@ han preservado sin limpieza ni reset. Los cambios de esta tarea están aislados
 en `academic-review/`, `CURRENT_STATE.md`, `IMPLEMENTATION_PLAN.md` y el plan
 operativo correspondiente.
 
-Stage 4 queda detenido aquí tras completar la síntesis y auditoría. Stage 5
-generará el paquete final de integración sin tocar la memoria canónica. WoS
-continúa pendiente; ningún resultado actual autoriza afirmaciones de inclusión
-definitiva, estado del arte, novedad o hueco científico.
+Stage 5 queda completado como paquete de revisión independiente. WoS continúa
+pendiente y la lectura humana cercana/validación experimental siguen siendo
+riesgos científicos abiertos; no se emite afirmación de inclusión definitiva,
+estado del arte, novedad o hueco universal.

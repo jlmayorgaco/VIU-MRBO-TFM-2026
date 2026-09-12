@@ -1,0 +1,32 @@
+{
+  "generated_at_utc": "2026-09-12T22:31:57.530204+00:00",
+  "git_head_at_generation": "f0ea343adef7f13f0e17ace42f65c11e0797623d",
+  "canonical_thesis_modified": false,
+  "stage_inputs": {
+    "candidate_corpus_stage2.csv": "dee8796d4ae05a83609fd7a369fd3c013f5ea81478c8a43cacb3ca2ed4cde826",
+    "fulltext_evidence_matrix.csv": "61befd9d886ee189b292f2087bbedfc43ff2906db3aa621053636f1bb8737fa9",
+    "stage4_analysis_summary.json": "54f8f43c55d017f127f3169f525532a954d7f0367a9baf43f7f6aab0d10c0934"
+  },
+  "commands": [
+    "python academic-review/scripts/stage1c.py --resume",
+    "python academic-review/scripts/stage2_acquire.py --resume",
+    "python academic-review/scripts/stage3_code.py",
+    "python academic-review/scripts/stage4_synthesize.py",
+    "python academic-review/scripts/stage5_finalize.py",
+    "python -m pytest academic-review/tests -q"
+  ],
+  "outputs": [
+    "final\\claim_source_matrix.csv",
+    "final\\core_papers.csv",
+    "final\\enabling_papers.csv",
+    "final\\excluded_papers.csv",
+    "final\\literature_review_compact.md",
+    "final\\literature_review_full.md",
+    "final\\reproducibility_manifest.json",
+    "final\\reproducibility_manifest.md",
+    "final\\review_limitations.md",
+    "final\\tfm_integration_plan.md"
+  ],
+  "raw_fulltext_policy": "local-only; excluded from Git; manifests and SHA-256 values are versioned",
+  "wos_status": "pending_external_export"
+}
