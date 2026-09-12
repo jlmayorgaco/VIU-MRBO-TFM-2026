@@ -108,4 +108,5 @@ esta tarea solo compromete sus artefactos aislados y no mezcla esos cambios.
 El commit aislado de Stage 1A es
 `67a1ecbfe6c0c13c0fa507121a2f5f864a2ccfce` (`review: build Stage 1A candidate
 corpus pipeline`); el commit aislado de Stage 1B se añadirá después de
-revisar el diff final. No se hizo ni se hará push.
+revisar el diff final es `3a99e1b8` (`review: complete Stage 1B screening and
+recall audit`). No se hizo ni se hará push.
