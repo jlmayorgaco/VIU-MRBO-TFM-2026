@@ -47,6 +47,28 @@ La compuerta se superó: 246 candidatos únicos, 0 fallos terminales de API,
 No se ejecutaron screening, texto completo, snowballing, prior-art final,
 novelty/gap analysis ni redacción científica.
 
+## Stage 1B — auditoría de cobertura y screening
+
+**Estado: completado y validado el 2026-09-12.**
+
+Se congelaron los artefactos Stage 1A con un manifest SHA-256 y se ejecutó el
+protocolo `screening_protocol_v1` sobre una sola entrada derivada. La etapa
+incluyó resolución conservadora de los 9 grupos probables, auditoría de los 5
+registros sin DOI, reconciliación de las 32 semillas, matriz de conceptos y
+snowballing de una ronda sobre 20 anclas mediante OpenAlex. Se recuperaron 2
+DOI únicamente cuando Crossref/OpenAlex coincidieron con título, año y autor.
+
+El corpus final contiene 1218 candidatos, de los cuales 340 quedaron en
+`include_fulltext`, 280 en `maybe_fulltext` y 598 en `exclude`. El diagnóstico
+de recall observó 463 registros nuevos relevantes o plausibles y, por tanto,
+no permite declarar saturación. Se realizó una auditoría manual de 20
+incluidos, 20 excluidos y 20 `maybe`; se registraron 0 correcciones en una
+revisión de un único auditor, no como acuerdo interevaluador.
+
+Los registros siguen siendo `not_evidence`. La cola de texto completo no se
+descargó ni se utilizó para redactar afirmaciones; Web of Science continúa
+pendiente como exportación externa.
+
 ## Stage 2 — semillas originales y WoS manual
 
 **Estado: pendiente de entrada externa.**
@@ -65,7 +87,7 @@ novelty/gap analysis ni redacción científica.
    arXiv, Semantic Scholar y Unpaywall según necesidad.
 2. **Stage 4:** normalización, version linkage y lineage ampliada.
 3. **Stage 5:** texto completo legal, validación PDF y extracción por página.
-4. **Stage 6:** screening, codebook y claim evidence con decisiones
+4. **Stage 6:** coding de texto completo, codebook y claim evidence con decisiones
    auditables.
 5. **Stage 7:** descubrimiento masivo controlado y reconciliación de fuentes.
 6. **Stage 8:** lectura profunda, snowballing y saturación.
@@ -74,7 +96,7 @@ novelty/gap analysis ni redacción científica.
 
 Cada etapa requerirá sus propias pruebas, configuración versionada, resultados
 reproducibles, informe de limitaciones y compuerta antes de avanzar. Las cinco
-figuras TikZ protegidas de la memoria no forman parte de esta Stage 1A y no se
+figuras TikZ protegidas de la memoria no forman parte de esta Stage 1B y no se
 han alterado.
 
 ## Política de commits
@@ -85,4 +107,5 @@ traslado de 26.136 ficheros a legacy/`). El árbol tenía cambios preexistentes;
 esta tarea solo compromete sus artefactos aislados y no mezcla esos cambios.
 El commit aislado de Stage 1A es
 `67a1ecbfe6c0c13c0fa507121a2f5f864a2ccfce` (`review: build Stage 1A candidate
-corpus pipeline`). No se hizo ni se hará push.
+corpus pipeline`); el commit aislado de Stage 1B se añadirá después de
+revisar el diff final. No se hizo ni se hará push.

@@ -1,11 +1,10 @@
 # Estado actual de la revisión bibliográfica
 
-**Etapa:** Stage 1A — corpus candidato y QA completados  
+**Etapa:** Stage 1B — auditoría de cobertura, identidad y screening completados  
 **Fecha de ejecución:** 2026-09-12  
 **Repositorio:** `VIU-MRBO-TFM-2026`  
 **Rama:** `sp1-final-refactor`  
-**Commit de implementación:** `67a1ecbfe6c0c13c0fa507121a2f5f864a2ccfce`
-(`review: build Stage 1A candidate corpus pipeline`)
+**Commits de implementación:** Stage 1A congelado en `e3bdfb553dc1f2fb32fa4a1f3c721d39200666b3`; Stage 1B se cerrará en un commit aislado posterior.
 
 ## Resumen ejecutivo
 
@@ -17,9 +16,12 @@ semillas candidatas; no se mezclaron con el ledger del TFM ni se transformaron
 en evidencia.
 
 Stage 1A se ejecutó solo para construir y auditar un corpus bibliográfico
-candidato con descubrimiento abierto en Crossref y OpenAlex. No se hizo
-screening, adquisición de texto completo, lectura profunda, snowballing,
-análisis de novedad ni redacción de revisión.
+candidato con descubrimiento abierto en Crossref y OpenAlex. Sobre esa entrada
+congelada se completó Stage 1B: auditoría de identidad, recuperación
+conservadora de DOI, reconciliación de las 32 semillas, matriz de conceptos,
+snowballing acotado de una ronda y screening de título/resumen. No se hizo
+descarga masiva de PDF, coding de texto completo, análisis de novedad ni
+redacción de revisión.
 
 ## Entradas y cobertura
 
@@ -28,7 +30,8 @@ análisis de novedad ni redacción de revisión.
 | Bundle bootstrap | SHA-256 `809ECCDDB33660B3CCAF943A01F1F9CE05E902A2F87727F7D5C4559806722A37` |
 | Semillas legacy | 32 filas; preservadas en `academic-review/inputs/legacy/` |
 | Exportación WoS | 0 archivos auténticos; `wos_status=pending_external_export` |
-| Cobertura declarada | `corpus_coverage=open_discovery_only` |
+| Cobertura Stage 1A | `corpus_coverage=open_discovery_only` |
+| Cobertura Stage 1B | `coverage_status=open_sources_plus_limited_snowballing` |
 | CONTACT_EMAIL | Configurado solo en `academic-review/.env.literature`, ignorado por Git |
 | Claves opcionales | No requeridas ni configuradas |
 | Ledger/evidencia previos | No ingeridos, sobrescritos ni auto-fusionados |
@@ -83,6 +86,26 @@ De ellas, 30 tienen `metadata_verification_status=metadata_verified` y 2
 quedan `unresolved`. El enriquecimiento de metadatos no cambia la frontera de
 evidencia ni constituye una decisión de screening.
 
+## Resultados Stage 1B
+
+| Métrica | Resultado |
+|---|---:|
+| Candidatos Stage 1B | 1218 |
+| Registros nuevos por snowballing acotado | 974 |
+| Nuevos relevantes/plausibles | 463 |
+| Duplicados probables auditados | 9; 4 alias fusionados y 5 retenidos como distintos |
+| DOI recuperados por metadatos | 2 de 5 intentos |
+| Semillas legacy | 13 verificadas, 17 corregidas, 2 no resueltas |
+| `include_fulltext` / `maybe_fulltext` / `exclude` | 340 / 280 / 598 |
+| QA manual | 20 / 20 / 20; 0 correcciones; auditoría de un revisor |
+| Fallos terminales de API en la corrida final | 0 |
+
+La expansión por una ronda no constituye una estimación formal de recall ni
+una prueba de saturación; el diagnóstico observó literatura adicional y no
+permite declarar exhaustividad. Todos los registros siguen con
+`evidence_status=not_evidence`; la cola de texto completo es solo una entrada
+de adquisición y verificación posterior.
+
 ## Artefactos verificables
 
 - `academic-review/data/processed/candidate_corpus_stage1a.csv`
@@ -93,6 +116,19 @@ evidencia ni constituye una decisión de screening.
 - `academic-review/reports/stage1a_qa.md`
 - `academic-review/reports/stage1a_provenance_summary.md`
 - `academic-review/reports/WOS_PENDING.md`
+- `academic-review/data/processed/candidate_corpus_stage1b.csv`
+- `academic-review/data/processed/fulltext_queue_stage1b.csv`
+- `academic-review/logs/stage1b_duplicate_resolution.csv`
+- `academic-review/logs/stage1b_doi_recovery.csv`
+- `academic-review/logs/stage1b_legacy_reconciliation.csv`
+- `academic-review/logs/stage1b_screening_log.csv`
+- `academic-review/logs/stage1b_snowball_log.csv`
+- `academic-review/logs/stage1b_api_log.csv`
+- `academic-review/reports/search_concept_matrix.md`
+- `academic-review/reports/stage1b_recall_audit.md`
+- `academic-review/reports/stage1b_screening_qa.md`
+- `academic-review/protocol/screening_protocol_v1.md`
+- `academic-review/manifests/stage1a_freeze_manifest.json`
 
 Además se conservaron la semilla legacy, el contrato de alcance, el protocolo
 de búsqueda, el esquema y el validador dentro de `academic-review/`.
@@ -101,11 +137,14 @@ de búsqueda, el esquema y el validador dentro de `academic-review/`.
 
 - `python academic-review/scripts/validate_inputs.py` — correcto: 4 entradas,
   32 semillas y 0 WoS.
-- `python -m pytest academic-review/tests -q` — 5 pruebas correctas.
+- `python -m pytest academic-review/tests -q` — 14 pruebas correctas.
 - `python -m py_compile academic-review/scripts/bootstrap_literature.py academic-review/scripts/validate_inputs.py` — correcto.
 - CSV y JSONL — 246 filas/líneas y 246 `candidate_id` únicos.
 - Campos obligatorios — sin valores ausentes.
 - Log de búsqueda — 14/14 estados `ok`; log API sin fallos terminales.
+- Stage 1B — 1218 IDs únicos, 0 DOI duplicados, decisiones y razones válidas,
+  cola igual a `include_fulltext + maybe_fulltext`, provenance presente y
+  exclusiones sin etiquetas temáticas.
 
 La advertencia de `requests` sobre versiones de `urllib3`/`charset_normalizer`
 no impidió la ejecución ni produjo fallos HTTP; queda como nota de entorno para
@@ -118,8 +157,8 @@ han preservado sin limpieza ni reset. Los cambios de esta tarea están aislados
 en `academic-review/`, `CURRENT_STATE.md`, `IMPLEMENTATION_PLAN.md` y el plan
 operativo correspondiente.
 
-Stage 1A queda detenido aquí, conforme a la autorización. La siguiente
-compuerta es Stage 2: incorporar, si el autor lo proporciona, el export WoS
-manual y/o semillas originales, calcular hashes de lineage y probar la ingesta
-sin pérdida silenciosa. Ningún resultado actual autoriza afirmaciones de
-inclusión, estado del arte, novedad o hueco científico.
+Stage 1B queda detenido aquí, conforme a la autorización. La siguiente
+compuerta es incorporar, si el autor lo proporciona, el export WoS manual y/o
+semillas originales, y después adquirir y verificar texto completo desde la
+cola legalmente disponible. Ningún resultado actual autoriza afirmaciones de
+inclusión definitiva, estado del arte, novedad o hueco científico.
