@@ -152,3 +152,27 @@ claims fuertes.
 
 Fijar Stage 4 con las 16 analíticas requeridas, tablas/figuras reproducibles y
 auditoría adversarial de solapamiento por ejes SP1–SP3.
+
+### Stage 4 — síntesis, taxonomía, figuras y auditoría de novedad
+
+**Estado: completado y validado el 2026-09-12.**
+
+- [x] Generar las 16 analíticas requeridas desde la matriz y el corpus Stage 2.
+- [x] Producir tablas/figuras para selección, temporalidad, métodos,
+  arquitectura, robots/aplicaciones, heterogeneidad, coaliciones, física,
+  contacto/wrench, comunicación, fallos, validación, heatmaps, mapa de
+  evidencia y gaps.
+- [x] Separar conteos descriptivos de impacto científico y conservar el nivel
+  de evidencia en la interpretación.
+- [x] Generar la auditoría adversarial con prior art candidato y estados de
+  novedad prudentes.
+- [x] Inspeccionar figuras representativas y ejecutar pruebas de análisis.
+
+Resultado: 20 análisis totales (16 requeridos), 23 tablas CSV, 20 PNG, triage
+de 94 CORE y 123 ENABLING, y auditoría de novedad sin conclusión final.
+
+### Siguiente compuerta
+
+Construir Stage 5 en `academic-review/final/`: revisión completa/compacta,
+plan de integración SP1–SP3, claim-source matrix, triage de fuentes,
+limitaciones y manifest de reproducción.

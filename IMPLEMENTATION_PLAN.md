@@ -148,4 +148,6 @@ El commit aislado de Stage 1A es
 corpus pipeline`); el commit aislado de Stage 1B es `3a99e1b8` (`review:
 complete Stage 1B screening and recall audit`) y el de Stage 1C es
 `1ffe17e6` (`review: complete Stage 1C query repair`). No se hizo ni se hará
-push.
+push. Stage 2 está en `f0757abd` (`review: complete Stage 2 legal full-text
+acquisition`) y Stage 3 en `687d877e0` (`review: complete Stage 3 evidence
+coding`); Stage 4 y Stage 5 se registrarán en commits aislados posteriores.

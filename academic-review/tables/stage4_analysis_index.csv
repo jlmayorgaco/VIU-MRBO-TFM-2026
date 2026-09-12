@@ -1,0 +1,21 @@
+analysis_id,slug,title,table,figure,description,categories,records_counted
+A01,selection_flow,Study-selection and evidence flow,tables\analysis_01_selection_flow.csv,figures\analysis_01_selection_flow.png,"Corpus, acquisition queue, and verified full-text counts.",3,3513
+A02,publication_year,Temporal publication distribution,tables\analysis_02_publication_year.csv,figures\analysis_02_publication_year.png,Descriptive publication-year distribution.,64,2226
+A03,method_families,Method-family distribution,tables\analysis_03_method_families.csv,figures\analysis_03_method_families.png,Method terms located in extracted text; no performance claim is implied.,12,469
+A04,coordination_architecture,Coordination-architecture distribution,tables\analysis_04_coordination_architecture.csv,figures\analysis_04_coordination_architecture.png,Architecture terms observed in extracted text.,12,799
+A05,robot_application,Robot and application distribution,tables\analysis_05_robot_application.csv,figures\analysis_05_robot_application.png,Robot/application screening axes; `unclear` is excluded.,4,654
+A06,heterogeneous_capabilities,Heterogeneous-capability coverage,tables\analysis_06_heterogeneous_capabilities.csv,figures\analysis_06_heterogeneous_capabilities.png,Heterogeneity and capability screening axes.,1,89
+A07,coalition_team,Coalition/team-formation coverage,tables\analysis_07_coalition_team.csv,figures\analysis_07_coalition_team.png,Coalition and team screening axes.,2,128
+A08,physical_feasibility,Physical-feasibility coverage,tables\analysis_08_physical_feasibility.csv,figures\analysis_08_physical_feasibility.png,Physical-layer terms and transport screening axes.,13,373
+A09,contact_wrench,Contact and wrench coverage,tables\analysis_09_contact_wrench.csv,figures\analysis_09_contact_wrench.png,Contact/wrench screening axes; occurrence does not verify a mechanics proof.,1,30
+A10,communication_assumptions,Communication-assumption coverage,tables\analysis_10_communication_assumptions.csv,figures\analysis_10_communication_assumptions.png,Information assumptions located in actual text where full text was available.,12,178
+A11,failure_recovery,Failure and recovery coverage,tables\analysis_11_failure_recovery.csv,figures\analysis_11_failure_recovery.png,Failure/recovery terms observed in text and screening.,3,88
+A12,experimental_validation,Experimental validation level,tables\analysis_12_experimental_validation.csv,figures\analysis_12_experimental_validation.png,Evidence availability and observed validation vocabulary.,5,517
+A13,method_x_capability,Method x physical capability evidence map,tables\analysis_13_method_x_capability.csv,figures\analysis_13_method_x_capability.png,Co-occurrence of method and physical-layer terms in verified full text.,144,704
+A14,problem_stage_literature_family,Problem-stage x literature-family matrix,tables\analysis_14_problem_stage_literature_family.csv,figures\analysis_14_problem_stage_literature_family.png,Co-occurrence of Stage 1C problem-family and method-family screening tags.,48,735
+A15,evidence_map_tfm_architecture,Evidence map for the TFM architecture,tables\analysis_15_evidence_map_tfm_architecture.csv,figures\analysis_15_evidence_map_tfm_architecture.png,SP1-SP3 screening interfaces crossed with evidence strength.,12,641
+A16,explicit_gap_map,Explicit gap map,tables\analysis_16_explicit_gap_map.csv,figures\analysis_16_explicit_gap_map.png,Coverage indicators for capabilities required by the TFM; low counts are not proof of absence.,16,1190
+A17,evidence_strength,Evidence strength,tables\analysis_17_evidence_strength.csv,figures\analysis_17_evidence_strength.png,Separates verified full text from abstract and metadata-only records.,4,1057
+A18,scientific_role,Provisional scientific role,tables\analysis_18_scientific_role.csv,figures\analysis_18_scientific_role.png,Role labels are structural first-pass labels and not a claim of influence.,5,1057
+A19,theory_terms,Theory and guarantee terms,tables\analysis_19_theory_terms.csv,figures\analysis_19_theory_terms.png,Observed theory vocabulary; presence does not verify a theorem or proof.,12,491
+A20,execution_terms,Execution and motion terms,tables\analysis_20_execution_terms.csv,figures\analysis_20_execution_terms.png,"Motion, docking, navigation, and recovery terms located in text.",12,703

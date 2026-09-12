@@ -1,10 +1,10 @@
 # Estado actual de la revisión bibliográfica
 
-**Etapa:** Stage 3 — coding estructural de texto completo completado  
+**Etapa:** Stage 4 — síntesis, figuras y auditoría adversarial completadas  
 **Fecha de ejecución:** 2026-09-12  
 **Repositorio:** `VIU-MRBO-TFM-2026`  
 **Rama:** `sp1-final-refactor`  
-**Commits de implementación:** Stage 1A congelado en `e3bdfb553dc1f2fb32fa4a1f3c721d39200666b3`; Stage 1B en `3a99e1b8`; Stage 1C en `1ffe17e6`; Stage 2 en `f0757abd`; Stage 3 se cerrará en un commit aislado posterior.
+**Commits de implementación:** Stage 1A congelado en `e3bdfb553dc1f2fb32fa4a1f3c721d39200666b3`; Stage 1B en `3a99e1b8`; Stage 1C en `1ffe17e6`; Stage 2 en `f0757abd`; Stage 3 en `687d877e0`; Stage 4 se cerrará en un commit aislado posterior.
 
 ## Resumen ejecutivo
 
@@ -161,6 +161,25 @@ La matriz no convierte vocabulario observado en resultados, teoremas,
 garantías o claims de novedad. Los campos detallados de filas
 `metadata_only`/`retrieval_error` permanecen vacíos.
 
+## Resultados Stage 4
+
+| Métrica | Resultado |
+|---|---:|
+| Analíticas requeridas | 16 |
+| Analíticas totales | 20 |
+| Tablas CSV de análisis | 23 |
+| Figuras PNG | 20 |
+| Filas CORE / ENABLING triage | 94 / 123 |
+| Auditoría adversarial | generada; novedad final retenida |
+
+Las salidas incluyen selección, temporalidad, familias de método,
+arquitectura, robots/aplicaciones, heterogeneidad, coaliciones, factibilidad
+física, contacto/wrench, comunicación, fallos/recuperación, validación,
+heatmaps de método-capacidad y problema-familia, mapa de evidencia SP1–SP3 y
+mapa explícito de gaps. Se inspeccionaron visualmente figuras representativas
+sin clipping ni solapamientos. Los conteos son descriptivos y no impacto
+científico.
+
 ## Artefactos verificables
 
 - `academic-review/data/processed/candidate_corpus_stage1a.csv`
@@ -207,6 +226,13 @@ garantías o claims de novedad. Los campos detallados de filas
 - `academic-review/data/processed/fulltext_evidence_matrix.jsonl`
 - `academic-review/logs/stage3_coding_log.csv`
 - `academic-review/reports/stage3_fulltext_qa.md`
+- `academic-review/scripts/stage4_synthesize.py`
+- `academic-review/tests/test_stage4.py`
+- `academic-review/tables/stage4_analysis_summary.json`
+- `academic-review/tables/stage4_analysis_index.csv`
+- `academic-review/figures/analysis_01_selection_flow.png` … `analysis_20_execution_terms.png`
+- `academic-review/reports/stage4_synthesis_qa.md`
+- `academic-review/reports/adversarial_novelty_audit.md`
 
 Además se conservaron la semilla legacy, el contrato de alcance, el protocolo
 de búsqueda, el esquema y el validador dentro de `academic-review/`.
@@ -231,6 +257,8 @@ de búsqueda, el esquema y el validador dentro de `academic-review/`.
   excluidas por la política de binarios.
 - Stage 3 — 1057 filas únicas, 230 textos completos leídos, filas limitadas
   por nivel de evidencia y JSONL/CSV generados.
+- Stage 4 — 16 analíticas requeridas, 20 análisis totales, tablas/figuras
+  generadas desde CSV/JSONL y auditoría adversarial sin claim final de novedad.
 
 La advertencia de `requests` sobre versiones de `urllib3`/`charset_normalizer`
 no impidió la ejecución ni produjo fallos HTTP; queda como nota de entorno para
@@ -243,8 +271,7 @@ han preservado sin limpieza ni reset. Los cambios de esta tarea están aislados
 en `academic-review/`, `CURRENT_STATE.md`, `IMPLEMENTATION_PLAN.md` y el plan
 operativo correspondiente.
 
-Stage 3 queda detenido aquí tras completar la matriz. Stage 4 ya tiene la
-analítica y auditoría adversarial generadas localmente y será fijado en un
-commit separado. WoS continúa pendiente; ningún resultado actual autoriza
-afirmaciones de inclusión definitiva, estado del arte, novedad o hueco
-científico.
+Stage 4 queda detenido aquí tras completar la síntesis y auditoría. Stage 5
+generará el paquete final de integración sin tocar la memoria canónica. WoS
+continúa pendiente; ningún resultado actual autoriza afirmaciones de inclusión
+definitiva, estado del arte, novedad o hueco científico.

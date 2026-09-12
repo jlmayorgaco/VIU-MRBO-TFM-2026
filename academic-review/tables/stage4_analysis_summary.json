@@ -1,0 +1,208 @@
+{
+  "generated_at_utc": "2026-09-12T22:27:58.750665+00:00",
+  "matrix_sha256": "61befd9d886ee189b292f2087bbedfc43ff2906db3aa621053636f1bb8737fa9",
+  "corpus_sha256": "dee8796d4ae05a83609fd7a369fd3c013f5ea81478c8a43cacb3ca2ed4cde826",
+  "analysis_count": 20,
+  "analyses": [
+    {
+      "analysis_id": "A01",
+      "slug": "selection_flow",
+      "title": "Study-selection and evidence flow",
+      "table": "tables\\analysis_01_selection_flow.csv",
+      "figure": "figures\\analysis_01_selection_flow.png",
+      "description": "Corpus, acquisition queue, and verified full-text counts.",
+      "categories": 3,
+      "records_counted": 3513
+    },
+    {
+      "analysis_id": "A02",
+      "slug": "publication_year",
+      "title": "Temporal publication distribution",
+      "table": "tables\\analysis_02_publication_year.csv",
+      "figure": "figures\\analysis_02_publication_year.png",
+      "description": "Descriptive publication-year distribution.",
+      "categories": 64,
+      "records_counted": 2226
+    },
+    {
+      "analysis_id": "A03",
+      "slug": "method_families",
+      "title": "Method-family distribution",
+      "table": "tables\\analysis_03_method_families.csv",
+      "figure": "figures\\analysis_03_method_families.png",
+      "description": "Method terms located in extracted text; no performance claim is implied.",
+      "categories": 12,
+      "records_counted": 469
+    },
+    {
+      "analysis_id": "A04",
+      "slug": "coordination_architecture",
+      "title": "Coordination-architecture distribution",
+      "table": "tables\\analysis_04_coordination_architecture.csv",
+      "figure": "figures\\analysis_04_coordination_architecture.png",
+      "description": "Architecture terms observed in extracted text.",
+      "categories": 12,
+      "records_counted": 799
+    },
+    {
+      "analysis_id": "A05",
+      "slug": "robot_application",
+      "title": "Robot and application distribution",
+      "table": "tables\\analysis_05_robot_application.csv",
+      "figure": "figures\\analysis_05_robot_application.png",
+      "description": "Robot/application screening axes; `unclear` is excluded.",
+      "categories": 4,
+      "records_counted": 654
+    },
+    {
+      "analysis_id": "A06",
+      "slug": "heterogeneous_capabilities",
+      "title": "Heterogeneous-capability coverage",
+      "table": "tables\\analysis_06_heterogeneous_capabilities.csv",
+      "figure": "figures\\analysis_06_heterogeneous_capabilities.png",
+      "description": "Heterogeneity and capability screening axes.",
+      "categories": 1,
+      "records_counted": 89
+    },
+    {
+      "analysis_id": "A07",
+      "slug": "coalition_team",
+      "title": "Coalition/team-formation coverage",
+      "table": "tables\\analysis_07_coalition_team.csv",
+      "figure": "figures\\analysis_07_coalition_team.png",
+      "description": "Coalition and team screening axes.",
+      "categories": 2,
+      "records_counted": 128
+    },
+    {
+      "analysis_id": "A08",
+      "slug": "physical_feasibility",
+      "title": "Physical-feasibility coverage",
+      "table": "tables\\analysis_08_physical_feasibility.csv",
+      "figure": "figures\\analysis_08_physical_feasibility.png",
+      "description": "Physical-layer terms and transport screening axes.",
+      "categories": 13,
+      "records_counted": 373
+    },
+    {
+      "analysis_id": "A09",
+      "slug": "contact_wrench",
+      "title": "Contact and wrench coverage",
+      "table": "tables\\analysis_09_contact_wrench.csv",
+      "figure": "figures\\analysis_09_contact_wrench.png",
+      "description": "Contact/wrench screening axes; occurrence does not verify a mechanics proof.",
+      "categories": 1,
+      "records_counted": 30
+    },
+    {
+      "analysis_id": "A10",
+      "slug": "communication_assumptions",
+      "title": "Communication-assumption coverage",
+      "table": "tables\\analysis_10_communication_assumptions.csv",
+      "figure": "figures\\analysis_10_communication_assumptions.png",
+      "description": "Information assumptions located in actual text where full text was available.",
+      "categories": 12,
+      "records_counted": 178
+    },
+    {
+      "analysis_id": "A11",
+      "slug": "failure_recovery",
+      "title": "Failure and recovery coverage",
+      "table": "tables\\analysis_11_failure_recovery.csv",
+      "figure": "figures\\analysis_11_failure_recovery.png",
+      "description": "Failure/recovery terms observed in text and screening.",
+      "categories": 3,
+      "records_counted": 88
+    },
+    {
+      "analysis_id": "A12",
+      "slug": "experimental_validation",
+      "title": "Experimental validation level",
+      "table": "tables\\analysis_12_experimental_validation.csv",
+      "figure": "figures\\analysis_12_experimental_validation.png",
+      "description": "Evidence availability and observed validation vocabulary.",
+      "categories": 5,
+      "records_counted": 517
+    },
+    {
+      "analysis_id": "A13",
+      "slug": "method_x_capability",
+      "title": "Method x physical capability evidence map",
+      "table": "tables\\analysis_13_method_x_capability.csv",
+      "figure": "figures\\analysis_13_method_x_capability.png",
+      "description": "Co-occurrence of method and physical-layer terms in verified full text.",
+      "categories": 144,
+      "records_counted": 704
+    },
+    {
+      "analysis_id": "A14",
+      "slug": "problem_stage_literature_family",
+      "title": "Problem-stage x literature-family matrix",
+      "table": "tables\\analysis_14_problem_stage_literature_family.csv",
+      "figure": "figures\\analysis_14_problem_stage_literature_family.png",
+      "description": "Co-occurrence of Stage 1C problem-family and method-family screening tags.",
+      "categories": 48,
+      "records_counted": 735
+    },
+    {
+      "analysis_id": "A15",
+      "slug": "evidence_map_tfm_architecture",
+      "title": "Evidence map for the TFM architecture",
+      "table": "tables\\analysis_15_evidence_map_tfm_architecture.csv",
+      "figure": "figures\\analysis_15_evidence_map_tfm_architecture.png",
+      "description": "SP1-SP3 screening interfaces crossed with evidence strength.",
+      "categories": 12,
+      "records_counted": 641
+    },
+    {
+      "analysis_id": "A16",
+      "slug": "explicit_gap_map",
+      "title": "Explicit gap map",
+      "table": "tables\\analysis_16_explicit_gap_map.csv",
+      "figure": "figures\\analysis_16_explicit_gap_map.png",
+      "description": "Coverage indicators for capabilities required by the TFM; low counts are not proof of absence.",
+      "categories": 16,
+      "records_counted": 1190
+    },
+    {
+      "analysis_id": "A17",
+      "slug": "evidence_strength",
+      "title": "Evidence strength",
+      "table": "tables\\analysis_17_evidence_strength.csv",
+      "figure": "figures\\analysis_17_evidence_strength.png",
+      "description": "Separates verified full text from abstract and metadata-only records.",
+      "categories": 4,
+      "records_counted": 1057
+    },
+    {
+      "analysis_id": "A18",
+      "slug": "scientific_role",
+      "title": "Provisional scientific role",
+      "table": "tables\\analysis_18_scientific_role.csv",
+      "figure": "figures\\analysis_18_scientific_role.png",
+      "description": "Role labels are structural first-pass labels and not a claim of influence.",
+      "categories": 5,
+      "records_counted": 1057
+    },
+    {
+      "analysis_id": "A19",
+      "slug": "theory_terms",
+      "title": "Theory and guarantee terms",
+      "table": "tables\\analysis_19_theory_terms.csv",
+      "figure": "figures\\analysis_19_theory_terms.png",
+      "description": "Observed theory vocabulary; presence does not verify a theorem or proof.",
+      "categories": 12,
+      "records_counted": 491
+    },
+    {
+      "analysis_id": "A20",
+      "slug": "execution_terms",
+      "title": "Execution and motion terms",
+      "table": "tables\\analysis_20_execution_terms.csv",
+      "figure": "figures\\analysis_20_execution_terms.png",
+      "description": "Motion, docking, navigation, and recovery terms located in text.",
+      "categories": 12,
+      "records_counted": 703
+    }
+  ]
+}
