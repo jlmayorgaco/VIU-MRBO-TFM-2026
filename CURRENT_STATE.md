@@ -4,7 +4,7 @@
 **Fecha de ejecución:** 2026-09-12  
 **Repositorio:** `VIU-MRBO-TFM-2026`  
 **Rama:** `sp1-final-refactor`  
-**Commits de implementación:** Stage 1A congelado en `e3bdfb553dc1f2fb32fa4a1f3c721d39200666b3`; Stage 1B en `3a99e1b8`; Stage 1C en `1ffe17e6`; Stage 2 en `f0757abd`; Stage 3 en `687d877e0`; Stage 4 en `f0ea343ad`; Stage 5 en `2d182e260`.
+**Commits de implementación:** Stage 1A congelado en `e3bdfb553dc1f2fb32fa4a1f3c721d39200666b3`; Stage 1B en `3a99e1b8`; Stage 1C en `1ffe17e6`; Stage 2 en `f0757abd`; Stage 3 en `687d877e0`; Stage 4 en `f0ea343ad`; Stage 5 en `2d182e260`; normalización final del ledger de claims en `594acd30`.
 
 ## Resumen ejecutivo
 
@@ -271,7 +271,7 @@ de búsqueda, el esquema y el validador dentro de `academic-review/`.
 
 - `python academic-review/scripts/validate_inputs.py` — correcto: 4 entradas,
   32 semillas y 0 WoS.
-- `python -m pytest academic-review/tests -q` — 30 pruebas correctas.
+- `python -m pytest academic-review/tests -q` — 31 pruebas correctas.
 - `python -m py_compile academic-review/scripts/bootstrap_literature.py academic-review/scripts/validate_inputs.py` — correcto.
 - CSV y JSONL — 246 filas/líneas y 246 `candidate_id` únicos.
 - Campos obligatorios — sin valores ausentes.
