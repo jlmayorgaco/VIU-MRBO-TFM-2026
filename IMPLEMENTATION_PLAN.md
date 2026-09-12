@@ -83,4 +83,6 @@ El HEAD base observado al cerrar Stage 1A era
 `307683ea2eac7d7e5a2dc54190bd22b6d8589b7e` (`chore(repo): confirmar el
 traslado de 26.136 ficheros a legacy/`). El árbol tenía cambios preexistentes;
 esta tarea solo compromete sus artefactos aislados y no mezcla esos cambios.
-No se hará push.
+El commit aislado de Stage 1A es
+`67a1ecbfe6c0c13c0fa507121a2f5f864a2ccfce` (`review: build Stage 1A candidate
+corpus pipeline`). No se hizo ni se hará push.

@@ -4,7 +4,8 @@
 **Fecha de ejecución:** 2026-09-12  
 **Repositorio:** `VIU-MRBO-TFM-2026`  
 **Rama:** `sp1-final-refactor`  
-**HEAD observado:** `307683ea2eac7d7e5a2dc54190bd22b6d8589b7e`
+**HEAD de cierre:** `67a1ecbfe6c0c13c0fa507121a2f5f864a2ccfce`
+(`review: build Stage 1A candidate corpus pipeline`)
 
 ## Resumen ejecutivo
 
