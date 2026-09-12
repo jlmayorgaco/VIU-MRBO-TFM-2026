@@ -1,10 +1,10 @@
 # Estado actual de la revisión bibliográfica
 
-**Etapa:** Stage 1B — auditoría de cobertura, identidad y screening completados  
+**Etapa:** Stage 1C — reparación de consultas y auditoría de cobertura completadas  
 **Fecha de ejecución:** 2026-09-12  
 **Repositorio:** `VIU-MRBO-TFM-2026`  
 **Rama:** `sp1-final-refactor`  
-**Commits de implementación:** Stage 1A congelado en `e3bdfb553dc1f2fb32fa4a1f3c721d39200666b3`; Stage 1B en `3a99e1b8` (`review: complete Stage 1B screening and recall audit`).
+**Commits de implementación:** Stage 1A congelado en `e3bdfb553dc1f2fb32fa4a1f3c721d39200666b3`; Stage 1B en `3a99e1b8`; Stage 1C se cerrará en un commit aislado posterior.
 
 ## Resumen ejecutivo
 
@@ -21,7 +21,8 @@ congelada se completó Stage 1B: auditoría de identidad, recuperación
 conservadora de DOI, reconciliación de las 32 semillas, matriz de conceptos,
 snowballing acotado de una ronda y screening de título/resumen. No se hizo
 descarga masiva de PDF, coding de texto completo, análisis de novedad ni
-redacción de revisión.
+redacción de revisión. El diagnóstico de Stage 1B activó una única ronda Stage
+1C de reparación de consultas y otra comprobación acotada de recall.
 
 ## Entradas y cobertura
 
@@ -32,6 +33,7 @@ redacción de revisión.
 | Exportación WoS | 0 archivos auténticos; `wos_status=pending_external_export` |
 | Cobertura Stage 1A | `corpus_coverage=open_discovery_only` |
 | Cobertura Stage 1B | `coverage_status=open_sources_plus_limited_snowballing` |
+| Cobertura Stage 1C | `coverage_status=open_sources_plus_limited_snowballing` |
 | CONTACT_EMAIL | Configurado solo en `academic-review/.env.literature`, ignorado por Git |
 | Claves opcionales | No requeridas ni configuradas |
 | Ledger/evidencia previos | No ingeridos, sobrescritos ni auto-fusionados |
@@ -106,6 +108,26 @@ permite declarar exhaustividad. Todos los registros siguen con
 `evidence_status=not_evidence`; la cola de texto completo es solo una entrada
 de adquisición y verificación posterior.
 
+## Resultados Stage 1C
+
+| Métrica | Resultado |
+|---|---:|
+| Familias de consulta de reparación | 8 (16 ejecuciones Crossref/OpenAlex) |
+| Candidatos Stage 1C | 2226 |
+| Nuevos por consultas de reparación | 278 |
+| Nuevos relevantes/plausibles por consultas | 126 |
+| Nuevos por segunda comprobación one-hop | 730 |
+| Relevantes/plausibles de la comprobación | 311 |
+| `include_fulltext` / `maybe_fulltext` / `exclude` | 515 / 542 / 1169 |
+| Cola Stage 1C | 1057 |
+| Fallos terminales de API | 0 |
+
+La reparación confirmó cobertura adicional en juegos poblacionales/evolutivos,
+seguridad/CBF, contexto industrial, formación/docking, terminología
+multi-agent, transporte colectivo y factibilidad de fuerza/wrench. No se
+ejecutarán más consultas de reparación en esta ronda; la siguiente compuerta
+es la adquisición legal de texto completo.
+
 ## Artefactos verificables
 
 - `academic-review/data/processed/candidate_corpus_stage1a.csv`
@@ -129,6 +151,16 @@ de adquisición y verificación posterior.
 - `academic-review/reports/stage1b_screening_qa.md`
 - `academic-review/protocol/screening_protocol_v1.md`
 - `academic-review/manifests/stage1a_freeze_manifest.json`
+- `academic-review/data/processed/candidate_corpus_stage1c.csv`
+- `academic-review/data/processed/candidate_corpus_stage1c.jsonl`
+- `academic-review/data/processed/fulltext_queue_stage1c.csv`
+- `academic-review/logs/stage1c_query_repair_log.csv`
+- `academic-review/logs/stage1c_recall_log.csv`
+- `academic-review/logs/stage1c_anchor_manifest.csv`
+- `academic-review/logs/stage1c_api_log.csv`
+- `academic-review/manifests/stage1b_freeze_manifest.json`
+- `academic-review/config/stage1c_query_repair.yaml`
+- `academic-review/reports/stage1c_query_repair_report.md`
 
 Además se conservaron la semilla legacy, el contrato de alcance, el protocolo
 de búsqueda, el esquema y el validador dentro de `academic-review/`.
@@ -145,6 +177,9 @@ de búsqueda, el esquema y el validador dentro de `academic-review/`.
 - Stage 1B — 1218 IDs únicos, 0 DOI duplicados, decisiones y razones válidas,
   cola igual a `include_fulltext + maybe_fulltext`, provenance presente y
   exclusiones sin etiquetas temáticas.
+- Stage 1C — 2226 IDs únicos, 0 DOI duplicados, cola igual a
+  `include_fulltext + maybe_fulltext`, provenance presente y 8/8 familias de
+  reparación procesadas.
 
 La advertencia de `requests` sobre versiones de `urllib3`/`charset_normalizer`
 no impidió la ejecución ni produjo fallos HTTP; queda como nota de entorno para
@@ -157,8 +192,8 @@ han preservado sin limpieza ni reset. Los cambios de esta tarea están aislados
 en `academic-review/`, `CURRENT_STATE.md`, `IMPLEMENTATION_PLAN.md` y el plan
 operativo correspondiente.
 
-Stage 1B queda detenido aquí, conforme a la autorización. La siguiente
+Stage 1C queda detenido aquí, conforme a la autorización. La siguiente
 compuerta es incorporar, si el autor lo proporciona, el export WoS manual y/o
-semillas originales, y después adquirir y verificar texto completo desde la
-cola legalmente disponible. Ningún resultado actual autoriza afirmaciones de
+semillas originales, y adquirir y verificar texto completo desde la cola
+legalmente disponible. Ningún resultado actual autoriza afirmaciones de
 inclusión definitiva, estado del arte, novedad o hueco científico.

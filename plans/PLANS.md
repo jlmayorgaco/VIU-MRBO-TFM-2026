@@ -80,3 +80,33 @@ arte.
 Esperar exportaciones WoS/semillas originales si están disponibles y, en una
 etapa separada, adquirir legalmente los textos completos de la cola. Ningún
 registro Stage 1B es evidencia científica todavía.
+
+### Stage 1C — reparación acotada de consultas
+
+**Estado: completado y validado el 2026-09-12.**
+
+- [x] Congelar el hash del derivado Stage 1B antes de crear el derivado de
+  reparación.
+- [x] Ejecutar una única ronda de reparación con ocho familias nuevas, sin
+  modificar Q1–Q7 y respetando el máximo de 12 familias.
+- [x] Ejecutar una segunda comprobación one-hop acotada sobre las 20 anclas
+  seleccionadas.
+- [x] Reconciliar conservadoramente los nuevos registros y volver a aplicar el
+  screening determinista v1 sin promover ningún registro a evidencia.
+- [x] Validar unicidad, ausencia de duplicados DOI, estados de evidencia y
+  correspondencia exacta de la cola de texto completo.
+- [x] Generar el informe, logs, manifest y pruebas de regresión de Stage 1C.
+
+La reparación produjo 278 registros nuevos por consulta y 730 por la
+comprobación de recall; 437 fueron relevantes o plausibles. El corpus derivado
+contiene 2226 registros: 515 `include_fulltext`, 542 `maybe_fulltext` y 1169
+`exclude`; la cola de adquisición contiene 1057 registros. Persistió evidencia
+de terminología relevante no cubierta, por lo que no se declara saturación; la
+expansión automática queda detenida tras esta ronda.
+
+### Siguiente compuerta
+
+Pasar a Stage 2 con la cola Stage 1C para intentar adquisición legal/open de
+texto completo. Los trabajos inaccesibles se conservarán como
+`abstract_only` o `unavailable_legally`; no se usarán para afirmaciones
+detalladas de método, resultados o garantías.

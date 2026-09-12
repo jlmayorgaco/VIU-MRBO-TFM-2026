@@ -1,0 +1,35 @@
+protocol_version: "MROB-LIT-2026-09-12-stage1c-v1"
+max_query_families: 12
+query_families:
+  - id: Q8_game_dynamics
+    gap_family: population_evolutionary_potential_games
+    rationale: "The Stage 1B concept matrix found population/evolutionary/potential-game vocabulary absent from Q1-Q7."
+    terms: '("population game" OR "evolutionary game" OR "potential game" OR replicator OR logit) AND ("multi-robot" OR MRTA OR coalition)'
+  - id: Q9_safety_transport
+    gap_family: safety_collision_barrier_transport
+    rationale: "The Stage 1B matrix identified collision avoidance, CBF and safety as absent canonical query axes coupled to transport."
+    terms: '("multi-robot" OR "mobile robot") AND ("cooperative transport" OR payload) AND ("collision avoidance" OR "control barrier function" OR CBF OR safety)'
+  - id: Q10_industrial_context
+    gap_family: industrial_intralogistics
+    rationale: "Warehouse, intralogistics and industrial-logistics context was not present in the original Boolean families."
+    terms: '("multi-robot" OR AMR OR AGV) AND (warehouse OR intralogistics OR "industrial logistics" OR factory) AND (transport OR "task allocation" OR coalition)'
+  - id: Q11_formation_docking
+    gap_family: formation_docking_cooperative_motion
+    rationale: "Formation and docking variants were only partially represented and cooperative motion was absent as a direct query axis."
+    terms: '("multi-robot" OR "mobile robot") AND (formation OR docking OR "cooperative motion") AND (transport OR payload)'
+  - id: Q12_multiagent_robotics
+    gap_family: multiagent_robotic_coordination
+    rationale: "The Stage 1B matrix showed partial coverage of multi-agent robotic terminology and run-on multiagent variants."
+    terms: '("multi-agent robotic" OR "multi-agent robot" OR "multiagent robot") AND (coordination OR allocation OR cooperation)'
+  - id: Q13_collective_transport
+    gap_family: collective_shared_load_transport
+    rationale: "Collective transport and shared-load formulations are relevant synonyms not fully captured by the canonical transport terms."
+    terms: '("collective transport" OR "cooperative object transport" OR "shared payload" OR "shared load") AND (robot OR "multi-robot")'
+  - id: Q14_force_wrench
+    gap_family: force_wrench_contact_feasibility
+    rationale: "Force/wrench/contact feasibility needs a targeted audit beyond the narrow Q3 conjunction."
+    terms: '("multi-robot" OR "mobile robot") AND ("force allocation" OR wrench OR "force closure" OR "contact feasibility")'
+  - id: Q15_amr_agv_industrial
+    gap_family: amr_agv_logistics
+    rationale: "AMR/AGV industrial logistics combinations were missing from the original query set despite the administrative TFM scope."
+    terms: '(AMR OR AGV OR "autonomous mobile robot") AND (warehouse OR intralogistics OR logistics) AND (task OR transport OR fleet)'

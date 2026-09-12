@@ -69,6 +69,26 @@ Los registros siguen siendo `not_evidence`. La cola de texto completo no se
 descargó ni se utilizó para redactar afirmaciones; Web of Science continúa
 pendiente como exportación externa.
 
+## Stage 1C — reparación acotada de consultas
+
+**Estado: completado y validado el 2026-09-12.**
+
+El recall de Stage 1B mostró familias relevantes ausentes de Q1–Q7, por lo que
+se ejecutó una sola ronda de reparación con ocho familias dirigidas: juegos
+poblacionales/evolutivos, seguridad/CBF, contexto industrial, formación/docking,
+multi-agent robótico, transporte colectivo, fuerza/wrench y AMR/AGV logístico.
+Q1–Q7 no se modificaron. Se hicieron 16 ejecuciones, una por proveedor abierto
+para cada familia, y una segunda comprobación one-hop acotada.
+
+La ronda añadió 278 candidatos por consultas y 730 por la comprobación de
+recall; 437 fueron relevantes o plausibles. El derivado final contiene 2226
+registros, con 515 `include_fulltext`, 542 `maybe_fulltext` y 1169
+`exclude`. Como persistió la recuperación de literatura relevante, no se
+declara saturación; la expansión automática se detiene después de esta ronda.
+
+Todos los registros permanecen en `not_evidence`. Stage 2 usa la cola Stage 1C
+y se limita a adquisición legal/open de texto completo, sin bypass de controles.
+
 ## Stage 2 — semillas originales y WoS manual
 
 **Estado: pendiente de entrada externa.**
