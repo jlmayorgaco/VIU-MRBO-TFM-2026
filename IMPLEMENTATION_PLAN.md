@@ -151,4 +151,5 @@ complete Stage 1B screening and recall audit`) y el de Stage 1C es
 push. Stage 2 está en `f0757abd` (`review: complete Stage 2 legal full-text
 acquisition`) y Stage 3 en `687d877e0` (`review: complete Stage 3 evidence
 coding`); Stage 4 está en `f0ea343ad` (`review: complete Stage 4 synthesis
-and gap audit`); Stage 5 se registrará en un commit aislado posterior.
+and gap audit`); Stage 5 está en `2d182e260` (`review: finalize academic
+literature review package`).

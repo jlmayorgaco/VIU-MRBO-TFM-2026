@@ -20,3 +20,8 @@ def test_citation_never_invents_missing_doi() -> None:
 def test_top_terms_drops_unclear_placeholder() -> None:
     rows = [{"x": "auction;unclear"}, {"x": "auction;consensus"}]
     assert module.top_terms(rows, "x") == [("auction", 2), ("consensus", 1)]
+
+
+def test_claim_ledger_protocol_status_vocabulary_is_documented() -> None:
+    allowed = {"supported", "partially_supported", "contradicted", "unclear", "not_tested"}
+    assert allowed == set(module.CLAIM_SUPPORT_STATUSES)

@@ -1,6 +1,6 @@
 # Manifest de reproducibilidad
 
-- HEAD al generar Stage 5: `f0ea343adef7f13f0e17ace42f65c11e0797623d`
+- HEAD al generar Stage 5: `2d182e2606e2e67abe0f7330b19fe313bb2f2fe4`
 - Tesis canónica modificada: **no**
 - Corpus Stage 2 SHA-256: `dee8796d4ae05a83609fd7a369fd3c013f5ea81478c8a43cacb3ca2ed4cde826`
 - Matriz Stage 3 SHA-256: `61befd9d886ee189b292f2087bbedfc43ff2906db3aa621053636f1bb8737fa9`

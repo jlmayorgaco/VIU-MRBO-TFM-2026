@@ -1,6 +1,6 @@
 # Revisión de literatura: coordinación distribuida de múltiples AMR
 
-Generada UTC: 2026-09-12T22:31:57.457080+00:00
+Generada UTC: 2026-09-12T22:39:47.953637+00:00
 
 ## Resumen ejecutivo
 

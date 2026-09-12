@@ -1,6 +1,6 @@
 # Stage 5 final package QA
 
-Run UTC: 2026-09-12T22:31:57.549256+00:00
+Run UTC: 2026-09-12T22:39:48.057148+00:00
 
 - Final files generated: **10**
 - Claim-source rows: **5**

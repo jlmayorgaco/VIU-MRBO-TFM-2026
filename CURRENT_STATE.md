@@ -4,7 +4,7 @@
 **Fecha de ejecución:** 2026-09-12  
 **Repositorio:** `VIU-MRBO-TFM-2026`  
 **Rama:** `sp1-final-refactor`  
-**Commits de implementación:** Stage 1A congelado en `e3bdfb553dc1f2fb32fa4a1f3c721d39200666b3`; Stage 1B en `3a99e1b8`; Stage 1C en `1ffe17e6`; Stage 2 en `f0757abd`; Stage 3 en `687d877e0`; Stage 4 en `f0ea343ad`; Stage 5 se cerrará en un commit aislado posterior.
+**Commits de implementación:** Stage 1A congelado en `e3bdfb553dc1f2fb32fa4a1f3c721d39200666b3`; Stage 1B en `3a99e1b8`; Stage 1C en `1ffe17e6`; Stage 2 en `f0757abd`; Stage 3 en `687d877e0`; Stage 4 en `f0ea343ad`; Stage 5 en `2d182e260`.
 
 ## Resumen ejecutivo
 
