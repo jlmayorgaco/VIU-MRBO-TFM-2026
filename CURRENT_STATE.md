@@ -1,10 +1,10 @@
 # Estado actual de la revisión bibliográfica
 
-**Etapa:** Stage 1C — reparación de consultas y auditoría de cobertura completadas  
+**Etapa:** Stage 3 — coding estructural de texto completo completado  
 **Fecha de ejecución:** 2026-09-12  
 **Repositorio:** `VIU-MRBO-TFM-2026`  
 **Rama:** `sp1-final-refactor`  
-**Commits de implementación:** Stage 1A congelado en `e3bdfb553dc1f2fb32fa4a1f3c721d39200666b3`; Stage 1B en `3a99e1b8`; Stage 1C en `1ffe17e6`.
+**Commits de implementación:** Stage 1A congelado en `e3bdfb553dc1f2fb32fa4a1f3c721d39200666b3`; Stage 1B en `3a99e1b8`; Stage 1C en `1ffe17e6`; Stage 2 en `f0757abd`; Stage 3 se cerrará en un commit aislado posterior.
 
 ## Resumen ejecutivo
 
@@ -128,6 +128,39 @@ multi-agent, transporte colectivo y factibilidad de fuerza/wrench. No se
 ejecutarán más consultas de reparación en esta ronda; la siguiente compuerta
 es la adquisición legal de texto completo.
 
+## Resultados Stage 2
+
+| Métrica | Resultado |
+|---|---:|
+| Cola procesada | 1057 |
+| Texto completo verificado | 230 (144 PDF, 86 HTML, 0 XML) |
+| `abstract_only` | 30 |
+| `unavailable_legally` | 776 |
+| `retrieval_error` | 21 |
+| Fallos terminales de API | 0 |
+| Política de acceso | legal/open sin autenticación ni bypass |
+
+Cada objeto promovido conserva URL final, timestamp, SHA-256, MIME, tamaño,
+ruta local y estado de identidad DOI/título. Los binarios permanecen locales y
+fuera de Git por tamaño y condiciones de redistribución; los manifests y logs
+son versionados.
+
+## Resultados Stage 3
+
+| Métrica | Resultado |
+|---|---:|
+| Filas de la matriz de evidencia | 1057; IDs únicos |
+| Coding de texto completo verificado | 230 |
+| Coding limitado a resumen | 30 |
+| No codificable sin texto completo | 797 |
+| Errores de extracción | 0 |
+| Modo | primer pase estructural determinista con páginas/snippets |
+| Roles CORE / ENABLING / CONTEXT / BASELINE / SURVEY | 94 / 123 / 800 / 19 / 21 |
+
+La matriz no convierte vocabulario observado en resultados, teoremas,
+garantías o claims de novedad. Los campos detallados de filas
+`metadata_only`/`retrieval_error` permanecen vacíos.
+
 ## Artefactos verificables
 
 - `academic-review/data/processed/candidate_corpus_stage1a.csv`
@@ -161,6 +194,19 @@ es la adquisición legal de texto completo.
 - `academic-review/manifests/stage1b_freeze_manifest.json`
 - `academic-review/config/stage1c_query_repair.yaml`
 - `academic-review/reports/stage1c_query_repair_report.md`
+- `academic-review/config/stage2_acquisition.yaml`
+- `academic-review/data/processed/candidate_corpus_stage2.csv`
+- `academic-review/data/processed/fulltext_queue_stage2.csv`
+- `academic-review/logs/stage2_fulltext_acquisition.csv`
+- `academic-review/logs/stage2_fulltext_attempts.csv`
+- `academic-review/logs/stage2_api_log.csv`
+- `academic-review/manifests/stage1c_freeze_manifest.json`
+- `academic-review/reports/stage2_acquisition_qa.md`
+- `academic-review/config/stage3_codebook.yaml`
+- `academic-review/data/processed/fulltext_evidence_matrix.csv`
+- `academic-review/data/processed/fulltext_evidence_matrix.jsonl`
+- `academic-review/logs/stage3_coding_log.csv`
+- `academic-review/reports/stage3_fulltext_qa.md`
 
 Además se conservaron la semilla legacy, el contrato de alcance, el protocolo
 de búsqueda, el esquema y el validador dentro de `academic-review/`.
@@ -169,7 +215,7 @@ de búsqueda, el esquema y el validador dentro de `academic-review/`.
 
 - `python academic-review/scripts/validate_inputs.py` — correcto: 4 entradas,
   32 semillas y 0 WoS.
-- `python -m pytest academic-review/tests -q` — 14 pruebas correctas.
+- `python -m pytest academic-review/tests -q` — 30 pruebas correctas.
 - `python -m py_compile academic-review/scripts/bootstrap_literature.py academic-review/scripts/validate_inputs.py` — correcto.
 - CSV y JSONL — 246 filas/líneas y 246 `candidate_id` únicos.
 - Campos obligatorios — sin valores ausentes.
@@ -180,6 +226,11 @@ de búsqueda, el esquema y el validador dentro de `academic-review/`.
 - Stage 1C — 2226 IDs únicos, 0 DOI duplicados, cola igual a
   `include_fulltext + maybe_fulltext`, provenance presente y 8/8 familias de
   reparación procesadas.
+- Stage 2 — 1057 filas con estados válidos, 230 objetos adquiridos con
+  identidad verificada, hashes/rutas presentes y entradas fuera de Git
+  excluidas por la política de binarios.
+- Stage 3 — 1057 filas únicas, 230 textos completos leídos, filas limitadas
+  por nivel de evidencia y JSONL/CSV generados.
 
 La advertencia de `requests` sobre versiones de `urllib3`/`charset_normalizer`
 no impidió la ejecución ni produjo fallos HTTP; queda como nota de entorno para
@@ -192,8 +243,8 @@ han preservado sin limpieza ni reset. Los cambios de esta tarea están aislados
 en `academic-review/`, `CURRENT_STATE.md`, `IMPLEMENTATION_PLAN.md` y el plan
 operativo correspondiente.
 
-Stage 1C queda detenido aquí, conforme a la autorización. La siguiente
-compuerta es incorporar, si el autor lo proporciona, el export WoS manual y/o
-semillas originales, y adquirir y verificar texto completo desde la cola
-legalmente disponible. Ningún resultado actual autoriza afirmaciones de
-inclusión definitiva, estado del arte, novedad o hueco científico.
+Stage 3 queda detenido aquí tras completar la matriz. Stage 4 ya tiene la
+analítica y auditoría adversarial generadas localmente y será fijado en un
+commit separado. WoS continúa pendiente; ningún resultado actual autoriza
+afirmaciones de inclusión definitiva, estado del arte, novedad o hueco
+científico.

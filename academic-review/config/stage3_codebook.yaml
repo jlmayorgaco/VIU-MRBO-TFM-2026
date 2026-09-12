@@ -1,0 +1,23 @@
+protocol_version: MROB-LIT-2026-09-12-stage3-v1
+input: data/processed/candidate_corpus_stage2.csv
+evidence_matrix: data/processed/fulltext_evidence_matrix.csv
+coding_mode: deterministic_structural_first_pass
+fulltext_policy: detailed_fields_require_verified_fulltext
+roles:
+  - CORE
+  - ENABLING
+  - CONTEXT
+  - BASELINE
+  - SURVEY
+  - FOUNDATIONAL
+fields:
+  - problem_formulation
+  - coordination_architecture
+  - information_assumptions
+  - method
+  - physical_layer
+  - execution
+  - theory
+  - experiments
+  - results
+  - limitations

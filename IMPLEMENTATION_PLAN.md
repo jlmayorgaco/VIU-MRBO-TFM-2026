@@ -89,35 +89,53 @@ declara saturación; la expansión automática se detiene después de esta ronda
 Todos los registros permanecen en `not_evidence`. Stage 2 usa la cola Stage 1C
 y se limita a adquisición legal/open de texto completo, sin bypass de controles.
 
-## Stage 2 — semillas originales y WoS manual
+## Stage 2 — adquisición legal de texto completo
 
-**Estado: pendiente de entrada externa.**
+**Estado: completado y validado el 2026-09-12.**
 
-- Recibir o ubicar los archivos semilla `academic_*.csv` y cualquier export
-  WoS auténtico, preferentemente `Full Record and Cited References`.
-- Calcular SHA-256 antes/después y registrar manifest de copia.
-- Implementar/probar parsers CSV, TSV, TXT, XLSX y BibTeX según el formato
-  real recibido.
-- Conservar archivos originales y producir una cola explícita para filas
-  fallidas; detener si la pérdida supera el umbral documentado.
+Se procesaron 1057 registros de la cola Stage 1C mediante ubicaciones OA de
+OpenAlex y enlaces públicos de Crossref. Se verificaron 230 objetos (144 PDF y
+86 HTML); 30 quedaron como `abstract_only`, 776 como `unavailable_legally` y
+21 como `retrieval_error`. Cada objeto promovido tiene identidad DOI/título,
+hash, MIME, tamaño, URL y timestamp. Los binarios locales se excluyen de Git
+por tamaño/licencia y se regeneran con el log/manifests.
 
-## Stages posteriores — no iniciados
+## Stage 3 — coding científico de texto completo
 
-1. **Stage 3:** cliente HTTP compartido y pilotos documentados de OpenAlex,
-   arXiv, Semantic Scholar y Unpaywall según necesidad.
-2. **Stage 4:** normalización, version linkage y lineage ampliada.
-3. **Stage 5:** texto completo legal, validación PDF y extracción por página.
-4. **Stage 6:** coding de texto completo, codebook y claim evidence con decisiones
-   auditables.
-5. **Stage 7:** descubrimiento masivo controlado y reconciliación de fuentes.
-6. **Stage 8:** lectura profunda, snowballing y saturación.
-7. **Stage 9:** analítica y figuras derivadas de datasets congelados.
-8. **Stage 10:** BibTeX, informe, compilación y auditoría final.
+**Estado: completado y validado el 2026-09-12.**
 
-Cada etapa requerirá sus propias pruebas, configuración versionada, resultados
-reproducibles, informe de limitaciones y compuerta antes de avanzar. Las cinco
-figuras TikZ protegidas de la memoria no forman parte de esta Stage 1B y no se
-han alterado.
+Los 230 textos verificados fueron leídos por extracción programática y
+codificados con un codebook versionado. La matriz cubre problema, arquitectura,
+supuestos de información, método, capa física, ejecución, teoría,
+experimentos, resultados, limitaciones, rol y localización de evidencia. Los
+30 resúmenes conservan un coding limitado; los casos metadata-only/error no
+reciben detalle técnico. La matriz se declara primer pase estructural, no
+lectura humana final.
+
+## Stage 4 — síntesis, taxonomía, figuras y auditoría de novedad
+
+**Estado: completado y validado el 2026-09-12.**
+
+Se generaron las 16 analíticas requeridas, 20 análisis totales, 23 tablas CSV,
+20 figuras PNG, mapa de evidencia SP1–SP3, mapa explícito de gaps y auditoría
+adversarial. Todas las salidas se derivan de la matriz congelada; no se
+presenta el conteo de registros como impacto científico y se mantiene la
+conclusión de novedad sin resolver.
+
+## Stage 5 — paquete académico final
+
+**Estado: completado y validado el 2026-09-12.**
+
+Se generó `academic-review/final/` sin modificar la memoria canónica, con
+revisión completa/compacta, plan de integración SP1–SP3, matriz de claims,
+triage CORE/ENABLING, exclusiones, limitaciones y manifest de reproducción.
+No se generó LaTeX para evitar introducir una variante no compilada de la
+memoria oficial.
+
+WoS permanece como `pending_external_export`; su ausencia no bloqueó la
+ejecución, pero impide declarar exhaustividad o novedad final.
+
+Las cinco figuras TikZ protegidas no se alteraron.
 
 ## Política de commits
 

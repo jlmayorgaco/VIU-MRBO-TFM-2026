@@ -110,3 +110,45 @@ Pasar a Stage 2 con la cola Stage 1C para intentar adquisición legal/open de
 texto completo. Los trabajos inaccesibles se conservarán como
 `abstract_only` o `unavailable_legally`; no se usarán para afirmaciones
 detalladas de método, resultados o garantías.
+
+### Stage 2 — adquisición legal de texto completo
+
+**Estado: completado y validado el 2026-09-12.**
+
+- [x] Congelar los CSV Stage 1C y registrar sus hashes.
+- [x] Consultar ubicaciones OA de OpenAlex por lotes y enlaces públicos de
+  Crossref, sin autenticación ni bypass.
+- [x] Descargar/cachear rutas públicas y guardar cada objeto bajo
+  `academic-review/data/fulltext/<candidate_id>/`.
+- [x] Verificar identidad por DOI/título; rechazar contenido incompatible,
+  paywalled o solo landing page.
+- [x] Registrar los seis estados permitidos, URL, timestamp, hash, MIME, tamaño,
+  nota de acceso y error.
+- [x] Ejecutar QA, tests y manifest de adquisición.
+
+Resultado: 1057 registros procesados; 230 objetos verificados (144 PDF y 86
+HTML), 30 `abstract_only`, 776 `unavailable_legally` y 21
+`retrieval_error`. Los binarios se mantienen locales y fuera de Git; los
+manifests y hashes permiten reproducir la adquisición.
+
+### Stage 3 — coding científico de texto completo
+
+**Estado: completado y validado el 2026-09-12.**
+
+- [x] Leer los 230 objetos verificados desde sus rutas locales.
+- [x] Generar matriz CSV/JSONL con problema, arquitectura, información,
+  método, capa física, ejecución, teoría, experimentos, resultados,
+  limitaciones, rol y localización de snippets.
+- [x] Mantener `abstract_only`, `metadata_only` y `retrieval_error` separados
+  de la evidencia de texto completo.
+- [x] Generar QA, log de coding y pruebas.
+
+El resultado es un primer pase estructural determinista: localiza evidencia en
+texto real, pero requiere lectura humana cercana para confirmar ecuaciones,
+tablas, figuras, supuestos, garantías y resultados antes de usarlos como
+claims fuertes.
+
+### Siguiente compuerta
+
+Fijar Stage 4 con las 16 analíticas requeridas, tablas/figuras reproducibles y
+auditoría adversarial de solapamiento por ejes SP1–SP3.
