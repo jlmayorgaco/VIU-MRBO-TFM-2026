@@ -1,0 +1,15 @@
+{
+  "created_at_utc": "2026-09-12T21:03:30.147624+00:00",
+  "status": "immutable_input",
+  "files": {
+    "data\\processed\\fulltext_queue_stage1c.csv": {
+      "bytes": 1478674,
+      "sha256": "e61c7187d2434bbbe13599f8b6392a8693c01414b9e40f335de65685cc3e3ae8"
+    },
+    "data\\processed\\candidate_corpus_stage1c.csv": {
+      "bytes": 2952653,
+      "sha256": "02ebed7559b0749783c8610f5399ed9733aa198c213aa2a76d5748ba01adc4d8"
+    }
+  },
+  "note": "Stage 2 must never overwrite Stage 1C corpus or queue."
+}

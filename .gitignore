@@ -114,3 +114,16 @@ docs/thesis-final/
 # Local delivery mirror. The only editable/canonical TFM source is
 # docs/doc-05-final-report; this mirror is retained locally, not versioned.
 docs/07-tfm/
+
+# Material de consulta. Libros y compendios en PDF: entrada de lectura, no
+# fuente del TFM. Pesan cientos de megabytes y ya los cubre la regla *.pdf;
+# se declaran aparte para que quede explicito por que no se versionan.
+material/books/
+material/compendios/
+!material/README.md
+
+# Stage 2 full-text cache. Public OA files can have publisher-specific
+# redistribution terms and are regenerated from the acquisition log; keep
+# candidate manifests and hashes versioned, but do not commit bulky raw files.
+academic-review/cache/fulltext/
+academic-review/data/fulltext/*/fulltext.*

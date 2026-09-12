@@ -1,0 +1,14 @@
+protocol_version: MROB-LIT-2026-09-12-stage2-v1
+input: data/processed/fulltext_queue_stage1c.csv
+coverage: legal_open_only
+max_attempts_per_url: 2
+max_download_bytes: 52428800
+request_timeout_seconds: 25
+candidate_sources:
+  - openalex_oa_locations
+  - crossref_public_links
+  - doi_landing_page_without_authentication
+identity_policy:
+  require_title_or_doi_match: true
+  reject_conflicting_doi: true
+  accept_html_only_when_fulltext_structure_observed: true
