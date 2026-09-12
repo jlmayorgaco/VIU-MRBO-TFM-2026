@@ -127,6 +127,7 @@ traslado de 26.136 ficheros a legacy/`). El árbol tenía cambios preexistentes;
 esta tarea solo compromete sus artefactos aislados y no mezcla esos cambios.
 El commit aislado de Stage 1A es
 `67a1ecbfe6c0c13c0fa507121a2f5f864a2ccfce` (`review: build Stage 1A candidate
-corpus pipeline`); el commit aislado de Stage 1B se añadirá después de
-revisar el diff final es `3a99e1b8` (`review: complete Stage 1B screening and
-recall audit`). No se hizo ni se hará push.
+corpus pipeline`); el commit aislado de Stage 1B es `3a99e1b8` (`review:
+complete Stage 1B screening and recall audit`) y el de Stage 1C es
+`1ffe17e6` (`review: complete Stage 1C query repair`). No se hizo ni se hará
+push.
