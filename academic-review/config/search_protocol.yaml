@@ -1,0 +1,92 @@
+protocol_version: "MROB-LIT-2026-09-12-v1"
+contact_email: "wallamejorge.co@hotmail.com"
+legacy_claim_is_target: false
+language_policy:
+  discovery: [en]
+  notes: "Do not exclude a strong non-English record merely because metadata is multilingual; flag for review."
+year_range:
+  primary: [2000, 2026]
+  foundational: [1940, 2026]
+
+concept_blocks:
+  robots:
+    - "multi-robot"
+    - "multiple mobile robots"
+    - "autonomous mobile robots"
+    - "AMR"
+    - "AGV"
+    - "robot fleet"
+    - "swarm robot"
+  coalition:
+    - "coalition formation"
+    - "team formation"
+    - "task allocation"
+    - "MRTA"
+    - "hedonic game"
+    - "auction"
+    - "market-based"
+    - "service composition"
+  transport:
+    - "cooperative transport"
+    - "cooperative object transport"
+    - "collaborative transport"
+    - "shared payload"
+    - "shared-load"
+    - "object transportation"
+    - "payload transport"
+  physical:
+    - "wrench"
+    - "force allocation"
+    - "contact feasibility"
+    - "grasp matrix"
+    - "force closure"
+    - "caging"
+    - "non-prehensile"
+    - "actuator limits"
+  recovery:
+    - "fault tolerant"
+    - "fault recovery"
+    - "robot replacement"
+    - "agent replacement"
+    - "member replacement"
+    - "substitution"
+    - "reconfiguration"
+  distributed:
+    - "distributed"
+    - "decentralized"
+    - "leaderless"
+    - "peer-to-peer"
+    - "consensus"
+    - "neighbor communication"
+  network:
+    - "packet loss"
+    - "delay"
+    - "switching topology"
+    - "event-triggered"
+    - "communication constraints"
+
+query_families:
+  - id: Q1_coalition_transport
+    terms: '("multi-robot" OR "autonomous mobile robot" OR AMR OR AGV) AND ("coalition formation" OR "team formation" OR MRTA OR "task allocation") AND (transport* OR payload OR object)'
+  - id: Q2_sharedload_distributed
+    terms: '("multi-robot" OR "mobile robot") AND ("cooperative transport" OR "object transport" OR "shared payload" OR "shared-load") AND (distributed OR decentralized OR leaderless OR consensus)'
+  - id: Q3_physical_certificate
+    terms: '("multi-robot" OR "mobile robot") AND ("cooperative transport" OR payload OR object) AND (wrench OR "force allocation" OR "contact feasibility" OR "grasp matrix" OR "force closure" OR caging)'
+  - id: Q4_recovery_replacement
+    terms: '("multi-robot" OR "mobile robot") AND ("cooperative transport" OR payload OR MRTA) AND (fault OR failure OR recovery OR replacement OR substitution OR reconfiguration)'
+  - id: Q5_heterogeneous_local
+    terms: '(heterogeneous AND ("multi-robot" OR MRTA)) AND (coalition OR team) AND (distributed OR decentralized OR local)'
+  - id: Q6_network_imperfect
+    terms: '("multi-robot" OR "mobile robot") AND (cooperative OR coalition) AND ("packet loss" OR delay OR "switching topology" OR "event-triggered" OR "communication constraints")'
+  - id: Q7_counterexample_full_conjunction
+    terms: '(heterogeneous AND ("cooperative transport" OR "shared payload")) AND (replacement OR recovery OR reconfiguration) AND (distributed OR decentralized OR leaderless)'
+
+screening_guardrails:
+  title_only_is_method_evidence: false
+  abstract_can_prove_physical_validation: false
+  require_fulltext_for:
+    - "physical feasibility details"
+    - "authority/centralization architecture when abstract is ambiguous"
+    - "online replacement semantics"
+    - "hardware fleet size"
+    - "contact/wrench constraints"
