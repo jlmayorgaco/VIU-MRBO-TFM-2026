@@ -1,0 +1,29 @@
+{
+  "status": "passed",
+  "checks": {
+    "world_count": true,
+    "run_count": true,
+    "paired_methods": true,
+    "world_hash_unique": true,
+    "instance_hash_shared_across_regimes": true,
+    "finite_executed_metrics": true,
+    "exact_network_potential": true,
+    "strict_potential_monotonicity": true,
+    "better_response_visible_nash": true,
+    "finite_profile_move_bound": true,
+    "conflict_free_catalogue": true,
+    "oracle_cap_respected": true,
+    "no_fabricated_oracle_gap": true,
+    "message_accounting": true,
+    "probability_bound_valid": true
+  },
+  "evidence_level": "C",
+  "worlds": 900,
+  "runs": 4500,
+  "executed_runs": 4050,
+  "oracle_certified_worlds": 450,
+  "model_scope": "finite binary route game on a static undirected communication graph with sampled delay and independent packet loss",
+  "not_claimed": "No continuous physical safety, real radio stack, correlated loss, switching-topology convergence, global MAPF optimality, hardware scaling or energy measurement is claimed.",
+  "historical_campaign_used": false,
+  "config_protocol": "sp8_visible_route_network_v1"
+}

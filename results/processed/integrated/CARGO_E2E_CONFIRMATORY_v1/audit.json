@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "checks": {
+    "all_worlds_paired": true,
+    "world_hashes_unique": true,
+    "finite_metrics": true,
+    "wheel_torque_limits": true,
+    "no_load_motion_before_docking": true,
+    "failure_cases_preserved": true,
+    "termination_classified": true,
+    "message_accounting_nonnegative": true,
+    "global_methods_send_no_messages": true
+  },
+  "worlds": 360,
+  "runs": 2160,
+  "model_scope": "dynamic unicycle docking and replacement plus reduced-order planar rigid Cargo payload with fixed contacts",
+  "information_scope": "versioned neighbor gossip with sampled bounded delay and independent packet loss; perfect/global methods declared separately",
+  "not_claimed": "No global hybrid convergence, 3-D support, frictional contact, perception, middleware, hardware or pushing/caging validation."
+}

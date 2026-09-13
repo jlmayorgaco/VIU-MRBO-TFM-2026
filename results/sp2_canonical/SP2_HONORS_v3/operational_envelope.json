@@ -1,0 +1,228 @@
+{
+  "interface": "SP2_to_SP3_virtual_vehicle_v3",
+  "model_scope": "reduced_planar_supported_load",
+  "hardware_validated": false,
+  "units": {
+    "linear_velocity": "m/s",
+    "yaw_rate": "rad/s",
+    "linear_acceleration": "m/s^2",
+    "yaw_acceleration": "rad/s^2"
+  },
+  "formation_offsets_body_m": [
+    [
+      -0.45,
+      -0.3
+    ],
+    [
+      0.45,
+      -0.3
+    ],
+    [
+      0.45,
+      0.3
+    ],
+    [
+      -0.45,
+      0.3
+    ]
+  ],
+  "footprint": {
+    "model": "conservative_circumscribed_disc",
+    "radius_m": 0.7208326913195984,
+    "payload_half_extents_m": [
+      0.45,
+      0.3
+    ],
+    "robot_radius_m": 0.18,
+    "safety_margin_m": 0.08
+  },
+  "sampled_kinematic_twist_sections": [
+    {
+      "radius_m": 0.2,
+      "v_x_mps": 0.0,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.8500000000000001,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 0.2,
+      "v_x_mps": 0.1,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.875,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 0.2,
+      "v_x_mps": 0.2,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.75,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 0.2,
+      "v_x_mps": 0.3,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.30000000000000004,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 0.4,
+      "v_x_mps": 0.0,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.55,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 0.4,
+      "v_x_mps": 0.1,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.525,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 0.4,
+      "v_x_mps": 0.2,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.42500000000000004,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 0.4,
+      "v_x_mps": 0.3,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.15000000000000002,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 0.6,
+      "v_x_mps": 0.0,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.4,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 0.6,
+      "v_x_mps": 0.1,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.375,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 0.6,
+      "v_x_mps": 0.2,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.275,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 0.6,
+      "v_x_mps": 0.3,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.1,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 0.8,
+      "v_x_mps": 0.0,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.30000000000000004,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 0.8,
+      "v_x_mps": 0.1,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.30000000000000004,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 0.8,
+      "v_x_mps": 0.2,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.25,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 0.8,
+      "v_x_mps": 0.3,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.07500000000000001,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 1.0,
+      "v_x_mps": 0.0,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.25,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 1.0,
+      "v_x_mps": 0.1,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.25,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 1.0,
+      "v_x_mps": 0.2,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.2,
+      "seeds_with_feasible_sample": 30
+    },
+    {
+      "radius_m": 1.0,
+      "v_x_mps": 0.3,
+      "v_y_mps": 0.0,
+      "omega_max_q05_rad_s": 0.05,
+      "seeds_with_feasible_sample": 30
+    }
+  ],
+  "sampled_kinematic_margin_min": 3.952736548529234e-05,
+  "sampled_mechanical_margin_min": 0.008672632206514708,
+  "governor": {
+    "implementation": "govern_acceleration",
+    "nominal_scale_grid": [
+      1.0,
+      0.8,
+      0.6,
+      0.4,
+      0.2
+    ],
+    "brake_scale_grid": [
+      1.0,
+      0.8,
+      0.6,
+      0.4,
+      0.2
+    ],
+    "modes": [
+      "execute",
+      "brake",
+      "hold",
+      "uncontrolled_stop_required"
+    ],
+    "brake_gain": 1.8,
+    "information_max_age_s": 0.6,
+    "wrench_set": "sequential_hat_W_C",
+    "barrier_revalidated_for_each_candidate": true,
+    "terminal_criterion": {
+      "position_tolerance_m": 0.1,
+      "yaw_tolerance_rad": 0.1,
+      "linear_speed_tolerance_mps": 0.12,
+      "angular_speed_tolerance_rad_s": 0.1,
+      "dwell_time_s": 0.8
+    }
+  },
+  "failure_policy": {
+    "support_infeasible": "uncontrolled_stop_required_and_request_replacement",
+    "communication_stale": "brake_or_hold_if_jointly_feasible"
+  },
+  "limitations": [
+    "twist sections sample only non-negative yaw rate and zero lateral body speed",
+    "mechanical margin is observed on the N2 demand grid",
+    "footprint parameters belong to the reduced model, not calibrated hardware",
+    "traction is an isotropic configured surrogate, not an identified Pioneer 3-DX envelope",
+    "autonomous replacement travel and docking are not executed"
+  ]
+}

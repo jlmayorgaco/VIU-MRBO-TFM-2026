@@ -1,0 +1,11 @@
+id,metric,method_a,method_b,n_pairs,effect_a_minus_b,ci95_low,ci95_high,analysis_status
+H1-info-start-sparse,started_loads,local_gossip__sparse,local_no_gossip__sparse,360,0.1361111111111111,0.1,0.17222222222222222,descriptive_pilot
+H1-info-value-sparse,social_value,local_gossip__sparse,local_no_gossip__sparse,360,0.8339597334102963,0.6767708942146197,0.989995195681143,descriptive_pilot
+H1-switch-sparse,switches,local_gossip__sparse,local_no_switch_penalty__sparse,360,-0.6555555555555556,-0.7416666666666667,-0.5749305555555559,descriptive_pilot
+H1-info-start-nominal,started_loads,local_gossip__nominal,local_no_gossip__nominal,360,1.0333333333333334,0.9194444444444444,1.15,descriptive_pilot
+H1-info-value-nominal,social_value,local_gossip__nominal,local_no_gossip__nominal,360,4.472287262646249,3.9919639543305543,4.957613217129301,descriptive_pilot
+H1-switch-nominal,switches,local_gossip__nominal,local_no_switch_penalty__nominal,360,-0.7527777777777778,-0.8527777777777777,-0.6583333333333333,descriptive_pilot
+H1-info-start-dense,started_loads,local_gossip__dense,local_no_gossip__dense,360,1.1555555555555554,1.0361111111111112,1.275,descriptive_pilot
+H1-info-value-dense,social_value,local_gossip__dense,local_no_gossip__dense,360,4.977432073618488,4.476367017718914,5.500340265645454,descriptive_pilot
+H1-switch-dense,switches,local_gossip__dense,local_no_switch_penalty__dense,360,-0.7555555555555555,-0.8527777777777777,-0.6666666666666666,descriptive_pilot
+H1-gap-oracle,social_value,local_gossip__sparse,central_milp,360,-4.959995929560998,-5.361656326616125,-4.51961022525739,descriptive_pilot

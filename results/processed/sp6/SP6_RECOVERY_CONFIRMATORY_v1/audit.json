@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "checks": {
+    "world_count": true,
+    "run_count": true,
+    "paired_methods": true,
+    "world_hash_unique": true,
+    "finite_primary_metrics": true,
+    "exact_potential_identity": true,
+    "all_recoverable_nash_feasible": true,
+    "all_feasible_nash_inclusion_minimal": true,
+    "strict_potential_monotonicity": true,
+    "better_response_ends_at_nash": true,
+    "recoverable_certificate_restored": true,
+    "impossible_cases_not_reopened": true,
+    "time_bound_verified": true,
+    "finite_profile_move_bound": true,
+    "no_pose_repair": true
+  },
+  "evidence_level": "B",
+  "primary_branch": "SP6-C single failure, one affected rigid payload",
+  "worlds": 480,
+  "runs": 2400,
+  "model_scope": "finite asynchronous binary recovery game plus event-time replacement travel proxy",
+  "not_claimed": "No multiple simultaneous failures, frictional contact, SP6-E, persistent partitions, hardware validation or global social optimality is claimed.",
+  "historical_campaign_used": false,
+  "config_protocol": "sp6_potential_recovery_v1"
+}

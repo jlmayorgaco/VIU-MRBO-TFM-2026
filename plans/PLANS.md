@@ -194,7 +194,29 @@ carácter estructural del coding.
 
 ### Estado final y riesgos abiertos
 
-El pipeline autónomo queda completado bajo `academic-review/`. Permanecen como
-trabajo científico posterior la exportación WoS, la lectura humana cercana de
-prior art, la confirmación de ecuaciones/tablas/figuras y la validación
-experimental del método del TFM.
+El pipeline autónomo de revisión queda completado bajo `academic-review/`.
+En este punto permanecían como siguiente compuerta la exportación WoS, la
+lectura cercana de prior art, la confirmación de ecuaciones/tablas/figuras y
+la validación experimental del método; el cierre operativo de esa compuerta se
+registra a continuación, manteniendo abiertos los gates externos.
+
+### Compuerta posterior — cierre operativo del 2026-09-12
+
+**Estado: completada para la evidencia disponible; gates externos preservados.**
+
+- [x] Abrir WoS únicamente en una sesión visible y dejarlo preparado para
+  autenticación institucional, sin introducir credenciales ni automatizar el
+  acceso.
+- [x] Generar lectura cercana acotada de 16 fuentes con soporte y límites por
+  candidato, ligada a la matriz Stage 3.
+- [x] Ejecutar y auditar las campañas CPU versionadas de SP1, SP2, SP5 piloto
+  y confirmatoria, SP6, SP7, SP8 y Cargo E2E integrada.
+- [x] Ejecutar el modo seco de la campaña Coppelia y comprobar sus requisitos
+  de autorización y preflight hash-bound.
+- [x] Regenerar el informe de QA agregado desde manifests, registrar tests y
+  mantener la memoria canónica y sus figuras protegidas sin cambios.
+
+La exportación WoS requiere ahora una acción del usuario en la sesión
+institucional. La validación física Coppelia requiere un directorio de
+preflight aprobado y autorización explícita; ninguna de las dos condiciones
+se infiere desde los resultados CPU.

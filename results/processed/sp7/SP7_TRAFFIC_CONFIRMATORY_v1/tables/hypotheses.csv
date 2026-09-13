@@ -1,0 +1,4 @@
+id,metric,method_a,method_b,direction,test,successful_pairs_only,n_pairs,effect_a_minus_b,ci95_low,ci95_high,p_raw,p_holm,reject_holm
+H7.1,delivery_success,local_potential_reservation,no_zone_reservation,greater,mcnemar,False,360,0.2611111111111111,0.21666666666666667,0.3084027777777774,5.048709793414476e-29,5.048709793414476e-29,True
+H7.2,makespan_steps,local_potential_reservation,no_congestion_penalty,less,wilcoxon,True,360,-4.0,-4.288958333333333,-3.6943750000000004,2.0827769007574775e-48,6.248330702272433e-48,True
+H7.3,makespan_steps,local_potential_reservation,central_restricted_oracle,greater,wilcoxon,True,360,1.1527777777777777,1.0610416666666667,1.2444444444444445,7.366122156989267e-46,1.4732244313978534e-45,True

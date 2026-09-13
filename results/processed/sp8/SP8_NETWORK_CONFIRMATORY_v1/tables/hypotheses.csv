@@ -1,0 +1,4 @@
+id,metric,comparison,n,n_regime_pairs,effect,ci95_low,ci95_high,p_value_raw,test,favorable_discordances,adverse_discordances,p_value_holm,reject_holm
+H8.1,conflict_free,periodic_versioned_local - event_driven_local,180,720,0.05416666666666667,0.03611111111111111,0.07222222222222222,1.4503086847272408e-07,Wilcoxon bilateral sobre medias por instancia,47.0,8.0,1.4503086847272408e-07,True
+H8.2,global_conflict_pairs,periodic_versioned_local - perfect_information_response,180,720,1.5611111111111111,1.336111111111111,1.8125,3.089520705658465e-27,Wilcoxon unilateral sobre medias por instancia,,,6.17904141131693e-27,True
+H8.3,messages_per_agent,periodic_versioned_local - event_driven_local,180,720,261.25794994212964,225.3234029586227,298.5987932219329,1.3669917807289222e-31,Wilcoxon unilateral sobre medias por instancia,,,4.100975342186767e-31,True

@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "checks": {
+    "all_dynamic_runs_accounted": true,
+    "all_sensitivity_runs_accounted": true,
+    "paired_world_hashes": true,
+    "no_nan_pose_metrics": true,
+    "pose_errors_have_separate_units": true,
+    "terminal_speeds_have_separate_units": true,
+    "failures_preserved": true,
+    "failure_modes_recorded": true,
+    "physical_endpoints_recorded": true,
+    "joint_barrier_revalidation": true,
+    "n3_byte_accounting_conserved": true,
+    "central_method_labelled": true,
+    "paired_statistics_use_seed_blocks": true,
+    "paired_endpoint_intervals_finite": true,
+    "h6_negative_result_preserved": true,
+    "caging_kept_separate": true,
+    "coppeliasim_rerun": false
+  },
+  "external_simulator_validation": "not_part_of_this_protocol",
+  "model_scope": "CPU reduced-order planar supported-load simulation with 2.5-D static contact checks",
+  "not_claimed": [
+    "hardware validation",
+    "global stability",
+    "continuous-time collision invariance",
+    "optimal distributed control",
+    "autonomous physical replacement"
+  ]
+}

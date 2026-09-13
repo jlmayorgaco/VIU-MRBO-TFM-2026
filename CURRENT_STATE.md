@@ -197,6 +197,28 @@ analítica completa y compacta, plan SP1–SP3, matriz de trazabilidad, triage,
 limitaciones y reproducción. No se generó una variante LaTeX no compilada ni
 se alteró el manuscrito oficial.
 
+## Compuerta posterior: lectura cercana y validación experimental
+
+**Estado: ejecutada y auditada el 2026-09-12.**
+
+Se realizó una lectura cercana acotada de 16 fuentes priorizadas a partir de la
+matriz Stage 3. El ledger conserva por fuente la base de evidencia, las
+secciones/páginas inspeccionadas, el soporte permitido, los límites de
+transferencia y el uso autorizado. Las páginas de editor y resúmenes con
+acceso limitado quedan marcados como tales; no se transformaron en claims
+detallados.
+
+También se ejecutaron las campañas CPU versionadas de SP1, SP2, SP5 piloto y
+confirmatoria, SP6, SP7, SP8 y la campaña integrada Cargo E2E. Sus manifests,
+auditorías y tablas resumen son la fuente de verdad de conteos y métricas; el
+informe de QA agregado no convierte una campaña CPU/reducida en validación
+física ni en prueba de estabilidad, optimalidad, seguridad o robustez global.
+
+La corrida Coppelia física no se abrió: el modo seco verificó que exige
+`--authorize-confirmatory` y evidencia de preflight hash-bound. Web of Science
+continúa pendiente porque la sesión disponible requiere autenticación
+institucional; no se introdujeron credenciales ni se generó una exportación.
+
 ## Artefactos verificables
 
 - `academic-review/data/processed/candidate_corpus_stage1a.csv`
@@ -241,8 +263,16 @@ se alteró el manuscrito oficial.
 - `academic-review/config/stage3_codebook.yaml`
 - `academic-review/data/processed/fulltext_evidence_matrix.csv`
 - `academic-review/data/processed/fulltext_evidence_matrix.jsonl`
+- `academic-review/data/processed/prior_art_close_reading.csv`
+- `academic-review/data/processed/experimental_followup_campaigns.csv`
 - `academic-review/logs/stage3_coding_log.csv`
 - `academic-review/reports/stage3_fulltext_qa.md`
+- `academic-review/reports/prior_art_close_reading.md`
+- `academic-review/reports/experimental_followup_qa.md`
+- `academic-review/scripts/close_read_prior_art.py`
+- `academic-review/scripts/followup_experiment_qa.py`
+- `academic-review/tests/test_close_read_prior_art.py`
+- `academic-review/tests/test_followup_experiment_qa.py`
 - `academic-review/scripts/stage4_synthesize.py`
 - `academic-review/tests/test_stage4.py`
 - `academic-review/tables/stage4_analysis_summary.json`
@@ -271,7 +301,7 @@ de búsqueda, el esquema y el validador dentro de `academic-review/`.
 
 - `python academic-review/scripts/validate_inputs.py` — correcto: 4 entradas,
   32 semillas y 0 WoS.
-- `python -m pytest academic-review/tests -q` — 31 pruebas correctas.
+- `python -m pytest academic-review/tests -q` — 35 pruebas correctas.
 - `python -m py_compile academic-review/scripts/bootstrap_literature.py academic-review/scripts/validate_inputs.py` — correcto.
 - CSV y JSONL — 246 filas/líneas y 246 `candidate_id` únicos.
 - Campos obligatorios — sin valores ausentes.
@@ -291,6 +321,13 @@ de búsqueda, el esquema y el validador dentro de `academic-review/`.
   generadas desde CSV/JSONL y auditoría adversarial sin claim final de novedad.
 - Stage 5 — paquete final, 5 claims trazables, 16 preguntas TFM contestadas,
   limitaciones y reproducción generadas sin modificar el manuscrito.
+- Close reading — 16 filas ligadas a la matriz Stage 3; todos los límites de
+  transferencia y la necesidad de verificación final del autor se registran.
+- Follow-up campaigns — manifests agregados por el script de QA; las campañas
+  CPU completadas y sus estados de auditoría se leen de esos manifests, sin
+  convertir ausencias en ceros.
+- Coppelia — validación de diseño en modo seco correcta; ejecución física
+  deliberadamente no abierta sin preflight hash-bound y autorización explícita.
 
 La advertencia de `requests` sobre versiones de `urllib3`/`charset_normalizer`
 no impidió la ejecución ni produjo fallos HTTP; queda como nota de entorno para
@@ -303,7 +340,8 @@ han preservado sin limpieza ni reset. Los cambios de esta tarea están aislados
 en `academic-review/`, `CURRENT_STATE.md`, `IMPLEMENTATION_PLAN.md` y el plan
 operativo correspondiente.
 
-Stage 5 queda completado como paquete de revisión independiente. WoS continúa
-pendiente y la lectura humana cercana/validación experimental siguen siendo
-riesgos científicos abiertos; no se emite afirmación de inclusión definitiva,
-estado del arte, novedad o hueco universal.
+Stage 5 y la compuerta posterior quedan completados como entregables de
+revisión y validación CPU independientes. WoS, la verificación final del autor
+de las fuentes priorizadas y la validación física Coppelia siguen siendo
+gates abiertos; no se emite afirmación de inclusión definitiva, estado del
+arte, novedad o hueco universal.

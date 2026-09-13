@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "checks": {
+    "expected_world_count": true,
+    "expected_run_count": true,
+    "paired_method_count": true,
+    "finite_primary_metrics": true,
+    "no_invalid_role_assignments": true,
+    "one_record_per_robot_and_run": true,
+    "oracle_all_or_none": true,
+    "oracle_has_no_duplicate_slots": true,
+    "oracle_solver_completed": true,
+    "full_gossip_matches_global_greedy": true,
+    "local_methods_use_neighbor_scope": true,
+    "world_hash_unique_per_factor_cell": true
+  },
+  "canonical_sp": "SP1",
+  "evidence_level": "C-pilot",
+  "worlds": 360,
+  "runs": 3960,
+  "model_scope": "static heterogeneous role assignment after one failure or priority event",
+  "pipeline_state": "OBSERVED--ESTIMATED--RAW--CLOSED--GUARDED; no physical EXECUTED state",
+  "not_claimed": "El piloto no demuestra convergencia global ni optimalidad del método local, ejecución continua sin reloj, factibilidad de wrench planar, movimiento, seguridad ante colisiones, validez en hardware ni superioridad frente a una implementación CBBA multi-ganador verificada."
+}

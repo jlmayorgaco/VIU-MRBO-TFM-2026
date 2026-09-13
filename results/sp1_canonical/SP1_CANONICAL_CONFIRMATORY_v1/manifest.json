@@ -1,0 +1,106 @@
+{
+  "experiment_id": "SP1_CANONICAL_CONFIRMATORY_v1",
+  "canonical_sp": "SP1",
+  "protocol_family": "sp1_distributed_role_formation_v1",
+  "config_path": "experiments\\configs\\sp1_canonical_confirmatory.yaml",
+  "config_sha256": "780d79ad38ffa4f33cf28d35632f4cb07b63816a61c7f9a8b5c4b9684e68ed63",
+  "output_dir": "results\\sp1_canonical\\SP1_CANONICAL_CONFIRMATORY_v1",
+  "worlds": 360,
+  "runs": 3960,
+  "regimes": [
+    "abundant",
+    "tight",
+    "scarce"
+  ],
+  "fleet_sizes": [
+    8,
+    16
+  ],
+  "load_counts": [
+    2,
+    3
+  ],
+  "seeds": [
+    9200,
+    9201,
+    9202,
+    9203,
+    9204,
+    9205,
+    9206,
+    9207,
+    9208,
+    9209,
+    9210,
+    9211,
+    9212,
+    9213,
+    9214,
+    9215,
+    9216,
+    9217,
+    9218,
+    9219,
+    9220,
+    9221,
+    9222,
+    9223,
+    9224,
+    9225,
+    9226,
+    9227,
+    9228,
+    9229
+  ],
+  "network_cases": [
+    {
+      "name": "sparse",
+      "radius_m": 3.0,
+      "gossip_rounds": 2
+    },
+    {
+      "name": "nominal",
+      "radius_m": 5.0,
+      "gossip_rounds": 4
+    },
+    {
+      "name": "dense",
+      "radius_m": 15.0,
+      "gossip_rounds": 1
+    }
+  ],
+  "methods": [
+    "local_gossip",
+    "local_no_gossip",
+    "local_no_switch_penalty",
+    "global_greedy",
+    "central_milp"
+  ],
+  "audit_status": "passed",
+  "evidence_level": "B-target",
+  "git_commit": "ea11dacab62a7c75b49b6847456cb1ce23d777bb",
+  "git_dirty": true,
+  "python": "3.13.14",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "numpy": "2.3.5",
+  "scipy": "1.16.3",
+  "pandas": "2.3.3",
+  "gpu_used": false,
+  "artifact_sha256": {
+    "audit.json": "5a89ca0a4457e090672b263ef3541c851d4d0c83ea6d31f65e6968e74691a1e8",
+    "config_snapshot.yaml": "3633160ce4df5604549fcaaf97e350ddfacaa462e09d4d4acbafdd99e7255fce",
+    "figures/fig-sp1-quality-communication.pdf": "0ebd777b5c85c7673a417bab994574ceb8f54607fa22f492269885f7c1580bd2",
+    "figures/fig-sp1-quality-communication.png": "ad95190195202eb0d6bfe8b6e0864d16fdfd0590a5c481636a4c87e90e4a41f4",
+    "figures/fig-sp1-started-loads.pdf": "f611fbefe7c30fe0ced1938a9c7cbd181e051e5d29e4b63953e624bfb9ad994d",
+    "figures/fig-sp1-started-loads.png": "c6dedc2f856a808d86c76e27445a7b3e3d38dc3d962b9a1b2389cf8f690076ef",
+    "processed/paired_contrasts.csv": "2492be37abca2f79060164128c4e02d96626e34ae520d110f88a2f7b5757520a",
+    "processed/summary.csv": "2bf188edc015118669e3f6cd1d4834856ad35da030c1422049ad26fc8902139d",
+    "raw/assignments.csv": "39dc5d80c3dd3652c2da5bbbc7fea61ef5c1cf6af250bd6f7b60193f879e2b60",
+    "raw/load_decisions.csv": "59cb136659fda4f7db31692bf413a75ca0dc0152bc9e52512f6f7c279b0ff4d6",
+    "raw/runs.csv": "65823d57dd7e678849a59adbbb72b34d55f8d3c82b259df64ffd67595e8d90dc",
+    "raw/worlds.csv": "2dd7c115efaf0565d447a45ef9549a0381adc386839c83056e8a42041442b921",
+    "report.md": "5dd1fe26897beb5be94aedecc51eca6d2817224fa5a0f14d2fd81992730c5121",
+    "tables/sp1_canonical_contrasts.csv": "2492be37abca2f79060164128c4e02d96626e34ae520d110f88a2f7b5757520a",
+    "tables/sp1_canonical_summary.csv": "2bf188edc015118669e3f6cd1d4834856ad35da030c1422049ad26fc8902139d"
+  }
+}

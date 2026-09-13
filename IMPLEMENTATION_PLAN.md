@@ -137,6 +137,35 @@ ejecución, pero impide declarar exhaustividad o novedad final.
 
 Las cinco figuras TikZ protegidas no se alteraron.
 
+## Compuerta posterior — lectura cercana y campañas reproducibles
+
+**Estado: ejecutada y validada el 2026-09-12.**
+
+Se creó un ledger de lectura cercana acotada para 16 fuentes priorizadas. Cada
+fila queda ligada a la matriz Stage 3 y distingue texto completo local,
+abstract/preview del editor y acceso limitado. El ledger registra de forma
+simétrica el soporte de la fuente y aquello que no puede transferirse al TFM;
+la verificación final del autor permanece obligatoria.
+
+Se ejecutaron las campañas CPU versionadas de SP1, SP2, SP5 (pilot y
+confirmatoria), SP6, SP7, SP8 y Cargo E2E integrada. El script de QA agregado
+lee sus manifests y auditorías, conserva los estados de las campañas y separa
+la evidencia reducida de la validación física. No se añadieron resultados al
+manuscrito canónico.
+
+La inspección seca de Coppelia confirmó el gate de autorización y de preflight
+hash-bound; la campaña física no se inició. Web of Science continúa pendiente
+de una exportación manual desde una sesión institucional autenticada.
+
+Artefactos nuevos:
+
+- `academic-review/scripts/close_read_prior_art.py` y su test.
+- `academic-review/data/processed/prior_art_close_reading.csv` y
+  `academic-review/reports/prior_art_close_reading.md`.
+- `academic-review/scripts/followup_experiment_qa.py` y su test.
+- `academic-review/data/processed/experimental_followup_campaigns.csv` y
+  `academic-review/reports/experimental_followup_qa.md`.
+
 ## Política de commits
 
 El HEAD base observado al cerrar Stage 1A era

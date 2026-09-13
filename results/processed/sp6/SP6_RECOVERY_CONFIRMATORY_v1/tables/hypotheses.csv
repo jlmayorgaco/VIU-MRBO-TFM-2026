@@ -1,0 +1,4 @@
+id,metric,method_a,method_b,direction,test,n_pairs,effect_a_minus_b,ci95_low,ci95_high,p_raw,p_holm,reject_holm
+H6.1,certificate_restored,guarded_potential,no_repair,greater,mcnemar,480,0.75,0.7103645833333334,0.7875,4.257959840008151e-109,1.2773879520024452e-108,True
+H6.2,redundant_count,guarded_potential,distance_greedy,less,wilcoxon,480,-0.6041666666666666,-0.7166666666666667,-0.4957812500000003,1.5922951918175617e-21,1.5922951918175617e-21,True
+H6.3,selected_cost,guarded_potential,central_exact,greater,wilcoxon,480,0.24909756661850407,0.2138596842182758,0.2852080174715213,7.458965753022237e-36,1.4917931506044474e-35,True

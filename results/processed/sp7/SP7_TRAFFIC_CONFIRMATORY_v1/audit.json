@@ -1,0 +1,26 @@
+{
+  "status": "passed",
+  "checks": {
+    "world_count": true,
+    "run_count": true,
+    "paired_methods": true,
+    "world_hash_unique": true,
+    "finite_primary_metrics": true,
+    "exact_potential_identity": true,
+    "strict_potential_monotonicity": true,
+    "better_response_ends_at_nash": true,
+    "finite_profile_move_bound": true,
+    "conditional_conflict_free_result": true,
+    "logical_collision_exclusion": true,
+    "restricted_oracle_delivers": true,
+    "no_pose_repair": true
+  },
+  "evidence_level": "C",
+  "primary_branch": "SP7-C rigid compound bodies on an inflated configuration graph",
+  "worlds": 360,
+  "runs": 1800,
+  "model_scope": "finite route game plus sampled exclusive-resource traffic abstraction",
+  "not_claimed": "No CBS/ECBS or ORCA reproduction, continuous collision-avoidance proof, contact dynamics, hardware validation, packet-loss robustness, global MAPF optimality or industrial deadlock freedom is claimed.",
+  "historical_campaign_used": false,
+  "config_protocol": "sp7_route_reservation_v1"
+}

@@ -1,0 +1,21 @@
+{
+  "analysis_version": "SP2_HONORS_v3_review_revision_1",
+  "confirmatory_unit": "seed block",
+  "independent_seed_blocks": 30,
+  "scenarios_preserved_per_block": 7,
+  "bootstrap_resamples": 5000,
+  "analysis_seeds": {
+    "controller_pairs": 64001,
+    "network_architectures": 64002,
+    "aggregate_endpoints": 64003
+  },
+  "multiplicity": "Holm over the four controller-wise paired contrasts",
+  "controller_tuning_provenance": "non-optimized engineering selection fixed before opening the experimental seeds; no archived disjoint tuning set, search log, or independent optimization campaign exists",
+  "seed_count_rationale": "30 seed blocks were fixed as a computational budget before analysis; no prospective power calculation is claimed, and achieved precision is reported through block-bootstrap intervals",
+  "controller_comparison_scope": "descriptive across controller families; confirmatory inference is limited to each controller compared with itself with and without the governor",
+  "terminal_threshold_scope": "study-defined simulation acceptance tolerances, not calibrated industrial accuracy requirements",
+  "dt_sensitivity": "not executed in this campaign; changing dt also changes sampled noise and communication timing, so a separate continuous-time disturbance contract is required",
+  "post_hoc_diagnostics": [
+    "controller-wise collision effects used to interpret aggregate H6"
+  ]
+}
