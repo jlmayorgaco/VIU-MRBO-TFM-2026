@@ -1,0 +1,22 @@
+% Tabla 1 del consolidado académico (`MROB_literature_review_reworked (2).pdf`,
+% página 1). Reconstruida en LaTeX porque ese PDF no trae fuente: el `.tex`
+% depositado junto a él corresponde a una versión anterior de la revisión.
+\begin{table}[!htbp]
+  \centering
+  \caption{Capas del corpus y tipo de afirmación que puede sostener cada una.}
+  \label{tab:lit-corpus-layers}
+{\setstretch{1}\fontsize{7.6}{8.6}\selectfont\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\linewidth}{@{}J{2.5cm}K{1.0cm}J{5.1cm}Z@{}}
+\toprule
+\textbf{Capa} & \textbf{$n$} & \textbf{Uso principal} & \textbf{Límite de evidencia}\\
+\midrule
+\rowcolor{soft}
+Descubrimiento & 3\,014 & Maximizar cobertura, enlazar versiones y alimentar el cribado. & Metadatos; no sostiene afirmaciones técnicas.\\
+Mapeo analítico & 244 & Tendencias, cobertura temática, intersecciones y estructura bibliométrica. & Señales de título y resumen más extracción estructural; un cero significa «no identificado bajo esta codificación».\\
+\rowcolor{soft}
+Núcleo canónico & 59 & Comparación de capacidades, arquitectura de información y nivel de distribución. & Codificación explícita con \texttt{yes/partial/no/unclear}; no se infiere desde \emph{keywords}.\\
+Lectura cercana & 20 & Antecedentes más próximos, contraejemplos y delimitación de la brecha. & Texto completo y evidencia localizada; base de las afirmaciones técnicas más fuertes.\\
+\bottomrule
+\end{tabularx}}
+  \viusource{elaboración propia a partir del protocolo de revisión}
+\end{table}

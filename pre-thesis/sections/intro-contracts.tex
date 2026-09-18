@@ -1,0 +1,61 @@
+\subsection{Contrato entre decisión y transporte}
+\label{subsec:architecture-contract}
+
+Una revisión local consulta el estado del AMR y mensajes vecinales; el cierre
+entero y la infraestructura compartida añaden las dependencias globales que se
+declaran en la metodología. En transporte colectivo, el valor de incorporar a
+$i$ depende de $\mathcal C_k$, de su llegada y del contacto disponible. Los
+mercados para tareas complejas representan parte de esa dependencia
+\parencite{zlotStentz2006ComplexTasks}; la coalición física exige además
+concurrencia en contactos compatibles.
+
+La carga debe cerrar $\mathcal C_k$, realizar el \emph{wrench} y solo entonces
+ejecutar el transporte con su filtro de seguridad
+\parencite{an2023cooperativeReview}. La Figura~\ref{fig:tf-problem-gap} codifica
+esas entregas; una garantía extremo a extremo requeriría demostrar su
+composición.
+
+\begin{figure}[H]
+  \centering
+  \resizebox{\textwidth}{!}{%
+  \begin{tikzpicture}[
+    font=\sffamily,
+    stage/.style={rounded corners=2pt,draw=VIUGray!70,line width=0.75pt,
+      minimum width=2.42cm,minimum height=1.55cm,text width=2.15cm,
+      align=center,inner sep=3pt,font=\fontsize{8.2}{9.1}\selectfont},
+    measured/.style={stage,draw=SPBlue,fill=SPBlue!7},
+    decided/.style={stage,draw=SPPurple,fill=SPPurple!7},
+    certified/.style={stage,draw=VIUOrange,fill=VIUOrange!8},
+    applied/.style={stage,draw=SPGreen,fill=SPGreen!8},
+    arrow/.style={-{Latex[length=2.1mm]},draw=VIUDark,line width=0.9pt},
+    return/.style={-{Latex[length=2mm]},draw=SPRed,line width=0.75pt,dashed},
+    band/.style={rounded corners=2pt,draw=SPPurple!75,fill=SPPurple!4,
+      minimum width=13.25cm,minimum height=0.60cm,align=center,
+      font=\fontsize{7.8}{8.6}\selectfont}
+  ]
+    \node[measured] (measure) at (0, 0) {\textbf{Medición local}\\pose, batería, contacto};
+    \node[measured] (estimate) at (2.75, 0) {\textbf{Estimación}\\ocupación y recursos};
+    \node[decided] (decision) at (5.50, 0) {\textbf{Coalición}\\preferencia y cierre};
+    \node[certified] (certificate) at (8.25, 0) {\textbf{Certificado}\\capacidad y \emph{wrench}};
+    \node[applied] (plant) at (11.00, 0) {\textbf{Planta}\\pose, seguridad y fallo};
+    \draw[arrow] (measure) -- (estimate);
+    \draw[arrow] (estimate) -- (decision);
+    \draw[arrow] (decision) -- (certificate);
+    \draw[arrow] (certificate) -- (plant);
+    \draw[return] (plant.south) -- ++(0,-0.62) -| (measure.south);
+    \node[font=\fontsize{7.4}{8.0}\selectfont,text=SPRed,fill=white,inner sep=1pt]
+      at (5.50,-0.93) {déficit, pérdida de contacto, error de pose o retirada};
+    \node[band] at (5.50,-1.55)
+      {Red imperfecta y escala: radio, retardo, pérdidas, mensajes, CPU y memoria};
+  \end{tikzpicture}%
+  }
+  \caption{Contratos que separan información, decisión, factibilidad física y ejecución.}
+  \label{fig:tf-problem-gap}
+  \viuownsource
+\end{figure}
+
+Cada estimación se vincula con su instante y vecindario. La ejecución permanece
+digital aunque las activaciones sean asíncronas: integrador, muestreo y política
+de mensajes determinan la trayectoria. Cargo usa contactos soportados y
+bilaterales; caging parte de fuerzas unilaterales y exige otra prueba
+\parencite{an2023cooperativeReview,rosenfelder2024force}.

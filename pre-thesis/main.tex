@@ -1,0 +1,78 @@
+\documentclass[12pt,a4paper]{article}
+\tracinglostchars=3
+
+\usepackage{viu-mrob-thesis}
+\usepackage{zref-user,zref-abspage}
+\usepackage{csquotes}
+\usepackage[
+  backend=biber,
+  style=apa,
+  natbib=true,
+  sorting=nyt,
+  sortcites=true
+]{biblatex}
+\DeclareLanguageMapping{spanish}{spanish-apa}
+\DeclareSourcemap{\maps[datatype=bibtex]{\map{\step[fieldset=langid,fieldvalue=spanish]}}}
+\DeclareDelimFormat[bib,biblist]{finalnamedelim}{\addspace y\space}
+\DeclareDelimFormat[textcite]{finalnamedelim}{\addspace y\space}
+\DeclareDelimFormat[parencite]{finalnamedelim}{\addspace y\space}
+\DeclareDelimFormat[fullcite,fullcitebib]{finalnamedelim}{\addspace y\space}
+\addbibresource{bibliography/references.bib}
+\AtBeginBibliography{\raggedright\sloppy}
+\renewcommand*{\bibrangedash}{\textendash}
+
+\input{config/metadata}
+\input{config/math-commands}
+\input{shared/generated-macros/aws-industrial2-results}
+
+\begin{document}
+
+\input{sections/source-snapshot/frontmatter/00-cover}
+\input{sections/source-snapshot/frontmatter/01-summary}
+\input{sections/source-snapshot/frontmatter/02-abstract}
+\input{sections/source-snapshot/frontmatter/03-contents}
+\input{sections/source-snapshot/frontmatter/04-nomenclature}
+\clearpage
+\input{sections/frontmatter-evidence-key}
+
+\clearpage
+\viuromanfoliofalse
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\zlabel{budget:body-start}
+\input{sections/source-snapshot/mainmatter/01-introduction}
+\clearpage
+\zlabel{budget:objectives-start}
+\input{sections/source-snapshot/mainmatter/02-objectives}
+\clearpage
+\zlabel{budget:hypotheses-start}
+\input{sections/source-snapshot/mainmatter/03-hypotheses}
+\clearpage
+\zlabel{budget:methodology-start}
+\input{sections/source-snapshot/mainmatter/04-methodology}
+\clearpage
+\zlabel{budget:theory-start}
+\input{sections/source-snapshot/mainmatter/05-theoretical-framework}
+\clearpage
+\zlabel{budget:results-start}
+\input{sections/thesis-results}
+\zlabel{budget:results-end}
+\clearpage
+\zlabel{budget:conclusions-start}
+\input{sections/source-snapshot/mainmatter/07-conclusions}
+\zlabel{budget:body-end}
+
+\clearpage
+\zlabel{budget:references-start}
+\section{Referencias bibliográficas}
+\label{sec:references}
+\printbibliography[heading=none]
+\zlabel{budget:references-end}
+
+\clearpage
+\appendix
+\zlabel{budget:appendices-start}
+\input{sections/thesis-appendices}
+\zlabel{budget:appendices-end}
+
+\end{document}

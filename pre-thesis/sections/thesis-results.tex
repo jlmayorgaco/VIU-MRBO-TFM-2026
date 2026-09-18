@@ -1,0 +1,112 @@
+\section{Resultados y análisis}
+\label{sec:results}
+\zlabel{budget:results-interface-start}
+
+La evaluación conecta la asignación lógica con la misión física mediante tres interfaces verificables. SP1 forma coaliciones y asigna contactos; SP2 ejecuta el transporte y repara fallos; SP3 reserva rutas para coaliciones tratadas como agentes compuestos. Los identificadores históricos se conservan únicamente en las fuentes y en los artefactos reproducibles.
+
+\input{sections/results-interface}
+\zlabel{budget:results-interface-end}
+
+\clearpage
+\subsection{SP1: formación distribuida de coaliciones}
+\label{subsec:sp1}
+\zlabel{budget:sp1-start}
+
+SP1 decide la composición y los contactos antes de autorizar el movimiento de una carga. La primera etapa retenida comprueba capacidad heterogénea; la segunda sustituye la suma escalar por factibilidad de \emph{wrench}. Ambas etapas delimitan lo que la capa estratégica puede certificar sin atribuirle estabilidad mecánica.
+
+La regulación de cardinalidad admite un resultado exacto antes de introducir capacidad vectorial. Sean $\mathcal I=\{1,\ldots,N\}$, $\mathcal K=\{1,\ldots,K\}$ y $a_i\in\{0\}\cup\mathcal K$, donde $a_i=0$ deja al robot libre y $q_k(a)=|\{i:a_i=k\}|$. Para cuotas obligatorias $n_k>0$ y costes adimensionales fijos $\kappa_{ik}\in[0,\kappa_{\max}]$, defínanse
+\begin{equation}
+ \begin{aligned}
+ D(a)&=\sum_{k\in\mathcal K}[n_k-q_k(a)]_+,&
+ O(a)&=\sum_{k\in\mathcal K}[q_k(a)-n_k]_+,\\
+ C(a)&=\sum_{i:a_i\ne0}\kappa_{i,a_i},&
+ \Phi_1(a)&=-\{C(a)+\lambda D(a)+\lambda O(a)\},\\
+ U_i(a)&=\Phi_1(a)-\Phi_1(0,a_{-i}).
+ \end{aligned}
+ \label{eq:pre-sp1-quota-game}
+\end{equation}
+
+\begin{contribucion}{potencial exacto y regulación finita de cuotas}
+\estadoaporte{demostrado bajo activación asíncrona justa y continuación maximal.}
+\begin{teorema}[Potencial exacto y regulación de cuotas]
+\label{thm:pre-sp1-exact-quota}
+Para el juego de~\eqref{eq:pre-sp1-quota-game}, si $\sum_kn_k\leq N$ y $\lambda>\kappa_{\max}$, $\Phi_1$ es un potencial exacto y los equilibrios de Nash puros son exactamente los perfiles con $q_k=n_k$ para todo $k$. Toda ejecución asíncrona justa de mejor respuesta que continúe mientras exista una mejora estricta alcanza uno de esos perfiles después de, a lo sumo, $(K+1)^N-1$ cambios aceptados. Los máximos globales de $\Phi_1$ son las asignaciones de cuota exacta con coste $C$ mínimo.
+\end{teorema}
+\begin{proof}
+Al retirar a $i$ se obtiene el mismo perfil de referencia antes y después de cualquier desviación unilateral; por tanto, $\Delta U_i=\Delta\Phi_1$. En un perfil inexacto, un robot libre que entra en una carga deficitaria mejora $\Phi_1$ al menos $\lambda-\kappa_{\max}>0$. Si no hay robots libres, la realizabilidad obliga a que un déficit coexista con un exceso: trasladar un robot entre ambos reduce $D+O$ en dos y cambia $C$ a lo sumo en $\kappa_{\max}$; si solo hay exceso, retirar un miembro redundante reduce $O$ sin aumentar $C$. Luego ningún perfil inexacto es Nash.
+
+En un perfil exacto, salir crea déficit, entrar desde el estado libre crea exceso y trasladarse crea déficit y exceso; el posible ahorro de coste es menor que la penalización, luego ninguna desviación es rentable. Cada cambio aceptado aumenta estrictamente $\Phi_1$ y no puede repetir uno de los $(K+1)^N$ perfiles. La justicia activa finalmente una mejora disponible y la maximalidad impide detenerse antes de un Nash; sobre el conjunto exacto, maximizar $\Phi_1=-C$ equivale a minimizar $C$.
+\end{proof}
+La cota cuenta cambios estratégicos aceptados, no segundos ni rondas globales. Tampoco se transfiere a Smith muestreado, al cierre QR bajo escasez, a comunicación imperfecta o a la planta mecánica.
+\end{contribucion}
+
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/sp2}
+\input{sections/sp1-wrench-condensed}
+\zlabel{budget:sp1-end}
+
+\clearpage
+\subsection{SP2: ejecución y transporte cooperativo}
+\label{subsec:sp2}
+\zlabel{budget:sp2-start}
+
+SP2 recibe una coalición cerrada y estudia llegada, acoplamiento, seguimiento y recuperación. El Anexo~\ref{app:sp2-canonical-bridge} prueba la equivalencia entre twist de la carga y ruedas, las monotonicidades opuestas al retirar un miembro y la insuficiencia de capacidad escalar; estas condiciones preceden a la estabilidad nominal y evitan identificar cardinalidad con ejecutabilidad. Los resultados numéricos pertenecen al modelo declarado en cada etapa, y la campaña Cargo física nueva permanece sujeta a los \emph{gates} de instrumentación y repetibilidad.
+
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/sp4}
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/sp6}
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/cargo-e2e}
+\zlabel{budget:sp2-end}
+
+\clearpage
+\subsection{SP3: planificación y tráfico de coaliciones}
+\label{subsec:sp3}
+\zlabel{budget:sp3-start}
+
+SP3 coordina rutas y reservas locales después del certificado de ejecutabilidad de SP2. El juego de rutas separa la mejora estratégica de la exclusión lógica, mientras el piloto AWS localiza cuellos de botella de vivacidad sin presentarse como evidencia dinámica. Esta distinción impide transferir ausencia de solapamiento cinemático a seguridad física.
+
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/sp7}
+\input{sections/sp3-execution-envelope}
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/aws-industrial2}
+\zlabel{budget:sp3-end}
+
+\clearpage
+\subsection{Síntesis transversal}
+\label{subsec:cross-discussion}
+\zlabel{budget:results-synthesis-start}
+
+Las tres interfaces producen certificados distintos. La cobertura de capacidad no implica un \emph{wrench} realizable, un reparto realizable no implica estabilidad fuera del supuesto de contacto fijo y una ruta discreta sin conflicto no implica ausencia de colisión continua. Por ello, cada conclusión conserva el dominio, la planta y el contrato de información que generaron su evidencia.
+
+El demostrador Cargo ejecuta conjuntamente reclutamiento, movimiento y sustitución bajo un contrato híbrido con información global declarada. Ese resultado acredita coexistencia funcional en su banco numérico, no convergencia global ni transferencia industrial. La campaña MuJoCo con Pioneer P3DX deberá decidir si el certificado vectorial reduce falsos positivos dentro del dominio parametrizado.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Certificados que atraviesan las tres interfaces.}
+  \label{tab:pre-cross-certificates}
+  \viutablefont
+  \begin{tabularx}{0.96\textwidth}{>{\raggedright\arraybackslash}p{1.45cm} >{\raggedright\arraybackslash}p{3.05cm} Y >{\raggedright\arraybackslash}p{3.0cm}}
+    \toprule
+    Salida & Predicado verificable & Lo que habilita & Lo que no implica \\
+    \midrule
+    SP1 & cuota, rol y contacto asignados & intentar el acoplamiento & wrench realizable o estabilidad \\
+    SP2 & soporte, ruedas, contacto y pose dentro de tolerancia & tratar la coalición como agente compuesto & ruta libre o vivacidad de tráfico \\
+    SP3 & ruta y reserva local compatibles & autorizar el siguiente avance & seguridad continua fuera del modelo \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+La Tabla~\ref{tab:pre-cross-certificates} es una regla de composición: una capa consume el certificado anterior sin ampliar su dominio. Una garantía extremo a extremo necesitaría además invariancia durante las conmutaciones y compatibilidad entre los tres modelos; esa prueba no se reclama aquí.
+
+\clearpage
+
+\begin{contribucion}{límite informacional transversal bajo partición}
+\estadoaporte{demostrado para algoritmos deterministas basados en historial local.}
+\begin{proposicion}[Límite informacional bajo partición]
+\label{prop:pre-cross-partition-limit}
+Sea una clase de juegos que contiene dos instancias $I_0,I_1$ con el mismo historial observable para una componente conectada $H$, pero con proyecciones disjuntas sobre $H$ de sus conjuntos de óptimos globales. Ningún algoritmo determinista cuyo estado y salida en $H$ dependan solo de ese historial puede devolver un óptimo global en ambas instancias. Si el predicado ``existe interacción remota'' difiere entre $I_0$ e $I_1$, tampoco puede detectarlo correctamente en ambas.
+\end{proposicion}
+\begin{proof}
+La indistinguibilidad obliga al algoritmo a producir la misma salida local $a_H$ en ambas instancias. Si fuese globalmente óptima en las dos, $a_H$ pertenecería a la intersección de las proyecciones de sus óptimos, que es vacía. Para el predicado remoto, la salida binaria también debe coincidir mientras los valores verdaderos difieren.
+\end{proof}
+El resultado exige ese par indistinguible: no excluye optimalidad en una familia singleton, cuando la interacción remota es nula o conocida, ni cuando ambas instancias comparten una acción local óptima.
+\end{contribucion}
+\zlabel{budget:results-synthesis-end}

@@ -1,0 +1,48 @@
+% Resumen de la v2. Copia del resumen sellado
+% `sections/source-snapshot/frontmatter/01-summary.tex` con un único cambio:
+% el segundo párrafo declara la revisión sistemática, industrial y patentaria
+% incorporada en esta versión. Extensión: dentro del intervalo VIU de 200-300
+% palabras.
+\begin{viuabstract}{Resumen}
+Este TFM estudia el transporte cooperativo de cargas heterogéneas mediante tres
+subproblemas: SP1 forma coaliciones y asigna roles; SP2 aproxima, acopla,
+transporta y sustituye miembros; SP3 coordina rutas y reservas entre misiones.
+El modo primario, \emph{Cargo}, trata la carga soportada como un cuerpo rígido
+planar.
+
+El planteamiento se sostiene sobre tres revisiones con protocolo declarado: una
+sistemática de 3\,014 registros descubiertos y 59 trabajos canónicos, una
+industrial de catorce precedentes comerciales y una patentaria de 167 registros
+analíticos. La propuesta combina referencias LP/MILP, juegos potenciales, dinámica
+primal--dual, cierre entero y contratos de recursos, contacto, movimiento,
+recuperación y red. Se prueban regulación de cuotas, estabilidad local de Cargo
+bajo contacto fijo y realización exacta del \emph{wrench}, terminación de
+mejoras de rutas e imposibilidad de garantizar optimalidad global cuando la
+desconexión oculta instancias localmente indistinguibles con óptimos
+incompatibles. Las campañas usan mundos pareados, semillas explícitas y oráculos
+globales identificados como techos experimentales.
+
+SP1 regula cuotas bajo condiciones explícitas, separa la capacidad heterogénea
+y reduce falsos factibles nominales en la interfaz SP1--SP2. SP2 revela un intercambio
+adverso entre seguridad y progreso y restaura los certificados recuperables del
+banco estático; en su juego de reparación, el peor equilibrio no admite una
+cota uniforme. En SP3, la reserva reduce
+interbloqueos en el catálogo discreto; el piloto congestionado no entrega.
+Cargo completa casi todas las misiones sin ejecutar como una sola cadena todos
+los mecanismos teóricos. Una arquitectura de integración adicional certifica
+por bloque potencial exacto, separación geométrica y presupuesto; su
+reproducción en CoppeliaSim confirma el resultado de SP2 en un motor
+distinto.
+
+La contribución es una arquitectura verificable de contratos y juegos locales,
+más una composición funcional planar. No demuestra estabilidad híbrida global,
+optimalidad social, coordinación completamente distribuida ni validez
+industrial. El contacto instrumentado, el hardware y \emph{caging} quedan fuera
+de la evidencia confirmatoria.
+
+\keywords{Palabras clave}{coordinación multi-robot,
+  robots móviles autónomos, formación de coaliciones,
+  juegos potenciales, transporte cooperativo}
+\end{viuabstract}
+
+\clearpage

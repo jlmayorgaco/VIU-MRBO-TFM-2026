@@ -1,0 +1,103 @@
+% Adenda v2 a las conclusiones: cierra OE6 y H6 en el mismo vocabulario de la
+% Tabla de estado de hipótesis, sin tocar
+% sections/source-snapshot/mainmatter/07-conclusions.tex.
+\subsection{Cierre de OE6, H6 y RQ6}
+\label{subsec:conclusions-megajuego}
+
+\textbf{RQ6.} Sí se certifica por bloque, y el certificado sobrevive al cambio
+de motor, pero solo dentro de los dominios que cada resultado declara y sin
+que la cadena completa herede una garantía conjunta.
+
+OE6 se cumple de forma delimitada. El juego de integración conecta SP1--SP3 con
+cuatro resultados demostrados algebraicamente y verificados numéricamente
+(Sección~\ref{subsec:megajuego}, Tabla~\ref{tab:megajuego-e2e-summary}), y la
+reproducción en CoppeliaSim del juego de acoplamiento de E4
+(Sección~\ref{subsec:coppelia}, Tabla~\ref{tab:coppelia-compact-narrow})
+conserva el resultado cualitativo en un
+motor distinto del que lo generó: el método directo colisiona en el mundo
+pareado de paso estrecho y el juego distribuido no. Lo que OE6 no entrega es un
+certificado de optimalidad global del sistema híbrido bajo revisiones discretas
+arbitrarias; la Proposición~\ref{prop:pre-cross-partition-limit} da la razón
+formal de esa ausencia.
+
+\begin{table}[H]
+  \centering
+  \caption{Estado final de H6, en continuación de la Tabla~\ref{tab:conclusion-hypotheses}.}
+  \label{tab:conclusion-hypothesis-h6}
+  \scriptsize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\textwidth}{@{}p{0.8cm}p{1.75cm}p{5.1cm}X@{}}
+    \toprule
+    ID & Estado & Evidencia principal & Límite \\
+    \midrule
+    H6 & Apoyo delimitado & Cuatro resultados demostrados con residuales de verificación por debajo de $10^{-9}$ (Tabla~\ref{tab:megajuego-e2e-summary}); la reproducción en CoppeliaSim conserva el resultado cualitativo (Tabla~\ref{tab:coppelia-compact-narrow}). & Dominios concretos por resultado; ambas campañas con una corrida, sin réplicas ni semillas. \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+Los dominios son los que se demuestran: la separación Bézier, a dos coaliciones
+con una familia geométrica fija de curvas; el \emph{caging} racional, a una
+carga circular con cuatro contactos cardinales; la reproducción en CoppeliaSim,
+a geometría y reejecución cinemática, sin contacto ni hardware. El trabajo
+futuro más directo es la campaña congelada del
+Anexo~\ref{app:megajuego-full-detail} (misma planta, mismo objetivo, control
+central de referencia, variando agentes, contacto, batería, fricción, retardo y
+presupuesto de cálculo) junto con extender CoppeliaSim a contacto y dinámica de
+ruedas antes de un piloto de hardware.
+
+Una política aprendida no sustituye a esta arquitectura porque entrega una
+acción, no un predicado verificable con dominio declarado, y sin predicado no
+hay columna que rellenar en la regla de composición de la
+Tabla~\ref{tab:pre-cross-certificates}. Sí encaja como generador de
+propuestas dentro del filtro: la política propone y el certificado de
+\emph{wrench} admite o se abstiene, lo que conserva el contrato y es la vía de
+extensión más inmediata para la familia de métodos que SP1 ya compara.
+
+\subsection{Recomendaciones por dimensión}
+\label{subsec:conclusions-recommendations-dimensions}
+
+Las recomendaciones enunciadas hasta aquí son de implementación. Tres
+dimensiones adicionales condicionan si ese trabajo merece hacerse, y ninguna se
+resuelve con más simulación.
+
+En lo teórico, la garantía extremo a extremo que hoy no existe requiere dos
+piezas concretas que la Sección~\ref{subsec:cross-discussion} ya
+identifica: una función de Lyapunov común, o un argumento de tiempo de
+permanencia, para la conmutación entre modos de contacto, y una prueba de
+compatibilidad entre los tres modelos de planta que hoy solo se compone de
+forma funcional. Sin ellas, la composición de certificados seguirá siendo una
+regla de interfaz y no un teorema.
+
+En lo económico, la decisión relevante no es el coste de la flota frente al de
+un manipulador único, sino el coste de cómputo por misión: el certificado de
+\emph{wrench} resuelve un QP por admisión y la reserva espacio--temporal se
+reevalúa en cada revisión, de modo que el criterio de viabilidad es si ese coste
+cabe en el presupuesto de ejecución del
+Teorema~\ref{thm:megajuego-execution-budget} con el \emph{hardware} de a
+bordo previsto, no en una estación remota. Medir ese coste en la plataforma
+objetivo debe preceder a cualquier compra.
+
+En lo social, la abstención es la propiedad con consecuencia directa sobre el
+operario. Un sistema que declara «no puedo certificar este transporte» y se
+detiene traslada la decisión a una persona, y esa persona necesita saber qué
+condición falló; recomendar el despliegue exige, por tanto, exponer la causa de
+la abstención en la interfaz de planta, no solo el estado. La manipulación
+pesada asistida es precisamente el caso donde un falso positivo de admisión
+tiene coste físico sobre quien está cerca de la carga.
+
+\subsection{Condiciones bajo las que esta arquitectura no debe usarse}
+\label{subsec:conclusions-do-not-use}
+
+Los límites anteriores se declaran por resultado. Reunidos, delimitan el uso del
+conjunto. La arquitectura no debe aplicarse con congestión alta: en el piloto
+Industrial~2, tres de los cuatro escenarios entregaron cero con los cuatro
+métodos, incluidas las referencias, y ese régimen no está caracterizado. Tampoco
+con cargas no planares, contactos móviles durante el transporte o más de una
+carga simultánea sujeta a un oráculo espacio--temporal, porque ninguno de los
+tres casos entra en el dominio de los certificados de SP2 y SP3. Fuera del
+modelo de pérdidas Bernoulli --- particiones persistentes, retardos no
+acotados --- la mensajería vecinal no tiene garantía ensayada. Y ningún
+resultado de esta memoria sostiene despliegue físico: el verificador registró
+dos violaciones de barrera bajo el modelo declarado, lo que basta para exigir
+una cota continua, no muestreada, antes de cualquier prueba con hardware.

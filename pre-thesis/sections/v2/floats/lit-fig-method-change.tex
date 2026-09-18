@@ -1,0 +1,85 @@
+% Figura 5 del consolidado académico (PDF vigente, página 6): cambio
+% metodológico por periodos. Reconstruida en LaTeX a partir de los valores
+% impresos en el original. Los cuatro paneles comparten escala 0--35 % para que
+% la comparación entre periodos sea directa.
+%
+% Cada fila se dibuja con \mcrow, que recibe el índice de fila, la etiqueta, los
+% cuatro valores y el cambio. No se anida \foreach dentro de \foreach: PGF no
+% expande de forma fiable los valores del bucle exterior dentro de la lista del
+% interior, y el resultado era un «You can't use the character» por fila.
+\begin{figure}[!htbp]
+  \centering
+  {\sffamily\bfseries\fontsize{8.6}{9.2}\selectfont Cambio metodológico por periodos\par}
+  {\sffamily\fontsize{6.2}{6.8}\selectfont\color{muted}Misma escala 0--35~\% en los cuatro periodos; la columna final muestra el cambio entre el primero y el último.\par}
+  \vspace{1.5mm}
+  \makebox[\textwidth][c]{\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{5.6}{6.0}\selectfont]
+  \def\panw{33}\def\gap{5}\def\rowh{6.0}\def\sc{0.943}
+  \def\xzero{169}% origen del panel de cambio: 4*(33+5)+17
+
+  % Una barra: #1 origen x del panel, #2 valor, #3 color.
+  \def\mcbar#1#2#3#4{%
+    \pgfmathsetmacro{\bw}{\sc*#2}%
+    \ifdim #2pt>0pt
+      \fill[#3,rounded corners=.4pt] (#1,\yy-2.0) rectangle (#1+\bw,\yy+2.0);
+      \ifdim \bw pt>13pt
+        \node[anchor=east,font=\bfseries\fontsize{5.6}{6.0}\selectfont,text=#4] at (#1+\bw-1.2,\yy){#2};
+      \else
+        \node[anchor=west,font=\fontsize{5.6}{6.0}\selectfont,text=ink] at (#1+\bw+1.2,\yy){#2};
+      \fi
+    \fi}
+
+  % Una fila completa: #1 índice, #2 etiqueta, #3-#6 valores, #7 cambio.
+  \def\mcrow#1#2#3#4#5#6#7{%
+    \pgfmathsetmacro{\yy}{54-#1*\rowh}%
+    \node[anchor=east,text=ink,font=\fontsize{6.0}{6.4}\selectfont] at (-1.5,\yy){#2};
+    \mcbar{0}{#3}{gamecol!22}{ink}%
+    \mcbar{38}{#4}{gamecol!45}{ink}%
+    \mcbar{76}{#5}{gamecol!85}{white}%
+    \mcbar{114}{#6}{autumn}{white}%
+    \pgfmathsetmacro{\dw}{1.1*#7}%
+    \ifdim #7pt>0pt
+      \fill[canary!80!onyx,rounded corners=.4pt] (\xzero,\yy-2.0) rectangle (\xzero+\dw,\yy+2.0);
+      \node[anchor=west,font=\bfseries\fontsize{5.8}{6.2}\selectfont,text=ink] at (\xzero+\dw+1.2,\yy){+#7};
+    \else
+      \fill[autumn,rounded corners=.4pt] (\xzero+\dw,\yy-2.0) rectangle (\xzero,\yy+2.0);
+      \node[anchor=east,font=\bfseries\fontsize{5.8}{6.2}\selectfont,text=ink] at (\xzero+\dw-1.2,\yy){#7};
+    \fi}
+
+  % Fondos, rejilla y cabeceras de los cuatro periodos.
+  \foreach \p/\lab/\n in {0/{Hasta 2010}/{$n=35$},1/{2011--2016}/{$n=40$},2/{2017--2021}/{$n=89$},3/{2022--2026}/{$n=81$}}{%
+    \pgfmathsetmacro{\px}{\p*(\panw+\gap)}
+    \node[anchor=south,font=\bfseries\fontsize{6.4}{6.8}\selectfont,text=ink] at (\px+\panw/2,59.4){\lab};
+    \node[anchor=south,font=\fontsize{5.0}{5.4}\selectfont,text=muted] at (\px+\panw/2,56.6){\n};
+    \fill[onyx!3] (\px,-1) rectangle (\px+\panw,56);
+    \foreach \v in {0,10,20,30}{%
+      \draw[rule!60,line width=.2pt] (\px+\sc*\v,-1)--(\px+\sc*\v,56);
+      \node[anchor=north,text=muted,font=\fontsize{5.0}{5.4}\selectfont] at (\px+\sc*\v,-1.6){\v};}}
+  \node[anchor=south,font=\bfseries\fontsize{6.4}{6.8}\selectfont,text=ink] at (\xzero,59.4){Cambio temprano--reciente};
+  \node[anchor=south,font=\fontsize{5.0}{5.4}\selectfont,text=muted] at (\xzero,56.6){puntos porcentuales};
+
+  \mcrow{0}{Consenso / distribución}{20.0}{20.0}{31.6}{24.7}{4.7}
+  \mcrow{1}{Subasta / mercado}{22.9}{17.5}{16.5}{13.5}{-9.4}
+  \mcrow{2}{Aprendizaje}{2.9}{5.0}{17.7}{15.7}{12.8}
+  \mcrow{3}{Metaheurística evolutiva}{0.0}{5.0}{16.5}{11.2}{11.2}
+  \mcrow{4}{Control de formación}{14.3}{5.0}{5.1}{7.9}{-6.4}
+  \mcrow{5}{Comportamiento / enjambre}{8.6}{5.0}{0.0}{5.6}{-3.0}
+  \mcrow{6}{Teoría de juegos}{2.9}{5.0}{3.8}{3.4}{0.5}
+  \mcrow{7}{Seguridad reactiva / CBF}{0.0}{2.5}{2.5}{6.7}{6.7}
+  \mcrow{8}{Optimización exacta}{5.7}{0.0}{5.1}{2.2}{-3.5}
+
+  \draw[onyx,line width=.45pt] (\xzero,-1)--(\xzero,56);
+  \foreach \v in {-10,0,10}{%
+    \node[anchor=north,text=muted,font=\fontsize{5.0}{5.4}\selectfont] at (\xzero+1.1*\v,-1.6){\v};}
+\end{tikzpicture}%
+  }}
+  \caption[Cambio metodológico por periodos.]{Cambio metodológico por periodos.
+  Los cuatro paneles temporales comparten la misma escala horizontal, expresada
+  como porcentaje interno de cada periodo, para comparar directamente la
+  persistencia y la recombinación de familias; el panel final muestra el cambio
+  en puntos porcentuales entre el periodo temprano y 2022--2026. Las cuotas son
+  proporciones dentro de cada periodo, no tasas de publicación, y la
+  clasificación es multietiqueta.}
+  \label{fig:lit-method-change}
+  \viusource{elaboración propia a partir del corpus analítico; 2026 es un año incompleto}
+\end{figure}

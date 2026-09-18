@@ -1,0 +1,20 @@
+% Adenda v2 a Hipótesis: H6 cubre OE6 (MegaJuego y su reproducción en
+% CoppeliaSim). No edita 03-hypotheses.tex.
+\par\bigskip
+\noindent\textbf{H6. Certificado por bloque bajo continuaciones admisibles.}
+En el juego de integración, cada continuación admitida
+mejorará estrictamente el coste o certificado de su bloque (potencial,
+separación geométrica, contacto o presupuesto) respecto de la política
+vigente, y esa mejora se sostendrá bajo reproducción en un motor de
+simulación distinto del que la calculó. H6 no predice ni se contrasta contra
+un óptimo global del sistema híbrido completo.
+
+\medskip
+\noindent\emph{Estimando y regla de decisión.} Para cada bloque verificado
+(potencial exacto y óptimo central, separación Bézier, \emph{caging} KKT,
+presupuesto de ejecución), el estimando es el residual o la brecha frente al
+certificado algebraico del Anexo~\ref{app:megajuego-full-detail}; para la
+reproducción en CoppeliaSim, el estimando es si el método que evita colisión
+en el modelo cinemático también la evita en el motor 3D. Un residual que no
+cierra, o una reproducción que invierte el resultado cualitativo, deja a H6
+sin apoyo en ese bloque.

@@ -1,0 +1,67 @@
+\subsection{Puente cinemático--mecánico canónico}
+\label{app:sp2-canonical-bridge}
+
+Sea $\xi_L=(v_L^{\mathsf T},\omega)^{\mathsf T}$, sea
+$J=\bigl[\begin{smallmatrix}0&-1\\1&0\end{smallmatrix}\bigr]$ y sea $r_i$ el
+pivote de $i$ en el marco de la carga. Con radio $r_i^w>0$, semivía
+$\ell_i^w>0$ y límite $\bar\omega_{w,i}$, la cinemática rígida exige
+\begin{equation}
+ v_i^{\mathrm{piv}}=v_L+\omega JR(\theta_L)r_i,
+ \qquad
+ \dot\varphi_{i,L/R}=\frac{v_{i,\parallel}\mp\ell_i^w\dot\theta_i}{r_i^w}.
+ \label{eq:pre-sp2-pivot-wheels}
+\end{equation}
+
+\begin{proposicion}[Equivalencia cinemática]
+\label{prop:pre-sp2-kinematic-equivalence}
+En un intervalo con $v_i^{\mathrm{piv}}\ne0$, $\xi_L$ continuamente
+diferenciable, pivotes inicialmente anclados y una rama continua de rumbo, la
+coalición reproduce $\xi_L$ si y solo si cada eje longitudinal es paralelo o
+antiparalelo a $v_i^{\mathrm{piv}}$, la velocidad lateral es nula y
+\eqref{eq:pre-sp2-pivot-wheels} respeta los límites de rueda.
+\end{proposicion}
+\begin{proof}
+Derivar $p_i=p_L+R(\theta_L)r_i$ da la primera igualdad; la restricción no
+holónoma y el diferencial de ruedas dan la segunda. Recíprocamente, ambas
+igualdades realizan la derivada del anclaje y la coincidencia inicial conserva
+la relación rígida.
+\end{proof}
+
+En giro puro, $v_L=0$, la rueda exterior impone
+$|\omega|\leq\min_{i\in\mathcal C}
+r_i^w\bar\omega_{w,i}/(d_i^{\mathrm{ICR}}+\ell_i^w)$; el pivote situado en el
+centro instantáneo se trata como el caso separado de giro sobre sí mismo.
+Defínanse $\Xi_{\mathcal C}^{\mathrm{align}}=\bigcap_{i\in\mathcal C}
+\Xi_i^{\mathrm{align}}$ y $\mathcal W_{\mathcal C}$ como el conjunto de
+wrenches realizables por reacciones admisibles.
+
+\begin{proposicion}[Monotonicidades opuestas]
+\label{prop:pre-sp2-opposite-monotonicity}
+Si $j\in\mathcal C$ y la reacción nula es admisible, entonces
+$\Xi_{\mathcal C\setminus\{j\}}^{\mathrm{align}}\supseteq
+\Xi_{\mathcal C}^{\mathrm{align}}$ y
+$\mathcal W_{\mathcal C\setminus\{j\}}\subseteq\mathcal W_{\mathcal C}$.
+La factibilidad conjunta no es, en general, monótona con la cardinalidad.
+\end{proposicion}
+\begin{proof}
+Retirar $j$ elimina un conjunto de una intersección, pero también elimina sus
+reacciones; la inclusión mecánica sigue al prolongar cualquier reparto restante
+con reacción nula. Cada dirección puede ser estricta.
+\end{proof}
+
+\begin{proposicion}[Insuficiencia de la capacidad escalar]
+\label{prop:pre-sp2-scalar-insufficiency}
+Si $\|t_i\|\leq\bar t_i$ y $\sum_i t_i=F_d$, entonces
+$\sum_i\bar t_i\geq\|F_d\|$ es necesario, pero no suficiente para realizar
+$(F_d,\tau_d)$ ni para certificar soporte o fricción.
+\end{proposicion}
+\begin{proof}
+La necesidad es triangular. Si todos los contactos están en el centro de masa,
+$r_i\times t_i=0$ y ningún reparto genera $\tau_d\ne0$, por grande que sea la
+suma escalar; omitir soporte o fricción solo relaja la factibilidad.
+\end{proof}
+
+El Teorema~\ref{prop:sp4-pose-stability} completa el enlace: con contactos
+bilaterales fijos y wrench exacto, el equilibrio nominal de pose es localmente
+asintóticamente estable. El resultado no cubre saturación persistente, pérdida
+de contacto ni hardware.

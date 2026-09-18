@@ -1,0 +1,23 @@
+{
+  "schema": "viu-cargo-code-snapshot-v1",
+  "snapshot_id": "cargo-code-snapshot-preflight-minimal-v5",
+  "created_at": "2026-09-08",
+  "source_artifact": "results/coppelia_cargo_preflight_minimal_v5",
+  "source_artifact_manifest_sha256": "b0c2c4a76ac0b29b9f6b47368dda3213c5e1f800c1b440c57f8abef707fac316",
+  "source_gate_status_sha256": "d6c76e1e5914b0aa146e2d95ed2b85e067e63047dbda3d17a08b0777850c1a64",
+  "source_config_snapshot_sha256": "632f8f1a8b613dc8a723985dd132cd5500c32e540bcf8d230b9cd0f5fcb8ac9b",
+  "source_runs_sha256": "5e48d5fb71bbb91a5413d2ab5971a61dc7b1e90b55004b19de406e0798376303",
+  "source_directory": "src/viu_mrob_tfm/coppelia_cargo",
+  "implementation_sha256": {
+    "__init__.py": "6ceae2a8122f07c0d644c1755fcfd28092b4a2ee5e5858589938bc3096ff848c",
+    "backends.py": "6426d7a69181af4dffe2b8d82e5b1000e6aaf059bdd5dca603ceb31ec8d9bc77",
+    "campaign.py": "c47e93aa501e84759862abd592efddf0a13fafdcc94d1a4a8977d2d59b4fb8ad",
+    "config.py": "fe3695128a20f452f0f50dedae2b604e0536146bacca166ad098492ae5bb9006",
+    "controller.py": "32987e4965b984121521a5c3f67e6e9c553b4370dc19d9c3c39ac4dba9c79245",
+    "coppelia_backend.py": "d5263941b255fd4a209c55cc2165a17ce7ea8b2844b90453de0cdfcd7d5ce86f",
+    "design.py": "23d788fc507bd3f2de9ec8a0bdd1cd54206ee892ee06e311b1eefae9e8b04b10",
+    "guards.py": "29a53ee12c44bb388527883470af069baad3ca55b6c77bf681aca11ca6ffa3f7",
+    "inference.py": "5b714664c4145f176f366f18abd9c08d6c9a75a939ad0b7290e52e744d64d82c"
+  },
+  "scientific_use": "Immutable byte-for-byte source snapshot used only to verify the historical minimal-v5 preflight artifact after the live Cargo package evolves."
+}

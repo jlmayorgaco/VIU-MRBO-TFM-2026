@@ -1,0 +1,77 @@
+\subsection{Cobertura del corpus, tendencia académica y actividad patentaria}
+\label{subsec:results-review}
+\zlabel{budget:review-start}
+
+El mapa de cobertura que producen las tres revisiones decide qué comparadores son
+legítimos en SP1--SP3, antes de cualquier resultado experimental. La cobertura se mide
+por intersecciones, no por capacidad aislada, porque el problema focal es una
+composición. El Anexo~\ref{app:review-results-full} discute cada figura panel a panel.
+
+\input{sections/v2/floats/lit-fig-coverage-rubric}
+
+La cobertura por capacidad aislada es solvente (23 trabajos en transporte compartido, 18
+en reclutamiento) y colapsa a dos al exigir carga compartida y reemplazo, y a cero al
+sumar certificación física (Figura~\ref{fig:lit-coverage-rubric}).
+
+\input{sections/v2/floats/lit-fig-stage-coverage}
+
+La cobertura se concentra en SP1 (115 señales frente a 20 de SP3 y 15 de SP2); ningún
+documento cubre las tres etapas y la validación es sobre todo por simulación, 99 señales
+frente a 12 de experimento físico (Figura~\ref{fig:lit-stage-coverage}).
+
+\input{sections/v2/floats/lit-fig-method-change}
+
+\input{sections/v2/floats/lit-fig-period-shift}
+
+El cambio metodológico por periodo es de recombinación, no de sustitución: consenso y
+distribución, subasta y aprendizaje coexisten con pesos que se redistribuyen, sin que
+ninguna familia converja (Figuras~\ref{fig:lit-method-change}
+y~\ref{fig:lit-period-shift}).
+
+\input{sections/v2/floats/lit-fig-bibliometric}
+
+La estructura bibliométrica confirma esa lectura: núcleos de coautoría pequeños y
+aislados, y comunidades de método de modularidad baja ($Q=$\LitMethodModularity{}), sin
+una agenda ni una escuela metodológica dominante (Figura~\ref{fig:lit-bibliometric}).
+
+\input{sections/v2/floats/ind-fig-patents}
+
+El corpus patentario se desplaza hacia decisión de misión: media móvil de tres años del
+37,9~\% al 58,8~\% entre el cierre de 2022 y el de 2025 (+20,9~puntos, robusto a la
+ampliación dirigida por solicitante),
+mientras coordinación cinemática e interacción física bajan (Figura~\ref{fig:results-patents}).
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Resultados de la revisión y objetivo específico al que condicionan.}
+  \label{tab:results-review-synthesis}
+  \fontsize{8.5}{10}\selectfont
+  \renewcommand{\arraystretch}{1.06}
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{4.3cm}
+      >{\raggedright\arraybackslash}p{1.5cm} Y@{}}
+    \toprule
+    Resultado de la revisión & Objetivo & Consecuencia para el diseño experimental \\
+    \midrule
+    Ningún trabajo del núcleo reúne certificación física, ejecución distribuida y reemplazo
+      & OE2, OE3 & El certificado de \emph{wrench} y la reparación se evalúan como interfaces separadas y no se importa ninguna garantía de la literatura. \\
+    La autoridad residual se desplaza a lo global en certificación y recuperación
+      & OE1, OE5 & Toda dependencia global de la implementación evaluada se declara en la Tabla~\ref{tab:results-model-map} en vez de presentarse como distribuida. \\
+    Doce trabajos con validación física frente a noventa y nueve en simulación
+      & OE3, OE5 & Los resultados de simulación y los del demostrador se informan por separado, sin transferencia de conclusiones. \\
+    Desplazamiento de +20,9 puntos hacia decisión de misión en el corpus patentario
+      & OE1 & Confirma pertinencia industrial de la capa estratégica y justifica el peso de SP1 en la campaña. \\
+    Ningún precedente comercial integra selección local, certificación y recomposición
+      & OE5 & El demostrador se plantea como prueba de compatibilidad funcional, no como comparación con un producto equivalente. \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+La Tabla~\ref{tab:results-review-synthesis} enlaza cada hallazgo con el objetivo que
+condiciona. Ninguno demuestra que la arquitectura propuesta funcione: fijan qué debe
+demostrarse y con qué comparadores, y excluyen importar garantías de trabajos con
+supuestos distintos, presentar como distribuida una implementación con dependencias
+globales, o equiparar simulación con validación física. Las subsecciones siguientes
+evalúan las tres interfaces bajo esas
+restricciones.
+\zlabel{budget:review-end}

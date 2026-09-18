@@ -1,0 +1,49 @@
+\section{Detalle completo de SP2}
+\label{app:sp2-full-detail}
+
+Las Secciones~\ref{subsec:sp2} y~\ref{subsec:coppelia} presentan en formato
+compacto cuatro bloques: acoplamiento y transporte (E4), recuperación ante
+fallo (E6), el demostrador híbrido Cargo y la reproducción en CoppeliaSim de
+E4. Aquí se desarrollan sin recortes la metodología, el diseño experimental y
+la discusión de cada uno. Las figuras didácticas y las
+tablas de métodos de E4 y E6 no se repiten aquí porque ya están en el cuerpo
+(Tablas~\ref{tab:sp2-compact-e4-methods} y~\ref{tab:sp2-compact-e6-methods}).
+Los enunciados formales ya se presentan en el cuerpo; sus demostraciones viven
+en los anexos declarados allí (Anexo~\ref{app:sp4-game-proof},
+Anexo~\ref{app:sp4-pose-proof}, Anexo~\ref{app:sp6-proofs} y
+Anexo~\ref{app:sp6-feasible-nash-proof}).
+
+\subsection{Acoplamiento y transporte entre poses (E4)}
+\label{app:sp2-e4-full-detail}
+\input{sections/v2/support/sp2-e4-trimmed}
+
+\subsection{Recuperación ante fallo (E6)}
+\label{app:sp2-e6-full-detail}
+\input{sections/v2/support/sp2-e6-trimmed}
+
+\subsection{Demostrador híbrido Cargo}
+\label{app:sp2-cargo-full-detail}
+% cargo-e2e.tex carga su propia tabla de macros como primera línea; el cuerpo
+% ya la cargó una vez, de modo que la segunda carga necesita el mismo
+% envoltorio que en el resto de estos anexos.
+\begingroup
+\let\newcommand\renewcommand
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/cargo-e2e}
+\endgroup
+
+\subsection{Reproducción en CoppeliaSim de E4}
+\label{app:sp2-coppelia-full-detail}
+
+La Sección~\ref{subsec:coppelia} resume la reproducción en CoppeliaSim del
+mundo pareado de paso estrecho. La campaña \texttt{SP4\_V4\_COPPELIA\_PAIRED\_NARROW}
+usa una escena real (no sintética) con cuatro AMR por método, semilla 886001;
+el estado \texttt{coppelia\_real\_kinematic\_replay\_pass} y las seis
+comprobaciones de admisión (escena guardada, cuadros reales capturados, más de
+treinta objetos, error de reejecución bajo 1~mm, contraejemplo directo
+reproducido, éxito seguro del método propuesto reproducido) se superan todas.
+El método directo agota el horizonte de 120~s sin llegar
+(\texttt{arrival\_success=false}) con error final medio de posición de
+1.326~m; el juego PD distribuido llega en 39.96~s con error final de 0.073~m,
+sin violaciones de barrera de ejecución y residual máximo de barrera
+$1.665\times10^{-16}$. El vídeo, el montaje de cámaras y el CSV de poses
+medidas se conservan en \texttt{legacy/results/sp4/SP4\_V4\_COPPELIA\_PAIRED\_NARROW/}.

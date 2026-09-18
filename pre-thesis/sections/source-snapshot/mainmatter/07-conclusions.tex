@@ -1,0 +1,124 @@
+\section{Conclusiones y recomendaciones}
+\label{sec:conclusions}
+
+La pregunta principal admite una respuesta condicionada. Los contratos por
+capas permiten formar coaliciones y el demostrador Cargo completa una misión en
+una planta planar reducida mediante una arquitectura híbrida e interpretable.
+Sus reglas integradas no reproducen todos los mecanismos parciales de SP1--SP2. Las
+garantías pertenecen a capas distintas: un Nash no certifica viabilidad mecánica
+y una simulación satisfactoria no demuestra estabilidad global ni validez
+industrial.
+
+\subsection{Contribución y resultados principales}
+
+SP1 caracteriza la formación estratégica mediante una regulación exacta de
+cuotas y dos interfaces de capacidad. La penalización suficiente obtiene una
+cuota realizable. La contribución marginal incorpora heterogeneidad operacional, y la guardia de \emph{wrench}
+asigna contactos y separa cobertura nominal de factibilidad mecánica planar.
+
+SP2 introduce la ejecución física. En \SPThreeWorlds{} instancias, la guardia
+situada en la interfaz SP1--SP2 cambió la tasa de falsos positivos en
+\SPThreeGuardEffect{}, con cobertura \SPThreeGuardedCoverage{} y abstención
+\SPThreeGuardedAbstention{}; el QP sigue siendo central y planar. El
+servocontrol es localmente estable con contactos fijos y realización exacta,
+el filtro de seguridad elimina las colisiones observadas en su campaña y la
+reparación restaura una fracción \SPSixConditionalRestore{} de los certificados
+recuperables, aunque el peor Nash de ese juego no admite una cota uniforme. En SP3, la reserva excluye conflictos lógicos sin representar
+cuerpos continuos: el juego completo alcanzó \SPSevenProposedSuccess{} de
+entrega frente a \SPSevenNoReservationSuccess{} al retirarla.
+
+Cargo combina las seis etapas mediante reglas propias del ejecutor y alcanzó
+una tasa de misión \CargoEtwoESuccess{} sin intersección carga--obstáculo durante
+el transporte. Las ablaciones de seguridad y reparación degradaron el éxito.
+Las variantes vecinal y perfecta completaron el régimen degradado ensayado;
+estos datos acreditan compatibilidad funcional, no validación integrada de
+SP1--SP2. En Industrial~2, todos los escenarios congestionados agotaron el
+horizonte sin entregas aunque no se observaran solapamientos.
+
+\subsection{Cumplimiento de los objetivos}
+
+El objetivo general se cumple parcialmente. Se formalizan los contratos entre
+capas y se demuestra una composición funcional planar, pero no una arquitectura
+completamente distribuida ni la integración exacta de todos los mecanismos
+propuestos. OE1 caracteriza asignación, cuotas y heterogeneidad. OE2 relaciona
+certificado mecánico y control de pose por separado; Cargo no incorpora el QP
+geométrico inicial, por lo que la conexión integrada queda parcial. OE3 evalúa
+obstáculo, fallo y tráfico sin confundir sus métricas. OE4 mide CPU y mensajes
+en los catálogos activos; escala y red degradada no se adjudican en la memoria.
+
+OE5 se cumple como demostrador de compatibilidad funcional: reúne las seis
+etapas previstas, declara sus diferencias frente a las etapas de SP1--SP2 y emplea ablaciones
+para los bloques de seguridad y reparación. No demuestra que las garantías de
+los SP sobrevivan a la composición. De forma independiente, la reproducibilidad
+es parcial: las campañas incluidas en esta memoria conservan configuración,
+semillas y artefactos, mientras otras etapas históricas solo permiten reanalizar
+observaciones archivadas. El piloto CoppeliaSim aporta auditoría geométrica y
+reproducción cinemática, no validación dinámica independiente.
+
+\subsection{Respuesta a las preguntas de investigación}
+
+\textbf{RQ1.} Recursos y penalización suficientes permiten cuotas exactas;
+la escasez exige selección todo-o-nada. El contraste específico de QR queda
+fuera del cuerpo activo. La contribución marginal mejora la alineación sin
+heredar optimalidad social ni ejecución vecinal completa.
+
+\textbf{RQ2.} El acoplamiento entre decisión y movimiento fue operativo, pero el
+contraste temporal no sustentó una aceleración. La mensajería vecinal mantuvo la
+ejecución en el régimen degradado ensayado, aunque el registro global impide
+atribuir el resultado a coordinación local completa.
+
+\textbf{RQ3.} La factibilidad física exige
+$\boldsymbol W_k^{\mathrm{req}}\in\mathcal W_{C_k}$; cardinalidad y servicio no
+son certificados mecánicos. El QP evaluado es planar y supone contactos y
+demanda conocidos.
+
+\textbf{RQ4.} La etapa de reparación de SP2 restauró una fracción
+\SPSixConditionalRestore{} de los \SPSixRecoverableWorlds{} certificados
+estáticos recuperables; Cargo alcanzó \CargoEtwoEFailureSuccess{} en el escenario
+con fallo al continuar con reemplazo. La batería solo se modeló como
+disponibilidad en la etapa heterogénea de SP1. La exclusión lógica no evitó
+bloqueos congestionados.
+
+\textbf{RQ5.} En el catálogo activo de SP3, el juego contabilizó
+\SPSevenProposedMessages{} mensajes por mundo y la reserva recuperó
+\SPSevenHOneEffectPP{} puntos porcentuales de entrega frente a su ablación. El
+coste observado combina mensajes y CPU; no caracteriza escala de red ni incluye
+por completo el tráfico del registro global de Cargo.
+
+No se aislaron causalmente la batería ni sus procesos de descarga y recarga.
+
+\subsection{Estado de las hipótesis}
+
+La Tabla~\ref{tab:conclusion-hypotheses} restringe cada estado al dominio ensayado.
+
+\begin{table}[H]
+  \centering
+  \caption{Estado final de las hipótesis y principal límite.}
+  \label{tab:conclusion-hypotheses}
+  \scriptsize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\textwidth}{@{}p{0.8cm}p{1.75cm}p{5.1cm}X@{}}
+    \toprule
+    ID & Estado & Evidencia principal & Límite \\
+    \midrule
+    H1a & Sustentada & Nash de cuota exacta bajo recursos y penalización suficientes. & No se transfiere a cobertura, Smith muestreado ni escasez. \\
+    H1b & No adjudicada & El contraste QR--Smith se conserva fuera del cuerpo activo. & No se usa para sostener una conclusión VIU. \\
+    H1c & No adjudicada & El contraste cuórum--lineal se conserva fuera del cuerpo activo. & No se usa para sostener una conclusión VIU. \\
+    H2 & Apoyo parcial & Falsos positivos \SPThreeGuardEffect{}, cobertura \SPThreeGuardedCoverage{} y abstención \SPThreeGuardedAbstention{}. & QP planar; ablación Cargo combinada. \\
+    H3 & No sustentada & El IC del contraste temporal contiene cero tras ajuste de Holm. & Composición operativa sin ventaja temporal. \\
+    H4 & Apoyo parcial & Restauración estática \SPSixConditionalRestore{} y éxito Cargo \CargoEtwoEFailureSuccess{} con fallo. & Un agotamiento; sin nuevo contacto físico. \\
+    H5a & Apoyo teórico & Revisión local $O(|\mathcal R_i^7|(|\mathcal E_i^7|+n_i))$ frente al oráculo restringido exponencial. & Sin curvas activas por tamaño o grado; no caracteriza todo centralizador. \\
+    H5b & No adjudicada & La campaña de escala se conserva en la monografía, no en el cuerpo activo. & No se usa para sostener una conclusión VIU. \\
+    HP & Apoyo delimitado & Tasa de misión \CargoEtwoESuccess{} con la métrica de huella--obstáculo. & Compatibilidad funcional; planta reducida, registro global y seguridad combinada. \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+\subsection{Limitaciones}
+
+No existe una función de Lyapunov común para el sistema híbrido. El modelo usa carga planar, pose conocida, contactos fijos y fuerzas acotadas; omite soporte vertical, fricción 3D, deslizamiento, percepción y tracción rueda--suelo. Cargo considera una carga y un fallo simple, con líder temporal, registro global, grafo estático y pérdidas Bernoulli; los bancos activos no miden energía de radio. Sus intervalos describen generadores sintéticos y la tasa \CargoEtwoESuccess{} no estima una probabilidad industrial. Industrial~2 solo tiene dos semillas por escenario y usa adaptaciones piloto, no implementaciones completas de CBBA, ORCA o DMPC.
+
+\subsection{Recomendaciones y trabajo futuro}
+
+Primero deben sustituirse las reglas empíricas de Cargo por los mecanismos de SP1--SP2 que se pretendan reclamar como integrados y repetirse sus ablaciones. Una planta física independiente deberá incorporar fricción, agarre, saturación, incertidumbre y ruido; ROS~2 permitirá medir edad de información, bytes, memoria, energía y CPU bajo topología móvil. Las campañas FULL--AGG y de canal degradado quedan delimitadas en SP1.N4, fuera del cuerpo activo. Múltiples cargas exigirán un oráculo espacio--temporal y comparadores publicados de subasta, MAPF y control. El empuje/caging mantendrá un modelo unilateral separado, con mundos pareados, ablaciones y resultados negativos conservados como regresión.

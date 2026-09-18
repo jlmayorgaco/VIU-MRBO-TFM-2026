@@ -1,0 +1,232 @@
+\section{Detalle completo de la revisión}
+\label{app:review-full-detail}
+
+Las Secciones~\ref{subsec:method-review-protocol} y~\ref{subsec:tf-discriminant}
+presentan las tres revisiones en formato mínimo: una figura, una tabla y un
+párrafo por revisión. El protocolo completo, las tablas complementarias y la
+discusión que sostienen ese resumen siguen a continuación.
+
+\subsection{Protocolo comparado y capas del corpus}
+\label{app:review-protocol-full}
+
+La revisión académica se ejecuta como un embudo de cuatro capas, y cada capa
+sostiene un tipo de afirmación distinto. La Tabla~\ref{tab:lit-corpus-layers}
+lo hace explícito: el descubrimiento maximiza cobertura pero solo aporta
+metadatos; el mapeo analítico permite hablar de tendencias e intersecciones;
+el núcleo canónico admite comparar capacidades y arquitectura de información;
+y solo la lectura cercana, sobre veinte trabajos, sostiene las afirmaciones
+técnicas más fuertes.
+
+\input{sections/v2/floats/lit-tab-corpus-layers}
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Protocolo comparado de las tres revisiones que sostienen la brecha.}
+  \label{tab:method-review-protocol}
+  \fontsize{8.5}{10}\selectfont
+  \renewcommand{\arraystretch}{1.04}
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.15cm} >{\raggedright\arraybackslash}p{3.05cm} >{\raggedright\arraybackslash}p{3.05cm} Y@{}}
+    \toprule
+    Dimensión & Académica & Industrial & Patentaria \\
+    \midrule
+    Unidad de análisis & documento arbitrado o preprint enlazado & sistema o despliegue con fuente oficial & publicación patentaria \\
+    Recuperación & Crossref, OpenAlex, rutas OA y \emph{snowballing} & auditoría web de fabricantes e integradores & texto, CPC G05D 1/69--1/6987, solicitante y \emph{snowballing} \\
+    Volumen & 3\,014 descubiertos, 244 cribados, 168 con texto adecuado, 59 canónicos & 10 casos principales y 4 de contexto & 169 filas y 167 registros analíticos \\
+    Corte & sin corte duro; \emph{snowballing} cerrado en la etapa 5 & auditoría web de septiembre de 2026 & 11 de septiembre de 2026 \\
+    Codificación & autoridad, información, líder y cierre, no solo control local & seis capacidades frente a la cadena operativa del TFM & una etiqueta temática y una macrocapa por publicación \\
+    Qué certifica & mecanismos con formulación y garantía publicadas & capacidades disponibles en producto & desplazamiento de la actividad de protección \\
+    Qué no certifica & prevalencia poblacional ni calidad experimental & cuota de mercado ni inexistencia de lo no documentado & número de invenciones ni familias jurídicas \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+«Distribuido» no se asigna por la presencia de control local, sino por la
+combinación de autoridad de decisión, información disponible, existencia de
+líder o servidor y responsable del cierre, de modo que un método con control
+local y adjudicación centralizada se codifica como mixto. El corpus
+patentario se analiza a nivel de publicación y no de invención ni de familia
+jurídica, con el año de publicación como eje temporal porque el de prioridad
+solo consta en 6 de los 167 registros. Cada publicación recibe además una
+única etiqueta temática y una macrocapa ---decisión de misión, coordinación
+cinemática o interacción física--- para impedir el doble conteo, conforme al
+criterio de los manuales de análisis patentario
+\parencite{wipoPatentLandscape,oecdPatentManual2009}, con las clases CPC
+G05D~1/69, 1/692, 1/695, 1/696 y 1/698--1/6987 \parencite{usptoCpcG05D}.
+El fichero \texttt{bibliography/references-v2.bib} conserva la ficha completa
+de cada entrada catalogada durante las tres revisiones; el capítulo de
+Referencias solo lista las que el argumento del texto cita explícitamente,
+que es un subconjunto del corpus de 59, 14 y 167 declarado más arriba.
+
+Las tres revisiones se proyectan sobre una misma cadena operativa. La
+Figura~\ref{fig:method-review-sequence} fija sus seis etapas y anota bajo cada
+una qué evidencia predomina hoy: las de decisión aparecen sobre todo en
+investigación y patentes, la ejecución tiene precedentes comerciales
+consolidados y la recomposición durante la misión solo acumula evidencia
+parcial.
+
+\input{sections/v2/floats/ind-fig-sequence}
+
+La codificación estructural del corpus académico es un primer pase
+automatizado y no sustituye la lectura humana de ecuaciones, supuestos y
+protocolos. La heterogeneidad de tareas, robots, contactos, comparadores y
+métricas impide un metaanálisis cuantitativo. Ninguna de las tres revisiones
+evaluó estabilidad, convergencia, optimalidad, seguridad o escalabilidad: esas
+propiedades se contrastan, dentro de sus supuestos, en el capítulo de
+resultados.
+
+El mapa metodológico (Figura~\ref{fig:lit-methodological-map}) cubre 32 de
+los 59 trabajos canónicos, con el criterio de selección del consolidado
+original que le da fuente. Los 27 trabajos restantes no aparecen en el mapa,
+aunque siguen contando en el corpus de 59 para la matriz de capacidades y la
+auditoría adversarial de novedad; no se comprobó si su exclusión concentra
+algún cuadrante en particular.
+
+\subsection{Auditoría adversarial de novedad}
+\label{app:review-redteam-full}
+
+El primer frente resuelve la coalición lógica mediante emparejamientos uno a
+muchos, subastas y juegos hedónicos
+\parencite{choiBrunetHow2009CBBA,serviceAdams2011Coalition,chenSun2012Coalition,jangShinTsourdos2018GRAPE,duttaAsaithambi2019Bipartite,dutta2021hedonic,diehlAdams2026Grapes};
+el segundo resuelve la ejecución física con formulación, control y validación
+experimental
+\parencite{alonsomora2017transport,shibata2023event,ebel2024cooperative,fukao2025swarm,tian2025irregular,muhammed2026decentralizedMpc}.
+La brecha no puede formularse como «falta control distribuido de carga», que
+sería falso, sino como una interfaz que ninguno de los dos frentes atraviesa.
+
+Tres lecturas condicionan el diseño del resto de la memoria. La atomicidad
+exige que el cierre entero pertenezca al método, porque los juegos
+poblacionales producen masa continua y un redondeo posterior puede romper la
+propiedad demostrada en la Ecuación~\eqref{eq:tf-population-dynamics}. El paso
+de capacidad a \emph{wrench} impide sustituir
+$W_k^{\mathrm{req}} \in \mathcal W_C(q)$ por la suma escalar
+$\sum_i c_i \ge d_k$, según la Ecuación~\eqref{eq:tf-grasp-map}. La escala
+obliga a separar robots simulados, robots físicos, robots por coalición y
+cargas simultáneas. A esto se añade la modalidad de interacción: carga
+soportada, acoplamiento rígido, empuje y prensión imponen conjuntos de
+esfuerzos admisibles distintos y no deben agruparse (panel inferior de la
+Figura~\ref{fig:lit-capability-matrix}).
+
+\input{sections/v2/floats/lit-tab-prior-art}
+
+Una brecha solo es defendible si sobrevive al intento de refutarla, y la
+Tabla~\ref{tab:lit-prior-art} recoge esa auditoría adversarial. El resultado
+obliga a estrechar el enunciado: el reemplazo durante el transporte ya existe.
+Verma et al. lo implementan con ruta y puntos de relevo conocidos y
+planificación global \parencite{verma2019replacement}; Sahu y Kumar lo
+integran con detección de fallo bajo arquitectura maestro--esclavo
+\parencite{sahuKumar2026FaultManagement}; y Shibata et al. admiten que agentes
+se retiren o incorporen durante el control distribuido, sin resolver la
+selección del sustituto dentro de una flota heterogénea
+\parencite{shibata2023event}. Ebel et al. resuelven el transporte cooperativo
+con un equipo fijado de antemano, sin mecanismo de reclutamiento ni de
+sustitución \parencite{ebel2024cooperative}. En el extremo opuesto, Bezerra y
+GRAPE-S cubren reclutamiento o formación de coaliciones sin cerrar la
+interacción física de una carga compartida.
+
+El enunciado de brecha reclama solo que la composición de las tres piezas bajo
+información local carece de precedente documentado en el corpus: no el primer
+método distribuido de transporte cooperativo, ni el primer mecanismo de
+reemplazo, ni superioridad frente a ningún trabajo de la
+Figura~\ref{fig:lit-capability-matrix}.
+
+\subsection{Panorama industrial y marco normativo}
+\label{app:review-industrial-full}
+
+La lectura relevante del mapa industrial es que dos líneas funcionales
+coexisten con precedentes comerciales propios. En el cuadrante inferior
+derecho, la cooperación física para carga pesada está resuelta con
+configuración de ingeniería y escasa autonomía: KUKA omniMove mueve secciones
+de fuselaje de hasta 100~toneladas en Airbus Stade con composición dedicada
+\parencite{kukaOmnimoveAirbus2016} y los transportadores modulares SPMT
+resuelven \emph{project cargo} mediante configuración previa
+\parencite{tiiScheuerleSpmt2023}. En el superior izquierdo, la autonomía de
+flota está igualmente resuelta pero sin carga compartida: AGILOX opera
+27~AMR en BMW Regensburg con coordinación entre pares y sin control central
+\parencite{agiloxXswarmBmw2023}. El cuadrante superior derecho, donde ambas
+capacidades convergen, permanece escasamente poblado.
+
+Beacon Dual-AMR es el precedente con mayor solapamiento funcional, porque
+documenta emparejamiento automático y relevo de autoridad ante fallo, pero
+opera con dos robots bajo despacho central y no sustituye a un miembro por
+otro de la flota \parencite{beaconDualAmr2026}. Dos heterogeneidades distintas
+conviven en este panorama. La de flota, entendida como convivencia de modelos
+distintos bajo un mismo gestor, aparece con frecuencia en las plataformas de
+contexto. La que se da dentro de una misma coalición física, donde robots con
+capacidades y geometrías diferentes deben cerrar conjuntamente restricciones
+de carga, contacto y \emph{wrench}, tiene cobertura pública mucho menor y es
+la que el problema focal aborda.
+
+\input{sections/v2/floats/ind-tab-standards}
+
+La Tabla~\ref{tab:tf-standards} delimita el marco normativo de cualquier
+realización industrial de esta arquitectura. Ni VDA 5050 ni ISO 21423 definen
+la constitución de una coalición física o su certificación mecánica, e ISO
+3691-4 y ANSI/A3 R15.08-3 fijan el marco de seguridad sin cubrir ese contrato.
+Queda por tanto fuera de la normativa vigente y debe resolverlo el sistema,
+con una consecuencia de diseño directa: el certificado de \emph{wrench} no
+puede delegarse en una capa de interoperabilidad y debe producirse dentro del
+propio mecanismo de reclutamiento.
+
+\subsection{Discusión ampliada de cobertura, tendencia y patentes}
+\label{app:review-results-full}
+
+Esta subsección conserva, sin abreviar, la lectura panel a panel de las
+figuras de cobertura, tendencia metodológica y actividad patentaria que la
+Sección~\ref{subsec:results-review} presenta de forma condensada.
+
+El panel (a) de la Figura~\ref{fig:lit-coverage-rubric} sostiene el planteamiento: el
+corpus cubre con solvencia las capacidades por separado ---veintitrés trabajos abordan
+transporte compartido y dieciocho el reclutamiento--- y la cobertura se desploma al
+exigir intersecciones, con solo dos trabajos que combinan carga compartida y reemplazo y
+ninguno que reúna certificación física, ejecución distribuida y reemplazo. El panel (b)
+explica cómo se codificó la dependencia global: la rúbrica se aplica trabajo a trabajo y
+etapa a etapa, sin promediar categorías ordinales, y es la que permite afirmar que la
+autoridad residual se desplaza hacia lo global precisamente en certificación y
+recuperación.
+
+La Figura~\ref{fig:lit-stage-coverage} añade el estrechamiento decisivo. El panel (a)
+muestra que la cobertura se concentra en SP1, con 115 señales frente a 20 de SP3 y 15 de
+SP2. El panel (b) muestra el segundo estrechamiento: 103 documentos se codifican
+únicamente en SP1, diez enlazan SP1--SP3, dos enlazan SP1--SP2 y ninguno cubre las tres
+etapas. El panel (c) explica por qué los comparadores deben elegirse con cuidado: hay 99
+señales de simulación, 25 de contexto o caso industrial, 12 de experimento físico y
+siete de análisis formal. Esa proporción de validación física es la razón de que la
+memoria mantenga separados los resultados de simulación y los del demostrador.
+
+La Figura~\ref{fig:lit-method-change} descompone el cambio metodológico en cuatro
+periodos y muestra recombinación, no sustitución. Consenso y distribución pasan del
+20,0~\% al 24,7~\% y subasta o mercado baja del 22,9~\% al 13,5~\%, pero ambas familias
+siguen presentes; en paralelo, el aprendizaje sube 12,8~puntos, la metaheurística
+evolutiva 11,2 y la seguridad reactiva o CBF 6,7. El patrón dominante es de
+recombinación: selección, coordinación, control y seguridad ganan diversidad sin
+converger hacia una única familia metodológica.
+
+La Figura~\ref{fig:lit-period-shift} cuantifica ese mismo desplazamiento sobre las
+cinco categorías verificables del corte V3. La cuota de contexto general crece 17,7
+puntos entre el periodo temprano y 2022--2026, y la de recuperación o resiliencia cae
+9,7; coalición y transporte se mantienen casi estables, con cambios menores a un
+punto. La lectura es la misma que en el panel de tendencias: el corpus no converge
+hacia una única familia, sino que redistribuye peso entre las que ya tenía.
+
+La estructura bibliométrica de la Figura~\ref{fig:lit-bibliometric} confirma esa
+lectura desde otro ángulo. Los núcleos de coautoría fuerte son pequeños y aislados
+---como máximo cuatro autores---, de modo que ninguna agenda de investigación domina
+el corpus recuperado. Las comunidades de método tienen modularidad baja
+($Q=$\LitMethodModularity{}), señal de que consenso, subasta, aprendizaje y
+metaheurística se combinan con frecuencia en un mismo trabajo en vez de segregarse en
+escuelas cerradas.
+
+El corpus patentario responde a una pregunta distinta: hacia dónde se desplaza el
+interés de protección industrial. Con la media móvil de tres años calculada al cierre
+de cada periodo (2022 y 2025 respectivamente), la macrocapa de decisión
+de misión pasa del 37,9~\% al 58,8~\% del corpus, un aumento de 20,9~puntos porcentuales,
+mientras la coordinación cinemática baja del 30,3~\% al 17,6~\% y la interacción física
+del 31,8~\% al 23,5~\%. El resultado no depende de la ampliación dirigida por
+solicitante: excluyéndola el cambio va del 32,7~\% al 54,7~\%, es decir 22,0~puntos, y la
+prueba de sensibilidad que colapsa los cuatro grupos de títulos muy similares lo deja en
+20,0~puntos. Los paneles (b) y (c) añaden dos matices para no sobreinterpretarlo: China
+concentra la mayoría de titulares identificados y el 14,3~\% reciente de Estados Unidos
+procede íntegramente de la ampliación dirigida, de modo que no admite lectura como cuota
+mundial; por dominios, la intralogística concentra el 69~\% de su actividad en decisión
+de misión y el sector aeroespacial el 88~\% en interacción física.

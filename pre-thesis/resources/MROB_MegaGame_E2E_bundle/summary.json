@@ -1,0 +1,193 @@
+{
+  "scope": "Synthetic end-to-end reduced physical scenario. Not R10 replication and not hardware/CoppeliaSim validation.",
+  "scenario": {
+    "robots_total": 15,
+    "robots_recruited": 12,
+    "robots_idle": [
+      12,
+      13,
+      14
+    ],
+    "loads": [
+      {
+        "name": "A",
+        "mode": "Cargo",
+        "mass_kg": 48.0,
+        "start": [
+          -8.0,
+          -4.5
+        ],
+        "goal": [
+          8.0,
+          3.0
+        ],
+        "team": [
+          3,
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "name": "B",
+        "mode": "Caging",
+        "mass_kg": 62.0,
+        "start": [
+          8.0,
+          -3.8
+        ],
+        "goal": [
+          -8.0,
+          1.8
+        ],
+        "team": [
+          6,
+          4,
+          7,
+          5
+        ]
+      },
+      {
+        "name": "C",
+        "mode": "Cargo",
+        "mass_kg": 42.0,
+        "start": [
+          -8.1,
+          4.8
+        ],
+        "goal": [
+          8.0,
+          0.3
+        ],
+        "team": [
+          11,
+          10,
+          9,
+          8
+        ]
+      }
+    ],
+    "formation_time_s": 5.299999999999997,
+    "transport_start_s": 5.799999999999997,
+    "common_conflict_zone_abs_x_m": 4.5
+  },
+  "recruitment": {
+    "distributed_auction_iterations": 79,
+    "distributed_cost": 62.82776907678213,
+    "hungarian_oracle_cost": 62.82776907678213,
+    "gap": 0.0,
+    "exact_match_to_oracle": true
+  },
+  "spatial_routes": {
+    "A": {
+      "initial_straight_clearance_m": -0.5879503864957167,
+      "final_route_clearance_m": 0.400118533023438,
+      "length_m": 18.443292695512316,
+      "optimizer_success": true
+    },
+    "B": {
+      "initial_straight_clearance_m": -0.9482132435979407,
+      "final_route_clearance_m": 0.2116084848044455,
+      "length_m": 17.576466771186528,
+      "optimizer_success": true
+    },
+    "C": {
+      "initial_straight_clearance_m": -1.3818112403877032,
+      "final_route_clearance_m": 0.3067804018978688,
+      "length_m": 19.55593447430433,
+      "optimizer_success": true
+    }
+  },
+  "route_time_game": {
+    "fcfs_order": [
+      "C",
+      "A",
+      "B"
+    ],
+    "distributed_order": [
+      "A",
+      "B",
+      "C"
+    ],
+    "oracle_order": [
+      "A",
+      "B",
+      "C"
+    ],
+    "distributed_objective": 3856.024884996178,
+    "oracle_objective": 3856.024884996178,
+    "objective_gap": 0.0,
+    "revision_trace": [
+      "(0, 0, (2, 0, 1), (0, 2, 1), np.float64(3989.432538887214), np.float64(3961.4082876523103))",
+      "(0, 1, (0, 2, 1), (0, 1, 2), np.float64(3961.4082876523103), np.float64(3856.024884996178))"
+    ],
+    "fcfs_finish_s": 86.30478350662932,
+    "distributed_finish_s": 85.01462538617935,
+    "schedule_gain_s": 1.2901581204499735,
+    "schedule_gain_pct": 1.4948859936029764
+  },
+  "cooperative_transport": {
+    "min_inter_clearance_m": 0.6546561590390088,
+    "min_obstacle_clearance_m": 0.21170118188308829,
+    "max_wheel_rad_s": 9.245883806818645,
+    "max_torque_Nm": 2.2262560924762456,
+    "wheel_limit_ratio": 0.5298253636338588,
+    "torque_limit_ratio": 0.4083763307483139,
+    "ground_friction_utilization": 0.20638668258953352,
+    "cargo_pad_utilization": 0.07597679066481776,
+    "caging_utilization": 1.0000000000002172,
+    "caging_qp_max_residual": 1.2812573646646972e-14,
+    "caging_kkt_max_residual": 1.3959138092659634e-11,
+    "caging_all_feasible": true,
+    "total_energy_J": 24761.77357136583,
+    "stop_episodes": 0,
+    "stopped_time_s": 0.0,
+    "smoothness_accel_cost": 1.2216253315884151,
+    "makespan_s": 79.21462538617935
+  },
+  "matched_safe_stopgo": {
+    "min_inter_clearance_m": 0.8215498265016279,
+    "min_obstacle_clearance_m": 0.2117131305496296,
+    "max_wheel_rad_s": 15.836499279351102,
+    "max_torque_Nm": 5.441295095073067,
+    "wheel_limit_ratio": 0.8146425936988765,
+    "torque_limit_ratio": 0.9882855970984922,
+    "ground_friction_utilization": 0.38209713369263987,
+    "cargo_pad_utilization": 0.1885374978395742,
+    "caging_utilization": 1.00000000000098,
+    "caging_qp_max_residual": 1.596956546070967e-14,
+    "caging_kkt_max_residual": 3.262320883214754e-10,
+    "caging_all_feasible": true,
+    "total_energy_J": 25259.844973908846,
+    "stop_episodes": 3,
+    "stopped_time_s": 67.32,
+    "smoothness_accel_cost": 5.445502868600309,
+    "makespan_s": 79.21462538617935
+  },
+  "comparative": {
+    "same_route_time_schedule_for_execution_comparison": true,
+    "energy_saving_J": 498.07140254301703,
+    "energy_saving_pct": 1.9717912087642664,
+    "smoothness_reduction_pct": 77.56634490760233,
+    "peak_torque_reduction_pct": 59.085915143766876,
+    "peak_wheel_speed_reduction_pct": 41.61661839700792,
+    "stop_episodes_removed": 3,
+    "stopped_time_removed_s": 67.32
+  },
+  "caging": {
+    "static_geometric_edge_coverage_margin_m": 0.30520533437787756,
+    "all_dynamic_wrench_qps_feasible": true,
+    "max_qp_residual": 1.2812573646646972e-14,
+    "max_kkt_residual": 1.3959138092659634e-11
+  },
+  "limits": {
+    "not_certified": [
+      "global optimum of continuous spatial path",
+      "hybrid global optimum over all homotopies/coalitions",
+      "compliant-contact nonlinear tracking",
+      "motor-inductance closed-loop execution",
+      "SLAM/network packet-level simulation",
+      "hardware"
+    ]
+  }
+}

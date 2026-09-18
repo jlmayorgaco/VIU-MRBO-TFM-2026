@@ -1,0 +1,113 @@
+\section{Resultados y análisis}
+\label{sec:results}
+\zlabel{budget:results-interface-start}
+
+La evaluación conecta la asignación lógica con la misión física mediante tres interfaces verificables. SP1 forma coaliciones y asigna contactos; SP2 ejecuta el transporte y repara fallos; SP3 reserva rutas para coaliciones tratadas como agentes compuestos. Los identificadores históricos se conservan únicamente en las fuentes y en los artefactos reproducibles.
+
+\input{sections/results-interface}
+La Ecuación~\eqref{eq:pre-results-go-contract} es el contrato de avance que
+SP1--SP3 deben satisfacer conjuntamente para autorizar cada transición.
+\zlabel{budget:results-interface-end}
+
+\input{sections/v2/results-review}
+
+\clearpage
+\input{sections/v2/sp1-compact}
+
+\clearpage
+\input{sections/v2/sp2-compact}
+
+\clearpage
+\input{sections/v2/sp3-compact}
+
+\input{sections/v2/megajuego-compact}
+
+\input{sections/v2/coppelia-compact}
+
+\clearpage
+\subsection{Síntesis transversal}
+\label{subsec:cross-discussion}
+\zlabel{budget:results-synthesis-start}
+
+Las tres interfaces producen certificados distintos. La cobertura de capacidad no implica un \emph{wrench} realizable, un reparto realizable no implica estabilidad fuera del supuesto de contacto fijo y una ruta discreta sin conflicto no implica ausencia de colisión continua. Por ello, cada conclusión conserva el dominio, la planta y el contrato de información que generaron su evidencia.
+
+El demostrador Cargo ejecuta conjuntamente reclutamiento, movimiento y sustitución bajo un contrato híbrido con información global declarada. Ese resultado acredita coexistencia funcional en su banco numérico, no convergencia global ni transferencia industrial. La campaña MuJoCo con Pioneer P3DX deberá decidir si el certificado vectorial reduce falsos positivos dentro del dominio parametrizado.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Certificados que atraviesan las tres interfaces.}
+  \label{tab:pre-cross-certificates}
+  \viutablefont
+  \begin{tabularx}{0.96\textwidth}{>{\raggedright\arraybackslash}p{1.45cm} >{\raggedright\arraybackslash}p{3.05cm} Y >{\raggedright\arraybackslash}p{3.0cm}}
+    \toprule
+    Salida & Predicado verificable & Lo que habilita & Lo que no implica \\
+    \midrule
+    SP1 & cuota, rol y contacto asignados & intentar el acoplamiento & wrench realizable o estabilidad \\
+    SP2 & soporte, ruedas, contacto y pose dentro de tolerancia & tratar la coalición como agente compuesto & ruta libre o vivacidad de tráfico \\
+    SP3 & ruta y reserva local compatibles & autorizar el siguiente avance & seguridad continua fuera del modelo \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+La Tabla~\ref{tab:pre-cross-certificates} es una regla de composición: una capa consume el certificado anterior sin ampliar su dominio. Una garantía extremo a extremo necesitaría además invariancia durante las conmutaciones y compatibilidad entre los tres modelos; esa prueba no se reclama aquí.
+
+\clearpage
+
+\begin{contribucion}{instancia, para esta arquitectura, de un límite informacional conocido}
+\estadoaporte{demostrado para algoritmos deterministas basados en historial local; es una aplicación de un argumento de indistinguibilidad clásico en cómputo distribuido \parencite*{fischerLynchPaterson1985Impossibility}, no un resultado de imposibilidad nuevo.}
+\begin{proposicion}[Límite informacional bajo partición]
+\label{prop:pre-cross-partition-limit}
+Sea una clase de juegos que contiene dos instancias $I_0,I_1$ con el mismo historial observable para una componente conectada $H$, pero con proyecciones disjuntas sobre $H$ de sus conjuntos de óptimos globales. Ningún algoritmo determinista cuyo estado y salida en $H$ dependan solo de ese historial puede devolver un óptimo global en ambas instancias. Si el predicado ``existe interacción remota'' difiere entre $I_0$ e $I_1$, tampoco puede detectarlo correctamente en ambas.
+\end{proposicion}
+\begin{proof}
+La indistinguibilidad obliga al algoritmo a producir la misma salida local $a_H$ en ambas instancias. Si fuese globalmente óptima en las dos, $a_H$ pertenecería a la intersección de las proyecciones de sus óptimos, que es vacía. Para el predicado remoto, la salida binaria también debe coincidir mientras los valores verdaderos difieren.
+\end{proof}
+El resultado exige ese par indistinguible: no excluye optimalidad en una familia singleton, cuando la interacción remota es nula o conocida, ni cuando ambas instancias comparten una acción local óptima.
+
+\textbf{Testigo concreto en E7.} Sean $i,j$ dos coaliciones que comparten el
+recurso $e$ y forman con él la componente $H$, y sea $k$ una tercera coalición
+que aún no ha comprometido su ruta. En $I_0$, el catálogo $\mathcal R_k^7$ solo
+contiene rutas que evitan $e$; en $I_1$, todas sus rutas de coste base mínimo
+cruzan $e$. Como $P_7=\sum_e\binom{n_e}{2}$ penaliza la ocupación conjunta, el
+par $(r_i,r_j)$ que minimiza $\sum_\ell b^7_\ell+\lambda_7P_7$ difiere entre
+ambas instancias: en $I_1$ conviene que $i$ o $j$ liberen $e$. Pero el
+historial observable dentro de $H$ hasta el instante de decidir --- ocupación
+registrada y coste base de $e$ --- es idéntico, porque el compromiso de $k$
+todavía no se ha emitido. Por la proposición, ningún algoritmo que decida
+$(r_i,r_j)$ solo con ese historial es óptimo global en ambas. Esta es la razón
+por la que E7 certifica exclusión local y terminación, no optimalidad global
+de la asignación completa de rutas.
+\end{contribucion}
+
+\subsection{Grado de cumplimiento frente a objetivos e hipótesis}
+\label{subsec:results-compliance}
+
+La Tabla~\ref{tab:results-compliance} contrasta cada objetivo específico con la
+evidencia de este capítulo y declara el grado alcanzado. El estado de las
+hipótesis, con su límite por fila, se cierra en la
+Sección~\ref{subsec:conclusions-megajuego} y en la
+Tabla~\ref{tab:conclusion-hypotheses}.
+
+\begin{table}[H]
+  \centering
+  \caption{Objetivo, evidencia en este capítulo y grado de cumplimiento.}
+  \label{tab:results-compliance}
+  \scriptsize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\textwidth}{@{}p{0.7cm}p{1.1cm}p{4.9cm}X@{}}
+    \toprule
+    OE & Hipótesis & Evidencia en este capítulo & Grado y desviación \\
+    \midrule
+    OE1 & H1a, H1b, H1c & Nash de cuota exacta bajo penalización suficiente; completitud absoluta de SP1. & Cumplido para H1a. H1b y H1c no se adjudican: sus contrastes quedan fuera del cuerpo activo. \\
+    OE2 & H2 & Guardia de \emph{wrench}: falsos positivos, cobertura y abstención sobre 600 instancias. & Cumplido en el dominio del QP planar con contactos y demanda conocidos. \\
+    OE3 & H3, H4 & Contraste temporal de E4; restauración estática y recuperación con fallo en Cargo. & Parcial. H4 tiene apoyo; H3 no se sustenta, porque el intervalo de confianza contiene cero tras el ajuste de Holm. \\
+    OE4 & H5a, H5b & Conteo formal de la revisión local frente al oráculo restringido. & Teórico. No hay curvas activas por tamaño, de modo que H5b queda sin adjudicar. \\
+    OE5 & HP & Demostrador Cargo y piloto Industrial~2. & Delimitado. Acredita compatibilidad funcional, no composición formal; tres de los cuatro escenarios del piloto no entregaron carga con ninguno de los métodos. \\
+    OE6 & H6 & Cuatro resultados del juego de integración con verificación numérica; reproducción en CoppeliaSim. & Delimitado. Cada resultado vale en su dominio y ambas campañas son de una corrida. \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+\zlabel{budget:results-synthesis-end}

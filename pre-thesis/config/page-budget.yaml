@@ -1,0 +1,63 @@
+schema_version: 1
+document: thesis
+units: physical_pdf_pages
+limits:
+  preliminaries:
+    target: 12
+    minimum: 12
+    maximum: 12
+  body:
+    target: 69
+    minimum: 50
+    maximum: 80
+  body_including_references:
+    target: 77
+    minimum: 50
+    maximum: 80
+  results:
+    target: 39
+    minimum_fraction_of_body: 0.50
+    minimum_fraction_of_body_including_references: 0.50
+  references:
+    target: 8
+    maximum: 8
+  appendices:
+    target: 8
+    maximum: 20
+  total:
+    target: 97
+    maximum: 98
+chapter_targets:
+  introduction: 4
+  objectives: 2
+  hypotheses: 2
+  methodology: 8
+  theoretical_framework: 10
+  results_and_analysis: 39
+  conclusions: 4
+results_subsections:
+  interface_and_protocol:
+    target: 3
+    minimum: 3
+    maximum: 3
+  sp1:
+    target: 10
+    minimum: 10
+    maximum: 10
+  sp2:
+    target: 16
+    minimum: 16
+    maximum: 16
+  sp3:
+    target: 8
+    minimum: 8
+    maximum: 8
+  synthesis:
+    target: 2
+    minimum: 2
+    maximum: 2
+notes:
+  - El cuerpo excluye preliminares, referencias y anexos.
+  - Resultados debe ocupar al menos el 50 por ciento del cuerpo.
+  - Por cautela administrativa también se comprueban el intervalo de 50 a 80 páginas y la fracción de resultados contando las referencias dentro del cuerpo.
+  - El máximo de 98 páginas es una restricción editorial propia, no una norma VIU.

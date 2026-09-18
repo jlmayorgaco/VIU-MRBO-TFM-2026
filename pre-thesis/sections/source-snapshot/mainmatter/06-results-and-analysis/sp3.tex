@@ -1,0 +1,315 @@
+\subsubsection{Etapa 1.4: asignación de contactos y factibilidad mecánica}
+\label{subsubsec:sp1-contacts}
+
+\input{shared/generated-macros/sp3_numbers.tex}
+
+Una coalición puede superar el umbral escalar de E2 y carecer de brazos de palanca o direcciones de contacto capaces de producir el \emph{wrench} requerido. E3 asigna robots a puestos y certifica esa demanda mediante un modelo planar cuasiestático, con carga fija, contactos conocidos y límites de actuador. El certificado no modela rigidez tridimensional ni transporte.
+
+\paragraph{Geometría y contacto}
+
+En la configuración de la Figura~\ref{fig:sp3-scenario}, cada puesto aporta una columna distinta al mapa $G_k$; el residual depende tanto de la magnitud de los esfuerzos como de su dirección y brazo respecto al centro de masa.
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{spdiagram}
+    \spdrawarena{E3 \textbar\ geometría de contacto y factibilidad de wrench}
+    \draw[spcoalition] (1.55, 1.02) rectangle (11.95, 4.50);
+    \node[spload,minimum width=3.25cm,minimum height=1.45cm] (load) at (6.75, 2.58) {};
+    \node[sprobot] (r1) at (2.70, 2.58) {$R_1$};
+    \node[sprobotgreen] (r2) at (6.75, 4.03) {$R_2$};
+    \node[sprobotpurple] (r3) at (10.80, 2.58) {$R_3$};
+    \node[splabel] at ($(load.south east)+(-0.55, 0.30)$) {$L_k$};
+    \fill[VIUDark] (load.west) circle (1.8pt);
+    \fill[VIUDark] (load.north) circle (1.8pt);
+    \fill[VIUDark] (load.east) circle (1.8pt);
+    \node[spannotation] at ($(load.west)+(0.42, 0.30)$) {$p_{k1}$};
+    \node[spannotation] at ($(load.north)+(-0.78, 0.16)$) {$p_{k2}$};
+    \node[spannotation] at ($(load.east)+(-0.42, 0.30)$) {$p_{k3}$};
+    \fill[VIUDark] (load.center) circle (1.8pt);
+    \node[spannotation] at ($(load.center)+(0,-0.40)$) {$C_M$};
+    \draw[spforce] (r1) -- (load.west);
+    \draw[spforce] (r2) -- (load.north);
+    \draw[spforce] (r3) -- (load.east);
+    \node[spannotation] at (4.05, 2.92) {$\boldsymbol f_{1k}$};
+    \node[spannotation] at (7.40, 3.84) {$\boldsymbol f_{2k}$};
+    \node[spannotation] at (9.45, 2.92) {$\boldsymbol f_{3k}$};
+    \draw[draw=VIUGray,line width=0.5pt] (load.west) -- ++(-0.48, 0.28);
+    \draw[draw=VIUGray,line width=0.5pt] (load.west) -- ++(-0.48,-0.28);
+    \draw[draw=VIUGray,line width=0.5pt] (load.north) -- ++(-0.28, 0.40);
+    \draw[draw=VIUGray,line width=0.5pt] (load.north) -- ++(0.28, 0.40);
+    \draw[draw=VIUGray,line width=0.5pt] (load.east) -- ++(0.48, 0.28);
+    \draw[draw=VIUGray,line width=0.5pt] (load.east) -- ++(0.48,-0.28);
+    \draw[spheading] (load.center) -- ++(0.78, 0) node[spannotation,right] {$x_B$};
+    \draw[spheading] (load.center) -- ++(0, 0.58) node[spannotation,above] {$y_B$};
+    \draw[spmotion] (load.center) -- ++(1.62, 1.05);
+    \node[spannotation,text=SPGreen] at (8.70, 3.78) {$\boldsymbol W_k^{\mathrm{dem}}$};
+    \draw[spforce] (5.87, 2.02) arc[start angle=210,end angle=500,radius=0.38];
+    \node[spannotation,text=SPRed] at (6.05, 1.93) {$\tau_k$};
+    \node[spannotation] at (6.75, 1.38) {$\rho_k^W=\|G_k\boldsymbol\lambda_k-\boldsymbol W_k^{\mathrm{dem}}\|_{Q_W}$};
+    \draw[spforce] (0.30, 0.34) -- (1.08, 0.34);
+    \node[splegend,anchor=west] at (1.20, 0.34) {esfuerzo de contacto};
+    \draw[draw=VIUGray,line width=0.5pt] (4.05, 0.34) -- ++(0.42, 0.15);
+    \draw[draw=VIUGray,line width=0.5pt] (4.05, 0.34) -- ++(0.42,-0.15);
+    \node[splegend,anchor=west] at (4.62, 0.34) {dirección admisible};
+    \fill[VIUDark] (7.10, 0.34) circle (1.7pt);
+    \node[splegend,anchor=west] at (7.30, 0.34) {centro de masa};
+    \draw[spmotion] (9.40, 0.34) -- (10.20, 0.34);
+    \node[splegend,anchor=west] at (10.32, 0.34) {wrench requerido};
+  \end{spdiagram}
+  \caption{Vista cenital de E3: puestos, direcciones de contacto y residual normalizado de wrench.}
+  \label{fig:sp3-scenario}
+  \viuownsource
+\end{figure}
+
+\paragraph{Problema formal de referencia}
+
+Para carga $k$, $\mathcal S_k$ son puestos, $C_k$ la coalición, $\boldsymbol\lambda_k$ esfuerzos en N, $G_k(C_k)$ el mapa a fuerza/torque y $\boldsymbol W_k^{\mathrm{dem}}$ la demanda en N y N\,m. La matriz
+\[
+  Q_W=\diag(F_{\mathrm{ref}}^{-2},F_{\mathrm{ref}}^{-2},\tau_{\mathrm{ref}}^{-2})
+\]
+normaliza fuerza y torque. Así $\rho_k^W=\|G_k\boldsymbol\lambda_k-\boldsymbol W_k^{\mathrm{dem}}\|_{Q_W}$ es adimensional. Para puestos fijos, el certificado es
+
+\begin{equation}
+\label{eq:sp3-wrench}
+\begin{aligned}
+  \boldsymbol\lambda_k^\star(C_k)\in
+  \argmin_{\boldsymbol\lambda_k}\quad
+  & \left\|G_k(C_k)\boldsymbol\lambda_k-\boldsymbol W_k^{\mathrm{dem}}\right\|_{Q_W}^{2}
+    +\varepsilon_\lambda\left\|\boldsymbol\lambda_k\right\|_2^2 \\
+  \text{sujeto a}\quad
+  & A_{ik}\boldsymbol\lambda_{ik}\leq\boldsymbol b_{ik}, && \forall i\in C_k,\\
+  & \boldsymbol\lambda_{ik}\in\Lambda_{ik}, && \forall i\in C_k.
+\end{aligned}
+\end{equation}
+
+\begin{corolario}[Reparto interior de mínimo residual regularizado]
+\label{cor:sp3-interior-wrench-allocation}
+Si $Q_W\succ0$, $\varepsilon_\lambda>0$ y el minimizador no restringido satisface estrictamente los límites de contacto, el QP~\eqref{eq:sp3-wrench} posee la solución única
+\begin{equation}
+\label{eq:sp3-interior-wrench-solution}
+ \boldsymbol\lambda_k^\star=
+ \left(G_k^{\mathsf T}Q_WG_k+\varepsilon_\lambda I\right)^{-1}
+ G_k^{\mathsf T}Q_W\boldsymbol W_k^{\mathrm{dem}}.
+\end{equation}
+Cuando algún límite se activa, la solución continúa siendo única y queda caracterizada por las KKT y el conjunto activo. El Anexo~\ref{app:sp3-interior-wrench-proof} contiene la demostración.
+\end{corolario}
+
+$\varepsilon_\lambda$ tiene unidades N$^{-2}$ tras normalizar y selecciona menor esfuerzo. El residual se evalúa en el minimizador:
+\begin{equation}
+  \rho_k^{W\star}(C_k)=
+  \left\|G_k(C_k)\boldsymbol\lambda_k^\star(C_k)
+  -\boldsymbol W_k^{\mathrm{dem}}\right\|_{Q_W}.
+  \label{eq:sp3-certified-residual}
+\end{equation}
+Cada puesto planar transmite esfuerzo escalar acotado, por lo que $\Lambda_{ik}$ es un intervalo.
+
+Defínase además el residual factible mínimo sin regularización,
+\begin{equation}
+ \rho_k^{W,\min}(C_k)=\min_{\boldsymbol\lambda_k\ \mathrm{admisible}}
+ \left\|G_k\boldsymbol\lambda_k-\boldsymbol W_k^{\mathrm{dem}}\right\|_{Q_W}.
+ \label{eq:sp3-minimum-residual}
+\end{equation}
+
+\begin{proposicion}[Certificado exacto y reparto regularizado]
+\label{prop:sp3-certificado-exacto}
+Sean $Q_W\succ0$, $\varepsilon_\lambda>0$, $\mathcal S_k$ y $G_k(C_k)$ conocidos, y
+$\Lambda_{ik}$ y $A_{ik}\boldsymbol\lambda_{ik}\leq\boldsymbol b_{ik}$ un conjunto
+admisible cerrado, convexo y no vacío. Entonces
+\[
+\begin{aligned}
+  \rho_k^{W,\min}(C_k)\leq\epsilon_W
+  &\iff \exists\,\boldsymbol\lambda_k\ \text{admisible}:\
+  \left\|G_k\boldsymbol\lambda_k-\boldsymbol W_k^{\mathrm{dem}}\right\|_{Q_W}\leq\epsilon_W,\\
+  \rho_k^{W,\min}(C_k)&\leq\rho_k^{W\star}(C_k).
+\end{aligned}
+\]
+Por tanto, $\rho_k^{W\star}\leq\epsilon_W$ certifica factibilidad, pero la
+conversa puede fallar: la regularización hace conservadora la regla implementada.
+\end{proposicion}
+
+\viupruebasintesis{La equivalencia sigue de la definición de mínimo y
+$\rho_k^{W,\min}\leq\rho_k^{W\star}$ porque $\boldsymbol\lambda_k^\star$ es
+admisible. La conversa regularizada no vale en general: en el caso escalar
+$G_k=W_k^{\mathrm{dem}}=Q_W=1$, dominio $\mathbb R$ y
+$\varepsilon_\lambda=100$, se obtiene $\lambda_k^\star=1/101$ y residual
+$100/101$, aunque $\lambda_k=1$ realiza residual nulo.}
+
+La Proposición~\ref{prop:sp3-certificado-exacto} delimita el alcance con
+precisión: la exactitud corresponde a~\eqref{eq:sp3-minimum-residual}; el QP
+regularizado de~\eqref{eq:sp3-wrench} puede rechazar una realización existente.
+Cuatro fenómenos quedan fuera del modelo y ninguno puede deducirse del certificado.
+
+\begin{observacion}[Lo que el certificado no certifica]
+\label{obs:sp3-fronteras}
+\textbf{(i) Conos de fricción.} $A_{ik}\boldsymbol\lambda_{ik}\leq\boldsymbol b_{ik}$
+acota magnitudes de esfuerzo, no direcciones admisibles de Coulomb: un reparto
+certificado puede exigir una componente tangencial fuera del cono.
+\textbf{(ii) Dinámica.} $\boldsymbol W_k^{\mathrm{dem}}$ se fija a priori; en
+transporte depende de la aceleración instantánea de la carga.
+\textbf{(iii) Restricción no holónoma.} $G_k$ supone que cada puesto entrega su
+esfuerzo en su dirección de contacto; un AMR diferencial debe orientarse antes.
+\textbf{(iv) Mantenimiento del contacto.} Un contacto unilateral puede perderse.
+Cargo completo exigiría además soporte, fricción y peso; el empuje, unilateralidad;
+y el \emph{caging}, $q\in\mathcal C_k^{\mathrm{cage}}$.
+\end{observacion}
+
+El certificado es por tanto una \emph{condición de entrada} sobre el modelo
+planar cuasiestático, no una garantía de transporte. Contrastar sus fronteras
+exige un banco con física de contacto, que el Anexo~\ref{app:sp1-all-proofs}
+sitúa como línea abierta. El oráculo enumera el catálogo planar de asignaciones
+pequeñas, resuelve el reparto de esfuerzos para cada una y selecciona la mejor
+solución certificada dentro de ese catálogo.
+
+\paragraph{Métodos de comparación}
+
+Los comparadores escalares evalúan cierre de asignación; el QP y la guardia comprueban contacto y \emph{wrench}, apoyados en la formulación de manipulación cooperativa \parencite{nakamura1989dynamics,yoshikawa1993coordinated}; el cierre y el \emph{caging} delimitan un confinamiento que aquí no se ejecuta \parencite{bicchi1995closure,pereira2004caging}. La Tabla~\ref{tab:sp3-methods} usa $A$ para acciones, $S$ para puestos, $T$ para pasos, $I_C$ para consenso y $C_{\mathrm{QP}},C_G$ para los costes de fuerza y cierre.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Comparación computacional de métodos en E3.}
+  \label{tab:sp3-methods}
+  \viutablefont
+  \setlength{\tabcolsep}{1.4pt}
+  \renewcommand{\arraystretch}{1.02}
+  \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.05cm} >{\raggedright\arraybackslash}p{1.55cm} >{\raggedright\arraybackslash}p{2.30cm} >{\raggedright\arraybackslash}p{2.0cm} >{\raggedright\arraybackslash}p{1.85cm} Y}
+    \toprule
+    Método/fuente & Clase & Coste & Arq./información & Parámetros & Garantía/límite \\
+    \midrule
+    Oráculo de wrench (cierre basado en \textcite{bicchi1995closure}) & Selección 0--1 con QP convexo para asignación fija & $O((S+1)^N C_{\mathrm{QP}})$ en peor caso & Central; contactos, límites y demanda globales & $\varepsilon_W$, límites, tolerancia numérica & Óptimo certificado dentro del espacio enumerado; aplicable a instancias pequeñas. \\
+    Referencia escalar/húngara \parencite{kuhn1955Hungarian} & Aproximación LAP en P & $O(\max\{N,S\}^3)$ & Central; coste robot--puesto escalar & Pesos escalares & Óptimo del LAP escalar; la factibilidad vectorial requiere guardia. \\
+    Voraz de \emph{wrench} & Heurística de selección 0--1 & $O(N^2S)$ con selección secuencial & Candidatos y residual disponibles & Orden/desempate & Selección sensible al orden; certificado disponible después de la guardia. \\
+    CBBA por puestos \parencite{choiBrunetHow2009CBBA} & Aproximación MRTA heurística & $O(I_CNS)$ más mensajes de consenso & Pujas/conflictos; información parcial & Puntuación, paquete, desempate & Consenso para la puja modificada; garantía CBBA original inaplicable. \\
+    Replicator/BNN/Smith + precio \parencite{sandholm2010population} & Relajación convexa en P & Rep./BNN $O(TNA)$; Smith $O(TNA^2)$ & Agregados exactos & $\Delta t,T,\gamma$, ganancias de precio & Invariancia del simplex verificada; convergencia del esquema muestreado sin certificar. \\
+    PD exacto + guardia \parencite{cherukuri2016primalDual} & Relajación convexa con cierre heurístico & $O(TNA+C_G)$ & Agregado global exacto y guardia central & $\Delta t$, $\Delta t_\pi$, $T$, $\varepsilon_W$ & Residual KKT para la relajación y factibilidad para el cierre; optimalidad entera abierta. \\
+    PD anillo + guardia \parencite{barreiro2017distributed} & Relajación convexa con cierre heurístico & $O(T(NA+r_c|E_C|A)+C_G)$ & Vecinal sobre anillo; consenso finito & Los anteriores, $r_c$, grafo & Sensibilidad al consenso finito; sin teorema para una red variable. \\
+    Smith pareado + guardia & Heurística de cierre 0--1 & $O(TNA^2+N^2A+C_G)$ & Agregado exacto, revisiones bilaterales y guardia & $\Delta t,T,\varepsilon_W$ & Complementariedad local con certificado posterior; sin cota de optimalidad. \\
+    Sin guardia / uniforme + guardia & Ablaciones de las clases anteriores & $O(TNA)$ / $O(NA+C_G)$ & Misma información, retirando dinámica o certificado & Guardia activada/desactivada & Estimación del efecto de la guardia y del pago. \\
+    \bottomrule
+  \end{tabularx}
+  \viusource{elaboración propia a partir de las fuentes citadas y los métodos ejecutados}
+\end{table}
+
+\paragraph{Juego y cierre mecánico}
+
+\begin{contribucion}{juego potencial de wrench con precios de ocupación}
+\estadoaporte{demostrado para la relajación continua con geometría y restricciones congeladas.}
+Cada robot $i$ elige entre inactividad, $a=0$, y el conjunto $\mathcal P_i$ de acciones $a=(k,s)$ que representan una carga y uno de sus puestos; $\mathcal A_i=\{0\}\cup\mathcal P_i$. Su preferencia $\rho_{ia}\geq0$ satisface $\sum_{a\in\mathcal A_i}\rho_{ia}=1$. Para $a\in\mathcal P_i$, sea $\boldsymbol g_{ia}\in\R^3$ la columna de wrench normalizada que produciría la utilización unitaria de $i$ en $a$, $c_{ia}$ un coste adimensional y $\boldsymbol d_k$ la demanda normalizada; se fija $c_{i0}=0$. El wrench agregado es
+\begin{equation}
+\label{eq:sp3-aggregate-wrench}
+  \boldsymbol y_k(\rho)=
+  \sum_i\sum_{a\in\mathcal P_i:\,k(a)=k}\rho_{ia}\boldsymbol g_{ia}.
+\end{equation}
+Sobre el agregado de~\eqref{eq:sp3-aggregate-wrench}, cada puesto físico $a\in\mathcal P:=\bigcup_i\mathcal P_i$ impone $h_a(\rho)=\sum_{i:a\in\mathcal P_i}\rho_{ia}-1\leq0$ y un precio $\pi_a\geq0$; la inactividad no tiene restricción compartida. El potencial regularizado y los pagos son
+\begin{align}
+\label{eq:sp3-potential}
+  \Phi_W(\rho)
+  &=-\frac12\sum_k\|\boldsymbol d_k-\boldsymbol y_k(\rho)\|_2^2
+    -\sum_{i,a}c_{ia}\rho_{ia}
+    -\frac{\alpha}{2}\sum_{i,a}\rho_{ia}^2,\\
+\label{eq:sp3-payoff}
+  f_{ia}(\rho,\pi)
+  &=\begin{cases}
+    \boldsymbol g_{ia}^{\mathsf T}\bigl(\boldsymbol d_{k(a)}-\boldsymbol y_{k(a)}(\rho)\bigr)-c_{ia}-\alpha\rho_{ia}-\pi_a,
+      &a\in\mathcal P_i,\\
+    -\alpha\rho_{i0},&a=0.
+  \end{cases}
+\end{align}
+La normalización de $\boldsymbol g_{ia}$ y $\boldsymbol d_k$ hace adimensionales el pago, el coste $c_{ia}$, la ganancia $\alpha$ y el precio $\pi_a$.
+
+\begin{proposicion}[Potencial y equilibrio variacional de la relajación E3]
+\label{prop:sp3-wrench-potential}
+Con geometría, demanda, costes y límites fijos, cada pago sin precio de~\eqref{eq:sp3-payoff} coincide con $\partial\Phi_W/\partial\rho_{ia}$. Si el conjunto definido por los simplex y $h_a(\rho)\leq0$ para $a\in\mathcal P$ es no vacío y satisface Slater, los puntos KKT de la maximización cóncava de $\Phi_W$ coinciden con los equilibrios variacionales del juego de restricciones compartidas. El dominio del resultado es la relajación continua; el cierre entero se analiza como una heurística posterior.
+\end{proposicion}
+\end{contribucion}
+
+El producto $\boldsymbol g_{ia}^{\mathsf T}(\boldsymbol d_k-\boldsymbol y_k)$ aumenta el pago de las acciones que reducen el residual, mientras $\pi_a$ penaliza la ocupación compartida del puesto. La identidad de potencial se demuestra en el Anexo~\ref{app:sp3-wrench-proof}. Con información exacta se usa Euler proyectado,
+\begin{equation}
+\label{eq:sp3-digital-update}
+  \rho_i^{m+1}=P_{\Delta_i}\!\left(\rho_i^m+\Delta t\,F_i(\rho^m,\pi^m)\right),
+  \qquad
+  \pi_a^{m+1}=\left[\pi_a^m+\Delta t_\pi h_a(\rho^m)\right]_+,
+  \quad a\in\mathcal P,
+\end{equation}
+En la actualización de~\eqref{eq:sp3-digital-update}, $F_i$ es primal--dual o una ablación poblacional. Cada paso digital de tamaño $\Delta t$ proyecta $\rho_i$ sobre el simplex. La variante de anillo ejecuta cuatro rondas vecinales por paso para estimar los agregados; el experimento mide el error resultante frente al agregado exacto.
+
+El algoritmo secuencial cierra la solución con un robot por puesto y aplica después la guardia global de~\eqref{eq:sp3-wrench}. La guardia puede incorporar hasta dos robots y acepta la carga únicamente cuando satisface~\eqref{eq:sp3-certified-residual}; esta reparación usa información central y no busca el óptimo entero.
+
+El juego con precio, el mercado residual y el cierre pareado seleccionan puestos; la guardia certifica la selección resultante. Un paso con agregados exactos cuesta $O(N|\mathcal A|)$, y $r_c$ rondas vecinales añaden $O(r_c|\mathcal E_C||\mathcal A|)$ valores. La revisión pareada considera como máximo dos robots.
+
+\paragraph{Interfaz con el movimiento}
+
+La capa estratégica produce el error de \emph{wrench} y la violación de ocupación que debe regular la capa de decisión:
+\begin{equation}
+ \boldsymbol z_{3,k}^{W}(\rho)
+ =\boldsymbol d_k-\boldsymbol y_k(\rho),
+ \qquad
+ z_{3,a}^{\mathrm{puesto}}(\rho)=[h_a(\rho)]_+.
+ \label{eq:sp3-strategic-regulation}
+\end{equation}
+La referencia de~\eqref{eq:sp3-strategic-regulation} es cero o $\|\boldsymbol z_{3,k}^{W}\|_2\leq\epsilon_W$. Cada robot usa $\rho_i$, $\boldsymbol g_{ia}$, $c_{ia}$, $\pi_a$ y agregados estimados. La variante exacta recibe $\boldsymbol y_k$; la variante de anillo ejecuta cuatro rondas de consenso para estimarlo.
+
+La Proposición~\ref{prop:sp3-wrench-potential} caracteriza los puntos KKT de la relajación continua, y el residual KKT cuantifica su estacionariedad. Las trayectorias de Euler, el consenso finito y el cierre entero quedan fuera de esa equivalencia formal.
+
+E3 evalúa la asignación de puestos con la carga estática. En Cargo, al puesto $s$ le corresponde la referencia $\boldsymbol p_k^L+R(\theta_k^L)\boldsymbol r_{ks}$. El residuo del robot $i$ respecto de esa referencia es
+\begin{equation}
+\label{eq:sp3-formation-error}
+  \boldsymbol e_{iks}^{\mathrm{form}}
+  =\boldsymbol p_i-
+   \left(\boldsymbol p_k^L+R(\theta_k^L)\boldsymbol r_{ks}\right)
+\end{equation}
+El error de~\eqref{eq:sp3-formation-error} se mide en metros. Ejecutar la decisión requiere odometría, una estimación de $q_k^L$, proximidad al puesto y una medida de esfuerzo. El contacto se acepta si $\|\boldsymbol e_{iks}^{\mathrm{form}}\|\leq\epsilon_p$, el error angular satisface $\epsilon_\theta$, el conjunto admisible del QP~\eqref{eq:sp3-wrench} no es vacío y su solución cumple el certificado conservador $\rho_k^{W\star}\leq\epsilon_W$ de~\eqref{eq:sp3-certified-residual}; entonces $\boldsymbol\lambda_k^\star$ define el esfuerzo deseado. Como la carga y las poses permanecen fijas, esta campaña no mide el error de formación ni integra el uniciclo de~\eqref{eq:sp4-dynamic-unicycle}.
+
+La rama de empuje requeriría un conjunto unilateral $\Lambda_{ik}$ y una restricción de confinamiento $q\in\mathcal C_k^{\mathrm{cage}}$; la campaña no evaluó ese modo, y el residual de \emph{wrench} por sí mismo expresaría únicamente capacidad instantánea.
+
+\paragraph{Diseño experimental}
+
+Las semillas 461000--461099 producen \SPThreeWorlds{} mundos pareados y \SPThreeRuns{} ejecuciones de doce métodos. El endpoint principal es la tasa de falsos positivos mecánicos entre cargas aceptadas; los comparadores, ablaciones y estimandos se resumen en la Tabla~\ref{tab:sp3-design}.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Protocolo de la campaña E3.}
+  \label{tab:sp3-design}
+  \viutablefont
+  \begin{tabularx}{0.96\textwidth}{>{\raggedright\arraybackslash}p{2.35cm} Y}
+    \toprule
+    Elemento & Especificación \\
+    \midrule
+    Escenarios & Carga puntual degenerada, barra con torque puro, demanda direccional adversa, centro de masa descentrado, carga alargada y saturación de puestos. \\
+    Métodos & Oráculo, referencia escalar, CBBA y voraz; primal--dual, Smith, replicator y BNN con el pago de~\eqref{eq:sp3-payoff}; cierres con y sin guardia y revisión pareada. \\
+    Dinámica & $\alpha=0.025$, $\Delta t=0.07$, $\Delta t_\pi=0.08$; hasta 1200 pasos primal--dual y 500 en las demás variantes; cuatro rondas de anillo por paso. \\
+    Métricas & Precisión condicionada, falsos positivos, cobertura factible, brecha de puntuación, residuales de \emph{wrench} y KKT, error de consenso, CPU y mensajes. \\
+    Contrastes & Guardia, certificado vectorial frente a escalar, cierre pareado frente a CBBA y agregado exacto frente a anillo. \\
+    Inferencia & Wilcoxon pareado unilateral, IC \mbox{bootstrap} de la diferencia media con 2000 remuestreos y corrección de Holm. \\
+    \bottomrule
+  \end{tabularx}
+  \viusource{elaboración propia a partir del protocolo experimental de E3}
+\end{table}
+
+Los controles decisivos verifican que cada preferencia permanezca en el simplex y que toda carga aceptada satisfaga~\eqref{eq:sp3-certified-residual}. La generalización queda restringida a las geometrías planares y los límites de contacto muestreados.
+
+\paragraph{Resultados}
+
+El residual de la relajación y la factibilidad del cierre responden a etapas distintas: una preferencia continua próxima a KKT todavía puede producir una asignación entera inviable (Tabla~\ref{tab:sp3-results}).
+
+\begin{table}[!htbp]
+  \centering
+  \caption[E3 sobre 600 mundos pareados. Brecha y residual KKT adimensionales.]{E3 sobre \SPThreeWorlds{} mundos pareados. Brecha y residual KKT adimensionales.}
+  \label{tab:sp3-results}
+  \resizebox{\textwidth}{!}{\input{shared/generated-macros/sp3_results.tex}}
+  \viuownsource
+\end{table}
+
+
+\begin{samepage}
+La reducción de falsos positivos de \SPThreeUnguardedFP{} a \SPThreeGuardedFP{} al activar la guardia cuantifica los errores que deja pasar la capacidad escalar.
+
+Con información exacta, el residual KKT fue \SPThreeExactKKT{}; las cuatro rondas de anillo lo elevaron a \SPThreeRingKKT{}, diferencia atribuible al error persistente del agregado vecinal.
+\end{samepage}
+
+La inferencia mecánica depende de dos decisiones de diseño. El oráculo y la guardia acceden a demanda, geometría y límites globales, por lo que su desempeño no acredita una arquitectura estrictamente vecinal. El modelo cuasiestático omite los fenómenos tridimensionales y el movimiento que podrían invalidar un certificado planar durante el transporte.
+
+\paragraph{Síntesis}
+
+La capacidad escalar aceptó coaliciones que no producían el \emph{wrench} requerido; la guardia redujo esos falsos positivos de \SPThreeUnguardedFP{} a \SPThreeGuardedFP{}. El cierre pareado aprovechó complementariedades direccionales, aunque la certificación final aún depende de información global.
+
+El certificado se restringe a esfuerzos planares cuasiestáticos con contactos conocidos. E4 adopta como condición de entrada una coalición que satisface la posición de contacto, los límites de actuación y $\rho_k^{W\star}\leq\epsilon_W$.

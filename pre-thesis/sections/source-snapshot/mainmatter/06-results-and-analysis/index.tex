@@ -1,0 +1,63 @@
+\section{Resultados y análisis}
+\label{sec:results}
+
+La evaluación transforma una asignación lógica en una misión de transporte mediante tres subproblemas. SP1 estudia la formación distribuida y la asignación de roles/contactos; SP2, la ejecución física, la seguridad y la sustitución; SP3, la planificación y el tráfico de múltiples coaliciones. Cada SP contiene etapas experimentales con modelos distintos, y cada resultado permanece ligado al estado, la información y la planta que lo produjeron. Los anexos contienen las demostraciones completas.
+
+\subsection{SP1: formación distribuida de coaliciones}
+\label{subsec:sp1}
+
+SP1 decide qué robots atienden cada carga, cuántos se requieren y qué rol o contacto asume cada miembro. También delimita cuándo conviene esperar, iniciar, abandonar o cambiar de coalición. Las cuatro etapas históricas siguientes separan calibración, cardinalidad, heterogeneidad y factibilidad de contacto para no atribuir a una sola formulación garantías obtenidas bajo modelos distintos.
+
+La validación del módulo canónico se ejecuta además en una batería de siete
+experimentos, cuyos identificadores E0--E6 se conservan en los artefactos. Para
+evitar confundirlos con las etapas históricas de esta sección, se especifica
+siempre que se trata de la batería de validación: caso manual, relajación LP,
+conectividad, discretización, recuperación entera, escala y llegada uniciclo.
+El humo actual es evidencia C-pilot. E0 reproduce el LP regularizado en un caso
+controlado; E1 se aproxima al objetivo sin convergencia sistemática; E2 y E3 no
+son concluyentes; E4 es prometedor pero solo tiene ocho mundos; E5 sigue siendo
+un smoke test y E6 termina en la llegada a la carga, sin docking ni transporte.
+Estas observaciones no elevan el nivel de evidencia de las etapas históricas ni
+transfieren sus garantías al SP1 completo.
+
+\input{sections/mainmatter/06-results-and-analysis/sp0}
+\input{sections/mainmatter/06-results-and-analysis/sp1}
+\input{sections/mainmatter/06-results-and-analysis/sp2}
+\input{sections/mainmatter/06-results-and-analysis/sp3}
+
+\clearpage
+\subsection{SP2: ejecución y transporte cooperativo}
+\label{subsec:sp2}
+
+SP2 comienza con una coalición cerrada y certificada. Estudia la aproximación, el acoplamiento, la estabilización, el transporte de pose, la seguridad de la huella, el reemplazo tras fallos y la continuidad funcional de la misión Cargo. El liderazgo lógico temporal usado por el demostrador no equivale a un líder físico permanente de la formación.
+
+\input{sections/mainmatter/06-results-and-analysis/sp4}
+\input{sections/mainmatter/06-results-and-analysis/sp5}
+\input{sections/mainmatter/06-results-and-analysis/sp6}
+\input{sections/mainmatter/06-results-and-analysis/cargo-e2e}
+
+\clearpage
+\subsection{SP3: planificación y tráfico de múltiples coaliciones}
+\label{subsec:sp3}
+
+SP3 trata como agentes compuestos a las coaliciones ejecutables de SP2 y coordina sus rutas, reservas y prioridades junto con robots libres o en reunión. Las etapas distinguen exclusión lógica, degradación por escala/red y un piloto cinemático congestionado; ninguna de ellas demuestra por sí sola seguridad continua ni completitud global.
+
+\input{sections/mainmatter/06-results-and-analysis/sp7}
+\input{sections/mainmatter/06-results-and-analysis/sp8}
+\input{sections/mainmatter/06-results-and-analysis/aws-industrial2}
+
+\clearpage
+
+\subsection{Discusión transversal}
+\label{subsec:cross-discussion}
+
+Cada garantía queda asociada a la interfaz que la produjo. La cobertura escalar, por ejemplo, admite una coalición nominal que el QP de \emph{wrench} puede rechazar. La misión Cargo consiguió ejecutar juntos el reclutamiento, el movimiento, la respuesta a obstáculos y el reemplazo; las pruebas formales permanecen vinculadas a sus respectivos SP.
+
+En SP1, la eliminación del déficit establece factibilidad, pero la eficiencia necesita un coste social y la escasez exige decidir qué cargas activar. Las contribuciones marginales de la etapa E2 incorporan heterogeneidad operacional. Los cierres ejecutados en este bloque todavía consultan agregados globales.
+
+Las capas posteriores revelan límites diferentes. Al final de SP1, el QP planar redujo en \(0.333\) la tasa de falsos positivos sobre 600 mundos. En SP2, el filtro de seguridad eliminó las colisiones observadas y conservó casos bloqueados, mientras la reparación restauró los 360 certificados recuperables. En SP3, la retransmisión elevó la tasa libre de conflicto en \(0.054\) y añadió \(261.3\) mensajes por agente; a 128 robots, esa tasa fue cero.
+
+Cargo completó 359 de 360 misiones mediante un líder por carga y un registro global, resultado que acredita coexistencia funcional. En el piloto cinemático AWS, los tres escenarios congestionados agotaron el horizonte de \(60\)~s aunque las muestras no registraron solapamientos. El piloto localiza un problema de vivacidad y no reproduce la evidencia dinámica del modo Cargo.
+
+
+El efecto temporal pareado de Cargo fue \(-0.086\)~s, con IC~95\% \([-0.178;0.013]\) y \(p_{\mathrm{Holm}}=0.068\); este resultado deja H3 sin apoyo. El \emph{gossip} vecinal transporta identificadores y el líder consulta el registro global para seleccionar la coalición y resolver sus atributos. La evidencia establece compatibilidad funcional bajo ese contrato híbrido. Una ventaja temporal, la convergencia del sistema integrado y la validez industrial requieren evidencia adicional.

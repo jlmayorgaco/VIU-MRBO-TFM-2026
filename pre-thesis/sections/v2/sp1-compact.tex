@@ -1,0 +1,164 @@
+% SP1 comprimido para la v2: una figura de composición, las tres ecuaciones
+% que certifican cada etapa, el enunciado de cada resultado formal (la
+% demostración completa va al Anexo~\ref{app:sp1-full-detail}) y una tabla de
+% resultados por etapa. La etapa E3 ya estaba en este formato en la v1
+% (sections/sp1-wrench-condensed.tex) y se reutiliza sin cambios.
+\subsection{SP1: formación distribuida de coaliciones}
+\label{subsec:sp1}
+\zlabel{budget:sp1-start}
+\input{shared/generated-macros/sp2_numbers.tex}
+
+SP1 decide la composición y los contactos antes de autorizar el movimiento de
+una carga en tres etapas encadenadas, cada una con un certificado
+estrictamente más fuerte que la anterior. El razonamiento completo de cada
+etapa, incluidas las demostraciones y la comparación de métodos, se conserva
+en el Anexo~\ref{app:sp1-full-detail}.
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{7.0}{7.6}\selectfont]
+    \tikzset{stage/.style={draw=VIUGray!70,line width=0.5pt,rounded corners=2pt,
+        minimum width=42mm,minimum height=17mm,align=center,fill=white},
+      arr/.style={-{Latex[length=2.2mm]},line width=0.7pt,draw=VIUDark!70}}
+    \node[stage,fill=VIUOrange!8] (e1) at (24,10)
+      {\textbf{E1 · Cuotas}\\[1mm]{\fontsize{6.0}{6.5}\selectfont certifica: cardinalidad exacta}\\
+       {\fontsize{6.0}{6.5}\selectfont\color{VIUGray}no certifica: heterogeneidad}};
+    \node[stage,fill=SPBlue!8] (e2) at (78,10)
+      {\textbf{E2 · Servicio heterogéneo}\\[1mm]{\fontsize{6.0}{6.5}\selectfont certifica: cobertura ponderada}\\
+       {\fontsize{6.0}{6.5}\selectfont\color{VIUGray}no certifica: factibilidad mecánica}};
+    \node[stage,fill=SPPurple!8] (e3) at (132,10)
+      {\textbf{E3 · \emph{Wrench} planar}\\[1mm]{\fontsize{6.0}{6.5}\selectfont certifica: contacto realizable}\\
+       {\fontsize{6.0}{6.5}\selectfont\color{VIUGray}no certifica: estabilidad de movimiento}};
+    \draw[arr] (e1.east)--(e2.west);
+    \draw[arr] (e2.east)--(e3.west);
+    \node[anchor=north,text=VIUGray,font=\fontsize{6.2}{6.6}\selectfont] at (78,-3)
+      {SP2 certifica el movimiento a partir del contacto que entrega E3.};
+  \end{tikzpicture}
+  \caption[Composición de las tres etapas de SP1.]{Composición de las tres
+  etapas de SP1. Cada flecha entrega un certificado que la etapa siguiente
+  consume sin ampliar su dominio; ninguna etapa transfiere su garantía a la
+  ejecución física, que corresponde a SP2.}
+  \label{fig:sp1-compact-pipeline}
+  \viuownsource
+\end{figure}
+
+\paragraph{E1 --- regulación exacta de cuotas}
+Sean $\mathcal I=\{1,\ldots,N\}$, $\mathcal K=\{1,\ldots,K\}$ y $a_i\in\{0\}\cup\mathcal K$, donde $a_i=0$ deja al robot libre y $q_k(a)=|\{i:a_i=k\}|$. Para cuotas obligatorias $n_k>0$ y costes adimensionales fijos $\kappa_{ik}\in[0,\kappa_{\max}]$,
+\begin{equation}
+ \begin{aligned}
+ D(a)&=\sum_{k\in\mathcal K}[n_k-q_k(a)]_+,&
+ O(a)&=\sum_{k\in\mathcal K}[q_k(a)-n_k]_+,\\
+ C(a)&=\sum_{i:a_i\ne0}\kappa_{i,a_i},&
+ \Phi_1(a)&=-\{C(a)+\lambda D(a)+\lambda O(a)\}.
+ \end{aligned}
+ \label{eq:pre-sp1-quota-game}
+\end{equation}
+Con $U_i(a)=\Phi_1(a)-\Phi_1(0,a_{-i})$ la utilidad de retirarse a la
+condición libre,
+
+\begin{contribucion}{potencial exacto y regulación finita de cuotas}
+\estadoaporte{demostrado bajo activación asíncrona justa (cada robot revisa
+su acción infinitas veces) y continuación maximal (el proceso no se detiene
+mientras exista una mejora estricta disponible); demostración completa en el
+Anexo~\ref{app:sp1-full-detail}.}
+\begin{teorema}[Potencial exacto y regulación de cuotas]
+\label{thm:pre-sp1-exact-quota}
+Para el juego de~\eqref{eq:pre-sp1-quota-game}, si $\sum_kn_k\leq N$ y $\lambda>\kappa_{\max}$, $\Phi_1$ es un potencial exacto y los equilibrios de Nash puros son exactamente los perfiles con $q_k=n_k$ para todo $k$. Toda ejecución asíncrona justa de mejor respuesta que continúe mientras exista una mejora estricta alcanza uno de esos perfiles después de, a lo sumo, $(K+1)^N-1$ cambios aceptados. Los máximos globales de $\Phi_1$ son las asignaciones de cuota exacta con coste $C$ mínimo.
+\end{teorema}
+La cota cuenta cambios estratégicos aceptados, no segundos ni rondas globales. No se transfiere a Smith muestreado, al cierre QR bajo escasez, a comunicación imperfecta ni a la planta mecánica.
+\end{contribucion}
+
+\paragraph{E2 --- servicio operacional heterogéneo}
+Dos coaliciones de igual cardinalidad pueden producir servicio distinto. Con $c_i^{\mathrm{pay}}$ la carga útil nominal, $b_i$ la fracción de batería y $\delta_{ik}$ la distancia inicial,
+\begin{equation}
+  a_{ik}=\underbrace{\max\{0,\tfrac{b_i-b_i^{\mathrm{res}}}{1-b_i^{\mathrm{res}}}\}}_{\psi_i^b}\;
+  \underbrace{\exp(-\delta_{ik}/\ell_d)}_{\psi_{ik}^d},
+  \qquad
+  e_{ik}=\frac{c_i^{\mathrm{pay}}}{c^{\mathrm{ref}}}a_{ik},
+  \qquad
+  S_k(x)=\sum_ie_{ik}x_{ik}\geq d_k^{\mathrm{srv}}.
+  \label{eq:sp1-compact-service}
+\end{equation}
+\begin{figure}[!htbp]
+  \centering
+  \begin{spdiagram}
+    \spdrawarena{E2 \textbar\ misma cardinalidad, distinto servicio}
+    \node[spload,minimum width=1.55cm,minimum height=0.88cm] (load) at (6.65, 2.75) {$L_k$};
+    \node[spannotation] at (6.65, 1.78) {$d_k^{\mathrm{srv}}=10$};
+    \node[sprobot] (r1) at (1.35, 4.10) {$R_1$};
+    \node[sprobot] (r2) at (2.85, 3.00) {$R_2$};
+    \node[spannotation,anchor=west] at (0.55, 3.45) {$e_{1k}=4$};
+    \node[spannotation,anchor=west] at (0.55, 2.30) {$e_{2k}=4$};
+    \draw[spcandidate] (r1) -- (load);
+    \draw[spcandidate] (r2) -- (load);
+    \node[spannotation,text=SPRed] at (3.10, 1.25) {$C_k^A:\ 4+4=8<10$};
+    \node[sprobotgreen] (r3) at (10.45, 4.10) {$R_3$};
+    \node[sprobotgreen] (r4) at (11.95, 3.00) {$R_4$};
+    \node[spannotation,anchor=east] at (12.75, 3.45) {$e_{3k}=7$};
+    \node[spannotation,anchor=east] at (12.75, 2.30) {$e_{4k}=5$};
+    \draw[spassign] (r3) -- (load);
+    \draw[spassign] (r4) -- (load);
+    \node[spannotation,text=SPGreen!70!black] at (10.40, 1.25) {$C_k^B:\ 7+5=12\geq10$};
+  \end{spdiagram}
+  \caption[Caso didáctico E2: misma cardinalidad, distinto servicio.]{Caso didáctico E2 de la Ecuación~\eqref{eq:sp1-compact-service}: cardinalidad dos idéntica, servicio distinto por heterogeneidad de carga útil, batería y distancia; los valores no son observaciones experimentales.}
+  \label{fig:sp1-compact-e2-scenario}
+  \viuownsource
+\end{figure}
+
+\begin{contribucion}{puntuación de servicio y potencial marginal de E2}
+\estadoaporte{demostrado para preferencias continuas y parámetros congelados; demostración completa en el Anexo~\ref{app:sp1-full-detail}.}
+\begin{proposicion}[Alineación marginal del servicio operacional]
+\label{prop:sp2-marginal-alignment}
+En una región donde $S_k(\rho)<d_k^{\mathrm{srv}}$, con $E$, $d_k^{\mathrm{srv}}$
+y los pesos fijos, la puntuación marginal corregida por la fracción de
+demanda $e_{ik}/d_k^{\mathrm{srv}}$ es el gradiente exacto de un potencial
+escalar. La puntuación plana, sin ese factor, no lo es en general cuando
+existen $i,j,k$ con $e_{ik}\neq e_{jk}$.
+\end{proposicion}
+\end{contribucion}
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Métodos comparados en E2.}
+  \label{tab:sp1-compact-e2-methods}
+  \fontsize{7.6}{8.6}\selectfont
+  \setlength{\tabcolsep}{2.2pt}
+  \renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm} >{\raggedright\arraybackslash}p{1.9cm} Y}
+    \toprule
+    Método & Coste & Garantía o límite \\
+    \midrule
+    MILP de puntuación & exponencial en peor caso & certificado de optimalidad con brecha cero; prioriza completitud \\
+    MILP de cobertura & exponencial en peor caso & techo certificado para cobertura normalizada \\
+    Húngaro expandido \parencite{kuhn1955Hungarian} & $O(M^3)$ & exacto para el LAP expandido; capacidad aproximada \\
+    Voraz de capacidad & $O(NK\log NK)$ & selección dependiente del orden; sin cota \\
+    CBBA-capacidad \parencite{choiBrunetHow2009CBBA} & $O(NK)$ + consenso & garantía CBBA original inaplicable \\
+    Replicator/BNN/Smith \parencite{sandholm2010population} & $O(NK)$ & ordenación finita; garantías de la EDO fuera de esta implementación \\
+    Primal--dual & $O(NK)$ & cierre entero heurístico; sin certificado de la solución entera \\
+    Imitación / red neuronal & $O(NKd)$ o $O(NKP)$ & evaluación empírica; sin certificado combinatorio \\
+    Asignador secuencial + puntuación marginal (TFM) & $O(NK)$ & mejora la regla secuencial propia; no se combinó con los métodos anteriores \\
+    \bottomrule
+  \end{tabularx}
+  \viusource{elaboración propia a partir de los métodos ejecutados y las fuentes citadas; detalle completo en el Anexo~\ref{app:sp1-full-detail}}
+\end{table}
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Ablación pareada de las puntuaciones plana y marginal en E2 ($\SPTwoWorlds$ mundos).}
+  \label{tab:sp1-compact-e2-ablation}
+  \resizebox{0.82\textwidth}{!}{\input{shared/generated-macros/sp2_ablation.tex}}
+  \viusource{elaboración propia a partir de los datos procesados de E2}
+\end{table}
+
+La corrección marginal mejora la regla secuencial propia
+($\SPTwoPlainSuccess\to\SPTwoMarginalSuccess$ de completitud), pero en
+términos absolutos sigue por debajo de la red neuronal no certificada
+($\SPTwoNeuralSuccess$) y del oráculo MILP ($\SPTwoScoreSuccess$). No se
+evaluó combinada con los métodos aproximados de la Tabla~\ref{tab:sp1-compact-e2-methods}.
+El umbral $S_k\geq d_k^{\mathrm{srv}}$ puede cumplirse sin que los robots
+tengan puntos de contacto capaces de equilibrar el torque. Ese contraejemplo
+motiva el certificado de E3. El Anexo~\ref{app:sp1-full-detail} desarrolla las
+cifras, los intervalos y los ocho métodos completos.
+
+\input{sections/sp1-wrench-condensed}
+\zlabel{budget:sp1-end}

@@ -1,0 +1,50 @@
+% Figura 3 del consolidado académico: (a) cobertura del núcleo CORE y
+% (b) rúbrica de dependencia global. El panel (a) se porta desde
+% `academic_literature_review (1).tex` (líneas 228-238); el panel (b) es nuevo
+% en el PDF vigente y se reconstruye aquí con sus tres categorías literales.
+\begin{figure}[!htbp]
+  \centering
+  \begin{minipage}[t]{0.46\linewidth}
+    \centering
+    {\sffamily\bfseries\fontsize{8.4}{9}\selectfont (a) Cobertura del corpus CORE\par}
+    \vspace{2mm}
+    \resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[x=1.72mm,y=6.45mm,font=\sffamily\fontsize{5.95}{6.35}\selectfont]
+\foreach \lab/\v/\y in {Transporte compartido/23/7,Reclutamiento/18/6,Certificación física/13/5,Compartido + distribuido/10/4,Heterog. + coalición variable/9/3,Compartido + reemplazo/2/2,Heterog. + compartido/0/1,Física + distrib. + reemplazo/0/0}{
+  \fill[onyx!6] (0,\y-.30) rectangle (24.8,\y+.30);
+  \fill[orange] (0,\y-.30) rectangle (\v,\y+.30);
+  \node[anchor=east,align=right,text width=31mm] at (-1.0,\y) {\lab};
+  \node[anchor=west,font=\bfseries] at (\v+.55,\y) {\v};}
+\draw[-{Stealth[length=1.45mm]},ink,line width=.4pt](0,-.65)--(25.3,-.65);
+\node[anchor=north]at(12.2,-.82){trabajos CORE};
+\end{tikzpicture}}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.50\linewidth}
+    \centering
+    {\sffamily\bfseries\fontsize{8.4}{9}\selectfont (b) Rúbrica de dependencia global\par}
+    \vspace{2mm}
+    \resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{6.0}{6.6}\selectfont]
+\path[use as bounding box] (0,-8) rectangle (100,46);
+\foreach \y/\bg/\fg/\name/\txt in {%
+  34/{softblue}/{gamecol}/{LOCAL}/{decisión y cierre con estado propio/vecinal; sin servicio global permanente},
+  19/{soft}/{muted}/{MIXTA}/{acción local, pero con líder, precondición, mapa o cierre global material},
+  4/{softwarm}/{orange}/{GLOBAL}/{asignación, replanificación o selección decididos por una entidad central en tiempo de ejecución}}{%
+  \fill[\bg,rounded corners=1pt] (0,\y) rectangle (100,\y+11);
+  \node[anchor=west,font=\bfseries\fontsize{9}{9}\selectfont,text=\fg] at (3,\y+5.5) {\name};
+  \node[anchor=west,align=left,text width=62mm,text=ink] at (26,\y+5.5) {\txt};}
+\node[anchor=north,align=center,text width=86mm,text=muted,font=\fontsize{5.4}{6.0}\selectfont] at (50,1)
+  {La categoría se asigna independientemente a Recruit, Certify, Dock, Transport y Recover; no se promedia entre etapas.};
+\end{tikzpicture}}
+  \end{minipage}
+  \caption[Síntesis estructural del núcleo curado.]{Síntesis estructural del
+  núcleo curado. (a) Cobertura de capacidades e intersecciones: el corpus cubre
+  con solvencia cada capacidad por separado y la cobertura se desploma al
+  exigirlas simultáneamente. (b) Rúbrica usada para codificar la dependencia
+  global por etapa. La categoría se asigna por trabajo y por etapa; no se
+  promedian categorías ordinales ni se interpreta su separación como distancia
+  métrica.}
+  \label{fig:lit-coverage-rubric}
+  \viusource{elaboración propia a partir del dataset académico y de la
+  codificación del núcleo canónico}
+\end{figure}

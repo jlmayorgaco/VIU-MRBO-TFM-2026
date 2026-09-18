@@ -1,0 +1,88 @@
+\subsection{Demostraciones complementarias de la etapa E4 (SP2)}
+\label{app:sp4-proofs}
+
+E4 aporta dos resultados con dominios distintos. El juego de vivacidad posee convexidad fuerte para una instantánea congelada. El servolazo planar disipa energía mientras permanece el contacto modelado; la conmutación, la actualización recedente y la dinámica física requieren análisis adicionales.
+
+\subsection{Potencial y equilibrio variacional del juego de vivacidad}
+\label{app:sp4-game-proof}
+
+Apílese $\rho=(\rho_1,\ldots,\rho_N)$ y sea $B$ la matriz cuyas filas recogen $b_{ia\ell}$, de modo que $y(\rho)=B\rho$. Para costes congelados $c^{(4)}$, la función~\eqref{eq:sp4-game-potential} se escribe
+\[
+ J_G(\rho)=c^{(4)\mathsf T}\rho
+ +\frac{\beta_4}{2}\rho^{\mathsf T}B^{\mathsf T}B\rho
+ +\frac{\alpha_4}{2}\rho^{\mathsf T}\rho.
+\]
+El coste escalar del robot $i$ en~\eqref{eq:sp4-player-cost} conserva el término de congestión completo, pero solo incluye el coste lineal y la regularización propios. Para cualquier desviación unilateral factible $\rho_i\mapsto\rho_i'$, los términos lineales y cuadráticos de los demás robots permanecen constantes. Por tanto,
+\[
+ J_i(\rho_i',\rho_{-i})-J_i(\rho_i,\rho_{-i})
+ =J_G(\rho_i',\rho_{-i})-J_G(\rho_i,\rho_{-i}).
+\]
+Esta identidad de diferencias finitas demuestra que $J_G$ es un potencial exacto del juego continuo. Su gradiente por componente es
+\[
+ \frac{\partial J_G}{\partial\rho_{ia}}
+ =c_{ia}^{(4)}+\beta_4\sum_\ell b_{ia\ell}y_\ell(\rho)+\alpha_4\rho_{ia},
+\]
+por lo que el negativo del gradiente, más el precio compartido, coincide con el pago de~\eqref{eq:sp4-payoff}. El precio es el multiplicador común de la restricción compartida y no altera la identidad del juego sin restricciones.
+
+El Hessiano es
+\[
+ \nabla^2J_G=\beta_4 B^{\mathsf T}B+\alpha_4 I\succeq\alpha_4 I\succ0.
+\]
+La desigualdad anterior hace a \(J_G\) \(\alpha_4\)-fuertemente convexo. El conjunto factible, intersección del producto de símplex con \(B\rho\leq\boldsymbol1\), es convexo y compacto. Como la acción esperar proporciona un punto de Slater con ocupación nula, existe un único minimizador \(\rho^\star\).
+
+Las condiciones KKT necesarias y suficientes son
+\[
+ 0\in\nabla J_G(\rho^\star)+B^{\mathsf T}\pi^\star
+ +N_{\Delta}(\rho^\star),
+ \qquad
+ 0\leq\pi^\star\perp\boldsymbol1-B\rho^\star\geq0.
+\]
+Al sustituir $-(\nabla_iJ_G+B_i^{\mathsf T}\pi)$ por el vector de pagos de cada robot se obtiene la desigualdad variacional del juego con restricciones compartidas. Su solución coincide con el único minimizador \(\rho^\star\). La Proposición~\ref{prop:sp4-potential} se restringe a la instantánea continua anterior al cierre entero y a la actualización de costes o conflictos.
+
+\subsection{Disipación del servolazo de pose}
+\label{app:sp4-pose-proof}
+
+En una carta local de $SE(2)$, $\dot e_k^L=\dot q_k^L$. Sustituir~\eqref{eq:sp4-pose-law} en la dinámica produce
+\[
+ M_k\ddot q_k^L+(D_k+K_D)\dot q_k^L+K_Pe_k^L=\boldsymbol r_k^W.
+\]
+Para
+\[
+ V(e_k^L,\dot q_k^L)=
+ \frac12\dot q_k^{L\mathsf T}M_k\dot q_k^L
+ +\frac12e_k^{L\mathsf T}K_Pe_k^L,
+\]
+con $M_k$ constante, se obtiene
+\begin{align*}
+ \dot V
+ &=\dot q_k^{L\mathsf T}M_k\ddot q_k^L
+   +e_k^{L\mathsf T}K_P\dot q_k^L\\
+ &=-\dot q_k^{L\mathsf T}(D_k+K_D)\dot q_k^L
+   +\dot q_k^{L\mathsf T}\boldsymbol r_k^W.
+\end{align*}
+Si $\boldsymbol r_k^W=0$, $\dot V\leq0$. En el mayor conjunto invariante contenido en $\dot V=0$ se cumple $\dot q_k^L=0$ y, por la dinámica, $K_Pe_k^L=0$. Como $K_P\succ0$, $e_k^L=0$. El principio de invariancia de LaSalle da estabilidad asintótica local en la carta angular considerada.
+
+Para $\boldsymbol r_k^W\neq0$ se fija una longitud de referencia
+$\ell_0>0$ y se normalizan las coordenadas mediante
+$q_k^L=S_qz_k$, con $S_q=\operatorname{diag}(\ell_0,\ell_0,1)$.
+Defínanse
+$\widetilde D=S_q^{\mathsf T}(D_k+K_D)S_q$,
+$\widetilde{\boldsymbol r}_k^W=S_q^{\mathsf T}\boldsymbol r_k^W$ y
+$\lambda_D=\lambda_{\min}(\widetilde D)>0$. Así, las componentes
+traslacionales y rotacionales se comparan en una métrica declarada. La
+desigualdad de Young implica
+\[
+ \dot z_k^{\mathsf T}\widetilde{\boldsymbol r}_k^W
+ \leq\frac{\lambda_D}{2}\|\dot z_k\|_2^2
+ +\frac{1}{2\lambda_D}\|\widetilde{\boldsymbol r}_k^W\|_2^2,
+\]
+y, por tanto,
+\[
+ \dot V\leq-\frac{\lambda_D}{2}\|\dot z_k\|_2^2
+ +\frac{1}{2\lambda_D}\|\widetilde{\boldsymbol r}_k^W\|_2^2.
+\]
+La cota establece disipación con \(\boldsymbol r_k^W\) como entrada para la
+escala $\ell_0$ fijada; su valor numérico no es invariante frente a un cambio de
+esa escala. Cuando el residual persiste, el término
+\(\|\widetilde{\boldsymbol r}_k^W\|_2^2/(2\lambda_D)\) impide deducir
+convergencia exacta a partir de esta desigualdad.

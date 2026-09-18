@@ -1,0 +1,43 @@
+% Adenda v2 a la Introducción: impacto esperado, contenido exigido por nombre en
+% las Instrucciones VIU y ausente en 01-introduction.tex (sellada).
+\par\bigskip
+\noindent\textbf{Impacto esperado.}
+El impacto científico previsto es una regla de composición entre capas en la que
+cada interfaz expone un predicado verificable con su dominio declarado, de modo
+que la ausencia de garantía extremo a extremo deje de ser un supuesto implícito
+y pase a ser una condición explícita que otros trabajos puedan intentar cerrar.
+En lo industrial, el efecto directo está en la admisión de transportes
+cooperativos: un criterio de \emph{wrench} realizable permite rechazar antes de
+mover aquellas coaliciones que la cobertura de capacidad habría aceptado, y
+convierte el fallo en una abstención declarada en lugar de un intento fallido en
+planta. En lo social, la dimensión relevante es la seguridad de quien trabaja
+junto a cargas pesadas movidas por varios vehículos: un sistema que se abstiene
+cuando no puede certificar traslada la decisión a una persona en vez de
+ejecutarla sin respaldo. Ninguno de los tres impactos se cuantifica en esta
+memoria; se declaran como el resultado que el trabajo persigue y frente al cual
+debe leerse su alcance.
+
+\par\medskip
+\noindent\textbf{Preguntas de investigación.}
+El trabajo se articula en torno a seis preguntas, que la
+Sección~\ref{subsec:conclusions-megajuego} y el apartado de respuestas del
+Capítulo~\ref{sec:conclusions} cierran una a una.
+
+\begin{enumerate}[label=\textbf{RQ\arabic*.},leftmargin=3.1em,itemsep=0.15em,parsep=0pt]
+  \item ¿Bajo qué condiciones sobre recursos y penalización puede una regla
+        local de formación de coaliciones regular cuotas exactas, y qué se
+        pierde cuando esas condiciones no se cumplen? (OE1)
+  \item ¿Acoplar el coste espacial a la decisión estratégica acelera la
+        terminación, y sostiene la mensajería vecinal la ejecución cuando la
+        red se degrada? (OE3)
+  \item ¿Qué predicado certifica que una coalición puede ejercer físicamente el
+        \emph{wrench} que la misión exige, y por qué no bastan la cardinalidad
+        ni la cobertura de servicio? (OE2)
+  \item ¿Qué fracción de los certificados perdidos por un fallo se recupera con
+        reparación local, y en qué régimen deja de recuperarse? (OE3)
+  \item ¿Cuánto cuesta en mensajes y cómputo coordinar rutas con reserva, y qué
+        se gana frente a no reservar? (OE4, OE5)
+  \item ¿Puede certificarse por bloque una arquitectura que encadene las tres
+        capas, y sobrevive ese certificado a un motor de simulación distinto
+        del que lo generó? (OE6)
+\end{enumerate}

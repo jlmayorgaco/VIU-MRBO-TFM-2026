@@ -1,0 +1,52 @@
+% Figura 2(a) y 2(b) del consolidado académico. La matriz se porta desde
+% `thesis-reviews/academic_literature_review (1).tex` (líneas 176-217) y se le
+% añade la columna C ---nivel de centralización C0--C4--- que incorpora el PDF
+% vigente. Las modalidades físicas conservan los rótulos del original.
+\begin{figure}[!htbp]
+  \centering
+  \makebox[\textwidth][c]{\resizebox{0.99\textwidth}{!}{%
+\begin{minipage}{\linewidth}
+\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2.25pt}\fontsize{7.55}{8.0}\selectfont
+\begin{tabularx}{\linewidth}{J{27mm}*{8}{K{10.75mm}}K{9.6mm}K{9.2mm}}
+\toprule
+\textbf{Trabajo} & \rotatebox{90}{\textbf{heterog.}} & \rotatebox{90}{\textbf{coal. var.}} & \rotatebox{90}{\textbf{reclut. local}} & \rotatebox{90}{\textbf{shared-load}} & \rotatebox{90}{\textbf{cert. física}} & \rotatebox{90}{\textbf{exec. dist.}} & \rotatebox{90}{\textbf{recovery}} & \rotatebox{90}{\textbf{replacement}} & \textbf{Ev.} & \textbf{C}\\
+\midrule
+Jang 2018 [8] & \capno & \capyes & \capyes & \capno & \capno & \capyes & \capno & \capno & T+S & C4\\
+Dutta 2021 [12] & \capyes & \capyes & \capyes & \capno & \capno & \capyes & \capno & \capno & T+S & C4\\
+GRAPE-S 2026 [24] & \capyes & \capyes & \cappart & \capno & \capno & \capyes & \capno & \capno & T+S & C3--4\\
+CF-HMRTA 2025 [21] & \capyes & \capyes & \capno & \capno & \capno & \capno & \capno & \capno & T+S & C0--1\\
+Huo 2025 [19] & \capyes & \capyes & \capyes & \capno & \capno & \capyes & \cappart & \capno & T+S & C3--4\\
+Bezerra 2025 [20] & \capyes & \capyes & \capyes & \capno & \capno & \capyes & \cappart & \capno & S & C4\\
+Alonso-Mora 2017 [7] & \capno & \cappart & \capno & \capyes & \capyes & \cappart & \cappart & \capno & T+S+P & C0--1\\
+Ebel 2024 [18] & \capno & \capno & \capno & \capyes & \capyes & \capyes & \capno & \capno & T+S+P & C3\\
+Shibata 2023 [14] & \capno & \cappart & \capno & \capyes & \capyes & \capyes & \cappart & \cappart & S+P & C4\\
+Muhammed 2026 [26] & \capno & \capno & \capno & \capyes & \capyes & \capyes & \capno & \capno & T+S+P & C3\\
+Verma repl. 2019 [11] & \capno & \cappart & \capno & \capyes & \cappart & \capno & \capyes & \capyes & S+P & C0--1\\
+Sahu 2026 [27] & \capno & \cappart & \capno & \capyes & \cappart & \cappart & \capyes & \capyes & S+P & C1--2\\
+\bottomrule
+\end{tabularx}
+\end{minipage}%
+  }}
+  \par\vspace{2mm}
+  \makebox[\textwidth][c]{\resizebox{0.92\textwidth}{!}{%
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{6.25}{6.65}\selectfont]
+\tikzset{bx/.style={rounded corners=1pt,draw=rule,line width=.35pt,minimum width=41.5mm,minimum height=17mm,align=center}}
+\node[bx,fill=softblue](s)at(21,10){\textbf{Supported cargo}\\carga soportada\\wrench y límites};
+\node[bx,fill=softwarm](r)at(65,10){\textbf{Rigid attachment}\\formación rígida\\distribución de fuerza};
+\node[bx,fill=softgreen](p)at(109,10){\textbf{Pushing / caging}\\contacto unilateral\\geometría no-prehensil};
+\node[bx,fill=softplum](g)at(153,10){\textbf{Grasping / arms}\\grasp matrix\\force closure};
+\foreach \a/\b in {s/r,r/p,p/g}{\draw[-{Stealth[length=1.55mm]},muted,line width=.42pt](\a)--(\b);}
+\end{tikzpicture}%
+  }}
+  \caption[Matriz de capacidades y modalidades físicas.]{(a) Matriz de
+  capacidades de los trabajos discriminantes: \capyes\ evidencia explícita,
+  \cappart\ cobertura parcial o condicionada y \capno\ no documentado en el
+  alcance revisado. La columna Ev. indica el tipo de evidencia (T teórica,
+  S simulación, P plataforma física) y la columna C el nivel de centralización,
+  de C0 ---decisión centralizada--- a C4 ---decisión local con intercambios
+  vecinales sin autoridad central en tiempo de ejecución---. (b) Modalidades
+  físicas que no deben mezclarse bajo la etiqueta genérica \emph{cooperative
+  transport}: cada una impone un conjunto de esfuerzos admisibles distinto.}
+  \label{fig:lit-capability-matrix}
+  \viusource{elaboración propia a partir de la codificación del núcleo canónico}
+\end{figure}

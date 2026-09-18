@@ -1,0 +1,120 @@
+% Figura 1 del consolidado industrial, portada literalmente desde
+% `thesis-reviews/TFM_estado_industrial_patentes_EDITABLE_v47.tex` (líneas
+% 148-247). Solo se cambia el envoltorio: el original usa \figcap y aquí va
+% dentro de un `figure` con el pie y la fuente en el estilo de la memoria.
+% El cuerpo TikZ y la paleta son los del autor, de modo que sigue siendo
+% editable con la misma sintaxis que en el consolidado.
+\begin{figure}[!htbp]
+  \centering
+  \makebox[\textwidth][c]{\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{6.45}{6.95}\selectfont]
+% La caja original (0,-14)--(174,98) dejaba fuera las etiquetas ancladas al este
+% del borde derecho, que al reescalar invadían el margen. Se amplía para que
+% \resizebox mida el contenido completo.
+\path[use as bounding box] (0,-14) rectangle (196,98);
+
+% plot frame and regions: four clear quadrants
+\fill[gray!8] (30,16) rectangle (98,53);
+\fill[orange!10] (98,16) rectangle (166,53);
+\fill[teal!10] (30,53) rectangle (98,90);
+\fill[navy!8] (98,53) rectangle (166,90);
+\draw[rule,line width=.45pt] (30,16) rectangle (166,90);
+\draw[rule!88,line width=.42pt] (98,16)--(98,90);
+\draw[rule!88,line width=.42pt] (30,53)--(166,53);
+\foreach \x in {64,132}{\draw[rule!75,densely dotted,line width=.24pt] (\x,16)--(\x,90);}
+\foreach \y in {34.5,71.5}{\draw[rule!75,densely dotted,line width=.24pt] (30,\y)--(166,\y);}
+
+% axes
+\node[anchor=north,align=center,text width=30mm] at (47,14.7){Flota\ independiente};
+\node[anchor=north,align=center,text width=30mm] at (81,14.7){Movimiento\\ coordinado};
+\node[anchor=north,align=center,text width=30mm] at (115,14.7){Misma carga\\ sincronizada};
+\node[anchor=north,align=center,text width=30mm] at (149,14.7){Acoplamiento\\ rígido/modular};
+\node[anchor=north,font=\bfseries] at (98,5.2){Interacción cooperativa entre vehículos};
+\node[anchor=north,font=\sffamily\fontsize{5.5}{5.8}\selectfont,text=muted] at (98,9.4){menor $\rightarrow$ mayor};
+
+\node[anchor=east,align=right,text width=26mm] at (27,25){Humano /\\ configurado};
+\node[anchor=east,align=right,text width=26mm] at (27,43.5){Control\\ central};
+\node[anchor=east,align=right,text width=26mm] at (27,62){Líder /\\ master};
+\node[anchor=east,align=right,text width=26mm] at (27,80.5){Entre vehículos /\\ distribuido};
+\node[rotate=90,anchor=south,font=\bfseries] at (4.5,53){Descentralización de la coordinación y el control};
+\node[rotate=90,anchor=south,font=\sffamily\fontsize{5.3}{5.6}\selectfont,text=muted] at (9.6,53){menor $\rightarrow$ mayor};
+
+% label and point styles
+\tikzset{regtitle/.style={anchor=west,font=\bfseries,fill=white,fill opacity=.84,text opacity=1,inner sep=1.1pt,rounded corners=.8pt}, regsub/.style={anchor=west,text=muted,fill=white,fill opacity=.84,text opacity=1,inner sep=.9pt,rounded corners=.8pt}, pt/.style={circle,draw=onyx,line width=.55pt,minimum size=5.2mm,inner sep=0pt,fill=white}, num/.style={font=\sffamily\fontsize{5.8}{6.0}\selectfont\bfseries,text=white}, ctx/.style={diamond,aspect=1.15,draw=onyx!65,line width=.45pt,minimum width=5.0mm,minimum height=4.3mm,inner sep=0pt,fill=onyx!14!white}, ctxnum/.style={font=\sffamily\fontsize{5.1}{5.3}\selectfont\bfseries,text=onyx}}
+
+% region labels
+\node[regtitle,text=teal!90!black] at (34,87.8){flota autónoma};
+\node[regsub] at (34,84.4){coordinación distribuida; sin carga compartida};
+\node[regtitle,text=navy] at (101,87.8){convergencia objetivo};
+\node[regsub] at (101,84.4){carga compartida + mayor autonomía};
+\node[regtitle,text=ink] at (34,20.8){automatización convencional};
+\node[regsub] at (34,17.6){1 carga por robot; control configurado o central};
+\node[regtitle,text=orange!90!black] at (100.5,18.9){heavy-load configurado};
+\node[regsub] at (100.5,15.9){carga compartida/acople; baja autonomía};
+
+% points + labels
+\node[pt,fill=orange] (c1) at (151,25) {}; \node[num] at (c1){1};
+\draw[orange!70,line width=.32pt] (c1)--(141.5,23.3); \node[anchor=east,align=right] at (141.0,23.3){KUKA omniMove / Airbus\\2016};
+
+\node[pt,fill=teal] (c2) at (136.5,79.0) {}; \node[num] at (c2){2};
+\draw[teal!70,line width=.32pt] (c2)--(128.8,75.4); \node[anchor=east,align=right] at (128.3,75.4){Stäubli + R3\\2022};
+
+\node[pt,fill=blue] (c3) at (116,47) {}; \node[num,text=onyx] at (c3){3};
+\draw[blue!70,line width=.32pt] (c3)--(109.5,55.5); \node[anchor=east,align=right] at (109.0,55.5){SIASUN dual-vehicle\\2024};
+
+\node[pt,fill=spicy!68!white] (c4) at (113,63) {}; \node[num] at (c4){4};
+\draw[plum!70,line width=.32pt] (c4)--(103,67); \node[anchor=east,align=right] at (102.5,67){KUKA KMP 3000P\\2025};
+
+\node[pt,fill=orange] (c5) at (136,29.5) {}; \node[num] at (c5){5};
+\draw[orange!70,line width=.32pt] (c5)--(127.5,28.8); \node[anchor=east,align=right] at (127.0,28.8){GREATOX GTVL25\\cat. 2026};
+
+\node[pt,fill=orange] (c6) at (158,32) {}; \node[num] at (c6){6};
+\draw[orange!70,line width=.32pt] (c6)--(165,39.0); \node[anchor=west,align=left] at (165.5,39.0){TII SCHEUERLE SPMT\\2023};
+
+\node[pt,fill=teal] (c7) at (48,83) {}; \node[num] at (c7){7};
+\draw[teal!70,line width=.32pt] (c7)--(56,78.5); \node[anchor=west,align=left] at (56.5,78.5){AGILOX X-SWARM / BMW\\2023};
+
+\node[pt,fill=spicy!68!white] (c8) at (131,64) {}; \node[num] at (c8){8};
+\draw[spicy!70,line width=.32pt] (c8)--(140.0,59.0); \node[anchor=west,align=left] at (140.5,59.0){Beacon Dual-AMR\\2026};
+
+\node[pt,fill=orange] (c9) at (148,38) {}; \node[num] at (c9){9};
+\draw[orange!70,line width=.32pt] (c9)--(137.5,47.0); \node[anchor=east,align=right] at (137.0,47.0){HUBTEX Aviation\\2020};
+
+\node[pt,fill=blue] (c10) at (53,51.5) {}; \node[num,text=onyx] at (c10){10};
+\draw[blue!70,line width=.32pt] (c10)--(60,54); \node[anchor=west,align=left] at (60.5,54){Hyundai HMGICS\\2023};
+
+% contextual central-fleet systems (not expanded in Table 1)
+\node[ctx] (ctxA) at (40.5,42.0) {}; \node[ctxnum] at (ctxA){A};
+\draw[mustard!80!onyx,line width=.28pt] (ctxA)--(35.0,38.5); \node[anchor=east,align=right,font=\sffamily\fontsize{5.7}{6.0}\selectfont] at (34.5,38.5){MiR Fleet};
+
+\node[ctx] (ctxB) at (58.0,39.0) {}; \node[ctxnum] at (ctxB){B};
+\draw[mustard!80!onyx,line width=.28pt] (ctxB)--(61.5,35.0); \node[anchor=west,align=left,font=\sffamily\fontsize{5.7}{6.0}\selectfont] at (62.0,35.0){OTTO Fleet\\Manager};
+
+\node[ctx] (ctxC) at (74.0,46.0) {}; \node[ctxnum] at (ctxC){C};
+\draw[mustard!80!onyx,line width=.28pt] (ctxC)--(77.0,41.8); \node[anchor=north,align=center,font=\sffamily\fontsize{5.7}{6.0}\selectfont] at (77.0,41.4){Geek+ RMS};
+
+\node[ctx] (ctxD) at (89.0,40.5) {}; \node[ctxnum] at (ctxD){D};
+\draw[mustard!80!onyx,line width=.28pt] (ctxD)--(92.0,36.5); \node[anchor=west,align=left,font=\sffamily\fontsize{5.7}{6.0}\selectfont] at (92.5,36.5){Swisslog\\IntraMove};
+
+% convergence vectors and TFM target
+% The target is not placed at the rigid-coupling extreme: the TFM seeks carga compartida
+% multi-contact cooperation with distributed coalition decisions, not necessarily a rigid robot-robot module.
+\node[rounded corners=1.0pt,minimum size=6.4mm,inner sep=0pt,draw=spicy,line width=.55pt,fill=autumn] (tfm) at (147.5,84.0) {};
+\node[anchor=west,font=\bfseries,text=spicy] at (152.2,84.0){TFM objetivo};
+
+% compact legend
+\node[anchor=north west,align=left,text width=162mm,text=muted] at (5,1.5){\fontsize{6.4}{7}\selectfont Forma: círculo = caso principal; rombo gris = contexto de flota; cuadrado naranja = TFM.\\ \textbf{En los círculos}, el color indica: \textcolor{orange}{\textbf{configurado/humano}}, \textcolor{blue}{\textbf{central}}, \textcolor{plum}{\textbf{líder/seguidor}}, \textcolor{teal}{\textbf{entre vehículos/distribuido}}.};
+\end{tikzpicture}%
+  }}
+  \caption[Precedentes industriales de cooperación multi-vehículo.]{Diez
+  precedentes principales y cuatro referencias contextuales de gestión de flota,
+  clasificados según dos dimensiones ordinales: interacción cooperativa entre
+  vehículos (izquierda $\rightarrow$ derecha) y descentralización de la
+  coordinación y el control (abajo $\rightarrow$ arriba). Los círculos numerados
+  corresponden a la Tabla~\ref{tab:tf-industrial-matrix}; los rombos A--D son
+  contexto de flota centralizada. La posición dentro de una categoría se desplaza
+  solo para evitar solapes y no tiene interpretación métrica.}
+  \label{fig:tf-industrial-map}
+  \viusource{elaboración propia a partir de las fuentes oficiales citadas en la
+  Tabla~\ref{tab:tf-industrial-matrix}}
+\end{figure}

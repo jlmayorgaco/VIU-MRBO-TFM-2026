@@ -1,0 +1,113 @@
+\documentclass[12pt,a4paper]{article}
+\tracinglostchars=3
+
+\usepackage{viu-mrob-thesis}
+\usepackage{csquotes}
+\usepackage[
+  backend=biber,
+  style=apa,
+  natbib=true,
+  sorting=nyt,
+  sortcites=true
+]{biblatex}
+\DeclareLanguageMapping{spanish}{spanish-apa}
+\DeclareSourcemap{\maps[datatype=bibtex]{\map{\step[fieldset=langid,fieldvalue=spanish]}}}
+\DeclareDelimFormat[bib,biblist]{finalnamedelim}{\addspace y\space}
+\DeclareDelimFormat[textcite]{finalnamedelim}{\addspace y\space}
+\DeclareDelimFormat[parencite]{finalnamedelim}{\addspace y\space}
+\addbibresource{bibliography/references.bib}
+\AtBeginBibliography{\raggedright\sloppy}
+
+\input{config/metadata}
+\input{config/math-commands}
+\input{shared/generated-macros/aws-industrial2-results}
+
+\begin{document}
+
+\hypersetup{pageanchor=false}
+\pagenumbering{roman}
+\begin{titlepage}
+  \centering
+  \vspace*{2.2cm}
+  {\Large\bfseries Monografía técnica de coordinación distribuida de AMR\par}
+  \vspace{0.8cm}
+  {\large Formación de coaliciones, transporte Cargo y tráfico\par}
+  \vfill
+  {\large Jorge Luis Mayorga Taborda\par}
+  \vspace{0.3cm}
+  {\normalsize Documento técnico complementario de la memoria VIU\par}
+  \vspace{1.4cm}
+  {\normalsize Septiembre de 2026\par}
+\end{titlepage}
+
+\hypersetup{pageanchor=true}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\section{Propósito y frontera de evidencia}
+
+Esta monografía conserva derivaciones, modelos y resultados que exceden el presupuesto editorial de la memoria VIU. No sustituye ninguna prueba necesaria para sostener una afirmación de la tesis; cada resultado mantiene sus supuestos, planta y nivel de evidencia. La auditoría semántica cubre los 166 resultados detectados y no produjo promociones automáticas. El atlas conserva el megajuego, la estabilidad híbrida global, los argumentos de \emph{small-gain} y los resultados de tiempo muestreado con su veredicto: un fallo no sustenta un teorema y un resultado limitado aún requiere cruce exacto con una afirmación y su evidencia.
+
+El modo primario modelado es Cargo con acoples bilaterales. La escena MuJoCo
+instrumentada supera la auditoría estructural y un humo acotado completó seis
+ejecuciones sin fallos de software. Esto no cierra la validación física: no se
+ejecutaron la transmisión de fuerza ni la calibración rueda--twist, un solo paso
+temporal no constituye sensibilidad y ninguna corrida alcanzó el criterio
+terminal. La campaña confirmatoria permanece pendiente. El caging y el empuje
+unilateral se conservan como extensión separada; sin calibración real, el banco
+no es un gemelo digital.
+
+\section{Modelo común y estado del arte}
+
+La formulación compartida define conjuntos, estados, información y contratos entre SP1, SP2 y SP3 antes de reutilizar resultados históricos. La notación de esta instantánea procede de la memoria en curso y deberá mantenerse sincronizada con el registro canónico del repositorio. Las tres figuras conceptuales protegidas forman parte del argumento, no son ornamentación.
+
+\input{sections/intro-contracts}
+\input{sections/method-comparison}
+\input{sections/source-snapshot/mainmatter/05-theoretical-framework}
+
+\section{Resultados técnicos conservados}
+
+Los identificadores SP2--SP8 de esta sección son históricos y no introducen subproblemas adicionales. El cruce canónico es SP1 para capacidad y contactos, SP2 para ejecución, seguridad y reparación, y SP3 para rutas y red. Las cifras proceden de macros y tablas copiadas con su fuente; no se transcriben resultados a mano.
+
+\subsection{Etapas históricas E0--E1: asignación y cuotas}
+\input{monograph/sections/historical-e0-e1}
+
+\subsection{SP1 canónico: capacidad y factibilidad mecánica}
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/sp2}
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/sp3}
+
+\subsection{SP2 canónico: ejecución, seguridad y recuperación}
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/sp4}
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/sp5}
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/sp6}
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/cargo-e2e}
+
+\subsection{SP3 canónico: rutas, red y piloto AWS}
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/sp7}
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/sp8}
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/aws-industrial2}
+
+\input{monograph/sections/formal-candidate-atlas}
+
+\clearpage
+\section{Demostraciones extendidas}
+\label{app:sp1-all-proofs}
+\newcommand{\VIUFullSPsixProofs}{}
+
+Las demostraciones se conservan agrupadas por la etapa que originó su notación. Su presencia en esta monografía no eleva automáticamente el nivel de evidencia de una afirmación experimental. Cuando una premisa dependa de un cierre central o de información global, esa dependencia se declara como parte del resultado.
+
+\input{sections/source-snapshot/appendices/02-sp0-proofs}
+\input{sections/source-snapshot/appendices/03-sp1-proofs}
+\input{sections/source-snapshot/appendices/04-sp2-proofs}
+\input{sections/source-snapshot/appendices/05-sp3-proofs}
+\input{sections/source-snapshot/appendices/06-sp4-proofs}
+\input{sections/source-snapshot/appendices/07-sp6-proofs}
+\input{sections/source-snapshot/appendices/08-sp7-proofs}
+\input{sections/source-snapshot/appendices/09-sp8-proofs}
+
+\clearpage
+\section{Referencias}
+\printbibliography[heading=none]
+
+\end{document}

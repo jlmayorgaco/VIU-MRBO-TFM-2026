@@ -1,0 +1,87 @@
+% Figura 1 del consolidado académico: mapa metodológico de los 32 trabajos
+% discriminantes del núcleo canónico. El cuerpo TikZ y los macros \mappointL y
+% \mappointR se portan desde `thesis-reviews/academic_literature_review (1).tex`
+% (líneas 60-148), cuyo conjunto de trabajos coincide con el del PDF vigente.
+\begin{figure}[!htbp]
+  \centering
+  \makebox[\textwidth][c]{\resizebox{0.98\textwidth}{!}{%
+\begin{tikzpicture}[x=80mm,y=54mm,font=\sffamily]
+  \fill[softblue] (-1,-1) rectangle (0,0);
+  \fill[softgreen] (0,-1) rectangle (1,0);
+  \fill[softplum!55!white] (-1,0) rectangle (0,1);
+  \fill[softwarm] (0,0) rectangle (1,1);
+  \foreach \x in {-1,-.75,-.5,-.25,0,.25,.5,.75,1} \draw[rule,line width=.28pt] (\x,-1)--(\x,1);
+  \foreach \y in {-1,-.75,-.5,-.25,0,.25,.5,.75,1} \draw[rule,line width=.28pt] (-1,\y)--(1,\y);
+  \draw[-{Stealth[length=2.3mm]},ink,line width=.68pt] (-1.04,0)--(1.075,0);
+  \draw[-{Stealth[length=2.3mm]},ink,line width=.68pt] (0,-1.04)--(0,1.09);
+  \node[anchor=south,font=\bfseries\fontsize{7.2}{7.5}\selectfont] at (0,1.10) {data-driven};
+  \node[anchor=north,font=\bfseries\fontsize{7.2}{7.5}\selectfont] at (0,-1.09) {white-box};
+  \node[rotate=90,anchor=south,font=\bfseries\fontsize{7}{7.3}\selectfont] at (-1.12,0) {descentralizado};
+  \node[rotate=90,anchor=north,font=\bfseries\fontsize{7}{7.3}\selectfont] at (1.12,0) {centralizado};
+  \node[align=center,font=\bfseries\fontsize{6.35}{6.65}\selectfont] at (-.60,.90) {distribuido\\[-.35mm]data-driven};
+  \node[align=center,font=\bfseries\fontsize{6.35}{6.65}\selectfont] at (.60,.90) {centralizado\\[-.35mm]data-driven};
+  \node[align=center,font=\bfseries\fontsize{6.35}{6.65}\selectfont] at (-.60,-.90) {distribuido\\[-.35mm]white-box};
+  \node[align=center,font=\bfseries\fontsize{6.35}{6.65}\selectfont] at (.60,-.90) {centralizado\\[-.35mm]white-box};
+
+  % data-driven, distributed / mixed
+  \mappointL{-0.82}{0.72}{Bezerra}{2025}{B}{20}{learncol}
+  \mappointL{-0.64}{0.55}{Huo}{2025}{H}{19}{learncol}
+  \mappointL{-0.46}{0.73}{Dai}{2024}{D}{17}{learncol}
+  \mappointL{-0.78}{0.35}{Shibata-RL}{2023}{S}{16}{learncol}
+  \mappointL{-0.43}{0.32}{Pandit}{2026}{P}{28}{learncol}
+  \mappointR{-0.13}{0.50}{Eoh/Park}{2021}{E}{29}{learncol}
+
+  % data-driven, centralized/mixed
+  \mappointL{0.34}{0.64}{SADCHER}{2026}{S}{25}{learncol}
+  \mappointL{0.62}{0.42}{CF-HMRTA}{2025}{C}{21}{searchcol}
+
+  % white-box distributed - staggered
+  \mappointL{-0.90}{-0.18}{Pereira}{2004}{P}{1}{controlcol}
+  \mappointL{-0.78}{-0.34}{Parker/Tang}{2006}{PT}{2}{foundcol}
+  \mappointL{-0.88}{-0.54}{Vig/Adams}{2006}{V}{3}{gamecol}
+  \mappointL{-0.69}{-0.17}{CBBA}{2009}{C}{4}{gamecol}
+  \mappointL{-0.64}{-0.39}{Service}{2011}{S}{5}{foundcol}
+  \mappointL{-0.57}{-0.60}{Chen/Sun}{2012}{CS}{6}{gamecol}
+  \mappointL{-0.45}{-0.22}{Jang}{2018}{J}{8}{gamecol}
+  \mappointL{-0.39}{-0.47}{Dutta}{2019}{D}{10}{gamecol}
+  \mappointL{-0.36}{-0.67}{Dutta}{2021}{D}{12}{gamecol}
+  \mappointL{-0.14}{-0.28}{Ebel}{2024}{E}{18}{controlcol}
+  \mappointR{-0.03}{-0.50}{Shibata}{2023}{S}{14}{controlcol}
+  \mappointR{-0.04}{-0.71}{Fukao}{2025}{F}{22}{controlcol}
+  \mappointL{-0.48}{-0.90}{GRAPE-S}{2026}{G}{24}{gamecol}
+
+  % white-box central/mixed
+  \mappointL{0.08}{-0.18}{Alonso-Mora}{2017}{AM}{7}{controlcol}
+  \mappointL{0.20}{-0.40}{Machado}{2019}{M}{9}{controlcol}
+  \mappointL{0.31}{-0.65}{Verma repl.}{2019}{V}{11}{controlcol}
+  \mappointL{0.47}{-0.22}{Elaamery}{2021}{E}{13}{controlcol}
+  \mappointL{0.59}{-0.44}{Gong}{2023}{G}{15}{controlcol}
+  \mappointL{0.76}{-0.22}{Rizzo}{2020}{R}{30}{controlcol}
+  \mappointR{0.89}{-0.40}{Loh}{2012}{L}{31}{controlcol}
+  \mappointR{0.83}{-0.64}{Yufka}{2015}{Y}{32}{controlcol}
+  \mappointR{0.61}{-0.73}{Muhammed}{2026}{M}{26}{controlcol}
+  \mappointR{0.34}{-0.88}{Sahu}{2026}{S}{27}{controlcol}
+  \mappointL{0.02}{-0.90}{Tian}{2025}{T}{23}{controlcol}
+
+  \node[star,star points=5,star point ratio=2.1,fill=orange,draw=white,line width=.8pt,minimum size=8.5mm] at (-0.18,-0.78) {};
+  \node[anchor=west,font=\bfseries\fontsize{7.0}{7.4}\selectfont,align=left] at (-0.09,-0.75) {Este TFM\\integración};
+\end{tikzpicture}%
+  }}
+  \par\vspace{1mm}
+  {\centering\fontsize{8.35}{8.9}\selectfont
+  \chip{gamecol}{juegos/mercados}\hspace{5.5mm}
+  \chip{controlcol}{control/consenso}\hspace{5.5mm}
+  \chip{searchcol}{búsqueda/heurística}\hspace{5.5mm}
+  \chip{learncol}{política aprendida}\hspace{5.5mm}
+  \chip{foundcol}{fundacional}\par}
+  \caption[Mapa metodológico del núcleo canónico.]{Mapa metodológico de 32
+  trabajos discriminantes del núcleo canónico. El eje horizontal codifica
+  autoridad de decisión (descentralizado $\rightarrow$ centralizado) y el
+  vertical la explicitud del mecanismo (white-box $\rightarrow$ data-driven); el
+  color identifica la familia primaria. Los trabajos de coalición y MRTA se
+  concentran en la decisión lógica y los de transporte cooperativo en la
+  ejecución física. Las posiciones son ordinales y se desplazan solo para evitar
+  solapes: no representan calidad ni rendimiento.}
+  \label{fig:lit-methodological-map}
+  \viusource{elaboración propia a partir de la codificación del núcleo canónico}
+\end{figure}

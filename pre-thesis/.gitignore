@@ -1,0 +1,8 @@
+# Ephemeral page renders used only for visual QA.
+.qa/
+
+# LaTeX intermediates; keep the final PDFs available in the workspace.
+build/*
+!build/main.pdf
+monograph/build/*
+!monograph/build/monograph.pdf

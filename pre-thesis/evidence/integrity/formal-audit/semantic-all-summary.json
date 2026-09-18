@@ -1,0 +1,40 @@
+{
+  "audit_files": [
+    "semantic-a.csv",
+    "semantic-b.csv",
+    "semantic-c.csv",
+    "semantic-thesis.csv"
+  ],
+  "audited_count": 166,
+  "automatic_promotions": 0,
+  "complete": true,
+  "inventory_count": 166,
+  "missing_count": 0,
+  "missing_result_ids": [],
+  "normalized_verdict_counts": {
+    "CONJECTURE": 2,
+    "DUPLICATE": 16,
+    "FAIL": 43,
+    "LIMITED": 87,
+    "PASS": 18
+  },
+  "promotion_decision_counts": {
+    "eligible-for-manual-crosswalk-not-auto-promoted": 3,
+    "monograph-candidate-with-explicit-limitation": 89,
+    "proof-pass-but-claim-or-independent-evidence-unmapped": 15,
+    "reject-as-formal-support": 43,
+    "retain-canonical-result-only": 16
+  },
+  "rule": "A semantic PASS is necessary but never sufficient for promotion; an exact claim/evidence crosswalk and active-source review remain mandatory.",
+  "schema_version": 1,
+  "source_verdict_counts": {
+    "CANDIDATE": 59,
+    "CONJECTURE": 2,
+    "DUPLICATE": 16,
+    "FAIL": 15,
+    "LIMITED": 28,
+    "NOT_FORMAL": 4,
+    "PASS": 18,
+    "REJECT": 24
+  }
+}

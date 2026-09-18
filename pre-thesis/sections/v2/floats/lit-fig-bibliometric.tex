@@ -1,0 +1,80 @@
+% Sustituto real de la Figura 8 original (estructura bibliométrica del corpus).
+%
+% El panel (a) original identifica núcleos A1-A11 mediante una ejecución de
+% Louvain con semilla propia que no está guardada en el repositorio: no hay
+% forma de reproducirla. En su lugar, el panel (a) de aquí calcula las
+% componentes conexas del grafo de coautoría fuerte (par de autores con 3 o
+% más documentos compartidos en el corpus V3), que es un criterio explícito y
+% reproducible. El panel (b) sí usa el mismo tipo de insumo que el original: la
+% coocurrencia de familias de método, con comunidades obtenidas por modularidad
+% voraz (Clauset-Newman-Moore) sobre `method_cooccurrence_v3.csv`.
+\begin{figure}[!htbp]
+  \centering
+  \begin{minipage}[t]{0.46\linewidth}
+    \centering
+    {\sffamily\bfseries\fontsize{7.8}{8.4}\selectfont (a) Núcleos de coautoría fuerte\par}
+    {\sffamily\fontsize{5.6}{6.0}\selectfont\color{muted}Pares con \LitCoauthorThreshold{} o más documentos compartidos ($n=$\LitCoauthorPairsTotal{} pares totales)\par}
+    \vspace{2mm}
+    \resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{5.4}{5.8}\selectfont,
+  auth/.style={circle,draw=gamecol,fill=gamecol!12,line width=.5pt,minimum size=5mm,inner sep=0pt,font=\fontsize{4.6}{4.9}\selectfont},
+  wedge/.style={draw=gamecol!70,line width=.4pt}]
+\path[use as bounding box] (0,-4) rectangle (100,42);
+% Núcleo 1: K4 (Lefebvre, Leclercq, Guérin, Chakraa), todas las aristas peso 3.
+\node[auth] (l1) at (14,32) {DL};
+\node[auth] (l2) at (30,32) {EL};
+\node[auth] (l3) at (14,18) {FG};
+\node[auth] (l4) at (30,18) {HC};
+\foreach \a/\b in {l1/l2,l1/l3,l1/l4,l2/l3,l2/l4,l3/l4}{\draw[wedge] (\a)--(\b);}
+\node[anchor=north,align=center,text width=32mm,text=muted] at (22,10)
+  {\textbf{4 autores, $K_4$}\\Lefebvre, Leclercq, Guérin, Chakraa\\todas las aristas: 3 documentos};
+% Núcleo 2: triángulo (Zitouni, Maamri, Harous), pesos 6/4/4.
+\node[auth] (z1) at (58,34) {FZ};
+\node[auth] (z2) at (48,18) {RM};
+\node[auth] (z3) at (68,18) {SH};
+\draw[wedge,line width=.75pt] (z1)--(z2) node[midway,anchor=south east,font=\fontsize{4.2}{4.5}\selectfont,text=gamecol]{6};
+\draw[wedge] (z1)--(z3) node[midway,anchor=south west,font=\fontsize{4.2}{4.5}\selectfont,text=gamecol]{4};
+\draw[wedge] (z2)--(z3) node[midway,anchor=north,font=\fontsize{4.2}{4.5}\selectfont,text=gamecol]{4};
+\node[anchor=north,align=center,text width=30mm,text=muted] at (58,10)
+  {\textbf{3 autores, triángulo}\\Zitouni, Maamri, Harous\\6, 4 y 4 documentos};
+% Núcleo 3: un par aislado (Shell, Liu).
+\node[auth] (s1) at (88,28) {DS};
+\node[auth] (s2) at (88,18) {LL};
+\draw[wedge] (s1)--(s2) node[midway,anchor=west,font=\fontsize{4.2}{4.5}\selectfont,text=gamecol]{3};
+\node[anchor=north,align=center,text width=22mm,text=muted] at (88,10)
+  {\textbf{par aislado}\\Shell, Liu\\3 documentos};
+\end{tikzpicture}}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.50\linewidth}
+    \centering
+    {\sffamily\bfseries\fontsize{7.8}{8.4}\selectfont (b) Comunidades método--coocurrencia\par}
+    {\sffamily\fontsize{5.6}{6.0}\selectfont\color{muted}Modularidad voraz, $Q=$\LitMethodModularity{} sobre \LitMethodCommunities{} comunidades\par}
+    \vspace{2mm}
+    \resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{6.0}{6.5}\selectfont]
+\node[rounded corners=2pt,draw=gamecol,fill=gamecol!8,line width=.5pt,
+  minimum width=52mm,minimum height=26mm,align=left,text width=48mm,inner sep=2mm]
+  (ca) at (28,20) {\textbf{\textcolor{gamecol}{Comunidad A}}\\[1mm]
+  Consenso · Subasta / mercado\\Metaheurística · Optimización exacta\\Control predictivo};
+\node[rounded corners=2pt,draw=controlcol,fill=controlcol!8,line width=.5pt,
+  minimum width=52mm,minimum height=26mm,align=left,text width=48mm,inner sep=2mm]
+  (cb) at (28,-10) {\textbf{\textcolor{controlcol}{Comunidad B}}\\[1mm]
+  Aprendizaje · Enjambre · Formación\\Teoría de juegos\\\emph{Graph search} / MAPF · CBF};
+\draw[-{Stealth[length=1.6mm]},VIUGray,line width=.4pt] (ca.south)--(cb.north)
+  node[midway,anchor=west,align=left,font=\fontsize{5.0}{5.4}\selectfont,text=muted]{18 documentos comparten\\subasta + consenso};
+\end{tikzpicture}}
+  \end{minipage}
+  \caption[Estructura bibliométrica del corpus: coautoría y método.]{Estructura
+  bibliométrica del corpus analítico V3. (a) Núcleos de coautoría con \LitCoauthorThreshold{}
+  o más documentos compartidos, calculados como componentes conexas del grafo
+  de coautoría fuerte. (b) Comunidades de familias de método obtenidas por
+  modularidad voraz sobre su coocurrencia documental; $Q=$\LitMethodModularity{}
+  es baja, señal de que las familias metodológicas se combinan con frecuencia y
+  no forman bloques aislados. Ninguno de los dos paneles reproduce los
+  identificadores A1--A11 del panel visual original: esa partición usó una
+  ejecución de Louvain sin semilla ni dataset conservados en el repositorio.}
+  \label{fig:lit-bibliometric}
+  \viusource{elaboración propia a partir de \texttt{top\_coauthor\_pairs\_v3.csv}
+  y \texttt{method\_cooccurrence\_v3.csv}, generado por
+  \texttt{pre-thesis/scripts/build\_review\_figure\_data.py}}
+\end{figure}

@@ -1,0 +1,131 @@
+% =====================================================================
+% main-v2.tex — Versión 2 de la memoria.
+%
+% Diferencia respecto de `main.tex`: incorpora los consolidados de
+% revisión académica, industrial y patentaria depositados en
+% `thesis-reviews/`, repartidos según lo que certifica cada pieza:
+%
+%   Objetivos/Hipótesis -> OE6/H6 (sections/v2/02-objectives-megajuego-v2.tex,
+%                   sections/v2/03-hypotheses-megajuego-v2.tex)
+%   Metodología  -> protocolo de las tres revisiones y de la campaña
+%                   CoppeliaSim de paso estrecho
+%                   (sections/v2/method-review.tex,
+%                    sections/v2/method-coppelia-narrow-v2.tex)
+%   Marco teórico-> revisión académica e industrial en formato compacto,
+%                   detalle completo en el Anexo F
+%                   (sections/v2/review-compact.tex)
+%   Resultados   -> cobertura del corpus y actividad patentaria (SP1),
+%                   SP1--SP3, el juego de integración y CoppeliaSim
+%                   (sections/v2/results-review.tex, sp1/sp2/sp3-compact.tex,
+%                    megajuego-compact.tex, coppelia-compact.tex)
+%
+% `sections/v2/theory-discriminant.tex` y `theory-industrial.tex` son
+% versiones anteriores de la revisión, superadas por `review-compact.tex`;
+% se conservan en disco sin `\input` por si se necesita su contenido íntegro,
+% no compactado.
+%
+% `main.tex` y todos los insumos sellados por `config/release-manifest.json`
+% permanecen intactos: esta versión solo añade archivos.
+% =====================================================================
+\documentclass[12pt,a4paper]{article}
+\tracinglostchars=3
+
+\usepackage{viu-mrob-thesis}
+\usepackage{zref-user,zref-abspage}
+\usepackage{csquotes}
+
+% Añadidos de la v2: gráficos estadísticos del corpus patentario y
+% tramas para marcar la ampliación dirigida por solicitante.
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{patterns.meta}
+% \RaggedRight de los tipos de columna portados de los consolidados.
+\usepackage{ragged2e}
+
+\usepackage[
+  backend=biber,
+  style=apa,
+  natbib=true,
+  sorting=nyt,
+  sortcites=true
+]{biblatex}
+\DeclareLanguageMapping{spanish}{spanish-apa}
+\DeclareSourcemap{\maps[datatype=bibtex]{\map{\step[fieldset=langid,fieldvalue=spanish]}}}
+\DeclareDelimFormat[bib,biblist]{finalnamedelim}{\addspace y\space}
+\DeclareDelimFormat[textcite]{finalnamedelim}{\addspace y\space}
+\DeclareDelimFormat[parencite]{finalnamedelim}{\addspace y\space}
+\DeclareDelimFormat[fullcite,fullcitebib]{finalnamedelim}{\addspace y\space}
+\addbibresource{bibliography/references.bib}
+\addbibresource{bibliography/references-v2.bib}
+\AtBeginBibliography{\raggedright\sloppy}
+\renewcommand*{\bibrangedash}{\textendash}
+
+\input{config/metadata}
+\input{config/math-commands}
+\input{config/v2-review-macros}
+\input{config/v2-review-palette}
+\input{config/v2-cover-date}
+\input{shared/generated-macros/aws-industrial2-results}
+\input{shared/generated-macros/lit-corpus-activity}
+\input{shared/generated-macros/lit-bibliometric}
+
+\begin{document}
+
+\input{sections/source-snapshot/frontmatter/00-cover}
+\input{sections/v2/01-summary-v2}
+\input{sections/v2/02-abstract-v2}
+\input{sections/source-snapshot/frontmatter/03-contents}
+\input{sections/source-snapshot/frontmatter/04-nomenclature}
+\input{sections/v2/04-nomenclature-megajuego-v2}
+\clearpage
+\input{sections/frontmatter-evidence-key}
+\viuownsource
+
+\clearpage
+\viuromanfoliofalse
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\zlabel{budget:body-start}
+\input{sections/source-snapshot/mainmatter/01-introduction}
+\input{sections/v2/01-introduction-impact-v2}
+\clearpage
+\zlabel{budget:objectives-start}
+\input{sections/source-snapshot/mainmatter/02-objectives}
+\input{sections/v2/02-objectives-megajuego-v2}
+\clearpage
+\zlabel{budget:hypotheses-start}
+\input{sections/source-snapshot/mainmatter/03-hypotheses}
+\input{sections/v2/03-hypotheses-megajuego-v2}
+\clearpage
+\zlabel{budget:methodology-start}
+\input{sections/source-snapshot/mainmatter/04-methodology}
+\input{sections/v2/method-review}
+\input{sections/v2/method-coppelia-narrow-v2}
+\clearpage
+\zlabel{budget:theory-start}
+\input{sections/source-snapshot/mainmatter/05-theoretical-framework}
+\input{sections/v2/review-compact}
+\clearpage
+\zlabel{budget:results-start}
+\input{sections/v2/thesis-results-v2}
+\zlabel{budget:results-end}
+\clearpage
+\zlabel{budget:conclusions-start}
+\input{sections/source-snapshot/mainmatter/07-conclusions}
+\input{sections/v2/conclusions-megajuego-addendum}
+\zlabel{budget:body-end}
+
+\clearpage
+\zlabel{budget:references-start}
+\section{Referencias bibliográficas}
+\label{sec:references}
+\printbibliography[heading=none]
+\zlabel{budget:references-end}
+
+\clearpage
+\appendix
+\zlabel{budget:appendices-start}
+\input{sections/v2/thesis-appendices-v2}
+\zlabel{budget:appendices-end}
+
+\end{document}

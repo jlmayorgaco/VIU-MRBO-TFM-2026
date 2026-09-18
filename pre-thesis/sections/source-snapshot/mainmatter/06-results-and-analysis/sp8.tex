@@ -1,0 +1,177 @@
+\input{shared/generated-macros/sp8_numbers.tex}
+
+\subsubsection{Etapa 3.2: escala y coordinación bajo red imperfecta}
+\label{subsubsec:sp3-network}
+
+Cuando dos componentes de la red dejan de observar una interacción común, cada uno puede alcanzar un Nash visible y conservar un conflicto global. E8 mide este fallo al escalar las coaliciones discretas de E7 y variar radio, retardo y pérdida. El número de robots es $N=2A$ y la campaña no incorpora una planta física.
+
+\paragraph{Escala y observabilidad}
+
+El retardo produce copias obsoletas, la pérdida deja vistas incompletas y una partición oculta por completo los conflictos entre componentes (Figura~\ref{fig:sp8-scenario}).
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{spdiagram}
+    \spdrawarena{E8 \textbar\ escala, vecindad y pérdida de información}
+    \node[sprobot] (c1) at (1.25, 3.55) {$C_1$};
+    \node[sprobotgreen] (c2) at (3.65, 3.55) {$C_2$};
+    \node[sprobotpurple] (c3) at (2.45, 1.65) {$C_3$};
+    \draw[spcomm] (c1)--(c2)--(c3)--(c1);
+    \node[spannotation] at (2.45, 4.35) {grafo nominal};
+
+    \node[sprobot] (d1) at (6.20, 3.55) {$C_1$};
+    \node[sprobotgreen] (d2) at (8.60, 3.55) {$C_2$};
+    \node[sprobotpurple] (d3) at (7.40, 1.65) {$C_3$};
+    \draw[spcommdelayed] (d1)--(d2);
+    \draw[draw=SPRed,densely dotted,line width=0.9pt] (d2)--(d3);
+    \node[spannotation,text=SPRed] at (7.95, 2.55) {pérdida};
+    \node[spannotation] at (7.40, 4.35) {retardo y paquetes};
+
+    \node[sprobot] (p1) at (10.40, 3.55) {$C_1$};
+    \node[sprobotgreen] (p2) at (12.55, 1.65) {$C_2$};
+    \draw[draw=SPRed,dashed,line width=0.9pt] (p1)--(p2);
+    \node[spannotation] at (11.48, 4.35) {partición};
+    \node[spannotation,text=SPRed] at (11.48, 2.55) {conflicto no visible};
+
+    \draw[spcomm] (0.40, 0.42)--(1.20, 0.42);
+    \node[splegend,anchor=west] at (1.32, 0.42) {mensaje recibido};
+    \draw[spcommdelayed] (4.40, 0.42)--(5.20, 0.42);
+    \node[splegend,anchor=west] at (5.32, 0.42) {mensaje retardado};
+    \draw[draw=SPRed,densely dotted,line width=0.9pt] (8.55, 0.42)--(9.35, 0.42);
+    \node[splegend,anchor=west] at (9.47, 0.42) {información ausente};
+  \end{spdiagram}
+  \caption{Incremento de E8: el juego regula conflictos visibles, mientras el retardo, la pérdida y la partición alteran la información disponible.}
+  \label{fig:sp8-scenario}
+  \viuownsource
+\end{figure}
+
+\paragraph{Problema formal de referencia}
+
+Sean $\mathcal A_8$ las coaliciones, $\mathcal R_i^8$ sus rutas y $\mathcal E_{ir}^8$ los recursos. $b_{ir}^8$ es coste normalizado y $P_8(\boldsymbol r)$ cuenta recursos compartidos. El oráculo resuelve
+\begin{equation}
+\label{eq:sp8-global-oracle}
+ \min_{\boldsymbol r\in\prod_i\mathcal R_i^8}
+ J_8(\boldsymbol r)
+ =\sum_{i\in\mathcal A_8} b_{i r_i}^8+\lambda_8P_8(\boldsymbol r).
+\end{equation}
+Con dos rutas se enumeran $2^A$ perfiles, hasta 4096. Fuera de ese dominio no se informa brecha.
+
+\paragraph{Métodos de comparación}
+
+La retransmisión periódica intenta cerrar vistas mediante anuncios repetidos; la ablación transmite únicamente al cambiar de ruta. La vista perfecta aísla el efecto de la red y~\eqref{eq:sp8-global-oracle} certifica el óptimo en los tamaños enumerables. La Tabla~\ref{tab:sp8-methods} sitúa estos tratamientos frente a los antecedentes de optimización asíncrona y consenso.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Métodos y literatura comparada para E8.}
+  \label{tab:sp8-methods}
+  \viutablefont
+  \setlength{\tabcolsep}{1.3pt}
+  \begin{tabularx}{\textwidth}{p{2.0cm} p{1.45cm} p{2.25cm} p{2.0cm} p{1.75cm} Y}
+    \toprule
+    Método/fuente & Clase & Coste & Arquitectura & Parámetros & Garantía/límite \\
+    \midrule
+    Gradiente asíncrono \parencite{tsitsiklis1986asynchronousOptimization} & Convexo, bajo los supuestos citados & $O(T(c_g+d_i d))$ por agente & Distribuido; valores obsoletos & Paso, retardo, tolerancia & Convergencia convexa. No cubre el juego discreto. \\
+    Consenso con conmutación/retardo \parencite{olfatiSaber2004switchingConsensus} & Sistema lineal & $O(T|E_C|d)$ global & Distribuido; grafos delimitados & Pesos, $\Delta t$, $\tau_d$ & Consenso bajo conectividad. No decide rutas. \\
+    ACBBA con pérdidas \parencite{rantanen2018lossyAcbba} & MRTA; heurística & $O(T(KB_i+d_iK))$ y mensajes & Asíncrona entre pares & Paquete, marcas de tiempo, pérdida & Resultados para tareas exclusivas; modelo distinto. \\
+    Oráculo exhaustivo & Catálogo finito & $O(2^A A^2)$; memoria $O(A)$ & Central; información global & Límite de 4096 perfiles & Óptimo certificado solo dentro del límite. \\
+    Respuesta local con versiones & Juego finito & $O(A d_i)$ por barrido; $32$ bytes/mensaje & Vecinal; rutas recibidas & Radio, retardo, pérdida, frecuencia & Nash visible; persisten conflictos no observados. \\
+    \bottomrule
+  \end{tabularx}
+  \viusource{elaboración propia a partir de las referencias citadas}
+\end{table}
+
+\paragraph{Juego sobre información visible}
+
+Sea $G_C^8=(\mathcal A_8,\mathcal E_C^8)$ un grafo no dirigido y estático durante una ejecución. El número de conflictos visibles es
+\[
+ P_8^G(\boldsymbol r)=
+ \sum_{\{i,j\}\in\mathcal E_C^8}
+ |\mathcal E_{i r_i}^8\cap\mathcal E_{j r_j}^8|.
+\]
+Cada coalición usa la última ruta y versión recibidas y evalúa
+\begin{equation}
+ U_i^8(r_i,\boldsymbol r_{-i})=-b_{i r_i}^8
+ -\lambda_8\sum_{j\in\mathcal N_i^8}
+ |\mathcal E_{i r_i}^8\cap\mathcal E_{j r_j}^8|.
+ \label{eq:sp8-visible-utility}
+\end{equation}
+
+\begin{contribucion}{potencial de red y frontera de observabilidad}
+\estadoaporte{demostrado bajo coherencia de copias y para la clase indistinguible declarada.}
+La función
+\[
+ \Phi_8^G(\boldsymbol r)=-\sum_i b_{i r_i}^8-\lambda_8P_8^G(\boldsymbol r)
+\]
+es un potencial exacto de~\eqref{eq:sp8-visible-utility}. Todo camino maximal asíncrono de mejoras estrictas termina en un Nash visible tras, como máximo, $\prod_i|\mathcal R_i^8|-1$ cambios aceptados.
+
+La identidad y la terminación finita exigen coherencia: en cada actualización aceptada, las rutas vecinas usadas por el agente deben coincidir con el perfil visible vigente. El retardo o la pérdida pueden romper esa condición, de modo que la trayectoria observada se evalúa empíricamente en lugar de tratarse como una secuencia de mejoras de $\Phi_8^G$.
+
+\begin{proposicion}[Límite informativo bajo partición permanente]
+\label{prop:sp8-partition-limit}
+Sea una clase de juegos que contiene dos instancias $I_0,I_1$ con el mismo historial observable para una componente conectada $H$, pero con proyecciones disjuntas sobre $H$ de sus conjuntos de óptimos globales. Ningún algoritmo determinista cuyo estado y salida en $H$ dependan exclusivamente de ese historial puede devolver un óptimo global en ambas instancias. Si, además, el predicado ``existe interacción remota'' difiere entre $I_0$ e $I_1$, tampoco puede detectarlo correctamente en ambas.
+\end{proposicion}
+Una partición no siempre colisiona: prioridades o mapa previo resuelven familias particulares. La imposibilidad exige el par de instancias localmente indistinguibles y decisiones óptimas incompatibles del enunciado (Anexo~\ref{app:sp8-proofs}).
+\end{contribucion}
+
+Con $s$ copias y pérdidas independientes de probabilidad $p_{\mathrm{loss}}$, la probabilidad de perderlas todas es $p_{\mathrm{loss}}^s$. Las pérdidas correlacionadas y las particiones requieren modelos distintos.
+
+\paragraph{Protocolo de comunicación}
+
+Un cambio de ruta genera anuncios de 32 bytes con identificador, versión y ruta. Las activaciones asíncronas aplican retardo entero y pérdida Bernoulli; el tratamiento periódico retransmite el estado, mientras la variante por evento envía únicamente los cambios.
+
+Las rutas abstraen los cuerpos de E3--E4. Por ello, los conflictos y el Nash pertenecen a la capa estratégica y no describen contacto, seguimiento o barreras físicas.
+
+\paragraph{Diseño experimental}
+
+Treinta semillas producen \SPEightWorlds{} mundos y \SPEightExecutedRuns{} ejecuciones. La unidad independiente es la combinación tamaño--semilla--régimen; los 720 pares se reducen a 180 instancias para la inferencia.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Diseño experimental de E8.}
+  \label{tab:sp8-design}
+  \viutablefont
+  \begin{tabularx}{0.94\textwidth}{>{\raggedright\arraybackslash}p{2.4cm} Y}
+    \toprule
+    Elemento & Especificación \\
+    \midrule
+    Escala & $A\in\{4,8,12,16,32,64\}$ coaliciones y $N=2A$ robots. \\
+    Red & Nominal, radio limitado, retardo, pérdida $0.25$ y régimen combinado con pérdida $0.35$. \\
+    Contrastes & Periódico frente a evento para retransmisión; periódico frente a vista perfecta para observabilidad; oráculo en \SPEightCertified{} mundos con $A\leq12$; perfil aleatorio como referencia inferior. \\
+    Métricas & Conflictos, tasa libre de conflictos, mensajes, bytes y CPU. \\
+    Inferencia & Promedio por instancia, IC \mbox{bootstrap}, Wilcoxon pareado y corrección de Holm. Los 450 registros no enumerados del oráculo permanecen marcados como no ejecutados, para \SPEightRecords{} filas totales. \\
+    \bottomrule
+  \end{tabularx}
+  \viusource{elaboración propia a partir del protocolo experimental de E8}
+\end{table}
+
+\paragraph{Resultados}
+
+La retransmisión periódica alcanzó una tasa libre de conflictos de \SPEightProposedSuccess{}, frente a \SPEightNaiveSuccess{} para la variante por evento y \SPEightPerfectSuccess{} con información perfecta. En red nominal, su tasa descendió de $0.933$ con cuatro coaliciones a $0.667$ con doce, $0.433$ con dieciséis y cero con sesenta y cuatro (Tabla~\ref{tab:sp8-results}).
+Para cada $A$, el generador incluye al menos dos perfiles sin conflicto: todas las coaliciones por la ruta 0 o todas por la ruta 1. El valor cero en $A=64$ corresponde a un fallo del método sobre un catálogo factible. La brecha frente al oráculo permanece sin certificar cuando $A>12$.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Calidad y coste medios de los métodos ejecutados en E8.}
+  \label{tab:sp8-results}
+  \resizebox{0.94\textwidth}{!}{\input{shared/generated-macros/sp8_results.tex}}
+  \viuownsource
+\end{table}
+
+
+En los mundos degradados, la política periódica elevó en $0.054$ la tasa libre de conflictos frente a la política por evento (IC del 95\,\% $[0.036;0.072]$, $p_{\mathrm{Holm}}=1.45\times10^{-7}$) y añadió $261.3$ mensajes por agente (IC $[225.3;298.6]$). Frente a información perfecta, conservó $1.561$ pares de conflicto adicionales por instancia y régimen (IC $[1.336;1.813]$). Calidad y tráfico se reportan como estimandos separados.
+
+
+En los 450 mundos con enumeración completa, la brecha media normalizada frente al oráculo fue $0.497$, calculada como $(J_8-J_8^\star)/\max\{|J_8^\star|,10^{-12}\}$. Los costes base hicieron $J_8^\star>0$ en todas esas instancias, por lo que la guarda numérica permaneció inactiva. La estimación cubre únicamente los tamaños enumerados.
+
+Los regímenes de radio y combinado produjeron $2.25$ componentes en promedio y una fracción conexa de $0.389$; en los demás grafos, $\lambda_2(L)=0$.
+La política periódica dejó $4.133/4.211$ conflictos remotos y cerró las vistas y el rezago.
+La política por evento conservó rezagos $0.277/0.367$ y fracciones de vistas ausentes $0.157/0.207$, con un máximo de cuatro versiones. Estas magnitudes cuentan versiones simuladas y no tiempo o paquetes físicos.
+
+La campaña alcanzó 128 robots, donde la tasa libre de conflictos nominal fue cero. El oráculo certificó hasta doce coaliciones y los tiempos de CPU describen únicamente la implementación Python evaluada.
+
+
+La campaña caracteriza observabilidad, retransmisión y conflicto. Evaluar escalabilidad operacional exigiría además memoria, energía, hardware y una planta.
+
+\paragraph{Síntesis}
+
+La retransmisión periódica recuperó $0.054$ de tasa libre de conflictos y añadió $261.3$ mensajes por agente. La coordinación se degradó con la escala hasta alcanzar tasa cero en $A=64$, y la brecha media fue $0.497$ en el dominio certificado por el oráculo. El potencial garantiza terminación con copias coherentes; bajo vistas obsoletas, la trayectoria tiene respaldo empírico. Estas cifras cuantifican el coste de paliar pérdidas de información en el ejecutor discreto.

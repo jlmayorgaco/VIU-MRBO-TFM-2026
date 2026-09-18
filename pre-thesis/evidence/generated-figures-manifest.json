@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "generated_at_utc": "2026-09-08T19:45:00Z",
+  "git_commit": "e2e67abe7552b60be210805626fac4f495d95138",
+  "working_tree_note": "The repository was dirty; generation used versioned code and the two dedicated configurations recorded below.",
+  "campaigns": [
+    {
+      "experiment_id": "PRE_THESIS_SP0_FIGURES_20260908",
+      "config": "experiments/configs/pre_thesis_sp0_figures.yaml",
+      "config_sha256": "a5d0ae4c7c8ec04697357112cfa6cb6a2b8dc47781aa0d4ef2e4a0280840da08",
+      "generator": "src/viu_mrob_tfm/sp0/experiment.py",
+      "generator_sha256": "6b1f28c99ead438ec97ce944f0fbf4fd1eeaad48677c43b30035fefc9790e8b1",
+      "run_manifest": "results/pre_thesis/figure_regeneration/sp0/manifest.json",
+      "run_manifest_sha256": "37fbeb3d5782d5f9509f2dfa6d92c7bf64aeb9265b81f066b81859920bf16c9b",
+      "theory_gate_passed": true
+    },
+    {
+      "experiment_id": "PRE_THESIS_SP1_FIGURES_20260908",
+      "config": "experiments/configs/pre_thesis_sp1_figures.yaml",
+      "config_sha256": "38b01806f3e08705fb820a0c631c32df7e516ede4f6392779298d9a95712966a",
+      "generator": "src/viu_mrob_tfm/sp1/experiment.py",
+      "generator_sha256": "0cd9127793730c7842e8fb86254a350ffd576bb052be7a0d7bd0b0fc7c98c1f2",
+      "run_manifest": "results/pre_thesis/figure_regeneration/sp1/manifest.json",
+      "run_manifest_sha256": "c7b68f8e36ee8fffbfdd3b137ba4417ba517ff33240229d5b3b546d0b3e43833",
+      "theory_gate_passed": true,
+      "confirmatory": false
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "pre-thesis/figures/generated/sp0-equilibrium-efficiency.pdf",
+      "sha256": "1e861757ce1e04c53491a6f18398a0444a9711ae13b33d2b81b532d621b14f55",
+      "format": "vector-pdf"
+    },
+    {
+      "path": "pre-thesis/figures/generated/sp0-scaling-welfare.pdf",
+      "sha256": "21c30536b705ec528e0e2ff23317e7acf9e8a994bfc3c8d506da49483a5d6c39",
+      "format": "vector-pdf"
+    },
+    {
+      "path": "pre-thesis/figures/generated/sp1-regime-results.pdf",
+      "sha256": "67f28eb13d07ba13271653b09f21bb2fbecfb82245fa8a08f8a62c2784783570",
+      "format": "vector-pdf"
+    },
+    {
+      "path": "pre-thesis/figures/generated/sp1-beta-regime-map.pdf",
+      "sha256": "03ef2c677147bf448f94cc81a420564b97f51e715b54d474d7c6edec0d29340f",
+      "format": "vector-pdf"
+    }
+  ]
+}

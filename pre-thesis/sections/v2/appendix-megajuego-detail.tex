@@ -1,0 +1,298 @@
+\section{Detalle completo del juego de integración}
+\label{app:megajuego-full-detail}
+
+La Sección~\ref{subsec:megajuego} enuncia cuatro resultados en formato
+compacto; sus demostraciones completas, transcritas de la revisión
+matemática interna citada en la nota~\ref{fn:megajuego-source}, siguen a
+continuación.
+
+\subsection{Potencial exacto y óptimo central}
+\label{app:megajuego-potential-proof}
+
+\begin{proof}[Demostración de la Proposición~\ref{prop:megajuego-exact-potential}]
+Los factores no incidentes no cambian y se cancelan. No se define el coste
+social como $\sum_iJ_i$: eso duplicaría factores compartidos. Si se eliminan
+los estados mediante integración, una entrada local puede afectar costes
+remotos; esos gradientes deben propagarse mediante adjuntos o mensajes, o
+acotarse. La factorización antes de eliminar estados no prueba localidad de
+la sensibilidad reducida.
+\end{proof}
+
+\begin{proof}[Demostración del Teorema~\ref{thm:megajuego-central-optimum}]
+Es la condición de primer orden de minimización convexa; en ambos sentidos se
+utiliza el segmento factible entre $z^\star$ y $z$.
+\end{proof}
+
+Un GNE ordinario no basta: con $z_1+z_2=1$, cada jugador puede quedar sin
+desviaciones unilaterales y todo punto factible ser GNE. Se busca la
+desigualdad variacional (VI) o revisiones conjuntas suficientes. Fijar
+coalición y homotopía no garantiza por sí solo la convexidad requerida.
+
+\subsection{Separación exacta de trayectorias Bézier cooperativas}
+\label{app:megajuego-bezier-proof}
+
+Se consideran dos coaliciones Cargo, cada una contenida en un disco exterior
+de radio $1.05$~m; la separación adicional es $0.1$~m, de modo que
+$D=2.2$~m. En $s=t/20\in[0,1]$, $P_A(s)=(-3+6s,\,a_Ab(s))$,
+$P_B(s)=(3-6s,\,-a_Bb(s))$, $b(s)=64s^3(1-s)^3$. No hay otros obstáculos; el
+horizonte y el avance longitudinal están fijados.
+
+\begin{proof}[Demostración del Teorema~\ref{thm:megajuego-bezier-separation}]
+En $s=1/2$, la distancia es $a_A+a_B$, lo que prueba necesidad. Sea
+$z=(2s-1)^2\in[0,1]$ y $A=a_A+a_B\geq D$. Entonces
+\[
+ \|P_A-P_B\|^2=36z+A^2(1-z)^6\geq36z+D^2(1-z)^6.
+\]
+La derivada del último miembro respecto a $z$ es $36-6D^2(1-z)^5\geq0$ si
+$D\leq\sqrt6$. Su mínimo es $D^2$ en $z=0$.
+\end{proof}
+
+Este certificado es para todo tiempo, no una ausencia de colisión muestreada.
+$b$ es una curva Bézier de grado seis con coeficientes
+$(0,0,0,16/5,0,0,0)$; además $b'(0)=b'(1)=b''(0)=b''(1)=0$, de modo que todas
+las amplitudes comparadas comparten poses, velocidades longitudinales y
+velocidades iniciales de ruedas.
+
+El objetivo es la suavidad transversal ponderada
+$\Phi(a)=\tfrac12h_Aa_A^2+\tfrac12h_Ba_B^2$ sujeto a $a_A+a_B\geq D$,
+$a_i\geq0$, relacionado exactamente con la aceleración transversal cuadrática
+porque $\int_0^{20}\ddot y_i^2\,dt=\tfrac{8192}{35\cdot20^3}a_i^2$. Los pesos
+positivos producen óptimo en $a_A+a_B=D$, con
+$a_A^\star=h_BD/(h_A+h_B)$, $a_B^\star=h_AD/(h_A+h_B)$,
+$\Phi^\star=h_Ah_BD^2/(2(h_A+h_B))$. Para $(h_A,h_B)=(2,1)$,
+$a_A^\star=11/15$, $a_B^\star=22/15$; la solución simétrica
+$a_A=a_B=1.1$ cuesta $363/200$, un $12.5$\,\% más. Si cada jugador minimiza
+solo su coste privado sujeto a $a_A+a_B\geq D$, cualquier reparto en la
+frontera es un GNE ordinario: nadie puede reducir unilateralmente su
+amplitud. El vGNE añade el multiplicador común y exige $h_Aa_A=h_Ba_B$,
+seleccionando precisamente el reparto óptimo.
+
+\paragraph{Protocolo distribuido ejecutado}
+Cada coalición conoce su $h_i$, su propuesta y los mensajes de la otra. El
+coordinador de incidencia usa $B=(1,-1)^{\mathsf T}$, $L=BB^{\mathsf T}$,
+$b_i=D/2$ y estado $w=(a_A,a_B,\nu_A,\nu_B,\eta)$, con operador afín
+\[
+ \mathcal F(w)=
+ \begin{bmatrix}\operatorname{diag}(h) & I & 0\\ -I & L & B\\ 0 & -B^{\mathsf T} & 0\end{bmatrix}w
+ +\begin{bmatrix}0\\0\\D/2\\D/2\\0\end{bmatrix}.
+\]
+Se aplica extragradiente con paso $0.8/\|\mathcal F_{\mathrm{linear}}\|_2$ y
+proyección local $a_i\in[0,D]$. La parte simétrica del operador es positiva
+semidefinida y su solución primal es el óptimo anterior. En el caso principal
+se alcanzó residual menor que $10^{-9}$ en 113 iteraciones; en 30 instancias
+de pesos heterogéneos, todas alcanzaron esa tolerancia, con máximo
+$9.998\times10^{-10}$ e intervalo 109--315 iteraciones. El óptimo analítico
+se usa solo para evaluar el error; no interviene en las actualizaciones ni en
+la condición de parada, que comprueba residual natural KKT, balance y
+consenso, y brecha primal--dual de la rama.
+
+\paragraph{Levantamiento físico ideal}
+Cada carga tiene 40~kg y cuatro pads simétricos en $(\pm0.45,\pm0.45)$~m; el
+yaw de carga es constante y los chasis se alinean con su tangente. Los robots
+se modelan contenidos en discos exteriores de radio 0.32~m; la carga en un
+rectángulo de $1.4\times1.3$~m; la unión queda dentro de la envolvente de
+1.05~m. Con rodadura ideal, pads rígidos centrados y yaw libre, y torque como
+entrada, el reparto $f_i=(m_\ell/4)\ddot P$ satisface Newton--Euler de carga
+y momento cero por simetría. Las cotas de fuerza, ruedas y energía obtenidas
+para $a\leq22/15$ son conservadoras sobre todo el intervalo; el máximo entre
+los ocho AMR fue: velocidad de rueda $4.80260$~rad/s, torque por rueda
+$0.325989$~N\,m, fuerza horizontal por pad $0.880001$~N, fuerza por rueda al
+suelo $3.29597$~N y energía de batería por AMR en 20~s, $181.543$~J. Estas
+cotas cubren geometría, ruedas, reacciones, torque y batería; no son una
+simulación de \emph{tracking} de pads deformables ni de inductancia de motor.
+
+\begin{proof}[Demostración del Corolario, óptimo físico nominal dentro de la familia]
+Restringir el conjunto no puede disminuir su mínimo. Como el mínimo global
+$a^\star$ de $\Phi$ en la familia geométrica posee el levantamiento factible
+construido, $a^\star$ pertenece también al subconjunto que admite ruedas,
+reacciones, torque y batería de la reducción ideal, luego ese mismo valor
+sigue siendo alcanzable y ambas cotas coinciden. Este razonamiento respalda
+optimalidad física nominal para el coste de suavidad y la familia fijados; no
+sustituye ese coste por energía de batería ni extiende el resultado a otra
+homotopía, duración, adquisición o planta con \emph{compliance}.
+\end{proof}
+
+\subsection{Caging: certificado de contacto con KKT racional}
+\label{app:megajuego-caging-proof}
+
+Se considera una carga circular de radio $R=0.45$~m y cuatro contactos
+cardinales; el cerco tiene radio $0.65$~m y el robot un radio ocupado de
+0.20~m. Con $z=(n_1,t_1,\ldots,n_4,t_4)$, $0\leq n_i\leq30$~N,
+$|t_i|\leq0.4n_i$, se demanda un \emph{wrench} $(20,0,5)$ en N, N y N\,m; con
+empujes solo normales y radiales el momento es siempre cero y esa demanda es
+imposible. Con adherencia tangencial de Coulomb se resuelve
+\[
+ \min_z\tfrac12z^{\mathsf T}z \quad\text{sujeto a}\quad Az=(20,0,5)^{\mathsf T},\ Hz\leq g,
+\]
+con
+\[
+ A=\begin{bmatrix}-1&0&0&1&1&0&0&-1\\0&-1&-1&0&0&1&1&0\\0&-9/20&0&-9/20&0&-9/20&0&-9/20\end{bmatrix}.
+\]
+La solución racional es
+\[
+ z^\star=\Big(0,\,0,\,\tfrac{475}{261},\,-\tfrac{190}{29},\,\tfrac{500}{29},\,-\tfrac{200}{29},\,\tfrac{2275}{261},\,-\tfrac{910}{261}\Big),
+\]
+de valor $513025/2349$. El código verifica exactamente factibilidad,
+estacionariedad y multiplicadores de desigualdad no negativos con SymPy. Por
+convexidad estricta, es el óptimo único de este QP. La solución numérica
+independiente se conserva con sus residuos, incluidos signos de brecha de
+tamaño $10^{-11}$ debidos al redondeo.
+
+\paragraph{Relación exacta con energía eléctrica estática}
+Para robots estacionarios orientados hacia sus normales, radio de rueda
+0.1~m, semivía y brazo de \emph{bumper} 0.2~m,
+$\tau_{iL/R}=0.05(n_i\mp t_i)$. Con $nk_t=0.5$~N\,m/A y resistencia
+$0.6\,\Omega$, $P_{cu}=0.6\sum_{i,s}(\tau_{is}/0.5)^2=0.024(z^{\mathsf T}z/2)$.
+El mismo QP minimiza por tanto \emph{exactamente} las pérdidas de cobre en esa
+rama estática; el óptimo es $P_{cu}^\star=20521/3915=5.241634738$~W. El
+torque máximo es $1.206897$~N\,m, la corriente máxima $2.413794$~A y la
+tensión estática máxima $1.448276$~V; la fuerza máxima por rueda requerida es
+$12.551914$~N, inferior a $61.3125$~N disponibles. Un \emph{wrench} externo
+opuesto mantiene el equilibrio estático de la carga; este experimento no es
+transporte, demuestra un bloque físico--económico exacto y su certificado,
+y muestra que un robot con fuerza nula puede seguir formando parte del cerco.
+
+\subsection{Presupuesto de ejecución}
+\label{app:megajuego-budget-proof}
+
+\textbf{Definiciones usadas en la prueba.} Un \emph{tubo} es un intervalo
+maximal de tiempo durante el cual la continuación vigente no cambia; una
+ejecución es la concatenación de tubos $[t_0,t_1),[t_1,t_2),\ldots$, separados
+por revisiones. Un \emph{testigo inicial seguro} es un certificado de que el
+estado en $t_0$ admite al menos una continuación admisible (en el sentido de
+la Proposición~\ref{prop:megajuego-exact-potential}: dinámica, contactos,
+soporte, ruedas, energía, seguridad y causalidad respetadas). Que ``los tubos
+componen'' significa que si el estado al final de un tubo porta un testigo
+seguro y la revisión que le sigue es admitida, el estado al inicio del
+siguiente tubo también porta un testigo seguro; esta es una hipótesis del
+teorema, no una consecuencia que se derive de otro resultado del documento.
+
+\begin{proof}[Teorema~\ref{thm:megajuego-execution-budget}]
+Por inducción en el número de tubos $k=0,\ldots,N_{\mathrm{rev}}$.
+\emph{Base:} $k=0$ porta un testigo seguro por hipótesis, y $W_0$ es el
+presupuesto inicial declarado. \emph{Paso inductivo:} supóngase que el tubo
+$k$ empieza con testigo seguro y presupuesto $W\leq W_0-\kappa_Wt_k-\delta k$.
+Durante el movimiento dentro del tubo, la hipótesis de decrecimiento mínimo
+da $\dot W\leq-\kappa_W$, luego al final del tubo, en $t_{k+1}$,
+$W\leq W_0-\kappa_Wt_{k+1}-\delta k$. Si en $t_{k+1}$ se admite una sustitución,
+la regla de admisión exige que reduzca el presupuesto en al menos $\delta$, de
+modo que $W\leq W_0-\kappa_Wt_{k+1}-\delta(k+1)$ al inicio del tubo $k+1$, que
+por composición de tubos también porta testigo seguro. La ausencia de Zeno
+garantiza que $t_{k+1}>t_k$ con margen mínimo entre revisiones, de modo que la
+inducción no colapsa en tiempo finito con infinitos tubos. Al agotarse la
+ejecución en el instante $T$ tras $N_{\mathrm{rev}}$ sustituciones admitidas,
+$0\leq W_T\leq W_0-\kappa_WT-\delta N_{\mathrm{rev}}$, que reordenado da
+$\kappa_WT+\delta N_{\mathrm{rev}}\leq W_0$. Como $\kappa_W,\delta>0$, esta
+desigualdad acota $T\leq W_0/\kappa_W$ y
+$N_{\mathrm{rev}}\leq\lfloor W_0/\delta\rfloor$ (el mayor entero que la
+desigualdad admite con $T\geq0$). Ambas cotas son simultáneamente necesarias:
+ninguna se sigue de la otra por separado. Lo demostrado es terminación, no
+vivacidad: la ejecución no puede durar más de $W_0/\kappa_W$ ni admitir más de
+$\lfloor W_0/\delta\rfloor$ revisiones, pero nada en este argumento obliga a
+que el objetivo se haya alcanzado cuando el presupuesto se agota.
+\end{proof}
+
+La existencia del testigo inicial no es gratuita. Si solo hay una parada
+segura, se garantiza seguridad durante su dominio, no entrega. La regla que
+compara \emph{upper bound} nuevo con presupuesto incumbente produce descenso
+de presupuesto; solo una comparación con un \emph{lower bound} válido permite
+afirmar mejora de coste frente a la alternativa anterior. Para márgenes
+físicos $m_j\geq0$ con $\dot m_j\geq-\nu_j$, una condición local suficiente
+de recuperación es
+\[
+ T_{\mathrm{rec}}=T_{\det}+T_{\mathrm{comm}}+T_{\mathrm{solve}}+T_{\mathrm{approach}}+T_{\mathrm{acquire}}+T_{\mathrm{commit}}
+ <\min_{j:\nu_j>0}\frac{m_j(0)}{\nu_j}.
+\]
+No se suman indiscriminadamente márgenes de metros, newtons y julios. Los
+fallos que destruyen todos los testigos quedan fuera de la hipótesis.
+
+\subsection{Capa epistemológica delta y cobertura de \emph{commit}}
+\label{app:megajuego-epistemic-detail}
+
+Esta subsección especifica una extensión candidata de la información
+$\mathcal I$ de la Ecuación~\eqref{eq:megajuego-state}. No es una
+implementación ni un resultado experimental del demostrador: en particular,
+no se ha medido todavía su efecto sobre tiempo de reclutamiento, bytes,
+estabilidad de una dinámica Smith ni rendimiento extremo a extremo.
+
+Sea $e\in\mathcal E^{\mathrm{fact}}$ un hecho físico o estratégico con una
+única fuente y versión. El belief conservado por el robot $i$ adopta la forma
+\begin{equation}
+ b_{i,e}=\bigl(\widehat x_{i,e},\Sigma_{i,e},
+ \operatorname{src}_e,\operatorname{seq}_e,t_e,h_{i,e},c_{i,e}\bigr),
+ \label{eq:megajuego-epistemic-belief}
+\end{equation}
+donde $\widehat x_{i,e}$ es el valor estimado, $\Sigma_{i,e}$ es una
+incertidumbre opcional, $\operatorname{src}_e$ identifica al originador,
+$\operatorname{seq}_e$ su versión monotónica, $t_e$ su marca temporal,
+$h_{i,e}$ sus saltos acumulados y $c_{i,e}\in[0,1]$ una confianza definida por
+el estimador. Se distinguen los conjuntos de beliefs físicos y estratégicos,
+$B_i^{\mathrm P}$ y $B_i^{\mathrm S}$, y un digest epistemológico $D_i$:
+\begin{equation}
+ \mathcal B_i=\bigl(B_i^{\mathrm P},B_i^{\mathrm S},D_i\bigr).
+ \label{eq:megajuego-epistemic-state}
+\end{equation}
+El primer conjunto puede incluir pose, estado de carga, batería y obstáculos;
+el segundo, intención de tarea, coalición, homotopía, reserva, trayectoria
+paramétrica y propuesta de revisión. Esta clasificación organiza el mensaje;
+no convierte una estimación remota en una medición independiente.
+
+Para cada vecino $j$ y fuente $s$, $D_{i\to j,s}$ es la última versión de $s$
+que $i$ cree que $j$ ha reconocido. El paquete candidato y su delta son
+\begin{align}
+ \Delta B_{i\to j}&=\left\{b_{i,e}:\operatorname{seq}_e>
+ D_{i\to j,\operatorname{src}_e}\right\},
+ \label{eq:megajuego-epistemic-delta}\\
+ m_{i\to j}&=\bigl(\Delta B_{i\to j},D_i,t_i,\operatorname{TTL}\bigr).
+ \label{eq:megajuego-epistemic-message}
+\end{align}
+Si el delta es vacío, la regla no envía un paquete de estado. Un digest no
+prueba que $j$ tenga el dato en presencia de pérdida, reinicio o partición;
+$D_{i\to j,s}$ solo avanza mediante reconocimiento o expiración declarada.
+Dos copias con el mismo $(\operatorname{src}_e,\operatorname{seq}_e)$ no son
+observaciones independientes y no se fusionan como tales.
+
+\paragraph{Admisión candidata de \emph{commit}}
+Sea $V(d)$ el valor normalizado de una decisión y supóngase, solo si el
+estimador certifica una envolvente válida, que
+$|V(d)-\widehat V_i(d)|\leq\epsilon_i(d)$. Para el conjunto relevante
+$\mathcal C_e$ y su cobertura estimada por reconocimientos
+$\widehat{\mathcal K}_i(e)$, la guardia usa
+\begin{equation}
+ L_i(d)=\widehat V_i(d)-\epsilon_i(d),\quad
+ U_i(d)=\widehat V_i(d)+\epsilon_i(d),\quad
+ \gamma_i(e)=\frac{|\widehat{\mathcal K}_i(e)\cap\mathcal C_e|}{|\mathcal C_e|}.
+ \label{eq:megajuego-epistemic-commit}
+\end{equation}
+Una transición de $d$ a $d'$ solo sería elegible con guarda física válida,
+edad admisible, $\gamma_i(e)\geq\gamma_{\min}$ y
+$C_e^++U_i(d')\leq L_i(d)-\delta$, con $C_e^+$ en las unidades de $V$.
+La condición es una guardia de diseño: no prueba conocimiento común, seguridad
+de la planta ni mejora real si se calibran mal incertidumbre, costes o
+reconocimientos. La ponderación por antigüedad y saltos, la regulación del
+radio, el coste de memoria y la campaña de pérdida y retardo quedan en el
+material suplementario.
+
+\subsection{Alcance y aporte}
+\label{app:megajuego-scope}
+
+La revisión externa identifica antecedentes directos de las piezas
+genéricas: MPC distribuido mediante Smith \parencite*{barreiro2017distributed},
+dinámicas poblacionales distribuidas, contacto cooperativo distribuido
+mediante ADMM/DisCo, navegación con homotopías y juegos potenciales, VI
+\emph{anytime} seguras, BeBOT y temporalización por alcanzabilidad. No se
+reclama originalidad de esos bloques. La contribución candidata más coherente
+es la contabilidad certificada de valor sobre revisiones atómicas físicamente
+ejecutables: qué transición existe, qué estado y recursos consume, qué coste
+común mejora, qué cota lo respalda y cómo conservar seguridad y progreso
+mientras se calcula. Las pruebas de este documento demuestran dominios
+concretos de esa arquitectura, no prioridad mundial sobre esos bloques
+genéricos.
+
+Para avanzar al siguiente nivel se necesita una campaña congelada con la
+\emph{misma} planta de ruedas y contacto y el \emph{mismo} objetivo del juego
+de integración y un control central de referencia, variando número de
+agentes, contacto activo, pérdida de miembro, homotopía, batería, fricción,
+retardo y presupuesto de cálculo; no se escogerán solo los casos que ambos
+métodos completan como métrica principal. Esa campaña queda fuera del alcance
+de esta memoria.

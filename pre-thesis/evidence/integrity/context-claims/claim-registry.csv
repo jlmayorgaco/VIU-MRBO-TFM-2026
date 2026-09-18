@@ -1,0 +1,68 @@
+claim_id,stratum,path,line,claim,evidence_ref,evidence_level,alignment,sampled
+C001,front,"sections/source-snapshot/frontmatter/01-summary.tex",2,"The thesis decomposes the problem into SP1-SP3 with Cargo primary.","docs/00_TFM_CHARTER.md; active methodology",design-contract,aligned,yes
+C002,front,"sections/source-snapshot/frontmatter/01-summary.tex",8,"The method combines optimization, potential games, primal-dual dynamics and explicit interface contracts.","active Chapters 4-6",implemented-formulation,aligned,no
+C003,front,"sections/source-snapshot/frontmatter/01-summary.tex",10,"Quota regulation, local Cargo stability, finite route improvement and an information limitation are proved.","active theorem/proof graph; focused tests",formal-proof,aligned,no
+C004,front,"sections/source-snapshot/frontmatter/01-summary.tex",16,"SP1/SP2/SP3 empirical headline outcomes hold only in their stated domains.","audited E2/E3/E4/E6/E7 bundles",audited-simulation,aligned-scoped,yes
+C005,front,"sections/source-snapshot/frontmatter/01-summary.tex",22,"Cargo completes almost all missions without composing all theoretical mechanisms.","Cargo result .997; architecture trace",audited-simulation,aligned,no
+C006,front,"sections/source-snapshot/frontmatter/01-summary.tex",25,"The contribution is a verifiable layered architecture plus planar functional composition.","active methods and Cargo campaign",mixed-formal-empirical,aligned,no
+C007,front,"sections/source-snapshot/frontmatter/01-summary.tex",26,"No global hybrid stability, social optimality, full distribution or industrial validity is proved.","scope audit and absence of corresponding evidence",explicit-limitation,aligned,yes
+C008,front,"sections/source-snapshot/frontmatter/01-summary.tex",28,"Instrumented contact, hardware and caging lie outside confirmatory evidence.","campaign audit not_claimed fields",explicit-limitation,aligned,no
+C009,methods,"sections/source-snapshot/mainmatter/04-methodology.tex",5,"Cargo bilateral fixed-contact transport is primary and caging remains separate.","physical-model definitions and E3/E4 audit scopes",design-contract,aligned,yes
+C010,methods,"sections/source-snapshot/mainmatter/04-methodology.tex",144,"The wrench residual is the SP1-SP2 interface, not proof of full transport.","E3 formulation and E4 bridge",formal-interface,aligned,no
+C011,methods,"sections/source-snapshot/mainmatter/04-methodology.tex",251,"SP1-SP3 are linked through typed state/information/model contracts.","methodology contract table",design-contract,aligned,no
+C012,methods,"sections/source-snapshot/mainmatter/04-methodology.tex",299,"Cargo repair compares continuing with replacement against stopping, not E6 versus another allocator.","Cargo ablation implementation/hypotheses",audited-design,aligned,yes
+C013,methods,"sections/source-snapshot/mainmatter/04-methodology.tex",345,"Inference is paired and multiplicity-corrected per predeclared campaign.","configs and hypotheses.csv",audited-protocol,aligned,no
+C014,methods,"sections/source-snapshot/mainmatter/04-methodology.tex",433,"A guarantee transfers only if the next layer preserves proof state, information and model.","interface logic and explicit counterexamples",formal-scope,aligned,no
+C015,methods,"sections/source-snapshot/mainmatter/04-methodology.tex",441,"E2-E4 are reanalyses with missing historical generators; Cargo is regenerable.","E2/E3/E4 audits; Cargo manifest",provenance-audit,aligned,yes
+C016,framework,"sections/source-snapshot/mainmatter/05-theoretical-framework.tex",64,"MRTA taxonomies do not by themselves solve multi-robot physical feasibility.","Gerkey/Korsah primary papers plus E3 counterexample",primary-plus-formal,aligned,no
+C017,framework,"sections/source-snapshot/mainmatter/05-theoretical-framework.tex",76,"Auction/bundle outputs need an additional common physical closure rule.","MURDOCH/CBBA scope and manuscript interface",reasoned-synthesis,aligned,no
+C018,framework,"sections/source-snapshot/mainmatter/05-theoretical-framework.tex",98,"Asynchrony, distribution and network robustness are distinct properties.","Tsitsiklis primary assumptions; network literature",primary-synthesis,aligned,yes
+C019,framework,"sections/source-snapshot/mainmatter/05-theoretical-framework.tex",148,"Arbitrary switching is cited only for individually balanced strongly connected digraphs.","Olfati-Saber/Murray primary theorem domain",primary-source,aligned,no
+C020,framework,"sections/source-snapshot/mainmatter/05-theoretical-framework.tex",152,"Nedic projection handles convex local constraints but not channel noise.","Nedic primary paper",primary-source,aligned,no
+C021,framework,"sections/source-snapshot/mainmatter/05-theoretical-framework.tex",250,"A variational GNE is a VI solution with common multipliers under regularity.","Yi 2019; Franci 2022 primary papers",primary-source,aligned,yes
+C022,framework,"sections/source-snapshot/mainmatter/05-theoretical-framework.tex",265,"Resultant wrench and internal forces are distinct under the grasp map.","Nakamura/Yoshikawa primary papers; linear algebra",primary-plus-formal,aligned,no
+C023,framework,"sections/source-snapshot/mainmatter/05-theoretical-framework.tex",280,"Safety and progress require distinct endpoints.","CBF theory and active negative docking results",primary-plus-empirical,aligned,no
+C024,framework,"sections/source-snapshot/mainmatter/05-theoretical-framework.tex",288,"MAPF guarantees are model-specific and SP3 uses restricted references.","CBS/ECBS/LA-MAPF primary literature; E7 scope",primary-synthesis,aligned,yes
+C025,SP1,"sections/thesis-results.tex",23,"The quota game is an exact potential game and reaches exact quota Nash under sufficient penalty.","sections/thesis-results.tex:23-30",formal-proof,aligned,yes
+C026,SP1,"sections/thesis-results.tex",25,"Fair strict better response terminates within the finite-profile bound.","sections/thesis-results.tex:25-30",formal-proof,aligned,no
+C027,SP1,"sections/thesis-results.tex",25,"Global potential maximizers minimize cost over exact quota assignments.","sections/thesis-results.tex:28-30",formal-proof,aligned,no
+C028,SP1,"sp2.tex",155,"The marginal heterogeneous field is the gradient of the declared potential in each unsaturated region.","appendices/04-sp2-proofs.tex",formal-proof,aligned,yes
+C029,SP1,"sp2.tex",163,"The unscaled flat field is generally not integrable under heterogeneous capacities.","appendices/04-sp2-proofs.tex cross-partials",formal-counterexample,aligned,no
+C030,SP1,"sp2.tex",216,"E2 cannot regenerate world creation because its historical generator is absent.","E2 audit.json historical_generator_present=false",provenance-audit,aligned,no
+C031,SP1,"sp2.tex",220,"Coverage and completion objectives produce different empirical tradeoffs.","E2 generated table and audit",audited-simulation,aligned,yes
+C032,SP1,"sp2.tex",232,"The marginal correction improves the sequential rule in the paired ablation.","E2 ablation macros/CI",audited-simulation,aligned,no
+C033,SP1,"sp2.tex",242,"The executed primal-dual variant underperforms greedy in completion.","E2 negative effect/CI",audited-simulation,aligned,no
+C034,SP1,"pre-thesis/sections/sp1-wrench-condensed.tex",30,"The regularized residual is conservative: acceptance implies pure feasibility, but feasible points may be rejected.","pre-thesis/sections/sp1-wrench-proofs-condensed.tex; tests",formal-counterexample,aligned,yes
+C035,SP1,"pre-thesis/sections/source-snapshot/mainmatter/06-results-and-analysis/sp3.tex",220,"The E3 relaxed shared-constraint game has the declared potential and variational GNE/KKT equivalence.","pre-thesis/sections/source-snapshot/appendices/05-sp3-proofs.tex; monograph",formal-proof,aligned,no
+C036,SP1,"pre-thesis/sections/sp1-wrench-condensed.tex",73,"The vector wrench guard removes observed scalar false positives.","E3 audited results and generated macros",audited-simulation,aligned,no
+C037,SP2,"shared/formal-results/sp2-canonical-bridge.tex",1,"The unicycle-to-wheel bridge respects kinematics and wheel limits.","canonical bridge proof/tests",formal-proof,aligned,yes
+C038,SP2,"shared/formal-results/sp2-canonical-bridge.tex",91,"Adding a robot need not monotonically improve realizable wrench under constraints.","constructive canonical-bridge example",formal-counterexample,aligned,no
+C039,SP2,"shared/formal-results/sp2-canonical-bridge.tex",111,"Scalar capacity is insufficient for wrench feasibility.","constructive canonical-bridge example; E3 data",formal-plus-empirical,aligned,no
+C040,SP2,"sp4.tex",170,"The fixed-contact pose controller has the stated local dissipativity/stability bound.","appendices/06-sp4-proofs.tex",formal-proof,aligned,yes
+C041,SP2,"sp4.tex",213,"Safety filters remove observed docking collisions but increase timeouts.","E4 docking table/macros",audited-simulation,aligned,no
+C042,SP2,"sp4.tex",226,"The small V4 stratum favors the game+CBF combination only descriptively.","E4 V4 macros; n=12",limited-simulation,aligned-scoped,no
+C043,SP2,"sp4.tex",232,"Transport controllers exhibit a time-work tradeoff in the reduced planar model.","E4 transport contrasts",audited-simulation,aligned,yes
+C044,SP2,"sp4.tex",246,"E4 does not validate end-to-end hybrid stability or independent Coppelia physics.","SP4 audit not_claimed fields",explicit-limitation,aligned,no
+C045,SP2,"sp6.tex",120,"The guarded binary recovery game is exact potential and finite-improvement.","active SP6 proof; tests/audit",formal-proof,aligned,no
+C046,SP2,"sp6.tex",138,"Above the threshold, pure Nash are exactly feasible inclusion-minimal repairs.","active SP6 proof",formal-proof,aligned,yes
+C047,SP2,"sp6.tex",150,"PoS equals one but worst-equilibrium PoA is unbounded.","active SP6 proof/counterexample",formal-proof,aligned,no
+C048,SP2,"sp6.tex",170,"Recovery duration is bounded only under aggregate activation-window, detection, travel and settling assumptions.","active SP6 proof",formal-proof,aligned-scoped,no
+C049,SP2,"sp6.tex",222,"All recoverable static certificates restore and impossible reserves do not reopen.","SP6 audit and results",audited-simulation,aligned,yes
+C050,SP2,"sp6.tex",232,"Tight deadlines expose a negative performance result for the potential rule.","SP6 macros/results",audited-simulation,aligned,no
+C051,SP2,"cargo-e2e.tex",6,"Cargo tests functional coexistence, not automatic composition of SP1/SP2 guarantees.","architecture trace and Cargo audit",audited-scope,aligned,no
+C052,SP2,"cargo-e2e.tex",130,"Cargo achieves .997 mission success in the reduced planar benchmark.","Cargo audited runs/results",audited-simulation,aligned,yes
+C053,SP2,"cargo-e2e.tex",143,"The combined physical-guard block improves success only over three nonnominal regimes and its intersection statistic aggregates four.","Cargo hypotheses.csv and runs",audited-simulation,aligned-scoped,no
+C054,SP2,"cargo-e2e.tex",143,"Continuing with replacement improves failure-regime success versus stopping.","Cargo E2E-H3",audited-simulation,aligned,no
+C055,SP2,"cargo-e2e.tex",145,"The timing contrast is inconclusive after Holm correction.","Cargo E2E-H1 CI/p",audited-simulation,aligned,yes
+C056,SP3,"sp7.tex",107,"The finite route game is exact potential and every maximal strict-improvement path ends at Nash.","appendices/08-sp7-proofs.tex",formal-proof,aligned,yes
+C057,SP3,"sp7.tex",122,"Conflict-free Nash follows only under unilateral accessibility and a sufficient penalty.","appendices/08-sp7-proofs.tex",formal-proof,aligned-scoped,no
+C058,SP3,"sp7.tex",180,"No-starvation is conditional on finite ordering, release and no re-entry.","appendices/08-sp7-proofs.tex",formal-proof,aligned-scoped,no
+C059,SP3,"sp7.tex",214,"Local reservation restores delivery in the tested discrete catalogue.","SP7 audited results",audited-simulation,aligned,yes
+C060,SP3,"sp7.tex",230,"The restricted oracle is faster in makespan; comparison excludes CBS/ECBS/ORCA.","SP7 results and explicit scope",audited-simulation,aligned,no
+C061,SP3,"aws-industrial2.tex",13,"AWS Industrial 2 is a geometric/kinematic pilot, not dynamic validation.","AWS macros/source summaries and caption",pilot-evidence,aligned,no
+C062,SP3,"aws-industrial2.tex",20,"Congested pilot scenarios fail to deliver despite sampled overlap exclusion.","AWS generated macros",pilot-negative-result,aligned,yes
+C063,conclusions,"sections/source-snapshot/mainmatter/07-conclusions.tex",4,"The main research question has only a conditional answer.","synthesis of active formal/empirical evidence",mixed-evidence,aligned,yes
+C064,conclusions,"sections/source-snapshot/mainmatter/07-conclusions.tex",30,"Cargo supports functional compatibility rather than integrated validation of SP1-SP2.","Cargo architecture/audit",audited-scope,aligned,no
+C065,conclusions,"sections/source-snapshot/mainmatter/07-conclusions.tex",60,"RQ1 is supported only for exact quota and marginal alignment; QR remains inactive.","active SP1 proofs/E2 evidence",mixed-evidence,aligned,no
+C066,conclusions,"sections/source-snapshot/mainmatter/07-conclusions.tex",92,"Hypotheses H1b/H1c/H5b are not adjudicated; H2/H4/HP are explicitly bounded.","conclusion hypothesis table and active graph",claim-governance,aligned,yes
+C067,conclusions,"sections/source-snapshot/mainmatter/07-conclusions.tex",118,"Limitations exclude global hybrid proof, 3D friction/contact, hardware and industrial probability inference.","model/audit scopes and absence of real calibration",explicit-limitation,aligned,no

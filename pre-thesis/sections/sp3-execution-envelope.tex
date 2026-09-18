@@ -1,0 +1,54 @@
+\subsubsection{Interfaz entre reserva discreta y movimiento}
+\label{subsubsec:sp3-execution-envelope}
+
+Una reserva lógica autoriza una celda; no prescribe una trayectoria continua.
+La interfaz infla la huella, conserva separación temporal y devuelve a SP2 una
+referencia compatible con ruedas y contacto. La Tabla~\ref{tab:pre-sp3-execution-envelope}
+fija los chequeos y la respuesta conservadora.
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{tikzpicture}[
+    node distance=0.42cm,
+    box/.style={draw=VIULinkBlue,rounded corners=1.2mm,fill=VIULinkBlue!8,
+      minimum width=2.55cm,minimum height=0.82cm,align=center,font=\footnotesize},
+    gate/.style={draw=VIUOrange,rounded corners=1.2mm,fill=VIUOrange!8,
+      minimum width=2.55cm,minimum height=0.82cm,align=center,font=\footnotesize},
+    arr/.style={-{Stealth[length=2.3mm]},thick,draw=VIUDark}]
+    \node[box] (route) {ruta elegida};
+    \node[box,right=of route] (reserve) {reserva local};
+    \node[gate,right=of reserve] (check) {huella--tiempo--ruedas};
+    \node[box,right=of check] (pose) {referencia para SP2};
+    \draw[arr] (route)--(reserve);
+    \draw[arr] (reserve)--(check);
+    \draw[arr] (check)--(pose);
+  \end{tikzpicture}
+  \caption{Cadena ejecutable entre la ruta discreta y la referencia física.}
+  \label{fig:pre-sp3-execution-envelope}
+  \viuownsource
+\end{figure}
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Chequeos de la interfaz SP3--SP2.}
+  \label{tab:pre-sp3-execution-envelope}
+  \viutablefont
+  \begin{tabularx}{0.96\textwidth}{>{\raggedright\arraybackslash}p{2.55cm} Y >{\raggedright\arraybackslash}p{3.25cm}}
+    \toprule
+    Chequeo & Condición para avanzar & Respuesta si falla \\
+    \midrule
+    Reserva & recurso compatible con ocupaciones e intenciones visibles & esperar y conservar celda \\
+    Geometría & huellas infladas disjuntas en el intervalo & ampliar separación o replantear \\
+    Cinemática & twist realizable por las ruedas & reducir velocidad o curvatura \\
+    Mecánica & soporte, contacto y residual dentro de tolerancia & detener y recertificar coalición \\
+    Temporal & reserva cubre tránsito y asentamiento & renovar antes de entrar o ceder \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+El contrato intercambia intención, versión, prioridad y ocupación local; su coste
+se registra en mensajes y bytes. La prueba de rutas y la reserva pertenecen al
+modelo discreto; los chequeos cinemático y mecánico se repiten durante la
+ejecución. El piloto AWS mueve actores cinemáticamente: evidencia integración
+lógica y visual, no contacto físico ni un gemelo digital.

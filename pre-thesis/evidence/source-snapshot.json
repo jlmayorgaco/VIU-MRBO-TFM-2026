@@ -1,0 +1,206 @@
+{
+  "schema_version": 2,
+  "generated_at": "2026-09-09T11:02:07-05:00",
+  "repository": {
+    "root_name": "VIU-MRBO-TFM-2026",
+    "head_commit": "307683ea2eac7d7e5a2dc54190bd22b6d8589b7e",
+    "branch": "sp1-final-refactor",
+    "working_tree": {
+      "dirty": true,
+      "total_entries": 32625,
+      "category_counts": {
+        "modified": 115,
+        "untracked": 32510
+      },
+      "status_code_counts": {
+        " M": 114,
+        "??": 32510,
+        "M ": 1
+      },
+      "note": "Resumen no destructivo; no se restauró, limpió ni modificó el árbol fuente."
+    }
+  },
+  "scope": {
+    "corpora": [
+      "books",
+      "work",
+      "paper",
+      "thesis"
+    ],
+    "source_roots": {
+      "books": "material/books",
+      "work": "material/compendios",
+      "paper": "paper",
+      "thesis": "thesis"
+    },
+    "copy_policy": "hash-and-index-only",
+    "books_copied_to_pre_thesis": false
+  },
+  "corpus_counts": {
+    "books": {
+      "files": 42,
+      "bytes": 623822655,
+      "unique_sha256": 37,
+      "pdf_files": 42,
+      "unique_pdf_sha256": 37
+    },
+    "work": {
+      "files": 43,
+      "bytes": 231690178,
+      "unique_sha256": 33,
+      "pdf_files": 43,
+      "unique_pdf_sha256": 33
+    },
+    "paper": {
+      "files": 53,
+      "bytes": 4294211,
+      "unique_sha256": 53,
+      "pdf_files": 13,
+      "unique_pdf_sha256": 13
+    },
+    "thesis": {
+      "files": 64,
+      "bytes": 4023181,
+      "unique_sha256": 64,
+      "pdf_files": 1,
+      "unique_pdf_sha256": 1
+    }
+  },
+  "formal_result_counts": {
+    "paper_observed": 145,
+    "paper_planned_baseline": 104,
+    "thesis_observed": 21,
+    "total_observed": 166,
+    "audit_status_counts": {
+      "CONJECTURE": 2,
+      "DUPLICATE": 16,
+      "FAIL": 43,
+      "LIMITED": 87,
+      "PASS": 18
+    },
+    "semantic_audit_source": "pre-thesis/evidence/integrity/formal-audit/semantic-all.csv",
+    "definition": "teorema/proposición/lema/corolario/conjetura and English equivalents; observations and definitions excluded"
+  },
+  "traceability": {
+    "claim_link_status_counts": {
+      "linked": 57,
+      "not-applicable": 104,
+      "reviewed-unlinked": 41
+    },
+    "claim_relation_counts": {
+      "candidate-only": 41,
+      "canonical-reference": 5,
+      "context": 28,
+      "mentions": 24,
+      "none": 104
+    },
+    "symbol_status_counts": {
+      "indexed": 53,
+      "none-detected": 11,
+      "not-applicable": 133,
+      "reviewed-local-only": 5
+    },
+    "unassigned_sp_targets": 0,
+    "interpretation": "Los estados de aplicabilidad distinguen enlaces resueltos, campos no aplicables y revisión semántica pendiente; no convierten fuentes candidatas en evidencia."
+  },
+  "style_config_and_protected_sources": [
+    {
+      "path": "thesis/main.tex",
+      "role": "VIU document root",
+      "exists": true,
+      "bytes": 3414,
+      "sha256": "53d2fc76cbef30bd713422d7764f76f9c65fa80580f6cffc96a7967e2f695d22"
+    },
+    {
+      "path": "thesis/viu-mrob-thesis.sty",
+      "role": "VIU LaTeX style",
+      "exists": true,
+      "bytes": 18880,
+      "sha256": "d167e00885133c3e2f51c7e77ef5cbdf31c1396d622f3893ca2f21158b2fa79c"
+    },
+    {
+      "path": "thesis/build.ps1",
+      "role": "reference build interface",
+      "exists": true,
+      "bytes": 1631,
+      "sha256": "1af806a75b7e52afcf22a0fcaebdc4dcefcf9840dceb5886efd5e44b155840aa"
+    },
+    {
+      "path": "thesis/config/math-commands.tex",
+      "role": "canonical math commands",
+      "exists": true,
+      "bytes": 535,
+      "sha256": "6864fa8e1584384c3f78cf963119f93f0531bc42a6bf57377a825e21f002e614"
+    },
+    {
+      "path": "thesis/config/metadata.tex",
+      "role": "administrative metadata",
+      "exists": true,
+      "bytes": 1268,
+      "sha256": "d33488cf42a3b100c3ebd04e9ef9910ced72e71891e53bacc00fe092eea5bdec"
+    },
+    {
+      "path": "thesis/config/protected-tikz-figures.json",
+      "role": "protected TikZ contract",
+      "exists": true,
+      "bytes": 1957,
+      "sha256": "1c11d4d64ef7570661f7124fe92bacf6d0df1ad8812b7575ee4ec78877560fa7"
+    },
+    {
+      "path": "thesis/config/sp1-n1-frozen-pages.json",
+      "role": "historical frozen-page contract",
+      "exists": true,
+      "bytes": 3072,
+      "sha256": "41a962c82ad54f541e80fe5b46de21c39290d49a58a98bdff151f4166af45c00"
+    },
+    {
+      "path": "thesis/figures/protected/01-distributed-coalition-scenario.tex",
+      "role": "protected TikZ fig:problema",
+      "exists": true,
+      "bytes": 7759,
+      "sha256": "fa255f09110d42dc6537b9f37992a029b8c3fadba8197b4292683b98ed82d767"
+    },
+    {
+      "path": "thesis/figures/protected/02-unicycle-geometry.tex",
+      "role": "protected TikZ fig:robot",
+      "exists": true,
+      "bytes": 2111,
+      "sha256": "e94b211b5ddb1c84ec662aec3ab1eb4f9f7f7ea3f5cac3ea998556dbfc78616e"
+    },
+    {
+      "path": "thesis/sections/mainmatter/05-theoretical-framework.tex",
+      "role": "protected TikZ figures in theoretical framework",
+      "exists": true,
+      "bytes": 50273,
+      "sha256": "2859ae90c6783740032840328ac5bf73db7acf19ba8517b398f3846168425046"
+    }
+  ],
+  "validations": {
+    "books_pdf_files_expected_42": true,
+    "books_unique_pdf_sha256_expected_37": true,
+    "work_pdf_files_expected_43": true,
+    "work_unique_pdf_sha256_expected_33": true,
+    "all_pdf_page_counts_available": true,
+    "paper_formal_results_match_planned_104": false,
+    "formal_labels_unique_within_corpus": false,
+    "formal_semantic_audit_complete": true
+  },
+  "warnings": [
+    {
+      "code": "PAPER_FORMAL_COUNT_SOURCE_DRIFT",
+      "planned": 104,
+      "observed": 145,
+      "handling": "Se registran todos los resultados observados; no se descarta ninguno para forzar el recuento histórico."
+    },
+    {
+      "code": "DUPLICATE_FORMAL_LABELS",
+      "labels": [
+        {
+          "corpus": "thesis",
+          "label": "cor:sp1-strategic-regulation"
+        }
+      ],
+      "handling": "Las filas se conservan y se bloquea su migración hasta resolver la etiqueta duplicada."
+    }
+  ]
+}

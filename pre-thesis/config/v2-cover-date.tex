@@ -1,0 +1,25 @@
+% Añade el campo de fecha "mes y año" exigido por las Instrucciones VIU §4 a
+% la portada, sin editar el `\makeviucover` sellado de `viu-mrob-thesis.sty`
+% (config/release-manifest.json lo protege). Redefine el macro solo para la
+% v2, reproduciendo su cuerpo original y añadiendo un nodo de fecha bajo la
+% edición. `\viudate` ya se fija en config/metadata.tex; el original nunca lo
+% pinta en la portada.
+\renewcommand{\makeviucover}{%
+  \begin{titlepage}
+    \thispagestyle{viucover}
+    \null
+    \begin{tikzpicture}[remember picture,overlay]
+      \node[anchor=center,inner sep=0pt] at (current page.center) {\includegraphics[width=\paperwidth,height=\paperheight]{images/viu_cover_bg.jpg}};
+      \node[anchor=base east,text=black,font={\fontsize{18}{18}\selectfont}] at ($(current page.north east)+(-4.4cm,-7.5cm)$) {MÁSTER UNIVERSITARIO EN};
+      \node[anchor=base east,text=black,font={\fontsize{18}{18}\selectfont}] at ($(current page.north east)+(-4.4cm,-8.4cm)$) {ROBÓTICA Y AUTOMATIZACIÓN DE};
+      \node[anchor=base east,text=black,font={\fontsize{18}{18}\selectfont}] at ($(current page.north east)+(-4.4cm,-9.3cm)$) {PROCESOS};
+      \node[anchor=north west,text=white,font={\fontsize{18}{22}\selectfont}] at ($(current page.north west)+(3cm,-18.5cm)$) {TÍTULO:};
+      \node[anchor=north west,text=white,align=left,text width=15cm,font={\bfseries\fontsize{10.5}{13}\selectfont}] at ($(current page.north west)+(3cm,-21.5cm)$) {\viutitle};
+      \node[anchor=north west,text=white,font={\fontsize{18}{22}\selectfont}] at ($(current page.north west)+(3cm,-23.4cm)$) {Alumno/a:};
+      \node[anchor=north west,text=white,text width=15cm,font={\fontsize{12}{15}\selectfont}] at ($(current page.north west)+(3cm,-24.5cm)$) {\viustudent};
+      \node[anchor=north west,text=white,font={\fontsize{18}{22}\selectfont}] at ($(current page.north west)+(3cm,-25.9cm)$) {Director/a:};
+      \node[anchor=north west,text=white,text width=15cm,font={\fontsize{12}{15}\selectfont}] at ($(current page.north west)+(3cm,-27cm)$) {\viututor};
+      \node[anchor=north west,text=white,font={\fontsize{12}{15}\selectfont}] at ($(current page.north west)+(3cm,-28.2cm)$) {Edición: \viuedition\ \textbullet\ Fecha: \viudate};
+    \end{tikzpicture}
+  \end{titlepage}
+}

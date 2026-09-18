@@ -1,0 +1,41 @@
+% =====================================================================
+% Macros introducidas por la versión 2 para las matrices de capacidades
+% de la revisión académica e industrial.
+%
+% Los cuatro símbolos codifican evidencia pública revisada, nunca calidad
+% ni desempeño. Se dibujan en TikZ para que conserven su forma al imprimir
+% en blanco y negro: relleno sólido, media luna y circunferencia vacía se
+% distinguen sin color.
+% =====================================================================
+
+\newcommand{\capyes}{%
+  \begin{tikzpicture}[x=1mm,y=1mm,baseline=-0.6ex]
+    \path[use as bounding box] (-1.7,-1.7) rectangle (1.7,1.7);
+    \fill[SPGreen] (0,0) circle (1.3);
+  \end{tikzpicture}}
+
+\newcommand{\cappart}{%
+  \begin{tikzpicture}[x=1mm,y=1mm,baseline=-0.6ex]
+    \path[use as bounding box] (-1.7,-1.7) rectangle (1.7,1.7);
+    \begin{scope}
+      \clip (0,0) circle (1.3);
+      \fill[VIUOrange!75] (-1.3,-1.3) rectangle (0,1.3);
+    \end{scope}
+    \draw[VIUDark!55,line width=0.3pt] (0,0) circle (1.3);
+  \end{tikzpicture}}
+
+\newcommand{\capno}{%
+  \begin{tikzpicture}[x=1mm,y=1mm,baseline=-0.6ex]
+    \path[use as bounding box] (-1.7,-1.7) rectangle (1.7,1.7);
+    \draw[VIUDark!48,line width=0.34pt] (0,0) circle (1.3);
+  \end{tikzpicture}}
+
+\newcommand{\capunk}{{\sffamily\bfseries\color{VIUGray}?}}
+\newcommand{\capna}{{\sffamily\color{VIUGray}--}}
+
+\newcommand{\capgoal}{%
+  \begin{tikzpicture}[x=1mm,y=1mm,baseline=-0.7ex]
+    \path[use as bounding box] (-2.0,-2.0) rectangle (2.0,2.0);
+    \fill[VIUOrange] (-1.5,-1.5) rectangle (1.5,1.5);
+    \node[font=\sffamily\bfseries\fontsize{5.4}{5.4}\selectfont,text=white] at (0,0.05) {\checkmark};
+  \end{tikzpicture}}

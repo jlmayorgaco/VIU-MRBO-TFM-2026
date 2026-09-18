@@ -1,0 +1,54 @@
+\subsection{Criterios de comparación}
+\label{subsec:method-comparison}
+
+La Tabla~\ref{tab:tf-comparison} clasifica la salida que cada familia entrega a
+la capa siguiente. ``Parcial'' indica que la propiedad depende de un módulo o
+de supuestos externos al problema tratado.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Cobertura de las familias metodológicas relevantes.}
+  \label{tab:tf-comparison}
+  \scriptsize
+  \setlength{\tabcolsep}{2.4pt}
+  \begin{tabularx}{\textwidth}{@{}p{2.0cm}p{1.25cm}p{1.35cm}p{1.45cm}X p{2.2cm}@{}}
+    \toprule
+    Familia & Coalición & Física & Información local & Garantía típica & Límite para este problema \\
+    \midrule
+    Asignación/MILP & Sí & Parcial & No & óptimo o cota del optimizador & coste global y combinatorio \\
+    Subasta/CBBA & Parcial & No & Sí & asignación bajo supuestos de puntuación y red & no certifica contacto \\
+    Juego de coalición & Sí & Parcial & Sí & estabilidad o mejora local & no implica óptimo social \\
+    Juego poblacional & Relajada & No & Parcial & convergencia bajo estructura del juego & exige cierre entero \\
+    Consenso/primal--dual & No & No & Sí & acuerdo o convergencia bajo red y regularidad & no decide ni estabiliza la planta \\
+    Formación/\emph{wrench} & Equipo dado & Sí & Parcial & rigidez, reparto o seguimiento & no selecciona el equipo \\
+    ORCA/CBF & No & Parcial & Sí & evitación o invariancia condicionada & puede bloquearse \\
+    Reparación por evento & Parcial & No & Sí & reasignación o activación alternativa & exige recertificar la coalición \\
+    MAPF/tráfico & No & Huella parcial & Parcial & completitud, optimalidad o cota según método & conflicto discreto no es colisión física \\
+    MARL/GNN & Aprendida & Parcial & Sí & rendimiento empírico & interpretación y garantías limitadas \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+Las familias parten de objetos distintos: asignación consume utilidad, formación
+consume un equipo, seguridad consume un control nominal y MAPF una abstracción
+espacio--temporal. En instancias pequeñas, el oráculo global fija un techo bajo
+información privilegiada; la brecha, la comunicación y la conectividad se miden
+por separado. El oráculo no se presenta como competidor distribuido.
+
+Con restricciones compartidas y las condiciones de regularidad declaradas, un
+Nash generalizado variacional se caracteriza como solución de una desigualdad
+variacional y admite multiplicadores comunes
+\parencite{yi2019operatorGNE,franci2022stochasticGNE}. Las dinámicas
+primal--dual actualizan esos multiplicadores junto con las decisiones bajo
+convexidad, monotonicidad y conectividad
+\parencite{cherukuri2016primalDual,koshal2016aggregative}. El precio dual
+representa congestión o déficit; la integralidad y el coste social requieren
+mecanismos y estimandos separados.
+
+El protocolo exige que una prueba de pasividad identifique puertos,
+almacenamiento y suministro, y que una prueba de Lyapunov fije dominio y signo
+de la derivada \parencite{vanderschaf2017passivity,ortega2002passivity}. Un
+cambio de contacto, la saturación o la discretización alteran esas hipótesis.
+La interconexión híbrida necesita una prueba composicional incluso si la capa
+estratégica y la planta poseen resultados locales propios.

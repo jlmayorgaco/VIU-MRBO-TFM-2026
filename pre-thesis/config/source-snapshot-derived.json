@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-09-09T04:55:37Z",
+  "base_manifest": "config/source-snapshot.json",
+  "base_manifest_sha256": "fc33e7b42189cff96362208c4638d96a1259d5e24f4ef8ac652e101986e3c0bf",
+  "base_commit": "e2e67abe7552b60be210805626fac4f495d95138",
+  "policy": "Each listed file is an audited derivation of the immutable imported snapshot. Files not listed must retain their base SHA-256 exactly.",
+  "files": [
+    {
+      "snapshot_path": "sections/source-snapshot/appendices/03-sp1-proofs.tex",
+      "base_sha256": "62d3f53c19a15b241ea6838a6e1657760aa50883dcbce36ab164b3f531869609",
+      "derived_sha256": "8c89b0164bdba2c5f1bd4aaf8401d7837e2bd64f2424e422bc9dd3d07e308286",
+      "rationale": "Auditoría de supuestos y corrección de la demostración canónica de SP1."
+    },
+    {
+      "snapshot_path": "sections/source-snapshot/appendices/05-sp3-proofs.tex",
+      "base_sha256": "4d563f0b349721c0c4d8b631d8ebebffd1803475c03a8c4eb478fba2de25de77",
+      "derived_sha256": "8b3fcda0c6c22ae7e96fd47a717dad10fe7d317099defcc3f81587dc58ece6c2",
+      "rationale": "Auditoría formal de SP3 y delimitación explícita del resultado de reparto de wrench."
+    },
+    {
+      "snapshot_path": "sections/source-snapshot/mainmatter/01-introduction.tex",
+      "base_sha256": "94f505d5bd3ece34f8d10c5108d9b4664be91c84af65f62aba6eca3fceffc5da",
+      "derived_sha256": "8670a289118cec19f679d0f617671c963e4e5fcf564c5a6a362c7016c7dfc329",
+      "rationale": "Redistribución editorial auditada del contrato entre capas para cumplir el presupuesto exacto de capítulos."
+    },
+    {
+      "snapshot_path": "sections/source-snapshot/mainmatter/04-methodology.tex",
+      "base_sha256": "58d4b984f9303f7947b0a72e43b3b32fe89c6412dcce2a5992c19fc13b23b5dc",
+      "derived_sha256": "a085541f1a3d76681c2f5dba07be341eb74857d8fe4731b150f7d98e6d3ecdbd",
+      "rationale": "Incorporación auditada del marco comparativo en Metodología para mantener la función de cada capítulo."
+    },
+    {
+      "snapshot_path": "sections/source-snapshot/mainmatter/05-theoretical-framework.tex",
+      "base_sha256": "701676c44140640cf0884e23a75f4a4df1f02ac4235854f0b0363ea8c3894bbe",
+      "derived_sha256": "f22cfd60a5857930585c2690a8444abc5a352699b41ac66f828d6844a8587a87",
+      "rationale": "Condensación y relocalización trazable de bloques hacia Introducción y Metodología sin retirar las figuras protegidas."
+    },
+    {
+      "snapshot_path": "sections/source-snapshot/mainmatter/06-results-and-analysis/sp0.tex",
+      "base_sha256": "e3c7277b6fba04432737e6b7a533e76b6b52e09dad41e8040b60a92bdb84c5d2",
+      "derived_sha256": "918fe1fe5aa4e891462ceb936c19d8c2235be2c3dc99e5b11e0b11daffe2cc40",
+      "rationale": "Revisión editorial, clasificación explícita del alcance histórico de SP0 y reformulación técnica tras la auditoría externa de originalidad."
+    },
+    {
+      "snapshot_path": "sections/source-snapshot/mainmatter/06-results-and-analysis/sp1.tex",
+      "base_sha256": "30e08339c8242f630d7e9d888354384754c18fc012f9f5ee11ba920cc333c05e",
+      "derived_sha256": "45d88517bbfe4188f39794ffb4b4bb2140fe7f52f041dcddbd383b3473f52c89",
+      "rationale": "Revisión formal y rotulado explícito del nivel de evidencia de SP1."
+    },
+    {
+      "snapshot_path": "sections/source-snapshot/mainmatter/06-results-and-analysis/sp2.tex",
+      "base_sha256": "57c4c52b896cdcd2e31acb4f789b04978571bc892d8a56cb012b2419d58f8329",
+      "derived_sha256": "6ad82f78f6805d7c40f2c3887b47ac2ae9d1037fc0b78568e371b653c8fb4b5d",
+      "rationale": "Revisión formal, rotulado explícito del nivel de evidencia de SP2 y reformulación técnica tras la auditoría externa de originalidad."
+    },
+    {
+      "snapshot_path": "sections/source-snapshot/mainmatter/06-results-and-analysis/sp3.tex",
+      "base_sha256": "9a0f121034b7e5452674c5e9dfcf4081dd964765b88178d379fc496d0287ebb7",
+      "derived_sha256": "d97dc785296261bcd46b97b8ba2cf44a25bc41bafff318e4c6f98e8265d604a2",
+      "rationale": "Revisión del certificado de wrench, separación entre evidencia de tesis y desarrollo extendido de monografía, y reformulación técnica tras la auditoría externa de originalidad."
+    },
+    {
+      "snapshot_path": "sections/source-snapshot/mainmatter/06-results-and-analysis/sp4.tex",
+      "base_sha256": "bc9badf3d261a0e908462b84d328c06ee189f9996556ba71b655e39e7494e531",
+      "derived_sha256": "cff7b8f6478cf3feb3660e59e956a026d6e5b22f31db4349bc69a76e4dfbfe45",
+      "rationale": "Revisión de supuestos físicos y delimitación local de la garantía de estabilidad de SP4."
+    },
+    {
+      "snapshot_path": "sections/source-snapshot/mainmatter/06-results-and-analysis/sp5.tex",
+      "base_sha256": "00e56928a2bc70c2041c9410a90c5bac4da8052d54240bfd3e38f22663c10fb4",
+      "derived_sha256": "66798e508eed889c6bfde77779463567bc70986f0d2e3f7dd53d87ce8c5dd059",
+      "rationale": "Revisión editorial y clasificación explícita de los límites de seguridad de SP5."
+    },
+    {
+      "snapshot_path": "sections/source-snapshot/mainmatter/06-results-and-analysis/sp6.tex",
+      "base_sha256": "9dbd9a69950e6c796f3bb07498b15a288c6abe8a5f98244b245d3aa7e88c3909",
+      "derived_sha256": "1997628abd8915b1e4dd6e80a46bb1c7693fb7621f5fcee6790fbeb33db0e959",
+      "rationale": "Revisión formal y rotulado explícito del alcance de recuperación de SP6."
+    },
+    {
+      "snapshot_path": "sections/source-snapshot/mainmatter/06-results-and-analysis/sp7.tex",
+      "base_sha256": "5f61460acc669c925e92ae227270972794c4f388c955b6628f5965f03856f684",
+      "derived_sha256": "f8495d22ca3685e2a17e12d1541d7a29eac40f556bc4cda6a73bdbd1eae07669",
+      "rationale": "Revisión formal y rotulado explícito del alcance de tráfico de SP7."
+    },
+    {
+      "snapshot_path": "sections/source-snapshot/mainmatter/06-results-and-analysis/sp8.tex",
+      "base_sha256": "b99e1102bb7eb225439f525cd6b89e9ce78449cdd94e534b581f34447ceb6b33",
+      "derived_sha256": "31fbbe4918efdfc4e70319b604c119b68e02e381657f8fba603f201c09cdc629",
+      "rationale": "Revisión formal y rotulado explícito del alcance de red y escala de SP8."
+    }
+  ]
+}

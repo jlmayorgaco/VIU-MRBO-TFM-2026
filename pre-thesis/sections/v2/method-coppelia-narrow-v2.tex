@@ -1,0 +1,21 @@
+% Adenda v2 a Metodología: describe la campaña de CoppeliaSim que Resultados
+% 6.6 reporta (mundo pareado de paso estrecho, E4), distinta de la escena de
+% almacén AWS descrita en 04-methodology.tex. No edita ese archivo.
+\subsection{CoppeliaSim: mundo pareado de paso estrecho (E4)}
+\label{sec:method-coppelia-narrow}
+
+Además del piloto de almacén de la Sección~\ref{sec:method_statistics_coppelia},
+una segunda escena de CoppeliaSim reproduce el juego de acoplamiento de E4 en
+un mundo de paso estrecho, para contrastar en un motor de simulación 3D
+independiente la misma conclusión que el modelo cinemático de Python. La
+escena real (no sintética) enfrenta cuatro AMR por método a través de un
+cuello de botella entre dos obstáculos fijos, con origen, destino y semilla
+(886001) idénticos para ambos métodos comparados: control directo con HOCBF y
+el juego PD distribuido con HOCBF de E4. El protocolo registra la trayectoria
+comandada y la reejecutada en el motor, y admite la campaña solo si supera
+seis comprobaciones: escena guardada, cuadros reales capturados, al menos
+treinta objetos en escena, error de reejecución por debajo de 1~mm, y
+reproducción tanto del contraejemplo del método directo como del éxito seguro
+del método propuesto. Como en el piloto de almacén, la evidencia se limita a
+geometría y \emph{replay} cinemático; no sustituye contacto, dinámica de
+ruedas ni validación de hardware.

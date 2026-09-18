@@ -1,0 +1,93 @@
+% Sustituto real de los paneles (b)/(c) de la Figura 4 original.
+%
+% El PDF `MROB_literature_review_reworked (2).pdf` usa una taxonomía de siete
+% familias (Coalition, Transport, Planning, Feasibility, Recovery, Learning/RL,
+% Foundational) que no tiene dataset reproducible en el repositorio: la propia
+% auditoría del proyecto (academic-review/literature-review-v4/README.md)
+% confirma que esas cifras no se derivaron de ningún CSV conservado. Esta
+% figura usa en su lugar las cinco categorías reales del corpus V3
+% (`analytic_corpus_v3.csv`, campo `theme_signals_title_abstract`), generadas
+% por `pre-thesis/scripts/build_review_figure_data.py` y volcadas en
+% `shared/generated-macros/lit-corpus-activity.tex`. La clasificación es
+% multietiqueta, así que las cuotas de un mismo periodo pueden sumar más de
+% 100~%.
+\begin{figure}[!htbp]
+  \centering
+  \begin{minipage}[t]{0.56\linewidth}
+    \centering
+    {\sffamily\bfseries\fontsize{7.8}{8.4}\selectfont (a) Cuota temática por periodo\par}
+    \vspace{1.5mm}
+    \resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{5.8}{6.2}\selectfont]
+  \def\sc{0.62}
+  \foreach \p/\lab in {0/{$\le$2010}, 1/{2011--16}, 2/{2017--21}, 3/{2022--26}}{%
+    \pgfmathsetmacro{\y}{34-\p*9}
+    \node[anchor=east,text=ink,font=\bfseries] at (-2,\y+3.4){\lab};}
+  \foreach \y/\lab/\col/\vals in {%
+    34/{Coalición / MRTA}/{gamecol}/{45.7,50.0,48.1,44.9},
+    24.4/{Recuperación / resil.}/{canary!75!onyx}/{40.0,25.0,35.4,30.3},
+    14.8/{Contexto / otros}/{VIUGray!70}/{17.1,40.0,24.1,34.8},
+    5.2/{Planif. / rutas}/{VIUOrange}/{2.9,7.5,11.4,7.9},
+    -4.4/{Transporte / control}/{SPPurple}/{8.6,2.5,5.1,7.9}}{%
+    \node[anchor=east,text=ink] at (-2,\y){\lab};
+    \foreach \v [count=\i from 0] in \vals{%
+      \pgfmathsetmacro{\x}{\i*15}
+      \fill[onyx!5] (\x,\y-1.7) rectangle (\x+13,\y+1.7);
+      \pgfmathsetmacro{\w}{\sc*\v}
+      \fill[\col,rounded corners=.4pt] (\x,\y-1.7) rectangle (\x+\w,\y+1.7);
+      \node[anchor=west,font=\fontsize{5.0}{5.4}\selectfont,text=ink] at (\x+\w+.6,\y){\v};}}
+  \foreach \p/\lab in {0/{$\le$2010},1/{2011-16},2/{2017-21},3/{2022-26}}{%
+    \pgfmathsetmacro{\x}{\p*15}
+    \node[anchor=south,font=\fontsize{5.2}{5.6}\selectfont,text=muted] at (\x+6.5,37.4){\lab};}
+\end{tikzpicture}}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.40\linewidth}
+    \centering
+    {\sffamily\bfseries\fontsize{7.8}{8.4}\selectfont (b) Cambio temprano--reciente\par}
+    {\sffamily\fontsize{5.6}{6.0}\selectfont\color{muted}$\le$2010 $\rightarrow$ 2022--2026, puntos porcentuales\par}
+    \vspace{1.5mm}
+    \resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{5.8}{6.2}\selectfont]
+% La caja terminaba en x=68 y la etiqueta «+17.7», anclada al oeste en x=63.4,
+% quedaba fuera: al reescalar a \linewidth invadia el margen derecho.
+\path[use as bounding box] (0,-6) rectangle (74,36);
+  \draw[VIUGray!55,line width=.35pt] (40,-4)--(40,34);
+  % Cinco filas fijas: la escala y la posición de cada etiqueta se calculan a
+  % mano, no con una fórmula genérica; con solo cinco valores conocidos y dos
+  % de ellos casi nulos (-0,7 y -0,8) una regla \ifdim/min/max encadenada con
+  % signos negativos es más frágil que útil. La etiqueta de categoría se ancla
+  % en x=20, lejos de las etiquetas de valor (x=26,5-37,5): a x=36, como en el
+  % primer intento, ambas colisionaban y el solape de trazos parecía una
+  % fuente gigante, aunque el PDF confirma que las cinco miden 10,55 pt.
+  \node[anchor=east,text=ink] at (14,30){Contexto / otros};
+  \fill[canary!80!onyx,rounded corners=.4pt] (40,28) rectangle (61.9,32);
+  \node[anchor=west,font=\bfseries,text=ink] at (63.4,30){+17.7};
+
+  \node[anchor=east,text=ink] at (14,22){Planif. / rutas};
+  \fill[VIUOrange,rounded corners=.4pt] (40,20) rectangle (46.2,24);
+  \node[anchor=west,font=\bfseries,text=ink] at (47.7,22){+5.0};
+
+  \node[anchor=east,text=ink] at (14,14){Transporte / control};
+  \fill[SPPurple,rounded corners=.4pt] (39.1,12) rectangle (40,16);
+  \node[anchor=east,font=\bfseries,text=ink] at (37.5,14){-0.7};
+
+  \node[anchor=east,text=ink] at (14,6){Coalición / MRTA};
+  \fill[gamecol,rounded corners=.4pt] (39.0,4) rectangle (40,8);
+  \node[anchor=east,font=\bfseries,text=ink] at (37.5,6){-0.8};
+
+  \node[anchor=east,text=ink] at (14,-2){Recuperación / resil.};
+  \fill[SPRed,rounded corners=.4pt] (28.0,-4) rectangle (40,0);
+  \node[anchor=east,font=\bfseries,text=ink] at (26.5,-2){-9.7};
+\end{tikzpicture}}
+  \end{minipage}
+  \caption[Cuota temática por periodo y cambio temprano-reciente.]{Cuota temática
+  por periodo (a) y cambio entre el periodo temprano y 2022--2026 (b), calculados
+  sobre las cinco categorías reales del corpus analítico V3. La clasificación es
+  multietiqueta: las cuotas de un mismo periodo pueden sumar más de 100~\%. Esta
+  figura no reproduce las siete familias del panel visual original, que carecen
+  de dataset conservado; usa en su lugar la taxonomía verificable del corte V3.}
+  \label{fig:lit-period-shift}
+  \viusource{elaboración propia a partir de \texttt{analytic\_corpus\_v3.csv} y
+  \texttt{theme\_period\_v3.csv}, generado por
+  \texttt{pre-thesis/scripts/build\_review\_figure\_data.py}}
+\end{figure}

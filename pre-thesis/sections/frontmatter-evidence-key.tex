@@ -1,0 +1,47 @@
+\section*{Guía de lectura y niveles de evidencia}
+\addcontentsline{toc}{section}{Guía de lectura y niveles de evidencia}
+
+La memoria separa lo demostrado, lo observado y lo pendiente. Cada afirmación
+fuerte remite a una prueba o a datos regenerables; su alcance queda restringido
+por el modelo, la información y la planta declarados. Esta convención evita
+transferir a hardware una conclusión obtenida en simulación o confundir un
+equilibrio estratégico con factibilidad mecánica.
+
+\begin{table}[!htbp]
+  \centering
+  \caption*{Clave de estados empleada en la memoria.}
+  \small
+  \renewcommand{\arraystretch}{1.14}
+  \begin{tabularx}{\textwidth}{@{}p{2.55cm}p{4.10cm}X@{}}
+    \toprule
+    Estado & Soporte exigido & Lectura permitida \\
+    \midrule
+    \textsc{Soportada} & prueba completa o datos y análisis reproducibles & conclusión válida solo en el dominio declarado \\
+    \textsc{Parcial} & evidencia incompleta o indirecta & resultado acotado; no sostiene la conclusión fuerte \\
+    \textsc{Pendiente} & falta verificación decisiva & hipótesis abierta, sin uso concluyente \\
+    \textsc{Refutada} & contraejemplo o gate incumplido & resultado negativo conservado como evidencia \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Un \emph{teorema} incluye supuestos y demostración; una \emph{proposición}
+declara un alcance más estrecho; una \emph{conjetura} no se presenta como
+hecho; una \emph{observación empírica} informa configuración, semillas y
+estadística. Las magnitudes físicas usan unidades SI. Las cifras del
+Capítulo~6 proceden de macros generadas, y las tablas distinguen explícitamente
+los oráculos globales de los mecanismos distribuidos.
+
+\begin{center}
+  \begin{tikzpicture}[>=Latex, node distance=1.0cm, every node/.style={font=\small}]
+    \node[draw, rounded corners, inner sep=5pt] (claim) {afirmación};
+    \node[draw, rounded corners, inner sep=5pt, right=of claim] (assume) {supuestos};
+    \node[draw, rounded corners, inner sep=5pt, right=of assume] (support) {prueba o datos};
+    \node[draw, rounded corners, inner sep=5pt, right=of support] (scope) {alcance};
+    \draw[->] (claim) -- (assume);
+    \draw[->] (assume) -- (support);
+    \draw[->] (support) -- (scope);
+  \end{tikzpicture}
+\end{center}
+
+Esta cadena es el contrato de lectura del documento: si falta un eslabón, el
+estado se degrada y la conclusión se limita de forma explícita.

@@ -1,0 +1,38 @@
+% Figura 3 del consolidado industrial, portada desde
+% `thesis-reviews/TFM_estado_industrial_patentes_EDITABLE_v47.tex` (líneas
+% 468-493). Sin cambios en el cuerpo TikZ.
+\begin{figure}[!htbp]
+  \centering
+  \makebox[\textwidth][c]{\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[x=0.985mm,y=1mm,font=\sffamily\fontsize{6.65}{7.15}\selectfont]
+\path[use as bounding box] (0,0) rectangle (174,48);
+\tikzset{stage/.style={draw=rule,line width=.45pt,minimum width=25mm,minimum height=13.5mm,align=left,fill=white,inner sep=0pt},arr/.style={-{Latex[length=1.7mm]},line width=.55pt,draw=onyx!45}}
+% each stage is a white box with editable color rail
+\foreach \x/\num/\title/\sub/\col in {14/1/{Reclutamiento}/{local por capacidad}/autumn,43/2/{Factibilidad}/{contacto / torsor}/autumn!82,72/3/{Aproximación}/{y formación}/mustard,101/4/{Transporte}/{carga compartida}/onyx!38,130/5/{Recomposición}/{ante fallo / cambio}/spicy!55,159/6/{Entrega}/{y disolución}/onyx!18}{
+ \node[stage] (s\num) at (\x,31) {};
+ \fill[\col] ({\x-12.5},24.25) rectangle ({\x-8.7},37.75);
+ \node[font=\bfseries\fontsize{8.1}{8.5}\selectfont,text=white] at ({\x-10.6},31){\num};
+ \node[anchor=west,font=\bfseries\fontsize{6.8}{7.2}\selectfont] at ({\x-6.8},32.6){\title};
+ \node[anchor=west,text=muted] at ({\x-6.8},28.8){\sub};
+}
+\foreach \a/\b in {1/2,2/3,3/4,4/5,5/6}{\draw[arr] (s\a.east)--(s\b.west);}
+% coverage labels
+\node[anchor=north,text=muted,font=\fontsize{6.0}{6.4}\selectfont] at (14,22.7){I+D / patentes};
+\node[anchor=north,text=muted,font=\fontsize{6.0}{6.4}\selectfont] at (43,22.7){I+D / patentes};
+\node[anchor=north,text=muted,font=\fontsize{6.0}{6.4}\selectfont] at (72,22.7){literatura técnica};
+\node[anchor=north,text=muted,font=\fontsize{6.0}{6.4}\selectfont] at (101,22.7){precedentes comerciales};
+\node[anchor=north,text=muted,font=\fontsize{6.0}{6.4}\selectfont] at (130,22.7){evidencia parcial};
+\node[anchor=north,text=muted,font=\fontsize{6.0}{6.4}\selectfont] at (159,22.7){operación comercial};
+% three-layer band
+\fill[autumn!24] (1,7.5) rectangle (61,11.5);\fill[mustard!42] (61,7.5) rectangle (113,11.5);\fill[onyx!18] (113,7.5) rectangle (173,11.5);
+\node[anchor=north west,text=muted] at (1,7.1){decisión estratégica};\node[anchor=north west,text=muted] at (61,7.1){factibilidad y ejecución física};\node[anchor=north west,text=muted] at (113,7.1){continuidad de misión};
+\node[anchor=west,text=muted,font=\fontsize{5.8}{6.2}\selectfont] at (1,2.2){Cadena evaluada: composición dinámica $\rightarrow$ verificación física $\rightarrow$ ejecución $\rightarrow$ recuperación.};
+\end{tikzpicture}%
+  }}
+  \caption[Secuencia funcional y evidencia pública predominante.]{Secuencia
+  funcional considerada en el trabajo y relación cualitativa con la evidencia
+  pública predominante revisada. La banda inferior separa decisión estratégica,
+  factibilidad y ejecución física, y continuidad de misión.}
+  \label{fig:method-review-sequence}
+  \viuownsource
+\end{figure}

@@ -1,0 +1,82 @@
+\section{Introducción}
+\label{sec:introduction}
+
+La IFR registró 102\,900 robots de servicio para transporte y logística en 2024:
+un 14\,\% más que el año anterior y más de la mitad de las unidades profesionales
+de su muestra \parencite{internationalFederationRobotics2025}. En almacenes, Kiva
+documentó la coordinación de flotas para mover estanterías
+\parencite{wurman2008coordinating}; Geek+ y MiR ofrecen soluciones comerciales
+para preparación de pedidos y transporte interno
+\parencite{geekplusWarehouseSolutions,mirInternalTransport}. Estas aplicaciones
+se benefician de interfaces repetibles y recorridos conocidos.
+
+El problema cambia cuando una carga rebasa la capacidad individual o exige apoyo
+en varios puntos. Un bastidor pesado, por ejemplo, puede requerir varios AMR y una
+pose de entrega precisa. Una coalición temporal reparte la tarea sin dimensionar
+toda la flota para la carga máxima \parencite{an2023cooperativeReview}. La
+modularidad se conserva, pero la decisión deja de ser una asignación uno a uno.
+
+La asignación multi-robot aporta las variables para seleccionar participantes
+\parencite{gerkeyMataric2004MRTA,korsahStentzDias2013iTax}, y los modelos de
+coalición representan el valor de una composición
+\parencite{shehoryKraus1998Coalition,vigAdams2006Coalition}. Esa salida lógica es
+solo la primera interfaz. El equipo debe ocupar contactos compatibles antes de
+producir el \emph{wrench} requerido; después, el control regula la pose bajo los
+límites de los actuadores
+\parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe,alonsomora2017transport}.
+Un fallo en cualquiera de esas interfaces reabre la selección o detiene la tarea.
+
+La Figura~\ref{fig:problema} fija la lectura espacial del problema: una carga
+puede seguir reclutando, otra puede estar ya en transporte y una tercera puede
+ser atendida por un solo robot. El dibujo representa la arquitectura objetivo
+sin coordinador central; las dependencias globales que conserva la
+implementación evaluada se declaran después en la metodología.
+
+\input{figures/protected/01-distributed-coalition-scenario}
+
+La literatura revisada resuelve partes diferentes de esa cadena. MURDOCH y CBBA
+adjudican tareas mediante negociación
+\parencite{gerkeyMataric2002MURDOCH,choiBrunetHow2009CBBA}; ASyMTRe comprueba
+composiciones funcionales
+\parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}. El control cooperativo
+parte, en cambio, de un grupo ya constituido \parencite{alonsomora2017transport}.
+Las garantías de estos métodos responden a estados de entrada distintos. Dentro
+del corpus y del criterio de inclusión documentados en el Capítulo~5, no se
+identificó una solución que conectara la decisión de coalición con la ejecución
+física, la recuperación y la degradación de red.
+
+Este trabajo especifica la entrada y la salida de cada interfaz. Los robots
+revisan decisiones a partir de su estado y de mensajes vecinales. El cierre
+entero y varios cálculos por carga consultan agregados globales; el registro del
+simulador también resuelve identificadores fuera del vecindario. Por eso la
+implementación evaluada es híbrida. Los optimizadores centralizados solo fijan
+referencias en instancias acotadas, y su ventaja informativa se declara en cada
+comparación.
+
+Los experimentos siguen SP1--SP3. El primero pasa de asignación unitaria a
+cuotas y servicio heterogéneo. El segundo exige un \emph{wrench} planar y regula
+la pose después del acoplamiento. El tercero evalúa seguridad, recuperación y
+tráfico, y registra mensajes y CPU dentro de catálogos finitos. La campaña de
+calidad al escalar la red se conserva en la monografía y no adjudica H5b en esta
+memoria. Demostraciones, enumeraciones y mundos pareados separan resultados
+formales de observaciones empíricas. Un demostrador Cargo comprueba la
+compatibilidad funcional de selección, acoplamiento,
+transporte y reemplazo. Como sustituye parte de los mecanismos parciales de SP1
+y SP2, sus resultados no constituyen una validación integrada de ambos
+subproblemas. El
+piloto tridimensional aporta un ensayo cinemático adicional de congestión.
+
+La modalidad física principal es Cargo soportada. Tras el acoplamiento, carga y
+robots se modelan como un cuerpo planar de contactos fijos con \emph{wrench}
+acotado. Las proposiciones formales se refieren a componentes concretos de ese
+modelo; los dominios experimentales aparecen en las tablas de protocolo. El
+soporte tridimensional, la interacción rueda--suelo y la percepción completa
+requieren otro modelo. Tampoco se ensayaron agarre físico ni empuje por
+confinamiento geométrico.
+
+\input{sections/intro-contracts}
+
+Los Capítulos~2 a~5 fijan objetivos, hipótesis, protocolo y fundamentos. El
+Capítulo~6 presenta la evidencia; el Capítulo~7 responde a las hipótesis y
+delimita la transferencia de los resultados. Los anexos contienen las
+demostraciones completas y el estado de reproducibilidad.

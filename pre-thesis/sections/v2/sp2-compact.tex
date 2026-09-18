@@ -1,0 +1,214 @@
+% SP2 comprimido para la v2: figura de arquitectura, ecuaciones esenciales,
+% los cinco resultados formales (solo enunciado; las demostraciones ya vivían
+% en anexo en la v1: app:sp4-game-proof, app:sp4-pose-proof, app:sp6-proofs,
+% app:sp6-feasible-nash-proof), y una tabla de resultados por bloque. La
+% metodología completa (tablas de métodos, diseño experimental, discusión
+% extendida) se traslada al Anexo~\ref{app:sp2-full-detail}.
+\subsection{SP2: ejecución y transporte cooperativo}
+\label{subsec:sp2}
+\zlabel{budget:sp2-start}
+\input{shared/generated-macros/sp4_numbers.tex}
+\input{shared/generated-macros/sp6_numbers.tex}
+\input{shared/generated-macros/cargo_e2e_numbers.tex}
+
+SP2 recibe una coalición cerrada de SP1 y certifica, en tres bloques
+encadenados, que puede moverse. El Anexo~\ref{app:sp2-canonical-bridge} prueba
+la equivalencia entre twist de la carga y ruedas, las monotonicidades opuestas
+al retirar un miembro y la insuficiencia de capacidad escalar; el razonamiento
+completo de cada bloque, incluida su metodología experimental, se conserva en
+el Anexo~\ref{app:sp2-full-detail}.
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{7.0}{7.6}\selectfont]
+    \tikzset{stage/.style={draw=VIUGray!70,line width=0.5pt,rounded corners=2pt,
+        minimum width=42mm,minimum height=17mm,align=center,fill=white},
+      arr/.style={-{Latex[length=2.2mm]},line width=0.7pt,draw=VIUDark!70}}
+    \node[stage,fill=VIUOrange!8] (e4) at (24,10)
+      {\textbf{E4 · Acoplamiento y transporte}\\[1mm]{\fontsize{6.0}{6.5}\selectfont certifica: pose estable con contacto fijo}\\
+       {\fontsize{6.0}{6.5}\selectfont\color{VIUGray}no certifica: vivacidad sin coordinación}};
+    \node[stage,fill=SPBlue!8] (e6) at (78,10)
+      {\textbf{E6 · Recuperación}\\[1mm]{\fontsize{6.0}{6.5}\selectfont certifica: reparación mínima factible}\\
+       {\fontsize{6.0}{6.5}\selectfont\color{VIUGray}no certifica: cota del peor equilibrio}};
+    \node[stage,fill=SPPurple!8] (cargo) at (132,10)
+      {\textbf{Cargo · Demostrador}\\[1mm]{\fontsize{6.0}{6.5}\selectfont certifica: compatibilidad funcional}\\
+       {\fontsize{6.0}{6.5}\selectfont\color{VIUGray}no certifica: composición formal de garantías}};
+    \draw[arr] (e4.east)--(e6.west);
+    \draw[arr] (e6.east)--(cargo.west);
+    \node[anchor=north,text=VIUGray,font=\fontsize{6.2}{6.6}\selectfont] at (78,-3)
+      {SP3 trata cada coalición como agente compuesto para el tráfico.};
+  \end{tikzpicture}
+  \caption[Composición de los tres bloques de SP2.]{Composición de los tres
+  bloques de SP2. Cargo integra funcionalmente los mecanismos, no reproduce
+  las pruebas de E4 y E6 como una composición demostrada.}
+  \label{fig:sp2-compact-pipeline}
+  \viuownsource
+\end{figure}
+
+\paragraph{E4 --- acoplamiento y transporte entre poses}
+Con $\rho_i\in\Delta_3$ la mezcla avanzar/ceder/esperar de cada robot en un
+conflicto de recurso $\ell$, $y_\ell(\rho)=\sum_{i,a}b_{ia\ell}\rho_{ia}$ y
+$\beta_4,\alpha_4>0$,
+\begin{equation}
+ J_i(\rho_i,\rho_{-i})=\sum_ac_{ia}^{(4)}\rho_{ia}
+ +\tfrac{\beta_4}{2}\sum_{\ell}y_\ell(\rho)^2+\tfrac{\alpha_4}{2}\|\rho_i\|_2^2.
+ \label{eq:sp2-compact-e4-cost}
+\end{equation}
+Para la carga, con $e_k^L$ el error de pose y $W_k^d=-K_Pe_k^L-K_D\dot q_k^L$
+la referencia de \emph{wrench},
+\begin{equation}
+ M_k\ddot q_k^L+D_k\dot q_k^L=G_{C_k}\boldsymbol\lambda_k^\star,\qquad
+ \boldsymbol\lambda_k^\star\in\argmin_{0\leq\lambda\leq\bar\lambda}
+ \|G_{C_k}\lambda-W_k^d\|_{Q_W}^2.
+ \label{eq:sp2-compact-e4-pose}
+\end{equation}
+
+\begin{contribucion}{juego de vivacidad y servorregulación de pose}
+\estadoaporte{demostrado por separado para la instantánea congelada y para contactos bilaterales fijos; demostraciones en el Anexo~\ref{app:sp4-game-proof} y el Anexo~\ref{app:sp4-pose-proof}.}
+\begin{proposicion}[Potencial exacto y equilibrio variacional de E4]
+\label{prop:sp2-compact-e4-potential}
+Para costes y conflictos congelados, $\alpha_4>0$, simplex no vacíos, restricciones lineales $y_\ell\leq1$ y un punto interior factible (p. ej. la acción esperar satisface $y_\ell<1$ para todo $\ell$), los costes de~\eqref{eq:sp2-compact-e4-cost} definen un juego de potencial exacto cuyo minimizador coincide con los KKT del problema compartido y el equilibrio variacional de la relajación.
+\end{proposicion}
+\begin{teorema}[Disipación y estabilidad local de la pose]
+\label{thm:sp2-compact-e4-pose}
+Para la dinámica de la carga de la Ecuación~\eqref{eq:sp2-compact-e4-pose}, con $M_k,D_k,K_P,K_D\succ0$, objetivo y contactos fijos, y realización exacta del \emph{wrench} nominal ($\boldsymbol r_k^W=0$), la función $V=\tfrac12\dot q^{L\mathsf T}M_k\dot q^L+\tfrac12e_k^{L\mathsf T}K_Pe_k^L$ satisface $\dot V\leq0$; el principio de invariancia de LaSalle sobre el conjunto $\dot V=0$ da entonces estabilidad asintótica local del equilibrio de pose.
+\end{teorema}
+\end{contribucion}
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Métodos comparados en E4.}
+  \label{tab:sp2-compact-e4-methods}
+  \fontsize{7.6}{8.6}\selectfont
+  \setlength{\tabcolsep}{2.2pt}
+  \renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.0cm} >{\raggedright\arraybackslash}p{2.0cm} Y}
+    \toprule
+    Fuente/método & Coste & Resultado y alcance \\
+    \midrule
+    SCP restringido \parencite{alonsomora2017transport} & iteraciones globales de QP & solución local; referencia de formulación, fuera del comparativo numérico \\
+    Directo/CBF (referencia) & $O(I_B(d_i+n_o))$ & seguridad instantánea verificada; vivacidad sin mecanismo coordinado \\
+    Planificador central + HOCBF & búsqueda global + $O(I_BN^2)$ & referencia coordinada; sin certificado de optimalidad \\
+    Juego PD/replicator + HOCBF (TFM) & $O(I_Gd_i+I_B(d_i+n_o))$ & VE para la relajación congelada y ejecución verificada \\
+    Control de pose + proyección de \emph{wrench} & $C_{\mathrm{LS}}(s)$ & estabilidad local con realización exacta; piloto planar de contacto fijo \\
+    \bottomrule
+  \end{tabularx}
+  \viusource{elaboración propia a partir de las referencias citadas y de los métodos evaluados; detalle completo en el Anexo~\ref{app:sp2-full-detail}}
+\end{table}
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Resultados pareados del experimento principal de acoplamiento dinámico.}
+  \label{tab:sp2-compact-e4-docking}
+  \resizebox{\textwidth}{!}{\input{shared/generated-macros/sp4_docking_results.tex}}
+  \viuownsource
+\end{table}
+
+El Anexo~\ref{app:sp2-full-detail} amplía las cifras, los intervalos y la comparación completa de métodos.
+
+\paragraph{E6 --- recuperación ante fallo}
+Con $D_6(\boldsymbol x)$ el déficit residual y $K_6$ el coste de movilización,
+\begin{equation}
+ \Phi_6(\boldsymbol x)=-\lambda_6D_6(\boldsymbol x)-K_6(\boldsymbol x),\qquad
+ U_i(x_i,\boldsymbol x_{-i})=\Phi_6(x_i,\boldsymbol x_{-i})-\Phi_6(0,\boldsymbol x_{-i}).
+ \label{eq:sp2-compact-e6-potential}
+\end{equation}
+
+\begin{contribucion}{equilibrio de recuperación sujeto a certificado}
+\estadoaporte{demostrado para el juego binario con déficit y costes congelados; demostraciones en el Anexo~\ref{app:sp6-proofs}.}
+\begin{teorema}[Potencial exacto y terminación]
+\label{thm:sp2-compact-e6-exact-potential}
+El juego de~\eqref{eq:sp2-compact-e6-potential} es de potencial exacto; existe al menos un Nash puro y todo camino maximal de mejoras estrictas termina en, como máximo, $2^{n_R}-1$ cambios aceptados.
+\end{teorema}
+\begin{teorema}[Caracterización exacta de los Nash]
+\label{thm:sp2-compact-e6-feasible-nash}
+Con capacidades no negativas, costes positivos y $\lambda_6>\kappa_{\max}^6/\delta_{\min}$, los Nash puros coinciden exactamente con las coaliciones factibles mínimas por inclusión, de donde $\operatorname{PoS}_6=1$.
+\end{teorema}
+\begin{proposicion}[Ineficiencia no acotada del peor Nash]
+\label{prop:sp2-compact-e6-unbounded-poa}
+No existe cota uniforme, independiente de la instancia y de $\lambda_6$, para el cociente entre el peor Nash factible y el óptimo: $\operatorname{PoA}_6=+\infty$ incluso con un recurso y tres robots.
+\end{proposicion}
+\end{contribucion}
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Métodos comparados en E6-C.}
+  \label{tab:sp2-compact-e6-methods}
+  \fontsize{7.6}{8.6}\selectfont
+  \setlength{\tabcolsep}{2.2pt}
+  \renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.0cm} >{\raggedright\arraybackslash}p{2.0cm} Y}
+    \toprule
+    Método & Coste & Garantía o límite \\
+    \midrule
+    Juego potencial guardado & $O(A_6)$ por activación & Nash factible y mínimo bajo el umbral; no óptimo global \\
+    Subasta marginal & $O(n_R^2A_6)$ & adaptación distribuible; no equivale a CBBA completo \\
+    Voraz por distancia & $O(n_R\log n_R+n_RA_6)$ & referencia simple; puede sobrerreclutar \\
+    Sin reparación & $O(1)$ & ablación causal; conserva el déficit \\
+    Oráculo exacto & $O(2^{n_R}n_RA_6)$ & coste mínimo con certificado; solo tamaños pequeños \\
+    \bottomrule
+  \end{tabularx}
+  \viusource{elaboración propia a partir de \parencite{parker1998alliance,nanjanath2006dynamicAuctions,johnson2011acbba,buckman2019cbbaPr}; detalle completo en el Anexo~\ref{app:sp2-full-detail}}
+\end{table}
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Resultados agregados de E6-C sobre 480 mundos pareados por método.}
+  \label{tab:sp2-compact-e6-results}
+  \scriptsize
+  \resizebox{\textwidth}{!}{\input{shared/generated-macros/sp6_results.tex}}
+  \viuownsource
+\end{table}
+
+$\operatorname{PoS}_6=1$ garantiza un Nash óptimo cuando el tiempo no
+restringe la reparación. La caída de éxito temporal bajo plazo estrecho es un
+efecto empírico distinto, de distancia física entre robots y déficit, no una
+instancia del contraejemplo de coste no acotado que prueba
+$\operatorname{PoA}_6=+\infty$. El régimen de plazo estrecho, con sus cifras
+e intervalos completos, se discute en el Anexo~\ref{app:sp2-full-detail}.
+
+\paragraph{Cargo --- demostrador híbrido}
+El demostrador ejecuta reclutamiento, acoplamiento, transporte y recuperación
+sobre una misma planta planar con líder designado globalmente y reemplazo
+voraz; sus reglas difieren de los mecanismos de E2, E3 y E6, y su evidencia
+acredita compatibilidad funcional, no la composición formal de esas garantías.
+
+\begin{algorithm}[!htbp]
+\caption{Demostrador Cargo híbrido: selección, acoplamiento, transporte y sustitución}
+\label{alg:cargo-hibrido-compact}
+\begin{algorithmic}[1]
+\Require identificadores activos, registro global, demanda agregada, guardia de seguridad
+\Ensure entrega en pose destino, abstención, o fallo declarado con su causa
+\State propagar identificadores (7 eventos, 10 si la red está degradada) y ordenar candidatos por $s_i=\bar\delta_i-0.08\bar c_i-0.025\bar f_i$
+\While{no se satisface el criterio agregado $|C_k|\geq3$, $\sum c_i^{\mathrm{pay}}\geq m_k^{\mathrm{req}}$, $\sum f_i^{\max}\geq F_k^{\mathrm{req}}$ y quedan candidatos}
+  \State añadir el siguiente candidato
+\EndWhile
+\If{no se satisface el criterio}\Return abstención\EndIf
+\State acoplar uniciclos; transportar con punto intermedio y filtro de seguridad
+\If{falla el miembro de menor límite de fuerza}
+  \State detener, retirar identificador, seleccionar y desplazar reemplazo
+  \If{llega y el criterio vuelve a cumplirse}\State reanudar\Else\Return fallo\EndIf
+\EndIf
+\Return entrega en pose destino
+\end{algorithmic}
+\end{algorithm}
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Demostrador Cargo híbrido: resultados agregados de los seis tratamientos.}
+  \label{tab:sp2-compact-cargo-results}
+  \small
+  \resizebox{\textwidth}{!}{\input{shared/generated-macros/cargo_e2e_results.tex}}
+  \viuownsource
+\end{table}
+
+El demostrador alcanzó una tasa de misión $\CargoEtwoESuccess$ sin
+intersección durante transporte, frente a $\CargoEtwoECentralSuccess$ de la
+referencia central. En los tres regímenes de riesgo (obstáculo estático, red
+degradada y fallo durante el transporte; el nominal abierto queda fuera de
+este contraste), la guardia física cambió el éxito en
+$\CargoEtwoEGuardEffect$; continuar con reemplazo tras un fallo lo elevó en
+$\CargoEtwoERepairEffect$ frente a detenerse. El Anexo~\ref{app:sp2-full-detail}
+detalla el protocolo, los cuatro regímenes y las ablaciones.
+
+\zlabel{budget:sp2-end}

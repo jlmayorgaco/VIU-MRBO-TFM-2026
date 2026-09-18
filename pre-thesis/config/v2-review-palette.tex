@@ -1,0 +1,119 @@
+% =====================================================================
+% Paleta y macros de los consolidados de revisión, reproducidas tal como
+% están en `thesis-reviews/TFM_estado_industrial_patentes_EDITABLE_v47.tex`
+% y en la revisión académica.
+%
+% Se definen con los mismos nombres que el original para que el código TikZ
+% de las figuras pueda portarse sin reescribirlo y siga siendo editable con
+% la misma sintaxis que en los consolidados.
+%
+% Sobre los nombres genéricos: los `\colorlet` de abajo remapean `blue`,
+% `green`, `teal`, `orange` y `olive`. Es deliberado y seguro aquí porque la
+% memoria no usa ninguno de esos nombres: su paleta es VIUOrange, VIUDark,
+% VIUGray, VIULinkBlue, SPBlue, SPGreen, SPRed, SPPurple, SPFloor y SPGrid,
+% más los `dvipsnames` (RoyalBlue, BurntOrange, ...). Comprobado sobre todo
+% `sections/`, `figures/` y `viu-mrob-thesis.sty`.
+% =====================================================================
+
+\definecolor{autumn}{HTML}{E36A2E}
+\definecolor{spicy}{HTML}{C8572A}
+\definecolor{onyx}{HTML}{0C0C0C}
+\definecolor{mustard}{HTML}{FCD757}
+\definecolor{canary}{HTML}{8CB369}
+
+\colorlet{navy}{spicy}
+\colorlet{orange}{autumn}
+\colorlet{blue}{mustard}
+\colorlet{teal}{onyx}
+\colorlet{green}{canary}
+\colorlet{plum}{spicy!35!white}
+\colorlet{ink}{onyx}
+\colorlet{muted}{onyx!58!white}
+\colorlet{rule}{onyx!18!white}
+\colorlet{soft}{mustard!10!white}
+\colorlet{softblue}{mustard!14!white}
+\colorlet{softgreen}{canary!12!white}
+\colorlet{softwarm}{autumn!9!white}
+\colorlet{softplum}{spicy!9!white}
+\colorlet{charcoal}{onyx}
+\colorlet{sky}{mustard}
+\colorlet{olive}{onyx!52!white}
+
+% Colores de familia del mapa metodológico académico.
+\definecolor{gamecol}{HTML}{2D6CC0}
+\definecolor{controlcol}{HTML}{E36A2E}
+\definecolor{searchcol}{HTML}{2E9B5F}
+\definecolor{learncol}{HTML}{7B4DBA}
+\definecolor{foundcol}{HTML}{6F7C8E}
+
+% ---------------------------------------------------------------------
+% Tipos de columna de los consolidados. En el original son L{}, C{} e Y,
+% pero `C` e `Y` ya existen en viu-mrob-thesis.sty como columnas X sin
+% argumento. Se renombran a J{}, K{} y Z, que están libres. Tienen que ser
+% de una sola letra: `array` no maneja bien los nombres de varias y acaba
+% rompiendo la `Y` de las tablas que ya existían.
+% ---------------------------------------------------------------------
+\newcolumntype{J}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{K}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{Z}{>{\RaggedRight\arraybackslash}X}
+
+% ---------------------------------------------------------------------
+% Símbolos de las matrices de capacidades, con la geometría del original.
+% Relleno sólido, media luna y circunferencia vacía se distinguen impresos
+% en blanco y negro.
+% ---------------------------------------------------------------------
+\renewcommand{\capyes}{\begin{tikzpicture}[x=1mm,y=1mm,baseline=-0.6ex]\path[use as bounding box](-1.6,-1.6)rectangle(1.6,1.6);\fill[canary!85!onyx](0,0)circle(1.25);\end{tikzpicture}}
+\renewcommand{\cappart}{\begin{tikzpicture}[x=1mm,y=1mm,baseline=-0.6ex]\path[use as bounding box](-1.6,-1.6)rectangle(1.6,1.6);\begin{scope}\clip(0,0)circle(1.25);\fill[mustard](-1.25,-1.25)rectangle(0,1.25);\end{scope}\draw[onyx!55,line width=.28pt](0,0)circle(1.25);\end{tikzpicture}}
+\renewcommand{\capno}{\begin{tikzpicture}[x=1mm,y=1mm,baseline=-0.6ex]\path[use as bounding box](-1.6,-1.6)rectangle(1.6,1.6);\draw[onyx!48,line width=.32pt](0,0)circle(1.25);\end{tikzpicture}}
+\renewcommand{\capunk}{{\sffamily\bfseries\color{muted}?}}
+\renewcommand{\capna}{{\sffamily\color{muted}--}}
+% El glifo de objetivo era un tick blanco sobre cuadro lleno, indistinguible de
+% \capyes al hojear: la fila «TFM objetivo» parecia reclamar capacidades
+% demostradas. Ahora es una diana hueca, que no se confunde con una marca de
+% verificacion.
+\renewcommand{\capgoal}{\begin{tikzpicture}[x=1mm,y=1mm,baseline=-0.7ex]\path[use as bounding box](-1.9,-1.9)rectangle(1.9,1.9);\draw[spicy,line width=.42pt](-1.45,-1.45)rectangle(1.45,1.45);\fill[spicy](-0.5,-0.5)rectangle(0.5,0.5);\end{tikzpicture}}
+
+% ---------------------------------------------------------------------
+% Puntos y leyenda del mapa metodológico académico, portados desde
+% `thesis-reviews/academic_literature_review (1).tex` (líneas 60-68).
+% #1,#2 = coordenadas; #3 = autor; #4 = año; #5 = inicial; #6 = número de
+% referencia; #7 = color de familia.
+% ---------------------------------------------------------------------
+\newcommand{\mappointL}[7]{%
+  \filldraw[fill=#7,draw=white,line width=.64pt] (#1,#2) circle (2.38mm);
+  \node[text=white,font=\sffamily\bfseries\fontsize{5.55}{5.75}\selectfont] at (#1,#2){#5};
+  \node[anchor=west,align=left,text=#7!70!black,font=\sffamily\bfseries\fontsize{5.35}{5.60}\selectfont] at ($(#1,#2)+(0.036,0)$) {#3\,\textsuperscript{[#6]}\\[-.45mm]\fontsize{4.68}{4.95}\selectfont #4};}
+\newcommand{\mappointR}[7]{%
+  \filldraw[fill=#7,draw=white,line width=.64pt] (#1,#2) circle (2.38mm);
+  \node[text=white,font=\sffamily\bfseries\fontsize{5.55}{5.75}\selectfont] at (#1,#2){#5};
+  \node[anchor=east,align=right,text=#7!70!black,font=\sffamily\bfseries\fontsize{5.35}{5.60}\selectfont] at ($(#1,#2)+(-0.036,0)$) {#3\,\textsuperscript{[#6]}\\[-.45mm]\fontsize{4.68}{4.95}\selectfont #4};}
+\newcommand{\chip}[2]{\tikz[baseline=-0.6ex]{\filldraw[fill=#1,draw=white,line width=.35pt] (0,0) circle (1.75mm);}\,\textcolor{ink}{#2}}
+
+% ---------------------------------------------------------------------
+% Celda de sistema de la matriz industrial. El original reserva un hueco
+% de fotografía enlazado a la fuente oficial; aquí se conserva el enlace y
+% se sustituye el hueco por el número de caso, que es lo que la memoria
+% necesita para casar la tabla con el mapa.
+% ---------------------------------------------------------------------
+% El círculo se centra en (3.1,3.1), no en el origen: con la caja declarada en
+% (0,0)-(6.2,6.2) y el trazo centrado en (0,0) el disco sobresalía 1 mm por la
+% izquierda y la celda desbordaba por 2,85 pt en cada fila de la matriz.
+\newcommand{\casenum}[1]{%
+  \begin{tikzpicture}[x=1mm,y=1mm,baseline=-0.7mm]
+    \path[use as bounding box] (0,0) rectangle (6.2,6.2);
+    \fill[autumn] (3.1,3.1) circle (3.0);
+    \node[font=\sffamily\bfseries\fontsize{5.4}{5.6}\selectfont,text=white] at (3.1,3.1) {#1};
+  \end{tikzpicture}%
+}
+\newcommand{\matrixsystem}[5]{%
+  \begin{minipage}[t]{\linewidth}\vspace{0pt}%
+  \begin{minipage}[c]{6.4mm}\centering\casenum{#1}\end{minipage}%
+  \hspace{0.4mm}%
+  % \sloppy y las penalizaciones bajas dejan partir nombres como «Dual-AMR» o
+  % «SL/HL-AGV», que si no desbordan la celda por unos pocos puntos.
+  \begin{minipage}[c]{26.4mm}\raggedright\sloppy\hyphenpenalty=50\exhyphenpenalty=50\relax
+    {\sffamily\bfseries\href{#5}{#2}}\par
+    {\fontsize{5.35}{5.65}\selectfont\color{muted}#3 · #4}
+  \end{minipage}%
+  \end{minipage}%
+}

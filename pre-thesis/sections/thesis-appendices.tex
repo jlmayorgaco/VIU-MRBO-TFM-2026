@@ -1,0 +1,52 @@
+\section{Reproducibilidad y disponibilidad}
+\label{app:reproducibility}
+
+Los estimandos y resultados principales de la memoria se enlazan con tablas o
+macros generadas; parámetros de protocolo y ejemplos analíticos permanecen
+declarados en las fuentes. La instantánea documental conserva la procedencia de
+cada artefacto y el banco Cargo nuevo registra configuración, semilla, entorno y
+hashes por ejecución. Una campaña solo podrá elevar una afirmación cuando sus
+datos procesados, pruebas y enlace con la matriz de evidencia estén disponibles.
+
+\section{Demostraciones seleccionadas de SP1}
+\label{app:sp1-all-proofs}
+\input{sections/source-snapshot/appendices/04-sp2-proofs}
+\input{sections/sp1-wrench-proofs-condensed}
+
+\section{Demostraciones seleccionadas de SP2}
+\label{app:sp2-all-proofs}
+\input{shared/formal-results/sp2-canonical-bridge}
+\input{sections/source-snapshot/appendices/06-sp4-proofs}
+
+\section{Demostraciones compactas de recuperación}
+\label{app:sp6-proofs}
+
+Para una desviación unilateral $x_i\to x_i'$, la utilidad marginal de~\eqref{eq:sp6-payoff} satisface
+\[
+ U_i(x_i',\boldsymbol x_{-i})-U_i(x_i,\boldsymbol x_{-i})
+ =\Phi_6(x_i',\boldsymbol x_{-i})-\Phi_6(x_i,\boldsymbol x_{-i}).
+\]
+Por tanto, $\Phi_6$ es un potencial exacto. Al ser $\{0,1\}^{n_R}$ finito, el potencial alcanza un máximo, que es Nash. Un camino de mejoras estrictas no repite perfiles; si es maximal, acaba en un Nash tras no más de $2^{n_R}-1$ cambios aceptados. La cota se refiere a eventos, no a tiempo físico.
+
+Si el camino acepta $m\leq2^{n_R}-1$ cambios, contiene como máximo $m+1$
+ventanas agregadas: detección--primer cambio aceptado, intervalos entre cambios
+aceptados y certificación terminal. Cada ventana incluye las revisiones que no
+alteran el perfil. Por tanto, su duración estratégica no supera
+$\bar\tau_d+2^{n_R}\bar\tau_a$. Los reemplazos viajan en paralelo, de modo que
+el último tarda a lo sumo $\max_{i:x_i=1}\ell_i/v_i^{\min}$; al añadir
+$\tau_s$ se obtiene~\eqref{eq:sp6-time-bound}. La cota requiere las ventanas,
+trayectorias libres y velocidades positivas del Corolario~\ref{cor:sp6-time-bound};
+la sola justicia no la implica.
+
+\subsection{Factibilidad y minimalidad}
+\label{app:sp6-feasible-nash-proof}
+
+Considérese un perfil deficitario. La factibilidad de la reserva completa implica que algún robot no seleccionado reduce estrictamente $D_6$; como hay finitos perfiles deficitarios, el mínimo~\eqref{eq:sp6-delta-min} es positivo. Con $\lambda_6\delta_{\min}>\kappa_{\max}^6$, ese ingreso aumenta $\Phi_6$, de modo que ningún perfil deficitario es Nash. Si un Nash factible tuviera un miembro redundante, su salida conservaría $D_6=0$ y aumentaría el potencial en $\kappa_i^6>0$, contradicción.
+
+Recíprocamente, en una coalición factible mínima por inclusión, el ingreso de un robot externo modifica $\Phi_6$ en $-\kappa_j^6<0$. La salida de un miembro $i$ crea un déficit al menos $\delta_{\min}$ y produce una variación no mayor que $\kappa_{\max}^6-\lambda_6\delta_{\min}<0$. No hay otra desviación binaria; el perfil es Nash. Así se prueba el Teorema~\ref{thm:sp6-feasible-nash}. La positividad de los costes hace mínima por inclusión a toda solución factible de coste mínimo, lo que establece~\eqref{eq:sp6-pos}.
+
+Para la Proposición~\ref{prop:sp6-unbounded-poa}, tómese una demanda escalar unitaria, capacidades $(1,1/2,1/2)$, costes $(M,1,1)$ con $M>2$ y $\lambda_6=5M/2$. Se tiene $\delta_{\min}=1/2$ y se cumple el umbral. Los perfiles $(1,0,0)$ y $(0,1,1)$ son coaliciones factibles mínimas y, por el teorema, Nash; sus costes son $M$ y $2$. El cociente $M/2$ diverge cuando $M\to\infty$, por lo que no existe una cota uniforme del peor equilibrio. Las derivaciones alternativas y la comprobación enumerativa se conservan en la monografía técnica; estos resultados no certifican la estabilidad nominal de Cargo.
+
+\section{Demostraciones seleccionadas de SP3}
+\label{app:sp3-all-proofs}
+\input{sections/source-snapshot/appendices/08-sp7-proofs}

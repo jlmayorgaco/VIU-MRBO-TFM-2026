@@ -1,0 +1,1582 @@
+# Extracted Citation Contexts
+Generated: 2026-09-09_run01
+Paper root: .
+Bib file: bibliography/references.bib
+Documents: thesis=main.tex; monograph=monograph/main.tex
+Included TeX files (thesis): 50
+Included TeX files (monograph): 49
+Active cited keys: 76
+
+## alonsomora2017transport
+```bibtex
+@article{alonsomora2017transport,
+  author       = {Alonso-Mora, Javier and Baker, Stuart and Rus, Daniela},
+  title        = {Multi-robot formation control and object transport in dynamic environments via constrained optimization},
+  journaltitle = {The International Journal of Robotics Research},
+  date         = {2017},
+  volume       = {36},
+  number       = {9},
+  pages        = {1000--1021},
+  doi          = {10.1177/0278364917719333},
+  url          = {https://doi.org/10.1177/0278364917719333}
+}
+```
+- thesis sections/source-snapshot/mainmatter/01-introduction.tex:26 `\parencite`
+  Context: El equipo debe ocupar contactos compatibles antes de producir el \emph{wrench} requerido; después, el control regula la pose bajo los límites de los actuadores \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe,alonsomora2017transport}.
+- thesis sections/source-snapshot/mainmatter/01-introduction.tex:42 `\parencite`
+  Context: El control cooperativo parte, en cambio, de un grupo ya constituido \parencite{alonsomora2017transport}.
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:212 `\parencite`
+  Context: Las estructuras virtuales distribuyen referencias entre robots, y la optimización restringida reparte esfuerzo o impone evitación para esa formación \parencite{alonsomora2017transport,ebel2024cooperative}.
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/sp4.tex:78 `\parencite`
+  Context: SCP es la referencia global de formulación \parencite{alonsomora2017transport}.
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/sp4.tex:91 `\parencite`
+  Context: \begin{table}[!htbp] \centering \caption{Métodos y literatura comparada para E4.} \label{tab:sp4-methods} \viutablefont \setlength{\tabcolsep}{1.05pt} \renewcommand{\arraystretch}{1.03} \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.02cm} >{\raggedright\arraybackslash}p{1.34cm} >{\raggedright\arraybackslash}p{2.18cm} >{\raggedright\arraybackslash}p{2.05cm} >{\raggedright\arraybackslash}p{1.82cm} Y} \toprule Fuente/método & Clase & Coste y mensajes & Arquitectura/información & Parámetros & Resultado y alcance \\ \midrule SCP restringido \parencite{alonsomora2017transport} & NLP no convexo & Iteraciones globales de QP & Central/coordinado; predicción global & Horizonte, pesos & Solución local del modelo; referencia de formulación fuera del comparativo numérico.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:212 `\parencite`
+  Context: Las estructuras virtuales distribuyen referencias entre robots, y la optimización restringida reparte esfuerzo o impone evitación para esa formación \parencite{alonsomora2017transport,ebel2024cooperative}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp4.tex:78 `\parencite`
+  Context: SCP es la referencia global de formulación \parencite{alonsomora2017transport}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp4.tex:91 `\parencite`
+  Context: \begin{table}[!htbp] \centering \caption{Métodos y literatura comparada para E4.} \label{tab:sp4-methods} \viutablefont \setlength{\tabcolsep}{1.05pt} \renewcommand{\arraystretch}{1.03} \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.02cm} >{\raggedright\arraybackslash}p{1.34cm} >{\raggedright\arraybackslash}p{2.18cm} >{\raggedright\arraybackslash}p{2.05cm} >{\raggedright\arraybackslash}p{1.82cm} Y} \toprule Fuente/método & Clase & Coste y mensajes & Arquitectura/información & Parámetros & Resultado y alcance \\ \midrule SCP restringido \parencite{alonsomora2017transport} & NLP no convexo & Iteraciones globales de QP & Central/coordinado; predicción global & Horizonte, pesos & Solución local del modelo; referencia de formulación fuera del comparativo numérico.
+
+## ames2017cbf
+```bibtex
+@article{ames2017cbf,
+  author       = {Ames, Aaron D. and Xu, Xiangru and Grizzle, Jessy W. and Tabuada, Paulo},
+  title        = {Control barrier function based quadratic programs for safety critical systems},
+  journaltitle = {IEEE Transactions on Automatic Control},
+  date         = {2017},
+  volume       = {62},
+  number       = {8},
+  pages        = {3861--3876},
+  doi          = {10.1109/TAC.2016.2638961},
+  url          = {https://doi.org/10.1109/TAC.2016.2638961}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:223 `\parencite`
+  Context: El filtro CBF-QP proyecta el control nominal sobre las desigualdades admisibles bajo el modelo, el grado relativo y el estado declarados \parencite{ames2017cbf}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:223 `\parencite`
+  Context: El filtro CBF-QP proyecta el control nominal sobre las desigualdades admisibles bajo el modelo, el grado relativo y el estado declarados \parencite{ames2017cbf}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp5.tex:117 `\parencite`
+  Context: VO/RVO/ORCA permiten comparar la selección geométrica de velocidades \parencite{fiorini1998velocity,vandenberg2008rvo,vandenberg2011orca}, mientras el CBF fija la referencia de invariancia continua bajo sus supuestos de factibilidad y regularidad \parencite{ames2017cbf}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp5.tex:132 `\parencite`
+  Context: \\ CBF-QP \parencite{ames2017cbf} & QP convexo si es factible & $C_{\mathrm{QP}}(2,m)$ & Depende de la geometría disponible & $\gamma_5$, margen, límites & Invariancia continua bajo supuestos; sirve como referencia conceptual y el optimizador no se ejecuta.
+
+## an2023cooperativeReview
+```bibtex
+@article{an2023cooperativeReview,
+  author       = {An, Xing and Wu, Celimuge and Lin, Yangfei and Lin, Min and Yoshinaga, Tsutomu and Ji, Yusheng},
+  title        = {Multi-Robot Systems and Cooperative Object Transport: Communications, Platforms, and Challenges},
+  journaltitle = {IEEE Open Journal of the Computer Society},
+  date         = {2023},
+  volume       = {4},
+  pages        = {23--36},
+  doi          = {10.1109/OJCS.2023.3238324},
+  url          = {https://doi.org/10.1109/OJCS.2023.3238324}
+}
+```
+- thesis sections/source-snapshot/mainmatter/01-introduction.tex:16 `\parencite`
+  Context: Una coalición temporal reparte la tarea sin dimensionar toda la flota para la carga máxima \parencite{an2023cooperativeReview}.
+- thesis sections/intro-contracts.tex:14 `\parencite`
+  Context: La carga debe cerrar $\mathcal C_k$, realizar el \emph{wrench} y solo entonces ejecutar el transporte con su filtro de seguridad \parencite{an2023cooperativeReview}.
+- thesis sections/intro-contracts.tex:61 `\parencite`
+  Context: Cargo usa contactos soportados y bilaterales; caging parte de fuerzas unilaterales y exige otra prueba \parencite{an2023cooperativeReview,rosenfelder2024force}.
+- monograph sections/intro-contracts.tex:14 `\parencite`
+  Context: La carga debe cerrar $\mathcal C_k$, realizar el \emph{wrench} y solo entonces ejecutar el transporte con su filtro de seguridad \parencite{an2023cooperativeReview}.
+- monograph sections/intro-contracts.tex:61 `\parencite`
+  Context: Cargo usa contactos soportados y bilaterales; caging parte de fuerzas unilaterales y exige otra prueba \parencite{an2023cooperativeReview,rosenfelder2024force}.
+
+## awsRobomakerWarehouse2021
+```bibtex
+@online{awsRobomakerWarehouse2021,
+  author  = {{Amazon Web Services}},
+  title   = {{AWS RoboMaker Small Warehouse World}},
+  date    = {2021-12-15},
+  url     = {https://github.com/aws-robotics/aws-robomaker-small-warehouse-world},
+  urldate = {2026-07-17},
+  note    = {Versión 1.0.4; licencia MIT-0}
+}
+```
+- thesis sections/source-snapshot/mainmatter/04-methodology.tex:361 `\parencite`
+  Context: El modelo de CoppeliaSim representa un almacén de \(24\times18\)~m construido sobre la escena de AWS RoboMaker \parencite{awsRobomakerWarehouse2021}.
+- thesis sections/source-snapshot/mainmatter/04-methodology.tex:386 `\parencite`
+  Context: La vista oblicua muestra las estanterías, las zonas de operación, el paso central y la flota de AMR durante la ejecución del piloto.} \label{fig:method-coppeliasim-warehouse} \viusource{elaboración propia sobre la escena AWS RoboMaker Small Warehouse World, modificada para este TFM \parencite{awsRobomakerWarehouse2021}} \end{figure} \fi
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/aws-industrial2.tex:4 `\parencite`
+  Context: La escena modificada toma como procedencia el almacén de AWS RoboMaker, cuyo repositorio oficial se distribuye bajo licencia MIT-0 \parencite{awsRobomakerWarehouse2021}.
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/aws-industrial2.tex:11 `\parencite`
+  Context: La limpieza visual no altera las huellas operacionales auditadas.} \label{fig:aws-industrial2-scene} \viusource{elaboración propia sobre la escena AWS RoboMaker Small Warehouse World, modificada para este TFM \parencite{awsRobomakerWarehouse2021}} \end{figure}
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/aws-industrial2.tex:4 `\parencite`
+  Context: La escena modificada toma como procedencia el almacén de AWS RoboMaker, cuyo repositorio oficial se distribuye bajo licencia MIT-0 \parencite{awsRobomakerWarehouse2021}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/aws-industrial2.tex:11 `\parencite`
+  Context: La limpieza visual no altera las huellas operacionales auditadas.} \label{fig:aws-industrial2-scene} \viusource{elaboración propia sobre la escena AWS RoboMaker Small Warehouse World, modificada para este TFM \parencite{awsRobomakerWarehouse2021}} \end{figure}
+
+## barer2014ecbs
+```bibtex
+@article{barer2014ecbs,
+  author       = {Barer, Max and Sharon, Guni and Stern, Roni and Felner, Ariel},
+  title        = {Suboptimal variants of the conflict-based search algorithm for the multi-agent pathfinding problem},
+  journaltitle = {Proceedings of the International Symposium on Combinatorial Search},
+  date         = {2014},
+  volume       = {5},
+  number       = {1},
+  pages        = {19--27},
+  doi          = {10.1609/socs.v5i1.18315},
+  url          = {https://doi.org/10.1609/socs.v5i1.18315}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:231 `\parencite`
+  Context: CBS alterna detección de conflictos y planificación individual, con completitud y optimalidad en su modelo discreto; ECBS acepta suboptimalidad acotada para reducir coste \parencite{sharon2015cbs,barer2014ecbs}.
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/sp7.tex:67 `\parencite`
+  Context: CBS/ECBS proporcionan el contexto de MAPF, LA-MAPF trata agentes extensos y ORCA opera en velocidades continuas \parencite{sharon2015cbs,barer2014ecbs,li2019largeAgentMapf,vandenberg2011orca}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:231 `\parencite`
+  Context: CBS alterna detección de conflictos y planificación individual, con completitud y optimalidad en su modelo discreto; ECBS acepta suboptimalidad acotada para reducir coste \parencite{sharon2015cbs,barer2014ecbs}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp7.tex:67 `\parencite`
+  Context: CBS/ECBS proporcionan el contexto de MAPF, LA-MAPF trata agentes extensos y ORCA opera en velocidades continuas \parencite{sharon2015cbs,barer2014ecbs,li2019largeAgentMapf,vandenberg2011orca}.
+
+## barreiro2017distributed
+```bibtex
+@article{barreiro2017distributed,
+  author       = {Barreiro-G{\'o}mez, Juli{\'a}n and Obando, Germ{\'a}n and Quijano, Nicanor},
+  title        = {Distributed Population Dynamics: Optimization and Control Applications},
+  journaltitle = {IEEE Transactions on Systems, Man, and Cybernetics: Systems},
+  date         = {2017},
+  volume       = {47},
+  number       = {2},
+  pages        = {304--314},
+  doi          = {10.1109/TSMC.2016.2523934},
+  url          = {https://doi.org/10.1109/TSMC.2016.2523934}
+}
+```
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp3.tex:184 `\parencite`
+  Context: \\ PD anillo + guardia \parencite{barreiro2017distributed} & Relajación convexa con cierre heurístico & $O(T(NA+r_c|E_C|A)+C_G)$ & Vecinal sobre anillo; consenso finito & Los anteriores, $r_c$, grafo & Sensibilidad al consenso finito; sin teorema para una red variable.
+
+## bertsekas1988Auction
+```bibtex
+@article{bertsekas1988Auction,
+  author       = {Bertsekas, Dimitri P.},
+  title        = {The auction algorithm: A distributed relaxation method for the assignment problem},
+  journaltitle = {Annals of Operations Research},
+  date         = {1988},
+  volume       = {14},
+  number       = {1},
+  pages        = {105--123},
+  doi          = {10.1007/BF02186476},
+  url          = {https://doi.org/10.1007/BF02186476}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:23 `\parencite`
+  Context: Bertsekas resuelve la asignación clásica \parencite{bertsekas1988Auction}; MURDOCH emplea contratos entre robots \parencite{gerkeyMataric2002MURDOCH}, y CBBA/ACBBA construyen paquetes bajo consenso y mensajes desordenados \parencite{choiBrunetHow2009CBBA,johnson2011acbba}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:23 `\parencite`
+  Context: Bertsekas resuelve la asignación clásica \parencite{bertsekas1988Auction}; MURDOCH emplea contratos entre robots \parencite{gerkeyMataric2002MURDOCH}, y CBBA/ACBBA construyen paquetes bajo consenso y mensajes desordenados \parencite{choiBrunetHow2009CBBA,johnson2011acbba}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp0.tex:152 `\parencite`
+  Context: \\ Subasta-$\varepsilon$ \parencite{bertsekas1988Auction} & LAP en P & $O(KB_\varepsilon)$; $B_\varepsilon$ depende del rango y $\varepsilon$ & Precios y ganadores compartidos & $\varepsilon$ & Brecha aditiva \(\leq N\varepsilon\); arquitectura global.
+
+## bezerra2025dynamicCoalition
+```bibtex
+@article{bezerra2025dynamicCoalition,
+  author       = {Bezerra, Lucas C. D. and dos Santos, Ata{\'i}de M. G. and Park, Shinkyu},
+  title        = {Learning Policies for Dynamic Coalition Formation in Multi-Robot Task Allocation},
+  journaltitle = {IEEE Robotics and Automation Letters},
+  date         = {2025},
+  volume       = {10},
+  number       = {9},
+  pages        = {9216--9223},
+  doi          = {10.1109/LRA.2025.3592080},
+  url          = {https://doi.org/10.1109/LRA.2025.3592080}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:33 `\parencite`
+  Context: emplean mapas espaciales e intención para revisar la asignación \parencite{dai2024dynamicCoalition,bezerra2025dynamicCoalition}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:33 `\parencite`
+  Context: emplean mapas espaciales e intención para revisar la asignación \parencite{dai2024dynamicCoalition,bezerra2025dynamicCoalition}.
+
+## bicchi1995closure
+```bibtex
+@article{bicchi1995closure,
+  author       = {Bicchi, Antonio},
+  title        = {On the closure properties of robotic grasping},
+  journaltitle = {The International Journal of Robotics Research},
+  date         = {1995},
+  volume       = {14},
+  number       = {4},
+  pages        = {319--334},
+  doi          = {10.1177/027836499501400402},
+  url          = {https://doi.org/10.1177/027836499501400402}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:208 `\parencite`
+  Context: La geometría determina el cierre \parencite{bicchi1995closure}; la prueba pertinente es \(W_k^{\mathrm{req}}\in\mathcal W_C(q)=\{G_C(q)\boldsymbol\lambda:\boldsymbol\lambda\in\mathcal U_C\}\), no una suma escalar de capacidades.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:208 `\parencite`
+  Context: La geometría determina el cierre \parencite{bicchi1995closure}; la prueba pertinente es \(W_k^{\mathrm{req}}\in\mathcal W_C(q)=\{G_C(q)\boldsymbol\lambda:\boldsymbol\lambda\in\mathcal U_C\}\), no una suma escalar de capacidades.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp3.tex:165 `\parencite`
+  Context: Los comparadores escalares evalúan cierre de asignación; el QP y la guardia comprueban contacto y \emph{wrench}, apoyados en la formulación de manipulación cooperativa \parencite{nakamura1989dynamics,yoshikawa1993coordinated}; el cierre y el \emph{caging} delimitan un confinamiento que aquí no se ejecuta \parencite{bicchi1995closure,pereira2004caging}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp3.tex:178 `\textcite`
+  Context: \begin{table}[!htbp] \centering \caption{Comparación computacional de métodos en E3.} \label{tab:sp3-methods} \viutablefont \setlength{\tabcolsep}{1.4pt} \renewcommand{\arraystretch}{1.02} \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.05cm} >{\raggedright\arraybackslash}p{1.55cm} >{\raggedright\arraybackslash}p{2.30cm} >{\raggedright\arraybackslash}p{2.0cm} >{\raggedright\arraybackslash}p{1.85cm} Y} \toprule Método/fuente & Clase & Coste & Arq./información & Parámetros & Garantía/límite \\ \midrule Oráculo de wrench (cierre basado en \textcite{bicchi1995closure}) & Selección 0--1 con QP convexo para asignación fija & $O((S+1)^N C_{\mathrm{QP}})$ en peor caso & Central; contactos, límites y demanda globales & $\varepsilon_W$, límites, tolerancia numérica & Óptimo certificado dentro del espacio enumerado; aplicable a instancias pequeñas.
+
+## boyd2006randomizedGossip
+```bibtex
+@article{boyd2006randomizedGossip,
+  author       = {Boyd, Stephen and Ghosh, Arpita and Prabhakar, Balaji and Shah, Devavrat},
+  title        = {Randomized gossip algorithms},
+  journaltitle = {IEEE Transactions on Information Theory},
+  date         = {2006},
+  volume       = {52},
+  number       = {6},
+  pages        = {2508--2530},
+  doi          = {10.1109/TIT.2006.874516},
+  url          = {https://doi.org/10.1109/TIT.2006.874516}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:235 `\parencite`
+  Context: El \emph{gossip} aleatorio caracteriza el coste de mezclar promedios \parencite{boyd2006randomizedGossip}; el consenso con enlaces imperfectos depende del modelo estadístico y de la conectividad \parencite{kar2009imperfectConsensus}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:235 `\parencite`
+  Context: El \emph{gossip} aleatorio caracteriza el coste de mezclar promedios \parencite{boyd2006randomizedGossip}; el consenso con enlaces imperfectos depende del modelo estadístico y de la conectividad \parencite{kar2009imperfectConsensus}.
+
+## buckman2019cbbaPr
+```bibtex
+@inproceedings{buckman2019cbbaPr,
+  author    = {Buckman, Noam and How, Jonathan P. and Choi, Han-Lim},
+  title     = {Partial replanning for decentralized dynamic task allocation},
+  booktitle = {AIAA Scitech 2019 Forum},
+  date      = {2019},
+  publisher = {American Institute of Aeronautics and Astronautics},
+  eid       = {AIAA 2019-0915},
+  doi       = {10.2514/6.2019-0915},
+  url       = {https://doi.org/10.2514/6.2019-0915}
+}
+```
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/sp6.tex:77 `\parencite`
+  Context: ALLIANCE aporta el antecedente de activación alternativa \parencite{parker1998alliance}; las subastas dinámicas, ACBBA y CBBA-PR motivan la revisión asíncrona tras eventos \parencite{nanjanath2006dynamicAuctions,johnson2011acbba,buckman2019cbbaPr}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp6.tex:77 `\parencite`
+  Context: ALLIANCE aporta el antecedente de activación alternativa \parencite{parker1998alliance}; las subastas dinámicas, ACBBA y CBBA-PR motivan la revisión asíncrona tras eventos \parencite{nanjanath2006dynamicAuctions,johnson2011acbba,buckman2019cbbaPr}.
+
+## bullo2009distributed
+```bibtex
+@book{bullo2009distributed,
+  author    = {Bullo, Francesco and Cort{\'e}s, Jorge and Mart{\'i}nez, Sonia},
+  title     = {Distributed Control of Robotic Networks: A Mathematical Approach to Motion Coordination Algorithms},
+  publisher = {Princeton University Press},
+  date      = {2009},
+  doi       = {10.1515/9781400831470},
+  url       = {https://doi.org/10.1515/9781400831470}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:41 `\parencite`
+  Context: En el grafo de comunicación \(\mathcal G_c(t)=(\Robots,\mathcal E_c(t))\), \(\lambda_2(L)>0\) mide conectividad algebraica cuando la topología es no dirigida \parencite{bullo2009distributed}.
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:200 `\parencite`
+  Context: La conectividad del grafo certifica propagación de información; la rigidez geométrica conserva localmente la forma salvo movimientos rígidos del conjunto \parencite{desai2001formation,bullo2009distributed}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:41 `\parencite`
+  Context: En el grafo de comunicación \(\mathcal G_c(t)=(\Robots,\mathcal E_c(t))\), \(\lambda_2(L)>0\) mide conectividad algebraica cuando la topología es no dirigida \parencite{bullo2009distributed}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:200 `\parencite`
+  Context: La conectividad del grafo certifica propagación de información; la rigidez geométrica conserva localmente la forma salvo movimientos rígidos del conjunto \parencite{desai2001formation,bullo2009distributed}.
+
+## cherukuri2016primalDual
+```bibtex
+@article{cherukuri2016primalDual,
+  author       = {Cherukuri, Ashish and Mallada, Enrique and Cort{\'e}s, Jorge},
+  title        = {Asymptotic Convergence of Constrained Primal--Dual Dynamics},
+  journaltitle = {Systems \& Control Letters},
+  date         = {2016},
+  volume       = {87},
+  pages        = {10--15},
+  doi          = {10.1016/j.sysconle.2015.10.006},
+  url          = {https://doi.org/10.1016/j.sysconle.2015.10.006}
+}
+```
+- thesis sections/method-comparison.tex:45 `\parencite`
+  Context: Las dinámicas primal--dual actualizan esos multiplicadores junto con las decisiones bajo convexidad, monotonicidad y conectividad \parencite{cherukuri2016primalDual,koshal2016aggregative}.
+- monograph sections/method-comparison.tex:45 `\parencite`
+  Context: Las dinámicas primal--dual actualizan esos multiplicadores junto con las decisiones bajo convexidad, monotonicidad y conectividad \parencite{cherukuri2016primalDual,koshal2016aggregative}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp3.tex:183 `\parencite`
+  Context: \\ PD exacto + guardia \parencite{cherukuri2016primalDual} & Relajación convexa con cierre heurístico & $O(TNA+C_G)$ & Agregado global exacto y guardia central & $\Delta t$, $\Delta t_\pi$, $T$, $\varepsilon_W$ & Residual KKT para la relajación y factibilidad para el cierre; optimalidad entera abierta.
+
+## choiBrunetHow2009CBBA
+```bibtex
+@article{choiBrunetHow2009CBBA,
+  author       = {Choi, Han-Lim and Brunet, Luc and How, Jonathan P.},
+  title        = {Consensus-based decentralized auctions for robust task allocation},
+  journaltitle = {IEEE Transactions on Robotics},
+  date         = {2009},
+  volume       = {25},
+  number       = {4},
+  pages        = {912--926},
+  doi          = {10.1109/TRO.2009.2022423},
+  url          = {https://doi.org/10.1109/TRO.2009.2022423}
+}
+```
+- thesis sections/source-snapshot/mainmatter/01-introduction.tex:39 `\parencite`
+  Context: MURDOCH y CBBA adjudican tareas mediante negociación \parencite{gerkeyMataric2002MURDOCH,choiBrunetHow2009CBBA}; ASyMTRe comprueba composiciones funcionales \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}.
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:23 `\parencite`
+  Context: Bertsekas resuelve la asignación clásica \parencite{bertsekas1988Auction}; MURDOCH emplea contratos entre robots \parencite{gerkeyMataric2002MURDOCH}, y CBBA/ACBBA construyen paquetes bajo consenso y mensajes desordenados \parencite{choiBrunetHow2009CBBA,johnson2011acbba}.
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/sp2.tex:112 `\parencite`
+  Context: El Húngaro expandido y CBBA-capacidad modifican los problemas estudiados en sus fuentes, por lo que sus garantías originales no se transfieren a esta comparación \parencite{kuhn1955Hungarian,choiBrunetHow2009CBBA}.
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/sp2.tex:129 `\parencite`
+  Context: \\ Aproximación CBBA-capacidad \parencite{choiBrunetHow2009CBBA} & MRTA con capacidades; heurística & $O(NK)$ por barrido de pujas más consenso & Pujas y conflictos entre vecinos & Tres parámetros de puntuación & Consenso sobre pujas modificadas; garantía CBBA original inaplicable.
+- thesis sections/sp1-wrench-condensed.tex:54 `\parencite`
+  Context: La guardia comprueba \eqref{eq:sp3-wrench}; el oráculo enumera instancias pequeñas, Hungarian es solo referencia escalar y CBBA, voraz y dinámicas poblacionales son comparadores aproximados \parencite{kuhn1955Hungarian,choiBrunetHow2009CBBA,sandholm2010population}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:23 `\parencite`
+  Context: Bertsekas resuelve la asignación clásica \parencite{bertsekas1988Auction}; MURDOCH emplea contratos entre robots \parencite{gerkeyMataric2002MURDOCH}, y CBBA/ACBBA construyen paquetes bajo consenso y mensajes desordenados \parencite{choiBrunetHow2009CBBA,johnson2011acbba}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp1.tex:120 `\parencite`
+  Context: CBBA asigna un ganador por tarea y requeriría una extensión multi-ganador verificada para reproducir las cuotas de E1 \parencite{choiBrunetHow2009CBBA}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp2.tex:112 `\parencite`
+  Context: El Húngaro expandido y CBBA-capacidad modifican los problemas estudiados en sus fuentes, por lo que sus garantías originales no se transfieren a esta comparación \parencite{kuhn1955Hungarian,choiBrunetHow2009CBBA}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp2.tex:129 `\parencite`
+  Context: \\ Aproximación CBBA-capacidad \parencite{choiBrunetHow2009CBBA} & MRTA con capacidades; heurística & $O(NK)$ por barrido de pujas más consenso & Pujas y conflictos entre vecinos & Tres parámetros de puntuación & Consenso sobre pujas modificadas; garantía CBBA original inaplicable.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp3.tex:181 `\parencite`
+  Context: \\ CBBA por puestos \parencite{choiBrunetHow2009CBBA} & Aproximación MRTA heurística & $O(I_CNS)$ más mensajes de consenso & Pujas/conflictos; información parcial & Puntuación, paquete, desempate & Consenso para la puja modificada; garantía CBBA original inaplicable.
+
+## dai2024dynamicCoalition
+```bibtex
+@inproceedings{dai2024dynamicCoalition,
+  author    = {Dai, Weiheng and Bidwai, Aditya and Sartoretti, Guillaume},
+  title     = {Dynamic Coalition Formation and Routing for Multirobot Task Allocation via Reinforcement Learning},
+  booktitle = {2024 IEEE International Conference on Robotics and Automation},
+  date      = {2024},
+  pages     = {16567--16573},
+  doi       = {10.1109/ICRA57147.2024.10611244},
+  url       = {https://doi.org/10.1109/ICRA57147.2024.10611244}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:33 `\parencite`
+  Context: emplean mapas espaciales e intención para revisar la asignación \parencite{dai2024dynamicCoalition,bezerra2025dynamicCoalition}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:33 `\parencite`
+  Context: emplean mapas espaciales e intención para revisar la asignación \parencite{dai2024dynamicCoalition,bezerra2025dynamicCoalition}.
+
+## desai2001formation
+```bibtex
+@article{desai2001formation,
+  author       = {Desai, Jaydev P. and Ostrowski, James P. and Kumar, Vijay},
+  title        = {Modeling and control of formations of nonholonomic mobile robots},
+  journaltitle = {IEEE Transactions on Robotics and Automation},
+  date         = {2001},
+  volume       = {17},
+  number       = {6},
+  pages        = {905--908},
+  doi          = {10.1109/70.976023},
+  url          = {https://doi.org/10.1109/70.976023}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:200 `\parencite`
+  Context: La conectividad del grafo certifica propagación de información; la rigidez geométrica conserva localmente la forma salvo movimientos rígidos del conjunto \parencite{desai2001formation,bullo2009distributed}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:200 `\parencite`
+  Context: La conectividad del grafo certifica propagación de información; la rigidez geométrica conserva localmente la forma salvo movimientos rígidos del conjunto \parencite{desai2001formation,bullo2009distributed}.
+
+## dutta2021hedonic
+```bibtex
+@inproceedings{dutta2021hedonic,
+  author    = {Dutta, Ayan and Ufimtsev, Vladimir and Said, Tuffa and Jang, Inmo and Eggen, Roger},
+  title     = {Distributed Hedonic Coalition Formation for Multi-Robot Task Allocation},
+  booktitle = {2021 IEEE 17th International Conference on Automation Science and Engineering},
+  date      = {2021},
+  pages     = {639--644},
+  doi       = {10.1109/CASE49439.2021.9551582},
+  url       = {https://doi.org/10.1109/CASE49439.2021.9551582}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:25 `\parencite`
+  Context: Los modelos \emph{anytime}, basados en capacidades y hedónicos hacen depender \(u_i\) de la coalición que recibe al robot \parencite{shehoryKraus1998Coalition,vigAdams2006Coalition,dutta2021hedonic}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:25 `\parencite`
+  Context: Los modelos \emph{anytime}, basados en capacidades y hedónicos hacen depender \(u_i\) de la coalición que recibe al robot \parencite{shehoryKraus1998Coalition,vigAdams2006Coalition,dutta2021hedonic}.
+
+## ebel2024cooperative
+```bibtex
+@article{ebel2024cooperative,
+  author       = {Ebel, Henrik and Rosenfelder, Mario and Eberhard, Peter},
+  title        = {Cooperative Object Transportation with Differential-Drive Mobile Robots: Control and Experimentation},
+  journaltitle = {Robotics and Autonomous Systems},
+  date         = {2024},
+  volume       = {173},
+  pages        = {104612},
+  doi          = {10.1016/j.robot.2023.104612},
+  url          = {https://doi.org/10.1016/j.robot.2023.104612}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:212 `\parencite`
+  Context: Las estructuras virtuales distribuyen referencias entre robots, y la optimización restringida reparte esfuerzo o impone evitación para esa formación \parencite{alonsomora2017transport,ebel2024cooperative}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:212 `\parencite`
+  Context: Las estructuras virtuales distribuyen referencias entre robots, y la optimización restringida reparte esfuerzo o impone evitación para esa formación \parencite{alonsomora2017transport,ebel2024cooperative}.
+
+## fink2008caging
+```bibtex
+@inproceedings{fink2008caging,
+  author    = {Fink, Jonathan and Hsieh, M. Ani and Kumar, Vijay},
+  title     = {Multi-robot manipulation via caging in environments with obstacles},
+  booktitle = {2008 IEEE International Conference on Robotics and Automation},
+  date      = {2008},
+  pages     = {1471--1476},
+  publisher = {IEEE},
+  doi       = {10.1109/ROBOT.2008.4543409},
+  url       = {https://doi.org/10.1109/ROBOT.2008.4543409}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:216 `\parencite`
+  Context: El certificado de \emph{caging} comprueba que la configuración confina el objeto \parencite{pereira2004caging,fink2008caging}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:216 `\parencite`
+  Context: El certificado de \emph{caging} comprueba que la configuración confina el objeto \parencite{pereira2004caging,fink2008caging}.
+
+## fiorini1998velocity
+```bibtex
+@article{fiorini1998velocity,
+  author       = {Fiorini, Paolo and Shiller, Zvi},
+  title        = {Motion planning in dynamic environments using velocity obstacles},
+  journaltitle = {The International Journal of Robotics Research},
+  date         = {1998},
+  volume       = {17},
+  number       = {7},
+  pages        = {760--772},
+  doi          = {10.1177/027836499801700706},
+  url          = {https://doi.org/10.1177/027836499801700706}
+}
+```
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp5.tex:117 `\parencite`
+  Context: VO/RVO/ORCA permiten comparar la selección geométrica de velocidades \parencite{fiorini1998velocity,vandenberg2008rvo,vandenberg2011orca}, mientras el CBF fija la referencia de invariancia continua bajo sus supuestos de factibilidad y regularidad \parencite{ames2017cbf}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp5.tex:131 `\parencite`
+  Context: \\ VO/RVO/ORCA \parencite{fiorini1998velocity,vandenberg2008rvo,vandenberg2011orca} & Geometría/LP 2D & $O(m)$ más selección; ORCA lineal esperado & Estados relativos & Horizonte, radios & Garantías bajo sus modelos; se evalúa solo una aproximación a ORCA.
+
+## franci2022stochasticGNE
+```bibtex
+@article{franci2022stochasticGNE,
+  author       = {Franci, Barbara and Grammatico, Sergio},
+  title        = {Stochastic Generalized {Nash} Equilibrium Seeking under Partial-Decision Information},
+  journaltitle = {Automatica},
+  date         = {2022},
+  volume       = {137},
+  pages        = {110101},
+  doi          = {10.1016/j.automatica.2021.110101},
+  url          = {https://doi.org/10.1016/j.automatica.2021.110101}
+}
+```
+- thesis sections/method-comparison.tex:42 `\parencite`
+  Context: Con restricciones compartidas y las condiciones de regularidad declaradas, un Nash generalizado variacional se caracteriza como solución de una desigualdad variacional y admite multiplicadores comunes \parencite{yi2019operatorGNE,franci2022stochasticGNE}.
+- monograph sections/method-comparison.tex:42 `\parencite`
+  Context: Con restricciones compartidas y las condiciones de regularidad declaradas, un Nash generalizado variacional se caracteriza como solución de una desigualdad variacional y admite multiplicadores comunes \parencite{yi2019operatorGNE,franci2022stochasticGNE}.
+
+## geekplusWarehouseSolutions
+```bibtex
+@online{geekplusWarehouseSolutions,
+  author  = {{Geekplus Technology Co., Ltd.}},
+  title   = {Robotics Solutions for Warehouse and Logistics Automation},
+  url     = {https://www.geekplus.com/en},
+  urldate = {2026-07-17}
+}
+```
+- thesis sections/source-snapshot/mainmatter/01-introduction.tex:10 `\parencite`
+  Context: En almacenes, Kiva documentó la coordinación de flotas para mover estanterías \parencite{wurman2008coordinating}; Geek+ y MiR ofrecen soluciones comerciales para preparación de pedidos y transporte interno \parencite{geekplusWarehouseSolutions,mirInternalTransport}.
+
+## gerkeyMataric2002MURDOCH
+```bibtex
+@article{gerkeyMataric2002MURDOCH,
+  author       = {Gerkey, Brian P. and Matarić, Maja J.},
+  title        = {Sold!: Auction methods for multirobot coordination},
+  journaltitle = {IEEE Transactions on Robotics and Automation},
+  date         = {2002},
+  volume       = {18},
+  number       = {5},
+  pages        = {758--768},
+  doi          = {10.1109/TRA.2002.803462},
+  url          = {https://doi.org/10.1109/TRA.2002.803462}
+}
+```
+- thesis sections/source-snapshot/mainmatter/01-introduction.tex:39 `\parencite`
+  Context: MURDOCH y CBBA adjudican tareas mediante negociación \parencite{gerkeyMataric2002MURDOCH,choiBrunetHow2009CBBA}; ASyMTRe comprueba composiciones funcionales \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}.
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:23 `\parencite`
+  Context: Bertsekas resuelve la asignación clásica \parencite{bertsekas1988Auction}; MURDOCH emplea contratos entre robots \parencite{gerkeyMataric2002MURDOCH}, y CBBA/ACBBA construyen paquetes bajo consenso y mensajes desordenados \parencite{choiBrunetHow2009CBBA,johnson2011acbba}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:23 `\parencite`
+  Context: Bertsekas resuelve la asignación clásica \parencite{bertsekas1988Auction}; MURDOCH emplea contratos entre robots \parencite{gerkeyMataric2002MURDOCH}, y CBBA/ACBBA construyen paquetes bajo consenso y mensajes desordenados \parencite{choiBrunetHow2009CBBA,johnson2011acbba}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp0.tex:153 `\parencite`
+  Context: \\ Método voraz (familia de mercado \parencite{gerkeyMataric2002MURDOCH}) & LAP en P; heurística & $O(NK\log(NK))$ & Central; lista global de aristas & Orden/desempate & Factibilidad; heurística propia sin cota.
+
+## gerkeyMataric2004MRTA
+```bibtex
+@article{gerkeyMataric2004MRTA,
+  author       = {Gerkey, Brian P. and Matarić, Maja J.},
+  title        = {A formal analysis and taxonomy of task allocation in multi-robot systems},
+  journaltitle = {The International Journal of Robotics Research},
+  date         = {2004},
+  volume       = {23},
+  number       = {9},
+  pages        = {939--954},
+  doi          = {10.1177/0278364904045564},
+  url          = {https://doi.org/10.1177/0278364904045564}
+}
+```
+- thesis sections/source-snapshot/mainmatter/01-introduction.tex:20 `\parencite`
+  Context: La asignación multi-robot aporta las variables para seleccionar participantes \parencite{gerkeyMataric2004MRTA,korsahStentzDias2013iTax}, y los modelos de coalición representan el valor de una composición \parencite{shehoryKraus1998Coalition,vigAdams2006Coalition}.
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:11 `\parencite`
+  Context: La asignación multi-robot de tareas (MRTA) clasifica relaciones entre robots, tareas y horizonte de decisión \parencite{gerkeyMataric2004MRTA,korsahStentzDias2013iTax}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:11 `\parencite`
+  Context: La asignación multi-robot de tareas (MRTA) clasifica relaciones entre robots, tareas y horizonte de decisión \parencite{gerkeyMataric2004MRTA,korsahStentzDias2013iTax}.
+
+## huang2022mlLns
+```bibtex
+@inproceedings{huang2022mlLns,
+  author       = {Huang, Taoan and Li, Jiaoyang and Koenig, Sven and Dilkina, Bistra},
+  title        = {Anytime Multi-Agent Path Finding via Machine Learning-Guided Large Neighborhood Search},
+  booktitle    = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  date         = {2022},
+  volume       = {36},
+  number       = {9},
+  pages        = {9368--9376},
+  doi          = {10.1609/aaai.v36i9.21168},
+  url          = {https://ojs.aaai.org/index.php/AAAI/article/view/21168}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:364 `\nocite`
+  Context: \nocite{zhang2024coalition,zhou2026cttapf,huang2022mlLns,yu2023graphTransformer,tang2025railgun,paul2023collective,shibata2023event}
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:364 `\nocite`
+  Context: \nocite{zhang2024coalition,zhou2026cttapf,huang2022mlLns,yu2023graphTransformer,tang2025railgun,paul2023collective,shibata2023event}
+
+## internationalFederationRobotics2025
+```bibtex
+@online{internationalFederationRobotics2025,
+  author  = {{International Federation of Robotics}},
+  title   = {World Robotics 2025 Report: Service Robots See Global Growth Boom},
+  date    = {2025-10-07},
+  url     = {https://ifr.org/ifr-press-releases/news/service-robots-see-global-growth-boom},
+  urldate = {2026-07-17}
+}
+```
+- thesis sections/source-snapshot/mainmatter/01-introduction.tex:6 `\parencite`
+  Context: La IFR registró 102\,900 robots de servicio para transporte y logística en 2024: un 14\,\% más que el año anterior y más de la mitad de las unidades profesionales de su muestra \parencite{internationalFederationRobotics2025}.
+
+## johnson2011acbba
+```bibtex
+@inproceedings{johnson2011acbba,
+  author    = {Johnson, Luke B. and Ponda, Sameera S. and Choi, Han-Lim and How, Jonathan P.},
+  title     = {Asynchronous decentralized task allocation for dynamic environments},
+  booktitle = {Infotech@Aerospace 2011},
+  date      = {2011},
+  publisher = {American Institute of Aeronautics and Astronautics},
+  eid       = {AIAA 2011-1441},
+  doi       = {10.2514/6.2011-1441},
+  url       = {https://doi.org/10.2514/6.2011-1441}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:23 `\parencite`
+  Context: Bertsekas resuelve la asignación clásica \parencite{bertsekas1988Auction}; MURDOCH emplea contratos entre robots \parencite{gerkeyMataric2002MURDOCH}, y CBBA/ACBBA construyen paquetes bajo consenso y mensajes desordenados \parencite{choiBrunetHow2009CBBA,johnson2011acbba}.
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/sp6.tex:77 `\parencite`
+  Context: ALLIANCE aporta el antecedente de activación alternativa \parencite{parker1998alliance}; las subastas dinámicas, ACBBA y CBBA-PR motivan la revisión asíncrona tras eventos \parencite{nanjanath2006dynamicAuctions,johnson2011acbba,buckman2019cbbaPr}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:23 `\parencite`
+  Context: Bertsekas resuelve la asignación clásica \parencite{bertsekas1988Auction}; MURDOCH emplea contratos entre robots \parencite{gerkeyMataric2002MURDOCH}, y CBBA/ACBBA construyen paquetes bajo consenso y mensajes desordenados \parencite{choiBrunetHow2009CBBA,johnson2011acbba}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp6.tex:77 `\parencite`
+  Context: ALLIANCE aporta el antecedente de activación alternativa \parencite{parker1998alliance}; las subastas dinámicas, ACBBA y CBBA-PR motivan la revisión asíncrona tras eventos \parencite{nanjanath2006dynamicAuctions,johnson2011acbba,buckman2019cbbaPr}.
+
+## kar2009imperfectConsensus
+```bibtex
+@article{kar2009imperfectConsensus,
+  author       = {Kar, Soummya and Moura, José M. F.},
+  title        = {Distributed consensus algorithms in sensor networks with imperfect communication: Link failures and channel noise},
+  journaltitle = {IEEE Transactions on Signal Processing},
+  date         = {2009},
+  volume       = {57},
+  number       = {1},
+  pages        = {355--369},
+  doi          = {10.1109/TSP.2008.2007111},
+  url          = {https://doi.org/10.1109/TSP.2008.2007111}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:235 `\parencite`
+  Context: El \emph{gossip} aleatorio caracteriza el coste de mezclar promedios \parencite{boyd2006randomizedGossip}; el consenso con enlaces imperfectos depende del modelo estadístico y de la conectividad \parencite{kar2009imperfectConsensus}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:235 `\parencite`
+  Context: El \emph{gossip} aleatorio caracteriza el coste de mezclar promedios \parencite{boyd2006randomizedGossip}; el consenso con enlaces imperfectos depende del modelo estadístico y de la conectividad \parencite{kar2009imperfectConsensus}.
+
+## karp1972reducibility
+```bibtex
+@incollection{karp1972reducibility,
+  author    = {Karp, Richard M.},
+  title     = {Reducibility Among Combinatorial Problems},
+  booktitle = {Complexity of Computer Computations},
+  editor    = {Miller, Raymond E. and Thatcher, James W.},
+  date      = {1972},
+  pages     = {85--103},
+  publisher = {Plenum Press},
+  location  = {New York},
+  doi       = {10.1007/978-1-4684-2001-2_9},
+  url       = {https://doi.org/10.1007/978-1-4684-2001-2_9}
+}
+```
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp1.tex:109 `\textcite`
+  Context: \begin{table}[!htbp] \centering \caption{Comparación computacional de métodos en E1.} \label{tab:sp1-methods} \viutablefont \setlength{\tabcolsep}{1.3pt} \renewcommand{\arraystretch}{0.92} \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.2cm} >{\raggedright\arraybackslash}p{1.6cm} >{\raggedright\arraybackslash}p{2.35cm} >{\raggedright\arraybackslash}p{2.0cm} >{\raggedright\arraybackslash}p{1.75cm} Y} \toprule Método/fuente & Clase & Coste & Arq./información & Parámetros & Garantía/límite \\ \midrule MILP-Q (reducción desde \textcite{karp1972reducibility}) & Obligatorio: P; selección opcional: NP-difícil & Optimizador exacto: exponencial en peor caso & Central; costes, cuotas y valores globales & $\alpha$, límite temporal/brecha & Óptimo solo con certificado; reducción en Anexo~\ref{app:sp1-complexity}.
+- monograph sections/source-snapshot/appendices/02-sp0-proofs.tex:11 `\parencite`
+  Context: La reducción es polinómica y establece NP-dificultad \parencite{karp1972reducibility}.
+- monograph sections/source-snapshot/appendices/03-sp1-proofs.tex:16 `\parencite`
+  Context: Identificar $n_k$ con el peso de un objeto, $v_k$ con su valor y $N$ con la capacidad produce exactamente mochila 0--1, que es NP-difícil \parencite{karp1972reducibility}.
+
+## khatib1986obstacle
+```bibtex
+@article{khatib1986obstacle,
+  author       = {Khatib, Oussama},
+  title        = {Real-time obstacle avoidance for manipulators and mobile robots},
+  journaltitle = {The International Journal of Robotics Research},
+  date         = {1986},
+  volume       = {5},
+  number       = {1},
+  pages        = {90--98},
+  doi          = {10.1177/027836498600500106},
+  url          = {https://doi.org/10.1177/027836498600500106}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:221 `\parencite`
+  Context: Sus mínimos locales permiten mantener separación y, al mismo tiempo, perder progreso hacia la meta \parencite{khatib1986obstacle}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:221 `\parencite`
+  Context: Sus mínimos locales permiten mantener separación y, al mismo tiempo, perder progreso hacia la meta \parencite{khatib1986obstacle}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp5.tex:117 `\parencite`
+  Context: El campo potencial proporciona una referencia reactiva en el espacio de control \parencite{khatib1986obstacle}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp5.tex:130 `\parencite`
+  Context: \begin{table}[!htbp] \centering \caption{Métodos de evitación y control comparados en E5-C.} \label{tab:sp5-methods} \viutablefont \setlength{\tabcolsep}{1.4pt} \renewcommand{\arraystretch}{1.05} \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.15cm} >{\raggedright\arraybackslash}p{1.45cm} >{\raggedright\arraybackslash}p{2.15cm} >{\raggedright\arraybackslash}p{2.05cm} >{\raggedright\arraybackslash}p{1.80cm} Y} \toprule Fuente/método & Clase & Coste por muestra & Arquitectura/información & Parámetros & Resultado aplicable y límite \\ \midrule Campo potencial \parencite{khatib1986obstacle} & Realimentación reactiva & $O(m)$ & Local; geometría percibida & Ganancia, alcance & Sin invariancia general; adaptado al control de \emph{wrench}.
+
+## kia2019dynamicConsensus
+```bibtex
+@article{kia2019dynamicConsensus,
+  author       = {Kia, Solmaz S. and Van Scoy, Bryan and Cort{\'e}s, Jorge and Freeman, Randy A. and Lynch, Kevin M. and Mart{\'i}nez, Sonia},
+  title        = {Tutorial on Dynamic Average Consensus: The Problem, Its Applications, and the Algorithms},
+  journaltitle = {IEEE Control Systems Magazine},
+  date         = {2019},
+  volume       = {39},
+  number       = {3},
+  pages        = {40--72},
+  doi          = {10.1109/MCS.2019.2900783},
+  url          = {https://doi.org/10.1109/MCS.2019.2900783}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:43 `\parencite`
+  Context: El consenso dinámico sigue el agregado cuando sus entradas cambian durante el movimiento \parencite{kia2019dynamicConsensus}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:43 `\parencite`
+  Context: El consenso dinámico sigue el agregado cuando sus entradas cambian durante el movimiento \parencite{kia2019dynamicConsensus}.
+
+## korsahStentzDias2013iTax
+```bibtex
+@article{korsahStentzDias2013iTax,
+  author       = {Korsah, G. Ayorkor and Stentz, Anthony and Dias, M. Bernardine},
+  title        = {A comprehensive taxonomy for multi-robot task allocation},
+  journaltitle = {The International Journal of Robotics Research},
+  date         = {2013},
+  volume       = {32},
+  number       = {12},
+  pages        = {1495--1512},
+  doi          = {10.1177/0278364913496484},
+  url          = {https://doi.org/10.1177/0278364913496484}
+}
+```
+- thesis sections/source-snapshot/mainmatter/01-introduction.tex:20 `\parencite`
+  Context: La asignación multi-robot aporta las variables para seleccionar participantes \parencite{gerkeyMataric2004MRTA,korsahStentzDias2013iTax}, y los modelos de coalición representan el valor de una composición \parencite{shehoryKraus1998Coalition,vigAdams2006Coalition}.
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:11 `\parencite`
+  Context: La asignación multi-robot de tareas (MRTA) clasifica relaciones entre robots, tareas y horizonte de decisión \parencite{gerkeyMataric2004MRTA,korsahStentzDias2013iTax}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:11 `\parencite`
+  Context: La asignación multi-robot de tareas (MRTA) clasifica relaciones entre robots, tareas y horizonte de decisión \parencite{gerkeyMataric2004MRTA,korsahStentzDias2013iTax}.
+
+## koshal2016aggregative
+```bibtex
+@article{koshal2016aggregative,
+  author       = {Koshal, Jayash and Nedi{\'c}, Angelia and Shanbhag, Uday V.},
+  title        = {Distributed Algorithms for Aggregative Games on Graphs},
+  journaltitle = {Operations Research},
+  date         = {2016},
+  volume       = {64},
+  number       = {3},
+  pages        = {680--704},
+  doi          = {10.1287/opre.2016.1501},
+  url          = {https://doi.org/10.1287/opre.2016.1501}
+}
+```
+- thesis sections/method-comparison.tex:45 `\parencite`
+  Context: Las dinámicas primal--dual actualizan esos multiplicadores junto con las decisiones bajo convexidad, monotonicidad y conectividad \parencite{cherukuri2016primalDual,koshal2016aggregative}.
+- monograph sections/method-comparison.tex:45 `\parencite`
+  Context: Las dinámicas primal--dual actualizan esos multiplicadores junto con las decisiones bajo convexidad, monotonicidad y conectividad \parencite{cherukuri2016primalDual,koshal2016aggregative}.
+
+## kuhn1955Hungarian
+```bibtex
+@article{kuhn1955Hungarian,
+  author       = {Kuhn, Harold W.},
+  title        = {The {Hungarian} method for the assignment problem},
+  journaltitle = {Naval Research Logistics Quarterly},
+  date         = {1955},
+  volume       = {2},
+  number       = {1-2},
+  pages        = {83--97},
+  doi          = {10.1002/nav.3800020109},
+  url          = {https://doi.org/10.1002/nav.3800020109}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:11 `\parencite`
+  Context: El caso uno a uno admite asignación bipartita y el algoritmo húngaro \parencite{kuhn1955Hungarian}.
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/sp2.tex:112 `\parencite`
+  Context: El Húngaro expandido y CBBA-capacidad modifican los problemas estudiados en sus fuentes, por lo que sus garantías originales no se transfieren a esta comparación \parencite{kuhn1955Hungarian,choiBrunetHow2009CBBA}.
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/sp2.tex:127 `\parencite`
+  Context: \\ Húngaro expandido \parencite{kuhn1955Hungarian} & Aproximación LAP en P & $O(M^3)$, $M=\max\{N,S\}$ & Central; matriz robot--puesto global & Número y regla de puestos & Exactitud para el LAP expandido; capacidad aproximada mediante puestos.
+- thesis sections/sp1-wrench-condensed.tex:54 `\parencite`
+  Context: La guardia comprueba \eqref{eq:sp3-wrench}; el oráculo enumera instancias pequeñas, Hungarian es solo referencia escalar y CBBA, voraz y dinámicas poblacionales son comparadores aproximados \parencite{kuhn1955Hungarian,choiBrunetHow2009CBBA,sandholm2010population}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:11 `\parencite`
+  Context: El caso uno a uno admite asignación bipartita y el algoritmo húngaro \parencite{kuhn1955Hungarian}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp0.tex:71 `\parencite`
+  Context: El algoritmo húngaro lo resuelve en \(O(N^3)\) tiempo y \(O(N^2)\) memoria \parencite{kuhn1955Hungarian}, por lo que E0 pertenece a \(\mathsf P\).
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp0.tex:151 `\parencite`
+  Context: \begin{table}[!htbp] \centering \caption{Comparación computacional de métodos en E0.} \label{tab:sp0-method-literature} \scriptsize \setlength{\tabcolsep}{1.5pt} \renewcommand{\arraystretch}{1.04} \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.25cm} >{\raggedright\arraybackslash}p{1.45cm} >{\raggedright\arraybackslash}p{2.25cm} >{\raggedright\arraybackslash}p{2.15cm} >{\raggedright\arraybackslash}p{1.55cm} Y} \toprule Método/fuente & Clase & Coste & Arq./información & Parámetros & Garantía/límite \\ \midrule Algoritmo húngaro \parencite{kuhn1955Hungarian} & LAP en P & $O(m^3)$ tiempo; $O(NK)$ memoria & Central; matriz $\boldsymbol\kappa$ completa & Desempate & Óptimo global del LAP.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp2.tex:112 `\parencite`
+  Context: El Húngaro expandido y CBBA-capacidad modifican los problemas estudiados en sus fuentes, por lo que sus garantías originales no se transfieren a esta comparación \parencite{kuhn1955Hungarian,choiBrunetHow2009CBBA}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp2.tex:127 `\parencite`
+  Context: \\ Húngaro expandido \parencite{kuhn1955Hungarian} & Aproximación LAP en P & $O(M^3)$, $M=\max\{N,S\}$ & Central; matriz robot--puesto global & Número y regla de puestos & Exactitud para el LAP expandido; capacidad aproximada mediante puestos.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp3.tex:179 `\parencite`
+  Context: \\ Referencia escalar/húngara \parencite{kuhn1955Hungarian} & Aproximación LAP en P & $O(\max\{N,S\}^3)$ & Central; coste robot--puesto escalar & Pesos escalares & Óptimo del LAP escalar; la factibilidad vectorial requiere guardia.
+- monograph sections/source-snapshot/appendices/02-sp0-proofs.tex:9 `\parencite`
+  Context: El algoritmo húngaro resuelve el problema denso en $O(N^3)$ \parencite{kuhn1955Hungarian}.
+
+## li2019largeAgentMapf
+```bibtex
+@article{li2019largeAgentMapf,
+  author       = {Li, Jiaoyang and Surynek, Pavel and Felner, Ariel and Ma, Hang and Kumar, T. K. Satish and Koenig, Sven},
+  title        = {Multi-agent path finding for large agents},
+  journaltitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  date         = {2019},
+  volume       = {33},
+  number       = {01},
+  pages        = {7627--7634},
+  doi          = {10.1609/aaai.v33i01.33017627},
+  url          = {https://doi.org/10.1609/aaai.v33i01.33017627}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:231 `\parencite`
+  Context: LA-MAPF incorpora la huella de cuerpos extensos \parencite{li2019largeAgentMapf}.
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/sp7.tex:67 `\parencite`
+  Context: CBS/ECBS proporcionan el contexto de MAPF, LA-MAPF trata agentes extensos y ORCA opera en velocidades continuas \parencite{sharon2015cbs,barer2014ecbs,li2019largeAgentMapf,vandenberg2011orca}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:231 `\parencite`
+  Context: LA-MAPF incorpora la huella de cuerpos extensos \parencite{li2019largeAgentMapf}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp7.tex:67 `\parencite`
+  Context: CBS/ECBS proporcionan el contexto de MAPF, LA-MAPF trata agentes extensos y ORCA opera en velocidades continuas \parencite{sharon2015cbs,barer2014ecbs,li2019largeAgentMapf,vandenberg2011orca}.
+
+## li2022mapfLns2
+```bibtex
+@article{li2022mapfLns2,
+  author       = {Li, Jiaoyang and Chen, Zhe and Harabor, Daniel and Stuckey, Peter J. and Koenig, Sven},
+  title        = {{MAPF-LNS2}: Fast repairing for multi-agent path finding via large neighborhood search},
+  journaltitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  date         = {2022},
+  volume       = {36},
+  number       = {9},
+  pages        = {10256--10265},
+  doi          = {10.1609/aaai.v36i9.21266},
+  url          = {https://doi.org/10.1609/aaai.v36i9.21266}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:231 `\parencite`
+  Context: MAPF-LNS2 escala mediante reparaciones parciales de gran vecindario y carece de la cota propia de ECBS \parencite{li2022mapfLns2}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:231 `\parencite`
+  Context: MAPF-LNS2 escala mediante reparaciones parciales de gran vecindario y carece de la cota propia de ECBS \parencite{li2022mapfLns2}.
+
+## mirInternalTransport
+```bibtex
+@online{mirInternalTransport,
+  author  = {{Mobile Industrial Robots}},
+  title   = {Automate Your Internal Transportation},
+  url     = {https://mobile-industrial-robots.com/},
+  urldate = {2026-07-17}
+}
+```
+- thesis sections/source-snapshot/mainmatter/01-introduction.tex:10 `\parencite`
+  Context: En almacenes, Kiva documentó la coordinación de flotas para mover estanterías \parencite{wurman2008coordinating}; Geek+ y MiR ofrecen soluciones comerciales para preparación de pedidos y transporte interno \parencite{geekplusWarehouseSolutions,mirInternalTransport}.
+
+## monderer1996potential
+```bibtex
+@article{monderer1996potential,
+  author       = {Monderer, Dov and Shapley, Lloyd S.},
+  title        = {Potential Games},
+  journaltitle = {Games and Economic Behavior},
+  date         = {1996},
+  volume       = {14},
+  number       = {1},
+  pages        = {124--143},
+  doi          = {10.1006/game.1996.0044},
+  url          = {https://doi.org/10.1006/game.1996.0044}
+}
+```
+- thesis sections/source-snapshot/appendices/08-sp7-proofs.tex:14 `\parencite`
+  Context: \] Esta es la identidad de potencial exacto \parencite{monderer1996potential}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp0.tex:154 `\parencite`
+  Context: \\ Mejor respuesta \parencite{monderer1996potential} & Equilibrio de juego finito & $O(I_{\mathrm{BR}}NK)$; a lo sumo $(K+1)^N-1$ mejoras estrictas & Local con ocupación agregada exacta & $\lambda$, orden, $I_{\max}$ & Nash factible si \(\lambda>\kappa_{\max}\); eficiencia local.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp1.tex:138 `\parencite`
+  Context: La utilidad es la contribución marginal: una desviación unilateral modifica $U_i$ exactamente como modifica $\Phi_Q$ \parencite{monderer1996potential}.
+- monograph sections/source-snapshot/appendices/02-sp0-proofs.tex:21 `\parencite`
+  Context: Por la utilidad marginal, \[ u_i(b_i,a_{-i})-u_i(a_i,a_{-i}) =\Phi_\lambda(b_i,a_{-i})-\Phi_\lambda(a_i,a_{-i}), \] que satisface la definición de potencial exacto \parencite{monderer1996potential}.
+- monograph sections/source-snapshot/appendices/03-sp1-proofs.tex:26 `\parencite`
+  Context: \] La identidad cumple la definición de potencial exacto \parencite{monderer1996potential}.
+- monograph sections/source-snapshot/appendices/07-sp6-proofs.tex:16 `\parencite`
+  Context: \end{align*} La variación unilateral de utilidad coincide exactamente con la variación del potencial, de acuerdo con la definición de juego potencial exacto \parencite{monderer1996potential}.
+- monograph sections/source-snapshot/appendices/08-sp7-proofs.tex:14 `\parencite`
+  Context: \] Esta es la identidad de potencial exacto \parencite{monderer1996potential}.
+
+## naito2025tihdp
+```bibtex
+@inproceedings{naito2025tihdp,
+  author    = {Naito, Yusei and Jimbo, Tomohiko and Odashima, Tadashi and Matsubara, Takamitsu},
+  title     = {Task-Priority Intermediated Hierarchical Distributed Policies: Reinforcement Learning of Adaptive Multi-Robot Cooperative Transport},
+  booktitle = {2025 IEEE/SICE International Symposium on System Integration},
+  date      = {2025},
+  pages     = {1556--1562},
+  doi       = {10.1109/SII59315.2025.10870944},
+  url       = {https://doi.org/10.1109/SII59315.2025.10870944}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:360 `\parencite`
+  Context: Las políticas aprendidas cubren MAPF descentralizado \parencite{sartoretti2019primal,phan2024cactus} y transporte con capas locales y globales \parencite{shibata2023localGlobal,naito2025tihdp}; esta clasificación describe arquitectura y alcance, no calidad experimental.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:360 `\parencite`
+  Context: Las políticas aprendidas cubren MAPF descentralizado \parencite{sartoretti2019primal,phan2024cactus} y transporte con capas locales y globales \parencite{shibata2023localGlobal,naito2025tihdp}; esta clasificación describe arquitectura y alcance, no calidad experimental.
+
+## nakamura1989dynamics
+```bibtex
+@article{nakamura1989dynamics,
+  author       = {Nakamura, Yoshihiko and Nagai, Kiyoshi and Yoshikawa, Tsuneo},
+  title        = {Dynamics and stability in coordination of multiple robotic mechanisms},
+  journaltitle = {The International Journal of Robotics Research},
+  date         = {1989},
+  volume       = {8},
+  number       = {2},
+  pages        = {44--61},
+  doi          = {10.1177/027836498900800204},
+  url          = {https://doi.org/10.1177/027836498900800204}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:208 `\parencite`
+  Context: \label{eq:tf-grasp-map} \end{equation} La Ecuación~\eqref{eq:tf-grasp-map} separa el \emph{wrench} resultante de las fuerzas internas \parencite{nakamura1989dynamics,yoshikawa1993coordinated}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:208 `\parencite`
+  Context: \label{eq:tf-grasp-map} \end{equation} La Ecuación~\eqref{eq:tf-grasp-map} separa el \emph{wrench} resultante de las fuerzas internas \parencite{nakamura1989dynamics,yoshikawa1993coordinated}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp3.tex:165 `\parencite`
+  Context: Los comparadores escalares evalúan cierre de asignación; el QP y la guardia comprueban contacto y \emph{wrench}, apoyados en la formulación de manipulación cooperativa \parencite{nakamura1989dynamics,yoshikawa1993coordinated}; el cierre y el \emph{caging} delimitan un confinamiento que aquí no se ejecuta \parencite{bicchi1995closure,pereira2004caging}.
+
+## nanjanath2006dynamicAuctions
+```bibtex
+@inproceedings{nanjanath2006dynamicAuctions,
+  author    = {Nanjanath, Maitreyi and Gini, Maria L.},
+  title     = {Dynamic task allocation for robots via auctions},
+  booktitle = {Proceedings 2006 IEEE International Conference on Robotics and Automation},
+  date      = {2006},
+  pages     = {2781--2786},
+  publisher = {IEEE},
+  doi       = {10.1109/ROBOT.2006.1642122},
+  url       = {https://doi.org/10.1109/ROBOT.2006.1642122}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:227 `\parencite`
+  Context: ALLIANCE activa alternativas mediante impaciencia y aquiescencia, y las subastas dinámicas reabren la adjudicación después de un evento \parencite{parker1998alliance,nanjanath2006dynamicAuctions}.
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/sp6.tex:77 `\parencite`
+  Context: ALLIANCE aporta el antecedente de activación alternativa \parencite{parker1998alliance}; las subastas dinámicas, ACBBA y CBBA-PR motivan la revisión asíncrona tras eventos \parencite{nanjanath2006dynamicAuctions,johnson2011acbba,buckman2019cbbaPr}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:227 `\parencite`
+  Context: ALLIANCE activa alternativas mediante impaciencia y aquiescencia, y las subastas dinámicas reabren la adjudicación después de un evento \parencite{parker1998alliance,nanjanath2006dynamicAuctions}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp6.tex:77 `\parencite`
+  Context: ALLIANCE aporta el antecedente de activación alternativa \parencite{parker1998alliance}; las subastas dinámicas, ACBBA y CBBA-PR motivan la revisión asíncrona tras eventos \parencite{nanjanath2006dynamicAuctions,johnson2011acbba,buckman2019cbbaPr}.
+
+## nedic2010constrainedConsensus
+```bibtex
+@article{nedic2010constrainedConsensus,
+  author       = {Nedić, Angelia and Ozdaglar, Asuman and Parrilo, Pablo A.},
+  title        = {Constrained consensus and optimization in multi-agent networks},
+  journaltitle = {IEEE Transactions on Automatic Control},
+  date         = {2010},
+  volume       = {55},
+  number       = {4},
+  pages        = {922--938},
+  doi          = {10.1109/TAC.2010.2041686},
+  url          = {https://doi.org/10.1109/TAC.2010.2041686}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:235 `\textcite`
+  Context: La proyección sobre conjuntos convexos locales permite imponer restricciones durante el consenso bajo el modelo de grafo variable de \textcite{nedic2010constrainedConsensus}; ese resultado no modela ruido de canal.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:235 `\textcite`
+  Context: La proyección sobre conjuntos convexos locales permite imponer restricciones durante el consenso bajo el modelo de grafo variable de \textcite{nedic2010constrainedConsensus}; ese resultado no modela ruido de canal.
+
+## olfatiSaber2004switchingConsensus
+```bibtex
+@article{olfatiSaber2004switchingConsensus,
+  author       = {Olfati-Saber, Reza and Murray, Richard M.},
+  title        = {Consensus problems in networks of agents with switching topology and time-delays},
+  journaltitle = {IEEE Transactions on Automatic Control},
+  date         = {2004},
+  volume       = {49},
+  number       = {9},
+  pages        = {1520--1533},
+  doi          = {10.1109/TAC.2004.834113},
+  url          = {https://doi.org/10.1109/TAC.2004.834113}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:41 `\textcite`
+  Context: El resultado conmutado de \textcite{olfatiSaber2004switchingConsensus} permite conmutación arbitraria dentro de una colección finita cuyos digrafos son, cada uno, balanceados y fuertemente conectados; no se sustituye esa premisa por conectividad conjunta.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:41 `\textcite`
+  Context: El resultado conmutado de \textcite{olfatiSaber2004switchingConsensus} permite conmutación arbitraria dentro de una colección finita cuyos digrafos son, cada uno, balanceados y fuertemente conectados; no se sustituye esa premisa por conectividad conjunta.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp8.tex:74 `\parencite`
+  Context: \\ Consenso con conmutación/retardo \parencite{olfatiSaber2004switchingConsensus} & Sistema lineal & $O(T|E_C|d)$ global & Distribuido; grafos delimitados & Pesos, $\Delta t$, $\tau_d$ & Consenso bajo conectividad.
+
+## ortega2002passivity
+```bibtex
+@article{ortega2002passivity,
+  author       = {Ortega, Romeo and van der Schaft, Arjan and Maschke, Bernhard and Escobar, Gerardo},
+  title        = {Interconnection and Damping Assignment Passivity-Based Control of Port-Controlled {Hamiltonian} Systems},
+  journaltitle = {Automatica},
+  date         = {2002},
+  volume       = {38},
+  number       = {4},
+  pages        = {585--596},
+  doi          = {10.1016/S0005-1098(01)00278-3},
+  url          = {https://doi.org/10.1016/S0005-1098(01)00278-3}
+}
+```
+- thesis sections/method-comparison.tex:51 `\parencite`
+  Context: El protocolo exige que una prueba de pasividad identifique puertos, almacenamiento y suministro, y que una prueba de Lyapunov fije dominio y signo de la derivada \parencite{vanderschaf2017passivity,ortega2002passivity}.
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/sp4.tex:171 `\parencite`
+  Context: Para la planta concreta de E4 se adopta un candidato de almacenamiento basado en pasividad de sistemas mecánicos \parencite{vanderschaf2017passivity,ortega2002passivity}.
+- monograph sections/method-comparison.tex:51 `\parencite`
+  Context: El protocolo exige que una prueba de pasividad identifique puertos, almacenamiento y suministro, y que una prueba de Lyapunov fije dominio y signo de la derivada \parencite{vanderschaf2017passivity,ortega2002passivity}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp4.tex:171 `\parencite`
+  Context: Para la planta concreta de E4 se adopta un candidato de almacenamiento basado en pasividad de sistemas mecánicos \parencite{vanderschaf2017passivity,ortega2002passivity}.
+
+## parker1998alliance
+```bibtex
+@article{parker1998alliance,
+  author       = {Parker, Lynne E.},
+  title        = {{ALLIANCE}: An architecture for fault tolerant multirobot cooperation},
+  journaltitle = {IEEE Transactions on Robotics and Automation},
+  date         = {1998},
+  volume       = {14},
+  number       = {2},
+  pages        = {220--240},
+  doi          = {10.1109/70.681242},
+  url          = {https://doi.org/10.1109/70.681242}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:227 `\parencite`
+  Context: ALLIANCE activa alternativas mediante impaciencia y aquiescencia, y las subastas dinámicas reabren la adjudicación después de un evento \parencite{parker1998alliance,nanjanath2006dynamicAuctions}.
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/sp6.tex:77 `\parencite`
+  Context: ALLIANCE aporta el antecedente de activación alternativa \parencite{parker1998alliance}; las subastas dinámicas, ACBBA y CBBA-PR motivan la revisión asíncrona tras eventos \parencite{nanjanath2006dynamicAuctions,johnson2011acbba,buckman2019cbbaPr}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:227 `\parencite`
+  Context: ALLIANCE activa alternativas mediante impaciencia y aquiescencia, y las subastas dinámicas reabren la adjudicación después de un evento \parencite{parker1998alliance,nanjanath2006dynamicAuctions}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp6.tex:77 `\parencite`
+  Context: ALLIANCE aporta el antecedente de activación alternativa \parencite{parker1998alliance}; las subastas dinámicas, ACBBA y CBBA-PR motivan la revisión asíncrona tras eventos \parencite{nanjanath2006dynamicAuctions,johnson2011acbba,buckman2019cbbaPr}.
+
+## parkerTang2006ASyMTRe
+```bibtex
+@article{parkerTang2006ASyMTRe,
+  author       = {Parker, Lynne E. and Tang, Fang},
+  title        = {Building multirobot coalitions through automated task solution synthesis},
+  journaltitle = {Proceedings of the IEEE},
+  date         = {2006},
+  volume       = {94},
+  number       = {7},
+  pages        = {1289--1305},
+  doi          = {10.1109/JPROC.2006.876933},
+  url          = {https://doi.org/10.1109/JPROC.2006.876933}
+}
+```
+- thesis sections/source-snapshot/mainmatter/01-introduction.tex:26 `\parencite`
+  Context: El equipo debe ocupar contactos compatibles antes de producir el \emph{wrench} requerido; después, el control regula la pose bajo los límites de los actuadores \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe,alonsomora2017transport}.
+- thesis sections/source-snapshot/mainmatter/01-introduction.tex:41 `\parencite`
+  Context: MURDOCH y CBBA adjudican tareas mediante negociación \parencite{gerkeyMataric2002MURDOCH,choiBrunetHow2009CBBA}; ASyMTRe comprueba composiciones funcionales \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}.
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:27 `\parencite`
+  Context: ASyMTRe compone equipos mediante esquemas funcionales, e IQ-ASyMTRe descarta composiciones incompatibles por interacción o calidad de información \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:27 `\parencite`
+  Context: ASyMTRe compone equipos mediante esquemas funcionales, e IQ-ASyMTRe descarta composiciones incompatibles por interacción o calidad de información \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}.
+
+## paul2023collective
+```bibtex
+@inproceedings{paul2023collective,
+  author    = {Paul, Steve and Li, Wenyuan and Smyth, Brian and Chen, Yuzhou and Gel, Yulia and Chowdhury, Souma},
+  title     = {Efficient Planning of Multi-Robot Collective Transport Using Graph Reinforcement Learning with Higher Order Topological Abstraction},
+  booktitle = {2023 IEEE International Conference on Robotics and Automation},
+  date      = {2023},
+  pages     = {5779--5785},
+  doi       = {10.1109/ICRA48891.2023.10161517},
+  url       = {https://doi.org/10.1109/ICRA48891.2023.10161517}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:364 `\nocite`
+  Context: \nocite{zhang2024coalition,zhou2026cttapf,huang2022mlLns,yu2023graphTransformer,tang2025railgun,paul2023collective,shibata2023event}
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:364 `\nocite`
+  Context: \nocite{zhang2024coalition,zhou2026cttapf,huang2022mlLns,yu2023graphTransformer,tang2025railgun,paul2023collective,shibata2023event}
+
+## pereira2004caging
+```bibtex
+@article{pereira2004caging,
+  author       = {Pereira, Guilherme A. S. and Campos, Mario F. M. and Kumar, Vijay},
+  title        = {Decentralized algorithms for multi-robot manipulation via caging},
+  journaltitle = {The International Journal of Robotics Research},
+  date         = {2004},
+  volume       = {23},
+  number       = {7-8},
+  pages        = {783--795},
+  doi          = {10.1177/0278364904045477},
+  url          = {https://doi.org/10.1177/0278364904045477}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:216 `\parencite`
+  Context: El certificado de \emph{caging} comprueba que la configuración confina el objeto \parencite{pereira2004caging,fink2008caging}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:216 `\parencite`
+  Context: El certificado de \emph{caging} comprueba que la configuración confina el objeto \parencite{pereira2004caging,fink2008caging}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp3.tex:165 `\parencite`
+  Context: Los comparadores escalares evalúan cierre de asignación; el QP y la guardia comprueban contacto y \emph{wrench}, apoyados en la formulación de manipulación cooperativa \parencite{nakamura1989dynamics,yoshikawa1993coordinated}; el cierre y el \emph{caging} delimitan un confinamiento que aquí no se ejecuta \parencite{bicchi1995closure,pereira2004caging}.
+
+## phan2024cactus
+```bibtex
+@inproceedings{phan2024cactus,
+  author    = {Phan, Thomy and Driscoll, Joseph and Romberg, Justin and Koenig, Sven},
+  title     = {Confidence-Based Curriculum Learning for Multi-Agent Path Finding},
+  booktitle = {Proceedings of the 23rd International Conference on Autonomous Agents and MultiAgent Systems},
+  date      = {2024},
+  eprint    = {2401.05860},
+  eprinttype = {arxiv},
+  eprintclass = {cs.MA},
+  url       = {https://arxiv.org/abs/2401.05860},
+  note      = {AAMAS 2024}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:360 `\parencite`
+  Context: Las políticas aprendidas cubren MAPF descentralizado \parencite{sartoretti2019primal,phan2024cactus} y transporte con capas locales y globales \parencite{shibata2023localGlobal,naito2025tihdp}; esta clasificación describe arquitectura y alcance, no calidad experimental.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:360 `\parencite`
+  Context: Las políticas aprendidas cubren MAPF descentralizado \parencite{sartoretti2019primal,phan2024cactus} y transporte con capas locales y globales \parencite{shibata2023localGlobal,naito2025tihdp}; esta clasificación describe arquitectura y alcance, no calidad experimental.
+
+## qiu2024payloadConsumption
+```bibtex
+@online{qiu2024payloadConsumption,
+  author      = {Qiu, Xuekai and Zhu, Pengming and Hu, Yiming and Zeng, Zhiwen and Lu, Huimin},
+  title       = {Consensus-Based Dynamic Task Allocation for Multi-Robot System Considering Payloads Consumption},
+  date        = {2024},
+  eprint      = {2412.10087},
+  eprinttype  = {arxiv},
+  eprintclass = {cs.RO},
+  url         = {https://arxiv.org/abs/2412.10087}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:35 `\parencite`
+  Context: aprenden a excluir tareas inviables \parencite{qiu2024payloadConsumption,shida2025infeasibleTasks}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:35 `\parencite`
+  Context: aprenden a excluir tareas inviables \parencite{qiu2024payloadConsumption,shida2025infeasibleTasks}.
+
+## rantanen2018lossyAcbba
+```bibtex
+@inproceedings{rantanen2018lossyAcbba,
+  author    = {Rantanen, Matthew and Modares, Jalil and Mastronarde, Nicholas and Ghanei, Farshad and Dantu, Karthik},
+  title     = {Performance of the asynchronous consensus based bundle algorithm in lossy network environments},
+  booktitle = {2018 IEEE 10th Sensor Array and Multichannel Signal Processing Workshop (SAM)},
+  date      = {2018},
+  pages     = {311--315},
+  publisher = {IEEE},
+  doi       = {10.1109/SAM.2018.8448984},
+  url       = {https://doi.org/10.1109/SAM.2018.8448984}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:235 `\parencite`
+  Context: ACBBA aporta evidencia específica bajo pérdida de mensajes \parencite{rantanen2018lossyAcbba}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:235 `\parencite`
+  Context: ACBBA aporta evidencia específica bajo pérdida de mensajes \parencite{rantanen2018lossyAcbba}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp8.tex:75 `\parencite`
+  Context: \\ ACBBA con pérdidas \parencite{rantanen2018lossyAcbba} & MRTA; heurística & $O(T(KB_i+d_iK))$ y mensajes & Asíncrona entre pares & Paquete, marcas de tiempo, pérdida & Resultados para tareas exclusivas; modelo distinto.
+
+## rosenfelder2024force
+```bibtex
+@article{rosenfelder2024force,
+  author       = {Rosenfelder, Mario and Ebel, Henrik and Eberhard, Peter},
+  title        = {Force-Based Organization and Control Scheme for the Non-Prehensile Cooperative Transportation of Objects},
+  journaltitle = {Robotica},
+  date         = {2024},
+  volume       = {42},
+  number       = {2},
+  pages        = {611--624},
+  doi          = {10.1017/S0263574723001704},
+  url          = {https://doi.org/10.1017/S0263574723001704}
+}
+```
+- thesis sections/intro-contracts.tex:61 `\parencite`
+  Context: Cargo usa contactos soportados y bilaterales; caging parte de fuerzas unilaterales y exige otra prueba \parencite{an2023cooperativeReview,rosenfelder2024force}.
+- monograph sections/intro-contracts.tex:61 `\parencite`
+  Context: Cargo usa contactos soportados y bilaterales; caging parte de fuerzas unilaterales y exige otra prueba \parencite{an2023cooperativeReview,rosenfelder2024force}.
+
+## sandholm2010population
+```bibtex
+@book{sandholm2010population,
+  author    = {Sandholm, William H.},
+  title     = {Population Games and Evolutionary Dynamics},
+  publisher = {MIT Press},
+  date      = {2010}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:47 `\parencite`
+  Context: En un Nash poblacional, toda estrategia con masa positiva alcanza el pago máximo bajo el estado agregado \parencite{sandholm2010population}.
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:190 `\textcite`
+  Context: Los retratos no representan la integración de un mismo campo de pagos.} \label{fig:tf-population-simplex} \viusource{elaboración propia, inspirada en la representación de \textcite{sandholm2010population}} \end{figure}
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/sp2.tex:130 `\parencite`
+  Context: \\ Replicator/BNN/Smith \parencite{sandholm2010population} & Ordenación secuencial, sin EDO & $O(NK)$ por matriz de puntuaciones & Déficit agregado o visibilidad limitada & Cuatro/cinco parámetros ajustados & Ordenación finita; las garantías de la dinámica continua quedan fuera de esta implementación.
+- thesis sections/sp1-wrench-condensed.tex:54 `\parencite`
+  Context: La guardia comprueba \eqref{eq:sp3-wrench}; el oráculo enumera instancias pequeñas, Hungarian es solo referencia escalar y CBBA, voraz y dinámicas poblacionales son comparadores aproximados \parencite{kuhn1955Hungarian,choiBrunetHow2009CBBA,sandholm2010population}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:47 `\parencite`
+  Context: En un Nash poblacional, toda estrategia con masa positiva alcanza el pago máximo bajo el estado agregado \parencite{sandholm2010population}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:190 `\textcite`
+  Context: Los retratos no representan la integración de un mismo campo de pagos.} \label{fig:tf-population-simplex} \viusource{elaboración propia, inspirada en la representación de \textcite{sandholm2010population}} \end{figure}
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp1.tex:111 `\parencite`
+  Context: \\ Smith continuo \parencite{sandholm2010population} & Relajación continua & $O(T_SN(K+1)^2)$ & Agregado exacto de ocupación; ejecución centralizada & $\Delta t,\allowbreak T_S,\allowbreak\epsilon,\allowbreak\beta,\allowbreak\lambda_O$ & Preferencias en el símplex; requiere cierre entero posterior.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp1.tex:117 `\textcite`
+  Context: Protocolo Smith basado en \textcite{sandholm2010population}} \end{table}
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp2.tex:130 `\parencite`
+  Context: \\ Replicator/BNN/Smith \parencite{sandholm2010population} & Ordenación secuencial, sin EDO & $O(NK)$ por matriz de puntuaciones & Déficit agregado o visibilidad limitada & Cuatro/cinco parámetros ajustados & Ordenación finita; las garantías de la dinámica continua quedan fuera de esta implementación.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp3.tex:182 `\parencite`
+  Context: \\ Replicator/BNN/Smith + precio \parencite{sandholm2010population} & Relajación convexa en P & Rep./BNN $O(TNA)$; Smith $O(TNA^2)$ & Agregados exactos & $\Delta t,T,\gamma$, ganancias de precio & Invariancia del simplex verificada; convergencia del esquema muestreado sin certificar.
+
+## sartoretti2019primal
+```bibtex
+@article{sartoretti2019primal,
+  author       = {Sartoretti, Guillaume and Kerr, Justin and Shi, Yunfei and Wagner, Glenn and Kumar, T. K. Satish and Koenig, Sven and Choset, Howie},
+  title        = {PRIMAL: Pathfinding via Reinforcement and Imitation Multi-Agent Learning},
+  journaltitle = {IEEE Robotics and Automation Letters},
+  date         = {2019},
+  volume       = {4},
+  number       = {3},
+  pages        = {2378--2385},
+  doi          = {10.1109/LRA.2019.2903261},
+  url          = {https://doi.org/10.1109/LRA.2019.2903261}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:360 `\parencite`
+  Context: Las políticas aprendidas cubren MAPF descentralizado \parencite{sartoretti2019primal,phan2024cactus} y transporte con capas locales y globales \parencite{shibata2023localGlobal,naito2025tihdp}; esta clasificación describe arquitectura y alcance, no calidad experimental.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:360 `\parencite`
+  Context: Las políticas aprendidas cubren MAPF descentralizado \parencite{sartoretti2019primal,phan2024cactus} y transporte con capas locales y globales \parencite{shibata2023localGlobal,naito2025tihdp}; esta clasificación describe arquitectura y alcance, no calidad experimental.
+
+## shan2024collectiveTransport
+```bibtex
+@article{shan2024collectiveTransport,
+  author       = {Shan, Xiaotao and Jin, Yichao and Jurt, Marius and Li, Peizheng},
+  title        = {A Distributed Multi-Robot Task Allocation Method for Time-Constrained Dynamic Collective Transport},
+  journaltitle = {Robotics and Autonomous Systems},
+  date         = {2024},
+  volume       = {178},
+  pages        = {104722},
+  doi          = {10.1016/j.robot.2024.104722},
+  url          = {https://doi.org/10.1016/j.robot.2024.104722}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:31 `\parencite`
+  Context: distribuyen la asignación del transporte colectivo con restricciones temporales \parencite{shan2024collectiveTransport}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:31 `\parencite`
+  Context: distribuyen la asignación del transporte colectivo con restricciones temporales \parencite{shan2024collectiveTransport}.
+
+## sharon2015cbs
+```bibtex
+@article{sharon2015cbs,
+  author       = {Sharon, Guni and Stern, Roni and Felner, Ariel and Sturtevant, Nathan R.},
+  title        = {Conflict-based search for optimal multi-agent pathfinding},
+  journaltitle = {Artificial Intelligence},
+  date         = {2015},
+  volume       = {219},
+  pages        = {40--66},
+  doi          = {10.1016/j.artint.2014.11.006},
+  url          = {https://doi.org/10.1016/j.artint.2014.11.006}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:231 `\parencite`
+  Context: CBS alterna detección de conflictos y planificación individual, con completitud y optimalidad en su modelo discreto; ECBS acepta suboptimalidad acotada para reducir coste \parencite{sharon2015cbs,barer2014ecbs}.
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/sp7.tex:67 `\parencite`
+  Context: CBS/ECBS proporcionan el contexto de MAPF, LA-MAPF trata agentes extensos y ORCA opera en velocidades continuas \parencite{sharon2015cbs,barer2014ecbs,li2019largeAgentMapf,vandenberg2011orca}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:231 `\parencite`
+  Context: CBS alterna detección de conflictos y planificación individual, con completitud y optimalidad en su modelo discreto; ECBS acepta suboptimalidad acotada para reducir coste \parencite{sharon2015cbs,barer2014ecbs}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp7.tex:67 `\parencite`
+  Context: CBS/ECBS proporcionan el contexto de MAPF, LA-MAPF trata agentes extensos y ORCA opera en velocidades continuas \parencite{sharon2015cbs,barer2014ecbs,li2019largeAgentMapf,vandenberg2011orca}.
+
+## shehoryKraus1998Coalition
+```bibtex
+@article{shehoryKraus1998Coalition,
+  author       = {Shehory, Onn and Kraus, Sarit},
+  title        = {Methods for task allocation via agent coalition formation},
+  journaltitle = {Artificial Intelligence},
+  date         = {1998},
+  volume       = {101},
+  number       = {1-2},
+  pages        = {165--200},
+  doi          = {10.1016/S0004-3702(98)00045-9},
+  url          = {https://doi.org/10.1016/S0004-3702(98)00045-9}
+}
+```
+- thesis sections/source-snapshot/mainmatter/01-introduction.tex:22 `\parencite`
+  Context: La asignación multi-robot aporta las variables para seleccionar participantes \parencite{gerkeyMataric2004MRTA,korsahStentzDias2013iTax}, y los modelos de coalición representan el valor de una composición \parencite{shehoryKraus1998Coalition,vigAdams2006Coalition}.
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:25 `\parencite`
+  Context: Los modelos \emph{anytime}, basados en capacidades y hedónicos hacen depender \(u_i\) de la coalición que recibe al robot \parencite{shehoryKraus1998Coalition,vigAdams2006Coalition,dutta2021hedonic}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:25 `\parencite`
+  Context: Los modelos \emph{anytime}, basados en capacidades y hedónicos hacen depender \(u_i\) de la coalición que recibe al robot \parencite{shehoryKraus1998Coalition,vigAdams2006Coalition,dutta2021hedonic}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp1.tex:120 `\textcite`
+  Context: Los métodos de coalición de \textcite{shehoryKraus1998Coalition,vigAdams2006Coalition} se usan como antecedentes metodológicos.
+
+## shibata2023event
+```bibtex
+@article{shibata2023event,
+  author       = {Shibata, Kazuki and Jimbo, Tomohiko and Matsubara, Takamitsu},
+  title        = {Deep Reinforcement Learning of Event-Triggered Communication and Consensus-Based Control for Distributed Cooperative Transport},
+  journaltitle = {Robotics and Autonomous Systems},
+  date         = {2023},
+  volume       = {159},
+  pages        = {104307},
+  doi          = {10.1016/j.robot.2022.104307},
+  url          = {https://doi.org/10.1016/j.robot.2022.104307}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:364 `\nocite`
+  Context: \nocite{zhang2024coalition,zhou2026cttapf,huang2022mlLns,yu2023graphTransformer,tang2025railgun,paul2023collective,shibata2023event}
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:364 `\nocite`
+  Context: \nocite{zhang2024coalition,zhou2026cttapf,huang2022mlLns,yu2023graphTransformer,tang2025railgun,paul2023collective,shibata2023event}
+
+## shibata2023localGlobal
+```bibtex
+@article{shibata2023localGlobal,
+  author       = {Shibata, Kazuki and Jimbo, Tomohiko and Odashima, Tadashi and Takeshita, Keisuke and Matsubara, Takamitsu},
+  title        = {Learning Locally, Communicating Globally: Reinforcement Learning of Multi-Robot Task Allocation for Cooperative Transport},
+  journaltitle = {IFAC-PapersOnLine},
+  date         = {2023},
+  volume       = {56},
+  number       = {2},
+  pages        = {11436--11443},
+  doi          = {10.1016/j.ifacol.2023.10.431},
+  url          = {https://doi.org/10.1016/j.ifacol.2023.10.431}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:360 `\parencite`
+  Context: Las políticas aprendidas cubren MAPF descentralizado \parencite{sartoretti2019primal,phan2024cactus} y transporte con capas locales y globales \parencite{shibata2023localGlobal,naito2025tihdp}; esta clasificación describe arquitectura y alcance, no calidad experimental.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:360 `\parencite`
+  Context: Las políticas aprendidas cubren MAPF descentralizado \parencite{sartoretti2019primal,phan2024cactus} y transporte con capas locales y globales \parencite{shibata2023localGlobal,naito2025tihdp}; esta clasificación describe arquitectura y alcance, no calidad experimental.
+
+## shida2025infeasibleTasks
+```bibtex
+@inproceedings{shida2025infeasibleTasks,
+  author    = {Shida, Yuma and Jimbo, Tomohiko and Odashima, Tadashi and Matsubara, Takamitsu},
+  title     = {Reinforcement Learning of Multi-Robot Task Allocation for Multi-Object Transportation with Infeasible Tasks},
+  booktitle = {2025 IEEE/SICE International Symposium on System Integration},
+  date      = {2025},
+  pages     = {1548--1555},
+  doi       = {10.1109/SII59315.2025.10870902},
+  url       = {https://doi.org/10.1109/SII59315.2025.10870902}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:35 `\parencite`
+  Context: aprenden a excluir tareas inviables \parencite{qiu2024payloadConsumption,shida2025infeasibleTasks}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:35 `\parencite`
+  Context: aprenden a excluir tareas inviables \parencite{qiu2024payloadConsumption,shida2025infeasibleTasks}.
+
+## tang2025railgun
+```bibtex
+@inproceedings{tang2025railgun,
+  author       = {Tang, Yimin and Xiong, Xiao and Xi, Jingyi and Li, Jiaoyang and Biyik, Erdem and Koenig, Sven},
+  title        = {RAILGUN: A Unified Convolutional Policy for Multi-Agent Path Finding Across Different Environments and Tasks},
+  booktitle    = {Proceedings of the International Symposium on Combinatorial Search},
+  date         = {2025},
+  volume       = {18},
+  number       = {1},
+  pages        = {273--274},
+  doi          = {10.1609/socs.v18i1.36015},
+  url          = {https://ojs.aaai.org/index.php/SOCS/article/view/36015},
+  note         = {Extended abstract}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:364 `\nocite`
+  Context: \nocite{zhang2024coalition,zhou2026cttapf,huang2022mlLns,yu2023graphTransformer,tang2025railgun,paul2023collective,shibata2023event}
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:364 `\nocite`
+  Context: \nocite{zhang2024coalition,zhou2026cttapf,huang2022mlLns,yu2023graphTransformer,tang2025railgun,paul2023collective,shibata2023event}
+
+## tsitsiklis1986asynchronousOptimization
+```bibtex
+@article{tsitsiklis1986asynchronousOptimization,
+  author       = {Tsitsiklis, John N. and Bertsekas, Dimitri P. and Athans, Michael},
+  title        = {Distributed asynchronous deterministic and stochastic gradient optimization algorithms},
+  journaltitle = {IEEE Transactions on Automatic Control},
+  date         = {1986},
+  volume       = {31},
+  number       = {9},
+  pages        = {803--812},
+  doi          = {10.1109/TAC.1986.1104412},
+  url          = {https://doi.org/10.1109/TAC.1986.1104412}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:45 `\parencite`
+  Context: El resultado asíncrono citado supone activación persistente y retardos acotados \parencite{tsitsiklis1986asynchronousOptimization}; una copia que excede esa cota queda fuera de su dominio.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:45 `\parencite`
+  Context: El resultado asíncrono citado supone activación persistente y retardos acotados \parencite{tsitsiklis1986asynchronousOptimization}; una copia que excede esa cota queda fuera de su dominio.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp8.tex:73 `\parencite`
+  Context: \begin{table}[!htbp] \centering \caption{Métodos y literatura comparada para E8.} \label{tab:sp8-methods} \viutablefont \setlength{\tabcolsep}{1.3pt} \begin{tabularx}{\textwidth}{p{2.0cm} p{1.45cm} p{2.25cm} p{2.0cm} p{1.75cm} Y} \toprule Método/fuente & Clase & Coste & Arquitectura & Parámetros & Garantía/límite \\ \midrule Gradiente asíncrono \parencite{tsitsiklis1986asynchronousOptimization} & Convexo, bajo los supuestos citados & $O(T(c_g+d_i d))$ por agente & Distribuido; valores obsoletos & Paso, retardo, tolerancia & Convergencia convexa.
+
+## vandenberg2008rvo
+```bibtex
+@inproceedings{vandenberg2008rvo,
+  author    = {van den Berg, Jur and Lin, Ming and Manocha, Dinesh},
+  title     = {Reciprocal velocity obstacles for real-time multi-agent navigation},
+  booktitle = {2008 IEEE International Conference on Robotics and Automation},
+  date      = {2008},
+  pages     = {1928--1935},
+  publisher = {IEEE},
+  doi       = {10.1109/ROBOT.2008.4543489},
+  url       = {https://doi.org/10.1109/ROBOT.2008.4543489}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:221 `\parencite`
+  Context: RVO traslada la predicción al espacio de velocidades y reparte la maniobra; ORCA construye semiplanos recíprocamente admisibles \parencite{vandenberg2008rvo,vandenberg2011orca}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:221 `\parencite`
+  Context: RVO traslada la predicción al espacio de velocidades y reparte la maniobra; ORCA construye semiplanos recíprocamente admisibles \parencite{vandenberg2008rvo,vandenberg2011orca}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp5.tex:117 `\parencite`
+  Context: VO/RVO/ORCA permiten comparar la selección geométrica de velocidades \parencite{fiorini1998velocity,vandenberg2008rvo,vandenberg2011orca}, mientras el CBF fija la referencia de invariancia continua bajo sus supuestos de factibilidad y regularidad \parencite{ames2017cbf}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp5.tex:131 `\parencite`
+  Context: \\ VO/RVO/ORCA \parencite{fiorini1998velocity,vandenberg2008rvo,vandenberg2011orca} & Geometría/LP 2D & $O(m)$ más selección; ORCA lineal esperado & Estados relativos & Horizonte, radios & Garantías bajo sus modelos; se evalúa solo una aproximación a ORCA.
+
+## vandenberg2011orca
+```bibtex
+@incollection{vandenberg2011orca,
+  author    = {van den Berg, Jur and Guy, Stephen J. and Lin, Ming and Manocha, Dinesh},
+  title     = {Reciprocal n-body collision avoidance},
+  booktitle = {Robotics Research: The 14th International Symposium {ISRR}},
+  editor    = {Pradalier, Cédric and Siegwart, Roland and Hirzinger, Gerhard},
+  date      = {2011},
+  series    = {Springer Tracts in Advanced Robotics},
+  number    = {70},
+  pages     = {3--19},
+  publisher = {Springer Berlin Heidelberg},
+  doi       = {10.1007/978-3-642-19457-3_1},
+  url       = {https://doi.org/10.1007/978-3-642-19457-3_1}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:221 `\parencite`
+  Context: RVO traslada la predicción al espacio de velocidades y reparte la maniobra; ORCA construye semiplanos recíprocamente admisibles \parencite{vandenberg2008rvo,vandenberg2011orca}.
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/sp7.tex:67 `\parencite`
+  Context: CBS/ECBS proporcionan el contexto de MAPF, LA-MAPF trata agentes extensos y ORCA opera en velocidades continuas \parencite{sharon2015cbs,barer2014ecbs,li2019largeAgentMapf,vandenberg2011orca}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:221 `\parencite`
+  Context: RVO traslada la predicción al espacio de velocidades y reparte la maniobra; ORCA construye semiplanos recíprocamente admisibles \parencite{vandenberg2008rvo,vandenberg2011orca}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp5.tex:117 `\parencite`
+  Context: VO/RVO/ORCA permiten comparar la selección geométrica de velocidades \parencite{fiorini1998velocity,vandenberg2008rvo,vandenberg2011orca}, mientras el CBF fija la referencia de invariancia continua bajo sus supuestos de factibilidad y regularidad \parencite{ames2017cbf}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp5.tex:131 `\parencite`
+  Context: \\ VO/RVO/ORCA \parencite{fiorini1998velocity,vandenberg2008rvo,vandenberg2011orca} & Geometría/LP 2D & $O(m)$ más selección; ORCA lineal esperado & Estados relativos & Horizonte, radios & Garantías bajo sus modelos; se evalúa solo una aproximación a ORCA.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp7.tex:67 `\parencite`
+  Context: CBS/ECBS proporcionan el contexto de MAPF, LA-MAPF trata agentes extensos y ORCA opera en velocidades continuas \parencite{sharon2015cbs,barer2014ecbs,li2019largeAgentMapf,vandenberg2011orca}.
+
+## vanderschaf2017passivity
+```bibtex
+@book{vanderschaf2017passivity,
+  author    = {van der Schaft, Arjan},
+  title     = {$L_2$-Gain and Passivity Techniques in Nonlinear Control},
+  edition   = {3},
+  publisher = {Springer},
+  date      = {2017},
+  doi       = {10.1007/978-3-319-49992-5},
+  url       = {https://doi.org/10.1007/978-3-319-49992-5}
+}
+```
+- thesis sections/method-comparison.tex:51 `\parencite`
+  Context: El protocolo exige que una prueba de pasividad identifique puertos, almacenamiento y suministro, y que una prueba de Lyapunov fije dominio y signo de la derivada \parencite{vanderschaf2017passivity,ortega2002passivity}.
+- thesis sections/source-snapshot/mainmatter/06-results-and-analysis/sp4.tex:171 `\parencite`
+  Context: Para la planta concreta de E4 se adopta un candidato de almacenamiento basado en pasividad de sistemas mecánicos \parencite{vanderschaf2017passivity,ortega2002passivity}.
+- monograph sections/method-comparison.tex:51 `\parencite`
+  Context: El protocolo exige que una prueba de pasividad identifique puertos, almacenamiento y suministro, y que una prueba de Lyapunov fije dominio y signo de la derivada \parencite{vanderschaf2017passivity,ortega2002passivity}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp4.tex:171 `\parencite`
+  Context: Para la planta concreta de E4 se adopta un candidato de almacenamiento basado en pasividad de sistemas mecánicos \parencite{vanderschaf2017passivity,ortega2002passivity}.
+
+## vigAdams2006Coalition
+```bibtex
+@article{vigAdams2006Coalition,
+  author       = {Vig, Lovekesh and Adams, Julie A.},
+  title        = {Multi-robot coalition formation},
+  journaltitle = {IEEE Transactions on Robotics},
+  date         = {2006},
+  volume       = {22},
+  number       = {4},
+  pages        = {637--649},
+  doi          = {10.1109/TRO.2006.878948},
+  url          = {https://doi.org/10.1109/TRO.2006.878948}
+}
+```
+- thesis sections/source-snapshot/mainmatter/01-introduction.tex:22 `\parencite`
+  Context: La asignación multi-robot aporta las variables para seleccionar participantes \parencite{gerkeyMataric2004MRTA,korsahStentzDias2013iTax}, y los modelos de coalición representan el valor de una composición \parencite{shehoryKraus1998Coalition,vigAdams2006Coalition}.
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:25 `\parencite`
+  Context: Los modelos \emph{anytime}, basados en capacidades y hedónicos hacen depender \(u_i\) de la coalición que recibe al robot \parencite{shehoryKraus1998Coalition,vigAdams2006Coalition,dutta2021hedonic}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:25 `\parencite`
+  Context: Los modelos \emph{anytime}, basados en capacidades y hedónicos hacen depender \(u_i\) de la coalición que recibe al robot \parencite{shehoryKraus1998Coalition,vigAdams2006Coalition,dutta2021hedonic}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp1.tex:120 `\textcite`
+  Context: Los métodos de coalición de \textcite{shehoryKraus1998Coalition,vigAdams2006Coalition} se usan como antecedentes metodológicos.
+
+## wang2017barrier
+```bibtex
+@article{wang2017barrier,
+  author       = {Wang, Li and Ames, Aaron D. and Egerstedt, Magnus},
+  title        = {Safety barrier certificates for collisions-free multirobot systems},
+  journaltitle = {IEEE Transactions on Robotics},
+  date         = {2017},
+  volume       = {33},
+  number       = {3},
+  pages        = {661--674},
+  doi          = {10.1109/TRO.2017.2659727},
+  url          = {https://doi.org/10.1109/TRO.2017.2659727}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:223 `\parencite`
+  Context: Los certificados distribuidos imponen separación entre pares y pueden recurrir a frenado de emergencia \parencite{wang2017barrier}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:223 `\parencite`
+  Context: Los certificados distribuidos imponen separación entre pares y pueden recurrir a frenado de emergencia \parencite{wang2017barrier}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp5.tex:133 `\parencite`
+  Context: \\ Barreras multirrobot \parencite{wang2017barrier} & QP local convexo & $C_{\mathrm{QP}}(p,m_i)$ & Distribuida; estados vecinos & Radio, frenado & Separación en el modelo citado; se usa como contexto y no se evalúa.
+
+## wurman2008coordinating
+```bibtex
+@article{wurman2008coordinating,
+  author       = {Wurman, Peter R. and D'Andrea, Raffaello and Mountz, Mick},
+  title        = {Coordinating Hundreds of Cooperative, Autonomous Vehicles in Warehouses},
+  journaltitle = {AI Magazine},
+  date         = {2008},
+  volume       = {29},
+  number       = {1},
+  pages        = {9--19},
+  doi          = {10.1609/aimag.v29i1.2082},
+  url          = {https://doi.org/10.1609/aimag.v29i1.2082}
+}
+```
+- thesis sections/source-snapshot/mainmatter/01-introduction.tex:8 `\parencite`
+  Context: En almacenes, Kiva documentó la coordinación de flotas para mover estanterías \parencite{wurman2008coordinating}; Geek+ y MiR ofrecen soluciones comerciales para preparación de pedidos y transporte interno \parencite{geekplusWarehouseSolutions,mirInternalTransport}.
+
+## yi2019operatorGNE
+```bibtex
+@article{yi2019operatorGNE,
+  author       = {Yi, Peng and Pavel, Lacra},
+  title        = {An Operator Splitting Approach for Distributed Generalized {Nash} Equilibria Computation},
+  journaltitle = {Automatica},
+  date         = {2019},
+  volume       = {102},
+  pages        = {111--121},
+  doi          = {10.1016/j.automatica.2019.01.008},
+  url          = {https://doi.org/10.1016/j.automatica.2019.01.008}
+}
+```
+- thesis sections/method-comparison.tex:42 `\parencite`
+  Context: Con restricciones compartidas y las condiciones de regularidad declaradas, un Nash generalizado variacional se caracteriza como solución de una desigualdad variacional y admite multiplicadores comunes \parencite{yi2019operatorGNE,franci2022stochasticGNE}.
+- monograph sections/method-comparison.tex:42 `\parencite`
+  Context: Con restricciones compartidas y las condiciones de regularidad declaradas, un Nash generalizado variacional se caracteriza como solución de una desigualdad variacional y admite multiplicadores comunes \parencite{yi2019operatorGNE,franci2022stochasticGNE}.
+
+## yoshikawa1993coordinated
+```bibtex
+@article{yoshikawa1993coordinated,
+  author       = {Yoshikawa, Tsuneo and Zheng, Xin-Zhi},
+  title        = {Coordinated dynamic hybrid position/force control for multiple robot manipulators handling one constrained object},
+  journaltitle = {The International Journal of Robotics Research},
+  date         = {1993},
+  volume       = {12},
+  number       = {3},
+  pages        = {219--230},
+  doi          = {10.1177/027836499301200302},
+  url          = {https://doi.org/10.1177/027836499301200302}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:208 `\parencite`
+  Context: \label{eq:tf-grasp-map} \end{equation} La Ecuación~\eqref{eq:tf-grasp-map} separa el \emph{wrench} resultante de las fuerzas internas \parencite{nakamura1989dynamics,yoshikawa1993coordinated}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:208 `\parencite`
+  Context: \label{eq:tf-grasp-map} \end{equation} La Ecuación~\eqref{eq:tf-grasp-map} separa el \emph{wrench} resultante de las fuerzas internas \parencite{nakamura1989dynamics,yoshikawa1993coordinated}.
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp3.tex:165 `\parencite`
+  Context: Los comparadores escalares evalúan cierre de asignación; el QP y la guardia comprueban contacto y \emph{wrench}, apoyados en la formulación de manipulación cooperativa \parencite{nakamura1989dynamics,yoshikawa1993coordinated}; el cierre y el \emph{caging} delimitan un confinamiento que aquí no se ejecuta \parencite{bicchi1995closure,pereira2004caging}.
+
+## yu2023graphTransformer
+```bibtex
+@inproceedings{yu2023graphTransformer,
+  author       = {Yu, Chenning and Li, Qingbiao and Gao, Sicun and Prorok, Amanda},
+  title        = {Accelerating Multi-Agent Planning Using Graph Transformers with Bounded Suboptimality},
+  booktitle    = {2023 IEEE International Conference on Robotics and Automation},
+  date         = {2023},
+  pages        = {3432--3439},
+  doi          = {10.1109/ICRA48891.2023.10161018},
+  url          = {https://doi.org/10.1109/ICRA48891.2023.10161018},
+  note         = {Accepted by ICRA 2023}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:364 `\nocite`
+  Context: \nocite{zhang2024coalition,zhou2026cttapf,huang2022mlLns,yu2023graphTransformer,tang2025railgun,paul2023collective,shibata2023event}
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:364 `\nocite`
+  Context: \nocite{zhang2024coalition,zhou2026cttapf,huang2022mlLns,yu2023graphTransformer,tang2025railgun,paul2023collective,shibata2023event}
+
+## zhang2024coalition
+```bibtex
+@inproceedings{zhang2024coalition,
+  author    = {Zhang, Liwang and Liang, Dong and Li, Minglong and Yang, Wenjing and Yang, Shaowu},
+  title     = {Coalition Formation Game Approach for Task Allocation in Heterogeneous Multi-Robot Systems under Resource Constraints},
+  booktitle = {2024 IEEE/RSJ International Conference on Intelligent Robots and Systems},
+  date      = {2024},
+  pages     = {3439--3446},
+  doi       = {10.1109/IROS58592.2024.10801429},
+  url       = {https://doi.org/10.1109/IROS58592.2024.10801429}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:364 `\nocite`
+  Context: \nocite{zhang2024coalition,zhou2026cttapf,huang2022mlLns,yu2023graphTransformer,tang2025railgun,paul2023collective,shibata2023event}
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:364 `\nocite`
+  Context: \nocite{zhang2024coalition,zhou2026cttapf,huang2022mlLns,yu2023graphTransformer,tang2025railgun,paul2023collective,shibata2023event}
+
+## zhangParker2013IQASyMTRe
+```bibtex
+@article{zhangParker2013IQASyMTRe,
+  author       = {Zhang, Yu and Parker, Lynne E.},
+  title        = {{IQ-ASyMTRe}: Forming executable coalitions for tightly coupled multirobot tasks},
+  journaltitle = {IEEE Transactions on Robotics},
+  date         = {2013},
+  volume       = {29},
+  number       = {2},
+  pages        = {400--416},
+  doi          = {10.1109/TRO.2012.2228135},
+  url          = {https://doi.org/10.1109/TRO.2012.2228135}
+}
+```
+- thesis sections/source-snapshot/mainmatter/01-introduction.tex:26 `\parencite`
+  Context: El equipo debe ocupar contactos compatibles antes de producir el \emph{wrench} requerido; después, el control regula la pose bajo los límites de los actuadores \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe,alonsomora2017transport}.
+- thesis sections/source-snapshot/mainmatter/01-introduction.tex:41 `\parencite`
+  Context: MURDOCH y CBBA adjudican tareas mediante negociación \parencite{gerkeyMataric2002MURDOCH,choiBrunetHow2009CBBA}; ASyMTRe comprueba composiciones funcionales \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}.
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:27 `\parencite`
+  Context: ASyMTRe compone equipos mediante esquemas funcionales, e IQ-ASyMTRe descarta composiciones incompatibles por interacción o calidad de información \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:27 `\parencite`
+  Context: ASyMTRe compone equipos mediante esquemas funcionales, e IQ-ASyMTRe descarta composiciones incompatibles por interacción o calidad de información \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe}.
+
+## zhangParker2013Resources
+```bibtex
+@article{zhangParker2013Resources,
+  author       = {Zhang, Yu and Parker, Lynne E.},
+  title        = {Considering inter-task resource constraints in task allocation},
+  journaltitle = {Autonomous Agents and Multi-Agent Systems},
+  date         = {2013},
+  volume       = {26},
+  number       = {3},
+  pages        = {389--419},
+  doi          = {10.1007/s10458-012-9196-7},
+  url          = {https://doi.org/10.1007/s10458-012-9196-7}
+}
+```
+- monograph sections/source-snapshot/mainmatter/06-results-and-analysis/sp1.tex:110 `\parencite`
+  Context: \\ Greedy-Q (familia de recursos \parencite{zhangParker2013Resources}) & Selección opcional NP-difícil; heurística & $O(K^2N\log N)$ & Central; robots libres y todos los costes & $\alpha$, orden & Grupos enteros, sin cota y dependientes del orden.
+
+## zhou2026cttapf
+```bibtex
+@online{zhou2026cttapf,
+  author  = {Zhou, Ning and Bode, Nikolai W. F. and Hunt, Edmund R.},
+  title   = {Multi-Agent Cooperative Transportation: Optimal and Efficient Task Allocation and Path Finding},
+  date    = {2026},
+  eprint  = {2605.16097},
+  eprinttype = {arxiv},
+  eprintclass = {cs.RO},
+  url     = {https://arxiv.org/abs/2605.16097},
+  urldate = {2026-07-15},
+  note    = {Preprint}
+}
+```
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:364 `\nocite`
+  Context: \nocite{zhang2024coalition,zhou2026cttapf,huang2022mlLns,yu2023graphTransformer,tang2025railgun,paul2023collective,shibata2023event}
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:364 `\nocite`
+  Context: \nocite{zhang2024coalition,zhou2026cttapf,huang2022mlLns,yu2023graphTransformer,tang2025railgun,paul2023collective,shibata2023event}
+
+## zlotStentz2006ComplexTasks
+```bibtex
+@article{zlotStentz2006ComplexTasks,
+  author       = {Zlot, Robert and Stentz, Anthony},
+  title        = {Market-based multirobot coordination for complex tasks},
+  journaltitle = {The International Journal of Robotics Research},
+  date         = {2006},
+  volume       = {25},
+  number       = {1},
+  pages        = {73--101},
+  doi          = {10.1177/0278364906061160},
+  url          = {https://doi.org/10.1177/0278364906061160}
+}
+```
+- thesis sections/intro-contracts.tex:9 `\parencite`
+  Context: Los mercados para tareas complejas representan parte de esa dependencia \parencite{zlotStentz2006ComplexTasks}; la coalición física exige además concurrencia en contactos compatibles.
+- thesis sections/source-snapshot/mainmatter/05-theoretical-framework.tex:254 `\nocite`
+  Context: \nocite{zlotStentz2006ComplexTasks}
+- monograph sections/intro-contracts.tex:9 `\parencite`
+  Context: Los mercados para tareas complejas representan parte de esa dependencia \parencite{zlotStentz2006ComplexTasks}; la coalición física exige además concurrencia en contactos compatibles.
+- monograph sections/source-snapshot/mainmatter/05-theoretical-framework.tex:254 `\nocite`
+  Context: \nocite{zlotStentz2006ComplexTasks}

@@ -1,0 +1,14 @@
+\begin{tabular}{lrrrrrr}
+\toprule
+Método & $n$ & Éxito seguro & Colisión & Horizonte agotado & Holgura [m] & Violación aplicada \\
+\midrule
+PD de pose sin filtro & 108 & 0.259 & 0.741 & 0.000 & 0.107 & 0.264 \\
+Campo potencial & 108 & 0.333 & 0.333 & 0.333 & 0.406 & 0.063 \\
+Aproximación VO & 108 & 0.657 & 0.343 & 0.000 & 0.347 & 0.117 \\
+CBF local & 108 & 0.593 & 0.000 & 0.407 & 0.266 & 0.064 \\
+Hamiltoniano sin filtro & 108 & 0.167 & 0.833 & 0.000 & 0.100 & 0.255 \\
+Hamiltoniano + CBF & 108 & 0.426 & 0.000 & 0.574 & 0.258 & 0.068 \\
+CBF anticipativo local & 108 & 0.398 & 0.000 & 0.602 & 0.305 & 0.065 \\
+Previsión central & 108 & 0.167 & 0.000 & 0.833 & 0.265 & 0.066 \\
+\bottomrule
+\end{tabular}

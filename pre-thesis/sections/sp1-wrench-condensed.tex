@@ -1,0 +1,78 @@
+\subsubsection{Etapa 1.4: certificado planar de contacto}
+\label{subsubsec:sp1-contacts}
+
+\input{shared/generated-macros/sp3_numbers.tex}
+
+E3 reemplaza la cobertura escalar por un certificado planar de puestos y
+\emph{wrench}. La memoria retiene el reparto, su guardia y el contraste; la
+monografía conserva el juego continuo, las derivaciones y las variantes. El
+modelo es cuasiestático y anterior al transporte.
+
+Para $Q_W\succ0$, $\varepsilon_\lambda>0$ y el producto de conjuntos de
+contacto $\Lambda_k=\prod_{i\in C_k}\Lambda_{ik}$ cerrado, convexo y no vacío,
+el reparto implementado resuelve
+\begin{align}
+ \boldsymbol\lambda_k^\star&\in\argmin_{\boldsymbol\lambda_k\in\Lambda_k}
+ \|G_k\boldsymbol\lambda_k-\boldsymbol W_k^{\mathrm{dem}}\|_{Q_W}^{2}
+ +\varepsilon_\lambda\|\boldsymbol\lambda_k\|_2^2, \label{eq:sp3-wrench}\\
+ \rho_k^{W\star}&=\|G_k\boldsymbol\lambda_k^\star-
+ \boldsymbol W_k^{\mathrm{dem}}\|_{Q_W}. \nonumber
+\end{align}
+Si el minimizador no restringido es interior, entonces
+\begin{equation}
+ \boldsymbol\lambda_k^\star=(G_k^{\mathsf T}Q_WG_k+\varepsilon_\lambda I)^{-1}
+ G_k^{\mathsf T}Q_W\boldsymbol W_k^{\mathrm{dem}}.
+ \label{eq:sp3-interior-wrench-solution}
+\end{equation}
+
+\begin{contribucion}{reparto único y certificado regularizado conservador}
+\estadoaporte{demostrado para $\Lambda_k$ cerrado, convexo y no vacío.}
+\begin{proposicion}[Residual puro frente a reparto regularizado]
+\label{prop:pre-sp1-wrench-residual}
+Si $\rho_k^{W,\min}=\min_{\boldsymbol\lambda_k\in\Lambda_k}
+\|G_k\boldsymbol\lambda_k-\boldsymbol W_k^{\mathrm{dem}}\|_{Q_W}$, el
+QP~\eqref{eq:sp3-wrench} posee minimizador único y
+$\rho_k^{W,\min}\leq\rho_k^{W\star}$. Por tanto,
+$\rho_k^{W\star}\leq\epsilon_W$ certifica una realización tolerable, pero la
+conversa no vale en general.
+\end{proposicion}
+\end{contribucion}
+El Anexo~\ref{app:sp1-wrench-proofs} demuestra la unicidad, la desigualdad y un
+contraejemplo escalar. La selección continua que precede al cierre es
+primal--dual; su potencial corregido y sus KKT se documentan en la monografía,
+sin transferirlos al cierre entero ni a Euler muestreado.
+
+La ejecución digital proyecta preferencias y actualiza precios de ocupación,
+\begin{equation}
+ \rho_i^{m+1}=P_{\Delta_i}(\rho_i^m+\Delta t\,F_i),\qquad
+ \pi_a^{m+1}=[\pi_a^m+\Delta t_\pi h_a(\rho^m)]_+,
+ \label{eq:sp3-digital-update}
+\end{equation}
+donde cada paso de la Ecuación~\eqref{eq:sp3-digital-update} proyecta $\rho_i$
+sobre el símplex y después asigna como máximo un robot por puesto. La guardia comprueba
+\eqref{eq:sp3-wrench}; el oráculo enumera instancias pequeñas, Hungarian es solo
+referencia escalar y CBBA, voraz y dinámicas poblacionales son comparadores
+aproximados \parencite{kuhn1955Hungarian,choiBrunetHow2009CBBA,sandholm2010population}.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Contraste E3 sobre \SPThreeWorlds{} mundos pareados.}
+  \label{tab:sp3-results}
+  \viutablefont
+  \begin{tabularx}{0.96\textwidth}{>{\raggedright\arraybackslash}p{3.65cm} C C Y}
+    \toprule
+    Tratamiento & Falsos positivos & Residual KKT & Lectura \\
+    \midrule
+    PD exacto sin guardia & \SPThreeUnguardedFP{} & \SPThreeExactKKT{} & estacionariedad no certifica cierre \\
+    PD exacto con guardia & \SPThreeGuardedFP{} & \SPThreeExactKKT{} & elimina aceptaciones inviables en el banco evaluado \\
+    PD anillo con guardia & \SPThreeGuardedFP{} & \SPThreeRingKKT{} & cuatro rondas dejan error de agregado \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+Las \SPThreeRuns{} ejecuciones, con semillas predeclaradas
+$461000$--$461099$, redujeron los falsos positivos de
+\SPThreeUnguardedFP{} a \SPThreeGuardedFP{} en las geometrías evaluadas. El
+resultado no acredita contacto, estabilidad ni una arquitectura completamente
+vecinal; SP2 vuelve a certificar el movimiento.

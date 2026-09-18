@@ -1,0 +1,40 @@
+Las etapas E0 y E1 aíslan dos mecanismos que después alimentan SP1: asociación uno-a-uno y cierre de cuotas. Se conservan como antecedentes internos, con sus contratos de información y sin promover el cierre global QR a arquitectura distribuida.
+
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/sp0}
+\input{sections/source-snapshot/mainmatter/06-results-and-analysis/sp1}
+
+Los cuatro gráficos siguientes se regeneraron desde configuraciones versionadas el 8 de septiembre de 2026. E0 conserva su campaña empírica; E1 se etiqueta como desarrollo porque no fue preespecificada como confirmatoria.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth]{figures/generated/sp0-equilibrium-efficiency.pdf}
+  \caption{E0: cardinalidad del conjunto de Nash y distribución de la brecha respecto al oráculo en las instancias pareadas regeneradas.}
+  \label{fig:mono-sp0-equilibrium-efficiency}
+  \viuownsource
+\end{figure}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.98\textwidth]{figures/generated/sp0-scaling-welfare.pdf}
+  \caption{E0: tiempo de CPU, trabajo lógico y bienestar por tamaño. Las operaciones no son homogéneas entre algoritmos y las curvas no establecen una ley asintótica.}
+  \label{fig:mono-sp0-scaling-welfare}
+  \viuownsource
+\end{figure}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.68\textwidth]{figures/generated/sp1-regime-results.pdf}
+  \caption{E1, análisis de desarrollo: cierre y valor por presión de demanda; la línea vertical separa demanda realizable y escasez.}
+  \label{fig:mono-sp1-regime-results}
+  \viuownsource
+\end{figure}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.78\textwidth]{figures/generated/sp1-beta-regime-map.pdf}
+  \caption{E1, análisis de desarrollo: sensibilidad del valor completado a la presión de demanda y al parámetro de cuórum $\beta$.}
+  \label{fig:mono-sp1-beta-regime-map}
+  \viuownsource
+\end{figure}
+
+El manifiesto \texttt{evidence/generated-figures-manifest.json} enlaza cada PDF vectorial con el generador, la configuración, el manifiesto de corrida y sus hashes. Ninguno de estos gráficos aporta evidencia física sobre Cargo.

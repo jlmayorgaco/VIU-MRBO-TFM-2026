@@ -1,0 +1,22 @@
+% Adenda v2 a la Nomenclatura: símbolos nuevos de la Sección 6.5 (MegaJuego)
+% que no existían en la v1 congelada. No edita 04-nomenclature.tex.
+\subsection*{Símbolos adicionales del juego de integración (Sección~\ref{subsec:megajuego})}
+\begin{description}[style=multiline,leftmargin=8.2em,labelwidth=7.2em,itemsep=0.15em,parsep=0pt]
+  \item[$Y,X,d$] Estado aumentado del juego de integración; planta física y compromisos atómicos.
+  \item[$\widehat X,\mathcal E_X$] Estimación de planta e incertidumbre asociada.
+  \item[$\mathcal I,\Pi^{\mathrm{inc}}$] Información con procedencia y política incumbente.
+  \item[$\mathcal S$] Reservas espacio--temporales del juego de integración (no confundir con el catálogo de rutas $\mathcal R_i^7$ de SP3).
+  \item[$\Phi(d,z),J_i,\phi_i,\psi_a$] Potencial global, coste local y factores individual y de acoplamiento de la Proposición~\ref{prop:megajuego-exact-potential}. Aquí $z$ es la variable continua de decisión del bloque; el mismo símbolo designa las fuerzas de contacto en el QP de \emph{caging} y una sustitución auxiliar en la prueba de Bézier, y cada uso se define en su punto de aparición.
+  \item[$\mathcal I_a$] Conjunto de bloques sobre los que actúa el factor de acoplamiento $\psi_a$.
+  \item[$\Delta_i$] Operador de variación ante una desviación unilateral admisible del bloque $i$.
+  \item[$K,F$] Conjunto factible y campo de gradientes ($F=\operatorname{col}_i\nabla_{z_i}J_i$, apilado por bloques) del Teorema~\ref{thm:megajuego-central-optimum}.
+  \item[$P_A(s),P_B(s),b(s)$] Curvas de Bézier cooperativas y perfil de separación de la Ecuación~\eqref{eq:megajuego-bezier-curves}.
+  \item[$a_A,a_B,D,h_A,h_B$] Amplitudes, separación mínima requerida y pesos del Teorema~\ref{thm:megajuego-bezier-separation}.
+  \item[$z,A,H,g$] Variables, matriz de acoplamiento y restricciones del QP de \emph{caging} de la Ecuación~\eqref{eq:megajuego-caging-qp}.
+  \item[$\kappa_W,W,W_0,\delta,N_{\mathrm{rev}}$] Tasa de consumo, presupuesto de ejecución, su valor inicial, coste de sustitución y número de revisiones del Teorema~\ref{thm:megajuego-execution-budget}.
+  \item[$b_{i,e},\mathcal B_i$] Belief de un hecho y estado de información candidato del robot $i$; $\mathcal B_i$ separa beliefs físicos, estratégicos y digest. No constituye una medición independiente ni una implementación ejecutada.
+  \item[$\mathrm{src},\mathrm{seq},t,h,c$] Fuente, versión, marca temporal, número de saltos y confianza del hecho $e$ en la formulación delta propuesta.
+  \item[$D_{i\to j,s},\Delta B_{i\to j}$] Versión de la fuente $s$ que $i$ estima reconocida por $j$ y conjunto de cambios candidatos para ese enlace; el digest no prueba conocimiento común bajo red imperfecta.
+  \item[$\widehat{\mathcal K}_i(e),\gamma_i(e)$] Cobertura estimada por reconocimientos y su fracción dentro del conjunto relevante del hecho $e$.
+  \item[$\epsilon_i(d),L_i(d),U_i(d)$] Envolvente de incertidumbre y cotas de valor de la decisión $d$, utilizables solo si el estimador certifica su validez.
+\end{description}

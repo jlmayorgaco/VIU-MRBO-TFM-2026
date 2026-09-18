@@ -1,0 +1,41 @@
+group,check,hits_or_scope,verdict,assessment,word_count_scope
+Formatting,Em dash / TeX em dash,0,PASS,Unicode em dash and TeX '---' scan; LaTeX '--' is an intentional en dash for ranges/relations.,17768
+Formatting,Bold overuse,52,PASS,Uses are labels or local emphasis; no repeated bold-hook prose was found.,17768
+Formatting,Emoji in headers,0,PASS,No emoji-bearing heading.,17768
+Formatting,Excessive bullet lists,0,PASS,"Items occur in objectives, hypotheses, assumptions, and test protocols where enumeration is semantic.",17768
+Sentence structure,Not-X-but-Y template,0,PASS,No slot-fill contrast detected.,17768
+Sentence structure,Hollow intensifiers,0,PASS,No matched reader-steering intensifier.,17768
+Sentence structure,Vague endorsement,0,PASS,No generic endorsement phrase.,17768
+Sentence structure,Hedging overload,0,PASS,"Scientific scope verbs remain, but no stacked hedge template was found.",17768
+Sentence structure,Missing bridge sentences,0,MANUAL_PASS,Stratified read-through found explicit causal/contrastive links; paragraph order was not freely interchangeable.,17768
+Sentence structure,Compulsive rule of three,0,MANUAL_PASS,"Enumerations map to SP1--SP3, E0--E8, or declared protocols rather than promotional triads.",17768
+Vocabulary,Tier-1 / inflated vocabulary,2,CONTEXT_PASS,Matched terms require contextual review; current uses denote exhaustive search/oracles or a mathematical integral.,17768
+Templates,Slot-fill and formulaic opening,0,PASS,No broad era/landscape opener.,17768
+Transitions,Formulaic transitions,2,ADVISORY,Matched transitions are recorded individually for contextual review; their density and logical function determine whether editing is warranted.,17768
+Structure,Uniform paragraph length,6,ADVISORY,Reported chapter aggregates meet the 3--5 sentence band because the author explicitly required that contract.,17768
+Structure,Formulaic meta narration,0,PASS,Chapter introductions required by VIU were not misclassified as filler.,17768
+Structure,Suspiciously clean grammar / over-polishing,0,MANUAL_ADVISORY,"Not objectively decidable; sentence and paragraph lengths vary, especially in Results.",17768
+Inflation,Significance inflation,0,PASS,No routine result inflated into a historical claim.,17768
+Style,Copula avoidance,0,CONTEXT_PASS,"Matched uses are retained only where 'serves as', 'acts as', or 'represents' adds a precise technical relation.",17768
+Style,Synonym cycling,0,MANUAL_PASS,"The sampled prose repeats canonical nouns (coalition, certificate, load) rather than cycling ornamental synonyms.",17768
+Attribution,Vague attribution,0,PASS,No uncited 'experts/studies say' construction detected.,17768
+Filler,Mechanical padding,0,PASS,No 'it is important to note' equivalent detected.,17768
+Conclusion,Generic conclusion,0,PASS,Conclusions end in stated limitations or next measurements.,17768
+Artifacts,Chatbot residue / Let's / sycophancy,0,PASS,No conversational assistant residue.,17768
+Citations,Notability name-dropping,0,MANUAL_PASS,Named methods and authors are tied to technical comparison rather than prestige lists.,17768
+Analysis,Superficial gerund chain,0,PASS,No three-gerund pseudo-analysis chain detected.,17768
+Tone,Promotional language,0,PASS,No brochure or marketing language.,17768
+Argument,Formulaic challenge / false concession,0,PASS,No vague concession template matched.,17768
+Breadth,False ranges,3,CONTEXT_PASS,"Detected ranges refer to explicit stage/time/domain endpoints, not rhetorical breadth.",17768
+Lists,Inline-header / numbered-list inflation,0,MANUAL_PASS,"Numbered structures are mandated chapters, hypotheses, or experimental factors.",17768
+Headings,Title Case / excessive structure,0,CONTEXT_PASS,Spanish headings use sentence case; heading count reflects the VIU and SP templates.,17768
+Disclaimers,Model cutoff disclaimer,0,PASS,No model limitation leaked into the manuscript.,17768
+Novelty,Novelty inflation,0,PASS,No unsupported scarcity or invention claim.,17768
+Voice,Emotional flatline / announced emotion,0,PASS,No announced emotion; impersonal voice is appropriate for this engineering thesis.,17768
+Questions,Rhetorical question opener,0,PASS,No rhetorical-question transition.,17768
+Hedging,Parenthetical hedge,0,PASS,No parenthetical nuance template.,17768
+Reasoning,Chain-of-thought artifact,0,PASS,No internal reasoning scaffold.,17768
+Interaction,Acknowledgment loop,0,PASS,No prompt restatement.,17768
+Emphasis,Confidence-calibration cue,0,PASS,No stacked instruction about how the reader should value a result.,17768
+Rhythm,Sentence-length uniformity,6,ADVISORY,Paragraph envelope follows the approved 3--5 sentence contract; Results remains markedly more varied.,17768
+Voice,Missing first person,0,NOT_APPLICABLE,VIU engineering prose may use an impersonal authorial register.,17768

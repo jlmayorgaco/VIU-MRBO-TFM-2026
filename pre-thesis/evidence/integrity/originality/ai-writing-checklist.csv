@@ -1,0 +1,41 @@
+group,check,hits_or_scope,verdict,assessment,word_count_scope
+Formatting,Em dash / TeX em dash,0,PASS,Unicode em dash and TeX '---' scan; LaTeX '--' is an intentional en dash for ranges/relations.,15146
+Formatting,Bold overuse,65,PASS,Uses are labels or local emphasis; no repeated bold-hook prose was found.,15146
+Formatting,Emoji in headers,0,PASS,No emoji-bearing heading.,15146
+Formatting,Excessive bullet lists,5,PASS,"Items occur in objectives, hypotheses, assumptions, and test protocols where enumeration is semantic.",15146
+Sentence structure,Not-X-but-Y template,0,PASS,No slot-fill contrast detected.,15146
+Sentence structure,Hollow intensifiers,0,PASS,No matched reader-steering intensifier.,15146
+Sentence structure,Vague endorsement,0,PASS,No generic endorsement phrase.,15146
+Sentence structure,Hedging overload,0,PASS,"Scientific scope verbs remain, but no stacked hedge template was found.",15146
+Sentence structure,Missing bridge sentences,0,MANUAL_PASS,Stratified read-through found explicit causal/contrastive links; paragraph order was not freely interchangeable.,15146
+Sentence structure,Compulsive rule of three,0,MANUAL_PASS,"Enumerations map to SP1--SP3, E0--E8, or declared protocols rather than promotional triads.",15146
+Vocabulary,Tier-1 / inflated vocabulary,3,CONTEXT_PASS,Matched terms require contextual review; current uses denote exhaustive search/oracles or a mathematical integral.,15146
+Templates,Slot-fill and formulaic opening,0,PASS,No broad era/landscape opener.,15146
+Transitions,Formulaic transitions,0,ADVISORY,Matched transitions are recorded individually for contextual review; their density and logical function determine whether editing is warranted.,15146
+Structure,Uniform paragraph length,7,ADVISORY,Reported chapter aggregates meet the 3--5 sentence band because the author explicitly required that contract.,15146
+Structure,Formulaic meta narration,0,PASS,Chapter introductions required by VIU were not misclassified as filler.,15146
+Structure,Suspiciously clean grammar / over-polishing,0,MANUAL_ADVISORY,"Not objectively decidable; sentence and paragraph lengths vary, especially in Results.",15146
+Inflation,Significance inflation,0,PASS,No routine result inflated into a historical claim.,15146
+Style,Copula avoidance,1,CONTEXT_PASS,"Matched uses are retained only where 'serves as', 'acts as', or 'represents' adds a precise technical relation.",15146
+Style,Synonym cycling,0,MANUAL_PASS,"The sampled prose repeats canonical nouns (coalition, certificate, load) rather than cycling ornamental synonyms.",15146
+Attribution,Vague attribution,0,PASS,No uncited 'experts/studies say' construction detected.,15146
+Filler,Mechanical padding,0,PASS,No 'it is important to note' equivalent detected.,15146
+Conclusion,Generic conclusion,0,PASS,Conclusions end in stated limitations or next measurements.,15146
+Artifacts,Chatbot residue / Let's / sycophancy,0,PASS,No conversational assistant residue.,15146
+Citations,Notability name-dropping,0,MANUAL_PASS,Named methods and authors are tied to technical comparison rather than prestige lists.,15146
+Analysis,Superficial gerund chain,0,PASS,No three-gerund pseudo-analysis chain detected.,15146
+Tone,Promotional language,0,PASS,No brochure or marketing language.,15146
+Argument,Formulaic challenge / false concession,0,PASS,No vague concession template matched.,15146
+Breadth,False ranges,4,CONTEXT_PASS,"Detected ranges refer to explicit stage/time/domain endpoints, not rhetorical breadth.",15146
+Lists,Inline-header / numbered-list inflation,0,MANUAL_PASS,"Numbered structures are mandated chapters, hypotheses, or experimental factors.",15146
+Headings,Title Case / excessive structure,0,CONTEXT_PASS,Spanish headings use sentence case; heading count reflects the VIU and SP templates.,15146
+Disclaimers,Model cutoff disclaimer,0,PASS,No model limitation leaked into the manuscript.,15146
+Novelty,Novelty inflation,0,PASS,No unsupported scarcity or invention claim.,15146
+Voice,Emotional flatline / announced emotion,0,PASS,No announced emotion; impersonal voice is appropriate for this engineering thesis.,15146
+Questions,Rhetorical question opener,0,PASS,No rhetorical-question transition.,15146
+Hedging,Parenthetical hedge,0,PASS,No parenthetical nuance template.,15146
+Reasoning,Chain-of-thought artifact,0,PASS,No internal reasoning scaffold.,15146
+Interaction,Acknowledgment loop,0,PASS,No prompt restatement.,15146
+Emphasis,Confidence-calibration cue,0,PASS,No stacked instruction about how the reader should value a result.,15146
+Rhythm,Sentence-length uniformity,7,ADVISORY,Paragraph envelope follows the approved 3--5 sentence contract; Results remains markedly more varied.,15146
+Voice,Missing first person,0,NOT_APPLICABLE,VIU engineering prose may use an impersonal authorial register.,15146

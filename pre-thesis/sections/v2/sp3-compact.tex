@@ -1,0 +1,122 @@
+% SP3 comprimido para la v2: figura de arquitectura, ecuaciones del juego de
+% rutas, los tres resultados formales (solo enunciado; las demostraciones ya
+% vivían en anexo: app:sp7-proofs, y el invariante/inanición en
+% sections/source-snapshot/appendices/08-sp7-proofs.tex), una tabla de
+% resultados y el piloto AWS. La metodología completa se traslada al
+% Anexo~\ref{app:sp3-full-detail}.
+\subsection{SP3: planificación y tráfico de coaliciones}
+\label{subsec:sp3}
+\zlabel{budget:sp3-start}
+\input{shared/generated-macros/sp7_numbers.tex}
+
+SP3 coordina rutas y reservas locales después del certificado de
+ejecutabilidad de SP2, tratando cada coalición como un agente compuesto. El
+razonamiento completo, la comparación de métodos y el diseño experimental se
+conservan en el Anexo~\ref{app:sp3-full-detail}.
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{7.0}{7.6}\selectfont]
+    \tikzset{stage/.style={draw=VIUGray!70,line width=0.5pt,rounded corners=2pt,
+        minimum width=42mm,minimum height=17mm,align=center,fill=white},
+      arr/.style={-{Latex[length=2.2mm]},line width=0.7pt,draw=VIUDark!70}}
+    \node[stage,fill=VIUOrange!8] (e7) at (24,10)
+      {\textbf{E7 · Juego de rutas}\\[1mm]{\fontsize{6.0}{6.5}\selectfont certifica: exclusión lógica y terminación}\\
+       {\fontsize{6.0}{6.5}\selectfont\color{VIUGray}no certifica: separación continua}};
+    \node[stage,fill=SPBlue!8] (env) at (78,10)
+      {\textbf{Interfaz de ejecución}\\[1mm]{\fontsize{6.0}{6.5}\selectfont certifica: huella-tiempo-ruedas compatibles}\\
+       {\fontsize{6.0}{6.5}\selectfont\color{VIUGray}no certifica: contacto físico}};
+    \node[stage,fill=SPPurple!8] (aws) at (132,10)
+      {\textbf{Piloto AWS}\\[1mm]{\fontsize{6.0}{6.5}\selectfont certifica: integración lógica y visual}\\
+       {\fontsize{6.0}{6.5}\selectfont\color{VIUGray}no certifica: gemelo digital ni barrera limpia}};
+    \draw[arr] (e7.east)--(env.west);
+    \draw[arr] (env.east)--(aws.west);
+  \end{tikzpicture}
+  \caption[Composición de los tres bloques de SP3.]{Composición de los tres
+  bloques de SP3. La reserva discreta autoriza una celda; la interfaz de
+  ejecución la traduce en una referencia compatible con SP2.}
+  \label{fig:sp3-compact-pipeline}
+  \viuownsource
+\end{figure}
+
+\paragraph{E7 --- juego de rutas y reserva local}
+Con $r_i\in\mathcal R_i^7$, $\mathcal E_{ir_i}^7$ los recursos que cruza,
+$b_{ir_i}^7\geq0$ su coste base y $n_e(\boldsymbol r)=|\{i:e\in\mathcal E_{ir_i}^7\}|$,
+\begin{equation}
+ P_7(\boldsymbol r)=\sum_{e\in\mathcal E_7}\binom{n_e(\boldsymbol r)}{2},\qquad
+ U_i(r_i,\boldsymbol r_{-i})=-b_{ir_i}^7
+ -\lambda_7\sum_{e\in\mathcal E_{ir_i}^7}(n_e(\boldsymbol r)-1).
+ \label{eq:sp3-compact-e7-potential}
+\end{equation}
+
+\begin{contribucion}{selección anticipativa de rutas y reserva local separadas}
+\estadoaporte{demostrado para el juego de rutas; demostraciones en el Anexo~\ref{app:sp7-proofs}; la reserva muestreada se valida empíricamente.}
+\begin{teorema}[Potencial exacto y propiedad de mejora finita]
+\label{thm:sp3-compact-e7-potential}
+El juego de~\eqref{eq:sp3-compact-e7-potential} es de potencial exacto; posee al menos un Nash puro y todo camino maximal de mejoras estrictas termina en, a lo sumo, $\prod_i|\mathcal R_i^7|-1$ cambios aceptados.
+\end{teorema}
+\begin{proposicion}[Nash sin conflictos bajo accesibilidad]
+\label{prop:sp3-compact-e7-conflict-free}
+Si $\theta_7<\infty$ y $\lambda_7>\theta_7$ (umbral de la Ecuación~\eqref{eq:sp7-threshold} del Anexo~\ref{app:sp3-full-detail}), todo Nash puro satisface $P_7(\boldsymbol r)=0$; esta accesibilidad se infiere empíricamente de observar $P_7=0$ en los cruces y su fallo en el pasillo, no de calcular $\theta_7$ y $\lambda_7$ por separado y comprobar el margen antes del experimento, y ahí el testigo temporal es necesario.
+\end{proposicion}
+\begin{proposicion}[Ausencia condicional de inanición]
+\label{prop:sp3-compact-e7-no-starvation}
+Para solicitantes persistentes de una zona, si cada propietario libera el testigo en un número finito y acotado de pasos y deja de competir tras cruzarla, la regla $(w_i,P_i,-i)$ concede el testigo a cada solicitante en tiempo finito.
+\end{proposicion}
+\end{contribucion}
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Métodos comparados en E7-C.}
+  \label{tab:sp3-compact-e7-methods}
+  \fontsize{7.6}{8.6}\selectfont
+  \setlength{\tabcolsep}{2.2pt}
+  \renewcommand{\arraystretch}{1.08}
+  \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.0cm} >{\raggedright\arraybackslash}p{2.2cm} Y}
+    \toprule
+    Método & Coste declarado & Resultado aplicable y límite \\
+    \midrule
+    CBS/ECBS/LA-MAPF \parencite{sharon2015cbs,barer2014ecbs,li2019largeAgentMapf} & exponencial en conflictos & garantías MAPF bajo sus modelos; no incluidas en el comparativo numérico \\
+    ORCA \parencite{vandenberg2011orca} & LP local & evitación continua bajo su modelo; no planifica ni excluye interbloqueo \\
+    Juego + reserva local & $O(|\mathcal R_i^7|(|\mathcal E_i^7|+n_i))$ & potencial exacto y terminación; la entrega es empírica \\
+    Dos ablaciones & igual juego sin $\lambda_7$ o sin testigo & aíslan selección anticipativa y reserva de zona \\
+    Priorizado / oráculo restringido & $O(AH_7)$ o $O(2^AA!AH_7)$ & referencia y techo interno; no equivalen a CBS/ECBS \\
+    \bottomrule
+  \end{tabularx}
+  \viusource{elaboración propia a partir de las referencias citadas; detalle completo en el Anexo~\ref{app:sp3-full-detail}}
+\end{table}
+
+\begin{table}[!htbp]
+  \centering
+  \caption[Resultados agregados de E7-C sobre 360 mundos pareados por método.]{Resultados agregados de E7-C sobre $\SPSevenWorlds$ mundos pareados por método.}
+  \label{tab:sp3-compact-e7-results}
+  \scriptsize
+  \resizebox{\textwidth}{!}{\input{shared/generated-macros/sp7_results.tex}}
+  \viuownsource
+\end{table}
+
+El juego con reserva entregó todas las cargas; al retirarla, la tasa cayó
+$\SPSevenHOneEffectPP$ puntos porcentuales por interbloqueos entre huellas
+opuestas. El Anexo~\ref{app:sp3-full-detail} amplía las cifras, las
+ablaciones y la comparación completa con CBS, ECBS y ORCA.
+
+\input{sections/sp3-execution-envelope}
+
+\paragraph{Piloto AWS Industrial}
+La escena, derivada del almacén AWS RoboMaker \parencite{awsRobomakerWarehouse2021},
+somete la arquitectura a modos de fallo que Cargo no expone: $\AwsSceneRobots$
+AMR, $\AwsSceneActiveLoads$ cargas activas y tráfico controlado, cruzando
+$\AwsPilotScenarios$ escenarios, $\AwsPilotMethods$ métodos y 2 semillas
+($\AwsPilotRuns$ ejecuciones en total). Solo el escenario abierto entregó
+carga: Replicator+CBF (TFM) igualó a las dos referencias tipo subasta
+($\AwsOpenTfmDeliveries$, igual que $\AwsOpenAuctionDeliveries$ y
+$\AwsOpenPredictiveDeliveries$) y superó solo al MILP central
+($\AwsOpenCentralDeliveries$); los otros tres escenarios obtuvieron cero con
+los cuatro métodos. El verificador registró $\AwsSafeBarrierViolations$
+violaciones de la barrera de seguridad pese a no observar solapamientos
+muestreados; con solo dos semillas por escenario, ninguna de estas cifras
+sostiene un ranking ni una fiabilidad industrial. El protocolo completo, los
+cuatro escenarios y la discusión de bloqueo están en el
+Anexo~\ref{app:sp3-full-detail}.
+
+\zlabel{budget:sp3-end}

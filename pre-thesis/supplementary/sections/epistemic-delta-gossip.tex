@@ -1,0 +1,79 @@
+\label{supp:epistemic-delta-gossip}
+
+Esta sección congela el diseño experimental de la capa de información
+epistemológica descrita en el anexo del juego de integración de la memoria
+principal. Es un protocolo, no un informe de resultados: no se incluyen cifras de tiempo,
+tramas, bytes ni comparaciones competitivas mientras no existan la
+configuración, datos brutos, análisis procesado y manifiesto verificables.
+
+\subsection{Contrato de implementación candidato}
+
+Cada hecho se identifica por tipo, fuente y versión. El emisor conserva valor,
+incertidumbre opcional, procedencia, edad, saltos y confianza; el receptor
+descarta réplicas con la misma proveniencia y no cuenta dos rutas de difusión
+como evidencia independiente. El mensaje contiene una cabecera, un digest por
+fuente, solo los cambios que el vecino todavía no ha reconocido y una política
+explícita de expiración. Las trayectorias se codificarán por sus parámetros y
+horizonte, no por una secuencia arbitraria de puntos, siempre que el receptor
+pueda reconstruir exactamente la misma curva dentro de la tolerancia declarada.
+
+El digest resuelve únicamente el segundo orden operativo: ``sé un hecho'' y
+``dispongo de un reconocimiento de que este vecino lo conoce''. No representa
+recursivamente creencias de orden mayor ni certifica conocimiento común. Bajo
+pérdida, reinicio o retraso, el reconocimiento caducado debe bajar la cobertura
+y bloquear el \emph{commit} hasta recibir información fresca. Si se combinan
+estimaciones correlacionadas de pose, obstáculo o intención, la implementación
+prohibirá la fusión como medidas independientes; cualquier fusión conservadora
+para correlación desconocida se evaluará como una ablación separada.
+
+\subsection{Diseño A/B pareado}
+
+La comparación aislará la capa informativa: para cada mundo y semilla se
+congelarán planta, cargas, posiciones iniciales, planner espacial,
+controlador, guardia de seguridad, horizonte y regla estratégica. El único
+tratamiento cambiará gossip periódico por delta-gossip con reconocimiento,
+activación por evento, cobertura y radio informativo adaptativo. El protocolo
+registrará tanto decisiones aceptadas como bloqueadas; no se eliminarán del
+análisis las ejecuciones que no alcancen \emph{commit}.
+
+El factorial de red incluirá al menos
+\begin{equation*}
+ p_{\mathrm{loss}}\in\{0,0.05,0.10,0.20\},\qquad
+ \tau_d\in\{0,50,100,250,500\}\ \mathrm{ms},
+\end{equation*}
+con topologías favorables y adversas.
+Las condiciones de actualización de $n_i$ y los umbrales de edad, confianza y
+cobertura se fijarán antes de ejecutar cada campaña. Una celda de red nominal
+no permite inferir la robustez de las restantes.
+
+\subsection{Métricas, comparadores y aceptación}
+
+Se informarán, por mundo y tratamiento, factibilidad de coalición, valor y
+brecha contra el oráculo cuando exista, $T_{\mathrm{recruit}}$,
+$T_{\mathrm{E2E}}$, tiempo de transporte, energía, clearance mínimo,
+intervenciones de seguridad, revisiones, edad de información, cobertura,
+tramas, bytes, bytes por salto, ancho de banda pico, CPU por robot y tiempo de
+pared. La unidad primaria para el efecto de comunicación será la diferencia
+pareada de bytes por salto; el tamaño de un paquete no sustituye ese contador.
+Los resultados incluirán intervalos de confianza, fallos y el denominador
+completo de mundos ejecutados.
+
+Los métodos externos solo podrán compararse sobre la misma instancia y con la
+información que su arquitectura admite. Un optimizador central con estado
+global será un techo experimental, no una comparación arquitectónica justa.
+No se empleará la expresión ``competitivo con el estado del arte'' por un caso
+único: exige una batería pareada con baselines compatibles, inclusión de red
+imperfecta, métricas de seguridad y un análisis que separe asignación,
+planificación y planta física.
+
+\subsection{Criterio de publicación de resultados}
+
+Antes de trasladar un resultado al cuerpo de la memoria, la campaña deberá
+aportar una configuración versionada, semillas pareadas, registros de
+hechos/digests/paquetes, trazas de \emph{commit}, resultados brutos y
+procesados, figura y tabla generadas automáticamente, pruebas de duplicado y
+proveniencia, y un manifiesto de hashes. La auditoría deberá comprobar que los
+bytes son contadores del protocolo declarado y no estimaciones heterogéneas
+entre métodos. Hasta ese punto, la capa delta-gossip sigue siendo una
+formulación candidata y no respalda una afirmación de escalabilidad, reducción
+de tráfico o mejora extremo a extremo.

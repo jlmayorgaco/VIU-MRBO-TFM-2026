@@ -1,0 +1,27 @@
+% Tabla 2 del consolidado académico (PDF vigente, página 4): antecedentes más
+% próximos frente a las ocho capacidades que definen la combinación objetivo.
+% Reconstruida en LaTeX; el `.tex` depositado corresponde a una versión previa
+% con otra tabla de red-team.
+\begin{table}[!htbp]
+  \centering
+  \caption{Antecedentes más próximos frente a las capacidades que definen la combinación objetivo.}
+  \label{tab:lit-prior-art}
+{\setstretch{1}\fontsize{7.6}{8.6}\selectfont\setlength{\tabcolsep}{3.4pt}\renewcommand{\arraystretch}{1.22}
+\rowcolors{2}{white}{soft}
+\begin{tabularx}{\linewidth}{@{}J{2.6cm}*{8}{K{0.62cm}}Z@{}}
+\toprule
+\textbf{Trabajo} & \textbf{H} & \textbf{V} & \textbf{L} & \textbf{S} & \textbf{W} & \textbf{D} & \textbf{R} & \textbf{X} & \textbf{Restricción decisiva}\\
+\midrule
+Verma 2019 \parencite*{verma2019replacement} & \capno & \cappart & \capno & \capyes & \cappart & \capno & \capyes & \capyes & planificación global; ruta e hitos conocidos\\
+Sahu 2026 \parencite*{sahuKumar2026FaultManagement} & \capno & \cappart & \capno & \capyes & \cappart & \cappart & \capyes & \capyes & arquitectura maestro--esclavo\\
+Shibata 2023 \parencite*{shibata2023event} & \capno & \cappart & \capno & \capyes & \capyes & \capyes & \cappart & \cappart & equipo variable; no selección desde una flota heterogénea\\
+Ebel 2024 \parencite*{ebel2024cooperative} & \capno & \capno & \capno & \capyes & \capyes & \capyes & \capno & \capno & equipo de transporte fijado\\
+Bezerra 2025 \parencite*{bezerra2025dynamicCoalition} & \capyes & \capyes & \capyes & \capno & \capno & \capyes & \cappart & \capno & reclutamiento lógico; sin carga compartida física\\
+GRAPE-S 2026 \parencite*{diehlAdams2026Grapes} & \capyes & \capyes & \cappart & \capno & \capno & \capyes & \capno & \capno & formación de servicios; no transporte de carga compartida\\
+\bottomrule
+\end{tabularx}}
+\par\vspace{1.5pt}
+{\setstretch{1}\fontsize{7.0}{7.8}\selectfont\color{muted}
+H = heterogeneidad; V = tamaño de coalición variable; L = reclutamiento local; S = carga compartida; W = certificado físico; D = ejecución o decisión distribuida; R = recuperación; X = sustitución de miembro. \capyes\ explícito, \cappart\ parcial o condicionado, \capno\ no documentado en el alcance revisado.\par}
+  \viusource{codificación del núcleo canónico y evidencia de texto completo}
+\end{table}

@@ -1,0 +1,95 @@
+% Tabla 1 del consolidado industrial, portada desde
+% `thesis-reviews/TFM_estado_industrial_patentes_EDITABLE_v47.tex` (líneas
+% 263-334). Cambios respecto del original, todos de integración:
+%   - los tipos de columna L{}/C{}/Y pasan a J{}/K{}/Z, porque C e Y ya
+%     existen en viu-mrob-thesis.sty con otra signatura;
+%   - el hueco de fotografía se sustituye por el número de caso, que es lo
+%     que casa la fila con la Figura del mapa; el enlace a la fuente oficial
+%     se conserva sobre el nombre del sistema;
+%   - las marcas \casecite se sustituyen por citas biblatex reales.
+\begin{table}[!htbp]
+  \centering
+  \caption{Matriz funcional de precedentes industriales frente a la cadena operativa del trabajo.}
+  \label{tab:tf-industrial-matrix}
+{\setstretch{1}\fontsize{7.35}{8.10}\selectfont
+ \setlength{\tabcolsep}{0.4pt}
+ \renewcommand{\arraystretch}{1.32}
+\begin{tabularx}{\linewidth}{@{}J{3.72cm}K{0.74cm}K{0.78cm}K{0.86cm}K{0.86cm}K{0.82cm}K{0.90cm}Z@{}}
+\toprule
+\textbf{Sistema / evidencia} &
+{\fontsize{4.9}{5.2}\selectfont\shortstack{\textbf{Carga}\\\textbf{comp.}}} &
+{\fontsize{4.9}{5.2}\selectfont\shortstack{\textbf{Multi-veh.}\\\textbf{($>2$)}}} &
+{\fontsize{4.9}{5.2}\selectfont\shortstack{\textbf{Selecc.}\\\textbf{miembros}}} &
+{\fontsize{4.9}{5.2}\selectfont\shortstack{\textbf{Coord./ctrl.}\\\textbf{local}}} &
+{\fontsize{4.9}{5.2}\selectfont\shortstack{\textbf{Cert.}\\\textbf{factib.}}} &
+{\fontsize{4.9}{5.2}\selectfont\shortstack{\textbf{Recup.}\\\textbf{coalición}}} &
+\textbf{Evidencia industrial / límite}\\
+\midrule
+\rowcolor{soft}
+\matrixsystem{1}{KUKA · omniMove}{Airbus Stade}{2016}{https://www.kuka.com/en-us/industries/solutions-database/2016/07/solution-robotics-airbus}
+& \capyes & \capunk & \capno & \capno & \capno & \capno
+& 100 t; composición dedicada. Sin selección dinámica, certificado online ni recomposición autónoma publicada \parencite{kukaOmnimoveAirbus2016}.\\
+
+\matrixsystem{2}{Stäubli + R3}{Virtual drawbar}{2022}{https://www.r3.group/en/success-stories/collaborative-agvs-in-the-cleanroom}
+& \capyes & \capno & \capno & \cappart & \capno & \capno
+& 2 AGV, 2$\times$5 t; ejecución V2V directa a 32 ms con PROFINET/PROFIsafe. La fuente no demuestra formación distribuida de la pareja ni ausencia de una autoridad dominante \parencite{staubliR3Drawbar2022}.\\
+
+\rowcolor{soft}
+\matrixsystem{3}{SIASUN}{Heavy-truck dual vehicle}{2024}{https://en.siasun.com/heavy-truck-assembly-line-mobile-robot.html}
+& \capyes & \capno & \cappart & \capno & \capno & \capno
+& Dual-vehicle linkage + MES. Selección a nivel de planta, no reclutamiento local ni recomposición física \parencite{siasunDualVehicle2024}.\\
+
+\matrixsystem{4}{KUKA · KMP 3000P}{Load sharing}{2025}{https://www.kuka.com/en-us/products/amr-autonomous-mobile-robotics/mobile-platforms/kmp-3000p-omnimove}
+& \capyes & \capno & \capno & \cappart & \capno & \capno
+& Dos plataformas, hasta 6 t; líder--seguidor. Carga compartida comercial, pero pareja fija \parencite{kukaKmp3000p2025}.\\
+
+\rowcolor{soft}
+\matrixsystem{5}{GREATOX · GTVL25}{Multi-vehicle synchronous}{cat. 2026}{https://en.greatoxagv.com/products_info/id-14.html}
+& \capyes & \cappart & \capno & \capunk & \capno & \capunk
+& 80--220 t y cooperación multi-vehículo. Monitoriza centro de gravedad; no publica certificado online de factibilidad mecánica, selección o recuperación \parencite{greatoxGtvl2026}.\\
+
+\matrixsystem{6}{TII SCHEUERLE · SPMT}{Modular heavy transport}{2023}{https://www.tii-group.com/tii-scheuerle/our-solutions/spmt/scheuerle-spmt}
+& \capyes & \cappart & \capno & \capno & \capno & \capno
+& \textit{Project cargo} modular; configuración de ingeniería, no certificado online ni reclutamiento autónomo \parencite{tiiScheuerleSpmt2023}.\\
+
+\rowcolor{soft}
+\matrixsystem{7}{AGILOX · X-SWARM}{BMW Regensburg}{2023}{https://www.agilox.net/en/blog/bmw-agilox-swarm/}
+& \capno & \capna & \capna & \capyes & \capna & \capna
+& 27 AMR; coordinación entre pares sin líder central. Una carga por AMR: no aplica coalición física \parencite{agiloxXswarmBmw2023}.\\
+
+\matrixsystem{8}{Beacon Robot · Dual-AMR}{Collaborative transport}{2026}{https://www.beacon-robot.com/news/beacon-robot-amr-dual-robot-collaboration-officially-released-from-working-alone-to-working-together/}
+& \capyes & \capno & \capyes & \cappart & \capno & \capno
+& Emparejamiento automático y relevo de autoridad ante fallo documentados. 2 robots; despacho central y líder--seguidor. No se documenta sustitución/reclutamiento de un nuevo miembro \parencite{beaconDualAmr2026}.\\
+
+\rowcolor{soft}
+\matrixsystem{9}{HUBTEX · SL/HL-AGV}{Aviation}{2020}{https://www.hubtex.com/sites/default/files/2020-04/HUBTEX_Aircraft\%20Components_ENG.pdf}
+& \capyes & \capunk & \capno & \capno & \capno & \capno
+& Hasta 70 t; plataformas acoplables y operación semi/remota. Sin selección dinámica, certificado online o recomposición \parencite{hubtexAviation2020}.\\
+
+\matrixsystem{10}{Hyundai · HMGICS}{AGV / AMR}{2023}{https://www.hyundaimotorgroup.com/en/story/CONT0000000000126181}
+& \capno & \capna & \capna & \cappart & \capna & \capna
+& Orquestación de planta y reactividad local; sin coalición física de carga compartida \parencite{hyundaiHmgics2023}.\\
+\midrule
+\rowcolor{softplum}
+\multicolumn{1}{@{}l}{\parbox[t]{3.55cm}{\textbf{TFM objetivo}\\[-0.3pt]{\fontsize{5.35}{5.65}\selectfont\color{muted}(referencia conceptual)}}}
+& \capgoal & \capgoal & \capgoal & \capgoal & \capgoal & \capgoal
+& Integrar carga compartida, coalición heterogénea de tamaño adaptable, reclutamiento local, coordinación/control distribuido, verificación de factibilidad contacto/torsor y recomposición tras fallo.\\
+\bottomrule
+\end{tabularx}}
+
+\vspace{2.6pt}
+\noindent\colorbox{softwarm}{\parbox{0.972\linewidth}{\setstretch{1}\fontsize{7.35}{8.1}\selectfont
+\textbf{Lectura de la matriz.} La industria demuestra por separado carga compartida, emparejamiento/relevo ante fallo y coordinación distribuida de flota. \textbf{Ninguno de los precedentes revisados documenta simultáneamente una coalición física heterogénea multi-vehículo, selección local de miembros, verificación mecánica de factibilidad y recomposición durante la misión.}}}
+
+\vspace{1.8pt}
+{\setstretch{1}\fontsize{7.15}{8.0}\selectfont\color{muted}
+Contexto A--D del mapa: MiR Fleet, OTTO Fleet Manager, Geek+ RMS y Swisslog IntraMove coordinan flotas de carga individual; no se incluyen como filas principales porque no aportan carga compartida. Los símbolos indican evidencia pública revisada, no una puntuación de similitud. En Multi-veh. ($>2$), \cappart\ indica cooperación multi-vehículo documentada sin cardinalidad superior a dos explícita en la fuente.\par}
+
+\vspace{2pt}
+{\centering\footnotesize
+\capyes\ documentado \quad \cappart\ parcial o condicionado \quad
+\capno\ no documentado públicamente \quad \capunk\ arquitectura no publicada \quad
+\capna\ no aplica \quad \capgoal\ objetivo del TFM.\\
+«No documentado» no equivale a inexistencia.\par}
+  \viusource{elaboración propia con documentación técnica oficial de cada fabricante}
+\end{table}

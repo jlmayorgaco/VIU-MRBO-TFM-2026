@@ -1,0 +1,28 @@
+\section{Detalle completo de SP1}
+\label{app:sp1-full-detail}
+
+La Sección~\ref{subsec:sp1} resume E1 y E2 en formato compacto; aquí se
+desarrollan sin abreviar: la demostración completa del
+Teorema~\ref{thm:pre-sp1-exact-quota} (regulación de cuotas, E1) y la
+metodología, comparación de métodos y discusión completas de E2. La figura
+didáctica y la tabla de métodos de E2 no se repiten aquí porque ya están en
+el cuerpo (Figura~\ref{fig:sp1-compact-e2-scenario} y
+Tabla~\ref{tab:sp1-compact-e2-methods}). La etapa E3 no tiene contraparte
+aquí porque ya se presenta en el cuerpo con su formato definitivo; su
+demostración vive en el Anexo~\ref{app:sp1-wrench-proofs}.
+
+\subsection{Regulación exacta de cuotas (E1)}
+\label{app:sp1-e1-full-proof}
+
+Se retoma el Teorema~\ref{thm:pre-sp1-exact-quota} de la Sección~\ref{subsec:sp1}.
+
+\begin{proof}
+Al retirar a $i$ se obtiene el mismo perfil de referencia antes y después de cualquier desviación unilateral; por tanto, $\Delta U_i=\Delta\Phi_1$. En un perfil inexacto, un robot libre que entra en una carga deficitaria mejora $\Phi_1$ al menos $\lambda-\kappa_{\max}>0$. Si no hay robots libres, la realizabilidad obliga a que un déficit coexista con un exceso: trasladar un robot entre ambos reduce $D+O$ en dos y cambia $C$ a lo sumo en $\kappa_{\max}$; si solo hay exceso, retirar un miembro redundante reduce $O$ sin aumentar $C$. Luego ningún perfil inexacto es Nash.
+
+En un perfil exacto, salir crea déficit, entrar desde el estado libre crea exceso y trasladarse crea déficit y exceso; el posible ahorro de coste es menor que la penalización, luego ninguna desviación es rentable. Cada cambio aceptado aumenta estrictamente $\Phi_1$ y no puede repetir uno de los $(K+1)^N$ perfiles. La justicia activa finalmente una mejora disponible y la maximalidad impide detenerse antes de un Nash; sobre el conjunto exacto, maximizar $\Phi_1=-C$ equivale a minimizar $C$.
+\end{proof}
+
+\subsection{Servicio operacional heterogéneo (E2)}
+\label{app:sp1-e2-full-detail}
+
+\input{sections/v2/support/sp1-e2-trimmed}

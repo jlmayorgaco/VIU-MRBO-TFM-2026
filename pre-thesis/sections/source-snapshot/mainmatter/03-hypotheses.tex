@@ -1,0 +1,103 @@
+\section{Hipótesis de partida}
+\label{sec:hypotheses}
+
+La hipótesis principal se contrasta mediante resultados parciales cuyos dominios
+no son intercambiables. Las hipótesis específicas fijan la propiedad esperada;
+la Tabla~\ref{tab:hypothesis-decision-rules} separa después el estimando y la regla
+de decisión.
+
+\subsection{Hipótesis principal}
+
+\noindent\textbf{HP.}
+En una región donde la flota cubra la demanda, el certificado Cargo planar sea
+factible y el horizonte alcance para ejecutar la tarea, la arquitectura híbrida
+formará coaliciones factibles y completará el transporte. Las referencias
+globales medirán la brecha de calidad y el coste de usar información vecinal. El
+demostrador solo contrasta la compatibilidad funcional de su cadena concreta,
+pues sustituye parte de los mecanismos formales parciales de SP1--SP2. La hipótesis tampoco
+incluye una prueba de estabilidad del sistema híbrido ni validación industrial o
+en hardware.
+
+\subsection{Hipótesis específicas}
+
+\noindent\textbf{H1a. Realizabilidad estratégica.}
+En la etapa de cuota de SP1, una penalización mayor que el coste unilateral
+máximo hará coincidir los equilibrios de Nash puros con asignaciones de cuota
+exacta.
+
+\noindent\textbf{H1b. Cierre entero.}
+En condiciones de escasez, el cierre por ranking y cuórum (QR) aplicado a la
+relajación de Smith reducirá la fracción de robots que permanece en coaliciones
+parciales.
+
+\noindent\textbf{H1c. Incentivo de cuórum.}
+Con el cierre QR fijado, el beneficio de cuórum aumentará el valor de las cargas
+completadas frente al beneficio lineal.
+
+\noindent\textbf{H2. Factibilidad mecánica.}
+La guardia vectorial de \emph{wrench} planar reducirá las falsas aceptaciones
+respecto al criterio escalar y conservará cobertura sobre las coaliciones
+factibles disponibles.
+
+\noindent\textbf{H3. Acoplamiento espacial.}
+Bajo el régimen de red degradada fijado, incorporar el coste espacial a la
+decisión estratégica reducirá el tiempo de terminación frente a la variante
+desacoplada.
+
+\noindent\textbf{H4. Reparación.}
+Tras un fallo simple, el juego restaurará el certificado aditivo cuando la reserva
+completa cubra el déficit. En la misión integrada, continuar con reemplazo
+aumentará el éxito frente a detener la misión tras el fallo.
+
+\noindent\textbf{H5a. Coste de escala.}
+En la etapa de red y escala de SP3, una activación local tendrá coste proporcional al
+grado vecinal. El oráculo exhaustivo implementado crecerá con el número de
+perfiles dentro de su dominio certificado.
+
+\noindent\textbf{H5b. Calidad bajo escala.}
+La tasa global de perfiles libres de conflicto del método con retransmisión
+periódica se mantendrá por encima de cero en todos los tamaños ensayados.
+
+\subsection{Estimandos y reglas de decisión}
+
+La tabla asigna un criterio observable a cada predicción. Un intervalo que
+incluye cero deja una ventaja direccional sin sustento; no constituye una prueba
+de equivalencia.
+
+\begin{table}[H]
+  \centering
+  \caption{Estimandos y reglas de decisión para las hipótesis específicas.}
+  \label{tab:hypothesis-decision-rules}
+  \scriptsize
+  \setlength{\tabcolsep}{2pt}
+  \begin{tabularx}{\textwidth}{p{1.0cm} p{5.0cm} Y}
+    \toprule
+    Hip. & Estimando principal & Regla de decisión \\
+    \midrule
+    H1a & Déficit y exceso en Nash puros realizables &
+    Un Nash deficitario bajo los supuestos formales contradice H1a. \\
+    H1b & Diferencia pareada de fracción parcial, QR menos Smith &
+    H1b requiere un efecto favorable; cero o signo adverso la deja sin apoyo. \\
+    H1c & Diferencia pareada de valor completado, cuórum menos lineal &
+    El intervalo debe favorecer al incentivo de cuórum. \\
+    H2 & Diferencia de falsos positivos y cobertura de la guardia &
+    Deben disminuir los falsos positivos sin perder coaliciones factibles
+    disponibles; la abstención se reporta por separado. \\
+    H3 & Diferencia pareada del tiempo de terminación &
+    El IC del 95\,\% debe excluir cero en la dirección favorable. \\
+    H4 & Restauración en casos recuperables y diferencia de éxito integrado &
+    Todos los casos recuperables deben restaurar el certificado y el efecto de
+    activar reparación debe ser favorable; un timeout cuenta como fallo. \\
+    H5a & Coste por activación y tiempo del oráculo en perfiles certificados &
+    El conteo formal debe mostrar las dependencias; sin curvas por tamaño, el apoyo empírico queda abierto. \\
+    H5b & Tasa libre de conflictos por tamaño &
+    Una tasa igual a cero en cualquier tamaño refuta la conservación postulada. \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+Los contrastes estocásticos emplearán mundos y semillas pareados. El análisis
+mantendrá en el denominador colisiones, fallos de convergencia y agotamientos del
+horizonte. SP2 evalúa seguridad física local y SP3 exclusión lógica de tráfico;
+sus resultados conservan esos dominios.

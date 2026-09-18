@@ -1,0 +1,123 @@
+% Figura 2 del consolidado industrial, portada desde
+% `thesis-reviews/TFM_estado_industrial_patentes_EDITABLE_v47.tex` (líneas
+% 351-452): (a) actividad anual con MM3 e inset de cambio temático,
+% (b) cobertura geográfica y (c) orientación funcional por dominio.
+% Requiere pgfplots y la librería patterns.meta, ambas cargadas en main-v2.tex.
+\begin{figure}[!htbp]
+  \centering
+{\sffamily\fontsize{8.45}{9.0}\selectfont\bfseries (a) Publicaciones anuales y cambio del foco temático del corpus}\par\vspace{1pt}
+\makebox[\textwidth][c]{\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}
+\begin{axis}[
+ name=patents,width=0.95\linewidth,height=6.12cm,
+ ymin=0,ymax=31,ylabel={\sffamily\fontsize{6.8}{7.2}\selectfont Publicaciones del corpus/año},
+ symbolic x coords={2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025},xtick=data,
+ axis x line*=bottom,axis y line*=left,
+ x tick label style={font=\sffamily\fontsize{5.6}{5.95}\selectfont,rotate=45,anchor=east,text=muted},
+ y tick label style={font=\sffamily\fontsize{5.8}{6.1}\selectfont,text=muted},ytick={0,5,10,15,20,25,30},
+ axis line style={draw=rule!95,line width=.35pt},tick style={draw=rule!95},
+ ymajorgrids=true,major grid style={draw=rule!50,line width=.18pt},enlarge x limits=0.025,clip=false,
+ legend style={draw=none,fill=none,font=\sffamily\fontsize{5.25}{5.55}\selectfont,at={(0.52,-0.16)},anchor=north,legend columns=3,/tikz/every even column/.append style={column sep=1.2mm}}]
+% ---- Annual macro-layer counts; edit coordinates here ----
+\addplot+[ybar stacked,bar width=10.0pt,fill=autumn,draw=white,line width=.22pt] coordinates {(2012,0)(2013,0)(2014,3)(2015,0)(2016,0)(2017,5)(2018,3)(2019,4)(2020,8)(2021,6)(2022,11)(2023,11)(2024,12)(2025,17)};
+\addlegendentry{Decisión de misión}
+\addplot+[ybar stacked,bar width=10.0pt,fill=mustard,draw=white,line width=.22pt] coordinates {(2012,1)(2013,0)(2014,0)(2015,0)(2016,1)(2017,1)(2018,0)(2019,3)(2020,1)(2021,8)(2022,11)(2023,5)(2024,4)(2025,3)};
+\addlegendentry{Coordinación cinemática}
+\addplot+[ybar stacked,bar width=10.0pt,fill=onyx!42!white,draw=white,line width=.22pt] coordinates {(2012,1)(2013,0)(2014,0)(2015,2)(2016,1)(2017,1)(2018,3)(2019,4)(2020,10)(2021,7)(2022,4)(2023,7)(2024,7)(2025,2)};
+\addlegendentry{Interacción física}
+% MM3 volume, left axis
+\addplot+[no markers,smooth,onyx,line width=.9pt,dash pattern=on 3pt off 2pt] coordinates {(2014,1.67)(2015,1.67)(2016,2.33)(2017,3.67)(2018,5.00)(2019,8.00)(2020,12.00)(2021,17.00)(2022,22.00)(2023,23.33)(2024,24.00)(2025,22.67)};
+\node[anchor=west,font=\sffamily\fontsize{5.0}{5.3}\selectfont,text=onyx] at (axis description cs:0.70,0.94){MM3 volumen};
+% Total labels
+\addplot+[draw=none,forget plot,nodes near coords,point meta=explicit symbolic,every node near coord/.append style={font=\sffamily\fontsize{5.0}{5.3}\selectfont\bfseries,text=charcoal,yshift=1.2pt}] coordinates {(2012,2)[2](2013,0)[ ](2014,3)[3](2015,2)[2](2016,2)[2](2017,7)[7](2018,6)[6](2019,11)[11](2020,19)[19](2021,21)[21](2022,26)[26](2023,23)[23](2024,23)[23](2025,22)[22]};
+% Inset: six thematic shifts, p.p. (fixed columns: topic | bar | delta)
+\node[anchor=north west,inner sep=0pt] at (axis description cs:-0.085,0.97){%
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily]
+ \path[use as bounding box] (0,1.2) rectangle (61,31);
+ \node[anchor=west,font=\fontsize{5.65}{6}\selectfont\bfseries,text=spicy] at (15.0,29.1){Cambio de cuota temática [p.p.]};
+ \node[anchor=west,font=\fontsize{4.45}{4.75}\selectfont,text=muted] at (15.0,26.2){2020--2022 $\rightarrow$ 2023--2025};
+ \node[anchor=east,font=\fontsize{4.0}{4.3}\selectfont\bfseries,text=muted] at (59.0,24.6){$\Delta$ p.p.};
+ \draw[onyx!32,line width=.28pt] (36,2.0)--(36,24.0);
+ \foreach \y/\lab in {22.4/{Planificación},18.7/{Factibilidad},15.0/{Reclutamiento},11.3/{Acoplamiento},7.6/{Formación},3.9/{Shared-load}}{\node[anchor=east,font=\fontsize{4.4}{4.7}\selectfont,text=ink] at (27.8,\y){\lab};}
+ \fill[autumn] (36,21.65) rectangle ({36+0.55*16.67},23.15); \node[anchor=east,font=\fontsize{4.3}{4.6}\selectfont,text=autumn] at (59.0,22.4){+16,7};
+ \fill[canary] (36,17.95) rectangle ({36+0.55*5.84},19.45); \node[anchor=east,font=\fontsize{4.3}{4.6}\selectfont,text=green!65!onyx] at (59.0,18.7){+5,8};
+ \fill[mustard] (36,14.25) rectangle ({36+0.55*4.24},15.75); \node[anchor=east,font=\fontsize{4.3}{4.6}\selectfont,text=spicy] at (59.0,15.0){+4,2};
+ \fill[onyx!42] ({36-0.55*3.21},10.55) rectangle (36,12.05); \node[anchor=east,font=\fontsize{4.3}{4.6}\selectfont,text=muted] at (59.0,11.3){-3,2};
+ \fill[spicy!65] ({36-0.55*12.73},6.85) rectangle (36,8.35); \node[anchor=east,font=\fontsize{4.3}{4.6}\selectfont,text=spicy] at (59.0,7.6){-12,7};
+ \fill[spicy!42] ({36-0.55*10.91},3.15) rectangle (36,4.65); \node[anchor=east,font=\fontsize{4.3}{4.6}\selectfont,text=spicy!80!black] at (59.0,3.9){-10,9};
+\end{tikzpicture}};
+% Robustness callout
+\node[anchor=north east,rounded corners=1pt,draw=rule,fill=white,inner sep=2pt,align=right,font=\sffamily\fontsize{5.35}{5.7}\selectfont] at (axis description cs:0.985,0.94){$\Delta$ decisión de misión: +20,9 p.p.\\sin balanceo por solicitante: +22,0 p.p.};
+\end{axis}
+% right axis: MM3 mission-decision share
+\begin{axis}[at={(patents.south west)},anchor=south west,width=0.95\linewidth,height=6.12cm,
+ symbolic x coords={2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025},xmin=2012,xmax=2025,
+ ymin=0,ymax=100,axis x line=none,axis y line*=right,ylabel={\sffamily\fontsize{6.1}{6.45}\selectfont MM3 decisión de misión (\%)},
+ y label style={text=spicy,at={(axis description cs:1.075,0.5)},anchor=south},ytick={0,20,40,60,80,100},
+ y tick label style={font=\sffamily\fontsize{5.4}{5.7}\selectfont,text=spicy,xshift=3pt},tick style={draw=spicy!70},axis line style={draw=spicy!70,line width=.35pt},clip=false]
+\addplot+[spicy,line width=1.05pt,mark=o,mark size=1.35pt,mark options={fill=spicy,draw=spicy}] coordinates {(2018,53.3)(2019,50.0)(2020,41.7)(2021,35.3)(2022,37.9)(2023,40.0)(2024,47.2)(2025,58.8)};
+\end{axis}
+\end{tikzpicture}%
+}}
+
+\vspace{1.5mm}
+\noindent\begin{minipage}[t]{0.43\linewidth}
+{\sffamily\fontsize{8.05}{8.55}\selectfont\bfseries (b) Cobertura geográfica de solicitantes identificados}\par\vspace{0.4pt}
+{\sffamily\fontsize{5.35}{5.65}\selectfont\color{muted}Titulares identificados: 2018--2022 ($n=74$) y 2023--2025 ($n=49$).}\par\vspace{0.7pt}
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{4.75}{5.05}\selectfont]
+\path[use as bounding box] (0,0) rectangle (73.5,49);
+\def\xzero{22}\def\sc{0.67}
+\foreach \v in {0,20,40,60}{\pgfmathsetmacro{\xx}{\xzero+\sc*\v}\draw[rule!55,line width=.2pt] (\xx,5)--(\xx,46);\node[anchor=north,text=muted,font=\fontsize{6.0}{6.4}\selectfont] at (\xx,4.3){\v};}
+% legend
+\fill[canary!80!onyx] (23,46.5) rectangle +(4,1.4); \node[anchor=west] at (28,47.2){2018--2022};
+\fill[autumn] (44,46.5) rectangle +(4,1.4); \node[anchor=west] at (49,47.2){2023--2025};
+% data macro: y/name/old/oldDirected/new/newDirected
+\foreach \y/\name/\a/\ad/\b/\bd in {43/{China}/60.8/1.4/57.1/2.0,38.5/{EE.UU.}/2.7/2.7/14.3/14.3,34/{Japón}/5.4/1.4/10.2/6.1,29.5/{Suiza}/5.4/5.4/4.1/4.1,25/{Alemania}/4.1/0/6.1/0,20.5/{Francia}/4.1/4.1/4.1/4.1,16/{Canadá}/5.4/5.4/0/0,11.5/{Corea S.}/1.4/0/4.1/0,7/{Otros}/10.8/2.7/0/0}{
+ \node[anchor=east,text=ink] at (16.9,\y){\name};
+ \pgfmathsetmacro{\wa}{\sc*\a}\pgfmathsetmacro{\wad}{\sc*\ad}\pgfmathsetmacro{\wb}{\sc*\b}\pgfmathsetmacro{\wbd}{\sc*\bd}
+ \fill[canary!80!onyx] (\xzero,\y+.25) rectangle ({\xzero+\wa},\y+1.55);
+ \ifdim \ad pt>0pt \fill[pattern={Lines[angle=45,distance=1.35pt,line width=.22pt]},pattern color=onyx!70] ({\xzero+\wa-\wad},\y+.25) rectangle ({\xzero+\wa},\y+1.55);\fi
+ \fill[autumn] (\xzero,\y-1.55) rectangle ({\xzero+\wb},\y-.25);
+ \ifdim \bd pt>0pt \fill[pattern={Lines[angle=45,distance=1.35pt,line width=.22pt]},pattern color=onyx!70] ({\xzero+\wb-\wbd},\y-1.55) rectangle ({\xzero+\wb},\y-.25);\fi
+ \ifdim \a pt>0pt \node[anchor=west,text=muted] at ({\xzero+\wa+.7},\y+.9){\pgfmathprintnumber[fixed,precision=1,use comma]{\a}};\fi
+ \ifdim \b pt>0pt \node[anchor=west,text=spicy] at ({\xzero+\wb+.7},\y-.9){\pgfmathprintnumber[fixed,precision=1,use comma]{\b}};\fi
+}
+\draw[pattern={Lines[angle=45,distance=1.35pt,line width=.22pt]},pattern color=onyx!70,draw=onyx!60] (50.5,2.0) rectangle +(4,1.5);\node[anchor=west,text=muted] at (55.5,2.75){ampliación dirigida};
+\node[anchor=north,text=muted,font=\fontsize{4.6}{4.9}\selectfont] at (41.5,0.8){\% dentro de cada periodo};
+\end{tikzpicture}}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.55\linewidth}
+{\sffamily\fontsize{8.05}{8.55}\selectfont\bfseries (c) Orientación funcional por dominio de aplicación}\par\vspace{0.4pt}
+{\sffamily\fontsize{5.35}{5.65}\selectfont\color{muted}Dominios explícitos ($n=75$): tres macrocapas funcionales.}\par\vspace{0.7pt}
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{4.75}{5.05}\selectfont]
+\path[use as bounding box] (0,0) rectangle (95,49);
+\def\xstart{27}\def\barw{58}
+\foreach \p in {0,25,50,75,100}{\pgfmathsetmacro{\xx}{\xstart+0.58*\p}\draw[rule!50,line width=.2pt] (\xx,5)--(\xx,45);\node[anchor=north,text=muted,font=\fontsize{6.0}{6.4}\selectfont] at (\xx,4.3){\p};}
+\fill[autumn] (22,46.2) rectangle +(5,1.4);\node[anchor=west] at (28,46.9){misión};\fill[mustard] (41,46.2) rectangle +(5,1.4);\node[anchor=west] at (47,46.9){coordinación};\fill[onyx!42] (66,46.2) rectangle +(5,1.4);\node[anchor=west] at (72,46.9){física};
+\foreach \y/\name/\m/\c/\p in {41.5/{Intralogística (39)}/69.2/17.9/12.8,35.5/{Manufactura (16)}/62.5/12.5/25.0,29.5/{Automoción (3)}/33.3/0/66.7,23.5/{Marítimo/obra (3)}/0/33.3/66.7,17.5/{Heavy-load (6)}/16.7/16.7/66.7,11.5/{Aeroespacial (8)}/12.5/0/87.5}{
+ \node[anchor=east,text=ink] at (19.5,\y){\name};
+ \pgfmathsetmacro{\wm}{0.58*\m}\pgfmathsetmacro{\wc}{0.58*\c}\pgfmathsetmacro{\wp}{0.58*\p}
+ \fill[autumn] (\xstart,\y-1.55) rectangle ({\xstart+\wm},\y+1.55);
+ \fill[mustard] ({\xstart+\wm},\y-1.55) rectangle ({\xstart+\wm+\wc},\y+1.55);
+ \fill[onyx!42] ({\xstart+\wm+\wc},\y-1.55) rectangle ({\xstart+58},\y+1.55);
+ \ifdim \m pt>18pt \node[font=\bfseries,text=white] at ({\xstart+0.5*\wm},\y){\pgfmathprintnumber[fixed,precision=0]{\m}};\fi
+ \ifdim \c pt>18pt \node[font=\bfseries,text=onyx] at ({\xstart+\wm+0.5*\wc},\y){\pgfmathprintnumber[fixed,precision=0]{\c}};\fi
+ \ifdim \p pt>18pt \node[font=\bfseries,text=white] at ({\xstart+\wm+\wc+0.5*\wp},\y){\pgfmathprintnumber[fixed,precision=0]{\p}};\fi
+}
+\node[anchor=north,text=muted,font=\fontsize{4.6}{4.9}\selectfont] at (50,1.0){\% del dominio};
+\end{tikzpicture}}
+\end{minipage}
+  \caption[Evolución y estructura del corpus patentario curado.]{Evolución y
+  estructura del corpus patentario curado. (a) Actividad anual, media móvil de
+  tres años (MM3) de volumen y peso MM3 de decisión de misión; inset: cambio
+  temático 2020--2022 $\rightarrow$ 2023--2025. (b) Cobertura geográfica de
+  solicitantes identificados, con la ampliación dirigida por solicitante
+  hachurada. (c) Orientación funcional por dominio de aplicación en tres
+  macrocapas. Panel (b): top 8 más «Otros», con porcentajes normalizados dentro
+  de cada periodo; el hachurado marca la ampliación dirigida. Panel (c): se
+  excluyen 92 registros de uso general o multisector.}
+  \label{fig:results-patents}
+  \viusource{elaboración propia a partir del corpus patentario v3}
+\end{figure}

@@ -1,0 +1,54 @@
+% Revisión académica e industrial, formato mínimo: una figura, una tabla y un
+% párrafo por revisión. El resto de lo construido (tabla de protocolo,
+% capas del corpus, auditoría red-team, normas, tendencias patentarias,
+% secuencia funcional) se traslada íntegro al Anexo~\ref{app:review-full-detail}.
+\subsection{Revisión académica e industrial}
+\label{subsec:tf-discriminant}
+
+La revisión se organiza en dos frentes con criterios de inclusión distintos. El
+académico delimita qué mecanismos de decisión están publicados y con qué grado
+de explicitud; el industrial delimita qué de eso llega a producto o a norma. Los
+dos protocolos completos, con consultas, fechas de corte y criterios de
+exclusión, están en el Anexo~\ref{app:review-full-detail}.
+
+\paragraph{Académica}
+Se revisaron 59 trabajos canónicos de coalición/MRTA y transporte cooperativo,
+recuperados de Crossref, OpenAlex y \emph{snowballing} (protocolo completo en
+el Anexo~\ref{app:review-full-detail}); 32 de ellos, con coordenada
+discriminante completa en la fuente, se agrupan en la
+Figura~\ref{fig:lit-methodological-map} por autoridad de decisión y
+explicitud del mecanismo. La Figura~\ref{fig:lit-capability-matrix} cruza los
+doce trabajos más próximos contra ocho capacidades y evidencia que ninguno
+reúne certificación física, ejecución distribuida y reemplazo a la vez. La
+auditoría adversarial de novedad contra los seis antecedentes más directos
+del corpus completo se detalla en el Anexo~\ref{app:review-full-detail}.
+
+\input{sections/v2/floats/lit-fig-methodological-map}
+\input{sections/v2/floats/lit-fig-capability-matrix}
+
+\begin{tcolorbox}[enhanced,breakable,colback=VIUOrange!5,colframe=VIUOrange,
+  boxrule=0.45pt,leftrule=2.8pt,arc=1.2mm,left=2.5mm,right=2.5mm,top=1.8mm,bottom=1.8mm]
+\textbf{Brecha académica defendible.} En el corpus revisado no se identificó una
+arquitectura que integre, en una misma cadena operativa, la selección local de una
+coalición física heterogénea de tamaño variable desde una flota mayor, la verificación
+mecánica de factibilidad de la carga compartida y la recomposición en línea de un
+miembro durante el transporte, manteniendo la decisión de coalición y la ejecución sin
+una autoridad global permanente --- la misma combinación que la lectura de la matriz
+industrial (Tabla~\ref{tab:tf-industrial-matrix}) tampoco encuentra resuelta a la vez. El
+enunciado se restringe al protocolo de búsqueda documentado y no afirma inexistencia
+absoluta.
+\end{tcolorbox}
+
+\paragraph{Industrial}
+Se auditaron catorce precedentes comerciales con fuente oficial (protocolo en el
+Anexo~\ref{app:review-full-detail}), situados en la
+Figura~\ref{fig:tf-industrial-map} por interacción cooperativa y
+descentralización de la coordinación. La Tabla~\ref{tab:tf-industrial-matrix}
+muestra que la industria resuelve por separado carga compartida, emparejamiento
+con relevo ante fallo y coordinación de flota, pero ningún precedente integra las
+tres a la vez con selección local y certificación mecánica. El marco
+normativo aplicable (VDA~5050, ISO~21423, ISO~3691-4, ANSI/A3~R15.08-3) no
+cubre esa combinación, según se detalla en el Anexo~\ref{app:review-full-detail}.
+
+\input{sections/v2/floats/ind-fig-map}
+\input{sections/v2/floats/ind-tab-matrix}

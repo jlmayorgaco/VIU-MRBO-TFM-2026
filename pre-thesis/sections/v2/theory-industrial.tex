@@ -1,0 +1,48 @@
+\subsection{Estado industrial y normativo: qué existe ya en producto}
+\label{subsec:tf-industrial}
+
+Una brecha académica no basta para justificar un trabajo de máster en robótica
+aplicada: si la industria ya resolviera el problema con producto documentado, la
+contribución sería tardía aunque la literatura arbitrada la ignorase. La revisión
+incorpora por eso catorce precedentes comerciales seleccionados con el muestreo
+intencional de la Sección~\ref{subsec:method-review-protocol}. La
+Figura~\ref{fig:tf-industrial-map} los sitúa sobre dos dimensiones ordinales:
+interacción cooperativa entre vehículos y descentralización de la coordinación.
+
+\input{sections/v2/floats/ind-fig-map}
+
+La lectura relevante es que dos líneas funcionales coexisten con precedentes
+comerciales propios. En el cuadrante inferior derecho, la cooperación física para carga
+pesada está resuelta con configuración de ingeniería y escasa autonomía: KUKA omniMove
+mueve secciones de fuselaje de hasta 100~toneladas en Airbus Stade con composición
+dedicada \parencite{kukaOmnimoveAirbus2016} y los transportadores modulares SPMT
+resuelven \emph{project cargo} mediante configuración previa
+\parencite{tiiScheuerleSpmt2023}. En el superior izquierdo, la autonomía de flota está
+igualmente resuelta pero sin carga compartida: AGILOX opera 27~AMR en BMW Regensburg con
+coordinación entre pares y sin control central \parencite{agiloxXswarmBmw2023}. El
+cuadrante superior derecho, donde ambas capacidades convergen, permanece escasamente
+poblado.
+
+\input{sections/v2/floats/ind-tab-matrix}
+
+La Tabla~\ref{tab:tf-industrial-matrix} convierte el mapa en una comparación capacidad a
+capacidad contra la cadena operativa de este trabajo. Beacon Dual-AMR es el precedente
+con mayor solapamiento funcional, porque documenta emparejamiento automático y relevo de
+autoridad ante fallo, pero opera con dos robots bajo despacho central y no sustituye a
+un miembro por otro de la flota \parencite{beaconDualAmr2026}. Conviene además separar
+dos heterogeneidades: la de flota, entendida como convivencia de modelos distintos bajo
+un mismo gestor, aparece con frecuencia en las plataformas de contexto; la que se da
+dentro de una misma coalición física, donde robots con capacidades y geometrías
+diferentes deben cerrar conjuntamente restricciones de carga, contacto y \emph{wrench},
+tiene cobertura pública mucho menor y es la que el problema focal aborda.
+
+\input{sections/v2/floats/ind-tab-standards}
+
+La Tabla~\ref{tab:tf-standards} delimita el marco normativo de cualquier realización
+industrial de esta arquitectura. Ni VDA 5050 ni ISO 21423 definen la constitución de una
+coalición física o su certificación mecánica, e ISO 3691-4 y ANSI/A3 R15.08-3 fijan el
+marco de seguridad sin cubrir ese contrato. Queda por tanto fuera de la normativa
+vigente y debe resolverlo el sistema, con una consecuencia de diseño directa: el
+certificado de \emph{wrench} no puede delegarse en una capa de interoperabilidad y debe
+producirse dentro del propio mecanismo de reclutamiento, como se formula en el
+Capítulo~\ref{sec:methodology}.

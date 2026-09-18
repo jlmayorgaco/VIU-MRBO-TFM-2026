@@ -1,0 +1,54 @@
+\section{Objetivos}
+\label{sec:objectives}
+
+La coalición seleccionada debe poder acoplarse a la carga y completar el
+transporte. Los objetivos relacionan esa exigencia física con la decisión
+estratégica y con la información disponible durante la ejecución.
+
+\subsection{Objetivo general}
+
+Desarrollar una arquitectura híbrida e interpretable que conecte revisiones estratégicas
+vecinales con cierre entero y guardias físicas para el transporte cooperativo de
+cargas heterogéneas. Su evaluación comparará factibilidad, calidad operacional y
+coste de información con referencias globales, y registrará la respuesta ante
+obstáculos, fallos y degradación de red.
+
+\subsection{Objetivos específicos}
+
+\begin{enumerate}[
+  label=\textbf{OE\arabic*.},
+  leftmargin=3.4em,
+  topsep=0.4em,
+  itemsep=0.55em,
+  parsep=0pt
+]
+
+  \item Formalizar la transición desde la asignación homogénea uno a uno hasta
+  las cuotas variables y el servicio heterogéneo. Para cada caso se determinarán
+  las condiciones de equilibrio y cierre; los experimentos medirán factibilidad
+  y brecha respecto de la referencia global en abundancia y escasez.
+
+  \item Definir para Cargo un certificado planar que evalúe si la matriz de
+  agarre y los límites de actuación realizan el \emph{wrench} solicitado con el
+  residual permitido. Ese certificado debe proporcionar la condición de entrada
+  para el acoplamiento de robots diferenciales y para el servocontrol de pose en
+  el dominio de estabilidad local.
+
+  \item Evaluar la seguridad y la recuperación ante obstáculos y un fallo
+  simple, usando como respuestas la colisión, el progreso y el tiempo necesario
+  para restaurar el certificado. Los conflictos de circulación se estudiarán
+  sobre el grafo discreto; su invariante de exclusión se mantendrá separado de la
+  distancia física continua.
+
+  \item Medir tiempo de CPU y mensajes en los catálogos activos, y delimitar el
+  estudio de escala y red. La comparación entre coordinación por eventos,
+  retransmisión periódica e información perfecta se conserva como campaña
+  histórica en la monografía; no adjudica H5b en esta memoria.
+
+  \item Construir un demostrador Cargo en el que el cierre de la coalición
+  habilite el acoplamiento, el transporte continúe bajo la guardia de seguridad y
+  un fallo active el reemplazo. Las ablaciones identificarán qué etapas sostienen
+  el éxito; la comparación con las etapas experimentales de SP1--SP2 y con el
+  piloto cinemático de SP3 delimitará el alcance del demostrador.
+
+\end{enumerate}

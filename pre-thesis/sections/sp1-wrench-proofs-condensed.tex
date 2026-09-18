@@ -1,0 +1,18 @@
+\subsection{Certificado de contacto de E3}
+\label{app:sp1-wrench-proofs}
+
+El objetivo de~\eqref{eq:sp3-wrench} es coercivo y su Hessiano
+$2(G_k^{\mathsf T}Q_WG_k+\varepsilon_\lambda I)$ es definido positivo. Sobre
+$\Lambda_k$ cerrado, convexo y no vacío existe por tanto un minimizador único;
+si ninguna desigualdad es activa, anular el gradiente produce
+\eqref{eq:sp3-interior-wrench-solution}.
+
+El reparto regularizado $\boldsymbol\lambda_k^\star$ es admisible. Por la
+definición del mínimo puro,
+$\rho_k^{W,\min}\leq\rho_k^{W\star}$, de modo que aceptar con
+$\rho_k^{W\star}\leq\epsilon_W$ implica factibilidad pura. La conversa falla:
+para $G_k=Q_W=\boldsymbol W_k^{\mathrm{dem}}=1$,
+$\Lambda_k=\mathbb R$ y $\varepsilon_\lambda=100$, el reparto $1$ tiene
+residual cero, mientras el regularizado es $1/101$ y su residual $100/101$.
+Esto demuestra la Proposición~\ref{prop:pre-sp1-wrench-residual} sin atribuir el
+resultado al cierre entero ni a la planta dinámica.

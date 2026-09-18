@@ -1,0 +1,75 @@
+\subsection{Estado del arte discriminante y auditoría de novedad}
+\label{subsec:tf-discriminant}
+
+La Sección~\ref{subsec:tf-synthesis-gap} localizó la interfaz abierta entre composición
+nominal, certificado mecánico, recuperación y tráfico. Esa formulación todavía es
+cómoda, porque no se ha sometido a la prueba que decide si el problema focal existe:
+comparados uno a uno, ¿qué cubre cada trabajo próximo y qué deja fuera? La
+Figura~\ref{fig:lit-methodological-map} sitúa los 32 trabajos discriminantes del núcleo
+canónico sobre los ejes de autoridad de decisión y explicitud del mecanismo, y muestra
+un campo dividido: los trabajos de coalición y MRTA se concentran en la decisión lógica
+y los de transporte cooperativo en la ejecución física, con muy poca población en la
+franja que los conecta.
+
+\input{sections/v2/floats/lit-fig-methodological-map}
+
+El primer frente resuelve la coalición lógica mediante emparejamientos uno a muchos,
+subastas y juegos hedónicos
+\parencite{choiBrunetHow2009CBBA,serviceAdams2011Coalition,chenSun2012Coalition,jangShinTsourdos2018GRAPE,duttaAsaithambi2019Bipartite,dutta2021hedonic,diehlAdams2026Grapes};
+el segundo resuelve la ejecución física con formulación, control y validación
+experimental
+\parencite{alonsomora2017transport,shibata2023event,ebel2024cooperative,fukao2025swarm,tian2025irregular,muhammed2026decentralizedMpc}.
+La brecha no puede formularse como «falta control distribuido de carga», que sería
+falso, sino como una interfaz que ninguno de los dos frentes atraviesa.
+
+\input{sections/v2/floats/lit-fig-capability-matrix}
+
+La Figura~\ref{fig:lit-capability-matrix} se lee por el corte horizontal, no por
+columnas aisladas: las seis primeras filas cubren decisión de coalición con
+arquitecturas distribuidas y ninguna toca la carga compartida; las seis siguientes
+cubren carga compartida con certificación física y ninguna recluta desde una flota
+mayor. La columna de centralización añade el matiz decisivo, porque separa los trabajos
+que deciden localmente de los que conservan una autoridad central en tiempo de
+ejecución. Un círculo vacío señala que la fuente no documenta esa capacidad, no que el
+método sea incapaz de incorporarla.
+
+Tres lecturas condicionan el diseño del resto de la memoria. La atomicidad exige que el
+cierre entero pertenezca al método, porque los juegos poblacionales producen masa
+continua y un redondeo posterior puede romper la propiedad demostrada en la
+Ecuación~\eqref{eq:tf-population-dynamics}. El paso de capacidad a \emph{wrench} impide
+sustituir $W_k^{\mathrm{req}} \in \mathcal W_C(q)$ por la suma escalar
+$\sum_i c_i \ge d_k$, según la Ecuación~\eqref{eq:tf-grasp-map}. La escala obliga a
+separar robots simulados, robots físicos, robots por coalición y cargas simultáneas.
+A esto se añade la modalidad de interacción: como recoge el panel inferior de la
+Figura~\ref{fig:lit-capability-matrix}, carga soportada, acoplamiento rígido, empuje y
+prensión imponen conjuntos de esfuerzos admisibles distintos y no deben agruparse.
+
+\input{sections/v2/floats/lit-tab-prior-art}
+
+Una brecha solo es defendible si sobrevive al intento de refutarla, y la
+Tabla~\ref{tab:lit-prior-art} recoge esa auditoría adversarial. El resultado obliga a
+estrechar el enunciado: el reemplazo durante el transporte ya existe. Verma et al. lo
+implementan con ruta y puntos de relevo conocidos y planificación global
+\parencite{verma2019replacement}; Sahu y Kumar lo integran con detección de fallo bajo
+arquitectura maestro--esclavo \parencite{sahuKumar2026FaultManagement}; y Shibata et al.
+admiten que agentes se retiren o incorporen durante el control distribuido, sin resolver
+la selección del sustituto dentro de una flota heterogénea \parencite{shibata2023event}.
+En el extremo opuesto, Bezerra y GRAPE-S cubren reclutamiento o formación de coaliciones
+sin cerrar la interacción física de una carga compartida.
+
+\begin{tcolorbox}[enhanced,breakable,colback=VIUOrange!5,colframe=VIUOrange,
+  boxrule=0.45pt,leftrule=2.8pt,arc=1.2mm,left=2.5mm,right=2.5mm,top=1.8mm,bottom=1.8mm]
+\textbf{Brecha académica defendible.} En el corpus revisado no se identificó una
+arquitectura que integre, en una misma cadena operativa, el reclutamiento local de una
+coalición heterogénea de tamaño variable desde una flota mayor, la certificación
+mecánica de la carga compartida y el reemplazo en línea de un miembro durante el
+transporte, manteniendo la decisión de coalición y la ejecución sin una autoridad global
+permanente. El enunciado se restringe al protocolo de búsqueda documentado y no afirma
+inexistencia absoluta.
+\end{tcolorbox}
+
+El valor del enunciado está en lo que excluye: no reclama el primer método distribuido
+de transporte cooperativo, ni el primer mecanismo de reemplazo, ni superioridad frente a
+ningún trabajo de la Figura~\ref{fig:lit-capability-matrix}. Reclama solo que la
+composición de las tres piezas bajo información local carece de precedente documentado
+en el corpus, y esa es la afirmación que el capítulo de resultados evalúa por tramos.

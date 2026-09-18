@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "figures": [
+    {
+      "id": "distributed-coalition-scenario",
+      "label": "fig:problema",
+      "source": "figures/protected/01-distributed-coalition-scenario.tex",
+      "required_tokens": [
+        "TFM-PROTECTED-TIKZ: fig:problema",
+        "Almacén automatizado",
+        "\\sum_{i\\in\\mathcal C_k}\\boldsymbol c_i",
+        "rango de comunicación",
+        "reclutamiento",
+        "transporte"
+      ]
+    },
+    {
+      "id": "unicycle-geometry",
+      "label": "fig:robot",
+      "source": "figures/protected/02-unicycle-geometry.tex",
+      "required_tokens": [
+        "TFM-PROTECTED-TIKZ: fig:robot",
+        "\\boldsymbol h_i",
+        "\\theta_i",
+        "\\omega_i",
+        "\\ell"
+      ]
+    },
+    {
+      "id": "population-dynamics-simplex",
+      "label": "fig:tf-population-simplex",
+      "source": "sections/source-snapshot/mainmatter/05-theoretical-framework.tex",
+      "required_tokens": [
+        "TFM-PROTECTED-TIKZ: fig:tf-population-simplex",
+        "\\def\\SimplexFrame",
+        "(i) Replicadora",
+        "(ii) Mejor respuesta",
+        "(iii) Logit",
+        "(iv) Smith"
+      ]
+    },
+    {
+      "id": "literature-timeline",
+      "label": "fig:tf-literature-timeline",
+      "source": "sections/source-snapshot/mainmatter/05-theoretical-framework.tex",
+      "required_tokens": [
+        "TFM-PROTECTED-TIKZ: fig:tf-literature-timeline",
+        "Hitos representativos por familia y periodo",
+        "Alcance 2026",
+        "\\input{shared/generated-macros/literature-coverage.tex}"
+      ]
+    },
+    {
+      "id": "methodological-map",
+      "label": "fig:tf-methodological-map",
+      "source": "sections/source-snapshot/mainmatter/05-theoretical-framework.tex",
+      "required_tokens": [
+        "TFM-PROTECTED-TIKZ: fig:tf-methodological-map",
+        "Este TFM\\\\integración",
+        "data-driven",
+        "white-box",
+        "juegos/mercados",
+        "política aprendida"
+      ]
+    }
+  ]
+}

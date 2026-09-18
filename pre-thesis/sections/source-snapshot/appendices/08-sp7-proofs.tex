@@ -1,0 +1,31 @@
+\subsection{Demostraciones complementarias de la etapa E7 (SP3)}
+\label{app:sp7-proofs}
+
+E7 formaliza tráfico sobre un grafo inflado y movimiento muestreado. El potencial usa catálogos finitos, recursos no ponderados y costes fijos; los invariantes exigen mensajes coherentes y no cubren dinámica continua, contacto, localización ni red imperfecta.
+
+\subsection{Identidad de potencial exacto}
+\label{app:sp7-potential-proof}
+
+Fijadas $\boldsymbol r_{-i}$, sea $m_e^{-i}$ el número de sus rutas que usa $e$. Como $\binom{m+1}{2}-\binom m2=m$, añadir la ruta de $i$ incrementa cada término de pares en $m_e^{-i}$ y
+\[
+ U_i(r_i,\boldsymbol r_{-i})=-b_{ir_i}^7-\lambda_7\sum_{e\in\mathcal E_{ir_i}^7}m_e^{-i},\qquad
+ \Delta\Phi_7=\Delta U_i.
+\]
+Esta es la identidad de potencial exacto \parencite{monderer1996potential}. Una mejora estricta no repite ninguno de los \(\prod_i|\mathcal R_i^7|\) perfiles; todo camino maximal alcanza un Nash en, a lo sumo, \(\prod_i|\mathcal R_i^7|-1\) cambios, pero una trayectoria truncada no hereda la conclusión.
+
+\subsection{Condición suficiente para excluir conflictos}
+\label{app:sp7-conflict-free-proof}
+
+Si $P_7(\boldsymbol r)>0$ y $\theta_7<\infty$, la definición~\eqref{eq:sp7-threshold} proporciona una desviación con $\Delta P=P_7(\boldsymbol r)-P_7(a,\boldsymbol r_{-i})>0$ y $[\Delta B]_+/\Delta P\leq\theta_7$, donde $\Delta B=B_7(a,\boldsymbol r_{-i})-B_7(\boldsymbol r)$. Para \(\Delta B\leq0\), se cumple \(-\Delta B+\lambda_7\Delta P>0\). Para \(\Delta B>0\), la definición da \(\Delta B\leq\theta_7\Delta P<\lambda_7\Delta P\), con el mismo signo positivo. La exactitud transfiere esta mejora del potencial al pago unilateral; por eso, todo Nash satisface \(P_7=0\). Cuando ninguna desviación unilateral reduce \(P_7\), se obtiene \(\theta_7=\infty\) y la proposición deja fuera ese pasillo o cuello de botella.
+
+\subsection{Invariante lógico de la reserva}
+\label{app:sp7-reservation-invariant}
+
+Desde una zona libre, el arbitraje asigna un propietario único y conserva el testigo hasta observar su salida y el despeje. Cada autorización mantiene destino único, evita el intercambio opuesto y excluye nodos estacionarios; por inducción, dos entradas incompatibles nunca quedan autorizadas y los nodos activos permanecen distintos.
+
+\subsection{Ausencia condicional de inanición}
+\label{app:sp7-no-starvation}
+
+Sea $S$ un conjunto finito de solicitantes persistentes. Mientras espera, $w_i$ aumenta; tras cruzar, el propietario libera y abandona la competencia. En cada liberación se elige el máximo lexicográfico de $(w_i,P_i,-i)$. Si algún \(j\in S\) nunca fuese elegido, los demás saldrían en tiempo finito y $j$ sería el máximo siguiente, contradicción que requiere liberación, $S$ finito y ausencia de reingreso indefinido.
+
+Los invariantes certifican exclusión lógica en instantes muestreados. La separación entre muestras requiere que inflación e interpolación respeten la huella; la ejecución física añade una guardia como la de E5.

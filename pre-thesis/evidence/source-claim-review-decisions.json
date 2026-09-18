@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-09-09",
+  "decision": "reviewed-unlinked",
+  "claim_relation": "candidate-only",
+  "groups": [
+    {
+      "id": "author-draft-candidate",
+      "review_scope": "source-level-draft",
+      "rationale": "El mapa temático identifica material potencial para la monografía, pero el PDF del autor no es evidencia independiente ni se enlaza como bloque a un claim activo.",
+      "limitation": "Cada fragmento que se extraiga deberá recibir claim-ID, localizador y soporte independiente; el estado de la fuente no valida sus ecuaciones, cifras ni conclusiones.",
+      "unit_ids": [
+        "SRC-32584f218d873480",
+        "SRC-9c91bed248887adb",
+        "SRC-c4de2cde436be1e7",
+        "SRC-bad67694708989fb",
+        "SRC-325e48b75e569319",
+        "SRC-7ea71387d0d0ab51",
+        "SRC-244076e569684db6",
+        "SRC-3ce0e8603d586165",
+        "SRC-cd9898bc6c60eb64",
+        "SRC-3c311c9ba087b9f3",
+        "SRC-12aed037161e2ba6",
+        "SRC-f91b259d373ab112",
+        "SRC-437ad193392af6ac",
+        "SRC-349e5c0a19e09ffb",
+        "SRC-52bbb326926f1030"
+      ]
+    },
+    {
+      "id": "paper-formal-candidate",
+      "review_scope": "source-level-formal-candidate",
+      "rationale": "La fuente contiene resultados formales auditados individualmente, pero ninguno posee un claim-ID activo. El archivo completo permanece como cantera de monografía y no adquiere una relación de soporte.",
+      "limitation": "Los veredictos PASS, LIMITED, FAIL, DUPLICATE o CONJECTURE pertenecen a cada resultado; incluso un PASS sin claim-ID no puede sostener una conclusión activa.",
+      "unit_ids": [
+        "SRC-60529e9ce21b4c1c",
+        "SRC-219a6cb5fdb36944",
+        "SRC-d9ad7b569ebd9e86",
+        "SRC-1a456bd458421bc8",
+        "SRC-d9a88ac6914a6bf6",
+        "SRC-f141a29c49668c4d",
+        "SRC-0ac4cf50037738da",
+        "SRC-ab049632b572c6a4",
+        "SRC-38cef13b2d7db6fd",
+        "SRC-d34d447761142373",
+        "SRC-cc161612af623bc0",
+        "SRC-783fa98d99065ee1",
+        "SRC-7071178cfe936094",
+        "SRC-7a35c4395568fdb5",
+        "SRC-bd7fee4477c498a6",
+        "SRC-bb0bb20a061d06b1",
+        "SRC-101266d80a38e2f4"
+      ]
+    },
+    {
+      "id": "paper-empirical-candidate",
+      "review_scope": "source-level-empirical-candidate",
+      "rationale": "La fuente reúne protocolo, interpretación, tablas o figuras candidatas, pero no está vinculada por localizador a datos, configuración y claim activos en el ledger canónico.",
+      "limitation": "Las observaciones y visualizaciones permanecen pendientes por fragmento; no se infiere soporte a partir de cifras narradas, pies de figura o proximidad con otra sección.",
+      "unit_ids": [
+        "SRC-ab5a52d833ca4d37",
+        "SRC-afc2c81571ed7321",
+        "SRC-685c6ab29f44b9dd",
+        "SRC-37b1417d7eba061d",
+        "SRC-2a35cf206beee671",
+        "SRC-00643212f1487a15",
+        "SRC-86be33d1c4858990"
+      ]
+    },
+    {
+      "id": "paper-context-candidate",
+      "review_scope": "source-level-context-candidate",
+      "rationale": "La fuente organiza auditoría bibliográfica o posicionamiento. Su función es contextual y las referencias se gobiernan por el ledger bibliográfico, no por un claim propio del archivo.",
+      "limitation": "No se usa para afirmar novedad universal, estado del arte o validez del método; cada cita y comparación conserva su comprobación independiente.",
+      "unit_ids": [
+        "SRC-9182bdb312db3b32",
+        "SRC-8948b0a54914e552"
+      ]
+    }
+  ]
+}

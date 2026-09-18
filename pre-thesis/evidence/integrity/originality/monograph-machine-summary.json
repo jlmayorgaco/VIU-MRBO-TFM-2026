@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "document": "monograph",
+  "checked_at_utc": "2026-09-09T21:51:47+00:00",
+  "git_commit": "307683ea2eac7d7e5a2dc54190bd22b6d8589b7e",
+  "git_branch": "sp1-final-refactor",
+  "worktree_dirty": true,
+  "audit_script_sha256": "25352e4b06c7795906149764cec14af5e6e07a6c51d44ea6b139c920046eb576",
+  "python": "3.13.14",
+  "commands": [
+    "python pre-thesis/evidence/integrity/originality/audit_originality.py --document monograph --all",
+    "python pre-thesis/evidence/integrity/originality/audit_originality.py --document monograph --author-works",
+    "python pre-thesis/evidence/integrity/originality/audit_originality.py --document monograph --sync-external",
+    "python pre-thesis/evidence/integrity/originality/audit_originality.py --document monograph --check"
+  ],
+  "entrypoint": "pre-thesis/monograph/main.tex",
+  "document_pdf": {
+    "path": "pre-thesis/monograph/build/monograph.pdf",
+    "exists": true,
+    "bytes": 1944865,
+    "pages": 110,
+    "sha256": "d22f011514079e7573dded2f8e19dd4710a1a01239d5450b76eb160738e2730f"
+  },
+  "paragraphs_total": 351,
+  "paragraphs_sampled": 112,
+  "sampling_rate": 0.319088,
+  "active_prose_units_style_scanned": 448,
+  "active_prose_words_style_scanned": 17768,
+  "ai_flags_by_severity": {
+    "P0": 0,
+    "P1": 2,
+    "P2": 8
+  },
+  "ai_flags_by_category": {
+    "formulaic_transition": 2,
+    "inflated_vocabulary": 2,
+    "uniform_paragraph_rhythm": 6
+  },
+  "self_overlap": {
+    "snapshot": {
+      "rows": 334,
+      "exact_or_contained": 333,
+      "high_overlap": 0,
+      "moderate_overlap": 0
+    },
+    "legacy_snapshot": {
+      "rows": 148,
+      "exact_or_contained": 45,
+      "high_overlap": 5,
+      "moderate_overlap": 23
+    },
+    "thesis": {
+      "rows": 329,
+      "exact_or_contained": 256,
+      "high_overlap": 25,
+      "moderate_overlap": 28
+    },
+    "paper": {
+      "rows": 2,
+      "exact_or_contained": 0,
+      "high_overlap": 0,
+      "moderate_overlap": 0
+    },
+    "work": {
+      "rows": 84,
+      "exact_or_contained": 1,
+      "high_overlap": 1,
+      "moderate_overlap": 10
+    }
+  },
+  "corpus_files": {
+    "legacy_snapshot": 46,
+    "paper": 43,
+    "snapshot": 32,
+    "thesis": 41,
+    "work": 43
+  },
+  "external_web_review": "see monograph-external-search-audit.csv",
+  "disclaimer": "Heuristic screening; not a professional plagiarism or AI-authorship determination."
+}

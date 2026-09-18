@@ -1,0 +1,22 @@
+\subsection{Demostraciones complementarias de la etapa E8 (SP3)}
+\label{app:sp8-proofs}
+
+El potencial visible de E8 se define sobre un grafo de comunicación no dirigido y fijo durante cada ejecución. La prueba mantiene constantes los catálogos y los costes.
+
+\subsection{Potencial exacto y terminación finita}
+
+Supóngase $\widehat r_{ij}=r_j$ en toda arista usada por una actualización. Si $i$ cambia $r_i$ por $r_i'$, solo varían su coste base y los términos de $P_8^G$ asociados a $\{i,j\}\in\mathcal E_C^8$. Al expandir ambas diferencias,
+\[
+ \Delta\Phi_8^G=-b_{ir_i'}^8+b_{ir_i}^8
+ -\lambda_8\sum_{j\in\mathcal N_i^8}
+ \bigl(|\mathcal E_{ir_i'}^8\cap\mathcal E_{jr_j}^8|-|\mathcal E_{ir_i}^8\cap\mathcal E_{jr_j}^8|\bigr)=\Delta U_i^8.
+\]
+Bajo copias coherentes, la identidad anterior hace a \(\Phi_8^G\) un potencial exacto. La finitud del espacio acota todo camino de mejoras estrictas por \(\prod_i|\mathcal R_i^8|-1\) cambios; si el camino es maximal, su perfil terminal es Nash. Con copias obsoletas, el pago puede usar un término vecinal distinto del incluido en \(\Phi_8^G\); esa pérdida de identidad queda fuera del teorema de terminación.
+
+\subsection{Imposibilidad bajo partición permanente}
+
+Sean $I_0,I_1$ las instancias del enunciado y $H$ la componente cuyo historial observable es idéntico. El determinismo y la dependencia exclusiva de ese historial obligan al algoritmo a producir la misma salida local en $H$ en ambas instancias. Las proyecciones disjuntas de los conjuntos de óptimos implican que esa salida no puede pertenecer a un óptimo global de las dos; falla al menos en una. Si el predicado de interacción remota toma valores distintos, la misma indistinguibilidad obliga a emitir una detección igual y, por tanto, errónea en una instancia. Una realización concreta usa dos rutas locales $a,b$ de igual coste y una coalición remota $j$: en $I_0$, $\Gamma(a,r_j)=0$ y $\Gamma(b,r_j)=1$; en $I_1$ se intercambian. La optimalidad puede recuperarse en clases restringidas que excluyan ese par o compartan los términos remotos.
+
+\subsection{Efecto elemental de la retransmisión}
+
+Con pérdidas independientes, probabilidad \(0\leq p_{\mathrm{loss}}<1\) y \(s\) intentos, la probabilidad de fallo conjunto es \(p_{\mathrm{loss}}^s\). Las pérdidas correlacionadas requieren su distribución conjunta, y una partición con probabilidad efectiva de entrega nula carece de una cota decreciente de este tipo.

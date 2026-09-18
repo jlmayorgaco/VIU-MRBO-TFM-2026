@@ -1,0 +1,133 @@
+\subsection*{Interfaz y protocolo transversal}
+\phantomsection
+\addcontentsline{toc}{subsection}{Interfaz y protocolo transversal}
+
+El capítulo se lee como una cadena de certificados, no como tres algoritmos independientes. Cada interfaz separa decisión, mecánica y tráfico; una salida solo habilita la comprobación siguiente. La Figura~\ref{fig:pre-results-contract} resume esa composición y las realimentaciones permitidas.
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{tikzpicture}[
+    node distance=1.05cm and 0.65cm,
+    stage/.style={draw=VIULinkBlue,rounded corners=2mm,very thick,fill=VIULinkBlue!8,
+      minimum width=3.35cm,minimum height=1.55cm,align=center,font=\small},
+    cert/.style={draw=VIUOrange,rounded corners=1.5mm,thick,fill=VIUOrange!8,
+      minimum width=3.15cm,minimum height=1.20cm,align=center,font=\footnotesize},
+    limit/.style={draw=red!70!black,rounded corners=1.5mm,thick,dashed,fill=white,
+      minimum width=3.15cm,minimum height=1.10cm,align=center,font=\footnotesize},
+    flow/.style={-{Stealth[length=3mm]},very thick,draw=VIUDark},
+    feedback/.style={-{Stealth[length=2.5mm]},thick,dashed,draw=VIUGray}
+  ]
+    \node[stage] (sp1) {SP1\\coalición y contacto};
+    \node[stage,right=of sp1] (sp2) {SP2\\acoplamiento y transporte};
+    \node[stage,right=of sp2] (sp3) {SP3\\ruta y reserva};
+    \node[cert,below=of sp1] (c1) {$C_1$: asignación cerrada\\y capacidad declarada};
+    \node[cert,below=of sp2] (c2) {$C_2$: soporte--wrench--ruedas\\y pose dentro de tolerancia};
+    \node[cert,below=of sp3] (c3) {$C_3$: intención y recurso\\local compatibles};
+    \node[limit,below=of c2] (lim) {Sin transferencia automática de\\optimalidad, estabilidad o seguridad};
+    \draw[flow] (sp1) -- node[above,font=\scriptsize] {consume $C_1$} (sp2);
+    \draw[flow] (sp2) -- node[above,font=\scriptsize] {consume $C_2$} (sp3);
+    \draw[flow] (sp1) -- (c1);
+    \draw[flow] (sp2) -- (c2);
+    \draw[flow] (sp3) -- (c3);
+    \draw[feedback] (c2.west) to[bend left=18] node[below,font=\scriptsize] {rechazo o recambio} (c1.east);
+    \draw[feedback] (c3.west) to[bend left=18] node[below,font=\scriptsize] {espera o replanteo} (c2.east);
+    \draw[flow,draw=red!70!black] (c1.south east) -- (lim.north west);
+    \draw[flow,draw=red!70!black] (c2) -- (lim);
+    \draw[flow,draw=red!70!black] (c3.south west) -- (lim.north east);
+  \end{tikzpicture}
+  \caption{Contrato de composición entre SP1--SP3. Cada flecha transmite un certificado con dominio explícito.}
+  \label{fig:pre-results-contract}
+  \viuownsource
+\end{figure}
+
+Para una carga $k$, la autorización ejecutable es la conjunción
+\begin{equation}
+ \begin{aligned}
+ \mathsf{GO}_k={}&\mathsf{CLOSE}_k\land\mathsf{SUPPORT}_k
+ \land\mathsf{WRENCH}_k\\
+ &{}\land\mathsf{WHEELS}_k\land\mathsf{CONTACT}_k\land\mathsf{ROUTE}_k.
+ \end{aligned}
+ \label{eq:pre-results-go-contract}
+\end{equation}
+Un término falso produce abstención, espera o recuperación; no se repara el dato para convertirlo en éxito. La estabilidad local de SP2 se enuncia solo para contactos bilaterales fijos y realización exacta del \emph{wrench}; el banco físico mide precisamente cuándo esa hipótesis deja de sostenerse.
+
+\clearpage
+\paragraph{Unidad experimental y comparación}
+
+Una unidad experimental es un mundo, una semilla y una configuración congelada. Los métodos reciben el mismo mundo; cuando un oráculo usa información global, se presenta como techo y no como par arquitectónicamente equivalente. La Tabla~\ref{tab:pre-results-protocol} fija las operaciones comunes a las tres campañas.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Protocolo común de comparación y registro.}
+  \label{tab:pre-results-protocol}
+  \viutablefont
+  \renewcommand{\arraystretch}{1.12}
+  \begin{tabularx}{0.96\textwidth}{>{\raggedright\arraybackslash}p{2.55cm} Y >{\raggedright\arraybackslash}p{3.40cm}}
+    \toprule
+    Operación & Regla & Evidencia conservada \\
+    \midrule
+    Congelar mundo & Factores, perturbación, semilla, unidades SI y versión se fijan antes de comparar. & configuración, registro de semillas y hash del mundo \\
+    Parear métodos & Cada tratamiento observa la misma instancia; toda ventaja informativa se declara. & clave mundo--semilla--método y manifiesto de entorno \\
+    Ejecutar sin selección & Se corren coaliciones aceptadas y rechazadas; los fallos no se eliminan. & series, saturación, contacto perdido, NaN/Inf y excepción \\
+    Calcular una vez & Cada cifra procede de una métrica y un generador únicos. & datos procesados, tabla, figura vectorial y macro LaTeX \\
+    Inferir por mundo & IC95 y contraste pareado usan mundos o semillas, nunca instantes como réplicas. & estimando, intervalo, tamaño muestral, McNemar o prueba declarada \\
+    Corregir multiplicidad & La familia de hipótesis y Holm se fijan antes del confirmatorio. & hipótesis congelada, valor $p$ bruto y ajustado \\
+    Elevar un claim & Solo un gate aprobado cambia `PENDIENTE` o `PARCIAL` a `SOPORTADA`. & claim-ID, supuesto, prueba o artefacto y destino \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+Para el tratamiento $g$ y el mundo pareado $w$, la clasificación física usa
+\[
+ \mathrm{FP}_{gw}=\mathbf1\{A_{gw}=1,Y_{gw}=0\},\qquad
+ \mathrm{FN}_{gw}=\mathbf1\{A_{gw}=0,Y_{gw}=1\},
+\]
+donde $A$ es la decisión de la guardia y $Y$ el éxito físico completo. Esta definición obliga a observar también los rechazos y evita llamar éxito a una corrida que incumple contacto, deslizamiento, colisión, límites o criterio terminal.
+
+\clearpage
+\paragraph{Contrato de evidencia}
+
+La evidencia se eleva por el predicado más débil comprobado. Una identidad de potencial es analítica; una tasa de éxito pertenece al dominio muestreado; una escena auditada solo acredita su estructura. La Tabla~\ref{tab:pre-results-evidence-contract} determina qué afirmación puede cruzar cada gate.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Correspondencia entre resultado, evidencia y límite.}
+  \label{tab:pre-results-evidence-contract}
+  \viutablefont
+  \renewcommand{\arraystretch}{1.10}
+  \begin{tabularx}{0.96\textwidth}{>{\raggedright\arraybackslash}p{1.40cm} >{\raggedright\arraybackslash}p{3.10cm} Y >{\raggedright\arraybackslash}p{3.25cm}}
+    \toprule
+    Bloque & Predicado principal & Evidencia mínima & Frontera explícita \\
+    \midrule
+    SP1 & cuota/capacidad/contacto asignados & prueba de potencial o cierre; mundos pareados frente a oráculo & no acredita mecánica ni movimiento \\
+    SP2 & carga llevada a pose con restricciones & prueba local bajo wrench exacto; simulación con todas las guardas físicas & no acredita contacto conmutado ni hardware \\
+    SP3 & ruta/reserva sin conflicto en el modelo & prueba finita; tráfico pareado y registro de bloqueo & no acredita separación continua por sí sola \\
+    Transversal & límite de información o coste & contraejemplo o par de instancias indistinguibles & no excluye familias particulares resolubles \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+\begin{figure}[!htbp]
+  \centering
+  \begin{tikzpicture}[node distance=0.40cm,
+    item/.style={draw=VIULinkBlue,rounded corners=1mm,fill=VIULinkBlue!8,
+      minimum width=2.35cm,minimum height=0.86cm,align=center,font=\footnotesize},
+    arrow/.style={-{Stealth[length=2.4mm]},thick,draw=VIUDark}]
+    \node[item] (raw) {datos crudos};
+    \node[item,right=of raw] (metric) {métrica única};
+    \node[item,right=of metric] (stat) {estimando e IC};
+    \node[item,right=of stat] (macro) {macro/figura};
+    \node[item,right=of macro] (claim) {claim con alcance};
+    \draw[arrow] (raw)--(metric);
+    \draw[arrow] (metric)--(stat);
+    \draw[arrow] (stat)--(macro);
+    \draw[arrow] (macro)--(claim);
+  \end{tikzpicture}
+  \caption{Cadena de procedencia para cifras y afirmaciones empíricas.}
+  \label{fig:pre-results-provenance}
+  \viuownsource
+\end{figure}
+
+Las cifras del capítulo se insertan desde macros generadas y las pruebas completas remiten a los anexos activos. Los resultados negativos se conservan porque delimitan el mecanismo; los artefactos incompletos permanecen en la monografía o en el archivo de procedencia sin sostener conclusiones.

@@ -1,0 +1,60 @@
+\subsection{Demostraciones complementarias de la etapa E3 (SP1)}
+\label{app:sp3-proofs}
+
+El juego continuo de E3 fija la demanda, la geometría, los costes y los límites mientras evoluciona la preferencia sobre el símplex. Las restricciones lineales de ocupación definen el conjunto factible usado en la equivalencia KKT. El cierre entero, la guardia distribuida y la estabilidad de la carga corresponden a contratos posteriores.
+
+\subsection{Solución interior del reparto regularizado}
+\label{app:sp3-interior-wrench-proof}
+
+Cuando ninguna desigualdad está activa, el objetivo de~\eqref{eq:sp3-wrench} se escribe
+\[
+ (G_k\boldsymbol\lambda_k-\boldsymbol W_k^{\mathrm{dem}})^{\mathsf T}
+ Q_W(G_k\boldsymbol\lambda_k-\boldsymbol W_k^{\mathrm{dem}})
+ +\varepsilon_\lambda\boldsymbol\lambda_k^{\mathsf T}\boldsymbol\lambda_k.
+\]
+Su Hessiano es $2(G_k^{\mathsf T}Q_WG_k+\varepsilon_\lambda I)\succ0$. Igualar el gradiente a cero produce~\eqref{eq:sp3-interior-wrench-solution}, que es por ello el minimizador único. Si este punto pertenece al interior del conjunto admisible, también resuelve el problema restringido. De lo contrario, la estricta convexidad conserva unicidad y las KKT determinan el conjunto activo.
+
+\subsection{Residual puro y certificado conservador}
+\label{app:sp3-residual-proof}
+
+El minimizador regularizado $\lambda_k^\star$ de~\eqref{eq:sp3-wrench} es
+admisible. Por definición del mínimo del residual puro,
+$\rho_k^{W,\min}\leq\rho_k^{W\star}$; así,
+$\rho_k^{W\star}\leq\epsilon_W$ implica que existe un reparto admisible
+dentro de la tolerancia. La conversa puede fallar: con
+$G_k=Q_W=W_k^{\mathrm{dem}}=1$, dominio $\mathbb R$ y
+$\varepsilon_\lambda=100$, el reparto $\lambda_k=1$ tiene residual cero,
+mientras que el regularizado es $\lambda_k^\star=1/101$ y su residual es
+$100/101$. El término de esfuerzo hace conservadora la aceptación sin alterar
+la existencia del reparto de residual puro.
+
+\subsection{Potencial de wrench y equilibrio variacional}
+\label{app:sp3-wrench-proof}
+
+Para una acción física $a=(k,s)\in\mathcal P_i$, la derivada del término de ajuste es
+\[
+  \frac{\partial}{\partial\rho_{ia}}
+  \left[-\frac12\|\boldsymbol d_k-\boldsymbol y_k(\rho)\|_2^2\right]
+  =\boldsymbol g_{ia}^{\mathsf T}
+   \bigl(\boldsymbol d_k-\boldsymbol y_k(\rho)\bigr),
+\]
+porque $\partial\boldsymbol y_k/\partial\rho_{ia}=\boldsymbol g_{ia}$. Los otros dos términos de~\eqref{eq:sp3-potential} producen $-c_{ia}$ y $-\alpha\rho_{ia}$. En consecuencia,
+\[
+  \frac{\partial\Phi_W}{\partial\rho_{ia}}
+  =\boldsymbol g_{ia}^{\mathsf T}
+   \bigl(\boldsymbol d_k-\boldsymbol y_k(\rho)\bigr)
+   -c_{ia}-\alpha\rho_{ia},
+\]
+que coincide con el pago de~\eqref{eq:sp3-payoff} antes de restar el multiplicador compartido $\pi_a$.
+
+Para $a=0$, el término de ajuste no depende de $\rho_{i0}$ y $c_{i0}=0$; por tanto, $\partial\Phi_W/\partial\rho_{i0}=-\alpha\rho_{i0}=f_{i0}$. La acción inactiva no posee ni restricción $h_0$ ni multiplicador compartido.
+
+El Hessiano de $\Phi_W$, igual al negativo de una matriz Gram menos $\alpha I$, es definido negativo para $\alpha>0$. El conjunto factible es convexo y compacto porque intersecta productos de símplex con los semiespacios $h_a(\rho)\leq0$. Bajo Slater, las condiciones KKT son necesarias y suficientes para maximizar $\Phi_W$:
+\[
+  0\in-\nabla\Phi_W(\rho^\star)
+  +\sum_{a\in\mathcal P}\pi_a^\star\nabla h_a(\rho^\star)
+  +N_{\Delta}(\rho^\star),
+  \qquad
+  0\leq\pi_a^\star\perp-h_a(\rho^\star)\geq0.
+\]
+La sustitución de $\nabla\Phi_W-\sum_{a\in\mathcal P}\pi_a\nabla h_a$ por el vector de pagos~\eqref{eq:sp3-payoff} satisface la desigualdad variacional del juego con restricciones compartidas. Los maximizadores de la relajación coinciden con sus equilibrios variacionales. La Proposición~\ref{prop:sp3-wrench-potential} se restringe a este dominio continuo, antes de decodificar \(\rho^\star\) en decisiones binarias.
