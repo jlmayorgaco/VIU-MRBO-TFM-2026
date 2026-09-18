@@ -10,17 +10,14 @@ transporta y sustituye miembros; SP3 coordina rutas y reservas entre misiones.
 El modo primario, \emph{Cargo}, trata la carga soportada como un cuerpo rígido
 planar.
 
-El planteamiento se sostiene sobre tres revisiones con protocolo declarado: una
-sistemática de 3\,014 registros descubiertos y 59 trabajos canónicos, una
-industrial de catorce precedentes comerciales y una patentaria de 167 registros
-analíticos. La propuesta combina referencias LP/MILP, juegos potenciales, dinámica
-primal--dual, cierre entero y contratos de recursos, contacto, movimiento,
-recuperación y red. Se prueban regulación de cuotas, estabilidad local de Cargo
-bajo contacto fijo y realización exacta del \emph{wrench}, terminación de
-mejoras de rutas e imposibilidad de garantizar optimalidad global cuando la
-desconexión oculta instancias localmente indistinguibles con óptimos
-incompatibles. Las campañas usan mundos pareados, semillas explícitas y oráculos
-globales identificados como techos experimentales.
+Tres revisiones con protocolo declarado sostienen el planteamiento: una
+estructurada sobre 3\,014 registros, una industrial y una patentaria. Se
+prueban regulación de cuotas, estabilidad local de Cargo bajo contacto fijo y
+realización exacta del \emph{wrench}, terminación de mejoras de rutas e
+imposibilidad de garantizar optimalidad global cuando la desconexión oculta
+instancias localmente indistinguibles con óptimos incompatibles. Las campañas
+usan mundos pareados, semillas explícitas y referencias centrales con
+información global.
 
 SP1 regula cuotas bajo condiciones explícitas, separa la capacidad heterogénea
 y reduce falsos factibles nominales en la interfaz SP1--SP2. SP2 revela un intercambio
@@ -31,8 +28,9 @@ interbloqueos en el catálogo discreto; el piloto congestionado no entrega.
 Cargo completa casi todas las misiones sin ejecutar como una sola cadena todos
 los mecanismos teóricos. Una arquitectura de integración adicional certifica
 por bloque potencial exacto, separación geométrica y presupuesto; su
-reproducción en CoppeliaSim confirma el resultado de SP2 en un motor
-distinto.
+reejecución cinemática en CoppeliaSim reproduce el resultado cualitativo de
+separación, sin revalidar en ese motor las hipótesis dinámicas ni de contacto.
+El contraste temporal de H3 no obtuvo apoyo.
 
 La contribución es una arquitectura verificable de contratos y juegos locales,
 más una composición funcional planar. No demuestra estabilidad híbrida global,

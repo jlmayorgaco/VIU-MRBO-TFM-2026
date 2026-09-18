@@ -166,28 +166,42 @@ siguiente tubo también porta un testigo seguro; esta es una hipótesis del
 teorema, no una consecuencia que se derive de otro resultado del documento.
 
 \begin{proof}[Teorema~\ref{thm:megajuego-execution-budget}]
-Por inducción en el número de tubos $k=0,\ldots,N_{\mathrm{rev}}$.
-\emph{Base:} $k=0$ porta un testigo seguro por hipótesis, y $W_0$ es el
-presupuesto inicial declarado. \emph{Paso inductivo:} supóngase que el tubo
-$k$ empieza con testigo seguro y presupuesto $W\leq W_0-\kappa_Wt_k-\delta k$.
-Durante el movimiento dentro del tubo, la hipótesis de decrecimiento mínimo
-da $\dot W\leq-\kappa_W$, luego al final del tubo, en $t_{k+1}$,
-$W\leq W_0-\kappa_Wt_{k+1}-\delta k$. Si en $t_{k+1}$ se admite una sustitución,
-la regla de admisión exige que reduzca el presupuesto en al menos $\delta$, de
-modo que $W\leq W_0-\kappa_Wt_{k+1}-\delta(k+1)$ al inicio del tubo $k+1$, que
-por composición de tubos también porta testigo seguro. La ausencia de Zeno
-garantiza que $t_{k+1}>t_k$ con margen mínimo entre revisiones, de modo que la
-inducción no colapsa en tiempo finito con infinitos tubos. Al agotarse la
-ejecución en el instante $T$ tras $N_{\mathrm{rev}}$ sustituciones admitidas,
-$0\leq W_T\leq W_0-\kappa_WT-\delta N_{\mathrm{rev}}$, que reordenado da
-$\kappa_WT+\delta N_{\mathrm{rev}}\leq W_0$. Como $\kappa_W,\delta>0$, esta
-desigualdad acota $T\leq W_0/\kappa_W$ y
-$N_{\mathrm{rev}}\leq\lfloor W_0/\delta\rfloor$ (el mayor entero que la
-desigualdad admite con $T\geq0$). Ambas cotas son simultáneamente necesarias:
-ninguna se sigue de la otra por separado. Lo demostrado es terminación, no
-vivacidad: la ejecución no puede durar más de $W_0/\kappa_W$ ni admitir más de
-$\lfloor W_0/\delta\rfloor$ revisiones, pero nada en este argumento obliga a
-que el objetivo se haya alcanzado cuando el presupuesto se agota.
+Sea $T_{\mathrm{mov}}$ el tiempo acumulado de movimiento, es decir la medida
+del conjunto de instantes en que la hipótesis de decrecimiento mínimo está
+activa. Los intervalos sin movimiento no entran en $T_{\mathrm{mov}}$ y no
+consumen $\kappa_W$; esto es una restricción del enunciado, no un tecnicismo:
+una ejecución que espere indefinidamente sin moverse no queda acotada por este
+resultado.
+
+\emph{Cota de revisiones.} Cada sustitución admitida reduce el presupuesto en
+al menos $\delta>0$, y el presupuesto es no negativo y parte de $W_0$, luego
+$\delta N_{\mathrm{rev}}\leq W_0$ y $N_{\mathrm{rev}}\leq\lfloor W_0/\delta\rfloor$.
+Esta cota no requiere suponer ausencia de Zeno: el número de
+revisiones es finito por agotamiento del presupuesto, y de ahí que la sucesión
+de tubos sea finita. Suponer además un margen mínimo entre revisiones sería
+incorrecto, porque la ausencia de Zeno no implica un tiempo de permanencia
+uniformemente positivo: una sucesión con $t_{k+1}-t_k=1/k$ no acumula
+infinitos eventos en tiempo finito y aun así tiene margen ínfimo nulo.
+
+\emph{Cota de tiempo de movimiento.} Por inducción sobre los
+$k=0,\ldots,N_{\mathrm{rev}}$ tubos, que ya sabemos finitos. \emph{Base:}
+$k=0$ porta un testigo seguro por hipótesis y el presupuesto inicial es $W_0$.
+\emph{Paso:} si el tubo $k$ empieza con testigo seguro y presupuesto
+$W\leq W_0-\kappa_W\tau_k-\delta k$, con $\tau_k$ el tiempo de movimiento
+acumulado hasta el inicio de ese tubo, entonces $\dot W\leq-\kappa_W$ mientras
+haya movimiento da $W\leq W_0-\kappa_W\tau_{k+1}-\delta k$ al final del tubo; y
+si allí se admite una sustitución, la regla de admisión resta otros $\delta$,
+de modo que $W\leq W_0-\kappa_W\tau_{k+1}-\delta(k+1)$ al inicio del tubo
+$k+1$, que por composición de tubos también porta testigo seguro.
+
+Al terminar la ejecución, $0\leq W\leq W_0-\kappa_WT_{\mathrm{mov}}-\delta N_{\mathrm{rev}}$,
+y reordenando, $\kappa_WT_{\mathrm{mov}}+\delta N_{\mathrm{rev}}\leq W_0$. Con
+$\kappa_W,\delta>0$ se obtienen las dos cotas del enunciado.
+
+Lo demostrado es terminación, no vivacidad, y sobre el tiempo de movimiento,
+no sobre la duración de la misión: nada en este argumento obliga a que el
+objetivo se haya alcanzado al agotarse el presupuesto, ni acota cuánto puede
+esperar la ejecución sin moverse.
 \end{proof}
 
 La existencia del testigo inicial no es gratuita. Si solo hay una parada

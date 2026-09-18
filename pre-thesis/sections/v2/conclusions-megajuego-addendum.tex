@@ -4,9 +4,14 @@
 \subsection{Cierre de OE6, H6 y RQ6}
 \label{subsec:conclusions-megajuego}
 
-\textbf{RQ6.} Sí se certifica por bloque, y el certificado sobrevive al cambio
-de motor, pero solo dentro de los dominios que cada resultado declara y sin
-que la cadena completa herede una garantía conjunta.
+\textbf{RQ6.} Sí se certifica por bloque, dentro de los dominios que cada
+resultado declara y sin que la cadena completa herede una garantía conjunta.
+La segunda mitad de la pregunta admite una respuesta más débil de lo que su
+enunciado sugiere: la conclusión cualitativa de separación del mundo pareado
+se reproduce en CoppeliaSim mediante reejecución cinemática, pero esa
+comprobación no revalida en ese motor las hipótesis dinámicas, de contacto ni
+de tracción rueda--suelo del certificado de SP2. Reproducir un resultado
+geométrico no es revalidar el certificado que lo respalda.
 
 OE6 se cumple de forma delimitada. El juego de integración conecta SP1--SP3 con
 cuatro resultados demostrados algebraicamente y verificados numéricamente
@@ -30,7 +35,7 @@ formal de esa ausencia.
     \toprule
     ID & Estado & Evidencia principal & Límite \\
     \midrule
-    H6 & Apoyo delimitado & Cuatro resultados demostrados con residuales de verificación por debajo de $10^{-9}$ (Tabla~\ref{tab:megajuego-e2e-summary}); la reproducción en CoppeliaSim conserva el resultado cualitativo (Tabla~\ref{tab:coppelia-compact-narrow}). & Dominios concretos por resultado; ambas campañas con una corrida, sin réplicas ni semillas. \\
+    H6 & Apoyo delimitado & Cuatro resultados con evidencia de tipo distinto: potencial por factores y equivalencia variacional, por demostración algebraica; separación de Bézier, por demostración exacta más extragradiente sobre 30 instancias; \emph{caging}, por KKT racionales con residual $1{,}4\times10^{-11}$; presupuesto de ejecución, por desigualdad condicional. La reproducción en CoppeliaSim conserva el resultado cualitativo de separación (Tabla~\ref{tab:coppelia-compact-narrow}). & Dominios concretos por resultado; solo dos de los cuatro tienen verificación numérica. La reproducción es cinemática y de una corrida. \\
     \bottomrule
   \end{tabularx}
   \viuownsource

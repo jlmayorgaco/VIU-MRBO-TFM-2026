@@ -113,14 +113,20 @@ $10^{-11}$.
 \estadoaporte{demostrado, condicionado a testigo inicial seguro y ausencia de Zeno; demostración en el Anexo~\ref{app:megajuego-full-detail}.}
 \begin{teorema}[Presupuesto de ejecución, condicionado]
 \label{thm:megajuego-execution-budget}
-Con testigo inicial seguro, tubos que componen, entradas locales realizables,
-ausencia de Zeno y un presupuesto $W$ que decrece al menos $\kappa_W\Delta t$
-durante el movimiento y en $\delta>0$ por cada sustitución admitida,
-$\kappa_WT+\delta N_{\mathrm{rev}}\leq W_0$. La ejecución no puede prolongarse
-más allá de $T\leq W_0/\kappa_W$ y admite a lo sumo
-$\lfloor W_0/\delta\rfloor$ revisiones estrictas. La cota acota la duración y
-el número de revisiones; no garantiza que se alcance el objetivo, que puede
-quedar sin entregar al agotarse el presupuesto.
+Con testigo inicial seguro, tubos que componen, entradas locales realizables y
+un presupuesto $W$ que decrece al menos $\kappa_W\Delta t$ durante el
+movimiento y en $\delta>0$ por cada sustitución admitida,
+$\kappa_WT_{\mathrm{mov}}+\delta N_{\mathrm{rev}}\leq W_0$, donde
+$T_{\mathrm{mov}}$ es el tiempo acumulado de movimiento. De ahí
+$T_{\mathrm{mov}}\leq W_0/\kappa_W$ y $N_{\mathrm{rev}}\leq\lfloor W_0/\delta\rfloor$.
+Tres precisiones delimitan el enunciado. La cota es sobre el tiempo de
+movimiento, no sobre la duración de la misión: los intervalos de espera,
+deliberación o parada segura no consumen $\kappa_W$ y no están acotados por
+este resultado. La finitud de $N_{\mathrm{rev}}$ no requiere suponer ausencia
+de Zeno: se sigue de que cada revisión admitida consume $\delta>0$ de un
+presupuesto finito, lo que a su vez impide una sucesión infinita de tubos. Y
+acotar duración y revisiones no garantiza que se alcance el objetivo, que
+puede quedar sin entregar al agotarse el presupuesto.
 \end{teorema}
 \end{contribucion}
 
