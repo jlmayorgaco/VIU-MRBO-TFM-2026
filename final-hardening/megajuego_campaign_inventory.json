@@ -1,0 +1,430 @@
+{
+  "campaign_dir": "results/megajuego",
+  "grids": [
+    {
+      "grid_id": "aptitud",
+      "factors": [
+        "cfg_fitness",
+        "cfg_protocol"
+      ],
+      "levels": {
+        "cfg_fitness": [
+          "scalar",
+          "vector"
+        ],
+        "cfg_protocol": [
+          "smith"
+        ]
+      },
+      "n_cells": 2,
+      "seeds_per_cell": 30,
+      "paired_seed_set": true,
+      "seed_min": 0,
+      "seed_max": 29,
+      "n_distinct_seeds": 30,
+      "total_rows": 60,
+      "sha256": "b53a76d163370ef799cd7fd6fbb424702eb3053014c076cf590d1e4b7f26debd",
+      "columns": [
+        "cfg_fitness",
+        "cfg_protocol",
+        "corridor_double",
+        "cpu_s",
+        "energy_Wh",
+        "false_cert",
+        "makespan",
+        "min_sep_amr",
+        "min_sep_load",
+        "msgs",
+        "n_done",
+        "phi_oracle",
+        "recert_reject",
+        "revisions",
+        "seed",
+        "slip",
+        "success",
+        "t_end",
+        "wall_pen_max"
+      ]
+    },
+    {
+      "grid_id": "hiperjuego",
+      "factors": [
+        "cfg_belief_err",
+        "cfg_protocol",
+        "cfg_recertify"
+      ],
+      "levels": {
+        "cfg_belief_err": [
+          "0.0",
+          "0.35"
+        ],
+        "cfg_protocol": [
+          "smith"
+        ],
+        "cfg_recertify": [
+          "False",
+          "True"
+        ]
+      },
+      "n_cells": 4,
+      "seeds_per_cell": 20,
+      "paired_seed_set": true,
+      "seed_min": 0,
+      "seed_max": 19,
+      "n_distinct_seeds": 20,
+      "total_rows": 80,
+      "sha256": "42f79653999b437106cdd886d7c2f2aa5977ab8cddc96430798d26b5978539ba",
+      "columns": [
+        "cfg_belief_err",
+        "cfg_protocol",
+        "cfg_recertify",
+        "corridor_double",
+        "cpu_s",
+        "energy_Wh",
+        "false_cert",
+        "makespan",
+        "min_sep_amr",
+        "min_sep_load",
+        "msgs",
+        "n_done",
+        "phi_oracle",
+        "recert_reject",
+        "revisions",
+        "seed",
+        "slip",
+        "success",
+        "t_end",
+        "wall_pen_max"
+      ]
+    },
+    {
+      "grid_id": "hiperjuego2",
+      "factors": [
+        "cfg_a_ref",
+        "cfg_belief_err",
+        "cfg_cap_scale",
+        "cfg_protocol",
+        "cfg_recertify"
+      ],
+      "levels": {
+        "cfg_a_ref": [
+          "1.0"
+        ],
+        "cfg_belief_err": [
+          "0.0",
+          "0.35"
+        ],
+        "cfg_cap_scale": [
+          "0.4"
+        ],
+        "cfg_protocol": [
+          "smith"
+        ],
+        "cfg_recertify": [
+          "False",
+          "True"
+        ]
+      },
+      "n_cells": 4,
+      "seeds_per_cell": 20,
+      "paired_seed_set": true,
+      "seed_min": 0,
+      "seed_max": 19,
+      "n_distinct_seeds": 20,
+      "total_rows": 80,
+      "sha256": "1c9f964beee70ba7feb590265b1c1defd5db29981b4e96b232a47862cff4c0d9",
+      "columns": [
+        "cfg_a_ref",
+        "cfg_belief_err",
+        "cfg_cap_scale",
+        "cfg_protocol",
+        "cfg_recertify",
+        "corridor_double",
+        "cpu_s",
+        "energy_Wh",
+        "false_cert",
+        "makespan",
+        "min_sep_amr",
+        "min_sep_load",
+        "msgs",
+        "n_done",
+        "phi_oracle",
+        "recert_reject",
+        "revisions",
+        "seed",
+        "slip",
+        "success",
+        "t_end",
+        "wall_pen_max"
+      ]
+    },
+    {
+      "grid_id": "pasillo",
+      "factors": [
+        "cfg_corridor",
+        "cfg_protocol"
+      ],
+      "levels": {
+        "cfg_corridor": [
+          "lease",
+          "price"
+        ],
+        "cfg_protocol": [
+          "smith"
+        ]
+      },
+      "n_cells": 2,
+      "seeds_per_cell": 20,
+      "paired_seed_set": true,
+      "seed_min": 0,
+      "seed_max": 19,
+      "n_distinct_seeds": 20,
+      "total_rows": 40,
+      "sha256": "b1ad1c0a09ff517159f91a1050c7bb92648f401e6c4f45b1389df5b08c512daf",
+      "columns": [
+        "cfg_corridor",
+        "cfg_protocol",
+        "corridor_double",
+        "cpu_s",
+        "energy_Wh",
+        "false_cert",
+        "makespan",
+        "min_sep_amr",
+        "min_sep_load",
+        "msgs",
+        "n_done",
+        "phi_oracle",
+        "recert_reject",
+        "revisions",
+        "seed",
+        "slip",
+        "success",
+        "t_end",
+        "wall_pen_max"
+      ]
+    },
+    {
+      "grid_id": "planificador",
+      "factors": [
+        "cfg_planner",
+        "cfg_protocol"
+      ],
+      "levels": {
+        "cfg_planner": [
+          "game",
+          "waypoint"
+        ],
+        "cfg_protocol": [
+          "smith"
+        ]
+      },
+      "n_cells": 2,
+      "seeds_per_cell": 30,
+      "paired_seed_set": true,
+      "seed_min": 0,
+      "seed_max": 29,
+      "n_distinct_seeds": 30,
+      "total_rows": 60,
+      "sha256": "a0d400b97be0a5f3031f7f4814fe1c043d71f42af73c568a9486a421b355ce34",
+      "columns": [
+        "cfg_planner",
+        "cfg_protocol",
+        "corridor_double",
+        "cpu_s",
+        "energy_Wh",
+        "false_cert",
+        "makespan",
+        "min_sep_amr",
+        "min_sep_load",
+        "msgs",
+        "n_done",
+        "phi_oracle",
+        "recert_reject",
+        "revisions",
+        "seed",
+        "slip",
+        "success",
+        "t_end",
+        "wall_pen_max"
+      ]
+    },
+    {
+      "grid_id": "protocolos",
+      "factors": [
+        "cfg_protocol"
+      ],
+      "levels": {
+        "cfg_protocol": [
+          "best_response",
+          "bnn",
+          "logit",
+          "replicator",
+          "smith"
+        ]
+      },
+      "n_cells": 5,
+      "seeds_per_cell": 30,
+      "paired_seed_set": true,
+      "seed_min": 0,
+      "seed_max": 29,
+      "n_distinct_seeds": 30,
+      "total_rows": 150,
+      "sha256": "b38dd31864a69132ec211f184390ac568ce3c6fbeca0fe51d277cfb4afef5a5c",
+      "columns": [
+        "cfg_protocol",
+        "corridor_double",
+        "cpu_s",
+        "energy_Wh",
+        "false_cert",
+        "makespan",
+        "min_sep_amr",
+        "min_sep_load",
+        "msgs",
+        "n_done",
+        "phi_oracle",
+        "recert_reject",
+        "revisions",
+        "seed",
+        "slip",
+        "success",
+        "t_end",
+        "wall_pen_max"
+      ]
+    },
+    {
+      "grid_id": "reclutamiento",
+      "factors": [
+        "cfg_protocol",
+        "cfg_recruit"
+      ],
+      "levels": {
+        "cfg_protocol": [
+          "smith"
+        ],
+        "cfg_recruit": [
+          "atomic",
+          "gne_pd"
+        ]
+      },
+      "n_cells": 2,
+      "seeds_per_cell": 20,
+      "paired_seed_set": true,
+      "seed_min": 0,
+      "seed_max": 19,
+      "n_distinct_seeds": 20,
+      "total_rows": 40,
+      "sha256": "0fe85a6454a429d5fcdba9167d6593873938fe62580f8c1b66a5713c252af374",
+      "columns": [
+        "cfg_protocol",
+        "cfg_recruit",
+        "corridor_double",
+        "cpu_s",
+        "energy_Wh",
+        "false_cert",
+        "makespan",
+        "min_sep_amr",
+        "min_sep_load",
+        "msgs",
+        "n_done",
+        "phi_oracle",
+        "recert_reject",
+        "revisions",
+        "seed",
+        "slip",
+        "success",
+        "t_end",
+        "wall_pen_max"
+      ]
+    },
+    {
+      "grid_id": "seguridad",
+      "factors": [
+        "cfg_protocol",
+        "cfg_safety"
+      ],
+      "levels": {
+        "cfg_protocol": [
+          "smith"
+        ],
+        "cfg_safety": [
+          "coalition",
+          "nested",
+          "none"
+        ]
+      },
+      "n_cells": 3,
+      "seeds_per_cell": 20,
+      "paired_seed_set": true,
+      "seed_min": 0,
+      "seed_max": 19,
+      "n_distinct_seeds": 20,
+      "total_rows": 60,
+      "sha256": "bdfb65b759880b61fca929fc601dbd527f1ae821b91758a51e066c361660ba26",
+      "columns": [
+        "cfg_protocol",
+        "cfg_safety",
+        "corridor_double",
+        "cpu_s",
+        "energy_Wh",
+        "false_cert",
+        "makespan",
+        "min_sep_amr",
+        "min_sep_load",
+        "msgs",
+        "n_done",
+        "phi_oracle",
+        "recert_reject",
+        "revisions",
+        "seed",
+        "slip",
+        "success",
+        "t_end",
+        "wall_pen_max"
+      ]
+    }
+  ],
+  "total_raw_runs": 570,
+  "union_of_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29
+  ],
+  "code_audit_sha256": {
+    "__init__.py": "0dde066bb8173d266a51889e5c4f12c4fdb9f3624ae45d79b3ed4644c457d971",
+    "bench.py": "62465d3b10f659e2807f206b522eacb027c7b130bf12277d9abf191eec466190",
+    "debug.py": "1eda9156d6d4ea09f50579e782fc223f249402536609304eacd04a83a328b7e3",
+    "make_results_tex.py": "b9374d5c6413104905e864acb64403f2a6ee6f88778a569ca542f8ef59bb4708",
+    "mechanism.py": "9a3e3e8917687eb5f0331a494ee19d93594ee4c8727084c278637c99f11b9281",
+    "plant.py": "10aa5522156a62d090fc938d8e53f29dfb7ab7c022d9252f4d0adb48cc39ee73",
+    "run_factorial.py": "37eda68125d06dab7d4020ecdb670e9d1b894eabf9c4d97192694015609279f2",
+    "trajgame.py": "e54422fcb3eb5485197f2d68c3457ef14930cc37d9801ad1be58157b05a4acaa",
+    "viz.py": "2b687a613577b2b8e8fc56aa72d9468102d3e52eb09ddf3c1af523ca191d2b1b"
+  }
+}
