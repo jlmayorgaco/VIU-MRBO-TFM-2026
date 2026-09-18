@@ -183,13 +183,19 @@ acredita compatibilidad funcional, no la composición formal de esas garantías.
 \While{no se satisface el criterio agregado $|C_k|\geq3$, $\sum c_i^{\mathrm{pay}}\geq m_k^{\mathrm{req}}$, $\sum f_i^{\max}\geq F_k^{\mathrm{req}}$ y quedan candidatos}
   \State añadir el siguiente candidato
 \EndWhile
-\If{no se satisface el criterio}\Return abstención\EndIf
+\If{no se satisface el criterio}
+  \State \Return abstención
+\EndIf
 \State acoplar uniciclos; transportar con punto intermedio y filtro de seguridad
 \If{falla el miembro de menor límite de fuerza}
   \State detener, retirar identificador, seleccionar y desplazar reemplazo
-  \If{llega y el criterio vuelve a cumplirse}\State reanudar\Else\Return fallo\EndIf
+  \If{llega y el criterio vuelve a cumplirse}
+    \State reanudar
+  \Else
+    \State \Return fallo
+  \EndIf
 \EndIf
-\Return entrega en pose destino
+\State \Return entrega en pose destino
 \end{algorithmic}
 \end{algorithm}
 

@@ -2,9 +2,7 @@
 \label{app:megajuego-full-detail}
 
 La Sección~\ref{subsec:megajuego} enuncia cuatro resultados en formato
-compacto; sus demostraciones completas, transcritas de la revisión
-matemática interna citada en la nota~\ref{fn:megajuego-source}, siguen a
-continuación.
+compacto; sus demostraciones completas siguen a continuación.
 
 \subsection{Potencial exacto y óptimo central}
 \label{app:megajuego-potential-proof}
@@ -206,71 +204,20 @@ de recuperación es
 No se suman indiscriminadamente márgenes de metros, newtons y julios. Los
 fallos que destruyen todos los testigos quedan fuera de la hipótesis.
 
-\subsection{Capa epistemológica delta y cobertura de \emph{commit}}
+% La capa epistemologica delta se retira del documento principal: no fue
+% implementada ni evaluada en el demostrador, y sus cinco ecuaciones numeradas
+% no se citaban por su numero, lo que incumple la norma VIU. Su especificacion
+% completa se conserva en supplementary/sections/epistemic-delta-gossip.tex.
+\subsection{Extension no ensayada: actualizacion de informacion por diferencias}
 \label{app:megajuego-epistemic-detail}
 
-Esta subsección especifica una extensión candidata de la información
-$\mathcal I$ de la Ecuación~\eqref{eq:megajuego-state}. No es una
-implementación ni un resultado experimental del demostrador: en particular,
-no se ha medido todavía su efecto sobre tiempo de reclutamiento, bytes,
-estabilidad de una dinámica Smith ni rendimiento extremo a extremo.
-
-Sea $e\in\mathcal E^{\mathrm{fact}}$ un hecho físico o estratégico con una
-única fuente y versión. El belief conservado por el robot $i$ adopta la forma
-\begin{equation}
- b_{i,e}=\bigl(\widehat x_{i,e},\Sigma_{i,e},
- \operatorname{src}_e,\operatorname{seq}_e,t_e,h_{i,e},c_{i,e}\bigr),
- \label{eq:megajuego-epistemic-belief}
-\end{equation}
-donde $\widehat x_{i,e}$ es el valor estimado, $\Sigma_{i,e}$ es una
-incertidumbre opcional, $\operatorname{src}_e$ identifica al originador,
-$\operatorname{seq}_e$ su versión monotónica, $t_e$ su marca temporal,
-$h_{i,e}$ sus saltos acumulados y $c_{i,e}\in[0,1]$ una confianza definida por
-el estimador. Se distinguen los conjuntos de beliefs físicos y estratégicos,
-$B_i^{\mathrm P}$ y $B_i^{\mathrm S}$, y un digest epistemológico $D_i$:
-\begin{equation}
- \mathcal B_i=\bigl(B_i^{\mathrm P},B_i^{\mathrm S},D_i\bigr).
- \label{eq:megajuego-epistemic-state}
-\end{equation}
-El primer conjunto puede incluir pose, estado de carga, batería y obstáculos;
-el segundo, intención de tarea, coalición, homotopía, reserva, trayectoria
-paramétrica y propuesta de revisión. Esta clasificación organiza el mensaje;
-no convierte una estimación remota en una medición independiente.
-
-Para cada vecino $j$ y fuente $s$, $D_{i\to j,s}$ es la última versión de $s$
-que $i$ cree que $j$ ha reconocido. El paquete candidato y su delta son
-\begin{align}
- \Delta B_{i\to j}&=\left\{b_{i,e}:\operatorname{seq}_e>
- D_{i\to j,\operatorname{src}_e}\right\},
- \label{eq:megajuego-epistemic-delta}\\
- m_{i\to j}&=\bigl(\Delta B_{i\to j},D_i,t_i,\operatorname{TTL}\bigr).
- \label{eq:megajuego-epistemic-message}
-\end{align}
-Si el delta es vacío, la regla no envía un paquete de estado. Un digest no
-prueba que $j$ tenga el dato en presencia de pérdida, reinicio o partición;
-$D_{i\to j,s}$ solo avanza mediante reconocimiento o expiración declarada.
-Dos copias con el mismo $(\operatorname{src}_e,\operatorname{seq}_e)$ no son
-observaciones independientes y no se fusionan como tales.
-
-\paragraph{Admisión candidata de \emph{commit}}
-Sea $V(d)$ el valor normalizado de una decisión y supóngase, solo si el
-estimador certifica una envolvente válida, que
-$|V(d)-\widehat V_i(d)|\leq\epsilon_i(d)$. Para el conjunto relevante
-$\mathcal C_e$ y su cobertura estimada por reconocimientos
-$\widehat{\mathcal K}_i(e)$, la guardia usa
-\begin{equation}
- L_i(d)=\widehat V_i(d)-\epsilon_i(d),\quad
- U_i(d)=\widehat V_i(d)+\epsilon_i(d),\quad
- \gamma_i(e)=\frac{|\widehat{\mathcal K}_i(e)\cap\mathcal C_e|}{|\mathcal C_e|}.
- \label{eq:megajuego-epistemic-commit}
-\end{equation}
-Una transición de $d$ a $d'$ solo sería elegible con guarda física válida,
-edad admisible, $\gamma_i(e)\geq\gamma_{\min}$ y
-$C_e^++U_i(d')\leq L_i(d)-\delta$, con $C_e^+$ en las unidades de $V$.
-La condición es una guardia de diseño: no prueba conocimiento común, seguridad
-de la planta ni mejora real si se calibran mal incertidumbre, costes o
-reconocimientos. La ponderación por antigüedad y saltos, la regulación del
-radio, el coste de memoria y la campaña de pérdida y retardo quedan en el
+La informacion $\mathcal I$ de la Ecuacion~\eqref{eq:megajuego-state} admite una
+extension en la que cada AMR transmite al vecino solo los hechos nuevos respecto
+de la ultima version que ese vecino ha confirmado, en lugar del estado completo.
+No se implemento ni se evaluo en el demostrador de esta memoria, de modo que no
+sostiene ninguna afirmacion activa: no acredita menor trafico, decision mas
+temprana ni robustez frente a perdida o retardo. Su especificacion, la regla de
+admision y el diseno experimental necesario para contrastarla se conservan en el
 material suplementario.
 
 \subsection{Alcance y aporte}

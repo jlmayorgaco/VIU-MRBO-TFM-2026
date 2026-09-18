@@ -1,6 +1,5 @@
 % Juego de integración, formato compacto: arquitectura, cuatro resultados
-% formales y el demostrador extremo a extremo. Fuente: revisión matemática
-% interna (nota~\ref{fn:megajuego-source}). Las demostraciones completas de
+% formales y el demostrador extremo a extremo. Las demostraciones completas de
 % los cuatro resultados están en el Anexo~\ref{app:megajuego-full-detail}.
 \clearpage
 \subsection{Juego de integración}
@@ -11,11 +10,10 @@ SP1--SP3 certifican tres interfaces por separado. El juego de integración las
 conecta mediante un esquema híbrido sobre continuaciones físicamente
 admisibles: cada continuación se admite solo si mejora sobre la política
 vigente, sin garantizar el óptimo global del sistema
-completo.\footnote{\label{fn:megajuego-source}Fuente:
-\parencite{mrobMegajuegoRevision2026}, revisión matemática interna, 16 de
-septiembre de 2026. Corrige una formulación previa de la misma serie técnica
-que asumía convergencia al óptimo global; aquí cada bloque certifica solo una
-mejora local bajo hipótesis explícitas.} Su estado aumentado
+completo. Una formulación previa de esta misma arquitectura asumía
+convergencia al óptimo global; aquí cada bloque certifica solo una mejora
+local bajo hipótesis explícitas, y las demostraciones completas están en el
+Anexo~\ref{app:megajuego-full-detail}. Su estado aumentado
 \begin{equation}
  Y=(X,d,\widehat X,\mathcal E_X,\mathcal I,\Pi^{\mathrm{inc}},\mathcal S,t)
  \label{eq:megajuego-state}
@@ -25,19 +23,6 @@ $\mathcal E_X$, información con procedencia $\mathcal I$ y reservas
 espacio--temporales $\mathcal S$ (distintas del catálogo de rutas $\mathcal
 R_i^7$ de SP3), para que dos continuaciones se comparen desde el mismo
 problema.
-
-\paragraph{Capa epistemológica por diferencias (propuesta)}
-La procedencia incluida en $\mathcal I$ puede ampliarse con una memoria local
-que separe beliefs físicos, beliefs estratégicos y un digest de versiones. En
-vez de reenviar el estado completo, cada AMR transmitiría al vecino únicamente
-los hechos nuevos respecto de la última versión que ese vecino ha confirmado;
-la edad, el número de saltos y la confianza modularían su uso en reclutamiento,
-reservas y revisiones conjuntas. Esta es una formulación candidata, no una
-capa ejecutada en el demostrador de esta sección: todavía no acredita menor
-tráfico, un \emph{commit} más temprano ni robustez frente a pérdida o retardo.
-El Anexo~\ref{app:megajuego-epistemic-detail} fija el estado, la regla de
-admisión y sus límites, y el material suplementario conserva el protocolo A/B
-necesario para evaluarla.
 
 \begin{figure}[!htbp]
   \centering
@@ -63,8 +48,7 @@ necesario para evaluarla.
   y causalidad informacional simultáneamente; el certificado es válido por
   bloque, no como optimalidad global del sistema híbrido.}
   \label{fig:megajuego-architecture}
-  \viusource{elaboración propia a partir de la revisión matemática interna
-  citada en la nota~\ref{fn:megajuego-source}}
+  \viuownsource
 \end{figure}
 
 \paragraph{Potencial exacto por factores y óptimo central}
@@ -180,8 +164,7 @@ campaña estadística ni una validación de hardware.
   trayectorias suaves factibles (líneas continuas) que evitan los dos
   obstáculos centrales, para las tres coaliciones del escenario.}
   \label{fig:megajuego-routes}
-  \viusource{simulación propia, \texttt{simulate\_e2e\_megagame.py}, escenario
-  sintético descrito en la nota~\ref{fn:megajuego-source}}
+  \viusource{simulación propia, \texttt{simulate\_e2e\_megagame.py}}
 \end{figure}
 
 \begin{figure}[!htbp]

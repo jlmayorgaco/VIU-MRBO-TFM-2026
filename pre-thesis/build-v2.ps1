@@ -47,6 +47,15 @@ Push-Location $Root
 try {
     New-Item -ItemType Directory -Force -Path $OutputDirectory | Out-Null
 
+    # Misma guarda que build-supplementary.ps1: un .aux obsoleto se lee antes de
+    # que biblatex defina \abx@aux@..., y como \a existe en LaTeX no hay error,
+    # solo texto basura impreso en la portada. Se retiran los auxiliares antes de
+    # la primera pasada; las tres pasadas los reconstruyen.
+    foreach ($ext in @("aux", "bcf", "run.xml", "toc", "out", "lof", "lot")) {
+        $stale = Join-Path $OutputDirectory "$JobName.$ext"
+        if (Test-Path -LiteralPath $stale) { Remove-Item -LiteralPath $stale -Force }
+    }
+
     $latexArguments = @(
         "-interaction=nonstopmode",
         "-file-line-error",

@@ -43,6 +43,17 @@ Push-Location $Root
 try {
     New-Item -ItemType Directory -Force -Path $OutputDirectory | Out-Null
 
+    # Un .aux obsoleto se lee antes de que biblatex defina \abx@aux@...; como \a
+    # SI existe en LaTeX (acento de tabbing), no hay error y la linea se compone
+    # como texto: la portada llego a imprimir
+    # "bx@aux@defaultrefcontext0zlotStentz2006ComplexTasksnyt/global//global/...".
+    # Se retiran los auxiliares antes de la primera pasada; las tres pasadas
+    # posteriores los reconstruyen.
+    foreach ($ext in @("aux", "bcf", "run.xml", "toc", "out")) {
+        $stale = Join-Path $OutputDirectory "$JobName.$ext"
+        if (Test-Path -LiteralPath $stale) { Remove-Item -LiteralPath $stale -Force }
+    }
+
     $latexArguments = @(
         "-interaction=nonstopmode",
         "-file-line-error",

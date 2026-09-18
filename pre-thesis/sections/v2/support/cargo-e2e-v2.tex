@@ -1,0 +1,161 @@
+% Copia v2 de sections/source-snapshot/mainmatter/06-results-and-analysis/cargo-e2e.tex.
+% Unico cambio: \Return llevaba sin \State al inicio de linea, de modo que
+% algpseudocode lo concatenaba con la linea previa y el PDF imprimia
+% "entoncesdevolver" y "si nodevolver". El fichero sellado no se toca.
+\input{shared/generated-macros/cargo_e2e_numbers.tex}
+
+\subsubsection{Etapa 2.4: demostrador híbrido de la cadena Cargo}
+\label{subsubsec:sp2-cargo-e2e}
+
+El demostrador ejecuta reclutamiento, acoplamiento, transporte y recuperación sobre una misma planta planar. Su selección mediante líder, su criterio agregado y su reemplazo voraz difieren de los mecanismos evaluados en las etapas históricas \texttt{sp2}, \texttt{sp3} y \texttt{sp6}. La campaña evalúa la compatibilidad funcional de esta arquitectura híbrida; las garantías parciales de SP1 y SP2 no se componen automáticamente en ella.
+
+\paragraph{Ejecución común}
+
+Durante siete eventos se propagan identificadores en los regímenes nominal, con obstáculo y con fallo; el régimen de red degradada usa diez eventos. El ejecutor determina con el estado global qué robot activo está más cerca de la carga y lo designa líder; el menor identificador resuelve empates. No se implementa una elección distribuida. Los mensajes contienen identificadores, mientras posición, carga útil y fuerza se resuelven después en el registro global. Para cada candidato se definen
+\begin{equation}
+ \bar\delta_i=\frac{\delta_{iL}}{\delta_C^{\mathrm{ref}}},\qquad
+ \bar c_i=\frac{c_i^{\mathrm{pay}}}{c_C^{\mathrm{ref}}},\qquad
+ \bar f_i=\frac{f_i^{\max}}{f_C^{\mathrm{ref}}},
+ \label{eq:cargo-ranking-normalization}
+\end{equation}
+Las normalizaciones de~\eqref{eq:cargo-ranking-normalization} usan $\delta_C^{\mathrm{ref}}=1\,\mathrm{m}$, $c_C^{\mathrm{ref}}=1\,\mathrm{kg}$ y $f_C^{\mathrm{ref}}=1\,\mathrm{N}$. El líder ordena en sentido ascendente por el par
+\begin{equation}
+ \left(s_i,i\right),\qquad
+ s_i=\bar\delta_i-0.08\,\bar c_i-0.025\,\bar f_i,
+ \label{eq:cargo-ranking}
+\end{equation}
+de modo que el identificador resuelve los empates de puntuación. Las referencias unitarias conservan exactamente el orden numérico de la campaña archivada, mientras los tres términos y sus pesos son adimensionales. Esta regla empírica no es el pago de E2. Para una carga $k$, el criterio agregado de elegibilidad exige
+\begin{equation}
+ |C_k|\geq3,\qquad
+ \sum_{i\in C_k}c_i^{\mathrm{pay}}\geq m_k^{\mathrm{req}},\qquad
+ \sum_{i\in C_k}f_i^{\max}\geq F_k^{\mathrm{req}}.
+ \label{eq:cargo-aggregate-certificate}
+\end{equation}
+Si la vista no permite satisfacer las tres desigualdades, el líder se abstiene. Este criterio no usa geometría, torque ni el QP de E3 y, por tanto, no constituye su certificado de \emph{wrench}.
+
+\begin{algorithm}[!htbp]
+\caption{Demostrador Cargo híbrido: selección, acoplamiento, transporte y sustitución}
+\label{alg:cargo-hibrido}
+\begin{algorithmic}[1]
+\Require conjunto de identificadores activos, registro global de atributos,
+         demanda agregada de la carga, guardia de seguridad
+\Ensure entrega en pose destino, o abstención, o fallo declarado con su causa
+\State propagar identificadores durante 7 eventos, o 10 bajo red degradada
+  \Comment{10 si la red está degradada}
+\State formar la vista del líder designado globalmente
+\State resolver atributos en el registro global
+\State ordenar candidatos de forma ascendente por~\eqref{eq:cargo-ranking}
+\While{no se satisface~\eqref{eq:cargo-aggregate-certificate} y quedan candidatos}
+  \State añadir el siguiente candidato a la coalición
+\EndWhile
+\If{no se satisface~\eqref{eq:cargo-aggregate-certificate}}
+  \State \Return abstención
+    \Comment{criterio agregado, no el QP de E3}
+\EndIf
+\State integrar el acoplamiento de uniciclos
+\If{el acoplamiento no termina en 16~s}
+  \State \Return agotamiento de acoplamiento
+\EndIf
+\State transportar la carga planar hacia el destino con punto intermedio y
+       filtro cuando la guardia está activa
+\If{falla el miembro de menor límite de fuerza}
+  \State detener la carga y retirar su identificador
+  \State repetir propagación y selección con los miembros restantes fijos
+  \State desplazar el primer candidato añadido al puesto liberado, máx.\ 16~s
+  \If{llega y~\eqref{eq:cargo-aggregate-certificate} vuelve a cumplirse}
+    \State reanudar el transporte
+  \Else
+    \State \Return fallo de recuperación o agotamiento del horizonte
+  \EndIf
+\EndIf
+\State \Return entrega en pose destino
+\end{algorithmic}
+\end{algorithm}
+
+Ordenar cuesta $O(|\mathcal I^{\mathrm{vis}}|\log |\mathcal I^{\mathrm{vis}}|)$ y
+propagar $O(|\mathcal E_C|)$ mensajes por barrido. Cada fila del registro anota
+identidad del mundo, miembros, certificados, terminación, tiempos, errores,
+seguridad, \emph{wrench}, energía, comunicación, CPU y fases.
+
+\iffalse
+\begin{table}[!htbp]
+  \centering
+  \caption{Correspondencia funcional entre el demostrador Cargo y los subproblemas.}
+  \label{tab:cargo-sp-mapping}
+  \begin{tabularx}{\textwidth}{@{}p{2.5cm}p{2.0cm}X@{}}
+    \toprule
+    Etapa & Función análoga & Diferencia respecto al SP \\
+    \midrule
+    Reclutamiento & E2 & cierre por líder y atributos resueltos en un registro global \\
+    Elegibilidad & E3 & criterio agregado de cardinalidad, carga útil y fuerza, sin QP geométrico \\
+    Acoplamiento & E4 & uniciclos dinámicos hasta puestos impuestos \\
+    Seguridad & E5 & punto de rodeo y filtro sobre la planta planar reducida \\
+    Reparación & E6 & un fallo, reserva finita y contacto restablecido cinemáticamente \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+\fi
+
+Aproximación y reemplazo integran uniciclos con pares saturados. El acoplamiento inicial exige distancia no mayor que 0,12~m y velocidad no mayor que 0,08~m/s durante cinco muestras; el reemplazo se acepta en la primera muestra que satisface ambos umbrales. Ninguno verifica orientación, contacto ni colisiones de aproximación. Después, la carga planar fija las poses por desplazamientos rígidos. El \emph{wrench} usa reparto vectorial, pero la admisión inicial agrega carga útil y fuerza sin el QP geométrico de E3. Con déficit, la carga se detiene.
+
+\paragraph{Contrato de información y ablaciones}
+
+El grafo se construye por radio y, si queda desconectado, se añaden las aristas de anillo necesarias antes de aplicar pérdida y retardo. La campaña estudia así una red conectada con mensajes imperfectos, no particiones permanentes. El tratamiento llamado ``vecinal'' abrevia \emph{gossip} de identificadores más selección por líder y registro global; la vista perfecta elimina la incertidumbre de identificadores y la referencia central enumera coaliciones, pero las tres comparten docking, planta y control.
+
+La contabilidad asigna 16~B de cabecera y 32~B por identificador. No incluye elección de líder, atributos, pose de carga ni consultas al registro, por lo que no estima el tráfico de una realización completamente distribuida. La ablación ``sin guardia física'' retira a la vez el criterio de fuerza, el punto intermedio y el filtro de velocidad; identifica el bloque conjunto, no cada componente. ``Sin reparación'' detiene la misión cuando aparece el fallo, de modo que su contraste mide continuar con reemplazo frente a detenerse y no compara el juego E6 con otro reasignador.
+
+\paragraph{Protocolo confirmatorio}
+
+Tras un piloto de 36 instancias, el confirmatorio cruzó cuatro regímenes, $N\in\{4,8,12\}$ y 30 semillas: \CargoEtwoEWorlds{} instancias y \CargoEtwoERuns{} ejecuciones. La Tabla~\ref{tab:cargo-e2e-regimes} fija pérdida $0.25$ y retardo de hasta dos eventos para el régimen degradado, frente a pérdida $0.02$ y retardo nulo en los otros tres. Se comparan el demostrador híbrido, su vista perfecta, tres ablaciones y la referencia central.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Factores activos en los cuatro regímenes de la simulación integrada.}
+  \label{tab:cargo-e2e-regimes}
+  \small
+  \begin{tabular}{lccc}
+    \toprule
+    Régimen & Obstáculo & Red degradada & Fallo \\
+    \midrule
+    Abierto nominal & No & No & No \\
+    Obstáculo estático & Sí & No & No \\
+    Red degradada & Sí & Sí & No \\
+    Fallo durante transporte & Sí & No & Sí \\
+    \bottomrule
+  \end{tabular}
+  \viuownsource
+\end{table}
+
+Se miden éxito, intersección, tiempo, recuperación, error, \emph{wrench}, saturación, energía, trabajo, comunicación y CPU. Comparaciones pareadas usan \emph{bootstrap}, McNemar/Wilcoxon, efecto y Holm. Para escenarios repetidos se promedia por tamaño--semilla y remuestrean 90 instancias, no 270 pares.
+
+\paragraph{Resultados}
+
+Según la Tabla~\ref{tab:cargo-e2e-results}, el demostrador alcanzó una tasa de misión \CargoEtwoESuccess{} sin intersección durante transporte; un reemplazo agotó el horizonte. No se mide colisión continua de aproximación, robot--robot ni 3D. La referencia central alcanzó \CargoEtwoECentralSuccess{}. El demostrador y la vista perfecta eligieron la misma coalición inicial en todo el banco; bajo red degradada ambos alcanzaron \CargoEtwoEDegradedSuccess{}. Esta coincidencia describe un benchmark poco discriminante para calidad de selección y no prueba equivalencia. El demostrador promedió \CargoEtwoEMessages{} mensajes; en red fueron \CargoEtwoEDegradedMessages{} y \CargoEtwoEDegradedKilobytes{}~kB, sin los datos del registro.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Demostrador Cargo híbrido: resultados agregados de los seis tratamientos.}
+  \label{tab:cargo-e2e-results}
+  \small
+  \resizebox{\textwidth}{!}{\input{shared/generated-macros/cargo_e2e_results.tex}}
+  \viuownsource
+\end{table}
+
+Los tiempos de la Tabla~\ref{tab:cargo-e2e-results} son medias incondicionales: terminar por colisión puede parecer rápido. ``Recuperación'' vale cero sin reparación y no es duración condicionada.
+
+La ablación conjunta retiró el criterio agregado de fuerza, el punto de rodeo y el filtro de seguridad. En E2E-H2, condicionado a obstáculo estático, red degradada y fallo durante el transporte (el régimen nominal abierto quedó fuera del contraste), el efecto sobre el éxito fue \CargoEtwoEGuardEffect{} (IC del 95\,\% $\CargoEtwoEGuardCI{}$, Wilcoxon unilateral sobre la media por instancia, $p_{\mathrm{Holm}}=\CargoEtwoEGuardPHolm{}$); la intersección, agregada sobre los cuatro regímenes, alcanzó \CargoEtwoENoGuardCollision{}. La variante sin ese bloque conservó el criterio agregado completo en \CargoEtwoENoGuardCertified{} de \CargoEtwoEWorlds{} mundos, mientras el reparto del método completo registró residual numérico y saturación nula; el contraste discrimina principalmente rodeo y filtrado, no certificación mecánica. En el régimen de fallo, continuar con reemplazo elevó el éxito en \CargoEtwoERepairEffect{} frente a detenerse (IC $\CargoEtwoERepairCI{}$, McNemar exacto unilateral, $p_{\mathrm{Holm}}=\CargoEtwoERepairPHolm{}$); no compara el juego E6 con otro método de reparación.
+
+La penalización espacial cambió el tiempo medio en \CargoEtwoETimingEffect{}~s bajo red degradada frente a la selección desacoplada, pero el IC $\CargoEtwoETimingCI{}$ incluyó cero y Holm dejó $p=\CargoEtwoETimingPHolm{}$. E2E-H1 no queda sustentada. Selección con visibilidad restringida, acoplamiento, transporte y recuperación sí coexistieron dentro de la misma planta planar reducida.
+
+\iffalse
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.82\textwidth]{figures/generated/cargo-e2e-success.pdf}
+  \caption{Éxito extremo a extremo por método y régimen. Cada celda resume 90 instancias, salvo que la lectura por método agregue los cuatro regímenes.}
+  \label{fig:cargo-e2e-success}
+  \viuownsource
+\end{figure}
+\fi
+
+El modelo usa pose exacta, contacto fijo y grafo estático conectado por intercambio. La evidencia confirma coexistencia funcional bajo ese contrato, pero no un juego distribuido acoplado ni el coste completo de descentralizarlo. La misión termina al alcanzar la pose de entrega: no se ejecutan liberación ni desacoplamiento. Tampoco se modelan soporte, fricción, percepción, radio real, tracción ni hardware.

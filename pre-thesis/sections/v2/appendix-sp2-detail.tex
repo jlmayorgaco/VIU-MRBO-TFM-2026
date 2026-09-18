@@ -28,7 +28,9 @@ Anexo~\ref{app:sp6-feasible-nash-proof}).
 % envoltorio que en el resto de estos anexos.
 \begingroup
 \let\newcommand\renewcommand
-\input{sections/source-snapshot/mainmatter/06-results-and-analysis/cargo-e2e}
+% Se usa la copia v2, identica salvo el \State que faltaba antes de cada \Return
+% del pseudocodigo (el sellado imprimia «entoncesdevolver»).
+\input{sections/v2/support/cargo-e2e-v2}
 \endgroup
 
 \subsection{Reproducción en CoppeliaSim de E4}
