@@ -1013,24 +1013,31 @@ al certificado de *wrench* es justamente el componente que la ablación Cargo
     con su $k$ antes de ejecutar es `final-hardening/JCC_STATISTICAL_AUDIT.md`,
     del banco factorial del megajuego. (§3)
 
-21. **Siete de diez campañas carecen de preespecificación**. En E6-C y E7-C las
+19. **Siete de diez campañas carecen de preespecificación**. En E6-C y E7-C las
     hipótesis existen solo como literales de Python dentro de `experiment.py`, sin
     marca temporal que demuestre que preceden a la ejecución. (§3)
 
-22. **H7.2 y H7.3 se calculan con `successful_only=True`**, es decir, comparan
+20. **H7.2 y H7.3 se calculan con `successful_only=True`**, es decir, comparan
     *makespan* únicamente en los mundos donde ambos métodos entregaron —un
     condicionamiento sobre variable posterior al tratamiento—. Está declarado en
     la columna `successful_pairs_only` y en esta corrida no eliminó ninguna fila,
     pero el mecanismo sesgaría en cuanto un método empeorase. (§1.9)
-19. **El denominador de E3 se enuncia de tres maneras distintas** —«7200
+
+21. **El denominador de E3 se enuncia de tres maneras distintas** —«7200
     ejecuciones» (p. 45), «600 mundos pareados» (Tabla 11, p. 46), «En 600
     instancias» (p. 63)— sin que el cuerpo aclare la relación 12 brazos × 600.
     (§1.3, §3)
-20. **La lista de semillas no está en el manifiesto de E3 ni de E4** (solo es
+
+22. **La lista de semillas no está en el manifiesto de E3 ni de E4** (solo es
     recuperable del `runs.csv`), y los generadores de ambas campañas no están en
     el árbol de trabajo (`historical_generator_present_in_worktree: false`), de
     modo que sostienen H2 y el único contraste con $p$ de SP2 sin ser
     reproducibles. (§3)
+
+23. **Horizonte y *timeout* no se imprimen en el cuerpo para ninguna campaña
+    salvo AWS y CoppeliaSim**, ni siquiera en E4, donde «horizonte agotado»
+    alcanza 0,991 en una fila de la Tabla 13, ni en E6-C, cuyo «plazo estrecho»
+    es un valor aleatorio por mundo entre 7,5 y 12,5 s. (§3)
 
 ### Lo que sí cumple y conviene no tocar
 

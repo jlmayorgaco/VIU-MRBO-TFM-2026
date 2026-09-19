@@ -322,7 +322,7 @@ tribunal —que el banco no llegó a saturar— también vive en anexo (p. 107):
 hubo violaciones de barrera en la acción aplicada ni saturaciones de par. El
 conjunto es demasiado pequeño para someter los actuadores a su régimen límite».
 
-**8. Matriz de agarre. PARCIAL.** Se nombra en §5.3 (p. 23, Ec. 7): «Si
+**8. Matriz de agarre. PARCIAL.** Se nombra en el §5.3 de la memoria (p. 23, Ec. 7): «Si
 $\boldsymbol\lambda_C$ agrupa esfuerzos de contacto y $G_C(q)$ es la matriz de
 agarre, el *wrench* aplicado es $W_C=G_C(q)\boldsymbol\lambda_C$». La discusión
 que sigue es correcta y pertinente —«Como $G_C$ y $\mathcal U_C$ dependen de la
@@ -361,7 +361,7 @@ método en cinco lugares —la entrada de nomenclatura (p. xiv), la Tabla 3
 (p. 16), §4.10 (p. 18), la Tabla 12 (p. 48) y la Tabla 21 con su discusión
 (p. 59)— y **en ninguno define la función de barrera, la clase $\mathcal K$, el
 grado relativo ni el QP de filtrado**. Lo más próximo es la prosa del
-§5.4 (p. 24): «Una CBF define un conjunto seguro y una condición de invariancia
+§5.4 de la memoria (p. 24): «Una CBF define un conjunto seguro y una condición de invariancia
 hacia delante. El filtro CBF-QP proyecta el control nominal sobre las
 desigualdades admisibles bajo el modelo, el grado relativo y el estado
 declarados». Ni «el modelo», ni «el grado relativo», ni «el estado declarado»
@@ -390,7 +390,7 @@ p. 85: «$\dot V=-\dot q_k^{L\top}(D_k+K_D)\dot q_k^L+\dot q_k^{L\top}\boldsymbo
 r_k^W$». Realización exacta / no exacta (16): las dos ramas están separadas y la
 inexacta se cierra bien (p. 85), «Cuando el residual persiste, el término
 $\|\widetilde{\boldsymbol r}_k^W\|_2^2/(2\lambda_D)$ impide deducir convergencia
-exacta a partir de esta desigualdad». Saturación posterior (19): §5.4, p. 24,
+exacta a partir de esta desigualdad». Saturación posterior (19): §5.4 de la memoria, p. 24,
 «La saturación o el reparto de *wrench* pueden separar la acción ejecutada de la
 orden nominal y de la salida del filtro», principio correcto que solo se
 instrumenta en anexo (p. 105). Recuperación (20): Teoremas 6.3 y 6.4 y
@@ -550,7 +550,81 @@ documento un régimen degradado.
 | 20 | Qué es simulación idealizada | RESPONDE | p. 59; p. 60; p. 65 |
 | 21 | Qué puede transferirse a hardware | RESPONDE | p. 60; p. 66 |
 
-### 5.2 Verificación (a): ¿son ciertas las omisiones que el documento declara?
+### 5.2 Los ítems de parámetro, uno a uno
+
+**1, 2, 3, 6. Robot real, radio de rueda, *wheelbase*, inercia.** Ficha S-03.
+
+**4. Torque. PARCIAL.** En SP2 el par existe como restricción sin valor: p. 102,
+«El primer estrato integra uniciclos dinámicos con límites de par»; p. 114,
+«Aproximación y reemplazo integran uniciclos con pares saturados». Las únicas
+cifras de par del documento son las del Anexo J: «torque por rueda 0.325989
+N m» (p. 125) y «El torque máximo es 1.206897 N m» (p. 127), ambas en la rama
+de *caging* del juego de integración.
+
+**5. Masa. PARCIAL.** Solo la carga del Anexo J.1 tiene masa: «Cada carga tiene
+40 kg» (p. 125). En SP1, $c_i^{\mathrm{pay}}$ es una carga útil nominal en
+kilogramos (p. 96) pero se usa normalizada por $c^{\mathrm{ref}}=1$ kg, y el
+Anexo G.2 advierte que $e_{ik}$ «expresa servicio normalizado, **no masa**»
+(p. 96). En SP2, $M_k$ es una matriz abstracta.
+
+**7. Fricción.** Ítem 6 del bloque 19; véase §3.2 de este informe.
+
+**10. Saturación. PARCIAL.** Ítem 7 del bloque 19; véase §3.2 de este informe.
+
+**11. Contacto bilateral / unilateral. PARCIAL.** El documento distingue los dos
+regímenes con claridad en la metodología (p. 11: «El trabajo adopta Cargo planar
+soportado como modo primario … La extensión *caging* se limita a su definición
+geométrica y a contactos unilaterales») y en el marco teórico (p. 24: «En
+empuje, $\mathcal U_C$ incorpora unilateralidad y fricción, y la dinámica admite
+pérdida de contacto. … Cargo, en cambio, certifica soporte y realización de
+*wrench*»). Lo que no resuelve es la tensión local entre la caja
+$0\le\lambda\le\bar\lambda$ de la Ec. (15) y la hipótesis «contactos bilaterales
+fijos» del Teorema 6.2, ambas en pp. 47–48 (ítem 5 del bloque 19).
+
+**12. Sensores. NO RESPONDE.** No hay modelo de sensor en ninguna campaña. Lo
+único que se le parece es un alcance geométrico en la escena de CoppeliaSim
+(p. 15): «El radio de sensado es 1.8 m y el de comunicación 3.2 m». No hay
+campo de visión, ni ruido, ni tasa, ni oclusión; la escena registra
+«detecciones» (p. 15) sin decir cómo se producen.
+
+**13. Pose exacta vs. estimada. RESPONDE.** La Tabla 3 (p. 16) asigna a E4
+«pose exacta de carga» como agregado; el Anexo H.1 lo confirma (p. 105): «El
+piloto recibe la pose simulada $q_k^L$ y calcula centralmente el agregado de
+transporte; **no ejecuta el estimador vecinal $\hat q_k^L$**, aun cuando la
+selección de contactos proceda del juego». Y el Anexo H.3 cierra (p. 116): «El
+modelo usa pose exacta, contacto fijo y grafo estático conectado por
+intercambio».
+
+**14. Latencia. PARCIAL.** Existe retardo **de red** y está parametrizado
+(p. 115): «pérdida 0.25 y retardo de hasta dos eventos para el régimen
+degradado, frente a pérdida 0.02 y retardo nulo en los otros tres». No existe
+latencia de lazo: ni retardo de sensor a controlador, ni de controlador a
+actuador, ni periodo de muestreo distinto del paso de integración, que se
+declara por campaña ($\Delta t=0.12$ s en p. 105, $0.15$ s en p. 106, «paso
+digital unitario» en p. 119).
+
+**17. Actuadores. PARCIAL.** En SP2 el actuador es un conjunto de proyección sin
+contenido físico: Ec. (33), p. 104, con «la aceleración $\eta_i$ … se proyecta
+sobre el conjunto de actuación limitada $\mathcal U_i$». Las únicas constantes
+de motor del documento están en el Anexo J.3 (p. 127): «Con $nk_t=0.5$ N m/A y
+resistencia $0.6\,\Omega$, $P_{cu}=0.6\sum_{i,s}(\tau_{is}/0.5)^2$».
+
+**18. *Compliance*. PARCIAL, y bien declarada como ausente.** Anexo J.1,
+p. 125: el resultado «no sustituye ese coste por energía de batería ni extiende
+el resultado a otra homotopía, duración, adquisición o **planta con
+*compliance***». Y p. 125: las cotas «no son una simulación de *tracking* de
+*pads* deformables ni de inductancia de motor». La declaración es local y
+correcta; no hay equivalente en SP2, donde el contacto es rígido por hipótesis.
+
+**19. Rigidez. RESPONDE.** El marco teórico separa conectividad de rigidez
+(p. 23): «La conectividad del grafo certifica propagación de información; la
+rigidez geométrica conserva localmente la forma salvo movimientos rígidos del
+conjunto». El demostrador la impone en lugar de simularla (p. 114): «Después,
+la carga planar fija las poses por desplazamientos rígidos».
+
+**20 y 21.** Ficha S-04.
+
+### 5.3 Verificación (a): ¿son ciertas las omisiones que el documento declara?
 
 El enunciado que hay que contrastar está en §7.5, p. 65
 (`07-conclusions-v2.tex:126`):
@@ -589,15 +663,15 @@ Dos anomalías adicionales, ninguna de ellas declarada:
   esta es la única planta del TFM con parámetros físicos, y la que sostiene
   SP2 —$M_k$, $D_k$, $K_P$, $K_D$— no tiene ninguno.
 
-### 5.3 Verificación (b): ¿se declara donde el lector encuentra el resultado?
+### 5.4 Verificación (b): ¿se declara donde el lector encuentra el resultado?
 
 Las declaraciones existen y son numerosas. Su distribución es la siguiente:
 
 | Página | Texto | ¿Antes o después del resultado? |
 |---|---|---|
-| 3 (§1) | «El soporte tridimensional, la interacción rueda–suelo y la percepción completa requieren otro modelo. Tampoco se ensayaron agarre físico ni empuje por confinamiento geométrico.» | 42–62 pp. antes |
+| 3 (§1 de la memoria) | «El soporte tridimensional, la interacción rueda–suelo y la percepción completa requieren otro modelo. Tampoco se ensayaron agarre físico ni empuje por confinamiento geométrico.» | 42–62 pp. antes |
 | 11 (§4) | «El contacto tridimensional, la percepción real y la validación en hardware permanecen fuera de la campaña.» | 34–54 pp. antes |
-| 12 (§4.2) | «El modelo supone contactos fijos, límites de actuación y dinámica planar reducida.» | 33–53 pp. antes |
+| 12 (§4.2 de la memoria) | «El modelo supone contactos fijos, límites de actuación y dinámica planar reducida.» | 33–53 pp. antes |
 | 15 (§4.5) | «El agarre, la fricción rueda–suelo, la dinámica de contacto y el comportamiento en hardware requieren modelos y ensayos adicionales.» | 30–50 pp. antes |
 | 16 (Tabla 3) | planta por etapa: «carga estática planar», «uniciclo y carga planar en estratos separados», «viaje reducido», «grafo discreto» | 29–49 pp. antes |
 | 44 (§6.2.1) | «El modelo es cuasiestático y anterior al transporte.» | **en el sitio** (E3) |
@@ -631,13 +705,47 @@ Dicho de forma operativa: la omisión está declarada dos veces, una demasiado
 pronto y otra demasiado tarde, y nunca en el punto de uso. La reparación es de
 una línea por sección.
 
-### 5.4 La restricción no holónoma y la generación de fuerza
+### 5.5 La restricción no holónoma y la generación de fuerza
 
 Pregunta del encargo: el certificado de *wrench* supone que cada contacto puede
 aplicar fuerza en su dirección asignada; ¿establece el documento en algún punto
 que un AMR de tracción diferencial pueda orientarse y generar esa fuerza?
 
-**No. En el documento compilado, no.** El desarrollo está en la ficha S-01.
+**No.** Ni la orientación, ni la generación de fuerza, ni el enlace entre ambas.
+La cadena de comprobación es esta:
+
+1. **La dirección asignada no llega a nombrarse.** El QP de la Ec. (11) (p. 45)
+   busca $\boldsymbol\lambda_k$ en un $\Lambda_k$ del que solo se dice que es
+   «cerrado, convexo y no vacío», y aplica un $G_k$ que nunca se construye
+   (§2.2, ítem 3). Sin columnas de $G_k$ no hay «dirección de contacto $i$» en
+   el documento, de modo que la premisa de la pregunta ni siquiera queda
+   escrita.
+2. **El único resultado que liga robot y carga es cinemático.** La Proposición
+   C.1 (p. 82) exige «cada eje longitudinal … paralelo o antiparalelo a
+   $v_i^{\mathrm{piv}}$ [y] la velocidad lateral … nula». Eso ata el rumbo del
+   robot a la **velocidad** de su pivote, no a la fuerza que el reparto le
+   asigna. Las dos direcciones no coinciden en general: en una rotación pura de
+   la carga ($v_L=0$, caso que la propia p. 83 trata aparte) la velocidad del
+   pivote es tangencial mientras el reparto puede exigir componente radial.
+3. **La no-holonomía aparece una vez y dentro de una demostración.** P. 82–83:
+   «la restricción no holónoma y el diferencial de ruedas dan la segunda». No se
+   escribe la restricción, no está en la nomenclatura y no se usa fuera de esa
+   prueba.
+4. **No hay ningún modelo que convierta par de rueda en fuerza de contacto en
+   SP1–SP3.** El único cálculo de ese tipo está en el Anexo J.3, p. 126, y
+   empieza por suponer lo que habría que demostrar: «Para robots
+   **estacionarios orientados hacia sus normales**, radio de rueda 0.1 m,
+   semivía y brazo de *bumper* 0.2 m, $\tau_{iL/R}=0.05(n_i\mp t_i)$». Robots
+   parados, orientación dada por hipótesis, y rama de *caging*: el propio texto
+   aclara en p. 127 que «este experimento no es transporte».
+5. **La Proposición C.3 (p. 83) roza el asunto y se detiene en la magnitud**:
+   demuestra que la suma escalar de capacidades no basta «para realizar
+   $(F_d,\tau_d)$ ni para certificar soporte o fricción», que es un argumento
+   sobre brazos de palanca, no sobre orientabilidad del chasis.
+
+El autor había escrito la respuesta correcta en la v1 y la v2 no la compila:
+véase la ficha S-01, punto (iii). El coste de reponerla es de cuatro líneas
+detrás de la Proposición 6.2 (p. 45).
 
 ---
 
