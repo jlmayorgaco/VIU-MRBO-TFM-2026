@@ -107,6 +107,10 @@ results/campaigns/**/frames/*
 # Organization quarantine / regenerated local artifacts
 archive/
 guidelines/
+# Excepcion: las directrices del TFM, divididas por tema desde
+# pre-thesis/GUIDELINES.md. Son fuente del proyecto, no un artefacto
+# regenerado, y la regla anterior las atrapaba por el nombre del directorio.
+!pre-thesis/guidelines/
 output/
 pytest-cache-files-*/
 docs/thesis-final/
