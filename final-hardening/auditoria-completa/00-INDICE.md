@@ -32,7 +32,7 @@ convenía revisar igualmente.
 | 3 | [`lectura/03-fases-y-deposito.md`](lectura/03-fases-y-deposito.md) | `05-checklist-por-fases.md` (FASE 0–40) + `06-guia-estrategica-viu.md` |
 | 4 | [`lectura/04-matematica.md`](lectura/04-matematica.md) | FASE 8 y 9, teorema a teorema |
 | 5 | [`lectura/05-suplementario.md`](lectura/05-suplementario.md) | FASE 26–27 y sección CO |
-| 6 | `lectura/06-bibliografia.md` | `04-literatura-citas-y-referencias.md`, secciones A–DZ |
+| 6 | [`lectura/06-bibliografia.md`](lectura/06-bibliografia.md) | `04-literatura-citas-y-referencias.md`, secciones A–DZ |
 
 ---
 
