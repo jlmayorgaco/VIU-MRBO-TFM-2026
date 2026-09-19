@@ -96,8 +96,9 @@ actualización simultánea de posiciones aceptadas.
     \State conceder testigo a $i$
       \Comment{prioridad por espera acumulada}
   \Else
-    \State $w_i \gets w_i + 1$; \Return $c_i^+ \gets c_i$
+    \State $w_i \gets w_i + 1$
       \Comment{espera; envejecimiento}
+    \State \Return $c_i^+ \gets c_i$
   \EndIf
 \EndIf
 \If{$c_i^{\mathrm{obj}}$ libre y no hay intercambio de arista con un vecino}
@@ -109,7 +110,7 @@ actualización simultánea de posiciones aceptadas.
   \State liberar testigo
     \Comment{hipótesis de la Prop.~\ref{prop:sp7-no-starvation}}
 \EndIf
-\Return $c_i^+$
+\State \Return $c_i^+$
 \end{algorithmic}
 \end{algorithm}
 
