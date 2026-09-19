@@ -23,7 +23,9 @@ convenía revisar igualmente.
 | 4 | [`mecanica/04-trazabilidad-numerica.md`](mecanica/04-trazabilidad-numerica.md) | cifras escritas a mano frente a macros generadas | **7 pies de figura con la N a mano** teniendo macro |
 | 5 | [`mecanica/05-referencias-cruzadas.md`](mecanica/05-referencias-cruzadas.md) | flotantes y ecuaciones citados en el texto | **19 flotantes nunca citados** — incumple VIU |
 
-## Parte de lectura — una auditoría por directriz
+## Parte de lectura — una auditoría por frente
+
+Cobertura de los 60 frentes en [`01-COBERTURA.md`](01-COBERTURA.md).
 
 | # | Informe | Directriz aplicada |
 |---|---|---|
@@ -33,6 +35,10 @@ convenía revisar igualmente.
 | 4 | [`lectura/04-matematica.md`](lectura/04-matematica.md) | FASE 8 y 9, teorema a teorema |
 | 5 | [`lectura/05-suplementario.md`](lectura/05-suplementario.md) | FASE 26–27 y sección CO |
 | 6 | [`lectura/06-bibliografia.md`](lectura/06-bibliografia.md) | `04-literatura-citas-y-referencias.md`, secciones A–DZ |
+| 7 | [`lectura/07-subsistemas-y-planta.md`](lectura/07-subsistemas-y-planta.md) | frentes 18–20 y 25: SP1, SP2, SP3 y modelo físico |
+| 8 | [`lectura/08-diseno-estadistica-comparadores.md`](lectura/08-diseno-estadistica-comparadores.md) | frentes 28–30, 35, 36: diseño, estadística, comparadores, validez |
+| 9 | [`lectura/09-contribucion-novedad-industria.md`](lectura/09-contribucion-novedad-industria.md) | frentes 10, 11, 14, 15, 38: contribución, novedad, industria, patentes, futuro |
+| 10 | [`lectura/10-tablas-notacion-layout.md`](lectura/10-tablas-notacion-layout.md) | frentes 45, 24, 48, 49: tablas, notación, layout, front matter |
 
 ---
 
