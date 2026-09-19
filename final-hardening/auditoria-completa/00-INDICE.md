@@ -27,7 +27,7 @@ convenía revisar igualmente.
 
 | # | Informe | Directriz aplicada |
 |---|---|---|
-| 1 | `lectura/01-figuras.md` | `03-figuras-y-calidad-grafica.md`, reglas 1–110 |
+| 1 | [`lectura/01-figuras.md`](lectura/01-figuras.md) | `03-figuras-y-calidad-grafica.md`, reglas 1–110 |
 | 2 | [`lectura/02-coherencia-y-flujo.md`](lectura/02-coherencia-y-flujo.md) | `02-coherencia-y-flujo.md`, secciones A–CB |
 | 3 | [`lectura/03-fases-y-deposito.md`](lectura/03-fases-y-deposito.md) | `05-checklist-por-fases.md` (FASE 0–40) + `06-guia-estrategica-viu.md` |
 | 4 | [`lectura/04-matematica.md`](lectura/04-matematica.md) | FASE 8 y 9, teorema a teorema |
