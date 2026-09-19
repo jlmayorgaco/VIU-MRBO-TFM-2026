@@ -8991,15 +8991,3 @@ Existen varias herramientas de código abierto que aplican estas técnicas de fo
 | **unmask-ai** | **Pipeline de 3 pasadas con Claude Sonnet 4**. Se enfoca en inyectar **perplejidad** (elecciones de palabras inesperadas) y **burstiness** (variación drástica de longitud de frases). También elimina activamente 30+ palabras de vocabulario de IA. | [https://github.com/imsv1301/unmask-ai](https://github.com/imsv1301/unmask-ai) |
 | **StealthHumanizer** | **Reescritura multipaso y consciente del estilo**. Utiliza diferentes modelos (BART para textos cortos, Gemma para largos) y ofrece 4 niveles de reescritura y 6 estilos de escritura para preservar la voz del autor. | [https://github.com/rudra496/StealthHumanizer](https://github.com/rudra496/StealthHumanizer) |
 | **texthumanizer** | **Humanizador offline (PyPI)**. Usa un modelo T5 local para reescribir texto preservando citas, abreviaturas y terminología técnica. Ideal para documentos `.docx` con referencias. | [https://pypi.org/project/texthumanizer/](https://pypi.org/project/texthumanizer/) |
-
-### ⚠️ Consideraciones Éticas y de Integridad Académica
-
-Es fundamental que uses estas técnicas de forma **responsable y transparente**.
-
-*   **Declara siempre el uso de IA**: La normativa de la VIU y de la mayoría de las revistas científicas exigen que declares si has utilizado herramientas de IA para **cualquier** parte del proceso, incluyendo la corrección gramatical o la traducción. Ocultarlo es una falta grave.
-*   **El objetivo no es "engañar", sino "mejorar"**: La meta no es hacer pasar un texto 100% generado por IA como humano, sino **utilizar la IA como un asistente** para superar el "bloqueo del folio en blanco", generar ideas o mejorar tu redacción, y luego **reescribir y aportar tu propio valor** de forma sustancial.
-*   **El detector puede dar "falsos positivos"**: La propia Turnitin advierte que su detector puede marcar erróneamente textos escritos por humanos, especialmente si son muy formales o siguen estructuras muy rígidas. Tu mejor defensa es tener **evidencia de tu proceso de escritura** (borradores, notas, historial de versiones).
-
-En resumen, la estrategia más robusta para 2026 es **combinar una reescritura estructural profunda (manual o asistida) con una declaración honesta del uso de IA**. Esto no solo reduce el riesgo de detección, sino que también mejora la calidad y originalidad de tu TFM.
-
-Si necesitas que profundice en alguna de estas técnicas o herramientas, no dudes en preguntar.

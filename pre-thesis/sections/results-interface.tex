@@ -49,7 +49,20 @@ Para una carga $k$, la autorización ejecutable es la conjunción
  \end{aligned}
  \label{eq:pre-results-go-contract}
 \end{equation}
-Un término falso produce abstención, espera o recuperación; no se repara el dato para convertirlo en éxito. La estabilidad local de SP2 se enuncia solo para contactos bilaterales fijos y realización exacta del \emph{wrench}; el banco físico mide precisamente cuándo esa hipótesis deja de sostenerse.
+Un término falso produce abstención, espera o recuperación; no se repara el
+dato para convertirlo en éxito. La estabilidad local de SP2 se enuncia solo
+para contactos bilaterales fijos y realización exacta del \emph{wrench}.
+
+Dos de los seis términos delimitan el alcance de la ecuación más de lo que su
+forma sugiere. $\mathsf{SUPPORT}_k$ y $\mathsf{WHEELS}_k$ se comprueban contra
+criterios agregados de carga útil y de límite de fuerza por robot, no contra un
+modelo de soporte vertical ni de tracción rueda--suelo: ninguno de los dos se
+simula en esta memoria. Y $\mathsf{WRENCH}_k$ certifica que el conjunto de
+contactos admite el esfuerzo demandado suponiendo que cada puesto lo entrega en
+su dirección asignada; que un AMR diferencial pueda orientarse y generar esa
+fuerza es una condición adicional que este trabajo no establece. La conjunción
+es, por tanto, una regla de admisión sobre predicados declarados, no un
+certificado físico de la planta real.
 
 \clearpage
 \paragraph{Unidad experimental y comparación}

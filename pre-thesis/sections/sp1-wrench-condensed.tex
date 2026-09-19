@@ -71,8 +71,18 @@ aproximados \parencite{kuhn1955Hungarian,choiBrunetHow2009CBBA,sandholm2010popul
   \viuownsource
 \end{table}
 
-Las \SPThreeRuns{} ejecuciones, con semillas predeclaradas
-$461000$--$461099$, redujeron los falsos positivos de
-\SPThreeUnguardedFP{} a \SPThreeGuardedFP{} en las geometrías evaluadas. El
-resultado no acredita contacto, estabilidad ni una arquitectura completamente
+Las \SPThreeRuns{} ejecuciones sobre \SPThreeWorlds{} celdas pareadas, con
+100~semillas predeclaradas $461000$--$461099$, redujeron los falsos positivos
+de \SPThreeUnguardedFP{} a \SPThreeGuardedFP{} en las geometrías evaluadas
+(efecto pareado $\SPThreeGuardEffect$). Ese promedio no es una estimación con
+incertidumbre muestral: el desenlace es idéntico en las 100~semillas de cada
+geometría. En \emph{off-center CoM} y \emph{slot saturation} la variante sin
+guardia aceptó una asignación inviable en todas las semillas y la guardada en
+ninguna; en las otras cuatro geometrías ambas coinciden en todas. El $0{,}333$
+es, por tanto, la fracción de geometrías del banco donde la guardia actúa
+---dos de seis---, no una tasa estimada, y publicar un intervalo o un valor $p$
+para este contraste describiría la variación entre geometrías elegidas, no
+variabilidad aleatoria. La consecuencia es de alcance: el resultado es
+determinista dentro del banco y no se extrapola fuera de esas seis geometrías.
+Tampoco acredita contacto, estabilidad ni una arquitectura completamente
 vecinal; SP2 vuelve a certificar el movimiento.

@@ -4,9 +4,78 @@
 Los estimandos y resultados principales de la memoria se enlazan con tablas o
 macros generadas; parámetros de protocolo y ejemplos analíticos permanecen
 declarados en las fuentes. La instantánea documental conserva la procedencia de
-cada artefacto y el banco Cargo nuevo registra configuración, semilla, entorno y
-hashes por ejecución. Una campaña solo podrá elevar una afirmación cuando sus
-datos procesados, pruebas y enlace con la matriz de evidencia estén disponibles.
+cada artefacto y el banco Cargo registra configuración, semilla, entorno y
+hashes por ejecución. Una campaña solo puede elevar una afirmación cuando sus
+datos procesados, pruebas y enlace con la matriz de evidencia están
+disponibles. La Tabla~\ref{tab:deposit-identification} identifica la entrega y
+la Tabla~\ref{tab:reproducibility-status} declara, campaña por campaña, si es
+regenerable o solo reanalizable.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Identificación de la entrega y disponibilidad de los artefactos.}
+  \label{tab:deposit-identification}
+  \viutablefont
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\textwidth}{@{}p{3.1cm}X@{}}
+    \toprule
+    Campo & Estado verificable \\
+    \midrule
+    Repositorio & \url{https://github.com/jlmayorgaco/VIU-MRBO-TFM-2026} \\
+    Estado del depósito & Repositorio público. Etiqueta de versión y DOI todavía no asignados. \\
+    Rama de trabajo & \texttt{sp1-final-refactor} \\
+    Paquete del juego de integración & \texttt{pre-thesis/resources/}\allowbreak\texttt{MROB\_MegaGame\_E2E\_bundle/} (escena, simulador, CSV, resumen JSON y animación) \\
+    \emph{Commit} de esta compilación & \texttt{a3f41617b} \\
+    Entorno de referencia & Windows~11 (10.0.26200); Python~3.13.14; NumPy~2.3.5; pandas~2.3.3; SciPy~1.16.3 \\
+    Cadena de compilación & LuaLaTeX (MiKTeX) $\to$ Biber $\to$ LuaLaTeX $\times 2$, orquestada por \texttt{pre-thesis/build-v2.ps1} \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Estado de reproducción de las campañas empleadas en la memoria.}
+  \label{tab:reproducibility-status}
+  \viutablefont
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\textwidth}{@{}p{2.3cm}p{2.4cm}X@{}}
+    \toprule
+    Bloque & Estado & Evidencia conservada \\
+    \midrule
+    E0--E1 & Regenerable & Configuraciones, semillas, observaciones, tablas, manifiestos y pruebas. \\
+    E2--E4 & Reanálisis & Observaciones, postproceso, tablas y auditorías; faltan generadores históricos completos. \\
+    E5--E8 & Regenerable & Configuraciones, semillas, datos por mundo, manifiestos, hashes y pruebas. \\
+    Cargo & Regenerable & 360 mundos, 2160 ejecuciones, configuración congelada, fallos, hashes y pruebas. \\
+    Industrial~2 & Piloto regenerable & Dos semillas por escenario, trazas, escena y auditoría geométrica. Sin validación dinámica independiente. \\
+    Juego de integración & Regenerable bajo manifiesto & Manifiesto congelado antes de ejecutar, 570 corridas, semilla de análisis separada. El demostrador extremo a extremo sigue siendo de una corrida. \\
+    CoppeliaSim & Reejecución & Escena, guion de campaña, poses medidas y vídeo. El criterio de admisión exige el desenlace esperado: no es una comprobación independiente. \\
+    \bottomrule
+  \end{tabularx}
+  \viuownsource
+\end{table}
+
+En E2--E4, «reanálisis» significa que las cifras, contrastes y figuras se
+recalculan desde observaciones archivadas mediante el postproceso disponible.
+Las pruebas formales y sus comprobaciones unitarias sí pueden repetirse, pero
+no se puede reconstruir íntegramente la campaña ni generar mundos nuevos
+equivalentes sin los generadores históricos ausentes. Esta categoría no se
+contabiliza como regeneración completa.
+
+Cargo puede regenerar sus mundos y ejecuciones, pero reproduce el contrato
+híbrido implementado: el \emph{gossip} transporta identificadores y el líder
+resuelve atributos en un registro global. Los bytes archivados no incluyen esos
+atributos ni las consultas al registro. La regeneración acredita trazabilidad
+del demostrador, no una implementación completamente distribuida.
+
+Queda una comprobación que este trabajo no ha ejecutado: la reproducción en
+una máquina limpia, desde el clonado hasta el PDF, sin el entorno ya montado
+del autor. Mientras no se haga, lo que está acreditado es la trazabilidad de
+los artefactos, no la reproducibilidad operativa. La versión de depósito debe
+además crear una etiqueta inmutable y registrar su SHA tras incorporar las
+correcciones finales; hasta entonces, la URL pública no equivale a un archivo
+permanente. Jorge Luis Mayorga Taborda es responsable de la formulación,
+implementación, ejecución, análisis y redacción.
 
 \section{Demostraciones seleccionadas de SP1}
 \label{app:sp1-all-proofs}

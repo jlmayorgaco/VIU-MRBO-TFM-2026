@@ -77,10 +77,10 @@ Para solicitantes persistentes de una zona, si cada propietario libera el testig
     Método & Coste declarado & Resultado aplicable y límite \\
     \midrule
     CBS/ECBS/LA-MAPF \parencite{sharon2015cbs,barer2014ecbs,li2019largeAgentMapf} & exponencial en conflictos & garantías MAPF bajo sus modelos; no incluidas en el comparativo numérico \\
-    ORCA \parencite{vandenberg2011orca} & LP local & evitación continua bajo su modelo; no planifica ni excluye interbloqueo \\
+    ORCA \parencite{vandenberg2011orca} & LP local & evitación continua bajo su modelo; no planifica ni excluye interbloqueo. No incluida en el comparativo numérico: no se implementó \\
     Juego + reserva local & $O(|\mathcal R_i^7|(|\mathcal E_i^7|+n_i))$ & potencial exacto y terminación; la entrega es empírica \\
     Dos ablaciones & igual juego sin $\lambda_7$ o sin testigo & aíslan selección anticipativa y reserva de zona \\
-    Priorizado / oráculo restringido & $O(AH_7)$ o $O(2^AA!AH_7)$ & referencia y techo interno; no equivalen a CBS/ECBS \\
+    Orden fijo / oráculo restringido & $O(AH_7)$ o $O(2^AA!AH_7)$ & referencia interna y techo. El primero asigna la ruta base a todas las coaliciones con un orden de servicio fijo; es una referencia de orden, no planificación priorizada en el sentido de la literatura \\
     \bottomrule
   \end{tabularx}
   \viusource{elaboración propia a partir de las referencias citadas; detalle completo en el Anexo~\ref{app:sp3-full-detail}}
@@ -96,9 +96,11 @@ Para solicitantes persistentes de una zona, si cada propietario libera el testig
 \end{table}
 
 El juego con reserva entregó todas las cargas; al retirarla, la tasa cayó
-$\SPSevenHOneEffectPP$ puntos porcentuales por interbloqueos entre huellas
-opuestas. El Anexo~\ref{app:sp3-full-detail} amplía las cifras, las
-ablaciones y la comparación completa con CBS, ECBS y ORCA.
+$\SPSevenHOneEffectPP$ puntos porcentuales (efecto pareado
+$\SPSevenHOneEffect$, IC~95\,\% $\SPSevenHOneCI$, $n=\SPSevenWorlds$ mundos
+pareados) por interbloqueos entre huellas opuestas. El Anexo~\ref{app:sp3-full-detail} amplía las cifras, las
+ablaciones. CBS, ECBS y ORCA se sitúan por familia y coste declarado; ninguna
+se ejecutó sobre este banco, de modo que no hay cifras suyas que comparar.
 
 \input{sections/sp3-execution-envelope}
 

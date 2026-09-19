@@ -14,6 +14,16 @@ métodos, cuatro robots, una sola semilla (886001). La reproducción comprueba
 geometría y reejecución de la trayectoria comandada, no física independiente
 ni hardware: el error máximo de reejecución fue $6.89\times10^{-9}$~m.
 
+Una limitación del protocolo condiciona cómo debe leerse esta tabla. El guion
+de campaña admite la corrida solo si supera seis comprobaciones, y dos de
+ellas exigen precisamente el desenlace esperado: que el método directo colisione
+y que el método propuesto termine sin colisión. Una corrida con el desenlace
+contrario se habría registrado como \emph{gate} no superado. Con una única
+semilla, por tanto, la tabla no contrasta una hipótesis: documenta que el
+escenario se montó y se reprodujo como estaba previsto. Sirve como comprobación
+geométrica en un motor distinto, no como evidencia independiente del resultado
+de E4.
+
 \begin{table}[!htbp]
   \centering
   \caption[Reproducción en CoppeliaSim del mundo pareado de paso estrecho.]{Reproducción

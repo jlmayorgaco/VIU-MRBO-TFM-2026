@@ -1,0 +1,39 @@
+% Adenda v2 a Metodología: declara el alcance inferencial real de las campañas
+% del Capítulo 6 tras auditar la unidad experimental sobre los datos crudos.
+% No edita sections/source-snapshot/mainmatter/04-methodology.tex.
+\subsection{Alcance inferencial de las campañas}
+\label{subsec:method-inference-scope}
+
+La regla de la Sección~\ref{sec:method_statistics_coppelia} ---robots e
+instantes anidados en el mundo, nunca réplicas--- se cumple en todas las
+campañas. Una auditoría posterior sobre los ficheros crudos mostró que el
+problema estaba un nivel más arriba, y esta subsección lo declara porque
+condiciona cómo debe leerse cada intervalo del Capítulo~6.
+
+Lo que las campañas E2, E3, E4, E6-C y E7-C llaman «mundo» es una celda
+escenario\,$\times$\,factor\,$\times$\,semilla, y la misma semilla se reutiliza
+en todas las celdas de su campaña. El $n$ impreso cuenta celdas, no semillas
+independientes: 1\,560 celdas sobre 40 semillas en E2, 600 sobre 100 en E3, 108
+sobre 6 en E4, 480 sobre 40 en E6-C y 360 sobre 40 en E7-C. El demostrador
+Cargo y el banco factorial del juego de integración sí agrupan por semilla;
+Cargo remuestrea medias de conglomerado y registra a la vez el número de pares
+y el de instancias independientes.
+
+Se recalcularon los contrastes de E2, E3 y E4 tomando la semilla como unidad de
+remuestreo: la diferencia pareada se promedia dentro de cada semilla y el
+\emph{bootstrap} remuestrea semillas. Ningún contraste cambia de signo ni de
+orden de magnitud, y los efectos coinciden hasta la cuarta cifra. Lo que cambia
+es qué mide el intervalo. En E2 los anchos apenas se mueven; en E3 y E4 se
+estrechan, y dos contrastes resultan deterministas por semilla ---la guardia de
+\emph{wrench} de E3 y la evitación de colisión de E4---, es decir, el desenlace
+es idéntico en todas las semillas. En esos dos casos el intervalo publicado
+sobre celdas no describía variabilidad muestral: describía la dispersión entre
+escenarios, que están fijados por diseño y no muestreados de una población.
+
+La consecuencia es de alcance, no de signo. Los efectos del Capítulo~6 son los
+que se informan, pero sus valores $p$ no se interpretan como evidencia
+inferencial y sus intervalos no se leen como error de generalización a mundos
+nuevos: describen la variación dentro del banco de escenarios construido. La
+excepción es Cargo, cuya inferencia sí se agrupa por instancia independiente y
+cuyos contrastes admiten la lectura habitual. Esta limitación se declara aquí y
+se repite, por campaña, donde cada cifra aparece.

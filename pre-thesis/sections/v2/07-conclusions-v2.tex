@@ -25,7 +25,9 @@ asigna contactos y separa cobertura nominal de factibilidad mecánica planar.
 SP2 introduce la ejecución física. En \SPThreeWorlds{} instancias, la guardia
 situada en la interfaz SP1--SP2 cambió la tasa de falsos positivos en
 \SPThreeGuardEffect{}, con cobertura \SPThreeGuardedCoverage{} y abstención
-\SPThreeGuardedAbstention{}; el QP sigue siendo central y planar. El
+\SPThreeGuardedAbstention{}; ese promedio es determinista ---la guardia actúa
+en dos de las seis geometrías y en todas sus semillas---, de modo que mide
+cobertura del banco y no una tasa estimada. El QP sigue siendo central y planar. El
 servocontrol es localmente estable con contactos fijos y realización exacta,
 el filtro de seguridad elimina las colisiones observadas en su campaña y la
 reparación restaura una fracción \SPSixConditionalRestore{} de los certificados
@@ -110,7 +112,7 @@ La Tabla~\ref{tab:conclusion-hypotheses} restringe cada estado al dominio ensaya
     H1a & Sustentada & Nash de cuota exacta bajo recursos y penalización suficientes. & No se transfiere a cobertura, Smith muestreado ni escasez. \\
     H1b & No adjudicada & El contraste QR--Smith se conserva fuera del cuerpo activo. & No se usa para sostener una conclusión VIU. \\
     H1c & No adjudicada & El contraste cuórum--lineal se conserva fuera del cuerpo activo. & No se usa para sostener una conclusión VIU. \\
-    H2 & Apoyo parcial & Falsos positivos \SPThreeGuardEffect{}, cobertura \SPThreeGuardedCoverage{} y abstención \SPThreeGuardedAbstention{}. & QP planar; ablación Cargo combinada. \\
+    H2 & Apoyo parcial & Falsos positivos \SPThreeGuardEffect{}, cobertura \SPThreeGuardedCoverage{} y abstención \SPThreeGuardedAbstention{}. & QP planar; ablación Cargo combinada. El efecto es determinista: dos de seis geometrías, idéntico en las 100 semillas. \\
     H3 & No sustentada & El IC del 95\,\% del contraste temporal incluye cero y el contraste corregido por Holm da $p_{\mathrm{Holm}}=0{,}068$. & Composición operativa sin ventaja temporal. \\
     H4 & Apoyo parcial & Restauración estática \SPSixConditionalRestore{} y éxito Cargo \CargoEtwoEFailureSuccess{} con fallo. & Un agotamiento; sin nuevo contacto físico. \\
     H5a & Apoyo teórico & Revisión local $O(|\mathcal R_i^7|(|\mathcal E_i^7|+n_i))$ frente al oráculo restringido exponencial. & Sin curvas activas por tamaño o grado; no caracteriza todo centralizador. \\

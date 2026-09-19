@@ -1,0 +1,288 @@
+[
+  {
+    "campaign": "E3",
+    "id": "H-SP3-1-guard-reduces-fp",
+    "metric": "fp_given_assigned",
+    "method_a": "nash_pd_exact_guarded",
+    "method_b": "nash_pd_exact_unguarded",
+    "n_cells": 600,
+    "n_seeds": 100,
+    "effect_cells": -0.3333333333333333,
+    "ci_cells": [
+      -0.37166666666666665,
+      -0.295
+    ],
+    "effect_clustered": -0.3333333333333334,
+    "ci_clustered": [
+      -0.3333333333333334,
+      -0.3333333333333334
+    ],
+    "width_ratio": 0.0,
+    "deterministic_per_seed": true,
+    "sign_flips": false
+  },
+  {
+    "campaign": "E3",
+    "id": "H-SP3-2-vector-beats-scalar-gap",
+    "metric": "optimality_gap_vs_wrench_oracle",
+    "method_a": "nash_pd_exact_guarded",
+    "method_b": "oracle_scalar_assignment",
+    "n_cells": 600,
+    "n_seeds": 100,
+    "effect_cells": -0.09333258773170221,
+    "ci_cells": [
+      -0.10194384423459633,
+      -0.08487813597624988
+    ],
+    "effect_clustered": -0.09333258773170221,
+    "ci_clustered": [
+      -0.09358719119000816,
+      -0.09307234766111354
+    ],
+    "width_ratio": 0.03016830717487656,
+    "deterministic_per_seed": false,
+    "sign_flips": false
+  },
+  {
+    "campaign": "E3",
+    "id": "H-SP3-3-pair-beats-cbba-gap",
+    "metric": "optimality_gap_vs_wrench_oracle",
+    "method_a": "smith_wrench_pairs_guarded",
+    "method_b": "cbba_slots",
+    "n_cells": 600,
+    "n_seeds": 100,
+    "effect_cells": -0.09333858484855934,
+    "ci_cells": [
+      -0.10177047037643237,
+      -0.08505992635595215
+    ],
+    "effect_clustered": -0.09333858484855934,
+    "ci_clustered": [
+      -0.0935433177316838,
+      -0.09312399964613495
+    ],
+    "width_ratio": 0.0250930242028588,
+    "deterministic_per_seed": false,
+    "sign_flips": false
+  },
+  {
+    "campaign": "E3",
+    "id": "H-SP3-4-exact-beats-ring-kkt",
+    "metric": "kkt_residual",
+    "method_a": "nash_pd_exact_guarded",
+    "method_b": "nash_pd_ring_guarded",
+    "n_cells": 600,
+    "n_seeds": 100,
+    "effect_cells": -0.01808507297012039,
+    "ci_cells": [
+      -0.020099647181390415,
+      -0.016129033229986402
+    ],
+    "effect_clustered": -0.018085072970120398,
+    "ci_clustered": [
+      -0.0190717556741253,
+      -0.017110484962399662
+    ],
+    "width_ratio": 0.4939464616126005,
+    "deterministic_per_seed": false,
+    "sign_flips": false
+  },
+  {
+    "campaign": "E4",
+    "id": "H4_1_replicator_safe_success_above_cbf",
+    "metric": "safe_docking_success",
+    "method_a": "replicator_primitives",
+    "method_b": "cbf_qp",
+    "n_cells": 108,
+    "n_seeds": 6,
+    "effect_cells": 0.09259259259259259,
+    "ci_cells": [
+      0.037037037037037035,
+      0.1574074074074074
+    ],
+    "effect_clustered": 0.0925925925925926,
+    "ci_clustered": [
+      0.0462962962962963,
+      0.12962962962962965
+    ],
+    "width_ratio": 0.6923076923076923,
+    "deterministic_per_seed": false,
+    "sign_flips": false
+  },
+  {
+    "campaign": "E4",
+    "id": "H4_2_replicator_collision_below_direct",
+    "metric": "any_collision",
+    "method_a": "replicator_primitives",
+    "method_b": "direct_to_slot",
+    "n_cells": 108,
+    "n_seeds": 6,
+    "effect_cells": -0.8333333333333334,
+    "ci_cells": [
+      -0.8981481481481481,
+      -0.7592592592592593
+    ],
+    "effect_clustered": -0.8333333333333334,
+    "ci_clustered": [
+      -0.8333333333333334,
+      -0.8333333333333334
+    ],
+    "width_ratio": 0.0,
+    "deterministic_per_seed": true,
+    "sign_flips": false
+  },
+  {
+    "campaign": "E4",
+    "id": "H4_3_exact_kkt_below_ring",
+    "metric": "final_kkt_residual",
+    "method_a": "nash_pd_exact",
+    "method_b": "nash_pd_ring",
+    "n_cells": 108,
+    "n_seeds": 6,
+    "effect_cells": -0.33514654973933844,
+    "ci_cells": [
+      -0.3952304559272645,
+      -0.2725143825111968
+    ],
+    "effect_clustered": -0.3351465497393385,
+    "ci_clustered": [
+      -0.3520243272706531,
+      -0.32100170759163626
+    ],
+    "width_ratio": 0.25279997000747334,
+    "deterministic_per_seed": false,
+    "sign_flips": false
+  },
+  {
+    "campaign": "E4",
+    "id": "H4_4_replicator_safe_success_above_nash_pd",
+    "metric": "safe_docking_success",
+    "method_a": "replicator_primitives",
+    "method_b": "nash_pd_exact",
+    "n_cells": 108,
+    "n_seeds": 6,
+    "effect_cells": 0.24074074074074073,
+    "ci_cells": [
+      0.1574074074074074,
+      0.32407407407407407
+    ],
+    "effect_clustered": 0.24074074074074078,
+    "ci_clustered": [
+      0.22222222222222224,
+      0.2592592592592593
+    ],
+    "width_ratio": 0.22222222222222238,
+    "deterministic_per_seed": false,
+    "sign_flips": false
+  },
+  {
+    "campaign": "E4",
+    "id": "H4_5_replicator_position_error_below_central",
+    "metric": "final_position_error_m",
+    "method_a": "replicator_primitives",
+    "method_b": "central_potential_reference",
+    "n_cells": 108,
+    "n_seeds": 6,
+    "effect_cells": -1.0435548925741782,
+    "ci_cells": [
+      -1.186893057433543,
+      -0.903314596541229
+    ],
+    "effect_clustered": -1.0435548925741782,
+    "ci_clustered": [
+      -1.0888575203276847,
+      -0.9889086964751298
+    ],
+    "width_ratio": 0.35245562564256044,
+    "deterministic_per_seed": false,
+    "sign_flips": false
+  },
+  {
+    "campaign": "E2",
+    "id": "H02_primal_dual_vs_greedy",
+    "metric": "capacity_success_rate",
+    "method_a": "primal_dual_capacity",
+    "method_b": "greedy_capacity_nearest",
+    "n_cells": 1560,
+    "n_seeds": 40,
+    "effect_cells": -0.11901709401709402,
+    "ci_cells": [
+      -0.12738274572649572,
+      -0.11061939102564103
+    ],
+    "effect_clustered": -0.11901709401709401,
+    "ci_clustered": [
+      -0.12710470085470085,
+      -0.11126014957264956
+    ],
+    "width_ratio": 0.9451897645071875,
+    "deterministic_per_seed": false,
+    "sign_flips": false
+  },
+  {
+    "campaign": "E2",
+    "id": "H03_neural_vs_linear_imitation",
+    "metric": "optimality_gap_vs_oracle",
+    "method_a": "neural_capacity_scorer",
+    "method_b": "imitation_capacity",
+    "n_cells": 1560,
+    "n_seeds": 40,
+    "effect_cells": -0.0097400233699084,
+    "ci_cells": [
+      -0.011772850372671704,
+      -0.0076737134354507575
+    ],
+    "effect_clustered": -0.0097400233699084,
+    "ci_clustered": [
+      -0.011724926581650886,
+      -0.007891187816142342
+    ],
+    "width_ratio": 0.9352551096055033,
+    "deterministic_per_seed": false,
+    "sign_flips": false
+  },
+  {
+    "campaign": "E2",
+    "id": "H04_local_pd_vs_oracle_messages",
+    "metric": "communication_messages",
+    "method_a": "local_primal_dual_capacity",
+    "method_b": "centralized_capacity_milp",
+    "n_cells": 1560,
+    "n_seeds": 40,
+    "effect_cells": -2.8384615384615386,
+    "ci_cells": [
+      -3.225,
+      -2.455769230769231
+    ],
+    "effect_clustered": -2.8384615384615386,
+    "ci_clustered": [
+      -2.9525641025641027,
+      -2.7320512820512817
+    ],
+    "width_ratio": 0.2866666666666674,
+    "deterministic_per_seed": false,
+    "sign_flips": false
+  },
+  {
+    "campaign": "E2",
+    "id": "H05_smith_vs_neural_runtime",
+    "metric": "runtime_ms",
+    "method_a": "smith_capacity",
+    "method_b": "neural_capacity_scorer",
+    "n_cells": 1560,
+    "n_seeds": 40,
+    "effect_cells": -0.6626679494869537,
+    "ci_cells": [
+      -0.6848363958702882,
+      -0.6438108564291793
+    ],
+    "effect_clustered": -0.6626679494869536,
+    "ci_clustered": [
+      -0.6870559738103438,
+      -0.6422257653955454
+    ],
+    "width_ratio": 1.092739035866938,
+    "deterministic_per_seed": false,
+    "sign_flips": false
+  }
+]

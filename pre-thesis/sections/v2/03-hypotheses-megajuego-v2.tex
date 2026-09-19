@@ -10,11 +10,27 @@ simulación distinto del que la calculó. H6 no predice ni se contrasta contra
 un óptimo global del sistema híbrido completo.
 
 \medskip
-\noindent\emph{Estimando y regla de decisión.} Para cada bloque verificado
-(potencial exacto y óptimo central, separación Bézier, \emph{caging} KKT,
-presupuesto de ejecución), el estimando es el residual o la brecha frente al
-certificado algebraico del Anexo~\ref{app:megajuego-full-detail}; para la
-reproducción en CoppeliaSim, el estimando es si el método que evita colisión
-en el modelo cinemático también la evita en el motor 3D. Un residual que no
-cierra, o una reproducción que invierte el resultado cualitativo, deja a H6
-sin apoyo en ese bloque.
+\noindent\emph{Dos cláusulas con evidencias distintas.} H6 enuncia dos cosas
+que no comparten tipo de prueba, y se adjudican por separado. \textbf{H6a}, la
+mejora estricta por bloque, es una afirmación algebraica sobre los cuatro
+resultados del juego de integración. \textbf{H6b}, la supervivencia bajo
+reproducción en otro motor, es una afirmación empírica. La distinción importa
+porque el diseño de la reproducción disponible no alcanza a contrastar H6b tal
+como está enunciada: se reproduce un mundo del bloque de acoplamiento, con una
+semilla, en régimen cinemático, y el guion de admisión exige el desenlace
+esperado (Sección~\ref{subsec:coppelia}). H6b se declara, por tanto, no
+contrastada, y así se cierra en el Capítulo~7. Enunciarla más débil aquí, a
+posteriori, ocultaría que la hipótesis se formuló por encima de lo que su
+propia campaña podía decidir; se conserva como estaba y se registra la brecha.
+
+\medskip
+\noindent\emph{Estimando y regla de decisión.} Para H6a, en cada bloque
+verificado (potencial exacto y óptimo central, separación Bézier,
+\emph{caging} KKT, presupuesto de ejecución), el estimando es el residual o la
+brecha frente al certificado algebraico del
+Anexo~\ref{app:megajuego-full-detail}, y un residual que no cierra deja a H6a
+sin apoyo en ese bloque. Para H6b, el estimando sería si el método que evita
+colisión en el modelo cinemático también la evita en el motor 3D bajo semillas
+no condicionadas por el resultado; decidirla exige una campaña con réplicas y
+criterio de admisión independiente del desenlace, que no forma parte de este
+trabajo.

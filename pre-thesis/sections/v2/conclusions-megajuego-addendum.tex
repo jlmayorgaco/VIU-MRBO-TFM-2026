@@ -6,28 +6,31 @@
 
 \textbf{RQ6.} Sí se certifica por bloque, dentro de los dominios que cada
 resultado declara y sin que la cadena completa herede una garantía conjunta.
-La segunda mitad de la pregunta admite una respuesta más débil de lo que su
-enunciado sugiere: la conclusión cualitativa de separación del mundo pareado
-se reproduce en CoppeliaSim mediante reejecución cinemática, pero esa
-comprobación no revalida en ese motor las hipótesis dinámicas, de contacto ni
-de tracción rueda--suelo del certificado de SP2. Reproducir un resultado
-geométrico no es revalidar el certificado que lo respalda.
+La segunda mitad de la pregunta queda sin responder. La reejecución en
+CoppeliaSim se admitió bajo un criterio que exigía el desenlace esperado
+(Sección~\ref{subsec:coppelia}), de modo que con una sola semilla no puede
+tratarse como una comprobación independiente: documenta que el escenario se
+reprodujo, no que el certificado sobreviva al cambio de motor. Responder a esa
+mitad exige una campaña con semillas no condicionadas por el resultado.
 
 OE6 se cumple de forma delimitada. El juego de integración conecta SP1--SP3 con
-cuatro resultados demostrados algebraicamente y verificados numéricamente
-(Sección~\ref{subsec:megajuego}, Tabla~\ref{tab:megajuego-e2e-summary}), y la
-reproducción en CoppeliaSim del juego de acoplamiento de E4
-(Sección~\ref{subsec:coppelia}, Tabla~\ref{tab:coppelia-compact-narrow})
-conserva el resultado cualitativo en un
-motor distinto del que lo generó: el método directo colisiona en el mundo
-pareado de paso estrecho y el juego distribuido no. Lo que OE6 no entrega es un
-certificado de optimalidad global del sistema híbrido bajo revisiones discretas
-arbitrarias; la Proposición~\ref{prop:pre-cross-partition-limit} da la razón
-formal de esa ausencia.
+cuatro resultados de tipos de evidencia distintos
+(Sección~\ref{subsec:megajuego}): dos demostrados algebraicamente, uno con
+verificación numérica sobre 30 instancias y otro con KKT racionales. La
+reejecución en CoppeliaSim (Sección~\ref{subsec:coppelia}) no se suma a esa
+evidencia, por el condicionamiento de su criterio de admisión.
+
+Lo que OE6 no entrega es un certificado de optimalidad global del sistema
+híbrido bajo revisiones discretas arbitrarias. La
+Proposición~\ref{prop:pre-cross-partition-limit} exhibe una obstrucción
+informacional concreta bajo partición, pero no es la única causa: la regla de
+admisión por mejora local y la no convexidad de las ramas producen
+suboptimalidad aunque la información fuera perfecta.
 
 \begin{table}[H]
   \centering
-  \caption{Estado final de H6, en continuación de la Tabla~\ref{tab:conclusion-hypotheses}.}
+  \caption[Estado final de las dos cláusulas de H6.]{Estado final de las dos
+  cláusulas de H6, en continuación de la Tabla~\ref{tab:conclusion-hypotheses}.}
   \label{tab:conclusion-hypothesis-h6}
   \scriptsize
   \setlength{\tabcolsep}{3pt}
@@ -35,7 +38,8 @@ formal de esa ausencia.
     \toprule
     ID & Estado & Evidencia principal & Límite \\
     \midrule
-    H6 & Apoyo delimitado & Cuatro resultados con evidencia de tipo distinto: potencial por factores y equivalencia variacional, por demostración algebraica; separación de Bézier, por demostración exacta más extragradiente sobre 30 instancias; \emph{caging}, por KKT racionales con residual $1{,}4\times10^{-11}$; presupuesto de ejecución, por desigualdad condicional. La reproducción en CoppeliaSim conserva el resultado cualitativo de separación (Tabla~\ref{tab:coppelia-compact-narrow}). & Dominios concretos por resultado; solo dos de los cuatro tienen verificación numérica. La reproducción es cinemática y de una corrida. \\
+    H6a & Apoyo delimitado & Cuatro resultados con evidencia de tipo distinto: potencial por factores y equivalencia variacional, por demostración algebraica; separación de Bézier, por demostración exacta más extragradiente sobre 30 instancias; \emph{caging}, por KKT racionales con residual $1{,}4\times10^{-11}$; presupuesto de ejecución, por desigualdad condicional. & Dominios concretos por resultado; solo dos de los cuatro tienen verificación numérica. \\
+    H6b & No contrastada & --- & La reejecución en CoppeliaSim usa una semilla y se admitió bajo un criterio que exigía el desenlace esperado, de modo que no decide si el certificado se conserva en otro motor. Decidirla exige réplicas y un criterio de admisión independiente del desenlace. \\
     \bottomrule
   \end{tabularx}
   \viuownsource
@@ -95,9 +99,17 @@ tiene coste físico sobre quien está cerca de la carga.
 \label{subsec:conclusions-do-not-use}
 
 Los límites anteriores se declaran por resultado. Reunidos, delimitan el uso del
-conjunto. La arquitectura no debe aplicarse con congestión alta: en el piloto
-Industrial~2, tres de los cuatro escenarios entregaron cero con los cuatro
-métodos, incluidas las referencias, y ese régimen no está caracterizado. Tampoco
+conjunto. Los escenarios congestionados quedan fuera del dominio validado: en el
+piloto Industrial~2, tres de los cuatro escenarios entregaron cero con los
+cuatro métodos, incluidas las referencias. Ese cero conjunto no identifica la
+causa ---el escenario podría ser inviable, el horizonte insuficiente, el
+bloqueo estructural, o el ejecutor integrado inadecuado--- y el diseño actual,
+con dos semillas y sin oráculo de factibilidad, no permite distinguirlas. La
+afirmación admisible es, por tanto, que el régimen no está caracterizado y
+queda fuera del alcance ensayado, no que la arquitectura falle en él.
+Separarlas exige instrumentar el piloto con un oráculo de factibilidad por
+escenario, el grafo de espera, la ocupación y la fracción de tiempo con la
+barrera activa. Tampoco
 con cargas no planares, contactos móviles durante el transporte o más de una
 carga simultánea sujeta a un oráculo espacio--temporal, porque ninguno de los
 tres casos entra en el dominio de los certificados de SP2 y SP3. Fuera del

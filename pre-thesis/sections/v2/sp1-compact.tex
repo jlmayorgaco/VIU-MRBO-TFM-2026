@@ -135,7 +135,7 @@ existen $i,j,k$ con $e_{ik}\neq e_{jk}$.
     CBBA-capacidad \parencite{choiBrunetHow2009CBBA} & $O(NK)$ + consenso & garantía CBBA original inaplicable \\
     Replicator/BNN/Smith \parencite{sandholm2010population} & $O(NK)$ & ordenación finita; garantías de la EDO fuera de esta implementación \\
     Primal--dual & $O(NK)$ & cierre entero heurístico; sin certificado de la solución entera \\
-    Imitación / red neuronal & $O(NKd)$ o $O(NKP)$ & evaluación empírica; sin certificado combinatorio \\
+    Imitación / red neuronal & $O(NKd)$ o $O(NKP)$ & entrenadas por imitación supervisada del oráculo MILP; evaluación empírica, sin certificado combinatorio \\
     Asignador secuencial + puntuación marginal (TFM) & $O(NK)$ & mejora la regla secuencial propia; no se combinó con los métodos anteriores \\
     \bottomrule
   \end{tabularx}
@@ -153,8 +153,16 @@ existen $i,j,k$ con $e_{ik}\neq e_{jk}$.
 La corrección marginal mejora la regla secuencial propia
 ($\SPTwoPlainSuccess\to\SPTwoMarginalSuccess$ de completitud), pero en
 términos absolutos sigue por debajo de la red neuronal no certificada
-($\SPTwoNeuralSuccess$) y del oráculo MILP ($\SPTwoScoreSuccess$). No se
-evaluó combinada con los métodos aproximados de la Tabla~\ref{tab:sp1-compact-e2-methods}.
+($\SPTwoNeuralSuccess$) y del oráculo MILP ($\SPTwoScoreSuccess$). Esa
+comparación con la red neuronal no es arquitectónicamente simétrica: la red se
+entrena por imitación supervisada de las etiquetas del propio oráculo, de modo
+que su cercanía al techo es en parte consecuencia de esa supervisión y no una
+propiedad del método distribuido. No hay fuga de datos ---entrenamiento en las
+semillas $1200$--$1223$, validación en $2200$--$2209$ y evaluación en
+$3100$--$3139$, conjuntos disjuntos---, pero la asimetría de información se
+mantiene: la regla distribuida nunca ve una etiqueta del oráculo. No se evaluó
+combinada con los métodos aproximados de la
+Tabla~\ref{tab:sp1-compact-e2-methods}.
 El umbral $S_k\geq d_k^{\mathrm{srv}}$ puede cumplirse sin que los robots
 tengan puntos de contacto capaces de equilibrar el torque. Ese contraejemplo
 motiva el certificado de E3. El Anexo~\ref{app:sp1-full-detail} desarrolla las

@@ -8,13 +8,18 @@
 %   - TFM_estado_industrial_patentes_EDITABLE_v47.tex  (corpus industrial
 %     y patentario, paquete BULLETPROOF v47)
 %
-% REGLA DE TRANSCRIPCIÓN. Los metadatos se copian literalmente de la lista
-% de referencias de esos consolidados. Cuando la fuente abrevia la autoría
-% como «et al.», aquí se escribe `and others` y NO se completan los nombres
-% que la fuente no da. Cuando la fuente no aporta volumen, número o páginas,
-% esos campos se omiten en lugar de reconstruirse: el DOI identifica el
-% documento sin ambigüedad. Los números de artículo que van codificados en
-% el propio DOI (MDPI, Nature, Automation) sí se conservan.
+% REGLA DE AUTORÍA (APA 7). La lista de autores se escribe COMPLETA hasta
+% veinte autores; solo a partir del vigésimo primero se abrevia (los
+% diecinueve primeros, puntos suspensivos y el último). Nunca se escribe
+% `and others` ni `et al.` en el campo `author`: si el consolidado de
+% origen abrevia la autoría, los nombres se completan contra Crossref, arXiv
+% o la página del editor antes de incorporar la entrada. `et al.` en el
+% texto lo genera `biblatex-apa` a partir de la lista completa.
+%
+% REGLA DE METADATOS. Volumen, número y páginas (o número de artículo) se
+% completan contra Crossref para toda entrada `@article`; no se omiten
+% alegando que el DOI ya identifica el documento. El título se transcribe
+% íntegro, incluido el subtítulo tras los dos puntos.
 %
 % Este archivo es aditivo: `bibliography/references.bib` permanece sellado
 % por `config/release-manifest.json` y no se modifica.
@@ -25,16 +30,19 @@
 % ---------------------------------------------------------------------
 
 @article{serviceAdams2011Coalition,
-  author       = {Service, T. C. and Adams, J. A.},
+  author       = {Service, Travis C. and Adams, Julie A.},
   title        = {Coalition formation for task allocation: Theory and algorithms},
   journaltitle = {Autonomous Agents and Multi-Agent Systems},
   date         = {2011},
+  volume       = {22},
+  number       = {2},
+  pages        = {225--248},
   doi          = {10.1007/s10458-010-9123-8},
   url          = {https://doi.org/10.1007/s10458-010-9123-8}
 }
 
 @article{machado2019attractor,
-  author       = {Machado, T. and others},
+  author       = {Machado, Toni and Malheiro, Tiago and Monteiro, Sérgio and Erlhagen, Wolfram and Bicho, Estela},
   title        = {Attractor dynamics approach to joint transportation by autonomous robots},
   journaltitle = {Autonomous Robots},
   date         = {2019},
@@ -52,17 +60,19 @@
 }
 
 @online{verma2019replacement,
-  author       = {Verma, P. and others},
+  author       = {Verma, Pulkit and Tallamraju, Rahul and Rawat, Abhay and Chand, Subhasis and Karlapalem, Kamalakar},
   title        = {Loosely coupled payload transport system with robot replacement},
   date         = {2019},
   eprinttype   = {arXiv},
   eprint       = {1904.03049},
+  doi          = {10.48550/arXiv.1904.03049},
   url          = {https://arxiv.org/abs/1904.03049},
-  urldate      = {2026-09-11}
+  urldate      = {2026-09-11},
+  note         = {Preprint}
 }
 
 @article{elaamery2021mpc,
-  author       = {Elaamery, B. and others},
+  author       = {Elaamery, Badr and Pesavento, Massimo and Aldovini, Teresa and Lissandrini, Nicola and Michieletto, Giulia and Cenedese, Angelo},
   title        = {Model predictive control for cooperative transportation with feasibility-aware policy},
   journaltitle = {Robotics},
   date         = {2021},
@@ -74,7 +84,7 @@
 }
 
 @article{gong2023connector,
-  author       = {Gong, Z. and others},
+  author       = {Gong, Zhao and Nie, Zhenguo and Liu, Quan and Liu, Xin-Jun},
   title        = {Design and control of a multi-mobile-robot cooperative transport system based on a novel six degree-of-freedom connector},
   journaltitle = {ISA Transactions},
   date         = {2023},
@@ -83,7 +93,7 @@
 }
 
 @article{huo2025selfLearning,
-  author       = {Huo, X. and others},
+  author       = {Huo, Xin and Zhang, Hao and Wang, Zhuping and Huang, Chao and Yan, Huaicheng},
   title        = {A self-learning approach to heterogeneous multi-robot coalition formation under uncertainty},
   journaltitle = {IEEE Transactions on Automation Science and Engineering},
   date         = {2025},
@@ -92,7 +102,7 @@
 }
 
 @article{verma2025cfhmrta,
-  author       = {Verma, A. and others},
+  author       = {Verma, Ashish and Gautam, Avinash and Dutta, Ayan and Shekhawat, Virendra Singh and Mohan, Sudeept},
   title        = {{CF-HMRTA}: Coalition formation for heterogeneous multi-robot task allocation},
   journaltitle = {Journal of Intelligent and Robotic Systems},
   date         = {2025},
@@ -101,28 +111,37 @@
 }
 
 @article{fukao2025swarm,
-  author       = {Fukao, T. and others},
+  author       = {Fukao, Yuto and Terakawa, Tatsuro and Endo, Takahiro and Matsuno, Fumitoshi and Morimoto, Yoshihiro and Koshimoto, Takumi and Mizuno, Daisuke},
   title        = {Cooperative transportation of an object with a nonholonomic constraint by a swarm robot},
   journaltitle = {ROBOMECH Journal},
   date         = {2025},
+  volume       = {12},
+  number       = {1},
+  eid          = {20},
   doi          = {10.1186/s40648-025-00308-3},
   url          = {https://doi.org/10.1186/s40648-025-00308-3}
 }
 
 @article{tian2025irregular,
-  author       = {Tian, Y. and others},
+  author       = {Tian, Dujie and Zhou, Lelai and Zhang, Chen and Li, Yibin},
   title        = {Multi-robot cooperative transportation of irregular objects by multi-objective optimization with distributed control},
   journaltitle = {IEEE Robotics and Automation Letters},
   date         = {2025},
+  volume       = {10},
+  number       = {10},
+  pages        = {9822--9829},
   doi          = {10.1109/LRA.2025.3597895},
   url          = {https://doi.org/10.1109/LRA.2025.3597895}
 }
 
 @article{diehlAdams2026Grapes,
-  author       = {Diehl, G. and Adams, J. A.},
-  title        = {{GRAPE-S}: Near real-time coalition formation for multiple service collectives},
+  author       = {Diehl, Grace and Adams, Julie A.},
+  title        = {{GRAPE-S}: near real-time coalition formation for multiple service collectives},
   journaltitle = {Autonomous Agents and Multi-Agent Systems},
   date         = {2026},
+  volume       = {40},
+  number       = {1},
+  eid          = {29},
   doi          = {10.1007/s10458-026-09758-4},
   url          = {https://doi.org/10.1007/s10458-026-09758-4}
 }
@@ -137,10 +156,13 @@
 }
 
 @article{muhammed2026decentralizedMpc,
-  author       = {Muhammed, I. and Nada, A. A. and El-Hussieny, H.},
-  title        = {Real-time decentralized model predictive control for cooperative multi-robot object transport},
+  author       = {Muhammed, Ibrahim and Nada, Ayman A. and El-Hussieny, Haitham},
+  title        = {Real-time decentralized model predictive control for cooperative multi-robot object transport: experimental validation},
   journaltitle = {Scientific Reports},
   date         = {2026},
+  volume       = {16},
+  number       = {1},
+  eid          = {9824},
   doi          = {10.1038/s41598-026-41881-w},
   url          = {https://doi.org/10.1038/s41598-026-41881-w}
 }
@@ -165,7 +187,8 @@
   eprint       = {2509.14342},
   doi          = {10.48550/arXiv.2509.14342},
   url          = {https://doi.org/10.48550/arXiv.2509.14342},
-  urldate      = {2026-09-11}
+  urldate      = {2026-09-11},
+  note         = {Preprint}
 }
 
 @article{eohPark2021Curriculum,
@@ -322,10 +345,9 @@
 
 @online{iso21423,
   author  = {{International Organization for Standardization}},
-  title   = {{ISO} 21423 --- Industrial trucks: Communication protocols for interoperability of automated mobile robots, fleet managers and enterprise resources},
-  date    = {2026},
-  note    = {Etapa 60.00, «International Standard under publication»; excluye requisitos de seguridad},
-  url     = {https://www.iso.org/standard/70909.html},
+  title   = {{ISO/FDIS} 21423 --- Robotics --- Industrial mobile robots --- Communications and interoperability},
+  note    = {Borrador final en aprobación (etapa {FDIS}); {ISO/FDIS} 21423:2026-05 sustituye a {ISO/DIS} 21423:2025-07, retirado. Norma aún no publicada, sin año de publicación},
+  url     = {https://www.iso.org/standard/86749.html},
   urldate = {2026-09-11}
 }
 
@@ -378,7 +400,7 @@
 
 @article{fischerLynchPaterson1985Impossibility,
   author       = {Fischer, Michael J. and Lynch, Nancy A. and Paterson, Michael S.},
-  title        = {Impossibility of Distributed Consensus with One Faulty Process},
+  title        = {Impossibility of distributed consensus with one faulty process},
   journaltitle = {Journal of the ACM},
   date         = {1985},
   volume       = {32},
