@@ -1,3 +1,9 @@
+% Intervalos y valores p recalculados con la SEMILLA como unidad de
+% remuestreo por final-hardening/recompute_clustered_ci.py.
+% Bootstrap pareado sobre semillas, B=10000, semilla de analisis 20260919;
+% Wilcoxon de una cola en la direccion predeclarada sobre diferencias
+% por semilla, y Holm dentro de la familia de la campana. Los
+% contrastes deterministas por semilla no llevan intervalo ni valor p.
 \newcommand{\SPSevenWorlds}{360}
 \newcommand{\SPSevenRuns}{1800}
 \newcommand{\SPSevenProposedSuccess}{1.000}
@@ -12,9 +18,8 @@
 \newcommand{\SPSevenCorridorNoReservationSuccess}{0.217}
 \newcommand{\SPSevenHOneEffect}{0.261}
 \newcommand{\SPSevenHOneEffectPP}{26.1}
-\newcommand{\SPSevenHOneCI}{[0.217; 0.308]}
-\newcommand{\SPSevenHOnePHolm}{5\times10^{-29}}
+\newcommand{\SPSevenHOneCI}{[0.236; 0.283]}
+\newcommand{\SPSevenHOnePHolm}{1{,}81\times10^{-8}}
 \newcommand{\SPSevenHTwoEffect}{-4.00}
-\newcommand{\SPSevenHTwoPHolm}{6.2\times10^{-48}}
 \newcommand{\SPSevenHThreeEffect}{1.15}
-\newcommand{\SPSevenHThreePHolm}{1.5\times10^{-45}}
+\newcommand{\SPSevenHThreePHolm}{1{,}81\times10^{-8}}

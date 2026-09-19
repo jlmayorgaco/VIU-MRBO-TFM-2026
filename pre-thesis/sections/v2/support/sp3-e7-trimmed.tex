@@ -143,7 +143,7 @@ La Tabla~\ref{tab:sp7-design} resume \SPSevenWorlds{} mundos pareados y \SPSeven
     \midrule
     Factores & Cruce, pasillo y cuello bloqueado durante tres pasos; $A\in\{2,3,4\}$; semillas 8700--8739; ruta directa y desvío por coalición. \\
     Geometría & Radios $0.52$--$0.68$~m sobre celdas de 1~m, sin orientaciones intermedias. \\
-    Métodos & Juego completo, dos ablaciones, planificación priorizada y oráculo restringido. \\
+    Métodos & Juego completo, dos ablaciones, referencia de orden fijo sobre la ruta base y oráculo restringido. \\
     Contrastes & Efecto de la reserva, efecto de $\lambda_7$ y brecha temporal mediante McNemar, Wilcoxon, IC \mbox{bootstrap} y Holm. \\
     \bottomrule
   \end{tabularx}
@@ -163,7 +163,7 @@ El juego con reserva entregó todas las cargas con tiempo medio de terminación 
   \viuownsource
 \end{table}
 
-El efecto pareado de la reserva sobre entrega fue \SPSevenHOneEffect{} (IC del 95\,\% \SPSevenHOneCI{}, $p_{\mathrm{Holm}}=\SPSevenHOnePHolm$). A igualdad de reserva, retirar la penalización elevó cuatro pasos el tiempo de terminación: \SPSevenHTwoEffect{} para completo menos ablación, con $p_{\mathrm{Holm}}=\SPSevenHTwoPHolm$. El cruce y el cuello dinámico se resolvieron con la guardia puntual, mientras el pasillo opuesto necesitó propiedad temporal del recurso.
+El efecto pareado de la reserva sobre entrega fue \SPSevenHOneEffect{} (IC del 95\,\% \SPSevenHOneCI{}, $p_{\mathrm{Holm}}=\SPSevenHOnePHolm$). A igualdad de reserva, retirar la penalización elevó cuatro pasos el tiempo de terminación: \SPSevenHTwoEffect{} para completo menos ablación. El efecto es idéntico en las 40~semillas y varía solo entre escenarios ($-4$, $-5$ y $-3$ pasos), de modo que no lleva valor $p$: no hay variabilidad entre semillas que contrastar. El cruce y el cuello dinámico se resolvieron con la guardia puntual, mientras el pasillo opuesto necesitó propiedad temporal del recurso.
 
 
 El método completo alcanzó un tiempo medio de terminación de \SPSevenProposedMakespan{} y contabilizó \SPSevenProposedMessages{} mensajes por mundo. El oráculo restringido redujo el tiempo en \SPSevenHThreeEffect{} pasos ($p_{\mathrm{Holm}}=\SPSevenHThreePHolm$) hasta \SPSevenOracleMakespan{}. La CPU media fue \SPSevenProposedRuntime{}~ms para el juego y \SPSevenOracleRuntime{}~ms para enumerar el catálogo; esta comparación caracteriza el coste interno de esas implementaciones.

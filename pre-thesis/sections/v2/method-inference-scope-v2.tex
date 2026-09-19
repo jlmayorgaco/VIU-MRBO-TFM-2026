@@ -19,21 +19,32 @@ Cargo y el banco factorial del juego de integración sí agrupan por semilla;
 Cargo remuestrea medias de conglomerado y registra a la vez el número de pares
 y el de instancias independientes.
 
-Se recalcularon los contrastes de E2, E3 y E4 tomando la semilla como unidad de
-remuestreo: la diferencia pareada se promedia dentro de cada semilla y el
-\emph{bootstrap} remuestrea semillas. Ningún contraste cambia de signo ni de
-orden de magnitud, y los efectos coinciden hasta la cuarta cifra. Lo que cambia
-es qué mide el intervalo. En E2 los anchos apenas se mueven; en E3 y E4 se
-estrechan, y dos contrastes resultan deterministas por semilla ---la guardia de
-\emph{wrench} de E3 y la evitación de colisión de E4---, es decir, el desenlace
-es idéntico en todas las semillas. En esos dos casos el intervalo publicado
-sobre celdas no describía variabilidad muestral: describía la dispersión entre
-escenarios, que están fijados por diseño y no muestreados de una población.
+Declararlo no basta: las tablas tienen que llevar cifras correctas. Los
+diecinueve contrastes de las cinco campañas se recalcularon desde los ficheros
+crudos tomando la semilla como unidad. La diferencia pareada se promedia dentro
+de cada semilla; el intervalo del 95\,\% procede de un \emph{bootstrap} sobre
+semillas con $B=10^4$ y semilla de análisis $20\,260\,919$, distinta de toda
+semilla de simulación; el contraste es un Wilcoxon de una cola en la dirección
+predeclarada de la hipótesis, corregido por Holm dentro de la familia de su
+campaña. Las cifras impresas en el Capítulo~6 y en los anexos son las de ese
+recálculo.
 
-La consecuencia es de alcance, no de signo. Los efectos del Capítulo~6 son los
-que se informan, pero sus valores $p$ no se interpretan como evidencia
-inferencial y sus intervalos no se leen como error de generalización a mundos
-nuevos: describen la variación dentro del banco de escenarios construido. La
-excepción es Cargo, cuya inferencia sí se agrupa por instancia independiente y
-cuyos contrastes admiten la lectura habitual. Esta limitación se declara aquí y
-se repite, por campaña, donde cada cifra aparece.
+Ningún contraste cambia de signo ni de orden de magnitud. Tres consecuencias sí
+cambian lo que puede afirmarse. Primera: los valores $p$ bajan a lo que permiten
+40, 100 o 6 semillas, de modo que los órdenes como $10^{-108}$ o $10^{-242}$
+desaparecen; eran un artefacto de contar celdas. Segunda: cuatro contrastes
+resultan deterministas ---la guardia de \emph{wrench} de E3, la evitación de
+colisión de E4, la restauración del certificado de E6-C y la penalización de
+congestión de E7-C---: el desenlace es idéntico en todas las semillas y varía
+solo entre escenarios, que están fijados por diseño. Para esos no se publica
+intervalo ni valor $p$, porque no hay variabilidad muestral que describir, y en
+su lugar se informa la fracción de escenarios del banco en que el mecanismo
+actúa. Tercera: E4 no puede rechazar al 5\,\%. Con 6~semillas, el valor $p$ más
+pequeño que el contraste de rangos con signo alcanza, corregido por Holm dentro
+de una familia de cinco, es $0{,}062$; sus efectos se informan como descriptivos
+aunque la dirección se repita en las seis semillas.
+
+La excepción sigue siendo Cargo, cuya inferencia ya se agrupaba por instancia
+independiente. El guion que produce estas cifras es
+\texttt{final-hardening/recompute\_clustered\_ci.py}, y el
+Anexo~\ref{app:reproducibility} registra su ruta y el \emph{commit}.

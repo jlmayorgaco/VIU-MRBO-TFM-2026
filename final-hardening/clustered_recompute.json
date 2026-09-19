@@ -1,203 +1,5 @@
 [
   {
-    "campaign": "E3",
-    "id": "H-SP3-1-guard-reduces-fp",
-    "metric": "fp_given_assigned",
-    "method_a": "nash_pd_exact_guarded",
-    "method_b": "nash_pd_exact_unguarded",
-    "n_cells": 600,
-    "n_seeds": 100,
-    "effect_cells": -0.3333333333333333,
-    "ci_cells": [
-      -0.37166666666666665,
-      -0.295
-    ],
-    "effect_clustered": -0.3333333333333334,
-    "ci_clustered": [
-      -0.3333333333333334,
-      -0.3333333333333334
-    ],
-    "width_ratio": 0.0,
-    "deterministic_per_seed": true,
-    "sign_flips": false
-  },
-  {
-    "campaign": "E3",
-    "id": "H-SP3-2-vector-beats-scalar-gap",
-    "metric": "optimality_gap_vs_wrench_oracle",
-    "method_a": "nash_pd_exact_guarded",
-    "method_b": "oracle_scalar_assignment",
-    "n_cells": 600,
-    "n_seeds": 100,
-    "effect_cells": -0.09333258773170221,
-    "ci_cells": [
-      -0.10194384423459633,
-      -0.08487813597624988
-    ],
-    "effect_clustered": -0.09333258773170221,
-    "ci_clustered": [
-      -0.09358719119000816,
-      -0.09307234766111354
-    ],
-    "width_ratio": 0.03016830717487656,
-    "deterministic_per_seed": false,
-    "sign_flips": false
-  },
-  {
-    "campaign": "E3",
-    "id": "H-SP3-3-pair-beats-cbba-gap",
-    "metric": "optimality_gap_vs_wrench_oracle",
-    "method_a": "smith_wrench_pairs_guarded",
-    "method_b": "cbba_slots",
-    "n_cells": 600,
-    "n_seeds": 100,
-    "effect_cells": -0.09333858484855934,
-    "ci_cells": [
-      -0.10177047037643237,
-      -0.08505992635595215
-    ],
-    "effect_clustered": -0.09333858484855934,
-    "ci_clustered": [
-      -0.0935433177316838,
-      -0.09312399964613495
-    ],
-    "width_ratio": 0.0250930242028588,
-    "deterministic_per_seed": false,
-    "sign_flips": false
-  },
-  {
-    "campaign": "E3",
-    "id": "H-SP3-4-exact-beats-ring-kkt",
-    "metric": "kkt_residual",
-    "method_a": "nash_pd_exact_guarded",
-    "method_b": "nash_pd_ring_guarded",
-    "n_cells": 600,
-    "n_seeds": 100,
-    "effect_cells": -0.01808507297012039,
-    "ci_cells": [
-      -0.020099647181390415,
-      -0.016129033229986402
-    ],
-    "effect_clustered": -0.018085072970120398,
-    "ci_clustered": [
-      -0.0190717556741253,
-      -0.017110484962399662
-    ],
-    "width_ratio": 0.4939464616126005,
-    "deterministic_per_seed": false,
-    "sign_flips": false
-  },
-  {
-    "campaign": "E4",
-    "id": "H4_1_replicator_safe_success_above_cbf",
-    "metric": "safe_docking_success",
-    "method_a": "replicator_primitives",
-    "method_b": "cbf_qp",
-    "n_cells": 108,
-    "n_seeds": 6,
-    "effect_cells": 0.09259259259259259,
-    "ci_cells": [
-      0.037037037037037035,
-      0.1574074074074074
-    ],
-    "effect_clustered": 0.0925925925925926,
-    "ci_clustered": [
-      0.0462962962962963,
-      0.12962962962962965
-    ],
-    "width_ratio": 0.6923076923076923,
-    "deterministic_per_seed": false,
-    "sign_flips": false
-  },
-  {
-    "campaign": "E4",
-    "id": "H4_2_replicator_collision_below_direct",
-    "metric": "any_collision",
-    "method_a": "replicator_primitives",
-    "method_b": "direct_to_slot",
-    "n_cells": 108,
-    "n_seeds": 6,
-    "effect_cells": -0.8333333333333334,
-    "ci_cells": [
-      -0.8981481481481481,
-      -0.7592592592592593
-    ],
-    "effect_clustered": -0.8333333333333334,
-    "ci_clustered": [
-      -0.8333333333333334,
-      -0.8333333333333334
-    ],
-    "width_ratio": 0.0,
-    "deterministic_per_seed": true,
-    "sign_flips": false
-  },
-  {
-    "campaign": "E4",
-    "id": "H4_3_exact_kkt_below_ring",
-    "metric": "final_kkt_residual",
-    "method_a": "nash_pd_exact",
-    "method_b": "nash_pd_ring",
-    "n_cells": 108,
-    "n_seeds": 6,
-    "effect_cells": -0.33514654973933844,
-    "ci_cells": [
-      -0.3952304559272645,
-      -0.2725143825111968
-    ],
-    "effect_clustered": -0.3351465497393385,
-    "ci_clustered": [
-      -0.3520243272706531,
-      -0.32100170759163626
-    ],
-    "width_ratio": 0.25279997000747334,
-    "deterministic_per_seed": false,
-    "sign_flips": false
-  },
-  {
-    "campaign": "E4",
-    "id": "H4_4_replicator_safe_success_above_nash_pd",
-    "metric": "safe_docking_success",
-    "method_a": "replicator_primitives",
-    "method_b": "nash_pd_exact",
-    "n_cells": 108,
-    "n_seeds": 6,
-    "effect_cells": 0.24074074074074073,
-    "ci_cells": [
-      0.1574074074074074,
-      0.32407407407407407
-    ],
-    "effect_clustered": 0.24074074074074078,
-    "ci_clustered": [
-      0.22222222222222224,
-      0.2592592592592593
-    ],
-    "width_ratio": 0.22222222222222238,
-    "deterministic_per_seed": false,
-    "sign_flips": false
-  },
-  {
-    "campaign": "E4",
-    "id": "H4_5_replicator_position_error_below_central",
-    "metric": "final_position_error_m",
-    "method_a": "replicator_primitives",
-    "method_b": "central_potential_reference",
-    "n_cells": 108,
-    "n_seeds": 6,
-    "effect_cells": -1.0435548925741782,
-    "ci_cells": [
-      -1.186893057433543,
-      -0.903314596541229
-    ],
-    "effect_clustered": -1.0435548925741782,
-    "ci_clustered": [
-      -1.0888575203276847,
-      -0.9889086964751298
-    ],
-    "width_ratio": 0.35245562564256044,
-    "deterministic_per_seed": false,
-    "sign_flips": false
-  },
-  {
     "campaign": "E2",
     "id": "H02_primal_dual_vs_greedy",
     "metric": "capacity_success_rate",
@@ -211,13 +13,20 @@
       -0.11061939102564103
     ],
     "effect_clustered": -0.11901709401709401,
+    "deterministic": false,
+    "macros": {
+      "effect": "SPTwoPDEffect",
+      "lo": "SPTwoPDCILow",
+      "hi": "SPTwoPDCIHigh",
+      "p": "SPTwoPDPHolm"
+    },
+    "direction": "greater",
     "ci_clustered": [
       -0.12710470085470085,
       -0.11126014957264956
     ],
-    "width_ratio": 0.9451897645071875,
-    "deterministic_per_seed": false,
-    "sign_flips": false
+    "p_raw": 0.9999999822412133,
+    "p_holm": 0.9999999822412133
   },
   {
     "campaign": "E2",
@@ -233,13 +42,15 @@
       -0.0076737134354507575
     ],
     "effect_clustered": -0.0097400233699084,
+    "deterministic": false,
+    "macros": {},
+    "direction": "less",
     "ci_clustered": [
       -0.011724926581650886,
       -0.007891187816142342
     ],
-    "width_ratio": 0.9352551096055033,
-    "deterministic_per_seed": false,
-    "sign_flips": false
+    "p_raw": 9.094947017729282e-13,
+    "p_holm": 3.637978807091713e-12
   },
   {
     "campaign": "E2",
@@ -255,13 +66,15 @@
       -2.455769230769231
     ],
     "effect_clustered": -2.8384615384615386,
+    "deterministic": false,
+    "macros": {},
+    "direction": "less",
     "ci_clustered": [
       -2.9525641025641027,
       -2.7320512820512817
     ],
-    "width_ratio": 0.2866666666666674,
-    "deterministic_per_seed": false,
-    "sign_flips": false
+    "p_raw": 1.776507072200433e-08,
+    "p_holm": 3.553014144400866e-08
   },
   {
     "campaign": "E2",
@@ -277,12 +90,533 @@
       -0.6438108564291793
     ],
     "effect_clustered": -0.6626679494869536,
+    "deterministic": false,
+    "macros": {},
+    "direction": "less",
     "ci_clustered": [
       -0.6870559738103438,
       -0.6422257653955454
     ],
-    "width_ratio": 1.092739035866938,
-    "deterministic_per_seed": false,
-    "sign_flips": false
+    "p_raw": 9.094947017729282e-13,
+    "p_holm": 3.637978807091713e-12
+  },
+  {
+    "campaign": "E2-abl",
+    "id": "H_SP2_Marginal_smith_lower_score_gap",
+    "metric": "optimality_gap_vs_oracle",
+    "method_a": "smith_capacity_marginal",
+    "method_b": "smith_capacity_plain",
+    "n_cells": 1560,
+    "n_seeds": 40,
+    "effect_cells": -0.21453224194221712,
+    "ci_cells": [
+      -0.2229605723602848,
+      -0.20630244710112208
+    ],
+    "effect_clustered": -0.2145322419422171,
+    "deterministic": false,
+    "macros": {
+      "effect": "SPTwoGapEffect",
+      "lo": "SPTwoGapCILow",
+      "hi": "SPTwoGapCIHigh",
+      "p": "SPTwoGapPHolm"
+    },
+    "direction": "less",
+    "ci_clustered": [
+      -0.22295938702178852,
+      -0.20645735275646124
+    ],
+    "p_raw": 9.094947017729282e-13,
+    "p_holm": 4.547473508864641e-12
+  },
+  {
+    "campaign": "E2-abl",
+    "id": "H_SP2_Marginal_smith_higher_success",
+    "metric": "capacity_success_rate",
+    "method_a": "smith_capacity_marginal",
+    "method_b": "smith_capacity_plain",
+    "n_cells": 1560,
+    "n_seeds": 40,
+    "effect_cells": 0.08378205128205128,
+    "ci_cells": [
+      0.07581143162393163,
+      0.09178445512820511
+    ],
+    "effect_clustered": 0.08378205128205127,
+    "deterministic": false,
+    "macros": {
+      "effect": "SPTwoSuccessEffect",
+      "lo": "SPTwoSuccessCILow",
+      "hi": "SPTwoSuccessCIHigh"
+    },
+    "direction": "greater",
+    "ci_clustered": [
+      0.07631356837606838,
+      0.09150667735042733
+    ],
+    "p_raw": 1.7828018662560575e-08,
+    "p_holm": 1.7828018662560575e-08
+  },
+  {
+    "campaign": "E2-abl",
+    "id": "H_SP2_Marginal_replicator_lower_score_gap",
+    "metric": "optimality_gap_vs_oracle",
+    "method_a": "replicator_capacity_marginal",
+    "method_b": "replicator_capacity_plain",
+    "n_cells": 1560,
+    "n_seeds": 40,
+    "effect_cells": -0.21031506132054456,
+    "ci_cells": [
+      -0.2188125963085293,
+      -0.20180470750836635
+    ],
+    "effect_clustered": -0.2103150613205446,
+    "deterministic": false,
+    "macros": {},
+    "direction": "less",
+    "ci_clustered": [
+      -0.2191634923461782,
+      -0.20194081209376608
+    ],
+    "p_raw": 9.094947017729282e-13,
+    "p_holm": 4.547473508864641e-12
+  },
+  {
+    "campaign": "E2-abl",
+    "id": "H_SP2_Potential_marginal_lower_incomplete_capacity_smith",
+    "metric": "incomplete_capacity_ratio",
+    "method_a": "smith_capacity_marginal",
+    "method_b": "smith_capacity_plain",
+    "n_cells": 1560,
+    "n_seeds": 40,
+    "effect_cells": -0.09820960559642047,
+    "ci_cells": [
+      -0.10781763151194548,
+      -0.08881710759754163
+    ],
+    "effect_clustered": -0.09820960559642047,
+    "deterministic": false,
+    "macros": {
+      "effect": "SPTwoIncompleteEffect"
+    },
+    "direction": "less",
+    "ci_clustered": [
+      -0.10755879254061779,
+      -0.08928317328998353
+    ],
+    "p_raw": 9.094947017729282e-13,
+    "p_holm": 4.547473508864641e-12
+  },
+  {
+    "campaign": "E2-abl",
+    "id": "H_SP2_Potential_marginal_higher_alignment_smith",
+    "metric": "served_capacity_alignment",
+    "method_a": "smith_capacity_marginal",
+    "method_b": "smith_capacity_plain",
+    "n_cells": 1560,
+    "n_seeds": 40,
+    "effect_cells": 0.08767367432530364,
+    "ci_cells": [
+      0.07868304730483917,
+      0.09691026065606545
+    ],
+    "effect_clustered": 0.08767367432530362,
+    "deterministic": false,
+    "macros": {
+      "effect": "SPTwoAlignmentEffect"
+    },
+    "direction": "greater",
+    "ci_clustered": [
+      0.07909305308231485,
+      0.09647142651380332
+    ],
+    "p_raw": 9.094947017729282e-13,
+    "p_holm": 4.547473508864641e-12
+  },
+  {
+    "campaign": "E3",
+    "id": "H-SP3-1-guard-reduces-fp",
+    "metric": "fp_given_assigned",
+    "method_a": "nash_pd_exact_guarded",
+    "method_b": "nash_pd_exact_unguarded",
+    "n_cells": 600,
+    "n_seeds": 100,
+    "effect_cells": -0.3333333333333333,
+    "ci_cells": [
+      -0.37166666666666665,
+      -0.295
+    ],
+    "effect_clustered": -0.3333333333333334,
+    "deterministic": true,
+    "macros": {
+      "effect": "SPThreeGuardEffect",
+      "lo": "SPThreeGuardCILow",
+      "hi": "SPThreeGuardCIHigh",
+      "p": "SPThreeGuardPHolm"
+    },
+    "direction": "less",
+    "ci_clustered": null,
+    "p_raw": null
+  },
+  {
+    "campaign": "E3",
+    "id": "H-SP3-2-vector-beats-scalar-gap",
+    "metric": "optimality_gap_vs_wrench_oracle",
+    "method_a": "nash_pd_exact_guarded",
+    "method_b": "oracle_scalar_assignment",
+    "n_cells": 600,
+    "n_seeds": 100,
+    "effect_cells": -0.09333258773170221,
+    "ci_cells": [
+      -0.10194384423459633,
+      -0.08487813597624988
+    ],
+    "effect_clustered": -0.09333258773170221,
+    "deterministic": false,
+    "macros": {
+      "effect": "SPThreeVectorEffect",
+      "lo": "SPThreeVectorCILow",
+      "hi": "SPThreeVectorCIHigh"
+    },
+    "direction": "less",
+    "ci_clustered": [
+      -0.09358719119000816,
+      -0.09307234766111354
+    ],
+    "p_raw": 1.9482799225479542e-18,
+    "p_holm": 5.844839767643863e-18
+  },
+  {
+    "campaign": "E3",
+    "id": "H-SP3-3-pair-beats-cbba-gap",
+    "metric": "optimality_gap_vs_wrench_oracle",
+    "method_a": "smith_wrench_pairs_guarded",
+    "method_b": "cbba_slots",
+    "n_cells": 600,
+    "n_seeds": 100,
+    "effect_cells": -0.09333858484855934,
+    "ci_cells": [
+      -0.10177047037643237,
+      -0.08505992635595215
+    ],
+    "effect_clustered": -0.09333858484855934,
+    "deterministic": false,
+    "macros": {
+      "effect": "SPThreePairEffect"
+    },
+    "direction": "less",
+    "ci_clustered": [
+      -0.0935433177316838,
+      -0.09312399964613495
+    ],
+    "p_raw": 1.9482799225479542e-18,
+    "p_holm": 5.844839767643863e-18
+  },
+  {
+    "campaign": "E3",
+    "id": "H-SP3-4-exact-beats-ring-kkt",
+    "metric": "kkt_residual",
+    "method_a": "nash_pd_exact_guarded",
+    "method_b": "nash_pd_ring_guarded",
+    "n_cells": 600,
+    "n_seeds": 100,
+    "effect_cells": -0.01808507297012039,
+    "ci_cells": [
+      -0.020099647181390415,
+      -0.016129033229986402
+    ],
+    "effect_clustered": -0.018085072970120398,
+    "deterministic": false,
+    "macros": {
+      "effect": "SPThreeGraphEffect",
+      "lo": "SPThreeGraphCILow",
+      "hi": "SPThreeGraphCIHigh"
+    },
+    "direction": "less",
+    "ci_clustered": [
+      -0.0190717556741253,
+      -0.017110484962399662
+    ],
+    "p_raw": 1.9482799225479542e-18,
+    "p_holm": 5.844839767643863e-18
+  },
+  {
+    "campaign": "E4",
+    "id": "H4_1_replicator_safe_success_above_cbf",
+    "metric": "safe_docking_success",
+    "method_a": "replicator_primitives",
+    "method_b": "cbf_qp",
+    "n_cells": 108,
+    "n_seeds": 6,
+    "effect_cells": 0.09259259259259259,
+    "ci_cells": [
+      0.037037037037037035,
+      0.1574074074074074
+    ],
+    "effect_clustered": 0.0925925925925926,
+    "deterministic": false,
+    "macros": {
+      "effect": "SPFourDockEffect",
+      "lo": "SPFourDockCILow",
+      "hi": "SPFourDockCIHigh",
+      "p": "SPFourDockPHolm"
+    },
+    "direction": "greater",
+    "ci_clustered": [
+      0.0462962962962963,
+      0.12962962962962965
+    ],
+    "p_raw": 0.03125,
+    "p_holm": 0.0625
+  },
+  {
+    "campaign": "E4",
+    "id": "H4_2_replicator_collision_below_direct",
+    "metric": "any_collision",
+    "method_a": "replicator_primitives",
+    "method_b": "direct_to_slot",
+    "n_cells": 108,
+    "n_seeds": 6,
+    "effect_cells": -0.8333333333333334,
+    "ci_cells": [
+      -0.8981481481481481,
+      -0.7592592592592593
+    ],
+    "effect_clustered": -0.8333333333333334,
+    "deterministic": true,
+    "macros": {},
+    "direction": "less",
+    "ci_clustered": null,
+    "p_raw": null
+  },
+  {
+    "campaign": "E4",
+    "id": "H4_3_exact_kkt_below_ring",
+    "metric": "final_kkt_residual",
+    "method_a": "nash_pd_exact",
+    "method_b": "nash_pd_ring",
+    "n_cells": 108,
+    "n_seeds": 6,
+    "effect_cells": -0.33514654973933844,
+    "ci_cells": [
+      -0.3952304559272645,
+      -0.2725143825111968
+    ],
+    "effect_clustered": -0.3351465497393385,
+    "deterministic": false,
+    "macros": {},
+    "direction": "less",
+    "ci_clustered": [
+      -0.3520243272706531,
+      -0.32100170759163626
+    ],
+    "p_raw": 0.015625,
+    "p_holm": 0.0625
+  },
+  {
+    "campaign": "E4",
+    "id": "H4_4_replicator_safe_success_above_nash_pd",
+    "metric": "safe_docking_success",
+    "method_a": "replicator_primitives",
+    "method_b": "nash_pd_exact",
+    "n_cells": 108,
+    "n_seeds": 6,
+    "effect_cells": 0.24074074074074073,
+    "ci_cells": [
+      0.1574074074074074,
+      0.32407407407407407
+    ],
+    "effect_clustered": 0.24074074074074078,
+    "deterministic": false,
+    "macros": {},
+    "direction": "greater",
+    "ci_clustered": [
+      0.22222222222222224,
+      0.2592592592592593
+    ],
+    "p_raw": 0.015625,
+    "p_holm": 0.0625
+  },
+  {
+    "campaign": "E4",
+    "id": "H4_5_replicator_position_error_below_central",
+    "metric": "final_position_error_m",
+    "method_a": "replicator_primitives",
+    "method_b": "central_potential_reference",
+    "n_cells": 108,
+    "n_seeds": 6,
+    "effect_cells": -1.0435548925741782,
+    "ci_cells": [
+      -1.186893057433543,
+      -0.903314596541229
+    ],
+    "effect_clustered": -1.0435548925741782,
+    "deterministic": false,
+    "macros": {},
+    "direction": "less",
+    "ci_clustered": [
+      -1.0888575203276847,
+      -0.9889086964751298
+    ],
+    "p_raw": 0.015625,
+    "p_holm": 0.0625
+  },
+  {
+    "campaign": "E6-C",
+    "id": "H6.1",
+    "metric": "certificate_restored",
+    "method_a": "guarded_potential",
+    "method_b": "no_repair",
+    "n_cells": 480,
+    "n_seeds": 40,
+    "effect_cells": 0.75,
+    "ci_cells": [
+      0.7104166666666667,
+      0.7875
+    ],
+    "effect_clustered": 0.75,
+    "deterministic": true,
+    "macros": {
+      "effect": "SPSixHOneEffect",
+      "lo": "SPSixHOneCILow",
+      "hi": "SPSixHOneCIHigh",
+      "p": "SPSixHOnePHolm"
+    },
+    "direction": "greater",
+    "ci_clustered": null,
+    "p_raw": null
+  },
+  {
+    "campaign": "E6-C",
+    "id": "H6.2",
+    "metric": "redundant_count",
+    "method_a": "guarded_potential",
+    "method_b": "distance_greedy",
+    "n_cells": 480,
+    "n_seeds": 40,
+    "effect_cells": -0.6041666666666666,
+    "ci_cells": [
+      -0.7208333333333333,
+      -0.49375
+    ],
+    "effect_clustered": -0.6041666666666666,
+    "deterministic": false,
+    "macros": {
+      "effect": "SPSixHTwoEffect",
+      "p": "SPSixHTwoPHolm"
+    },
+    "direction": "less",
+    "ci_clustered": [
+      -0.6979166666666666,
+      -0.5083333333333334
+    ],
+    "p_raw": 2.5390527851864973e-08,
+    "p_holm": 2.5390527851864973e-08
+  },
+  {
+    "campaign": "E6-C",
+    "id": "H6.3",
+    "metric": "selected_cost",
+    "method_a": "guarded_potential",
+    "method_b": "central_exact",
+    "n_cells": 480,
+    "n_seeds": 40,
+    "effect_cells": 0.24909756661850407,
+    "ci_cells": [
+      0.21491892794202244,
+      0.285611447802307
+    ],
+    "effect_clustered": 0.2490975666185041,
+    "deterministic": false,
+    "macros": {
+      "effect": "SPSixHThreeEffect",
+      "p": "SPSixHThreePHolm"
+    },
+    "direction": "greater",
+    "ci_clustered": [
+      0.2259260809757339,
+      0.274176265492828
+    ],
+    "p_raw": 9.094947017729282e-13,
+    "p_holm": 1.8189894035458565e-12
+  },
+  {
+    "campaign": "E7-C",
+    "id": "H7.1",
+    "metric": "delivery_success",
+    "method_a": "local_potential_reservation",
+    "method_b": "no_zone_reservation",
+    "n_cells": 360,
+    "n_seeds": 40,
+    "effect_cells": 0.2611111111111111,
+    "ci_cells": [
+      0.21666666666666667,
+      0.3055555555555556
+    ],
+    "effect_clustered": 0.26111111111111107,
+    "deterministic": false,
+    "macros": {
+      "effect": "SPSevenHOneEffect",
+      "ci": "SPSevenHOneCI",
+      "p": "SPSevenHOnePHolm",
+      "pp": "SPSevenHOneEffectPP"
+    },
+    "direction": "greater",
+    "ci_clustered": [
+      0.2361111111111111,
+      0.2833333333333333
+    ],
+    "p_raw": 9.056121499884328e-09,
+    "p_holm": 1.8112242999768656e-08
+  },
+  {
+    "campaign": "E7-C",
+    "id": "H7.2",
+    "metric": "makespan_steps",
+    "method_a": "local_potential_reservation",
+    "method_b": "no_congestion_penalty",
+    "n_cells": 360,
+    "n_seeds": 40,
+    "effect_cells": -4.0,
+    "ci_cells": [
+      -4.3,
+      -3.702777777777778
+    ],
+    "effect_clustered": -4.0,
+    "deterministic": true,
+    "macros": {
+      "effect": "SPSevenHTwoEffect",
+      "p": "SPSevenHTwoPHolm"
+    },
+    "direction": "less",
+    "ci_clustered": null,
+    "p_raw": null
+  },
+  {
+    "campaign": "E7-C",
+    "id": "H7.3",
+    "metric": "makespan_steps",
+    "method_a": "local_potential_reservation",
+    "method_b": "central_restricted_oracle",
+    "n_cells": 360,
+    "n_seeds": 40,
+    "effect_cells": 1.1527777777777777,
+    "ci_cells": [
+      1.0611111111111111,
+      1.2444444444444445
+    ],
+    "effect_clustered": 1.152777777777778,
+    "deterministic": false,
+    "macros": {
+      "effect": "SPSevenHThreeEffect",
+      "p": "SPSevenHThreePHolm"
+    },
+    "direction": "greater",
+    "ci_clustered": [
+      1.1222222222222222,
+      1.1833333333333333
+    ],
+    "p_raw": 1.2063467894109876e-08,
+    "p_holm": 1.8112242999768656e-08
   }
 ]

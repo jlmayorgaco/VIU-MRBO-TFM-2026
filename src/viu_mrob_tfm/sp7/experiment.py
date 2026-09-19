@@ -46,7 +46,7 @@ METHOD_LABELS = {
     "local_potential_reservation": "Juego + reserva local",
     "no_congestion_penalty": "Sin penalización de congestión",
     "no_zone_reservation": "Sin reserva de zona",
-    "prioritized_planning": "Planificación priorizada",
+    "prioritized_planning": "Orden fijo (ruta base)",
     "central_restricted_oracle": "Oráculo restringido",
 }
 

@@ -1,3 +1,9 @@
+% Intervalos y valores p recalculados con la SEMILLA como unidad de
+% remuestreo por final-hardening/recompute_clustered_ci.py.
+% Bootstrap pareado sobre semillas, B=10000, semilla de analisis 20260919;
+% Wilcoxon de una cola en la direccion predeclarada sobre diferencias
+% por semilla, y Holm dentro de la familia de la campana. Los
+% contrastes deterministas por semilla no llevan intervalo ni valor p.
 \newcommand{\SPThreeWorlds}{600}
 \newcommand{\SPThreeRuns}{7200}
 \newcommand{\SPThreeGuardedPrecision}{1.000}
@@ -6,19 +12,16 @@
 \newcommand{\SPThreeGuardedFP}{0.000}
 \newcommand{\SPThreeUnguardedFP}{0.333}
 \newcommand{\SPThreeGuardEffect}{-0.333}
-\newcommand{\SPThreeGuardCILow}{-0.370}
-\newcommand{\SPThreeGuardCIHigh}{-0.295}
-\newcommand{\SPThreeGuardPHolm}{4.27\times10^{-35}}
 \newcommand{\SPThreeGuardedGap}{0.00018}
 \newcommand{\SPThreeScalarGap}{0.09351}
 \newcommand{\SPThreeVectorEffect}{-0.09333}
-\newcommand{\SPThreeVectorCILow}{-0.10139}
-\newcommand{\SPThreeVectorCIHigh}{-0.08550}
+\newcommand{\SPThreeVectorCILow}{-0.09359}
+\newcommand{\SPThreeVectorCIHigh}{-0.09307}
 \newcommand{\SPThreePairGap}{0.00001}
 \newcommand{\SPThreeCBBAGap}{0.09335}
 \newcommand{\SPThreePairEffect}{-0.09334}
 \newcommand{\SPThreeExactKKT}{0.00221}
 \newcommand{\SPThreeRingKKT}{0.02029}
 \newcommand{\SPThreeGraphEffect}{-0.01809}
-\newcommand{\SPThreeGraphCILow}{-0.02008}
-\newcommand{\SPThreeGraphCIHigh}{-0.01620}
+\newcommand{\SPThreeGraphCILow}{-0.01907}
+\newcommand{\SPThreeGraphCIHigh}{-0.01711}

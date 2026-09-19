@@ -147,7 +147,7 @@ La Tabla~\ref{tab:sp4-design} define cada unidad experimental como un mundo pare
 
 \paragraph{Resultados}
 
-La proyección CBF evitó colisiones, pero alcanzó éxito seguro \SPFourCBFSafe{} y agotó el horizonte en \SPFourCBFTimeout{} de los casos. Replicator+CBF elevó el éxito seguro a \SPFourRepSafe{}, redujo el agotamiento a \SPFourRepTimeout{} y produjo una diferencia de éxito de \SPFourDockEffect{} (IC del 95\,\% [\SPFourDockCILow{},~\SPFourDockCIHigh{}], $p_{\mathrm{Holm}}=\SPFourDockPHolm$). La tasa de timeout identifica el fallo de vivacidad aun cuando se satisface la barrera (Tabla~\ref{tab:sp4-docking-results}).
+La proyección CBF evitó colisiones, pero alcanzó éxito seguro \SPFourCBFSafe{} y agotó el horizonte en \SPFourCBFTimeout{} de los casos. Replicator+CBF elevó el éxito seguro a \SPFourRepSafe{}, redujo el agotamiento a \SPFourRepTimeout{} y produjo una diferencia de éxito de \SPFourDockEffect{} (IC del 95\,\% [\SPFourDockCILow{},~\SPFourDockCIHigh{}], $p_{\mathrm{Holm}}=\SPFourDockPHolm$, remuestreando las 6~semillas). Esa campaña tiene 108 celdas pero solo 6~semillas, y con 6 unidades independientes el valor $p$ más pequeño alcanzable por el contraste de rangos con signo, corregido por Holm dentro de su familia de cinco, es $0{,}062$: E4 no puede rechazar al 5\,\% aunque el efecto sea consistente. La dirección se repite en las 6~semillas, de modo que el resultado se informa como descriptivo y no como contraste superado. La tasa de timeout identifica el fallo de vivacidad aun cuando se satisface la barrera (Tabla~\ref{tab:sp4-docking-results}).
 
 \begin{table}[!htbp]
   \centering
