@@ -1,0 +1,78 @@
+{
+  "generator": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\scripts\\generate_sp2_master_figures.py",
+  "scope": "post-processing only; no new simulations",
+  "cargo_trace_limit": "load_pose only; robot poses and phase timestamps were not archived",
+  "inputs": {
+    "n1": {
+      "path": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\results\\sp2_canonical\\SP2_HONORS_v3\\raw\\n1_kinematic_grid.csv",
+      "sha256": "2822f8af858c6969e0ac0ce3f4b3ba19246f0bfe68580e60294e87187b45edf1"
+    },
+    "n2": {
+      "path": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\results\\sp2_canonical\\SP2_HONORS_v3\\raw\\n2_mechanical_grid.csv",
+      "sha256": "355f91157e0ae805d665ae1381f379b70b61b2e597221e0aa9ced81cf9e8c044"
+    },
+    "n3": {
+      "path": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\results\\sp2_canonical\\SP2_HONORS_v3\\raw\\n3_network_runs.csv",
+      "sha256": "832b75631ed8e12f766ece612454a4e5c58ed0f132e096fb6a92b60bf4b226db"
+    },
+    "n3_stats": {
+      "path": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\results\\sp2_canonical\\SP2_HONORS_v3\\processed\\n3_architecture_statistics.csv",
+      "sha256": "eda4fd388b11854055fe6241ae795d194c3dc6b649cb5e31f38d1ff2299e77f6"
+    },
+    "n4": {
+      "path": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\results\\sp2_canonical\\SP2_HONORS_v3\\raw\\n4_runs.csv",
+      "sha256": "9f73d3a2ccefa4063669bb07464b87f1b560e2dca523d538ea30c09d50677689"
+    },
+    "paired": {
+      "path": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\results\\sp2_canonical\\SP2_HONORS_v3\\processed\\paired_governor_statistics.csv",
+      "sha256": "51a1b1d64ef3be9236e2549cfef8a8fb57a0f696ba9ada6a5462226c504a86b6"
+    },
+    "endpoints": {
+      "path": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\results\\sp2_canonical\\SP2_HONORS_v3\\processed\\paired_endpoint_statistics.csv",
+      "sha256": "b10bdadb31339b19d9e931cef1fb492da0762af1fdd16a38cacb3f9a33a6ceeb"
+    },
+    "cargo": {
+      "path": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\results\\processed\\integrated\\CARGO_E2E_CONFIRMATORY_v1\\tables\\runs.csv",
+      "sha256": "2ccde450d91636084663a0836b7d993f4ce725c4af400d42ce90d3840d800950"
+    },
+    "cargo_trace": {
+      "path": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\results\\processed\\integrated\\CARGO_E2E_CONFIRMATORY_v1\\traces\\representative_trace.npz",
+      "sha256": "cd5a8478dc0cf189460681a91e3f19d130b11f4849d107d7e3397f35318655af"
+    }
+  },
+  "outputs": {
+    "n1_n2": {
+      "path": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\Subdocuments\\SP2\\figures\\generated\\fig-sp2-master-n1-n2.pdf",
+      "sha256": "99d04c8ab5e0ffcd6de06fa3db9050f66724c4556c877addab16321ef81691cb"
+    },
+    "n4": {
+      "path": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\Subdocuments\\SP2\\figures\\generated\\fig-sp2-master-n4.pdf",
+      "sha256": "6bca5e1b9b9fb1b0581e6f5d603b9efa41559caa36dba569acd805e2ba0003d1"
+    },
+    "cargo": {
+      "path": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\Subdocuments\\SP2\\figures\\generated\\fig-sp2-master-cargo.pdf",
+      "sha256": "1ff5e94b2ee30e25d621929658531ce2776cba1d471172e94b8b67cf32a8479d"
+    },
+    "table": {
+      "path": "C:\\Users\\walla\\Documents\\Github\\VIU-MRBO-TFM-2026\\Subdocuments\\SP2\\generated\\sp2_evidence_summary.tex",
+      "sha256": "6b0d7fabaecca5ab031ad36ca5906183a88ee5dcc18eeb578119a67695dba685"
+    }
+  },
+  "metrics": {
+    "n1_rows": 36600,
+    "n1_false_accepts": 4536,
+    "n1_false_acceptance_rate": 0.12393442622950819,
+    "n2_rows": 720,
+    "n2_supported_accepts": 668,
+    "n4_rows": 2100,
+    "n4_worlds": 210,
+    "n4_seed_blocks": 30,
+    "paired_success_difference": 0.0666666666666666,
+    "paired_collision_difference": 0.0523809523809523,
+    "cargo_worlds": 360,
+    "cargo_runs": 2160,
+    "cargo_distributed_success": 359,
+    "cargo_failure_success": 89,
+    "cargo_docking_success": 360
+  }
+}

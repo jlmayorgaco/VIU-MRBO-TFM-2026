@@ -1,0 +1,412 @@
+\section{Seguridad, rigidización y clusters: una jerarquía de multiplicadores}
+\label{sec:clusters}
+
+Las capas de seguridad y de decisión suelen acoplarse en cascada: el juego
+elige y un filtro CBF corrige. Esa disposición rompe la estructura del juego,
+porque el pago que el agente calculó no es el que recibe una vez filtrado. Esta
+sección propone la alternativa: \emph{la seguridad entra en el juego como
+precio}, y la rigidización de una coalición convierte ese precio en fuerza
+interna.
+
+La observación que ordena todo es que el reparto de esfuerzos
+$\bm\lambda$ de \eqref{eq:qp} y el multiplicador de una barrera son el mismo
+tipo de objeto —variables duales de restricciones— y admiten, por tanto, el
+mismo tratamiento.
+
+\subsection{La seguridad como precio}
+
+Sea $\psi_{ij}$ la restricción HOCBF del par $(i,j)$ y $\lambda_{ij}\ge0$ su
+multiplicador en el QP de movimiento. Por sensibilidad,
+$\lambda_{ij}=\partial J^{\mathrm{mov}}/\partial\epsilon$ evaluada en la
+relajación $\psi_{ij}\ge-\epsilon$: es lo que cuesta, al margen, la proximidad
+de ese par.
+
+\begin{teorema}[El precio de seguridad preserva la estructura variacional]
+\label{th:precio-seguridad}
+Modifíquese el pago de cada AMR según
+\[
+  \tilde J_i(z)=J_i(z)-\!\!\sum_{j\,:\,(i,j)\in\mathcal E_h}\!\!
+  \lambda_{ij}\,\psi_{ij}(z),
+\]
+donde $\mathcal E_h$ es el conjunto de pares con barrera activa. Si cada
+$\lambda_{ij}$ es un multiplicador \emph{común} al par —el mismo valor para $i$
+y para $j$—, entonces el juego modificado admite el potencial
+\[
+  \tilde\Phi(z)=\Phi(z)-\sum_{(i,j)\in\mathcal E_h}\lambda_{ij}\,\psi_{ij}(z),
+\]
+y sus reposos son equilibrios generalizados de Nash variacionales del juego con
+restricción de seguridad. Si cada agente emplea su propia estimación
+$\lambda_{ij}^{i}\neq\lambda_{ij}^{j}$, la propiedad de potencial exacto se
+pierde.
+\end{teorema}
+
+\begin{proof}
+Sea una desviación unilateral $z_i\to z_i'$. Los términos $\psi_{jk}$ con
+$i\notin\{j,k\}$ no cambian. Para los pares que contienen a $i$, el término
+$-\lambda_{ij}\psi_{ij}$ aparece en $\tilde J_i$ y en $\tilde\Phi$ con el mismo
+coeficiente, luego su variación es idéntica; sumado a
+\cref{th:potencial} se obtiene
+$\tilde J_i(z_i',z_{-i})-\tilde J_i(z)=\tilde\Phi(z_i',z_{-i})-\tilde\Phi(z)$.
+El carácter variacional se sigue de \cref{th:vi} aplicado a $\tilde\Phi$ con la
+restricción compartida $\psi_{ij}\ge0$ y multiplicador común.
+Si $\lambda_{ij}^{i}\neq\lambda_{ij}^{j}$, la contribución del par a $\tilde J_i$
+y a $\tilde J_j$ difiere y no existe función escalar cuya variación coincida con
+la de ambos: el término asimétrico no es un gradiente.
+\end{proof}
+
+\Cref{th:precio-seguridad} deja el requisito en un punto concreto: los dos
+miembros del par deben \emph{acordar} el precio. Ese acuerdo se obtiene con la
+dinámica de multiplicadores distribuidos de \cite{martinezPiazuelo2025gne},
+donde cada proveedor de pago mantiene una copia local y un término de consenso
+sobre el grafo de comunicación las lleva a un valor común; bajo digrafo
+fuertemente conexo y balanceado en peso, el conjunto GNE es asintóticamente
+estable. La tasa de ese acuerdo vuelve a estar gobernada por $\lambda_2$, igual
+que en \cref{th:mapa}.
+
+\begin{observacion}[Tres precios, un mecanismo]
+El precio de \emph{wrench} (\cref{sec:wrench}), el precio de congestión del
+encaminamiento y el precio de seguridad de esta sección se obtienen del mismo
+modo: restricción dura, programa convexo, variable dual devuelta como pago. La
+seguridad no se negocia —el QP la impone—; lo que se negocia es \emph{dónde
+colocarse} para que salga barata.
+\end{observacion}
+
+\subsection{Rigidización: de precio a fuerza interna}
+
+Cuando una coalición $\Ccal$ pasa a modo \textsf{cargo} y forma un cuerpo
+rígido, las distancias internas dejan de ser libres. Los pares internos ya no
+requieren barrera: quedan sujetos por la restricción de rigidez.
+
+\begin{teorema}[La rigidización convierte desigualdades en igualdades]
+\label{th:rigidizacion}
+Sea $\Ccal$ rígida con mapa de agarre $G_\Ccal$. Entonces:
+\begin{enumerate}[label=(\alph*),leftmargin=2.2em,topsep=0.2em,itemsep=0.15em]
+  \item las restricciones internas $\psi_{ij}$, $i,j\in\Ccal$, pasan de
+  desigualdad activa a igualdad, y sus multiplicadores dejan de ser precios
+  para ser fuerzas de restricción;
+  \item el reparto admite la descomposición única
+  $\bm\lambda=\bm\lambda^{\perp}+\bm\lambda^{0}$ con
+  $\bm\lambda^{0}\in\ker G_\Ccal$ y
+  $\bm\lambda^{\perp}\perp\ker G_\Ccal$, donde $\bm\lambda^{\perp}$ determina
+  por completo el \emph{wrench} resultante y $\bm\lambda^{0}$ no contribuye a
+  él;
+  \item $\bm\lambda^{0}$ consume presupuesto de actuador: la cota
+  $\|\bm\lambda\|_\infty\le\bar\lambda_i$ de \cref{pr:cota} se aplica a la suma,
+  no a $\bm\lambda^{\perp}$.
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}
+(a) La rigidez fija $\|p_i-p_j\|$ para $i,j\in\Ccal$; una igualdad activa tiene
+multiplicador de signo libre, que es la fuerza de restricción.
+(b) Es la descomposición ortogonal $\Rb^{m}=\ker G_\Ccal\oplus(\ker G_\Ccal)^{\perp}$,
+única por ser suma directa ortogonal; $G_\Ccal\bm\lambda^{0}=0$ por definición
+del núcleo, luego el resultante depende solo de $\bm\lambda^{\perp}$.
+(c) La restricción de actuador acota el esfuerzo físico total del contacto, que
+es $\bm\lambda$, no su proyección.
+\end{proof}
+
+\begin{observacion}[Qué es fuerza y qué es precio, sin confundirlos]
+\label{obs:precio-no-fuerza}
+El apartado (a) debe leerse con cuidado. Una \emph{igualdad} de rigidez tiene
+reacciones físicas en un modelo mecánico; una \emph{desigualdad} de separación
+tiene multiplicadores en un problema de control. Que ambas se escriban como
+restricciones no las identifica. Tres precisiones. El multiplicador de una
+barrera $h(u)+\epsilon\ge0$ tiene unidades de coste por unidad de restricción,
+no de newtons, y su sensibilidad es $dJ^\star/d\epsilon=-\lambda^\star$ con la
+convención $L=J-\lambda(h+\epsilon)$ —verificado numéricamente: $-4{,}0000$
+frente a $-\lambda^\star=-4{,}0000$—, de modo que relajar la barrera \emph{baja}
+el coste. En régimen rígido con holgura positiva, la desigualdad interna es
+constante y normalmente inactiva, luego su multiplicador es cero por
+complementariedad aunque las fuerzas de contacto sean no nulas. Y que un
+multiplicador común congelado conserve el potencial del término compartido no
+identifica por sí solo los puntos de reposo con el equilibrio variacional:
+faltan factibilidad, estacionariedad, signo y complementariedad. Lo que
+\cref{th:rigidizacion} afirma con rigor es la descomposición
+$\bm\lambda=\bm\lambda^{\perp}+\bm\lambda^{0}$ y el balance de presupuesto; la
+frase «los precios se convierten en fuerzas» es una imagen, no un teorema, y así
+debe entenderse \cite{mayorga2026m1}.
+\end{observacion}
+
+\begin{corolario}[Compromiso entre agarre y capacidad]
+\label{co:agarre}
+Sea $\lVert\bm\lambda^{0}\rVert_{\min}$ el apriete interno mínimo que asegura la
+sujeción de todos los contactos. Por encima de ese umbral, aumentar la fuerza de
+apriete interna reduce el margen de \emph{wrench} disponible $\rho_W$ de
+\cref{th:robusto}, porque consume la misma cota $\bar\lambda_i$. Por debajo de
+él, aumentarla mejora la sujeción sin que la reserva sea aún utilizable.
+\end{corolario}
+
+\begin{teorema}[Dos monotonías opuestas]
+\label{th:dos-monotonias}
+Sea $\mathcal W_{\Ccal}=\{G_{\Ccal}f:\ f\in\Fcal_{\Ccal}\}$ el conjunto de
+\emph{wrench} alcanzable. Si un AMR adicional $i$ es \emph{opcional} —su
+contribución nula es admisible y no añade otras restricciones—, entonces
+$\mathcal W_{\Ccal\cup\{i\}}\supseteq\mathcal W_{\Ccal}$. Si en cambio se añade un
+\emph{apoyo rígido obligatorio}, entonces
+$\ker A_{\mathrm{kin},\Ccal\cup\{i\}}\subseteq\ker A_{\mathrm{kin},\Ccal}$.
+\end{teorema}
+
+\begin{proof}
+La primera inclusión extiende cualquier fuerza admisible con una contribución
+nula del nuevo miembro. La segunda añade una fila a un sistema homogéneo: toda
+solución del sistema ampliado satisface las filas originales.
+\end{proof}
+
+\begin{observacion}[Es la formalización de \cref{co:agarre}, y explica la no superaditividad]
+\label{obs:dos-monotonias}
+Sobre doscientas coaliciones aleatorias y cuatro mil direcciones, la función
+soporte de $\mathcal W$ nunca decrece al añadir un AMR opcional; sobre trescientas
+coaliciones, el rango de $A_{\mathrm{kin}}$ nunca decrece al añadir un apoyo. Las
+dos inclusiones son ciertas por separado y \emph{no afirman monotonía de la
+misión completa}, que combina fuerza, movilidad, espacio y coste: el $78\%$ de
+violaciones de superaditividad de \cref{obs:no-superaditivo} es exactamente lo
+que sale de mezclar una monotonía creciente con otra decreciente
+\cite{mayorga2026m1}.
+
+La consecuencia de diseño es separar tres cosas que el reclutamiento tiende a
+confundir: \emph{disponibilidad}, \emph{reclutamiento} y \emph{contacto activo}.
+Más capacidad disponible puede ayudar —primera inclusión—; obligar a todos a
+mantenerse adheridos puede bloquear una maniobra —segunda—. Un AMR reclutado no
+tiene por qué estar en contacto en todo instante, y un AMR delantero no se
+conserva por simetría: su frenado, su autoridad, su reserva o su confinamiento
+deben figurar en el problema.
+
+Un caso límite fija la lectura de \cref{obs:brazo}: con empujes radiales sobre
+un círculo, $r_i\times n_i=0$ para todo $i$ —$5{,}6\times10^{-17}$ en la
+comprobación— y no existe momento normal de contacto sea cual sea la
+cardinalidad. El rango de $G_{\Ccal}$ no basta cuando las presiones están
+restringidas a ser no negativas; por eso \cref{th:span} habla de \emph{span
+positivo} y no de rango.
+\end{observacion}
+
+\begin{observacion}[La relación no es monótona, y conviene decirlo]
+\label{obs:agarre-no-monotono}
+La relación entre precarga y reserva no es monótona, y el contraejemplo de dos contactos
+opuestos lo muestra: con tope $\bar\lambda=10$ y una sujeción tangencial que
+exige apriete normal de al menos $6$, la reserva de \emph{wrench} cae de $10$ a
+$4$ al pasar el apriete de $0$ a $6$, pero hasta $6$ el contacto \emph{no
+sostiene}: hay una región de mejora —donde apretar es lo que permite
+transportar— y otra de pérdida, donde solo resta reserva. El óptimo está en la
+frontera entre ambas: la precarga mínima compatible con la sujeción, no la
+mínima a secas ni la máxima \cite{mayorga2026m1}.
+\end{observacion}
+
+Este compromiso es el que explica por qué una coalición numerosa no domina
+siempre a una pequeña: la capacidad agregada crece de forma aditiva, pero la
+movilidad se \emph{intersecta} —todos los miembros deben ser compatibles con un
+único twist del cuerpo compuesto— y el apriete necesario para mantener la
+rigidez crece con el número de contactos.
+
+\subsection{La descomposición correcta es en la métrica del coste}
+
+La descomposición $\bm\lambda=\bm\lambda^{\perp}+\bm\lambda^{0}$ de
+\cref{th:rigidizacion} se enunció en la métrica euclídea. Con AMR heterogéneos
+la métrica relevante es la del coste, y en ella la descomposición es exacta y
+ortogonal; en la euclídea no lo es \cite{mayorga2026m1}.
+
+\begin{proposicion}[Descomposición de coste en tarea y precarga]
+\label{pr:descomposicion-R}
+Sea $G\in\Rb^{3\times m}$ de rango fila completo y $R\succ0$ la métrica de coste.
+La solución del reparto sin cotas activas,
+$\min\{\tfrac12 f^{\!\top}Rf:\ Gf=w\}$, es
+$f_w=R^{-1}G^{\!\top}(GR^{-1}G^{\!\top})^{-1}w$. Si las columnas de $Z$ forman una
+base de $\ker G$, todo reparto con $Gf=w$ es $f=f_w+Z\eta$, y
+\[
+  f^{\!\top}Rf\;=\;f_w^{\!\top}Rf_w\;+\;\eta^{\!\top}Z^{\!\top}RZ\,\eta .
+\]
+\end{proposicion}
+
+\begin{proof}
+La diferencia entre dos soluciones de $Gf=w$ está en el núcleo. Además $Rf_w$
+pertenece a la imagen de $G^{\!\top}$, luego $f_w^{\!\top}RZ=0$ y el término
+cruzado desaparece al expandir el cuadrado.
+\end{proof}
+
+\begin{observacion}[Ortogonal en $R$, no en la euclídea]
+\label{obs:metrica-R}
+Sobre una instancia con seis contactos y métrica diagonal heterogénea, el
+término cruzado $f_w^{\!\top}RZ\eta$ vale $1{,}3\times10^{-16}$ y la identidad
+se cumple a seis cifras; el término cruzado \emph{euclídeo} $f_w^{\!\top}Z\eta$
+vale $-0{,}0445$. Con AMR distintos, la separación entre esfuerzo de tarea y
+precarga solo es limpia si se hace en la métrica del coste. Tres salvedades que
+la derivación declara: las restricciones de contacto y actuador deben
+comprobarse sobre $f_w+Z\eta$, no sobre cada sumando; una fuerza interna ideal
+no aporta \emph{wrench} ni trabajo a un cuerpo rígido, pero sí cambia la presión
+de contacto y las fuerzas tangenciales admisibles; y de la identidad no se
+deduce consumo eléctrico, que exige un modelo de pérdidas del motor.
+\end{observacion}
+
+\subsection{Cuándo se puede omitir una barrera interna}
+
+\Cref{obs:cuatro-grafos} exige un certificado geométrico para omitir un par.
+Este es el certificado.
+
+\begin{proposicion}[Eliminación interna mediante tubo]
+\label{pr:tubo}
+Sea $p_i=P+R\rho_i+e_i$ con $\lVert e_i\rVert\le\epsilon_i$ durante todo el
+intervalo certificado, y cuerpos contenidos en discos de radio $r_i$. La
+condición
+\[
+  \lVert\rho_i-\rho_j\rVert\ \ge\ r_i+r_j+d_{\mathrm{seg}}+\epsilon_i+\epsilon_j
+\]
+es suficiente para mantener la separación de ambos cuerpos y eliminar su
+barrera interna explícita durante ese intervalo.
+\end{proposicion}
+
+\begin{proof}
+Por la desigualdad triangular inversa,
+$\lVert p_i-p_j\rVert\ge\lVert R(\rho_i-\rho_j)\rVert-\lVert e_i\rVert-\lVert e_j\rVert$;
+la rotación conserva la norma y las cotas concluyen.
+\end{proof}
+
+\begin{observacion}[Lo que el tubo garantiza y lo que no]
+\label{obs:tubo-num}
+Muestreando veinte mil combinaciones de rotación y error dentro del tubo, con
+$r_i=r_j=0{,}30$, $d_{\mathrm{seg}}=0{,}05$ y $\epsilon=0{,}02$ y $0{,}08$: cuando
+la condición se cumple, la distancia mínima observada es $0{,}662$ y $0{,}667$,
+por encima de $0{,}650$; cuando se viola en $0{,}10$, cae a $0{,}551$ y
+$0{,}557$. La garantía exige el tubo \emph{completo}, no el error observado en
+una muestra. No elimina restricciones carga–obstáculo, ni ruedas–carga no
+permitidas, ni pares externos a la coalición. Y aclara una confusión: la
+separación interna $h_{ij}=\lVert\rho_i-\rho_j\rVert^{2}-d_{ij}^{2}$ es
+\emph{constante} bajo rigidez exacta; la igualdad de rigidez es otra relación,
+cuyas reacciones no son los multiplicadores de la antigua desigualdad de
+colisión.
+\end{observacion}
+
+\subsection{La barrera compuesta del cluster}
+
+Una vez rígido, el cluster es un solo obstáculo frente a los demás. Su barrera
+no es libre de elegir.
+
+\begin{proposicion}[Barrera compuesta y su relajación suave]
+\label{pr:barrera-compuesta}
+Sea $h_i$ la barrera del miembro $i$ frente a un obstáculo externo. Entonces
+$h_\Ccal=\min_{i\in\Ccal}h_i$ es una barrera válida para el cluster, no
+diferenciable en los puntos donde el mínimo se alcanza en más de un miembro.
+La relajación suave
+\[
+  h_\Ccal^{\kappa}=-\tfrac1\kappa\log\!\sum_{i\in\Ccal}e^{-\kappa h_i}
+\]
+es diferenciable, conservadora, y satisface
+\[
+  h_\Ccal-\tfrac{1}{\kappa}\log|\Ccal|\ \le\ h_\Ccal^{\kappa}\ \le\ h_\Ccal .
+\]
+\end{proposicion}
+
+\begin{proof}
+La validez de $\min$ es inmediata: el conjunto seguro del cluster es la
+intersección de los de sus miembros. Para las cotas, sea $h_{\min}=\min_ih_i$.
+Entonces $\sum_ie^{-\kappa h_i}\ge e^{-\kappa h_{\min}}$, de donde
+$h_\Ccal^{\kappa}\le h_{\min}$; y
+$\sum_ie^{-\kappa h_i}\le|\Ccal|e^{-\kappa h_{\min}}$, de donde
+$h_\Ccal^{\kappa}\ge h_{\min}-\tfrac1\kappa\log|\Ccal|$.
+\end{proof}
+
+\begin{proposicion}[La \emph{soft-min} añade curvatura desfavorable]
+\label{pr:softmin-curvatura}
+Sea $h_\kappa=-\kappa^{-1}\log\sum_i e^{-\kappa h_i}$ con pesos
+$w_i=e^{-\kappa h_i}/\sum_j e^{-\kappa h_j}$. A lo largo de toda trayectoria dos
+veces diferenciable,
+\[
+  \dot h_\kappa=\sum_i w_i\dot h_i,
+  \qquad
+  \ddot h_\kappa=\sum_i w_i\ddot h_i\;-\;\kappa\Bigl[\sum_i w_i\dot h_i^{2}-\bigl(\textstyle\sum_i w_i\dot h_i\bigr)^{2}\Bigr]
+  =\sum_i w_i\ddot h_i-\kappa\,\mathrm{Var}_w(\dot h).
+\]
+\end{proposicion}
+
+\begin{observacion}[Lo que la cota algebraica no decía]
+\label{obs:softmin-curvatura}
+La cota $\min_i h_i-\log m/\kappa\le h_\kappa\le\min_i h_i$ de
+\cref{pr:barrera-compuesta} es correcta y da inclusión de conjuntos seguros.
+No prueba, por sí sola, que exista un control que satisfaga una barrera de alto
+orden sobre $h_\kappa$: su segunda derivada contiene el término
+$-\kappa\,\mathrm{Var}_w(\dot h)\le0$, que
+endurece la condición de \cref{pr:hocbf} \cite{mayorga2026m1}. Las dos
+identidades se verifican por diferencias finitas a cinco cifras.
+
+Conviene leer bien dónde muerde ese término. No crece sin más con $\kappa$: con
+los pesos concentrados en una sola barrera la varianza se anula
+—$-1{,}4\times10^{-3}$ con $\kappa=20$ y $\approx0$ con $\kappa=80$ en la
+instancia ensayada—, mientras que con varias barreras casi empatadas vale
+$-0{,}40$ para $\kappa=1$ y $-0{,}39$ para $\kappa=5$. Es decir, penaliza
+exactamente el caso que importa: dos obstáculos comparablemente cercanos cuyas
+tasas de aproximación difieren. Al reducir el conservadurismo geométrico
+—$\kappa$ mayor con barreras cercanas— el término puede crecer antes de
+extinguirse, y el programa de \cref{co:invariancia-incondicional} debe
+incorporarlo explícitamente en lugar de heredar la factibilidad de las barreras
+individuales.
+\end{observacion}
+
+La cota es explotable: el conservadurismo introducido por la suavización decrece
+como $\log|\Ccal|/\kappa$, de modo que $\kappa$ se elige a partir de la holgura
+tolerable y del tamaño máximo de coalición, no por ensayo.
+
+\subsection{Cuándo es lícito rigidizar}
+
+La formación de un cluster es una conmutación estructural: desactiva barreras
+internas. Hacerlo desde una configuración insegura las desactivaría sin haberlas
+satisfecho.
+
+\begin{proposicion}[Rigidización admisible]
+\label{pr:rigidizacion-admisible}
+Si en el instante de rigidización $t^-$ se cumple $\psi_{ij}(t^-)\ge0$ para todo
+par interno $i,j\in\Ccal$, y la restricción de rigidez preserva
+$\|p_i-p_j\|$, entonces $\psi_{ij}(t)\ge0$ para todo $t\ge t^{-}$ mientras el
+cluster permanezca rígido, sin intervención del QP.
+\end{proposicion}
+
+\begin{proof}
+La rigidez mantiene constante $\|p_i-p_j\|$, luego $h_{ij}$ es constante y
+$\dot h_{ij}=0$; con $\psi_{ij}=\dot h_{ij}+\alpha_1(h_{ij})=\alpha_1(h_{ij})$
+y $\alpha_1$ de clase $\mathcal K$, el signo de $\psi_{ij}$ es el de $h_{ij}$,
+constante y no negativo por hipótesis.
+\end{proof}
+
+\Cref{pr:rigidizacion-admisible} da la condición de guarda que el
+\cref{alg:megajuego} debe comprobar antes de confirmar un cambio a
+\textsf{cargo}: la rigidización solo se autoriza desde holgura interna positiva.
+La disolución es el movimiento inverso y reactiva las barreras; por
+\cref{th:dwell} su frecuencia está acotada.
+
+\subsection{Recursión de escala}
+
+Las tres escalas comparten mecanismo, y esa es la propiedad estructural que
+justifica llamar \emph{megajuego} al conjunto.
+
+\begin{table}[!ht]
+\centering\small
+\caption{El mismo patrón en tres escalas: restricción dura, programa convexo,
+dual devuelto como precio a la escala superior.}
+\label{tab:escalas}
+\begin{tabularx}{\textwidth}{@{}llX@{}}
+\toprule
+Escala & Restricción dura & Dual y su papel \\
+\midrule
+AMR & límite de par y adherencia (\cref{pr:cota})
+  & saturación; acota $\bar\lambda_i$ \\
+Contacto & unilateralidad y cono de fricción
+  & esfuerzo $\bm\lambda$; precio de \emph{wrench} \\
+Par $(i,j)$ & barrera HOCBF $\psi_{ij}$
+  & $\lambda_{ij}$; precio de seguridad (\cref{th:precio-seguridad}) \\
+Cluster & rigidez interna
+  & fuerza interna $\bm\lambda^{0}$ (\cref{th:rigidizacion}) \\
+Población & recursos compartidos y congestión
+  & precio de congestión \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{observacion}[Qué no resuelve esta construcción]
+\label{obs:clusters-limites}
+El precio de seguridad hace que el juego \emph{prefiera} configuraciones
+holgadas; no sustituye al QP, que sigue siendo quien garantiza la invariancia.
+Si el QP resulta infactible —por singularidad de autoridad
+(\cref{obs:autoridad}) o por barreras incompatibles— el precio no lo evita y
+procede la parada segura. Tampoco se afirma que el equilibrio del juego con
+precios sea el óptimo social del problema con restricciones: por
+\cref{obs:vi}, la brecha permanece y se contabiliza en
+\cref{th:descomposicion}.
+\end{observacion}

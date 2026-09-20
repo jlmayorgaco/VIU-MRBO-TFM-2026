@@ -1,0 +1,37 @@
+{
+  "artifacts": {
+    "auditor": {
+      "path": "scripts/coppelia_cargo/audit_cargo_runtime_contract.py",
+      "sha256": "a350443048d66887e27f6f3b5ab85620b8cb4dacc47bc13fe1267d4e598b06a5"
+    },
+    "manifest": {
+      "path": "coppeliasim/real_scenes/cargo_primary_mujoco_v1.manifest.json",
+      "sha256": "900e1e9b70b6259b3605ab74b4788497299aa220b2b4bb4d34ab9da7b1bcc807"
+    },
+    "runtime": {
+      "path": "scripts/coppelia_cargo/cargo_primary_scene_runtime.lua",
+      "sha256": "4a8f46a7dd2c934c9b73ad120819c30454bdec6ae7abea06fb918a0deb01c5c7"
+    },
+    "scene": {
+      "path": "coppeliasim/real_scenes/cargo_primary_mujoco_v1.ttt",
+      "sha256": "e36a4a915bf3feda628d5eabd8bed56f601860d6b54544407cc09d73b8b31ebe"
+    }
+  },
+  "checks": {
+    "actuation_callback_has_no_mutator": true,
+    "apply_world_called_once_from_init": true,
+    "external_wheel_velocity_surface_present": true,
+    "manifest_structurally_valid": true,
+    "no_direct_body_force_calls": true,
+    "pose_setters_confined_to_apply_world": true,
+    "pose_setters_exist_for_initialization": true,
+    "runtime_sha256_matches_embedded_scene_contract": true,
+    "runtime_sha256_matches_manifest_input": true,
+    "scene_sha256_matches_manifest": true,
+    "sensing_callback_has_no_mutator": true
+  },
+  "generated_at_utc": "2026-09-09T01:39:42.504302+00:00",
+  "pass": true,
+  "schema": "viu-cargo-runtime-audit-v1",
+  "scope": "Static independent audit of pose/body-force confinement and artifact hash binding only; not a physical calibration or performance gate."
+}

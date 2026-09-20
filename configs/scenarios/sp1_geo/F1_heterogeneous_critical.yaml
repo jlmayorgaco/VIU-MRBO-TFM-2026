@@ -1,0 +1,11 @@
+schema_version: 1
+family: F1_heterogeneous_critical
+description: Heterogeneidad crítica de capacidad, fuerza, rol y compatibilidad.
+parameters:
+  demand_pressure: 0.95
+  heterogeneity: 0.28
+  compatibility_probability: 0.82
+  communication_degree: 5
+  shapes: [rectangle, square]
+  route_turns: [0.0, 0.7853981633974483]
+  wrench_tolerance: 0.08

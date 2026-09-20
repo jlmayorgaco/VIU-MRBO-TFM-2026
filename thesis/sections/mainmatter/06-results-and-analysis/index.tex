@@ -1,72 +1,49 @@
 \section{Resultados y análisis}
 \label{sec:results}
 
-La evaluación transforma una asignación lógica en una misión de transporte y comprueba, por bloques, reclutamiento, interacción física, ejecución segura y operación bajo fallos o red imperfecta. SP0--SP8 modifican el estado, la información y la planta entre experimentos; cada resultado pertenece al modelo de su subproblema. Los anexos contienen las demostraciones completas.
+La evaluación transforma una asignación lógica en una misión de transporte mediante tres subproblemas. SP1 estudia la formación distribuida y la asignación de roles/contactos; SP2, la ejecución física, la seguridad y la sustitución; SP3, la planificación y el tráfico de múltiples coaliciones. Cada SP contiene etapas experimentales con modelos distintos, y cada resultado permanece ligado al estado, la información y la planta que lo produjeron. Los anexos contienen las demostraciones completas.
 
-\subsection{Formulación general y arquitectura}
-\label{subsec:common-formulation}
+\subsection{SP1: formación distribuida de coaliciones}
+\label{subsec:sp1}
 
-Sean \(\Robots\) los robots y \(\Loads\) las cargas. Para cada par \(i,k\), \(\boldsymbol c_i\) y \(\boldsymbol r_k\) representan capacidad y requisito, \(\rho_{ik}\) la preferencia y \(x_{ik}\) la pertenencia. Los costes estratégicos se expresan en escala normalizada; las variables físicas usan unidades SI.
+SP1 decide qué robots atienden cada carga, cuántos se requieren y qué rol o contacto asume cada miembro. También delimita cuándo conviene esperar, iniciar, abandonar o cambiar de coalición. Las cuatro etapas históricas siguientes separan calibración, cardinalidad, heterogeneidad y factibilidad de contacto para no atribuir a una sola formulación garantías obtenidas bajo modelos distintos.
 
-La Tabla~\ref{tab:results-model-map} identifica qué SP consulta agregados o cierres globales y cuál es su planta. Esas dependencias, combinadas con decisiones locales, definen la arquitectura híbrida evaluada.
+La validación del módulo canónico se ejecuta además en una batería de siete
+experimentos, cuyos identificadores E0--E6 se conservan en los artefactos. Para
+evitar confundirlos con las etapas históricas de esta sección, se especifica
+siempre que se trata de la batería de validación: caso manual, relajación LP,
+conectividad, discretización, recuperación entera, escala y llegada uniciclo.
+El humo actual es evidencia C-pilot. E0 reproduce el LP regularizado en un caso
+controlado; E1 se aproxima al objetivo sin convergencia sistemática; E2 y E3 no
+son concluyentes; E4 es prometedor pero solo tiene ocho mundos; E5 sigue siendo
+un smoke test y E6 termina en la llegada a la carga, sin docking ni transporte.
+Estas observaciones no elevan el nivel de evidencia de las etapas históricas ni
+transfieren sus garantías al SP1 completo.
 
-\begin{table}[!htbp]
- \centering
- \caption{Contrato de distribución e interfaz física en SP0--SP8.}
- \label{tab:results-model-map}
- \scriptsize
- \setlength{\tabcolsep}{2.2pt}
- \renewcommand{\arraystretch}{1.08}
- \begin{tabularx}{\textwidth}{@{}p{0.70cm}p{2.35cm}p{2.70cm}p{2.20cm}p{2.45cm}X@{}}
-  \toprule
-  SP & Decisión & Agregado o estimación & Cierre & Certificación & Planta \\
-  \midrule
-  0 & revisión unilateral local & ocupación o precios globales; copias locales en el certificado auxiliar & discreto global & exclusividad & sin planta \\
-  1 & preferencia poblacional & cuotas globales & QR global & cardinalidad & sin planta \\
-  2 & ordenamiento secuencial & déficit global salvo la ablación primal--dual & global & umbral de servicio & sin planta \\
-  3 & pujas locales o vecinales parciales & residual exacto o consenso corto & global & QP de \emph{wrench} central & carga estática planar \\
-  4 & conflicto vecinal congelado & pose exacta de carga & bilateral/global & HOCBF y reparto de \emph{wrench} & uniciclo y carga planar en estratos separados \\
-  5 & coalición fija & geometría global filtrada por alcance & no aplica & filtro y reparto central por carga & cuerpo rígido planar \\
-  6 & marginal local & déficit publicado & local por carga & cobertura aditiva & viaje reducido \\
-  7 & ruta vecinal & intención local & testigo local & conflicto lógico visible & grafo discreto \\
-  8 & ruta vecinal & mensajes imperfectos & local & conflicto visible & grafo discreto \\
-  Cargo & líder temporal tras \emph{gossip} de identificadores & atributos resueltos en registro global & líder por carga & criterio agregado, punto intermedio y filtro & uniciclo y carga planar en una misión \\
-  \bottomrule
- \end{tabularx}
- \viuownsource
-\end{table}
-
-Una garantía puede pasar a la capa siguiente únicamente si esta conserva el estado, la información y el modelo de la prueba. Por ejemplo, la cobertura nominal de recursos debe someterse todavía al certificado de contacto. En Cargo, los enlaces vecinales descubren identificadores; el ejecutor consulta estado global para elegir líder y resolver atributos. Además, su admisión inicial usa un criterio agregado distinto del QP de SP3. Estas dependencias hacen híbrida la arquitectura.
-
-
-\subsection{Protocolo común y métodos de referencia}
-\label{subsec:common-protocol}
-
-Cada celda experimental reutiliza el mundo y la semilla entre métodos, con idénticos límites de actuación, horizonte y criterio de éxito. Las colisiones, los bloqueos y los agotamientos del horizonte permanecen en el denominador. Las tablas distinguen el oráculo con información global del método, los comparadores y las ablaciones. La clase de complejidad corresponde al problema; el tiempo o la cota informados corresponden al algoritmo ejecutado.
-
-SP2--SP4 son reanálisis de observaciones archivadas, con postproceso, tablas y auditorías disponibles. Parte de sus generadores históricos falta. Cargo sí puede regenerarse desde su configuración y reproduce el demostrador híbrido implementado; esta campaña no ejecuta la composición de los juegos de SP2--SP6.
-
-\clearpage
 \input{sections/mainmatter/06-results-and-analysis/sp0}
-\clearpage
 \input{sections/mainmatter/06-results-and-analysis/sp1}
-\clearpage
 \input{sections/mainmatter/06-results-and-analysis/sp2}
-\clearpage
 \input{sections/mainmatter/06-results-and-analysis/sp3}
+
 \clearpage
+\subsection{SP2: ejecución y transporte cooperativo}
+\label{subsec:sp2}
+
+SP2 comienza con una coalición cerrada y certificada. Estudia la aproximación, el acoplamiento, la estabilización, el transporte de pose, la seguridad de la huella, el reemplazo tras fallos y la continuidad funcional de la misión Cargo. El liderazgo lógico temporal usado por el demostrador no equivale a un líder físico permanente de la formación.
+
 \input{sections/mainmatter/06-results-and-analysis/sp4}
-\clearpage
 \input{sections/mainmatter/06-results-and-analysis/sp5}
-\clearpage
 \input{sections/mainmatter/06-results-and-analysis/sp6}
-\clearpage
-\input{sections/mainmatter/06-results-and-analysis/sp7}
-\clearpage
-\input{sections/mainmatter/06-results-and-analysis/sp8}
-\clearpage
 \input{sections/mainmatter/06-results-and-analysis/cargo-e2e}
+
 \clearpage
+\subsection{SP3: planificación y tráfico de múltiples coaliciones}
+\label{subsec:sp3}
+
+SP3 trata como agentes compuestos a las coaliciones ejecutables de SP2 y coordina sus rutas, reservas y prioridades junto con robots libres o en reunión. Las etapas distinguen exclusión lógica, degradación por escala/red y un piloto cinemático congestionado; ninguna de ellas demuestra por sí sola seguridad continua ni completitud global.
+
+\input{sections/mainmatter/06-results-and-analysis/sp7}
+\input{sections/mainmatter/06-results-and-analysis/sp8}
 \input{sections/mainmatter/06-results-and-analysis/aws-industrial2}
 
 \clearpage
@@ -76,9 +53,9 @@ SP2--SP4 son reanálisis de observaciones archivadas, con postproceso, tablas y 
 
 Cada garantía queda asociada a la interfaz que la produjo. La cobertura escalar, por ejemplo, admite una coalición nominal que el QP de \emph{wrench} puede rechazar. La misión Cargo consiguió ejecutar juntos el reclutamiento, el movimiento, la respuesta a obstáculos y el reemplazo; las pruebas formales permanecen vinculadas a sus respectivos SP.
 
-En reclutamiento, la eliminación del déficit establece factibilidad, pero la eficiencia necesita un coste social y la escasez exige decidir qué cargas activar. Las contribuciones marginales de SP2 incorporan heterogeneidad operacional. Los cierres ejecutados en este bloque todavía consultan agregados globales.
+En SP1, la eliminación del déficit establece factibilidad, pero la eficiencia necesita un coste social y la escasez exige decidir qué cargas activar. Las contribuciones marginales de la etapa E2 incorporan heterogeneidad operacional. Los cierres ejecutados en este bloque todavía consultan agregados globales.
 
-Las capas posteriores revelan límites diferentes. El QP planar redujo en \(0.333\) la tasa de falsos positivos sobre 600 mundos. El filtro de seguridad eliminó las colisiones observadas y conservó casos bloqueados, mientras la reparación restauró los 360 certificados recuperables. En SP8, la retransmisión elevó la tasa libre de conflicto en \(0.054\) y añadió \(261.3\) mensajes por agente; a 128 robots, esa tasa fue cero.
+Las capas posteriores revelan límites diferentes. Al final de SP1, el QP planar redujo en \(0.333\) la tasa de falsos positivos sobre 600 mundos. En SP2, el filtro de seguridad eliminó las colisiones observadas y conservó casos bloqueados, mientras la reparación restauró los 360 certificados recuperables. En SP3, la retransmisión elevó la tasa libre de conflicto en \(0.054\) y añadió \(261.3\) mensajes por agente; a 128 robots, esa tasa fue cero.
 
 Cargo completó 359 de 360 misiones mediante un líder por carga y un registro global, resultado que acredita coexistencia funcional. En el piloto cinemático AWS, los tres escenarios congestionados agotaron el horizonte de \(60\)~s aunque las muestras no registraron solapamientos. El piloto localiza un problema de vivacidad y no reproduce la evidencia dinámica del modo Cargo.
 

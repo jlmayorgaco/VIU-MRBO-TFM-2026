@@ -1,0 +1,164 @@
+\section{Fundamentos de movilidad, percepción y parámetros}
+\label{sec:fundamentos}
+
+La \cref{sec:dinamica} introdujo la dinámica de rueda y de carga, y
+\cref{sec:movimiento} dos lemas sobre orientación y curvatura. Falta la base
+que explica \emph{por qué} esas restricciones tienen la forma que tienen, y
+falta declarar dos supuestos que el resto del trabajo usa sin nombrarlos: que la
+pose se conoce y que los parámetros de la carga se conocen.
+
+\subsection{Clasificación de movilidad}
+
+La estructura cinemática de un robot con ruedas se caracteriza por dos enteros.
+Sea $C_1^{f}(\beta_s)$ la matriz que apila las restricciones de deslizamiento de
+las ruedas fijas y direccionables.
+
+\begin{definicion}[Grados de movilidad, direccionabilidad y maniobrabilidad]
+\label{def:movilidad}
+\[
+  \delta_m=\dim\mathcal N\bigl(C_1^{f}(\beta_s)\bigr),\qquad
+  \delta_s=\operatorname{rank}\bigl(C_1^{s}(\beta_s)\bigr),\qquad
+  \delta_M=\delta_m+\delta_s ,
+\]
+donde $\delta_m$ cuenta los grados de libertad del chasis manipulables
+\emph{de inmediato} mediante velocidades de rueda, y $\delta_s$ los parámetros
+de dirección independientes \cite{siegwart2011introduction}.
+\end{definicion}
+
+Para el AMR de tracción diferencial, las dos ruedas fijas comparten eje
+horizontal y la segunda no añade restricción independiente: $\delta_m=2$,
+$\delta_s=0$, luego $\delta_M=2$. El robot controla directamente su velocidad
+longitudinal y su velocidad de giro, y su centro instantáneo de rotación está
+obligado a caer sobre la recta que prolonga el eje de las ruedas.
+
+\begin{observacion}[De dónde vienen los lemas de movimiento]
+\label{obs:origen-lemas}
+$\delta_m=2<3$ es exactamente el motivo de \cref{le:orientacion}: con dos grados
+manipulables sobre un chasis de tres, la dirección de empuje no es libre y hay
+que orientarse. Y $\delta_s=0$ es el motivo de \cref{le:curvatura}: sin ruedas
+direccionables, curvatura y velocidad se acoplan a través de las mismas dos
+entradas. Un AMR omnidireccional tendría $\delta_m=3$ y ninguno de los dos lemas
+sería necesario; el precio es mecánico, no algorítmico.
+\end{observacion}
+
+\begin{observacion}[Consecuencia para la matriz de agarre]
+\label{obs:movilidad-agarre}
+La columna $g_{ks}$ de \eqref{eq:columna} supone que el puesto entrega su
+esfuerzo en la dirección $n_{ks}$. Con $\delta_M=2$ esa dirección no es
+instantáneamente arbitraria: pertenece al cono admisible del chasis en su
+orientación actual. Por tanto el conjunto realizable de \cref{th:span} debe
+entenderse sobre las direcciones \emph{alcanzables tras reorientación}, y el
+tiempo de esa reorientación entra en el presupuesto de la maniobra. La
+caracterización por span positivo se conserva; lo que cambia es que sus columnas
+son función de las poses, no constantes.
+\end{observacion}
+
+\subsection{El supuesto de pose conocida}
+
+Todo el aparato de barreras evalúa $h_{ij}=\|p_i-p_j\|^2-d_{\min}^2$ sobre poses
+\emph{estimadas}. La estimación de pose en interiores se resuelve con filtros
+bayesianos —Markov, Kalman extendido, partículas— sobre el mismo tipo de medidas
+telemétricas que alimentan \cref{th:mapa} \cite{siegwart2011introduction,thrun2005probabilistic}.
+
+\begin{supuesto}[Pose con error acotado]
+\label{s:pose}
+Existe $\varepsilon_p>0$ tal que $\|\hat p_i-p_i\|\le\varepsilon_p$ para todo $i$
+y todo $t$.
+\end{supuesto}
+
+\begin{proposicion}[Estrechamiento de la barrera por error de pose]
+\label{pr:pose}
+Bajo \cref{s:pose}, imponer la barrera estrechada
+$\hat h_{ij}=\|\hat p_i-\hat p_j\|^2-(d_{\min}+2\varepsilon_p)^2\ge0$ sobre las
+poses estimadas garantiza $h_{ij}\ge0$ sobre las poses reales.
+\end{proposicion}
+
+\begin{proof}
+Por desigualdad triangular,
+$\|p_i-p_j\|\ge\|\hat p_i-\hat p_j\|-2\varepsilon_p$. Si
+$\|\hat p_i-\hat p_j\|\ge d_{\min}+2\varepsilon_p$, entonces
+$\|p_i-p_j\|\ge d_{\min}$.
+\end{proof}
+
+\begin{observacion}[El coste se acumula]
+\label{obs:coste-pose}
+\Cref{pr:pose} se compone con \cref{le:muestras}: el margen total que hay que
+reservar es $2\varepsilon_p$ por localización más $L_\Psi\Delta t$ por muestreo.
+Y compite con \cref{pr:compatibilidad}: cada metro de estrechamiento por
+seguridad reduce el anillo admisible frente a la conectividad, con lo que la
+cota de grado del árbol generador empeora. La precisión de localización no es un
+detalle de implementación: entra en la cota de grado de la topología.
+\end{observacion}
+
+\subsection{Parámetros desconocidos y equivalencia cierta}
+
+\Cref{pr:monotonia-info} trata la incertidumbre paramétrica como conjunto
+$\Theta$. La alternativa habitual en control es estimar un valor nominal
+$\hat\theta$ y actuar como si fuera exacto. Conviene separar ambos objetos con
+precisión, porque hacen cosas distintas.
+
+Para un error de seguimiento $s$ cuya dinámica admite la forma regresora
+$M(q)\dot s+C(q,\dot q)s=Y(q,\dot q,v_r,\dot v_r)\tilde\theta-Ks+r$
+con $\tilde\theta=\hat\theta-\theta$, la ley $\dot{\hat\theta}=-\Gamma Y^{\!\top}s$
+y la antisimetría de $\dot M-2C$ dan
+\begin{equation}
+  V=\tfrac12 s^{\!\top}Ms+\tfrac12\tilde\theta^{\!\top}\Gamma^{-1}\tilde\theta,
+  \qquad
+  \dot V=-s^{\!\top}Ks+s^{\!\top}r .
+  \label{eq:adaptativo}
+\end{equation}
+
+\begin{observacion}[Qué da y qué no da la adaptación]
+\label{obs:adaptacion}
+Con $r=0$, \eqref{eq:adaptativo} da disipación, y con
+$k=\lambda_{\min}(K)$ se obtiene
+$\dot V\le-\tfrac{k}{2}\|s\|^2+\tfrac{1}{2k}\|r\|^2$. Eso \emph{no} demuestra
+estabilidad entrada--estado del vector completo de errores, porque el término
+negativo no domina el error paramétrico $\tilde\theta$. Dos consecuencias.
+Primera: saturación y pérdida de contacto entran en $r$ y no desaparecen por
+estimar mejor la masa; el certificado que las cubre es
+\cref{th:autoridad}, no \eqref{eq:adaptativo}. Segunda: seguir bien no implica
+identificar (\cref{obs:identificacion}), de modo que $\hat\theta$ sirve para
+rendimiento y $\Theta$ para garantías. Confundirlos produce certificados que
+descansan sobre una estimación puntual sin cobertura.
+\end{observacion}
+
+\begin{observacion}[Qué no aporta la biblioteca consultada]
+\label{obs:biblioteca-fisica}
+De las obras de robótica móvil y control cooperativo revisadas, ninguna formula
+el reparto de esfuerzo mediante el \emph{wrench} resultante sobre una carga
+común: tratan formación, seguimiento y consenso sobre poses, no asignación de
+esfuerzos con unilateralidad y conos de fricción. La capa de contacto de este
+trabajo no tiene precedente directo en esa literatura, y esa es la frontera
+concreta que separa el control de formación del transporte cooperativo.
+\end{observacion}
+
+\begin{observacion}[Un equilibrio generalizado puede ser socialmente inútil]
+\label{obs:gne-ineficiente}
+La definición de equilibrio de Nash generalizado se vacía cuando la
+restricción compartida bloquea toda desviación. Con $x_1+x_2=1$,
+$0\le x_i\le1$, $J_1=x_1^2/2$ y $J_2=3x_2^2/2$, fijado el otro jugador la
+igualdad deja una sola acción admisible, luego \emph{todo} punto factible es
+un equilibrio generalizado; el único equilibrio variacional es $(3/4,1/4)$,
+con coste social $3/8$ frente a $1/2$ en el equilibrio generalizado $(1,0)$
+\cite{mayorga2026compendio}. La selección variacional no es un refinamiento
+técnico: es lo que hace que el equilibrio con multiplicador común de
+\cref{th:potencial} tenga contenido cuando la restricción compartida es
+activa.
+\end{observacion}
+
+\begin{observacion}[El pago vectorial importa más que el protocolo]
+\label{obs:pago-vectorial}
+Sobre ciento veinte mundos de una relajación continua de asignación, tres
+inicializaciones y tres mil quinientas iteraciones, las tres dinámicas
+—replicador, Smith y BNN— dan brechas medianas respecto de la referencia
+convexa de $1{,}211$, $1{,}211$ y $1{,}211$ con pago escalar, y de
+$1{,}2\times10^{-4}$, $3{,}9\times10^{-4}$ y $7{,}0\times10^{-3}$ con pago
+vectorial \cite{mayorga2026compendio}. Representar correctamente la
+contribución vectorial de cada AMR a cada carga cambia el resultado en cuatro
+órdenes de magnitud; cambiar de protocolo con pago escalar no lo cambia. Es
+la versión empírica de \cref{th:noequiv}: la heterogeneidad no se resume en
+un escalar. Y a presupuesto finito ninguna alcanzó la brecha variacional de
+$10^{-4}$, de modo que las tres difieren en velocidad aunque coincidan en
+destino.
+\end{observacion}

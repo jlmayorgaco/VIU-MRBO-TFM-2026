@@ -1,13 +1,20 @@
 # Stage 1A provenance summary
 
-Coverage: `open_discovery_only`  
-WoS status: `pending_external_export`
+Coverage: `wos_partially_reconciled`
+WoS status: `present_partial`
 
 ## Source provenance counts
 
 - `crossref`: 190
 - `legacy_review`: 32
 - `openalex`: 65
+- `wos:F01_primary_wos_plaintext_full_record_cited_references.txt`: 50
+- `wos:F02_primary_wos_plaintext_full_record_cited_references.txt`: 50
+- `wos:F03_primary_wos_plaintext_full_record_cited_references.txt`: 14
+- `wos:F04_primary_wos_plaintext_full_record_cited_references.txt`: 13
+- `wos:F05_primary_wos_plaintext_full_record_cited_references.txt`: 23
+- `wos:F06_primary_wos_plaintext_full_record_cited_references.txt`: 3
+- `wos:F07_primary_wos_plaintext_full_record_cited_references.txt`: 1
 
 ## API events
 

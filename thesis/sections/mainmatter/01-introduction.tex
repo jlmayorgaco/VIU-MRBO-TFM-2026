@@ -26,6 +26,14 @@ límites de los actuadores
 \parencite{parkerTang2006ASyMTRe,zhangParker2013IQASyMTRe,alonsomora2017transport}.
 Un fallo en cualquiera de esas interfaces reabre la selección o detiene la tarea.
 
+La Figura~\ref{fig:problema} fija la lectura espacial del problema: una carga
+puede seguir reclutando, otra puede estar ya en transporte y una tercera puede
+ser atendida por un solo robot. El dibujo representa la arquitectura objetivo
+sin coordinador central; las dependencias globales que conserva la
+implementación evaluada se declaran después en la metodología.
+
+\input{figures/protected/01-distributed-coalition-scenario}
+
 La literatura revisada resuelve partes diferentes de esa cadena. MURDOCH y CBBA
 adjudican tareas mediante negociación
 \parencite{gerkeyMataric2002MURDOCH,choiBrunetHow2009CBBA}; ASyMTRe comprueba
@@ -52,8 +60,9 @@ en el tercer bloque; el cuarto mide el coste de comunicación y la pérdida de
 calidad al crecer la flota. Demostraciones, enumeraciones y mundos pareados
 separan resultados formales de observaciones empíricas. Además, un demostrador
 Cargo comprueba la compatibilidad funcional de selección, acoplamiento,
-transporte y reemplazo. Como sustituye parte de los mecanismos de SP2--SP6, sus
-resultados no constituyen una validación integrada de esos subproblemas. El
+transporte y reemplazo. Como sustituye parte de los mecanismos parciales de SP1
+y SP2, sus resultados no constituyen una validación integrada de ambos
+subproblemas. El
 piloto tridimensional aporta un ensayo cinemático adicional de congestión.
 
 La modalidad física principal es Cargo soportada. Tras el acoplamiento, carga y

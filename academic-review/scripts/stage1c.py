@@ -87,7 +87,7 @@ def write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
             handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
 
 
-def ensure_stage1b_frozen() -> dict[str, Any]:
+def ensure_stage1b_frozen(*, rebaseline: bool = False) -> dict[str, Any]:
     manifest_path = MANIFESTS / "stage1b_freeze_manifest.json"
     if not STAGE1B_CSV.exists():
         raise FileNotFoundError(f"Frozen Stage 1B input missing: {STAGE1B_CSV}")
@@ -100,16 +100,23 @@ def ensure_stage1b_frozen() -> dict[str, Any]:
     if manifest_path.exists():
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         if manifest.get("files") != observed:
-            raise RuntimeError(
-                "Stage 1B artifact changed after freeze; refusing to continue. "
-                f"Expected {manifest.get('files')}, observed {observed}."
-            )
-        return manifest
+            if not rebaseline:
+                raise RuntimeError(
+                    "Stage 1B artifact changed after freeze; refusing to continue. "
+                    f"Expected {manifest.get('files')}, observed {observed}."
+                )
+            stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+            archive = manifest_path.with_name(f"{manifest_path.stem}.superseded_{stamp}{manifest_path.suffix}")
+            archived = dict(manifest)
+            archived.update({"status": "superseded", "superseded_at_utc": utc_now(), "superseded_reason": "rebaseline_requested_after_upstream_reconciliation"})
+            archive.write_text(json.dumps(archived, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        else:
+            return manifest
     manifest = {
         "created_at_utc": utc_now(),
         "status": "immutable_input",
         "files": observed,
-        "note": "Stage 1C must never overwrite the Stage 1B corpus.",
+        "note": "Stage 1C must never overwrite the Stage 1B corpus. A prior freeze, if any, is archived before an explicit rebaseline.",
     }
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return manifest
@@ -187,9 +194,10 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--resume", action="store_true", help="reuse persistent HTTP cache")
     parser.add_argument("--force", action="store_true", help="refresh HTTP cache")
+    parser.add_argument("--rebaseline", action="store_true", help="archive a stale Stage 1B freeze and bind this derivative to the current input")
     args = parser.parse_args()
 
-    freeze = ensure_stage1b_frozen()
+    freeze = ensure_stage1b_frozen(rebaseline=args.rebaseline)
     config = yaml.safe_load(REPAIR_CONFIG.read_text(encoding="utf-8"))
     config_hash = sha256(REPAIR_CONFIG)
     env = BOOT.dotenv_values(ENV)
@@ -273,6 +281,8 @@ def main() -> int:
         raise RuntimeError(f"Stage 1C derivative invariant failure: {invariant_failures}")
 
     api_failures = [event for event in http.events if event.status in {"failed", "forbidden", "auth_required", "parse_error"}]
+    wos_coverage = BOOT.wos_coverage_label(BOOT.wos_raw_files())
+    wos_status = "present_partial" if wos_coverage == "wos_partially_reconciled" else ("present_complete" if wos_coverage == "wos_reconciled" else "pending_external_export")
     new_query_ids = set().union(*new_ids_by_query.values()) if new_ids_by_query else set()
     new_query_relevant = sum(1 for row in screened if row.get("candidate_id") in new_query_ids and row.get("screening_decision") in {"include_fulltext", "maybe_fulltext"})
     recall_new = [item for item in recall_log if item.get("discovery_status") in {"new_candidate", "ambiguous_match_retained"}]
@@ -349,8 +359,8 @@ better acquisition candidate set. Stage 2 may attempt legal/open full-text
 retrieval; paywalled or otherwise inaccessible works must be marked
 `unavailable_legally` or `abstract_only` without bypassing access controls.
 
-`coverage_status=open_sources_plus_limited_snowballing`  
-`wos_status=pending_external_export`
+`coverage_status=open_sources_plus_limited_snowballing;{wos_coverage}`
+`wos_status={wos_status}`
 """
     (REPORTS / "stage1c_query_repair_report.md").write_text(report, encoding="utf-8")
     print(report)

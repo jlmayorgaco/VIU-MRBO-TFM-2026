@@ -1,0 +1,151 @@
+\section{Topología dinámica: qué se rompe y cómo se repara}
+\label{sec:topologia}
+
+Los resultados de consenso sobre multiplicadores y sobre \emph{log-odds}
+invocados hasta aquí suponen un grafo fijo: fuertemente conexo y balanceado en
+peso en el caso de los multiplicadores \cite{martinezPiazuelo2025gne}, no dirigido
+y conexo en \cref{th:mapa}. Esa hipótesis es insostenible en este problema,
+porque el grafo de comunicación es el de disco
+$\Gcal_{\mathrm{disk}}(R^{\mathrm{com}})$ y los AMR se mueven: acercarse o
+alejarse crea y destruye aristas.
+
+Tres resultados dependen de ello y conviene decir exactamente cuáles.
+\Cref{th:mapa} usa $\lambda_2$ de un Laplaciano fijo. \Cref{th:precio-seguridad}
+exige que los dos miembros de un par \emph{acuerden} el precio, y el acuerdo se
+obtiene por consenso sobre el mismo grafo. Y la noción de desviación
+\emph{conectada} de \cref{sec:nhop}, que define $h_c^\star$, se enuncia sobre un
+grafo que ahora varía. Se presentan dos salidas, y la segunda es la que se
+adopta.
+
+\subsection{Salida 1: tolerar la conmutación}
+
+La teoría clásica de consenso bajo topología conmutada no exige conectividad
+instantánea, sino acumulada.
+
+\begin{teorema}[Consenso bajo topología conmutada]
+\label{th:conmutada}
+Sea la topología constante a trozos en instantes $t_0<t_1<\cdots$ con tiempos
+de permanencia $\tau_j=t_{j+1}-t_j$ acotados inferiormente por $\tau_{\min}>0$.
+Si la unión de los grafos dirigidos sobre intervalos contiguos acotados posee un
+árbol generador dirigido, entonces el protocolo de consenso alcanza acuerdo
+\cite[Lemas 2.26--2.27]{ren2008distributed}.
+\end{teorema}
+
+La demostración clásica pasa por productos infinitos de matrices SIA
+(estocásticas, indescomponibles y aperiódicas): cada $e^{-L(t_j)\tau_j}$ es
+estocástica por filas, y la unión con árbol generador garantiza que el producto
+lo sea también.
+
+\begin{observacion}[Lo que cuesta esta salida]
+\label{obs:coste-conmutada}
+La tasa deja de ser $(1-\varepsilon\lambda_2)^t$ con un $\lambda_2$ fijo: pasa a
+depender de la longitud del intervalo sobre el que hay que acumular el árbol
+generador, y se degrada cuando la conectividad es intermitente. Además, la
+hipótesis es sobre la \emph{trayectoria realizada}: no puede verificarse
+\emph{a priori} porque el grafo lo produce el propio movimiento que el
+mecanismo decide. Es una hipótesis sobre el resultado, no sobre el diseño.
+\end{observacion}
+
+\subsection{Salida 2: garantizar la topología con una barrera}
+
+La circularidad de \cref{obs:coste-conmutada} se rompe si se \emph{impone} la
+conectividad en lugar de suponerla. La observación es que una arista de
+comunicación es una restricción de distancia, y por tanto admite exactamente el
+mismo tratamiento que la seguridad en \cref{sec:clusters}: una barrera con su
+multiplicador.
+
+Sea $\mathcal T\subseteq\mathcal E_C(t_0)$ un árbol generador del grafo de
+comunicación en el instante inicial y, para cada $(i,j)\in\mathcal T$,
+\begin{equation}
+  h^{\mathrm{con}}_{ij}
+  \defeq (R^{\mathrm{com}})^2-\|p_i-p_j\|^2\ \ge\ 0 .
+  \label{eq:barrera-conectividad}
+\end{equation}
+
+\begin{teorema}[Topología garantizada]
+\label{th:topologia-garantizada}
+Si $h^{\mathrm{con}}_{ij}(t_0)\ge0$ para todo $(i,j)\in\mathcal T$ y el QP de
+movimiento que incluye las barreras \eqref{eq:barrera-conectividad} es factible
+en todo estado alcanzado, entonces $\mathcal T\subseteq\mathcal E_C(t)$ para
+todo $t\ge t_0$. En consecuencia el grafo de comunicación permanece conexo, y
+las hipótesis de grafo fijo de \cref{th:mapa} y de la dinámica de
+multiplicadores se satisfacen sobre $\mathcal T$.
+\end{teorema}
+
+\begin{proof}
+Cada $h^{\mathrm{con}}_{ij}$ es una función de barrera con grado relativo dos
+respecto a la aceleración, idéntica en estructura a la de seguridad. Aplicando
+\cref{pr:hocbf} al conjunto $\{h^{\mathrm{con}}_{ij}\ge0\}_{(i,j)\in\mathcal T}$
+se obtiene invariancia hacia adelante, luego ninguna arista de $\mathcal T$ se
+rompe. Un grafo que contiene un árbol generador es conexo.
+\end{proof}
+
+\Cref{th:topologia-garantizada} convierte un problema de topología conmutada en
+uno de topología fija \emph{por construcción}. Las aristas que no pertenecen a
+$\mathcal T$ aparecen y desaparecen libremente; solo añaden información y su
+pérdida no compromete ningún resultado.
+
+\subsection{Seguridad y conectividad están en tensión}
+
+Las dos barreras empujan en sentidos opuestos: la de seguridad separa, la de
+conectividad acerca. Su compatibilidad no es gratuita.
+
+\begin{proposicion}[Condición de compatibilidad y cota de grado]
+\label{pr:compatibilidad}
+Para un par, el conjunto admisible es el anillo
+$d_{\min}\le\|p_i-p_j\|\le R^{\mathrm{com}}$, no vacío si y solo si
+$d_{\min}\le R^{\mathrm{com}}$. Para un nodo de grado $\Delta$ en $\mathcal T$,
+una condición necesaria es
+\[
+  \Delta\ \le\
+  \left\lfloor
+    \frac{\pi}{\arcsin\!\bigl(d_{\min}/(2R^{\mathrm{com}})\bigr)}
+  \right\rfloor .
+\]
+\end{proposicion}
+
+\begin{proof}
+Los $\Delta$ vecinos deben estar a distancia no mayor que $R^{\mathrm{com}}$ del
+nodo y separados entre sí al menos $d_{\min}$. La disposición más permisiva los
+sitúa sobre la circunferencia de radio $R^{\mathrm{com}}$: dos vecinos a
+separación angular $\theta$ distan $2R^{\mathrm{com}}\sin(\theta/2)$, que debe
+ser al menos $d_{\min}$, luego
+$\theta\ge2\arcsin\bigl(d_{\min}/(2R^{\mathrm{com}})\bigr)$. Caben a lo sumo
+$\lfloor 2\pi/\theta\rfloor$ vecinos. Situarlos a radio menor exige separación
+angular mayor, luego la cota es necesaria.
+\end{proof}
+
+La cota es operativa: fija qué árboles generadores son admisibles. Con
+$d_{\min}=0{,}5$~m y $R^{\mathrm{com}}=3{,}2$~m resulta $\Delta\le40$, holgado;
+con $d_{\min}=1{,}0$~m y $R^{\mathrm{com}}=1{,}5$~m resulta $\Delta\le9$, que ya
+condiciona la elección del árbol.
+
+\begin{corolario}[El precio de la conectividad]
+\label{co:precio-conectividad}
+El multiplicador de $h^{\mathrm{con}}_{ij}$ es el coste marginal de mantener el
+enlace $(i,j)$. Comparado con el valor de la información que transporta,
+proporciona un criterio para reconfigurar $\mathcal T$: cuando el precio de una
+arista supera de forma sostenida ese valor, conviene recablear el árbol. La
+reconfiguración es una conmutación estructural y queda sujeta a
+\cref{th:dwell}.
+\end{corolario}
+
+\begin{observacion}[Qué se paga y dónde aparece]
+\label{obs:coste-conectividad}
+Imponer $\mathcal T$ restringe el movimiento: hay rutas admisibles sin la
+restricción que dejan de serlo con ella. Esa pérdida no desaparece, se
+contabiliza: entra en $\Delta_{\mathrm{dyn}}$ de \cref{th:descomposicion}. La
+elección entre las dos salidas es, por tanto, explícita. La primera no restringe
+el movimiento y ofrece una garantía condicionada a una hipótesis que solo puede
+comprobarse a posteriori; la segunda restringe el movimiento y ofrece una
+garantía verificable en diseño.
+\end{observacion}
+
+\begin{observacion}[Atribución]
+\label{obs:atribucion-conectividad}
+El mantenimiento de conectividad mediante campos potenciales o barreras es
+técnica conocida en control multi-robot; lo que aquí se sostiene no es la
+técnica sino su lugar en la arquitectura: la conectividad es una barrera más y,
+por \cref{th:precio-seguridad}, su multiplicador es un precio más dentro del
+mismo juego. No se introduce ningún mecanismo adicional.
+\end{observacion}

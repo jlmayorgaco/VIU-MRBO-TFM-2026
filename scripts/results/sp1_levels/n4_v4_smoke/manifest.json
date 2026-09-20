@@ -1,0 +1,87 @@
+{
+  "artifacts": {
+    "REPORT.md": {
+      "bytes": 432,
+      "sha256": "eef5e8e22166d624cab131c9b61afd61e25f7b3965b59e16d3e417c29d1092f9"
+    },
+    "config_frozen.yaml": {
+      "bytes": 2082,
+      "sha256": "7d06274c43e76ca6d2aca1af365607a4ac4d698363317720c5559ebfbf5eb27f"
+    },
+    "figures/n4_fi_representative_trace.pdf": {
+      "bytes": 27783,
+      "sha256": "ed2f791fa90412a54e4539e5063dffa921bb4b0e0e48677be4cc5a4794560e93"
+    },
+    "figures/n4_fi_representative_trace.png": {
+      "bytes": 226534,
+      "sha256": "72bab1e15c7c17862eb2c1e0af9ade22b13107ccdca292141d808996218cb1e7"
+    },
+    "figures/n4_hstar_distribution.pdf": {
+      "bytes": 22260,
+      "sha256": "b13a4dacc2f991c3313aa4ce22e2e98d09e3bf3fae19b7c69a6725656ddb5643"
+    },
+    "figures/n4_hstar_distribution.png": {
+      "bytes": 106347,
+      "sha256": "59abdb31ae0eb7260f66c4e655e892a7f34bbe4a7028570747fff54ad06182ad"
+    },
+    "figures/n4_hstar_gap_link.pdf": {
+      "bytes": 26224,
+      "sha256": "114a1ebcb3c4eaa26a7b8175d136966279ab8b91957fb922af1bee072ea89a87"
+    },
+    "figures/n4_hstar_gap_link.png": {
+      "bytes": 164157,
+      "sha256": "681a5c1be3b410e9d7823e63a53e9c8b566279d7abbd857e0487ae07b8d352b7"
+    },
+    "figures/n4_hstar_ratio_sensitivity.pdf": {
+      "bytes": 24852,
+      "sha256": "f191a01dc6a2352a82cd4707c82f00dec0c30d2b6a58e275068df5571bb50d38"
+    },
+    "figures/n4_hstar_ratio_sensitivity.png": {
+      "bytes": 122325,
+      "sha256": "9b7c0e13dbfc1f89ae0f3d81044694279750551833981a91c15854809fae4037"
+    },
+    "key_metrics.json": {
+      "bytes": 236,
+      "sha256": "3090afd5753386830e8bf08870af4bb7c6e9d13be8ae39005bfd49d83a2d41f8"
+    },
+    "processed/e9_fi_trace_endpoints.csv": {
+      "bytes": 350,
+      "sha256": "f0e445eca13fb659c6b4a1d146c7ec2700a45ea39d24a205ec87cd019fe39157"
+    },
+    "processed/hstar_category_summary.csv": {
+      "bytes": 8839,
+      "sha256": "65e3812eac2a16bd0c4205dd959f20f793da85ab65d933e72801ca68fad3ec4a"
+    },
+    "processed/n4_v4_results_macros.tex": {
+      "bytes": 327,
+      "sha256": "7227895e60bd70f54df8f6b15552d78f70eb07bb2bbdaea49397b293251731b7"
+    },
+    "raw/e9_fi_representative_trace.csv": {
+      "bytes": 6809,
+      "sha256": "e2e88caba86da495dc777b1eedcb3e0504cf20b891f80f4324fb2bec6070e493"
+    },
+    "raw/e9_hstar_runs.csv": {
+      "bytes": 12073,
+      "sha256": "b347b130fe926a7ec2ed0d7758ca2826c04242a473976fd78c35631a9f1b346c"
+    }
+  },
+  "campaign_id": "SP1_N4_HSTAR_v4_SMOKE",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:09:58) [MSC v.1929 64 bit (AMD64)]",
+    "workers": 4
+  },
+  "git": {
+    "branch": "VIU_TFM_V2",
+    "commit": "aaf0034483928598f2d81c71624ba12d9548f4f0",
+    "tree_dirty": true
+  },
+  "limitations": [
+    "The state is the BR terminal reached from the idle profile, not an arbitrary assignment.",
+    "The search is exact only within connected coalitions of size at most three.",
+    "The category >3 does not distinguish a higher-order improvement from a global local optimum.",
+    "The N/K sweep is an independent sensitivity block and is not pooled with the frozen confirmatory campaign.",
+    "Network loss and delay are outside this campaign because DMIS+TX currently assumes reliable delivery."
+  ],
+  "status": "smoke"
+}

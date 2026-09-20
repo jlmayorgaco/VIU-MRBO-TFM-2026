@@ -230,15 +230,15 @@ def exact_feasible_oracle(capabilities: np.ndarray, requirement: np.ndarray, cos
 
 def recovery_time_upper_bound(
     detection_delay_s: float,
-    strict_move_bound: int,
-    max_interactivation_s: float,
+    accepted_change_bound: int,
+    max_decision_window_s: float,
     max_travel_distance_m: float,
     min_speed_mps: float,
     settling_time_s: float,
 ) -> float:
     return float(
         detection_delay_s
-        + strict_move_bound * max_interactivation_s
+        + (accepted_change_bound + 1) * max_decision_window_s
         + max_travel_distance_m / max(min_speed_mps, 1e-12)
         + settling_time_s
     )

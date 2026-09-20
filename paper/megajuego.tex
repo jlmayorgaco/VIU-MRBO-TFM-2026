@@ -1,0 +1,1707 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2.6cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
+\usepackage{booktabs,tabularx,array}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,positioning,fit,decorations.pathreplacing}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{enumitem}
+\usepackage[hidelinks,colorlinks=true,linkcolor=NavyBlue,citecolor=NavyBlue]{hyperref}
+\usepackage{cleveref}
+
+\theoremstyle{plain}
+\newtheorem{teorema}{Teorema}[section]
+\newtheorem{proposicion}[teorema]{Proposición}
+\newtheorem{lema}[teorema]{Lema}
+\newtheorem{corolario}[teorema]{Corolario}
+\theoremstyle{definition}
+\newtheorem{definicion}[teorema]{Definición}
+\newtheorem{supuesto}{S}
+\theoremstyle{remark}
+\newtheorem{observacion}[teorema]{Observación}
+
+\crefname{teorema}{Teorema}{Teoremas}
+\crefname{proposicion}{Proposición}{Proposiciones}
+\crefname{lema}{Lema}{Lemas}
+\crefname{definicion}{Definición}{Definiciones}
+\crefname{supuesto}{S}{S}
+\crefname{observacion}{Observación}{Observaciones}
+
+\floatname{algorithm}{Algoritmo}
+\renewcommand{\algorithmicrequire}{\textbf{Entrada:}}
+\renewcommand{\algorithmicensure}{\textbf{Salida:}}
+\algrenewcommand\algorithmicif{\textbf{si}}
+\algrenewcommand\algorithmicthen{\textbf{entonces}}
+\algrenewcommand\algorithmicelse{\textbf{si no}}
+\algrenewcommand\algorithmicfor{\textbf{para}}
+\algrenewcommand\algorithmicforall{\textbf{para cada}}
+\algrenewcommand\algorithmicwhile{\textbf{mientras}}
+\algrenewcommand\algorithmicdo{\textbf{hacer}}
+\algrenewcommand\algorithmicreturn{\textbf{devolver}}
+\algtext*{EndIf}\algtext*{EndFor}\algtext*{EndWhile}
+
+\newcommand{\Rb}{\mathbb{R}}
+\newcommand{\Nb}{\mathbb{N}}
+\newcommand{\Xcal}{\mathcal{X}}
+\newcommand{\Fcal}{\mathcal{F}}
+\newcommand{\Ccal}{\mathcal{C}}
+\newcommand{\Rcal}{\mathcal{R}}
+\newcommand{\Ncal}{\mathcal{N}}
+\newcommand{\Gcal}{\mathcal{G}}
+\newcommand{\Mcal}{\mathcal{M}}
+\newcommand{\Dcal}{\mathcal{D}}
+\newcommand{\Vcal}{\mathcal{V}}
+\newcommand{\Tcal}{\mathcal{T}}
+\newcommand{\Hcal}{\mathcal{H}}
+\newcommand{\Pcal}{\mathcal{P}}
+\newcommand{\Kcal}{\mathcal{K}}
+\newcommand{\Scal}{\mathcal{S}}
+\newcommand{\Ucal}{\mathcal{U}}
+\newcommand{\Wdem}{\bm{w}^{\mathrm{d}}}
+\newcommand{\T}{^{\!\top}}
+\newcommand{\defeq}{\vcentcolon=}
+
+\title{\bfseries Un megajuego distribuido de $n$ saltos para el reclutamiento
+de coaliciones heterogéneas y el transporte cooperativo planar\\[0.35em]
+\large Potencial exacto, mercado de \emph{wrench} con contacto unilateral,
+interconexión $\delta$-disipativa y descomposición exacta de la brecha}
+
+\author{Jorge Luis Mayorga Taborda}
+\date{7 de septiembre de 2026}
+\input{sec_figuras}
+\begin{document}
+\maketitle
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\bigskip
+\paragraph{Cómo leer este documento.} Las ocho partes forman una cadena de dependencias. La Parte~I sitúa el problema frente a la literatura y a la práctica de almacén. La Parte~II fija los modelos —el robot de tracción diferencial, la carga en sus dos modos de contacto, la coalición como cuerpo, y la percepción que los observa— y nada posterior los modifica. La Parte~III da los fundamentos: qué información tiene cada robot, qué es un juego de potencial y cómo se revisa una decisión. La Parte~IV construye el megajuego sobre esos cimientos: el mercado de \emph{wrench}, el potencial exacto, el movimiento no holónomo, el algoritmo y el juego continuo de trayectorias con ejecución mientras se calcula. La Parte~V compone las capas, establece bajo qué hipótesis la composición conserva las garantías y fija las fronteras estructurales y de complejidad de la revisión de orden $h$. La Parte~VI cierra el mercado con sus cuatro precios. La Parte~VII encadena la brecha de optimalidad, la misión y la jornada. La Parte~VIII cierra: identifica el potencial híbrido con el valor de misión, enuncia y demuestra el teorema de entrega bajo hipótesis explícitas, lo ensaya con el mecanismo distribuido sobre la planta con ruedas y contacto, reúne sin prosa el modelo, los equilibrios y los rangos, reporta los demás ensayos y audita qué fuente sostiene cada enunciado; es la parte que conviene leer primero si se busca el resultado y no la derivación.
+
+
+\begin{abstract}
+\noindent
+Se formula el reclutamiento de coaliciones, la selección de modo de transporte,
+la asignación de contactos y el encaminamiento como un \emph{único} juego con
+potencial exacto sobre una estrategia híbrida discreto--continua, jugado por
+robots móviles autónomos (AMR) diferenciales heterogéneos con información de
+$n$ saltos. La física no entra como coste blando: entra como oráculo de
+factibilidad mediante un mercado de \emph{wrench} cuyo dual son precios
+sombra, y cuyo conjunto admisible respeta unilateralidad del contacto y
+disipación máxima de Coulomb. Se demuestra: (i) que la desviación unilateral
+factible sobre la estrategia híbrida admite potencial exacto; (ii) que el
+certificado de \emph{wrench} es exacto \emph{relativo a su modelo} y se
+identifican cuatro fenómenos que quedan fuera de él, dos de los cuales se
+cierran analíticamente; (iii) que la interconexión percepción--estrategia--
+física--movimiento es estable bajo una condición de ganancia pequeña entre
+funciones de almacenamiento $\delta$-disipativas, con versión muestreada y
+paso admisible explícito, tiempo de permanencia mínimo frente a la
+conmutación de modo y ausencia de comportamiento de Zenón; y (iv) una identidad exacta que descompone la brecha
+de optimalidad en cuatro términos no negativos y separadamente medibles
+—percepción, integralidad, topología y dinámica— de modo que cada capa de la
+arquitectura mide uno. Sobre la capa de percepción se prueba que el consenso
+promedio sobre \emph{log-odds} de ocupación converge al posterior centralizado,
+con tasa gobernada por la conectividad algebraica, lo que hace que el mismo
+$\lambda_2$ controle percepción y coordinación. Se identifica el potencial híbrido
+con el valor de misión y se demuestra, bajo hipótesis explícitas, que el mecanismo
+distribuido entrega sin colisión ni interbloqueo; el enunciado se ensaya con el
+propio mecanismo sobre una planta simulada con ruedas dinámicas y contacto,
+comparando cinco protocolos de revisión, dos aptitudes, dos políticas de pasillo,
+tres capas de seguridad, dos reclutamientos y un hiperjuego. Se declara con
+precisión lo que no queda demostrado: optimalidad global, garantía angular no
+local, transporte estable por empuje unilateral, y validación física del
+certificado bajo contacto real.
+
+\medskip
+\noindent\textbf{Palabras clave:} juegos potenciales, formación de coaliciones,
+transporte cooperativo, equilibrio generalizado de Nash variacional,
+$\delta$-disipatividad, contacto unilateral, robots diferenciales.
+\end{abstract}
+
+\section{Introducción}
+\label{sec:introduccion}
+
+Un almacén con $N$ AMR diferenciales heterogéneos y $K$ cargas heterogéneas
+plantea cuatro decisiones acopladas: qué robots atienden cada carga, con qué
+modo físico la mueven, dónde la tocan y por dónde la llevan. La literatura las
+trata por separado. La asignación se resuelve como problema combinatorio
+\cite{gerkey2004taxonomy,choi2009cbba}; el reparto de fuerzas, como programa
+cuadrático con la coalición ya dada \cite{nakamura1989dynamics}; la
+planificación, como búsqueda en un grafo con los agentes ya asignados
+\cite{sharon2015cbs}. Cada capa supone resuelta la anterior.
+
+El acoplamiento no es accesorio. Una coalición que satisface un umbral escalar
+de capacidad puede carecer de brazos de palanca para producir el \emph{wrench}
+requerido; una asignación de contactos válida puede exigir a un robot
+diferencial una dirección de fuerza que su restricción no holónoma no permite
+generar sin reorientarse; y una ruta admisible para una coalición puede
+bloquear la de otra. Resolver las capas en cascada produce decisiones que cada
+capa considera correctas y que el sistema no puede ejecutar.
+
+\paragraph{Contribución.} Este trabajo formula las cuatro decisiones como un
+solo juego y demuestra qué se conserva al hacerlo.
+
+\begin{enumerate}[leftmargin=1.9em,itemsep=0.35em]
+  \item \textbf{Potencial exacto híbrido} (\cref{th:potencial}). La estrategia
+  de cada AMR combina una parte discreta —carga, modo, contacto— y una continua
+  —esfuerzo, ruta—. Toda desviación unilateral factible cambia el pago privado
+  exactamente como cambia un potencial global.
+
+  \item \textbf{La física como oráculo, no como penalización}
+  (\cref{sec:wrench}). El conjunto admisible incorpora unilateralidad y
+  disipación máxima de Coulomb. Se prueba que ningún contacto transmite tensión
+  normal (\cref{pr:notiron}) y que el rango de la matriz de agarre no basta
+  y se caracteriza cuando una geometria de contactos
+  puede realizar una demanda arbitraria (\cref{th:span}). El certificado es exacto relativo a su modelo
+  (\cref{th:cert}) y su frontera queda enunciada, no insinuada
+  (\cref{obs:fronteras}).
+
+  \item \textbf{Interconexión $\delta$-disipativa} (\cref{sec:interconexion}).
+  Percepción, estrategia, física y movimiento se modelan como sistemas
+  $\delta$-disipativos; la interconexión es estable bajo ganancia pequeña
+  (\cref{th:smallgain}) y la versión muestreada admite paso explícito
+  (\cref{th:muestreada}), lo que evita afirmar en tiempo continuo una propiedad
+  que solo se ejecuta digitalmente.
+
+  \item \textbf{Topología dinámica sin hipótesis a posteriori}
+  (\cref{sec:topologia}). El grafo de comunicación cambia con el movimiento, lo
+  que invalida las hipótesis de grafo fijo. En lugar de suponer conectividad
+  acumulada —comprobable solo sobre la trayectoria ya realizada— se impone un
+  árbol generador mediante barreras (\cref{th:topologia-garantizada}), con su
+  condición de compatibilidad frente a la seguridad y una cota de grado
+  explícita (\cref{pr:compatibilidad}).
+
+  \item \textbf{Un criterio verificable de «distribuido»}
+  (\cref{sec:informacion}). Un mecanismo es implementable con información de un
+  salto si su grafo de interacción es espacialmente distribuido sobre el grafo
+  de comunicación (\cref{pr:implementable}); el grafo de Delaunay $r$-limitado
+  lo cumple y es más disperso que el de disco, lo que reduce barreras activas y
+  acuerdos de precio.
+
+  \item \textbf{Seguridad como precio y rigidización}
+  (\cref{sec:clusters}). La barrera no filtra la decisión del juego: entra en él
+  como multiplicador. Se prueba que la estructura variacional se conserva
+  exactamente cuando el precio es común al par (\cref{th:precio-seguridad}), y
+  que al rigidizar una coalición esos precios se convierten en fuerzas internas
+  que no aportan \emph{wrench} pero consumen actuador
+  (\cref{th:rigidizacion}).
+
+  \item \textbf{Descomposición exacta de la brecha} (\cref{th:descomposicion}).
+  La distancia entre lo que el sistema logra y el óptimo relajado se parte en
+  cuatro sumandos no negativos: percepción, integralidad, topología y dinámica.
+  Cada capa de la arquitectura mide uno y solo uno.
+
+  \item \textbf{Heterogeneidad con estatuto propio}
+  (\cref{sec:heterogeneidad}). Se prueba que la cadena
+  cardinalidad $\Rightarrow$ capacidad $\Rightarrow$ integralidad $\Rightarrow$
+  alcanzabilidad
+  no es válida en ningún eslabón (\cref{th:noequiv}), y que el déficit lineal
+  agregado no distingue completar una carga de no completar ninguna
+  (\cref{pr:degeneracion}), lo que obliga a un objetivo lexicográfico.
+
+  \item \textbf{Cierre: el potencial es el valor de misión y la entrega es un teorema}
+  (\cref{th:potencial-valor}, \cref{th:entrega}). El potencial híbrido se identifica con
+  el valor de misión unificado y, bajo cinco hipótesis explícitas, el mecanismo
+  distribuido entrega sin colisión ni interbloqueo; el enunciado se ensaya con el propio
+  mecanismo —no con un controlador central— sobre una planta con ruedas y contacto
+  (\cref{sec:ensayo-cierre}).
+
+  \item \textbf{Percepción cooperativa con sensores simples}
+  (\cref{sec:percepcion}). Los \emph{log-odds} de ocupación son aditivos bajo
+  medidas condicionalmente independientes; por tanto el consenso promedio
+  converge al posterior centralizado (\cref{th:mapa}) con tasa gobernada por
+  $\lambda_2$. El mismo escalar que controla la coordinación controla la
+  fusión del mapa.
+\end{enumerate}
+
+\paragraph{Lo que no se afirma.} No se demuestra optimalidad global; la
+\cref{obs:vi} explica por qué el puente variacional no la proporciona. La
+alineación angular para empuje es local y conserva un equilibrio antipodal
+(\cref{obs:antipodal}). Las fronteras (iii) y (iv) del certificado
+—no holonomía y pérdida de contacto— se acotan pero no se cierran
+analíticamente; su contraste exige un banco con física de contacto.
+
+
+\part{El problema y su posicionamiento}
+
+\input{sec_posicionamiento}
+
+\part{Modelos: el robot, la carga y la coalición}
+
+\section{Modelo}
+\label{sec:modelo}
+
+\subsection{Robots, cargas y grafo}
+
+Sea $\Ncal=\{1,\dots,N\}$ el conjunto de AMR y $\Kcal=\{1,\dots,K\}$ el de
+cargas. El AMR $i$ tiene pose $q_i=(x_i,y_i,\theta_i)\in SE(2)$, versor de
+chasis $e_i=(\cos\theta_i,\sin\theta_i)\T$, radio $r_i$, batería
+$b_i\in[0,1]$ y límites de rueda $|\tau_{i}^{L}|,|\tau_{i}^{R}|\le\bar\tau_i$.
+Su cinemática es la del uniciclo,
+\begin{equation}
+  \dot x_i=v_i\cos\theta_i,\quad
+  \dot y_i=v_i\sin\theta_i,\quad
+  \dot\theta_i=\omega_i,
+  \label{eq:uniciclo}
+\end{equation}
+con $(v_i,\omega_i)$ obtenidas de los pares de rueda a través de la inercia del
+vehículo. La carga $k$ es un cuerpo rígido planar de masa $m_k$, inercia
+$I_k$, pose $\xi_k\in SE(2)$ y demanda de \emph{wrench}
+$\Wdem_k\in\Rb^3$ expresada en fuerza y par.
+
+El grafo de comunicación $\Gcal_C(t)=(\Ncal,\mathcal E_C(t))$ conecta los AMR
+cuya distancia no excede $R^{\mathrm{com}}$. Escribimos $\Ncal_i^{(n)}(t)$ para
+el conjunto de AMR alcanzables desde $i$ en a lo sumo $n$ saltos. Todo el
+trabajo opera con información de $n$ saltos: ningún agente lee estado global.
+
+
+\subsection{Dinámica: de los pares de motor a la cota de esfuerzo}
+\label{sec:dinamica}
+
+La cinemática \eqref{eq:uniciclo} no basta: la cota de esfuerzo que el juego usa
+como restricción de caja debe derivarse de los actuadores, no postularse. Con
+inercia de rueda $J_w$, amortiguamiento viscoso $b_w$ y radio $r_w$,
+\begin{equation}
+  J_w\dot\omega_{R,i}=\tau_{R,i}-b_w\omega_{R,i}-r_wf_{R,i},\qquad
+  J_w\dot\omega_{L,i}=\tau_{L,i}-b_w\omega_{L,i}-r_wf_{L,i},
+  \label{eq:ruedas}
+\end{equation}
+con
+$v_i=\tfrac{r_w}{2}(\omega_{R,i}+\omega_{L,i})$ y
+$\omega_i=\tfrac{r_w}{b_i}(\omega_{R,i}-\omega_{L,i})$,
+donde $f_{R,i},f_{L,i}$ son las reacciones de contacto rueda--suelo y $b_i$ la
+distancia entre ruedas. A nivel de cuerpo,
+$M_i\dot\eta_i+C_i(\eta_i)\eta_i+D_i\eta_i=B_i\tau_i+f_i^{\mathrm{ext}}$
+con $\eta_i=(v_i,\omega_i)$. La carga obedece
+\begin{equation}
+  M_\ell\dot\xi_\ell+C_\ell(\xi_\ell)\xi_\ell+D_\ell\xi_\ell
+  =w_\ell^{\mathrm{ext}}+\sum_{i\in\Ccal_\ell}w_{i\ell},
+  \label{eq:carga}
+\end{equation}
+con twist $\xi_\ell=(v_{x,\ell},v_{y,\ell},\omega_\ell)$.
+
+\begin{proposicion}[La cota de esfuerzo es un dato del actuador]
+\label{pr:cota}
+En régimen cuasiestático ($\dot\omega_{\cdot,i}\approx0$) y empuje longitudinal,
+el esfuerzo máximo que el AMR $i$ puede sostener sin saturar es
+\[
+  \bar\lambda_i
+  =\frac{1}{r_w}\Bigl(\bar\tau_i-b_w\omega_{\cdot,i}\Bigr)
+  \quad\text{por rueda, y}\quad
+  \bar\lambda_i\le\mu_{\mathrm{sd}}\,m_ig/2
+\]
+por adherencia rueda--suelo, tomándose el mínimo de ambas.
+\end{proposicion}
+
+\begin{proof}
+Anular $\dot\omega$ en \eqref{eq:ruedas} da $r_wf=\tau-b_w\omega$, de donde la
+primera cota. La segunda es la condición de no deslizamiento de la rueda motriz
+bajo carga normal $m_ig/2$ con coeficiente $\mu_{\mathrm{sd}}$.
+\end{proof}
+
+\Cref{pr:cota} es lo que impide que el juego prometa esfuerzos que el motor no
+entrega: la caja $0\le\lambda_i\le\bar\lambda_i$ del programa \eqref{eq:qp}
+queda determinada por $\bar\tau_i$ y por la adherencia, no elegida.
+
+\paragraph{Normalización dimensional.} Un \emph{wrench} planar mezcla N y N\,m,
+por lo que la norma euclídea cruda no es físicamente invariante. Con escalas
+$F_0>0$, $\ell_0>0$ y $\tau_0=F_0\ell_0$ se define
+$S_W=\operatorname{diag}(F_0^{-1},F_0^{-1},\tau_0^{-1})$ y se trabaja con
+$\bar w=S_Ww$.
+
+\begin{observacion}[Límite de la separabilidad]
+\label{obs:separabilidad}
+El análisis convexo admite $\lambda_i\in\Ucal_i$ compacto y convexo siempre que
+el producto $\Ucal=\prod_i\Ucal_i$ sea físicamente válido. \emph{Si el soporte
+del peso acopla las normales entre contactos —por ejemplo en \textsf{cargo} con
+la carga apoyada sobre los propios AMR— esa separabilidad deja de ser correcta}
+y el modelo debe ampliarse a un conjunto no producto. Todos los resultados de
+\cref{sec:wrench} suponen separabilidad.
+\end{observacion}
+
+\subsection{Contacto: los dos modos}
+
+El modo $\mu_k\in\{\textsf{cargo},\textsf{caging}\}$ determina la estructura del
+contacto.
+
+En \textsf{cargo}, cada AMR asignado ocupa un puesto $s\in\Scal_k$ con punto de
+contacto $p_{ks}$ y normal interior $n_{ks}$. El mapa de agarre
+$G_k\in\Rb^{3\times m}$ apila las columnas
+\begin{equation}
+  g_{ks}=\begin{pmatrix} n_{ks}\\ (p_{ks}-c_k)^{\perp}\!\cdot n_{ks}\end{pmatrix}
+  \in\Rb^{3},
+  \label{eq:columna}
+\end{equation}
+donde $c_k$ es el centro de masa y $(\cdot)^\perp$ la rotación de $\pi/2$. Los
+esfuerzos $\bm\lambda_k\in\Rb^{m}$ generan el \emph{wrench}
+$G_k\bm\lambda_k$.
+
+En \textsf{caging}, la coalición no fija puntos de contacto sino que confina la
+carga en una región cuya frontera impide el escape; el empuje se ejerce por
+contactos intermitentes. \Cref{pr:caging} da una condición suficiente.
+
+\subsection{Estrategia híbrida}
+
+\begin{definicion}[Estrategia del AMR $i$]
+\label{def:estrategia}
+$z_i=(d_i,c_i)$ con parte discreta $d_i=(k_i,\mu_i,s_i)$ —carga, modo y
+puesto— y parte continua $c_i=(\lambda_i,\rho_i)$ —esfuerzo de contacto y ruta
+sobre el horizonte $H$—. El perfil es $z=(z_i)_{i\in\Ncal}$.
+\end{definicion}
+
+El conjunto admisible $\Fcal(t)$ recoge, simultáneamente: exclusividad
+($k_i$ único por AMR), coherencia de modo dentro de cada coalición,
+unilateralidad y cono de fricción en los esfuerzos, límites de rueda,
+compatibilidad no holónoma de la ruta y separación entre huellas. Es un
+conjunto mixto: discreto en $d$ y, para $d$ fijo, cerrado y convexo en $c$.
+
+\begin{supuesto}[Regularidad del conjunto admisible]
+\label{s:admisible}
+Para cada $d$ y cada $t$, el conjunto $\Kcal(d,t)\defeq\{c:(d,c)\in\Fcal(t)\}$
+es no vacío, cerrado y convexo, y satisface una cualificación de restricciones
+(Slater) sobre las restricciones compartidas.
+\end{supuesto}
+
+
+\input{sec_robotica}
+
+\input{sec_modelo_fisico}
+
+\section{Heterogeneidad: el principio de no equivalencia}
+\label{sec:heterogeneidad}
+
+La heterogeneidad no es un parámetro más: cambia qué certificados son válidos.
+Sea $e_{ik}\ge0$ la \emph{capacidad efectiva} que el AMR $i$ aporta a la carga
+$k$ —función de su carga útil, su batería $b_i$ y su distancia— y
+$S_k(x)=\sum_i e_{ik}x_{ik}$ la capacidad agregada frente a la demanda $D_k$.
+
+En régimen homogéneo y balanceado, contar robots basta. Al introducir
+heterogeneidad, cada implicación de la cadena
+\begin{equation}
+  \text{cardinalidad}\ \Rightarrow\ \text{capacidad}\ \Rightarrow\
+  \text{integralidad}\ \Rightarrow\ \text{alcanzabilidad}
+  \label{eq:cadena}
+\end{equation}
+deja de ser válida, y cada flecha exige su propio certificado.
+
+\begin{teorema}[Principio de no equivalencia]
+\label{th:noequiv}
+Ninguna implicación de \eqref{eq:cadena} es válida en general:
+\begin{enumerate}[label=(\alph*),leftmargin=2.2em,topsep=0.2em,itemsep=0.15em]
+  \item existe una instancia con $|\Ccal_k|$ suficiente y $S_k<D_k$;
+  \item existe una instancia con $S_k\ge D_k$ cuya relajación continua es
+        fraccionaria y ningún perfil entero alcanza el valor relajado;
+  \item existe una instancia con óptimo entero factible no alcanzable desde
+        $z_0$ mediante desviaciones admisibles.
+\end{enumerate}
+Los tres huecos son, respectivamente, $\Delta$ de capacidad,
+$\Delta_{\mathrm{int}}$ y $\Delta_{\mathrm{top}}$ de
+\cref{th:descomposicion}.
+\end{teorema}
+
+\begin{proof}
+(a) Tómense $n$ AMR de capacidad $e<D_k/n$: la cardinalidad se satisface y la
+capacidad no. (b) Con dos cargas de demanda $1$ y tres AMR de capacidad
+$2/3$, la relajación reparte masa fraccionaria y alcanza valor $2$; todo perfil
+entero deja una carga incompleta. (c) Si el grafo de revisión desde $z_0$ tiene
+por componente un único perfil y el óptimo entero está fuera de ella, ninguna
+secuencia de desviaciones admisibles lo alcanza.
+\end{proof}
+
+\Cref{th:noequiv} justifica la escalera de niveles: cada nivel del análisis
+levanta una flecha y mide exactamente el término que esa flecha no conservaba.
+
+\subsection{Degeneración del déficit lineal}
+
+Bajo escasez, el criterio agregado más natural —minimizar el déficit total—
+resulta insensible a lo único que importa industrialmente.
+
+\begin{proposicion}[El déficit lineal no distingue servicio]
+\label{pr:degeneracion}
+Sea el déficit agregado $\mathcal D(x)=\sum_k\max\{0,D_k-S_k(x)\}$. Existen
+perfiles $x^{\mathrm{a}}$ y $x^{\mathrm{b}}$ con
+$\mathcal D(x^{\mathrm{a}})=\mathcal D(x^{\mathrm{b}})$ tales que
+$x^{\mathrm{b}}$ completa una carga y $x^{\mathrm{a}}$ no completa ninguna.
+\end{proposicion}
+
+\begin{proof}
+Dos cargas con $D_1=D_2=1$ y capacidad total $1$. Repartir
+$S_1=S_2=\tfrac12$ da $\mathcal D=1$ sin ninguna carga completa; concentrar
+$S_1=1$, $S_2=0$ da también $\mathcal D=1$ con la carga $1$ completa.
+\end{proof}
+
+\begin{corolario}[Necesidad de un objetivo lexicográfico]
+\label{co:lexico}
+Ningún objetivo que dependa de $x$ solo a través de $\mathcal D$ puede preferir
+$x^{\mathrm{b}}$ a $x^{\mathrm{a}}$. Se requiere un término de servicio
+completado —umbral o lexicográfico— para romper la degeneración.
+\end{corolario}
+
+Este es el motivo por el que el potencial \eqref{eq:potencial} incorpora un
+término de servicio y no solo de déficit: el valor industrial no está en
+minimizar kilogramos faltantes si ninguna carga termina.
+
+
+\section{Percepción cooperativa con sensores simples}
+\label{sec:percepcion}
+
+Los AMR disponen de telémetros de bajo coste —láser de un plano o
+ultrasonidos—. Sea $\Mcal$ una rejilla de celdas y $o_c\in\{0,1\}$ la ocupación
+de la celda $c$. El modelo inverso de sensor asigna a cada medida $y$ una
+verosimilitud $P(o_c\mid y)$.
+
+\begin{definicion}[Log-odds]
+$\ell_c \defeq \log\dfrac{P(o_c=1)}{P(o_c=0)}$.
+\end{definicion}
+
+\begin{lema}[Aditividad]
+\label{le:aditividad}
+Si las medidas $y_1,\dots,y_M$ son condicionalmente independientes dado $o_c$,
+entonces
+$\ell_c^{\mathrm{post}}=\ell_c^{0}+\sum_{j=1}^{M}\big(\ell_c(y_j)-\ell_c^{0}\big)$.
+\end{lema}
+
+\begin{proof}
+Por Bayes y la independencia condicional, el cociente de posteriores factoriza
+en el producto de cocientes de verosimilitud por el cociente del prior.
+Tomando logaritmos, el producto se convierte en suma; restar $\ell_c^0$ en cada
+sumando evita contar el prior $M$ veces.
+\end{proof}
+
+\Cref{le:aditividad} es la razón por la que la fusión de mapas es un problema
+lineal: el estadístico suficiente es una suma. Sea $\ell_c^{i}$ la contribución
+acumulada por el AMR $i$ y sea $\bar\ell_c$ la media. La iteración de consenso
+sobre el grafo $\Gcal_C$,
+\begin{equation}
+  \ell_c^{i}(t+1)=\ell_c^{i}(t)
+  +\varepsilon\!\!\sum_{j\in\Ncal_i^{(1)}}\!\!\big(\ell_c^{j}(t)-\ell_c^{i}(t)\big),
+  \label{eq:consenso}
+\end{equation}
+es el promedio distribuido clásico \cite{olfatiSaber2004consensus,bullo2009distributed}.
+
+\begin{teorema}[El consenso sobre \emph{log-odds} recupera el posterior centralizado]
+\label{th:mapa}
+Sea $\Gcal_C$ no dirigido y conexo, con Laplaciano $L$ y conectividad algebraica
+$\lambda_2(L)>0$, y sea $0<\varepsilon<2/\lambda_{\max}(L)$. Entonces la
+iteración \eqref{eq:consenso} satisface
+\[
+  \big\|\bm\ell_c(t)-\bar\ell_c\mathbf 1\big\|_2
+  \le (1-\varepsilon\lambda_2)^{t}\,
+      \big\|\bm\ell_c(0)-\bar\ell_c\mathbf 1\big\|_2 ,
+\]
+y $N\bar\ell_c$ coincide con el \emph{log-odds} que obtendría un fusor
+centralizado con acceso a todas las medidas.
+\end{teorema}
+
+\begin{proof}
+La media es invariante bajo \eqref{eq:consenso} porque $\mathbf 1\T L=0$. En el
+subespacio de desacuerdo, la matriz de iteración es $I-\varepsilon L$ con
+autovalores $1-\varepsilon\lambda_j$; la elección de $\varepsilon$ los sitúa en
+$(-1,1)$ y el de módulo mayor corresponde a $\lambda_2$, lo que da la tasa. La
+segunda afirmación es \cref{le:aditividad}: el fusor centralizado suma todas las
+contribuciones, y $N$ veces la media es esa suma.
+\end{proof}
+
+\begin{observacion}
+La independencia condicional falla cuando dos AMR observan la misma celda desde
+poses muy próximas. El sesgo resultante es de sobreconfianza y se acota
+saturando $\ell_c$ en $[\underline\ell,\bar\ell]$, práctica estándar en rejillas
+de ocupación. La saturación no altera \cref{th:mapa} en el interior del
+intervalo.
+\end{observacion}
+
+El mapa fusionado define el conjunto libre $\Fcal^{\mathrm{libre}}$ que la capa
+de movimiento usa. Su error respecto al mapa verdadero es el origen del término
+$\Delta_{\mathrm{perc}}$ de \cref{th:descomposicion}.
+
+
+\input{sec_estimacion}
+
+\part{Fundamentos: información, juegos y dinámicas}
+
+\input{sec_informacion}
+
+\input{sec_fundamentos}
+
+\part{El megajuego: mercado de \emph{wrench}, potencial y movimiento}
+
+\section{El mercado de \emph{wrench}}
+\label{sec:wrench}
+
+\subsection{Contacto unilateral y disipación máxima}
+
+Sea $g_{ks}\ge 0$ el hueco en el contacto $s$ y $(\lambda_n,\lambda_t)$ las
+componentes normal y tangencial del esfuerzo. La condición de contacto es la
+complementariedad
+\begin{equation}
+  0\le g_{ks}\ \perp\ \lambda_n\ge 0,
+  \label{eq:complementariedad}
+\end{equation}
+y la fricción sigue la ley de Coulomb con disipación máxima,
+\begin{equation}
+  \lambda_t\in-\mu_s\lambda_n\,\partial|u_t|,
+  \label{eq:coulomb}
+\end{equation}
+donde $u_t$ es la velocidad tangencial relativa y $\partial|\cdot|$ el
+subdiferencial del valor absoluto.
+
+\begin{proposicion}[No existe tirón normal]
+\label{pr:notiron}
+Bajo \eqref{eq:complementariedad}--\eqref{eq:coulomb}, ningún contacto
+transmite tensión normal ni fuerza a distancia: si $g_{ks}>0$ entonces el
+esfuerzo total del contacto es nulo.
+\end{proposicion}
+
+\begin{proof}
+Por \eqref{eq:complementariedad}, $g_{ks}>0$ obliga $\lambda_n=0$. El cono de
+fricción impone $|\lambda_t|\le\mu_s\lambda_n=0$, luego $\lambda_t=0$ y el
+esfuerzo es nulo.
+\end{proof}
+
+\begin{definicion}[Span positivo]
+\label{def:span}
+El \emph{span positivo} de un conjunto finito $S=\{v_1,\dots,v_k\}\subset\Rb^n$
+es $\operatorname{pos}(S)=\{\sum_j\alpha_jv_j:\alpha_j\ge0\}$. Se dice que $S$
+\emph{genera positivamente} $\Rb^n$ si $\operatorname{pos}(S)=\Rb^n$.
+\end{definicion}
+
+\begin{teorema}[Caracterizacion exacta de la realizabilidad]
+\label{th:span}
+Sea $\Lambda_k=\Rb_{\ge0}^{m}$ y sean $\{g_{ks}\}_{s\in\Scal_k}$ las columnas de
+$G_k$. Son equivalentes:
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em,topsep=0.2em,itemsep=0.1em]
+  \item todo $\Wdem_k\in\Rb^3$ es realizable con esfuerzos admisibles;
+  \item $\{g_{ks}\}$ genera positivamente $\Rb^3$;
+  \item el margen $d_1\defeq\min_{\|e\|=1}\max_{s\in\Scal_k} g_{ks}\T e$ es
+        estrictamente positivo.
+\end{enumerate}
+En particular, $\operatorname{rank}G_k=3$ es \emph{necesario pero no
+suficiente} para (i).
+\end{teorema}
+
+\begin{proof}
+(i)$\Leftrightarrow$(ii) es la definicion: el conjunto alcanzable es
+$\operatorname{pos}(\{g_{ks}\})$.
+(ii)$\Rightarrow$(iii): si $d_1\le0$ existe $e$ unitario con $g_{ks}\T e\le0$
+para todo $s$; entonces todo elemento de $\operatorname{pos}(\{g_{ks}\})$ tiene
+proyeccion no positiva sobre $e$, luego $e\notin\operatorname{pos}(\{g_{ks}\})$.
+(iii)$\Rightarrow$(ii): si $d_1>0$, para cada direccion unitaria existe una
+columna con proyeccion positiva; los conos abiertos
+$\{e:g_{ks}\T e>0\}$ recubren la esfera y su envolvente conica positiva es
+$\Rb^3$ \cite[Def.~1]{lee2026switching}.
+La ultima afirmacion admite contraejemplo: tres columnas linealmente
+independientes contenidas en un semiespacio abierto tienen rango $3$ y span
+positivo estrictamente contenido en $\Rb^3$.
+\end{proof}
+
+\begin{observacion}[El margen es computable y local]
+$d_1$ se evalua resolviendo un programa de dimension $3$ que cada AMR puede
+plantear con las columnas de su coalicion visible. Sirve como criterio de
+admision \emph{antes} de resolver \eqref{eq:qp}: si $d_1\le0$, la geometria de
+contactos no puede realizar demandas arbitrarias y ningun reparto de esfuerzos
+lo remedia.
+\end{observacion}
+
+\Cref{th:span} tiene una consecuencia operativa que conviene enunciar sin
+rodeos: \emph{un optimizador que reparta esfuerzos minimizando
+$\|G_k\bm\lambda-\Wdem_k\|$ con la única restricción $\bm\lambda\ge 0$ está
+resolviendo un problema más permisivo que la física.} La cota
+$\bm\lambda\ge0$ codifica unilateralidad pero no el cono de fricción, y
+\eqref{eq:coulomb} muestra además que la componente tangencial no es libre: la
+selecciona la velocidad relativa, no el optimizador.
+
+\subsection{Primal, dual y precios}
+
+Para una coalición $\Ccal$ y un modo fijos, el reparto resuelve
+\begin{equation}
+  \min_{\bm\lambda\in\Lambda_k}\
+  \tfrac12\big\|G_k\bm\lambda-\Wdem_k\big\|_{Q}^{2}
+  +\tfrac{\varepsilon_\lambda}{2}\|\bm\lambda\|_2^{2},
+  \label{eq:qp}
+\end{equation}
+con $Q=\operatorname{diag}(F_{\mathrm{ref}}^{-2},F_{\mathrm{ref}}^{-2},
+\tau_{\mathrm{ref}}^{-2})\succ0$ y $\varepsilon_\lambda>0$. El residual
+certificado es
+$\rho_k^{\star}\defeq\|G_k\bm\lambda_k^{\star}-\Wdem_k\|_{Q}$.
+
+\begin{teorema}[Exactitud del certificado dentro de su modelo]
+\label{th:cert}
+Bajo \cref{s:admisible} y $\varepsilon_\lambda>0$,
+\[
+  \rho_k^{\star}\le\epsilon_W
+  \iff
+  \exists\,\bm\lambda\in\Lambda_k:\
+  \|G_k\bm\lambda-\Wdem_k\|_{Q}\le\epsilon_W .
+\]
+El criterio no es conservador ni optimista respecto a \eqref{eq:qp}.
+\end{teorema}
+
+\begin{proof}
+$\Lambda_k$ es cerrado, convexo y no vacío y el objetivo es fuertemente convexo,
+luego el mínimo se alcanza y es único. Por definición de mínimo,
+$\rho_k^\star\le\epsilon_W$ si y solo si algún punto admisible cumple la cota.
+La regularización no modifica $\Lambda_k$.
+\end{proof}
+
+\begin{teorema}[Interpretación robusta exacta del margen]
+\label{th:robusto}
+Sea $\mathcal W(\Ccal)=\{S_WG_k\bm\lambda:\bm\lambda\in\Lambda_k\}$ el conjunto
+de \emph{wrench} realizables normalizados, $\mathbb B$ la bola unidad y
+$\rho_W(\Ccal,\Wdem)$ el mayor $\delta$ tal que la demanda perturbada sigue
+siendo realizable. Entonces, para todo $\delta\ge0$,
+\[
+  S_W\Wdem+\delta\mathbb B\subseteq\mathcal W(\Ccal)
+  \iff
+  \rho_W(\Ccal,\Wdem)\ge\delta .
+\]
+\end{teorema}
+
+\begin{proof}
+$\mathcal W(\Ccal)$ es convexo y cerrado por ser imagen lineal de un compacto
+convexo. Para convexos cerrados, $A\subseteq K$ si y solo si
+$h_A(\eta)\le h_K(\eta)$ para toda dirección $\eta$, donde $h$ es la función
+soporte. La del conjunto trasladado es
+$h_{S_W\Wdem+\delta\mathbb B}(\eta)=\eta\T S_W\Wdem+\delta\|\eta\|_\star$;
+normalizando $\|\eta\|_\star=1$, la inclusión equivale a
+$\eta\T S_W\Wdem+\delta\le h_{\mathcal W}(\eta)$ para todo $\eta$, que es la
+definición de $\rho_W\ge\delta$.
+\end{proof}
+
+\Cref{th:robusto} responde a la incertidumbre sin apelar a un modelo
+estocástico: el margen del certificado \emph{es} el radio de la bola de
+perturbaciones de demanda que la coalición absorbe. Junto con el margen de span
+positivo $d_1$ de \cref{th:span}, se dispone de dos garantías de distinto
+nivel: $d_1>0$ asegura que \emph{toda} dirección es realizable; $\rho_W\ge\delta$
+cuantifica cuánta perturbación tolera \emph{esta} demanda.
+
+\begin{observacion}[Lo que el certificado no certifica]
+\label{obs:fronteras}
+\Cref{th:cert} es exactitud \emph{relativa al modelo} \eqref{eq:qp}. Cuatro
+fenómenos quedan fuera y ninguno se deduce del certificado.
+\textbf{(i) Cono de fricción.} Si $\Lambda_k$ se implementa como caja
+$0\le\bm\lambda\le\bar{\bm\lambda}$ en lugar del cono, el certificado acepta
+repartos con componente tangencial inadmisible (\cref{th:span}).
+\textbf{(ii) Dinámica.} $\Wdem_k$ se fija a priori; en transporte depende de la
+aceleración instantánea.
+\textbf{(iii) No holonomía.} \eqref{eq:columna} supone que el puesto entrega su
+esfuerzo en la dirección $n_{ks}$; un AMR diferencial debe orientarse primero
+(\cref{le:orientacion}).
+\textbf{(iv) Pérdida de contacto.} \eqref{eq:complementariedad} admite
+$g_{ks}>0$; el certificado cuasiestático no predice cuándo ocurre.
+Las fronteras (i) y (iii) se cierran analíticamente en este trabajo; (ii) y (iv)
+se acotan y quedan abiertas.
+\end{observacion}
+
+El dual de \eqref{eq:qp} asigna a cada componente de la demanda un precio
+sombra $p_k\in\Rb^3$ que es la sensibilidad del coste óptimo. Ese precio es la
+señal que la capa estratégica usa como pago: un AMR cuya columna $g_{ks}$ tiene
+proyección alta sobre $p_k$ aporta mucho a la demanda y cobra en consecuencia.
+
+\begin{proposicion}[Caging suficiente por curva cerrada]
+\label{pr:caging}
+Si la unión de las huellas de la coalición y de los obstáculos estáticos
+contiene una curva cerrada simple que rodea a la carga y cuya holgura mínima al
+contorno de la carga es menor que la mínima dimensión de escape, entonces la
+carga no puede abandonar la región encerrada por movimientos continuos.
+\end{proposicion}
+
+\begin{proof}
+Un movimiento continuo que sacase la carga induciría un camino continuo del
+contorno desde el interior al exterior de la curva; por el teorema de la curva
+de Jordan, ese camino cruza la curva. En el cruce la holgura sería al menos la
+dimensión de escape, contra la hipótesis.
+\end{proof}
+
+
+\section{El megajuego: potencial exacto}
+\label{sec:megajuego}
+
+Cada AMR percibe un pago $J_i(z)$ que combina la recompensa de la carga
+atendida, el precio sombra de su aportación al \emph{wrench}, el coste de
+recorrido y giro, la penalización de congestión sobre su ruta y un término de
+batería y urgencia. Se define
+\begin{equation}
+  \Phi(z,t)\defeq
+  \underbrace{\sum_{i\in\Ncal}\phi_i(z_i,t)}_{\text{privado}}
+  \;+\;
+  \underbrace{\Phi^{\mathrm{sh}}(z,t)}_{\text{compartido}},
+  \label{eq:potencial}
+\end{equation}
+donde $\phi_i$ recoge los términos que solo dependen de $z_i$ y
+$\Phi^{\mathrm{sh}}$ los acoplamientos —congestión, exclusividad de puesto,
+déficit agregado de \emph{wrench}— construidos de forma simétrica.
+
+\begin{teorema}[Potencial exacto sobre la estrategia híbrida]
+\label{th:potencial}
+Supóngase que el pago de cada AMR se construye como
+$J_i(z)=\phi_i(z_i,t)+\Phi^{\mathrm{sh}}(z,t)-\Phi^{\mathrm{sh}}(z_i^{0},z_{-i},t)$,
+donde $z_i^{0}$ es una acción de referencia fija. Entonces, para toda
+desviación unilateral factible $z_i\to z_i'$ con $(z_i',z_{-i})\in\Fcal(t)$,
+\[
+  J_i(z_i',z_{-i})-J_i(z_i,z_{-i})
+  =\Phi(z_i',z_{-i},t)-\Phi(z_i,z_{-i},t).
+\]
+\end{teorema}
+
+\begin{proof}
+El término contrafactual $\Phi^{\mathrm{sh}}(z_i^{0},z_{-i},t)$ no depende de
+$z_i$, luego es idéntico antes y después de la desviación y se cancela al
+restar. Queda
+$J_i(z_i',z_{-i})-J_i(z_i,z_{-i})
+=\phi_i(z_i')-\phi_i(z_i)+\Phi^{\mathrm{sh}}(z_i',z_{-i})-\Phi^{\mathrm{sh}}(z_i,z_{-i})$,
+que es exactamente la variación de \eqref{eq:potencial} porque los sumandos
+$\phi_j$, $j\ne i$, tampoco cambian.
+\end{proof}
+
+Esta construcción es la de utilidad marginal \emph{wonderful life}
+\cite{wolpert1999collective,marden2009cooperative}: su valor aquí es que se
+aplica a una estrategia \emph{híbrida}, de modo que un cambio de carga, un
+cambio de modo, un cambio de puesto y una reoptimización de ruta se contabilizan
+en el mismo potencial.
+
+\begin{corolario}[Terminación]
+\label{co:terminacion}
+Si el conjunto de partes discretas es finito y, para cada $d$ fijo, la
+optimización continua es exacta, toda secuencia de desviaciones unilaterales
+estrictamente mejorantes termina en un número finito de pasos.
+\end{corolario}
+
+\begin{proof}
+Por \cref{th:potencial}, $\Phi$ crece estrictamente en cada desviación. Para $d$
+fijo el óptimo continuo es único por convexidad, luego el valor
+$\Phi(d,t)=\max_{c\in\Kcal(d,t)}\Phi(d,c,t)$ está bien definido y la secuencia
+recorre valores estrictamente crecientes sobre un conjunto finito de $d$.
+\end{proof}
+
+\Cref{co:terminacion} garantiza terminación, \emph{no} eficiencia. El punto
+final es un equilibrio frente a desviaciones unilaterales, y la
+\cref{sec:nhop} mide cuánto se pierde por ello.
+
+\subsection{Qué dinámica de revisión, y por qué}
+
+El potencial no fija el protocolo de revisión. Entre las familias habituales
+—replicator, Smith, BNN, logit— la elección no es indiferente para el
+reclutamiento.
+
+\begin{observacion}[Estacionariedad de Nash y frontera invariante]
+\label{obs:smith}
+La dinámica del replicator tiene la frontera del símplex invariante: una
+estrategia con masa nula nunca se revive. Sus reposos incluyen, por tanto,
+caras que no son equilibrios de Nash. La dinámica de Smith satisface
+\emph{estacionariedad de Nash}: su conjunto de reposos coincide con el de
+equilibrios de Nash del juego subyacente \cite{quijano2017role,sandholm2010population}.
+Hay una segunda razon, mas dura: las dinamicas derivadas de objetivos de pago
+en exceso o de protocolos de comparacion por pares imparciales ---BNN y Smith---
+satisfacen la hipotesis de \emph{$\delta$-pasividad} que exigen los teoremas de
+convergencia al GNE; el replicator no figura entre ellas
+\cite{arcak2021dissipativity,martinezPiazuelo2025gne}.
+\end{observacion}
+
+La consecuencia operativa es directa: bajo replicator, un AMR que no participa
+en una carga en el instante inicial no puede ser reclutado más tarde, aunque su
+capacidad efectiva lo haga idóneo. Por eso el mecanismo emplea Smith, y el
+logit se reserva como perturbación de exploración cuyo reposo es un equilibrio
+\emph{logit} y no un Nash, distinción que se mantiene en todo el documento.
+
+\subsection{Puente variacional}
+
+\begin{teorema}[Puente VI--potencial]
+\label{th:vi}
+Sea $\Xcal$ convexo y compacto y $\Phi(\cdot,t)$ continuamente diferenciable y
+cóncava en $c$. Entonces $c^\star\in\arg\max_{c\in\Xcal}\Phi$ si y solo si
+$c^\star$ resuelve $\mathrm{VI}(-\nabla_c\Phi,\Xcal)$. Si además $\Xcal$
+representa restricciones compartidas de un GNEP con potencial exacto y se
+cumple \cref{s:admisible}, entonces $c^\star$ es un equilibrio generalizado de
+Nash variacional con multiplicadores comunes.
+\end{teorema}
+
+\begin{proof}
+Por concavidad diferenciable, $c^\star$ maximiza $\Phi$ sobre $\Xcal$ si y solo
+si $\nabla_c\Phi(c^\star)\T(y-c^\star)\le0$ para todo $y\in\Xcal$, que es la
+desigualdad variacional buscada tras multiplicar por $-1$. Bajo restricciones
+compartidas y cualificación, la VI equivale al sistema KKT con un multiplicador
+común por restricción compartida, que es la definición de GNE variacional
+\cite{facchinei2007gne}.
+\end{proof}
+
+\begin{observacion}
+\label{obs:vi}
+\Cref{th:vi} no convierte el equilibrio continuo en una coalición ejecutable.
+$\Xcal$ contiene puntos fraccionarios que no pertenecen a $\Fcal$, y aun
+existiendo un óptimo atómico, el grafo de revisión inducido por la información
+de $n$ saltos puede impedir alcanzarlo desde el estado actual. Esos dos huecos
+son exactamente $\Delta_{\mathrm{int}}$ y $\Delta_{\mathrm{top}}$ de
+\cref{th:descomposicion}.
+\end{observacion}
+
+
+\section{Movimiento: compatibilidad no holónoma y seguridad}
+\label{sec:movimiento}
+
+\begin{lema}[Orientación necesaria para empujar]
+\label{le:orientacion}
+Si el contacto se modela con un parachoques frontal de semiángulo
+$\beta\in(0,\pi/2)$, la existencia de presión positiva exige
+$e_i\T n_{ks}\ge\cos\beta$.
+\end{lema}
+
+\begin{proof}
+El parachoques solo transmite esfuerzo en direcciones que forman con $e_i$ un
+ángulo no mayor que $\beta$. Si $\lambda_n>0$ en la dirección $n_{ks}$,
+entonces $n_{ks}$ pertenece a ese cono, que es la desigualdad enunciada.
+\end{proof}
+
+\begin{observacion}
+\label{obs:antipodal}
+El atractor angular $V_\theta=1-e_i\T n$ con
+$\dot\theta_i=k_\theta(e_i^{\perp})\T n$ da
+$\dot V_\theta=-k_\theta[(e_i^{\perp})\T n]^{2}\le0$, luego alinea localmente.
+Conserva sin embargo el equilibrio antipodal $e_i=-n$, donde
+$\dot V_\theta=0$ con $V_\theta=2$. No se presenta, por tanto, como garantía
+angular global.
+\end{observacion}
+
+\begin{lema}[Cota de velocidad por curvatura]
+\label{le:curvatura}
+Si la ruta tiene curvatura local $\kappa_i$ y el AMR mantiene
+$\omega_i=\kappa_i v_i$, los límites de rueda
+$|v_i\pm\omega_i b_i/2|\le v^{\max}$ imponen
+$v_i\le v^{\max}/\big(1+|\kappa_i|b_i/2\big)$, con $b_i$ la distancia entre
+ruedas.
+\end{lema}
+
+\begin{proof}
+Sustituir $\omega_i=\kappa_i v_i$ en la velocidad de la rueda exterior y
+despejar $v_i$.
+\end{proof}
+
+\subsection{Seguridad: invariancia continua y estrechamiento muestreado}
+
+Sea $h_{ij}$ la distancia con holgura entre las huellas de $i$ y $j$, de grado
+relativo dos respecto a la aceleración. Se define la cadena
+$\psi_{0,ij}=h_{ij}$, $\psi_{1,ij}=\dot\psi_{0,ij}+\alpha_1(\psi_{0,ij})$ y se
+impone $\dot\psi_{1,ij}+\alpha_2(\psi_{1,ij})\ge0$ como desigualdad lineal en el
+programa de movimiento.
+
+\begin{proposicion}[Invariancia condicional bajo HOCBF--QP]
+\label{pr:hocbf}
+Supóngase dinámica localmente Lipschitz, $h_{ij}\in C^2$, estado inicial con
+$\psi_{0,ij}\ge0$ y $\psi_{1,ij}\ge0$ para todo par, y que el QP es factible en
+todo estado alcanzado. Si el control se aplica de forma continua, el conjunto
+seguro es invariante hacia adelante.
+\end{proposicion}
+
+\begin{proof}
+La factibilidad garantiza $\dot\psi_{1,ij}+\alpha_2(\psi_{1,ij})\ge0$; por el
+argumento de invariancia para funciones de clase $\mathcal K$, $\psi_{1,ij}$ no
+cruza a negativo. Entonces
+$\dot h_{ij}+\alpha_1(h_{ij})=\psi_{1,ij}\ge0$ impide que $h_{ij}$ cruce a
+negativo. La intersección sobre pares permanece invariante.
+\end{proof}
+
+\Cref{pr:hocbf} \emph{no} cubre ejecución muestreada ni pérdida de
+factibilidad. Lo primero se resuelve estrechando el margen.
+
+\begin{lema}[Margen suficiente entre muestras]
+\label{le:muestras}
+Si $|\dot\Psi(t)|\le L_\Psi$ en $[t_k,t_{k+1}]$ con
+$t_{k+1}-t_k\le\Delta t$ y $\Psi(t_k)\ge L_\Psi\Delta t$, entonces
+$\Psi(t)\ge0$ en todo el intervalo.
+\end{lema}
+
+\begin{proof}
+Para $t-t_k\le\Delta t$,
+$\Psi(t)\ge\Psi(t_k)-L_\Psi(t-t_k)\ge L_\Psi\Delta t-L_\Psi\Delta t=0$.
+\end{proof}
+
+\Cref{le:muestras} da el criterio para diseñar el estrechamiento \emph{a
+priori} en lugar de auditar por interpolación después de simular. Exige, eso sí,
+una constante $L_\Psi$ válida en el dominio, que debe acotarse por instancia.
+
+\begin{observacion}[Singularidad de autoridad]
+\label{obs:autoridad}
+El coeficiente de control del par $(i,j)$ es
+\[
+  L_gL_fh_{ij}=2\bigl(r_{ij}\T t_i-r_{ij}\T t_j\bigr).
+\]
+Cuando se anula, el par carece de autoridad instantánea sobre su barrera y el QP no puede corregir la violación
+con esos dos agentes: la restricción debe delegarse o declararse parada segura.
+La frecuencia de ambos eventos se reporta como métrica.
+\end{observacion}
+
+
+\section{Localidad estratégica de $n$ saltos}
+\label{sec:nhop}
+
+Un perfil estable frente a desviaciones unilaterales puede ser mejorable por un
+intercambio simultáneo entre dos AMR. Sea $\mathrm{BR}_h$ el conjunto de
+perfiles de los que ninguna coalición de a lo sumo $h$ agentes, mutuamente
+alcanzables en el grafo de comunicación, puede desviarse con mejora conjunta.
+
+\begin{definicion}[Orden mínimo conectado de mejora]
+\[
+  h_c^{\star}(z)\defeq\min\bigl\{h:\ \exists\ \text{desviación conectada de
+  orden }h\text{ que mejora }\Phi\bigr\},
+\]
+con $h_c^\star=\infty$ si no existe.
+\end{definicion}
+
+\begin{proposicion}[Jerarquía anidada]
+\label{pr:jerarquia}
+$\mathrm{BR}_1\supseteq\mathrm{BR}_2\supseteq\cdots\supseteq\mathrm{BR}_N$, y
+$\mathrm{BR}_N$ es el conjunto de óptimos de $\Phi$ sobre la componente
+alcanzable.
+\end{proposicion}
+
+\begin{proof}
+La inclusión es inmediata: una desviación de orden $h$ lo es de orden $h+1$
+con un agente que no cambia. Para $h=N$ toda desviación conjunta está
+permitida, luego un perfil sin mejora conjunta maximiza $\Phi$ sobre la
+componente.
+\end{proof}
+
+$h_c^\star$ localiza el primer orden en el que existe mejora; \emph{no} mide su
+magnitud. Ambas cosas se reportan por separado.
+
+
+\section{Algoritmo}
+
+\begin{algorithm}[!ht]
+\caption{Megajuego distribuido de $n$ saltos, ejecutado por el AMR $i$}
+\label{alg:megajuego}
+\begin{algorithmic}[1]
+\Require pose $q_i$, batería $b_i$, medidas del telémetro, mensajes de
+         $\Ncal_i^{(n)}$
+\Ensure estrategia $z_i=(k_i,\mu_i,s_i,\lambda_i,\rho_i)$ y comandos de rueda
+\State actualizar $\ell^{i}$ con el modelo inverso de sensor
+  \Comment{\cref{le:aditividad}}
+\State un paso de consenso \eqref{eq:consenso} con los vecinos de un salto
+  \Comment{\cref{th:mapa}}
+\State recibir de $\Ncal_i^{(n)}$: intenciones, precios $p_k$ y déficits
+\ForAll{carga $k$ visible y modo $\mu$ admisible}
+  \State construir $G_k$ y resolver \eqref{eq:qp} restringido al cono
+  \If{$\rho_k^\star>\epsilon_W$} descartar $(k,\mu)$
+    \Comment{\cref{th:cert}}
+  \EndIf
+  \If{$e_i\T n_{ks}<\cos\beta$} descartar el puesto $s$
+    \Comment{\cref{le:orientacion}}
+  \EndIf
+  \State evaluar $\Delta\Phi$ de la desviación a $(k,\mu,s)$ con ruta
+         reoptimizada
+\EndFor
+\State $z_i'\gets$ la desviación con $\Delta\Phi$ máximo
+\If{$\Delta\Phi>0$} proponer $z_i'$ y confirmar con arbitraje vecinal
+  \Comment{unilateral, $h=1$}
+\Else
+  \State buscar desviación conectada de orden $h\le h_{\max}$ con mejora
+         conjunta \Comment{\cref{sec:nhop}}
+\EndIf
+\State resolver el QP de movimiento con la barrera $\dot h\ge-\alpha(h)$ y la
+       cota de \cref{le:curvatura}
+\If{el QP es infactible} parada segura y registrar el evento
+\EndIf
+\State actualizar precios con paso $\gamma<2/L$ \Comment{\cref{th:muestreada}}
+\end{algorithmic}
+\end{algorithm}
+
+
+\input{sec_continuacion}
+
+\part{Composición, robustez y alcance}
+
+\section{Interconexión $\delta$-disipativa}
+\label{sec:interconexion}
+
+Las cuatro capas operan a velocidades distintas: la percepción actualiza a la
+tasa del sensor, el reparto de esfuerzos a la del solver, la revisión
+estratégica por eventos y el movimiento al periodo de control. Interpretarlas
+como juegos distintos sería un error; son un único sistema interconectado.
+
+Siguiendo el marco de sistemas $\delta$-disipativos para juegos de población
+\cite{fox2013population,park2019payoff}, sea $z$ el estado estratégico y $e_p$
+el error de la capa física, con funciones de almacenamiento $V_z$ y $V_p$.
+
+\begin{teorema}[Ganancia pequeña]
+\label{th:smallgain}
+Supóngase que existen $a_z,a_p>0$ y $b_z,b_p,\sigma_z,\sigma_p\ge0$ tales que
+\begin{align}
+  \dot V_z &\le -a_z\|z\|^{2}+b_z\|e_p\|^{2}+\sigma_z\|d_z\|^{2},\\
+  D^{+}V_p &\le -a_p\|e_p\|^{2}+b_p\|z\|^{2}+\sigma_p\|d_p\|^{2},
+\end{align}
+donde $d_z,d_p$ son perturbaciones acotadas. Si
+\begin{equation}
+  b_z b_p<a_z a_p ,
+  \label{eq:smallgain}
+\end{equation}
+la interconexión es estable entrada--estado respecto a $(d_z,d_p)$.
+\end{teorema}
+
+\begin{proof}
+Tómese $V=\eta V_z+V_p$ con $\eta>0$. Entonces
+$\dot V\le-(\eta a_z-b_p)\|z\|^2-(a_p-\eta b_z)\|e_p\|^2+\eta\sigma_z\|d_z\|^2+\sigma_p\|d_p\|^2$.
+Ambos coeficientes son positivos si $b_p/a_z<\eta<a_p/b_z$, intervalo no vacío
+exactamente cuando se cumple \eqref{eq:smallgain}. La cota ISS se sigue del
+lema de comparación.
+\end{proof}
+
+\begin{observacion}[Las constantes salen de una LMI, no de una estimacion]
+\label{obs:lmi}
+Los coeficientes $a_z,b_z,a_p,b_p$ no tienen por que estimarse a mano. En el
+marco de sistemas $\delta$-disipativos, la existencia de una funcion de
+almacenamiento cuadratica $S=\tfrac12 Z^{\!\top}\!PZ$ con $P\succ0$ que
+verifique la desigualdad de disipacion se comprueba, para dinamicas lineales o
+linealizadas, resolviendo una desigualdad matricial lineal en $P$
+\cite[Lema~3.1 y Cor.~3.1]{martinezPiazuelo2025gne}. La condicion
+\eqref{eq:smallgain} pasa asi de criterio abstracto a prueba numerica por
+instancia.
+\end{observacion}
+
+\Cref{th:smallgain} enuncia una propiedad del modelo en tiempo continuo. Como
+la ejecución es digital, hace falta su contrapartida muestreada.
+
+\begin{teorema}[Versión muestreada]
+\label{th:muestreada}
+Sea $F$ convexa con gradiente $L$-Lipschitz y $\arg\min F\ne\emptyset$. La
+iteración de precios
+$p_{k+1}=p_k+\gamma\big(\Wdem-\bar W(p_k)\big)=p_k-\gamma\nabla F(p_k)$
+converge al conjunto de minimizadores duales para todo paso
+\begin{equation}
+  0<\gamma<\frac{2}{L}.
+  \label{eq:paso}
+\end{equation}
+\end{teorema}
+
+\begin{proof}
+Es el descenso de gradiente sobre una función convexa con gradiente
+$L$-Lipschitz. Para $\gamma<2/L$ el operador $I-\gamma\nabla F$ es promediado y
+no expansivo respecto al conjunto de minimizadores; la convergencia se sigue del
+el teorema de punto fijo de Krasnoselski y Mann.
+\end{proof}
+
+\subsection{Conmutación de modo: histéresis y ausencia de Zenón}
+
+La parte discreta $d_i=(k_i,\mu_i,s_i)$ cambia durante la revisión estratégica,
+y cada cambio conmuta la configuración del lazo físico. La estabilidad del
+sistema conmutado \emph{no} se sigue de la estabilidad de cada modo por
+separado: hace falta acotar la frecuencia de conmutación. Se adopta una regla
+de histéresis: el AMR $i$ solo cambia de $d$ a $d'$ si
+\begin{equation}
+  \Delta_i(t)\defeq\Phi(d',z_{-i},t)-\Phi(d,z_{-i},t)>\epsilon_{\mathrm{sw}}>0 .
+  \label{eq:histeresis}
+\end{equation}
+
+\begin{teorema}[Tiempo de permanencia mínimo]
+\label{th:dwell}
+Supóngase \eqref{eq:histeresis} y que $\Delta_i$ es absolutamente continua con
+$|\dot\Delta_i|\le L_{\mathrm{sw}}$ sobre el horizonte considerado. Entonces el
+tiempo entre dos conmutaciones consecutivas del AMR $i$ satisface
+\[
+  \tau_D\ \ge\ \frac{2\,\epsilon_{\mathrm{sw}}}{L_{\mathrm{sw}}}\ >\ 0 .
+\]
+En consecuencia no hay comportamiento de Zenón y el sistema conmutado admite la
+cota de \cref{th:smallgain} sobre cada intervalo de permanencia.
+\end{teorema}
+
+\begin{proof}
+Sea $t_1$ un instante de conmutación de $d$ a $d'$. Por \eqref{eq:histeresis},
+$\Delta_i(t_1)>\epsilon_{\mathrm{sw}}$. Tras conmutar, los papeles se
+intercambian: volver a $d$ exige, por la misma regla,
+$-\Delta_i(t_2)>\epsilon_{\mathrm{sw}}$, es decir
+$\Delta_i(t_2)<-\epsilon_{\mathrm{sw}}$. La función debe recorrer una variación
+de al menos $2\epsilon_{\mathrm{sw}}$; con $|\dot\Delta_i|\le L_{\mathrm{sw}}$,
+el teorema del valor medio da
+$t_2-t_1\ge 2\epsilon_{\mathrm{sw}}/L_{\mathrm{sw}}$.
+\end{proof}
+
+\begin{observacion}[Coste de la histéresis]
+La regla \eqref{eq:histeresis} descarta mejoras menores que
+$\epsilon_{\mathrm{sw}}$. El perfil terminal es un
+$\epsilon_{\mathrm{sw}}$-equilibrio, no un equilibrio exacto, y esa holgura se
+contabiliza dentro de $\Delta_{\mathrm{dyn}}$ en \cref{th:descomposicion}. El
+compromiso es explícito: $\epsilon_{\mathrm{sw}}$ grande da permanencia larga y
+más pérdida; $\epsilon_{\mathrm{sw}}\to0$ recupera el equilibrio exacto y pierde
+la cota de permanencia.
+\end{observacion}
+
+En el modo \textsf{caging}, donde el contacto es intermitente por construcción,
+la conmutación de canales activos admite además el tratamiento por eventos de
+\cite{lee2026switching}, que prueba estabilidad exponencial semiglobal bajo
+conmutación no instantánea para manipulación cooperativa no prehensil.
+
+\begin{observacion}[Tolerancia a perdidas consecutivas]
+\label{obs:perdidas}
+El consenso sobre precios y sobre \emph{log-odds} no exige entrega perfecta.
+Bajo muestreo asincrono con periodo $h_j$ por agente, existe una cota
+$\rho^{\max}_{ij}$ de perdidas consecutivas admisibles de la forma
+$\rho^{\max}_{ij}<T_{ij}/h_j-1$, donde $T_{ij}$ depende de la ganancia del
+protocolo y del margen inicial; por debajo de esa cota se conserva la
+convergencia \cite{zhao2024hybrid}. La consecuencia de diseno es que el periodo
+de muestreo y la tasa de perdida no son parametros independientes: acelerar el
+muestreo reduce el numero de perdidas consecutivas tolerables.
+\end{observacion}
+
+\begin{observacion}
+\Cref{th:muestreada} es lo que permite escribir «sin rondas globales
+síncronas» en lugar de «asíncrono» o «sin reloj». El sistema implementado es
+digital y muestreado; lo que se afirma es la ausencia de una barrera de
+sincronización global, no la ausencia de reloj.
+\end{observacion}
+
+
+\input{sec_clusters}
+
+\input{sec_topologia}
+
+\input{sec_cfrd}
+
+\input{sec_autoridad}
+
+\input{sec_degradacion}
+
+\input{sec_alcance}
+
+\input{sec_informacion2}
+
+\part{El mercado completo: cuatro precios}
+
+\input{sec_comunicacion}
+
+\input{sec_multiclase}
+
+\input{sec_standby}
+
+\part{Brecha, misión y operación sostenida}
+
+\section{Descomposición exacta de la brecha}
+\label{sec:descomposicion}
+
+Sea $J$ el coste social. Se definen cuatro valores de referencia sobre el mismo
+instante y la misma instancia:
+\begin{align*}
+  J^{\star}_{\mathrm{rel}} &= \min\nolimits_{c\in\Xcal}\ J
+    &&\text{(relajación continua, mapa verdadero)}\\
+  J^{\star}_{\mathrm{IP}}  &= \min\nolimits_{z\in\Fcal}\ J
+    &&\text{(óptimo atómico, mapa verdadero)}\\
+  J^{\star}_{C}            &= \min\nolimits_{z\in CM(z_0)}\ J
+    &&\text{(óptimo alcanzable en la componente)}\\
+  J(Z_t)                   &= \text{coste del perfil que la dinámica alcanza,}
+\end{align*}
+y $\hat J^{\star}_{\mathrm{rel}}$ el óptimo relajado calculado sobre el
+\emph{mapa estimado}.
+
+\begin{teorema}[Descomposición exacta en cuatro términos]
+\label{th:descomposicion}
+Para todo $Z_t\in CM(z_0)$,
+\[
+  J(Z_t)-J^{\star}_{\mathrm{rel}}
+  =\Delta_{\mathrm{perc}}+\Delta_{\mathrm{int}}
+   +\Delta_{\mathrm{top}}+\Delta_{\mathrm{dyn}},
+\]
+con
+$\Delta_{\mathrm{perc}}=\hat J^{\star}_{\mathrm{rel}}-J^{\star}_{\mathrm{rel}}$,
+$\Delta_{\mathrm{int}}=J^{\star}_{\mathrm{IP}}-\hat J^{\star}_{\mathrm{rel}}$,
+$\Delta_{\mathrm{top}}=J^{\star}_{C}-J^{\star}_{\mathrm{IP}}$ y
+$\Delta_{\mathrm{dyn}}=J(Z_t)-J^{\star}_{C}$. Los términos
+$\Delta_{\mathrm{int}}$, $\Delta_{\mathrm{top}}$ y $\Delta_{\mathrm{dyn}}$ son
+no negativos; $\Delta_{\mathrm{perc}}$ es no negativo si el mapa estimado es
+conservador, es decir, si $\Fcal^{\mathrm{libre}}_{\text{est}}\subseteq
+\Fcal^{\mathrm{libre}}_{\text{real}}$.
+\end{teorema}
+
+\begin{proof}
+La identidad se obtiene sumando y restando
+$\hat J^{\star}_{\mathrm{rel}}$, $J^{\star}_{\mathrm{IP}}$ y $J^{\star}_{C}$.
+La no negatividad de los tres últimos se sigue de la cadena de inclusiones
+$\Xcal\supseteq\Fcal\supseteq CM(z_0)\ni Z_t$: minimizar sobre un conjunto
+menor no puede dar un valor menor. Para el primero, si el mapa estimado declara
+libre solo lo que realmente lo es, su conjunto admisible está contenido en el
+verdadero y el mínimo no puede ser menor.
+\end{proof}
+
+\begin{observacion}[La no negatividad exige un solo mapa]
+\label{obs:descomposicion-mapa}
+La identidad es algebraica y vale siempre. La no negatividad de los tres \'ultimos
+términos, en cambio, requiere que los cuatro problemas estén planteados sobre el
+\emph{mismo} mapa, porque solo entonces la cadena $\Xcal\supseteq\Fcal\supseteq CM(z_0)$
+está anidada. Tal como se definió, $\hat J^\star_{\mathrm{rel}}$ se calcula sobre el mapa
+estimado y $J^\star_{\mathrm{IP}}$ sobre el real, de modo que
+$\Delta_{\mathrm{int}}$ compara mínimos sobre conjuntos que no se contienen y
+puede ser negativo. La lectura correcta es: o bien se toman los cuatro sobre el
+mapa estimado, y entonces $\Delta_{\mathrm{int}},\Delta_{\mathrm{top}},\Delta_{\mathrm{dyn}}\ge0$
+y $\Delta_{\mathrm{perc}}$ absorbe toda la discrepancia entre mapas; o bien sobre el
+real, y entonces es la ejecución $Z_t$ la que puede no ser admisible en él. Mezclar ambos afirma una no negatividad que no se sigue \cite{mayorga2026m1}.
+\end{observacion}
+
+\begin{table}[!ht]
+\centering
+\small
+\caption{Cada capa mide un término y solo uno.}
+\label{tab:mapeo}
+\begin{tabularx}{\textwidth}{@{}llX@{}}
+\toprule
+Término & Capa & Qué lo genera \\
+\midrule
+$\Delta_{\mathrm{perc}}$ & Percepción (\cref{sec:percepcion})
+  & error del mapa fusionado frente al real \\
+$\Delta_{\mathrm{int}}$ & Física y atomicidad (\cref{sec:wrench})
+  & la coalición ejecutable es entera; la relajación admite participación
+    fraccionaria \\
+$\Delta_{\mathrm{top}}$ & Información de $n$ saltos (\cref{sec:megajuego})
+  & el óptimo atómico puede no ser alcanzable desde $z_0$ con revisiones
+    locales \\
+$\Delta_{\mathrm{dyn}}$ & Localidad estratégica (\cref{sec:nhop})
+  & la dinámica se detiene en $\mathrm{BR}_h$ con $h$ finito \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+El valor de \cref{th:descomposicion} no es algebraico —es una identidad
+telescópica— sino metodológico: convierte cuatro fuentes de subóptimalidad que
+la literatura suele confundir en cuatro cantidades separadamente medibles, y
+asigna a cada capa de la arquitectura la responsabilidad de una sola de ellas.
+Una mejora en la percepción no puede reclamar reducción de
+$\Delta_{\mathrm{dyn}}$, y subir de $h=1$ a $h=2$ no puede reclamar reducción de
+$\Delta_{\mathrm{int}}$.
+
+
+\input{sec_mision}
+
+\input{sec_operacion}
+
+\part{Síntesis y contraste}
+
+\input{sec_cierre}
+
+\input{sec_ensayo_cierre}
+
+\input{sec_nucleo}
+
+\input{sec_ensayos}
+
+\input{sec_auditoria}
+
+\section{Alcance y problemas abiertos}
+
+\paragraph{Lo demostrado.} Potencial exacto sobre estrategia híbrida
+(\cref{th:potencial}) y terminación (\cref{co:terminacion}); exactitud del
+certificado relativa a su modelo (\cref{th:cert}); imposibilidad de tirón
+normal (\cref{pr:notiron}) e caracterizacion por span positivo (\cref{th:span});
+suficiencia de \emph{caging} por curva cerrada (\cref{pr:caging}); consenso
+sobre \emph{log-odds} igual al posterior centralizado (\cref{th:mapa});
+principio de no equivalencia (\cref{th:noequiv}) y degeneracion del deficit
+lineal (\cref{pr:degeneracion}); interpretacion robusta exacta del margen
+(\cref{th:robusto}); invariancia HOCBF y estrechamiento muestreado
+(\cref{pr:hocbf}, \cref{le:muestras}); cota de esfuerzo derivada del actuador
+(\cref{pr:cota}); el precio de seguridad preserva la estructura variacional
+si y solo si el multiplicador es comun al par (\cref{th:precio-seguridad});
+la rigidizacion convierte precios en fuerzas internas y estas consumen
+presupuesto de actuador (\cref{th:rigidizacion}); barrera compuesta del
+cluster con cota de conservadurismo (\cref{pr:barrera-compuesta});
+condicion de implementabilidad del mecanismo distribuido
+(\cref{pr:implementable}); topologia garantizada por barrera y cota de
+grado del arbol generador (\cref{th:topologia-garantizada}, \cref{pr:compatibilidad});
+estabilidad ISS bajo ganancia pequeña (\cref{th:smallgain}) y su versión
+muestreada con paso explícito (\cref{th:muestreada}); tiempo de permanencia mínimo y ausencia de Zenón
+(\cref{th:dwell}); jerarquía anidada de desviaciones (\cref{pr:jerarquia}); descomposición exacta de la brecha
+(\cref{th:descomposicion}).
+
+\paragraph{Lo no demostrado.} No hay garantía de optimalidad global: el punto
+final es un elemento de $\mathrm{BR}_h$ y \cref{th:descomposicion} cuantifica lo
+que ello cuesta, sin acotarlo a priori. La alineación angular de
+\cref{obs:antipodal} es local. Las fronteras (ii) y (iv) de
+\cref{obs:fronteras} —dependencia dinámica de la demanda y pérdida de
+contacto— quedan abiertas: su contraste exige un banco con física de contacto
+en el que se ejecuten también las coaliciones que el certificado rechaza, sin
+lo cual no existe tasa de falsos negativos. La condición \eqref{eq:smallgain}
+es suficiente y sus constantes deben estimarse por instancia; no se afirma que
+sea necesaria.
+
+\paragraph{Trabajo futuro.} Cerrar (ii) y (iv) con el banco físico; sustituir la
+caja $0\le\bm\lambda\le\bar{\bm\lambda}$ por la aproximación poliédrica del cono
+de fricción en el solver, lo que hace \cref{th:span} operativa; y medir los
+cuatro términos de \cref{th:descomposicion} sobre una misma campaña, que es la
+validación natural de toda la construcción.
+
+\subsection{El problema abierto principal, planteado correctamente}
+
+Queda por decir qué sería \emph{resolver} este problema, porque el objetivo
+aparentemente natural no es el correcto.
+
+\begin{definicion}[Clase implementable]
+\label{def:implementable}
+Una política $\pi$ es $(n,\Delta)$\emph{-implementable} si la decisión de cada
+AMR en el instante $t$ es medible respecto de la información contenida en su
+bola de $n$ saltos con latencia no superior a $\Delta$, y su cómputo cabe en el
+presupuesto de un intervalo de control.
+\end{definicion}
+
+\begin{observacion}[Por qué el equilibrio de Nash en realimentación no es el
+listón]
+\label{obs:nash-no-listón}
+El objetivo que la teoría de juegos diferenciales propondría —un equilibrio de
+Nash en realimentación sobre el estado conjunto— exige que cada agente
+condicione su acción al estado global instantáneo. Ninguna flota física puede
+hacerlo: la información viaja a velocidad finita por un canal con pérdidas, y
+por \cref{pr:implementable} solo son ejecutables las políticas que dependen de
+magnitudes espacialmente distribuidas. Medir la arquitectura contra ese
+equilibrio es compararla con algo que no compite, porque no puede ejecutarse.
+
+El listón correcto es \cref{def:implementable}: entre las políticas que un
+sistema real puede ejecutar, ¿cuánto pierde esta? Esa pregunta sí está bien
+planteada, y el aparato construido aquí identifica los tres términos en que se
+descompondría su respuesta: la separación de escalas entre las capas rápida,
+media y lenta; el error de estimación del canal, acotado por la mezcla de
+\cref{th:conmutada} y el diámetro; y el error de formación de
+\cref{pr:rigidez}. Los tres son magnitudes ya medidas por el propio sistema.
+\end{observacion}
+
+\begin{observacion}[Lo que falta, dicho sin adorno]
+\label{obs:falta-optimalidad}
+Identificar los tres términos no es acotar su suma, y menos aún demostrar que
+ninguna otra política de la clase hace esencialmente mejor. Lo segundo exigiría
+una cota inferior uniforme sobre toda la clase implementable, y esa cota no está
+demostrada aquí ni se deriva de lo que está. Enunciarla como teorema sería
+presentar un programa de trabajo como resultado. Se declara, por tanto, como el
+problema abierto principal: \emph{acotar la pérdida de la política compuesta
+frente al ínfimo sobre la clase $(n,\Delta)$-implementable}, con la observación
+de que los ingredientes —descomposición por escalas, error de información,
+error de formación— ya tienen expresión en este trabajo, y lo que falta es el
+argumento que los compone en una cota válida para toda política de la clase.
+\end{observacion}
+
+\begin{thebibliography}{99}\small
+
+\bibitem{gerkey2004taxonomy}
+B.~P. Gerkey y M.~J. Matarić,
+\emph{A formal analysis and taxonomy of task allocation in multi-robot systems},
+The International Journal of Robotics Research, 23(9):939--954, 2004.
+
+\bibitem{choi2009cbba}
+H.-L. Choi, L. Brunet y J.~P. How,
+\emph{Consensus-based decentralized auctions for robust task allocation},
+IEEE Transactions on Robotics, 25(4):912--926, 2009.
+
+\bibitem{nakamura1989dynamics}
+Y. Nakamura, K. Nagai y T. Yoshikawa,
+\emph{Dynamics and stability in coordination of multiple robotic mechanisms},
+The International Journal of Robotics Research, 8(2):44--61, 1989.
+
+\bibitem{sharon2015cbs}
+G. Sharon, R. Stern, A. Felner y N.~R. Sturtevant,
+\emph{Conflict-based search for optimal multi-agent pathfinding},
+Artificial Intelligence, 219:40--66, 2015.
+
+\bibitem{olfatiSaber2004consensus}
+R. Olfati-Saber y R.~M. Murray,
+\emph{Consensus problems in networks of agents with switching topology and
+time-delays},
+IEEE Transactions on Automatic Control, 49(9):1520--1533, 2004.
+
+\bibitem{bullo2009distributed}
+F. Bullo, J. Cortés y S. Martínez,
+\emph{Distributed Control of Robotic Networks},
+Princeton University Press, 2009.
+
+\bibitem{wolpert1999collective}
+D.~H. Wolpert y K. Tumer,
+\emph{An introduction to collective intelligence},
+Technical Report NASA-ARC-IC-99-63, NASA Ames Research Center, 1999.
+
+\bibitem{marden2009cooperative}
+J.~R. Marden, G. Arslan y J.~S. Shamma,
+\emph{Cooperative control and potential games},
+IEEE Transactions on Systems, Man, and Cybernetics, Part B, 39(6):1393--1407,
+2009.
+
+\bibitem{facchinei2007gne}
+F. Facchinei y C. Kanzow,
+\emph{Generalized Nash equilibrium problems},
+4OR, 5(3):173--210, 2007.
+
+\bibitem{fox2013population}
+M.~J. Fox y J.~S. Shamma,
+\emph{Population games, stable games, and passivity},
+Games, 4(4):561--583, 2013.
+
+\bibitem{park2019payoff}
+S. Park, N.~C. Martins y J.~S. Shamma,
+\emph{Payoff dynamics models and evolutionary dynamics models: Feedback and
+convergence to equilibria},
+arXiv:1903.02018, 2019.
+
+\bibitem{sandholm2010population}
+W.~H. Sandholm,
+\emph{Population Games and Evolutionary Dynamics},
+MIT Press, 2010.
+
+\bibitem{martinezPiazuelo2025gne}
+J. Martínez-Piazuelo, C. Ocampo-Martínez y N. Quijano,
+\emph{Generalized Nash Equilibrium Seeking in Population Games: Applications
+in the Control of Large-Scale Multi-agent Systems},
+Communications and Control Engineering, Springer, 2026.
+
+\bibitem{glizer2022singular}
+V.~Y. Glizer y O. Kelis,
+\emph{Singular Linear-Quadratic Zero-Sum Differential Games and $H_{\infty}$
+Control Problems},
+Static and Dynamic Game Theory, Birkhäuser, 2022.
+
+\bibitem{quijano2017role}
+N. Quijano, C. Ocampo-Martínez, J. Barreiro-Gómez, G. Obando, A. Pantoja y
+E. Mojica-Nava,
+\emph{The role of population games and evolutionary dynamics in distributed
+control systems},
+IEEE Control Systems Magazine, 37(1):70--97, 2017.
+
+\bibitem{ames2017cbf}
+A.~D. Ames, X. Xu, J.~W. Grizzle y P. Tabuada,
+\emph{Control barrier function based quadratic programs for safety critical
+systems},
+IEEE Transactions on Automatic Control, 62(8):3861--3876, 2017.
+
+\bibitem{bicchi1995closure}
+A. Bicchi,
+\emph{On the closure properties of robotic grasping},
+The International Journal of Robotics Research, 14(4):319--334, 1995.
+
+\bibitem{rimon1996caging}
+E. Rimon y A. Blake,
+\emph{Caging 2D bodies by 1-parameter two-fingered gripping systems},
+en IEEE International Conference on Robotics and Automation, 1996.
+
+\bibitem{julier1997ci}
+S. J. Julier y J. K. Uhlmann,
+\emph{A non-divergent estimation algorithm in the presence of unknown
+correlations},
+Proceedings of the American Control Conference, pp. 2369--2373, 1997.
+
+\bibitem{thrun2005probabilistic}
+S. Thrun, W. Burgard y D. Fox,
+\emph{Probabilistic Robotics},
+MIT Press, 2005.
+
+\bibitem{lee2026switching}
+D. Lee, D.~V. Dimarogonas y H.~J. Kim,
+\emph{Event-triggered switching control for cooperative manipulation of
+underactuated multi-channel systems},
+2026. Preprint incluido en el corpus de trabajo.
+
+\bibitem{gorrostieta2019applications}
+E. Gorrostieta Hurtado (ed.),
+\emph{Applications of Mobile Robots},
+IntechOpen, 2019.
+
+\bibitem{lozovanu2024positional}
+D. Lozovanu y S. Pickl,
+\emph{Markov Decision Processes and Stochastic Positional Games},
+Springer, 2024.
+
+\bibitem{tembine2021meanfield}
+H. Tembine y J. Barreiro-Gómez,
+\emph{Mean-Field-Type Games for Engineers},
+CRC Press, 2021.
+
+\bibitem{yildirim2023warehouse}
+A. Yildirim, H. Reefke y E. Aktas,
+\emph{Mobile Robot Automation in Warehouses: A Framework for Decision Making},
+Palgrave Studies in Logistics and Supply Chain Management, 2023.
+
+\bibitem{dafermos1972multiclass}
+S.~C. Dafermos,
+\emph{The traffic assignment problem for multiclass-user transportation
+networks},
+Transportation Science, 6(1):73--87, 1972.
+
+\bibitem{ren2008distributed}
+W. Ren y R.~W. Beard,
+\emph{Distributed Consensus in Multi-vehicle Cooperative Control},
+Communications and Control Engineering, Springer, 2008.
+
+\bibitem{arcak2021dissipativity}
+M. Arcak y N.~C. Martins,
+\emph{Dissipativity tools for convergence to Nash equilibria in population
+games},
+IEEE Transactions on Control of Network Systems, 8(1):39--50, 2021.
+
+\bibitem{facchineiPang2003}
+F. Facchinei y J.-S. Pang,
+\emph{Finite-Dimensional Variational Inequalities and Complementarity
+Problems}, vol.~1, Springer, 2003.
+
+\bibitem{mahmoud2021advanced}
+M. S. Mahmoud,
+\emph{Advanced Distributed Consensus for Multiagent Systems},
+Academic Press, 2021.
+
+\bibitem{mayorga2026m1}
+J. L. Mayorga Taborda,
+\emph{MegaJuego: monografía científica integrada M1},
+documento de trabajo del proyecto MROB, septiembre de 2026.
+
+\bibitem{okada2026games}
+A. Okada,
+\emph{Games and Coalitions: Bridging Non-cooperative and Cooperative Games},
+Cambridge University Press, 2026.
+
+\bibitem{yadav2023advanced}
+S. K. Yadav,
+\emph{Advanced Graph Theory},
+Springer, 2023.
+
+\bibitem{clempner2024optimization}
+J. Kacprzyk, J. B. Clempner y A. S. Poznyak,
+\emph{Optimization and Games for Controllable Markov Chains: Numerical Methods
+with Application to Finance and Engineering},
+Springer, 2024.
+
+\bibitem{weiss2023games}
+U. Weiss y J. Agassi,
+\emph{Games to Play and Games Not to Play: Strategic Decisions},
+Studies in Systems, Decision and Control, Springer, 2023.
+
+\bibitem{wang2024adaptive}
+W. Wang, J. Long, J. Huang y C. Wen,
+\emph{Distributed Adaptive Consensus Control of Uncertain Multi-agent Systems},
+Automation and Control Engineering, CRC Press, 2024.
+
+\bibitem{cai2022cooperative}
+H. Cai, Y. Su y J. Huang,
+\emph{Cooperative Control of Multi-agent Systems: Distributed-Observer
+and Internal-Model Approaches},
+Advances in Industrial Control, Springer, 2022.
+
+\bibitem{zhao2024hybrid}
+G. Zhao, H. Cui, C. Hua y S. Liu,
+\emph{Cooperative Control of Multi-agent Systems: A Hybrid System Approach},
+Springer Nature Singapore, 2024.
+
+\bibitem{caiSu2022cooperative}
+H. Cai y Y. Su,
+\emph{Cooperative Control of Multi-agent Systems},
+Springer, 2022.
+
+\bibitem{yadav2023graph}
+S.~K. Yadav,
+\emph{Advanced Graph Theory},
+Springer, 2023.
+
+\bibitem{siegwart2011introduction}
+R. Siegwart, I.~R. Nourbakhsh y D. Scaramuzza,
+\emph{Introduction to Autonomous Mobile Robots}, 2.\textsuperscript{a} ed.,
+MIT Press, 2011.
+
+\bibitem{tembine2021meanfield}
+H. Tembine y J. Barreiro-Gómez,
+\emph{Mean-Field-Type Games for Engineers},
+CRC Press, 2021.
+
+\bibitem{stewart2000rigid}
+D.~E. Stewart,
+\emph{Rigid-body dynamics with friction and impact},
+SIAM Review, 42(1):3--39, 2000.
+
+\bibitem{mayorga2026compendio}
+J. L. Mayorga Taborda,
+\emph{TFM MROB 2026: compendio científico consolidado v0.2. MegaJuego, coaliciones, física cargo/push, path planning emergente, seguridad, recourse y benchmarking},
+documento de trabajo del proyecto MROB, 8 de septiembre de 2026.
+
+\bibitem{vandenberg2011orca}
+J. van den Berg, S. J. Guy, M. Lin y D. Manocha,
+«Reciprocal $n$-body collision avoidance»,
+en \emph{Robotics Research}, Springer Tracts in Advanced Robotics 70, pp. 3--19, 2011.
+
+\bibitem{okumura2019pibt}
+K. Okumura, M. Machida, X. Défago y Y. Tamura,
+«Priority inheritance with backtracking for iterative multi-agent path finding»,
+en \emph{Proc. IJCAI}, pp. 535--542, 2019.
+
+\bibitem{allibhoy2025anytime}
+A. Allibhoy y J. Cortés,
+«Anytime solvers for variational inequalities: the (recursive) safe monotone flows»,
+\emph{Automatica}, vol. 177, 2025.
+
+\bibitem{murota2003discrete}
+K. Murota,
+\emph{Discrete Convex Analysis},
+SIAM, 2003.
+
+\bibitem{kurtz1970solutions}
+T. G. Kurtz,
+«Solutions of ordinary differential equations as limits of pure jump Markov processes»,
+\emph{Journal of Applied Probability}, vol. 7, pp. 49--58, 1970.
+
+\bibitem{tassiulas1992stability}
+L. Tassiulas y A. Ephremides,
+«Stability properties of constrained queueing systems and scheduling policies for maximum throughput in multihop radio networks»,
+\emph{IEEE Transactions on Automatic Control}, vol. 37, n.º 12, pp. 1936--1948, 1992.
+
+\bibitem{fotakis2005selfish}
+D. Fotakis, S. Kontogiannis y P. Spirakis,
+«Selfish unsplittable flows»,
+\emph{Theoretical Computer Science}, vol. 348, pp. 226--239, 2005.
+
+\bibitem{downey2013fundamentals}
+R. G. Downey y M. R. Fellows,
+\emph{Fundamentals of Parameterized Complexity},
+Springer, 2013.
+
+\bibitem{karp1972reducibility}
+R. M. Karp,
+«Reducibility among combinatorial problems»,
+en \emph{Complexity of Computer Computations}, Plenum, pp. 85--103, 1972.
+
+\bibitem{shorinwa2024disco}
+O. Shorinwa, M. Devlin, E. W. Hawkes y M. Schwager,
+«DisCo: distributed contact-rich trajectory optimization for forceful multi-robot collaboration»,
+preprint arXiv, 2024.
+
+\bibitem{muhammed2026decentralized}
+D. Muhammed, A. Nada y H. El-Hussieny,
+«Real-time decentralized model predictive control for cooperative multi-robot object transport: experimental validation»,
+2026.
+
+\bibitem{sambhus2026distributed}
+S. Sambhus et al.,
+«Distributed nonlinear MPC with ADMM, wrench consensus and high-order control barrier functions for cooperative legged transport»,
+preprint arXiv, julio de 2026.
+
+\bibitem{zhou2026cttcbs}
+Y. Zhou, N. Bode y E. Hunt,
+«Cooperative transport task assignment and path finding (CT-TAPF): optimal and bounded-suboptimal solvers»,
+en \emph{Proc. AAMAS}, 2026.
+
+\bibitem{shibata2026dereco}
+K. Shibata et al.,
+«DeReCo: decoupled representation and coordination learning for cooperative object transport»,
+preprint arXiv, marzo de 2026.
+
+\bibitem{mrob2026r11}
+Proyecto MROB,
+\emph{R11: hipótesis de aportación del MegaJuego y contrastes de falsación},
+batería de 1\,550 realizaciones (E1--E5) con protocolos, semillas y resultados por instancia, 8 de septiembre de 2026.
+
+\bibitem{barreiro2019evolutionary}
+J. Barreiro-Gómez, G. Obando, C. Ocampo-Martínez y N. Quijano,
+«Evolutionary-games approach for distributed predictive control involving resource allocation»,
+\emph{IET Control Theory \& Applications}, vol. 13, n.º 13, pp. 2079--2090, 2019.
+
+\bibitem{boyd2011admm}
+S. Boyd, N. Parikh, E. Chu, B. Peleato y J. Eckstein,
+«Distributed optimization and statistical learning via the alternating direction method of multipliers»,
+\emph{Foundations and Trends in Machine Learning}, vol. 3, n.º 1, pp. 1--122, 2011.
+
+\bibitem{shin2022exponential}
+S. Shin, M. Anitescu y V. M. Zavala,
+«Exponential decay of sensitivity in graph-structured nonlinear programs»,
+\emph{SIAM Journal on Optimization}, vol. 32, n.º 2, pp. 1156--1183, 2022.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,185 @@
+\subsection{Lectura de los resultados}
+
+\begin{observacion}[El mecanismo distribuido entrega, y con qué tasa]
+\label{obs:ensayo-cierre-tasa}
+Con la configuración de referencia —Smith, aptitud vector, arrendamiento,
+seguridad anidada, reclutamiento atómico, creencias exactas— las dos cargas se
+entregan en $21$ de $30$ mundos, con intervalo de Wilson del $52$ al $83\%$, en
+una mediana de $153$~s desde el instante cero hasta la segunda entrega, con un
+reclutamiento que converge en unas seis revisiones aceptadas. Los nueve fallos
+son de dos tipos: formaciones que no cierran antes de los sesenta segundos de
+guarda y se reabren (churn), y segundas cargas que llegan al horizonte en
+transporte. Ninguno es un certificado falso: en las trescientas misiones de la
+rejilla de protocolos no hubo una sola coalición certificada con margen negativo.
+Es la primera vez en este documento que el mecanismo completo —revisión,
+certificado, mercado, arrendamiento, barreras— corre solo sobre la planta; el
+$70\%$ no es la cifra de un sistema industrial, es la de una construcción
+teórica ejecutada sin un solo nodo con el estado completo.
+\end{observacion}
+
+\begin{observacion}[Los protocolos con estacionariedad de Nash son equivalentes; el replicador no recluta]
+\label{obs:ensayo-cierre-protocolos}
+Mejor respuesta, Smith, BNN y logit entregan entre $19$ y $22$ de $30$, con
+McNemar pareado frente a Smith de $p\ge0{,}8$ en los tres casos: sobre esta
+planta el protocolo de revisión no cambia el resultado, como predice
+\cref{obs:smith} para los protocolos que comparten estacionariedad de Nash. El
+replicador entrega $0$ de $30$ con cero revisiones aceptadas en trescientas
+misiones-segundo: es la invariancia de la frontera del símplex medida —una
+estrategia que nadie usa no puede ser imitada— y frente a Smith da $0/21$
+discordancias, $p<10^{-6}$. \Cref{obs:smith} lo enunció como razón para
+descartar el replicador en reclutamiento; el banco lo convierte en un hecho
+con intervalo.
+\end{observacion}
+
+\begin{observacion}[La aptitud vector no fue vinculante en \textsf{cargo}]
+\label{obs:ensayo-cierre-aptitud}
+Aptitud vector y escalar dan trayectorias idénticas en las treinta semillas:
+mismo éxito, mismos tiempos, mismos mensajes. No es coincidencia sino
+geometría: con tres pads de disco bajo una plataforma, toda tripleta con
+capacidad suficiente tiene también margen de \emph{wrench} en todas las
+direcciones, luego el certificado de \cref{th:span} y la suma de capacidades
+certifican las mismas coaliciones. La diferencia entre ambas aptitudes es la
+de \cref{th:span} frente al rango: aparece cuando las columnas son
+unilaterales —empuje— y ese es exactamente el modo que no entró en el banco.
+El resultado es, por tanto, un control negativo honesto: dice dónde la
+aptitud vector no añade nada, que es donde la teoría dice que no debe añadir.
+\end{observacion}
+
+\begin{observacion}[Arrendamiento y precio de congestión: misma tasa, distinto coste]
+\label{obs:ensayo-cierre-pasillo}
+El arrendamiento exclusivo con orden total entrega $15$ de $20$ y el precio de
+congestión sin exclusividad $14$ de $20$, con una sola discordancia pareada:
+en tasa de éxito no se distinguen. Se distinguen en lo que cuestan: el precio
+consume un $22\%$ más de mensajes y un $20\%$ más de energía, con una mediana
+de misión siete segundos más larga, porque las dos coaliciones renegocian
+velocidad en cada paso de control mientras se aproximan al hueco en lugar de
+esperar en el punto de retención. En ninguna de las cuarenta misiones dos
+centros de carga ocuparon el vano a la vez: en esta geometría —un hueco de
+$3{,}3$~m por el que no caben dos plataformas de $1{,}1$ y $1{,}3$~m con sus
+AMR— la exclusión la impone la física antes que el contrato, y el precio la
+reproduce sin garantía. Es la tercera lectura de \cref{obs:ensayo-cuestiona} y
+de \cref{obs:mixed2d-exclusividad}: la garantía de \cref{th:ciclo-espera} no
+sale gratis, pero aquí su precio en tiempo es nulo y en comunicación es
+negativo.
+\end{observacion}
+
+\begin{observacion}[La capa de seguridad, tal como está implementada, cuesta éxito y no elimina el contacto]
+\label{obs:ensayo-cierre-seguridad}
+Es el resultado incómodo del banco y se reporta sin atenuarlo. Sin barreras
+—solo la repulsión de contacto de la planta— el mecanismo entrega $19$ de
+$20$ en una mediana de $110$~s; con la barrera de coalición sola, $18$ de $20$
+en $144$~s; con la anidada (coalición más AMR), $15$ de $20$ en $153$~s. Las
+diferencias pareadas frente a la anidada son $5/1$ y $5/2$ discordancias,
+$p=0{,}22$ y $p=0{,}45$: no significativas con veinte mundos, pero de un solo
+signo. Y la separación mínima entre AMR no acoplados es negativa en las tres
+variantes —$-0{,}13$, $-0{,}16$ y $-0{,}22$~m de mediana—, es decir, hay
+contacto entre parachoques en casi todas las misiones; la barrera anidada lo
+reduce, no lo elimina. La lectura correcta es sobre \cref{th:entrega}: la
+hipótesis (A5) exige barreras \emph{factibles en todo estado alcanzado}, y lo
+implementado es un límite heurístico de velocidad por distancia de frenado
+sobre la navegación de robots que además deben pasar bajo la plataforma. Esa
+heurística frena a los que se acercan a formar —de ahí las formaciones que no
+cierran— y no impide que dos robots que se rodean acaben tocándose. El
+teorema no falla; falla la hipótesis, y el banco dice cuál: hace falta el
+programa cuadrático con barrera de orden correcto de
+\cref{th:grado-relativo-rueda} y garantía de factibilidad, no un límite de
+velocidad. Hasta entonces, el sistema que entrega es el que no frena, y eso
+es exactamente lo que \cref{obs:ensayo-cuestiona} ya había medido en otra
+planta.
+\end{observacion}
+
+\begin{observacion}[Reclutamiento atómico y GNE primal--dual: mismo resultado, más mensajes]
+\label{obs:ensayo-cierre-gne}
+Sustituir la revisión atómica por dinámicas de Smith sobre cuotas continuas
+con multiplicadores de capacidad y atomizar a los doce segundos entrega $16$
+de $20$ frente a $15$ de $20$, con $4/3$ discordancias pareadas ($p=1$): la
+relajación continua y su redondeo llegan a las mismas coaliciones que la
+revisión atómica, con la mitad de revisiones aceptadas —tres frente a seis,
+porque la atomización ya nace cerca de un equilibrio— y un $35\%$ más de
+mensajes, porque las cuotas se difunden en cada paso de control mientras se
+relajan. Es \cref{th:vi} y \cref{obs:vi} medidos: el equilibrio variacional
+de la relajación es alcanzable de forma distribuida, y su brecha de
+integralidad frente a la revisión atómica es, en estas instancias, nula en
+resultado y positiva en comunicación. Ninguna de las dos vías produjo un
+certificado falso.
+\end{observacion}
+
+\begin{observacion}[Hiperjuego con margen holgado: las creencias erróneas no cambian nada]
+\label{obs:ensayo-cierre-hiperjuego}
+Con error uniforme de $\pm35\%$ en las capacidades ajenas y en las masas, con
+o sin recertificación, las veinte semillas producen trayectorias idénticas a
+las de creencias exactas, y no hay un solo certificado falso. La razón es la
+misma que en \cref{obs:ensayo-cierre-aptitud}: en \textsf{cargo} la demanda
+de diseño —unos $30$~N para $60$~kg a $0{,}35$~m/s$^2$— está a un factor
+tres o más de la capacidad de cualquier tripleta, y un error del $35\%$ no
+cruza esa distancia. El hiperjuego solo muerde cuando el certificado es
+vinculante; por eso la rejilla siguiente reduce las capacidades a un $40\%$ y
+eleva la aceleración de diseño a $1$~m/s$^2$, que es donde la recertificación
+de \cref{obs:certificado-postevento} tiene algo que rechazar.
+\end{observacion}
+
+\begin{observacion}[Qué queda demostrado y ensayado de la tesis central, y qué no]
+\label{obs:ensayo-cierre-balance}
+La tesis central de este documento es que reclutamiento, modo, contacto y ruta
+pueden decidirse como un solo juego distribuido de $n$ saltos sobre robots
+diferenciales heterogéneos con contacto real, y que ese juego entrega la
+carga. \Cref{th:potencial-valor} y \cref{th:entrega} la formulan y la
+demuestran bajo hipótesis nombradas; el banco la ensaya. Lo que el banco
+sostiene: el mecanismo completo, sin ningún nodo con el estado global, entrega
+las dos cargas en el $63$--$73\%$ de los mundos según el protocolo, con cero
+certificados falsos en $430$ misiones, recluta en seis revisiones, cruza el
+hueco por arrendamiento sin doble ocupación, y su capa continua no depende del
+protocolo de revisión ni de la relajación elegida. Lo que el banco niega: que
+el replicador recluta (nunca lo hace), que la aptitud vector importe en
+\textsf{cargo} con pads de disco (no importa), que un error de creencia del
+$35\%$ importe con margen holgado (no importa), y que la barrera heurística
+implementada cumpla (A5) (no la cumple: hay contacto entre parachoques en
+casi todas las misiones y la barrera cuesta éxito). Lo que el banco no toca:
+el empuje unilateral, la planta tridimensional, el hardware, y la optimalidad.
+Tres de cada diez misiones fallan por formaciones que no cierran o por
+segundas cargas que agotan el horizonte; ese $30\%$ es el número que una
+versión futura tiene que bajar, y \cref{obs:ensayo-cierre-seguridad} dice
+por dónde empezar.
+\end{observacion}
+
+\begin{observacion}[Hiperjuego con margen vinculante: la recertificación hace su trabajo]
+\label{obs:ensayo-cierre-hiperjuego2}
+Con capacidades al $40\%$ y aceleración de diseño de $1$~m/s$^2$, el
+certificado pasa a ser vinculante y el error de creencias del $\pm35\%$
+produce lo que la teoría anuncia. Sin recertificación, tres coaliciones se
+certifican con creencias que no lo estaban con las capacidades reales, entran
+en formación con ese margen negativo y la tasa baja a $14$ de $20$; con
+recertificación al formar, el mecanismo detecta y rechaza el certificado
+falso veinticinco veces en veinte mundos —expulsa al miembro de menor
+capacidad y reabre el reclutamiento— y la tasa vuelve a $15$ de $20$, la
+misma que con creencias exactas, sin un solo certificado falso que llegue al
+transporte. La diferencia pareada entre recertificar y no hacerlo es de una
+sola misión ($p=1$ con veinte mundos), así que lo que el banco establece no
+es una ventaja de tasa sino un mecanismo: bajo creencias erróneas y margen
+vinculante, la recertificación con capacidades observadas es lo que impide
+que el juego apruebe una continuación con capacidades que no existen, que es
+\cref{obs:certificado-postevento} ejecutado dentro del mecanismo distribuido
+y no en un frenado aislado. El coste es churn: veinticinco reaperturas, con
+el mismo número de mensajes y la misma energía.
+\end{observacion}
+
+\begin{observacion}[El juego de trayectorias frente al seguidor: más éxito y menos contacto, a cambio de tiempo y mensajes]
+\label{obs:ensayo-cierre-planificador}
+Sobre las mismas treinta semillas, el juego continuo de trayectorias entrega
+las dos cargas en $24$ de $30$ frente a $20$ de $30$ del seguidor de puntos,
+con $7/4$ discordancias pareadas ($p=0{,}55$: no significativo a este tamaño)
+y una separación mínima mediana entre robots de $-0{,}12$ frente a
+$-0{,}16$~m; cuesta un $8\%$ más de tiempo, un $12\%$ más de energía y un
+$13\%$ más de mensajes, porque cada jugador publica su continuación cinco veces
+por segundo. En la semilla de referencia el cambio de rumbo por metro recorrido
+de las cargas baja de $3{,}0$ y $2{,}3$ a $2{,}0$ y $1{,}5$~rad/m —un tercio
+menos de ondulación— mientras la longitud recorrida sube para la carga que
+espera, por el desvío al carril. Las rejillas principales de esta sección se
+ejecutaron con el seguidor de puntos, que es la capa con la que se obtuvieron
+sus tablas; la comparación directa entre ambas capas es esta fila, y la capa
+de juego es la que se conserva como predeterminada. Lo que el resultado no
+dice es que las rutas sean óptimas: son un equilibrio local del potencial de
+\eqref{eq:potencial-trayectorias} sobre una ruta discreta impuesta, con
+desvíos que la geometría de los carriles produce, y así se ve en
+\cref{fig:sim-plan}.
+\end{observacion}

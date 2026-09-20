@@ -150,6 +150,11 @@ def _decimal_comma(value: float, decimals: int) -> str:
     return f"{value:.{decimals}f}".replace(".", ",")
 
 
+def _math_decimal_comma(value: float, decimals: int) -> str:
+    """Format a decimal for MathText without punctuation spacing after comma."""
+    return f"{value:.{decimals}f}".replace(".", "{,}")
+
+
 def _comma_tick(value: float, _: int) -> str:
     return f"{value:g}".replace(".", ",")
 
@@ -1668,23 +1673,25 @@ def _plot_quality(
         ordered["share_above_threshold"].to_numpy(float),
         strict=True,
     ):
+        top_row = position == positions[0]
         axes[0].annotate(
-            rf"$\hat P={_decimal_comma(100.0 * share, 1)}$ %",
+            rf"$\hat P={_math_decimal_comma(100.0 * share, 1)}$ %",
             (estimate, position),
-            xytext=(6, 6),
+            xytext=(6, -9 if top_row else 6),
             textcoords="offset points",
             ha="left",
-            va="center",
+            va="top" if top_row else "center",
             fontsize=6.2,
             color=COLORS["gray"],
         )
     axes[0].set_yticks(positions, ordered["scenario_label"])
     axes[0].invert_yaxis()
     axes[0].set(
-        xlabel="Ahorro frente a greedy [%]",
+        xlabel="Ahorro frente a la heurística voraz [%]",
         title="Efecto pareado: mediana e IC 95 %",
         xlim=(0.0, 15.5),
     )
+    axes[0].xaxis.set_major_formatter(FuncFormatter(_comma_tick))
     axes[0].legend(
         handles=[
             Line2D(
@@ -1823,7 +1830,7 @@ def _plot_scaling(
             block["solver_ms_median"],
             marker=marker,
             color=color,
-            label=rf"$M/N={_decimal_comma(float(ratio), 2)}$",
+            label=rf"$M/N={_math_decimal_comma(float(ratio), 2)}$",
         )
         axes[0].fill_between(
             block["N"],
@@ -1846,7 +1853,7 @@ def _plot_scaling(
             block["matrix_mib_median"],
             marker=marker,
             color=color,
-            label=rf"$M/N={_decimal_comma(float(ratio), 2)}$",
+            label=rf"$M/N={_math_decimal_comma(float(ratio), 2)}$",
         )
     balanced = summary.loc[
         np.isclose(summary["slot_to_robot_ratio"], 1.0)
@@ -1864,7 +1871,7 @@ def _plot_scaling(
         linewidth=1.0,
         label=(
             rf"ajuste $N=M$: $N^{{"
-            f"{_decimal_comma(float(metrics['solver_power_exponent']), 2)}"
+            f"{_math_decimal_comma(float(metrics['solver_power_exponent']), 2)}"
             r"}$"
         ),
         zorder=4,
@@ -1887,7 +1894,7 @@ def _plot_scaling(
             f"{_decimal_comma(float(metrics['solver_power_ci_low']), 2)}; "
             f"{_decimal_comma(float(metrics['solver_power_ci_high']), 2)}]"
             "\n"
-            rf"$R^2={_decimal_comma(float(metrics['solver_power_r_squared']), 3)}$"
+            rf"$R^2={_math_decimal_comma(float(metrics['solver_power_r_squared']), 3)}$"
             " · descriptivo"
         ),
         transform=axes[0].transAxes,
@@ -2069,7 +2076,7 @@ def _plot_boundary(
         )
     axes[1].set(
         xlabel=r"Heterogeneidad realizada, $\mathrm{CV}(c_i^{\mathrm{pay}})$",
-        ylabel="Falsos factibles de N1 [%]",
+        ylabel="Falsos positivos de factibilidad [%]",
         ylim=(-3.0, 103.0),
         title="La capacidad individual rompe los slots",
     )
@@ -2196,7 +2203,7 @@ def _plot_failure_recovery(
             marker="o",
             linewidth=1.45,
             color=color,
-            label=rf"$\delta={_decimal_comma(float(delta), 2)}$",
+            label=rf"$\delta={_math_decimal_comma(float(delta), 2)}$",
         )
     axes[1].set(
         xlabel="Robots retirados [%]",
@@ -2206,6 +2213,8 @@ def _plot_failure_recovery(
         ylim=(-2.0, 60.0),
     )
     axes[1].legend(loc="upper left", ncols=2, fontsize=6.3)
+    axes[1].xaxis.set_major_formatter(FuncFormatter(_comma_tick))
+    axes[1].yaxis.set_major_formatter(FuncFormatter(_comma_tick))
 
     axes[0].grid(False)
     axes[1].grid(True, which="major", linewidth=0.55, alpha=0.38)
@@ -2333,9 +2342,9 @@ def _plot_heterogeneity_boundary(
         )
     axes[0].set(
         xlabel=r"Heterogeneidad realizada, $\mathrm{CV}(c_i^{\mathrm{pay}})$",
-        ylabel="Falsos factibles de N1 [%]",
+        ylabel="Falsos positivos de factibilidad [%]",
         ylim=(-3.0, 103.0),
-        title="Falsos factibles del modelo por puestos",
+        title="Falsos positivos de factibilidad",
     )
     axes[0].legend(loc="lower right", fontsize=6.0)
 
@@ -2411,6 +2420,10 @@ def _plot_heterogeneity_boundary(
     # read as data for the homogeneous profile.
     axes[1].set_ylim(len(positions) - 0.4, -1.15)
     axes[1].legend(loc="upper right", fontsize=6.1, ncol=2, columnspacing=1.0)
+
+    axes[0].xaxis.set_major_formatter(FuncFormatter(_comma_tick))
+    axes[0].yaxis.set_major_formatter(FuncFormatter(_comma_tick))
+    axes[1].xaxis.set_major_formatter(FuncFormatter(_comma_tick))
 
     axes[0].grid(True, axis="both", linewidth=0.55, alpha=0.38)
     axes[1].grid(True, axis="x", linewidth=0.55, alpha=0.38)

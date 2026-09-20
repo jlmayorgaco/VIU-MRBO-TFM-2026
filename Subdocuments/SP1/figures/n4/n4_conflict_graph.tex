@@ -5,7 +5,7 @@
  chosen/.style={circle,draw=SPGreen!80!black,fill=SPGreen!10,very thick,
   minimum size=7mm,font=\scriptsize},
  arr/.style={->,thick,draw=VIUOrange}]
-\node[font=\footnotesize\bfseries] at (-3.4,1.75) {propuestas físicas};
+\node[font=\footnotesize\bfseries] at (-3.4,1.75) {propuestas de reasignación};
 \node[load] (k1) at (-4.45,.55) {$k_1$};
 \node[load] (k2) at (-2.35,.55) {$k_2$};
 \node[prop] (rp1) at (-4.45,-.7) {$p_1$};
@@ -17,7 +17,7 @@
 % La etiqueta iba justo bajo el segmento y quedaba sobre los círculos p2 y p3.
 \draw[dashed,draw=SPRed,thick] (rp2)--(rp3);
 \node[font=\tiny,fill=white,inner sep=.7pt,below=3.2mm] at ($(rp2)!.5!(rp3)$)
-  {robot compartido};
+  {AMR compartido};
 
 \node[font=\footnotesize\bfseries] at (3.2,1.75) {grafo de conflictos $\mathcal G_C$};
 \node[chosen] (p1) at (1.35,.65) {$p_1$};

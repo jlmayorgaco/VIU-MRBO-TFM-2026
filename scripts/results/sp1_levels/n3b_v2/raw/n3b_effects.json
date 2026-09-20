@@ -1,0 +1,70 @@
+{
+ "n_common_support": 272,
+ "cell_medians": {
+  "BR-F0": 25.218390779276135,
+  "BR-F1": 59.26217760172078,
+  "BR-F2": 46.58819777488314,
+  "ASR-F0": 55.90448729703764,
+  "ASR-F1": 53.58292257465075,
+  "ASR-F2": 56.01813395683432,
+  "LLL-F0": 39.61783969026099,
+  "LLL-F1": 55.34421128963554,
+  "LLL-F2": 55.44552378599721
+ },
+ "main_effect_rule": {
+  "BR": {
+   "median": 39.25542708939958,
+   "ci_low": 36.737521116033705,
+   "ci_high": 42.500748825324756
+  },
+  "ASR": {
+   "median": 55.706789547932104,
+   "ci_low": 50.441358649269404,
+   "ci_high": 59.13310613628731
+  },
+  "LLL": {
+   "median": 50.32619303094809,
+   "ci_low": 45.96623156954104,
+   "ci_high": 53.70992056837144
+  }
+ },
+ "main_effect_fitness": {
+  "F0": {
+   "median": 38.46755489070199,
+   "ci_low": 36.25809091699712,
+   "ci_high": 40.73021343925218
+  },
+  "F1": {
+   "median": 56.75418582104192,
+   "ci_low": 51.73341146956867,
+   "ci_high": 60.366497004746144
+  },
+  "F2": {
+   "median": 51.01619167804445,
+   "ci_low": 48.21726871621406,
+   "ci_high": 55.07274836970744
+  }
+ },
+ "rule_range_pp": 16.45136245853252,
+ "fitness_range_pp": 18.286630930339932,
+ "interaction": {
+  "F0": {
+   "per_rule_vs_F2": {
+    "BR": -14.17836107686332,
+    "ASR": 0.0,
+    "LLL": -12.759578081992885
+   },
+   "range_pp": 14.17836107686332
+  },
+  "F1": {
+   "per_rule_vs_F2": {
+    "BR": 12.50013517901468,
+    "ASR": 0.0,
+    "LLL": 0.0
+   },
+   "range_pp": 12.50013517901468
+  }
+ },
+ "interaction_max_range_pp": 14.17836107686332,
+ "verdict": "hay interaccion: el efecto del fitness depende de la regla, de modo que no se formula ningun claim causal separado, como fijaba la configuracion congelada"
+}

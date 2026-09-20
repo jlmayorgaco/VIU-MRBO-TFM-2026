@@ -1,0 +1,128 @@
+\section{Teoría de robótica móvil: ruedas, ICR y maniobrabilidad}
+\label{sec:robotica}
+
+El modelo de \cref{sec:modelo-fisico} parte de la restricción de Pfaff de la rueda diferencial. Esta sección da el marco general del que esa restricción procede \cite{siegwart2011introduction} y lo que ese marco impone a
+una coalición, que resulta ser un teorema geométrico.
+
+\subsection{Restricciones de rueda}
+
+Sea $\xi=(x,y,\theta)$ la pose del chasis y $R(\theta)$ la rotación al marco del
+robot. Una rueda estándar situada a distancia $\ell$ del centro del chasis, con
+ángulo polar $\alpha$, orientación $\beta$ respecto del radio, radio $r$ y
+velocidad angular $\dot\varphi$, impone dos restricciones:
+\begin{align}
+  \text{rodadura:}&\quad
+  \bigl(\sin(\alpha+\beta),\ -\cos(\alpha+\beta),\ -\ell\cos\beta\bigr)\,R(\theta)\dot\xi
+  \;=\;r\dot\varphi, \label{eq:rodadura}\\
+  \text{no deslizamiento:}&\quad
+  \bigl(\cos(\alpha+\beta),\ \sin(\alpha+\beta),\ \ell\sin\beta\bigr)\,R(\theta)\dot\xi
+  \;=\;0. \label{eq:deslizamiento}
+\end{align}
+La rueda \emph{fija} tiene $\beta$ constante; la \emph{orientable} tiene
+$\beta(t)$ actuada; la \emph{castor} añade un descentramiento que hace su
+restricción de deslizamiento no acotante; las ruedas \emph{suecas} y
+\emph{esféricas} no imponen \eqref{eq:deslizamiento} en absoluto. Apilando las
+restricciones de deslizamiento de las $N_f$ ruedas fijas y $N_s$ orientables se
+obtiene $C_1(\beta_s)R(\theta)\dot\xi=0$, y el conjunto de velocidades
+admisibles del chasis es $\ker C_1(\beta_s)$.
+
+\begin{definicion}[Movilidad, direccionabilidad y maniobrabilidad]
+\label{def:maniobrabilidad}
+$\delta_m=3-\operatorname{rank}C_1(\beta_s)$ es el grado de \emph{movilidad}:
+las velocidades que el chasis puede imprimir instantáneamente sin cambiar la
+orientación de sus ruedas. $\delta_s=\operatorname{rank}C_{1s}(\beta_s)$ es el
+grado de \emph{direccionabilidad}: las orientaciones de rueda que puede cambiar.
+La \emph{maniobrabilidad} es $\delta_M=\delta_m+\delta_s$.
+\end{definicion}
+
+\begin{center}\small
+\begin{tabular}{@{}lccc l@{}}
+\toprule
+Chasis & $\delta_m$ & $\delta_s$ & $\delta_M$ & holonómico \\
+\midrule
+omnidireccional (tres ruedas suecas) & 3 & 0 & 3 & sí \\
+diferencial (dos fijas + castor) & 2 & 0 & 2 & no \\
+omni-direccionable (tres orientables) & 1 & 2 & 3 & no \\
+triciclo / Ackermann & 1 & 1 & 2 & no \\
+dos direccionables (\emph{two-steer}) & 1 & 2 & 3 & no \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Un robot es holonómico si sus grados de libertad diferenciables igualan a los del
+espacio de trabajo, $\delta_m=3$; solo la primera fila lo es. El AMR de este
+trabajo es la segunda: $\delta_m=2$, $\delta_s=0$, y ese es el origen de
+\eqref{eq:pfaff}. La maniobrabilidad $\delta_M$ dice qué poses puede alcanzar;
+la movilidad $\delta_m$ dice cómo puede moverse ahora. Que $\delta_M=\delta_m$
+en el diferencial significa que no hay nada que reorientar: toda maniobra es un
+cambio de velocidades de rueda.
+
+\subsection{El centro instantáneo de rotación}
+
+Cada rueda estándar define una \emph{línea de movimiento nulo}: la perpendicular
+a su plano por su centro. En todo instante el chasis rota alrededor de un punto,
+el \emph{centro instantáneo de rotación} (ICR), que debe estar sobre todas esas
+líneas a la vez; si están en posición general y son más de una, el ICR está
+determinado y $\delta_m$ cae. Es una construcción sobre el número de
+restricciones, no sobre el número de ruedas: una bicicleta y un Ackermann tienen
+$\delta_m=1$ con dos y cuatro ruedas. El diferencial tiene sus dos ruedas sobre
+el mismo eje, luego una sola línea, y el ICR es libre sobre ella: eso es
+$\delta_m=2$. Con $\zeta=(V,\Omega)$ el \emph{twist} del chasis en su propio
+marco, el ICR está en $r_{\mathrm{ICR}}=SV/\Omega$, a distancia
+$\lVert V\rVert/|\Omega|$ sobre la perpendicular a $V$.
+
+\subsection{Lo que el ICR impone a una coalición}
+
+Una coalición acoplada rígidamente a la carga es un solo cuerpo, y un cuerpo
+tiene un solo ICR. Cada AMR miembro aporta su línea de movimiento nulo. Esto da
+la lectura geométrica de \cref{pr:rigidez}.
+
+\begin{teorema}[ICR común]
+\label{th:icr-comun}
+Sea $\zeta_\ell=(V_\ell,\Omega_\ell)$ el \emph{twist} de la carga con
+$\Omega_\ell\neq0$, y $r_{\mathrm{ICR}}=SV_\ell/\Omega_\ell$. Para el AMR $i$ con
+rumbo $e_i$ y centro de eje en $r_i$ (marco de la carga),
+\[
+  [A_{\mathrm{kin}}]_i\,\zeta_\ell\;=\;\Omega_\ell\,e_i^{\!\top}\bigl(r_i-r_{\mathrm{ICR}}\bigr).
+\]
+En consecuencia, la fila $i$ de la restricción de rigidez se anula si y solo si
+el ICR de la carga está sobre la línea de movimiento nulo de la rueda $i$, y la
+coalición puede ejecutar $\zeta_\ell$ sin deslizamiento lateral si y solo si
+\emph{todas} sus líneas de movimiento nulo concurren en $r_{\mathrm{ICR}}$. Con
+$\Omega_\ell=0$ la condición es que todas sean paralelas a $V_\ell^{\perp}$.
+\end{teorema}
+
+\begin{proof}
+La velocidad del punto $r_i$ es $V_\ell+\Omega_\ell Sr_i=\Omega_\ell S(r_i-r_{\mathrm{ICR}})$
+usando $V_\ell=-\Omega_\ell S\,r_{\mathrm{ICR}}$ y $S^{2}=-I$. Su componente
+lateral es $e_i^{\perp\top}\Omega_\ell S(r_i-r_{\mathrm{ICR}})$, y como
+$e_i^{\perp}=Se_i$ y $S^{\!\top}S=I$, vale $\Omega_\ell\,e_i^{\!\top}(r_i-r_{\mathrm{ICR}})$,
+que es la fila de \cref{pr:rigidez} evaluada en $\zeta_\ell$. Se anula si y solo
+si $r_i-r_{\mathrm{ICR}}\perp e_i$, es decir, si el ICR está sobre la
+perpendicular al rumbo por $r_i$.
+\end{proof}
+
+\begin{observacion}[Verificación y consecuencias]
+\label{obs:icr-comun}
+La identidad se comprueba sobre dos mil configuraciones aleatorias sin una sola
+discrepancia por encima de $10^{-9}$. Tres consecuencias siguen.
+
+Primera, la dimensión $3-\operatorname{rank}A_{\mathrm{kin}}$ de
+\cref{pr:ruta-ruedas} es el número de parámetros libres del ICR compatible con
+todas las líneas: $2$ si todas coinciden (un solo eje común), $1$ si son
+paralelas distintas (ICR en el infinito, solo traslación), $0$ si concurren en
+un punto (ese ICR y solo ese), y la coalición está bloqueada si no concurren.
+
+Segunda, con contactos fuera del eje (\cref{obs:rigidez-alcance}) la línea de
+movimiento nulo sigue existiendo —es propiedad de la rueda, no del contacto—,
+pero el punto de contacto adelantado puede tener velocidad lateral, de modo que
+la concurrencia deja de ser obligatoria y pasa a ser económica: cuanto más lejos
+esté el ICR de la línea, mayor es la $\omega_i$ que \eqref{eq:N-eje} exige.
+
+Tercera, y es una regla de formación: para que una coalición diferencial gire
+sobre sí misma ($V_\ell=0$, ICR en el centro de la carga) todos los ejes deben
+apuntar radialmente al centro; para que traslade en línea recta, todos deben ser
+paralelos entre sí y perpendiculares a $V_\ell$. Ninguna formación satisface
+ambas a la vez, y esa es la razón geométrica de que el reparto de puestos deba
+mirar la ruta —\cref{pr:ruta-ruedas}— y no solo el \emph{wrench}.
+\end{observacion}

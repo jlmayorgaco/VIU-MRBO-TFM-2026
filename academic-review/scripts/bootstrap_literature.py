@@ -31,6 +31,7 @@ LOGS = BASE / "logs"
 REPORTS = BASE / "reports"
 CONFIG = BASE / "config" / "search_protocol.yaml"
 ENV = BASE / ".env.literature"
+WOS_EXPORT_MANIFEST = INPUT / "wos" / "wos_export_manifest.json"
 OUTPUT.mkdir(parents=True, exist_ok=True)
 CACHE.mkdir(parents=True, exist_ok=True)
 RAW.mkdir(parents=True, exist_ok=True)
@@ -531,6 +532,78 @@ def read_table_guess(path: Path) -> pd.DataFrame:
     raise RuntimeError(f"Could not parse {path}: {last}")
 
 
+def read_text_guess(path: Path) -> str:
+    """Read a text export without assuming its encoding.
+
+    Web of Science field-tagged exports are normally UTF-8, but institutional
+    sessions can emit UTF-16 or legacy Windows encodings.  Keep the raw file
+    untouched and only decode it in memory for parsing.
+    """
+    raw = path.read_bytes()
+    last: UnicodeDecodeError | None = None
+    for encoding in ("utf-8-sig", "utf-16", "cp1252", "latin-1"):
+        try:
+            return raw.decode(encoding)
+        except UnicodeDecodeError as exc:
+            last = exc
+    raise RuntimeError(f"Could not decode {path}: {last}")
+
+
+def parse_wos_tagged_plaintext(text: str) -> list[dict[str, str]]:
+    """Parse WoS ``Plain Text`` / field-tagged records.
+
+    A tagged WoS export is not a delimited table: a record starts with ``PT``
+    and ends with ``ER``; continuations are indented.  Values are joined with a
+    semicolon for repeating author-like fields and a space for multi-line text
+    fields so titles, abstracts and venues remain usable by normalization.
+    """
+    records: list[dict[str, list[str]]] = []
+    current: dict[str, list[str]] = {}
+    active_tag = ""
+    for raw_line in text.splitlines():
+        line = raw_line.rstrip()
+        if line == "ER":
+            if current.get("PT"):
+                records.append(current)
+            current = {}
+            active_tag = ""
+            continue
+        tagged = re.match(r"^([A-Z0-9]{2})\s(.*)$", line)
+        if tagged:
+            tag, value = tagged.group(1), tagged.group(2).strip()
+            current.setdefault(tag, []).append(value)
+            active_tag = tag
+            continue
+        if line.startswith("   ") and active_tag:
+            current.setdefault(active_tag, []).append(line.strip())
+        elif line.strip() and active_tag:
+            current.setdefault(active_tag, []).append(line.strip())
+
+    # A truncated export should not silently discard a complete final record.
+    if current.get("PT"):
+        records.append(current)
+
+    repeated_value_tags = {"AU", "AF", "CR", "DE", "ID"}
+    return [
+        {
+            tag: ("; " if tag in repeated_value_tags else " ").join(
+                value for value in values if value
+            ).strip()
+            for tag, values in record.items()
+        }
+        for record in records
+    ]
+
+
+def is_wos_tagged_plaintext(path: Path) -> bool:
+    """Return whether a raw WoS file uses the field-tagged Plain Text layout."""
+    try:
+        text = read_text_guess(path)
+    except RuntimeError:
+        return False
+    return bool(re.search(r"(?m)^PT\s", text) and re.search(r"(?m)^ER\s*$", text))
+
+
 def first_col(row: pd.Series, names: list[str]) -> str:
     cmap = {str(c).strip().lower(): c for c in row.index}
     for n in names:
@@ -542,45 +615,123 @@ def first_col(row: pd.Series, names: list[str]) -> str:
     return ""
 
 
+def wos_query_id(path: Path) -> str:
+    match = re.match(r"^(F\d{2})_", path.name)
+    return f"{match.group(1)}_primary" if match else "wos_export"
+
+
+def load_wos_export_manifest() -> dict[str, dict[str, Any]]:
+    """Load optional per-file completeness declarations for manual WoS exports."""
+    if not WOS_EXPORT_MANIFEST.exists():
+        return {}
+    payload = json.loads(WOS_EXPORT_MANIFEST.read_text(encoding="utf-8"))
+    rows = payload.get("exports", []) if isinstance(payload, dict) else payload
+    return {
+        str(row.get("file", "")): row
+        for row in rows
+        if isinstance(row, dict) and row.get("file")
+    }
+
+
+def wos_raw_files() -> list[Path]:
+    """Return only bibliographic exports, excluding the local audit manifest."""
+    return [
+        path
+        for path in (INPUT / "wos").glob("*")
+        if path.is_file()
+        and not path.name.lower().startswith("readme")
+        and path.name != WOS_EXPORT_MANIFEST.name
+        and path.suffix.lower() in {".txt", ".tsv", ".csv"}
+    ]
+
+
+def wos_coverage_label(files: list[Path]) -> str:
+    """State export completeness without inferring it from mere file presence."""
+    if not files:
+        return "open_discovery_only"
+    manifest = load_wos_export_manifest()
+    statuses = [str(manifest.get(path.name, {}).get("status", "unqualified")) for path in files]
+    if statuses and all(status == "complete" for status in statuses):
+        return "wos_reconciled"
+    if any(status == "partial" for status in statuses):
+        return "wos_partially_reconciled"
+    return "wos_present_unqualified"
+
+
+def wos_record_from_values(values: dict[str, str], path: Path) -> dict[str, Any] | None:
+    """Normalize one tagged or tabular WoS record without promoting evidence."""
+    title = values.get("title", "")
+    if not title:
+        return None
+    doi = norm_doi(values.get("doi", ""))
+    year = safe_year(values.get("year", ""))
+    ut = values.get("ut", "")
+    citation_count = values.get("citation_count", "")
+    return {
+        "candidate_id": stable_id(title, year, doi),
+        "title": title,
+        "title_norm": norm_title(title),
+        "authors": values.get("authors", ""),
+        "year": year,
+        "venue": values.get("venue", ""),
+        "doi": doi,
+        "doi_norm": doi,
+        "abstract": values.get("abstract", ""),
+        "document_type": values.get("document_type", ""),
+        "source_ids": f"wos:{ut}" if ut else "",
+        "provenance": "wos",
+        "provenance_sources": f"wos:{path.name}",
+        "provenance_queries": wos_query_id(path),
+        "verification_status": "metadata_verified",
+        "metadata_verification_status": "metadata_verified",
+        "evidence_status": "not_evidence",
+        "screening_status": "pending",
+        "legacy_seed_id": "",
+        "wos_ut": ut,
+        "citation_count": citation_count,
+        "citation_count_source": "wos" if citation_count else "",
+        "retrieved_at_utc": utc_now(),
+        "dedup_status": "unique",
+        "duplicate_status": "unique",
+        "dedup_parent_candidate_id": "",
+        "notes": "",
+    }
+
+
 def ingest_wos() -> list[dict[str, Any]]:
     out = []
-    for p in sorted((INPUT / "wos").glob("*")):
-        if not p.is_file() or p.name.lower().startswith("readme"):
-            continue
-        if p.suffix.lower() not in {".txt", ".tsv", ".csv"}:
+    for p in sorted(wos_raw_files()):
+        if is_wos_tagged_plaintext(p):
+            for tagged in parse_wos_tagged_plaintext(read_text_guess(p)):
+                record = wos_record_from_values({
+                    "title": tagged.get("TI", ""),
+                    "doi": tagged.get("DI", ""),
+                    "year": tagged.get("PY", ""),
+                    "ut": tagged.get("UT", ""),
+                    "authors": tagged.get("AF", "") or tagged.get("AU", ""),
+                    "venue": tagged.get("SO", ""),
+                    "abstract": tagged.get("AB", ""),
+                    "document_type": tagged.get("DT", ""),
+                    "citation_count": tagged.get("TC", ""),
+                }, p)
+                if record is not None:
+                    out.append(record)
             continue
         df = read_table_guess(p)
         for _, row in df.iterrows():
-            title = first_col(row, ["TI", "Article Title", "Title"])
-            if not title:
-                continue
-            doi = norm_doi(first_col(row, ["DI", "DOI"] ))
-            year = safe_year(first_col(row, ["PY", "Publication Year", "Year"] ))
-            ut = first_col(row, ["UT", "Accession Number", "UT (Unique WOS ID)"])
-            out.append({
-                "candidate_id": stable_id(title, year, doi),
-                "title": title,
-                "title_norm": norm_title(title),
+            record = wos_record_from_values({
+                "title": first_col(row, ["TI", "Article Title", "Title"]),
+                "doi": first_col(row, ["DI", "DOI"]),
+                "year": first_col(row, ["PY", "Publication Year", "Year"]),
+                "ut": first_col(row, ["UT", "Accession Number", "UT (Unique WOS ID)"]),
                 "authors": first_col(row, ["AU", "Authors", "Author Full Names"]),
-                "year": year,
                 "venue": first_col(row, ["SO", "Source Title", "Publication Name"]),
-                "doi": doi,
-                "doi_norm": doi,
                 "abstract": first_col(row, ["AB", "Abstract"]),
                 "document_type": first_col(row, ["DT", "Document Type"]),
-                "source_ids": f"wos:{ut}" if ut else "",
-                "provenance_sources": f"wos:{p.name}",
-                "provenance_queries": "wos_export",
-                "verification_status": "metadata_verified",
-                "legacy_seed_id": "",
-                "wos_ut": ut,
                 "citation_count": first_col(row, ["TC", "Times Cited, WoS Core", "Times Cited"]),
-                "citation_count_source": "wos" if first_col(row, ["TC", "Times Cited, WoS Core", "Times Cited"]) else "",
-                "retrieved_at_utc": utc_now(),
-                "dedup_status": "unique",
-                "dedup_parent_candidate_id": "",
-                "notes": "",
-            })
+            }, p)
+            if record is not None:
+                out.append(record)
     return out
 
 
@@ -747,7 +898,8 @@ def main() -> int:
     write_csv(LOGS / "stage1a_search_log.csv", search_logs, list(SearchEvent.__dataclass_fields__.keys()))
     write_csv(LOGS / "stage1a_dedup_log.csv", edges, ["candidate_id", "source", "query", "relation"])
 
-    wos_files = [p for p in (INPUT / "wos").glob("*") if p.is_file() and not p.name.lower().startswith("readme")]
+    wos_files = wos_raw_files()
+    wos_coverage = wos_coverage_label(wos_files)
     legacy = sum(1 for r in canon if r.get("legacy_seed_id"))
     verified = sum(1 for r in canon if r.get("metadata_verification_status") == "metadata_verified")
     unresolved = sum(1 for r in canon if r.get("metadata_verification_status") in {"unresolved", "not_checked", "metadata_partial"})
@@ -794,8 +946,8 @@ Run UTC: {utc_now()}
 
 ## Coverage label
 
-`corpus_coverage={'wos_reconciled_or_present' if wos_files else 'open_discovery_only'}`  
-`wos_status={'present' if wos_files else 'pending_external_export'}`
+`corpus_coverage={wos_coverage}`
+`wos_status={'present_complete' if wos_coverage == 'wos_reconciled' else ('present_partial' if wos_coverage == 'wos_partially_reconciled' else ('present_unqualified' if wos_files else 'pending_external_export'))}`
 
 ## Raw records retrieved by source
 
@@ -831,10 +983,19 @@ evidence and must not be used to finalize novelty or gap claims.
         tmpl = BASE / "templates" / "WOS_PENDING_TEMPLATE.md"
         if tmpl.exists():
             (REPORTS / "WOS_PENDING.md").write_text(tmpl.read_text(encoding="utf-8"), encoding="utf-8")
+    else:
+        (REPORTS / "WOS_PENDING.md").write_text(
+            "# Web of Science reconciliation status\n\n"
+            f"This supersedes the previous pending notice. Current coverage: `{wos_coverage}`.\n\n"
+            "The raw exports were ingested as bibliographic metadata only. "
+            "Consult `inputs/wos/wos_export_manifest.json` for per-file completeness and hashes; "
+            "a partial export must not support exhaustiveness, absence or novelty claims.\n",
+            encoding="utf-8",
+        )
     provenance = f"""# Stage 1A provenance summary
 
-Coverage: `{'open_discovery_only' if not wos_files else 'wos_reconciled_or_present'}`  
-WoS status: `{'pending_external_export' if not wos_files else 'present'}`
+Coverage: `{wos_coverage}`
+WoS status: `{'pending_external_export' if not wos_files else ('present_complete' if wos_coverage == 'wos_reconciled' else 'present_partial')}`
 
 ## Source provenance counts
 

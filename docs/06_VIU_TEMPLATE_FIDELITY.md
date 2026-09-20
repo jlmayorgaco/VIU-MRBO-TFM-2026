@@ -73,3 +73,49 @@ Todo cambio posterior en `thesis/viu-mrob-thesis.sty`, portada, preliminares o g
 Por petición expresa del autor, el encabezado vigente añade `Jorge Luis Mayorga Taborda` sobre el título corto `Coordinación distribuida AMR`. Esta decisión sustituye para la entrega actual la fidelidad literal al cuadro de encabezado del DOCX registrada en secciones anteriores. Los preliminares conservan romanos minúsculos, ahora con el punto de `i` compuesto explícitamente para evitar su confusión con `I`; la Introducción reinicia la numeración arábiga en 1.
 
 La compilación verificada produce un A4 de 117 páginas en `thesis/build/main.pdf`, sin cajas `Overfull`. La revisión rasterizada cubrió el encabezado, el primer folio romano, las tablas 1, 2, 9, 11, 14, 16, 19 y 25, Cargo, AWS Industrial 2, Referencias y el anexo de reproducibilidad. Esta adenda es el estado operativo vigente cuando contradiga conteos o decisiones históricas anteriores del presente documento.
+
+---
+
+## 7. Adenda 2026-09-02 — corrección contra el OOXML
+
+Auditoría rehecha extrayendo los valores directamente de
+`resources/Plantilla memoria TFM_ MROB.docx` (`styles.xml`, `document.xml`,
+`header1.xml`), no de la inspección visual. El DOCX tiene el mismo SHA-256
+`6B213806A83F7BAA…` declarado en la sección 1.
+
+### 7.1 Diferencias encontradas y corregidas
+
+| Severidad | Diferencia | Resolución |
+|---|---|---|
+| Crítica | **Interlineado.** `\onehalfspacing` daba 17,93 pt medidos. Word compone 1,5 líneas de Arial 12 = (1854+434+67)/2048 × 12 × 1,5 = **20,698 pt**. El documento salía un 13 % más apretado que la plantilla | `\setstretch{1.4329}`. Medido tras recompilar: **20,70 pt** |
+| Alta | **Computer Modern en el PDF.** `\mathsf` (la transpuesta, 27 usos) pedía `OT1/Arial` y LaTeX sustituía por `cmr12`/`cmr9`, presentes en ocho páginas. Es el delator tipográfico de LaTeX | `\DeclareMathAlphabet{\mathsf}{TU}{\sfdefault}{m}{n}` |
+| Alta | **TeX Gyre Heros** en los folios del índice (páginas 2–13), usado porque Arial pierde el punto de la i en romanos pequeños. Word compone esos folios en Arial y presenta el mismo efecto | `\viutocpagenumberfont` pasa a Arial |
+| Media | **Encabezado sin el nombre del estudiante**, que exigen las Instrucciones §1.1. El `header1.xml` oficial solo trae el marcador «Título del documento» y el folio | Nombre + título abreviado en el mismo cuadro y geometría |
+| Media | `\parskip` era `6pt plus 1pt`; Word usa `w:after="120"` twips = 6 pt rígidos | `\parskip` = `6pt` |
+| Media | `heading 2` en negrita; el estilo `Ttulo2` del DOCX es 16 pt `#E65113` **sin** `<w:b/>` | `\bfseries` retirado del `\titleformat{\subsection}` |
+
+### 7.2 Aviso en falso, documentado para no repetirlo
+
+El estilo `Normal` del DOCX declara **sangría derecha de 1,533 cm**. No es
+efectiva: todos los párrafos de cuerpo la anulan a `0` y fijan `jc=both` y
+`w:after="120"`. La definición del estilo no describe lo que Word compone; hay
+que leer los párrafos reales de `document.xml`.
+
+### 7.3 Citación
+
+`resources/NormasAPA_VIU_7ed.pdf` escribe **«y»**, no «&», en cita y en lista de
+referencias. `biblatex-apa` impone «&» por diseño y `spanish-apa.lbx` no lo
+corrige. Se sobrescriben los cuatro `finalnamedelim` (`bib`, `textcite`,
+`parencite`, `fullcite`) y se fija `langid=spanish` con
+`\DeclareLanguageMapping{spanish}{spanish-apa}`.
+
+Verificado en el PDF: «Alonso-Mora, J., Baker, S., y Rus, D. (2017)»,
+«(Monderer y Shapley, 1996)», «Consultado el 17 de julio de 2026, desde».
+
+### 7.4 Estado
+
+Compilación limpia: exit 0, **0 `Overfull`**, **0 referencias indefinidas**.
+Fuentes de texto en el PDF: únicamente ArialMT, Arial-BoldMT y Arial-ItalicMT.
+
+Sigue pendiente la apertura manual del DOCX y del PDF en el mismo equipo, y la
+extensión: 93 páginas de cuerpo frente al máximo de 80.

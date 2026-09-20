@@ -1,0 +1,99 @@
+{
+  "artifacts": {
+    "REPORT.md": {
+      "bytes": 483,
+      "sha256": "4f0521c9efdcbf997272205bad84603caf596400183945d7cb5a1b031a981d4a"
+    },
+    "config_frozen.yaml": {
+      "bytes": 3253,
+      "sha256": "213fb61b62956511b50adac8d625ad5d808b55f4c70dd14448a135509e4d1485"
+    },
+    "figures/n4_cross_family_pareto.pdf": {
+      "bytes": 26938,
+      "sha256": "70291e85ec9872827b00b556041f4784f2197ed0fbf85ecdb30081a71f39bab5"
+    },
+    "figures/n4_cross_family_pareto.png": {
+      "bytes": 240579,
+      "sha256": "c6e211f5260999d07ada0a7ae6173672c03979b4050ab29c0c6a3431f698271c"
+    },
+    "figures/n4_fii_continuous_atomic.pdf": {
+      "bytes": 21429,
+      "sha256": "a1614bf8e3ea5bc160a41739d2272df856995c41f187645d90de25cc0d92466e"
+    },
+    "figures/n4_fii_continuous_atomic.png": {
+      "bytes": 158065,
+      "sha256": "08f6329fbf013c3a242b30270c38002a4df9099d304c27fb2a0140e052a205f8"
+    },
+    "figures/n4_fiii_residuals.pdf": {
+      "bytes": 26221,
+      "sha256": "51ffa48bca1e62ac2b20d80037e140fbb8bcdeedb5b53754bcf576ee51f918e0"
+    },
+    "figures/n4_fiii_residuals.png": {
+      "bytes": 341347,
+      "sha256": "830e2cda0561be616fe68613ba3cbbd8771fe1b85ac656a0102cb34786f999c7"
+    },
+    "figures/n4_fiv_dynamic.pdf": {
+      "bytes": 16792,
+      "sha256": "64dd7b85ea11e4be9519d0065a9028adf92d3035b1c86006a8679292933770c4"
+    },
+    "figures/n4_fiv_dynamic.png": {
+      "bytes": 209531,
+      "sha256": "17d031b6acda3de2a9c7931d3298f2a64eb246438ba28400f5bfe63e31467e5c"
+    },
+    "key_metrics.json": {
+      "bytes": 516,
+      "sha256": "c0eeac033ed296138dcfec643964c6446a000829daa8c561be36f84c8943c413"
+    },
+    "processed/cross_family_summary.csv": {
+      "bytes": 2239,
+      "sha256": "c7ea6b8969a941423a5bb2b7eae2ae6a6703d0c0ae6143e79777e2e37dbb0c90"
+    },
+    "processed/n4_v3_results_macros.tex": {
+      "bytes": 544,
+      "sha256": "e377096dd848676b61fa1499a35770f32401aad41cd3662fa5151b8bd56aa926"
+    },
+    "processed/population_ranking_by_world.csv": {
+      "bytes": 107637,
+      "sha256": "6cefbc9d142ec8c0676c71fa4c23da834596aaeedfecb2c72c8cd7e5614ae904"
+    },
+    "processed/primary_contrasts.csv": {
+      "bytes": 860,
+      "sha256": "c861d3c947b30d0ff0e85ac369dd52dc0dab4d90b947a7c78faf59004776e93b"
+    },
+    "raw/e7_cross_family_runs.csv": {
+      "bytes": 9732787,
+      "sha256": "987357201f3d47f4e26c568e5e345aa4d8e0c9dcab8cdb7ad69fcca3f9ac75b5"
+    },
+    "raw/e7_representative_traces.csv": {
+      "bytes": 31205,
+      "sha256": "fa06dcd47832e8946011024431d61959d1cde9983e9271b2c36611528131d6df"
+    },
+    "raw/e8_dynamic_history.csv": {
+      "bytes": 86881,
+      "sha256": "2615ddafe18177e4998dcfd9317f1dcabc98d9c8a6e6640c31c0d770ebab05e2"
+    },
+    "raw/e8_dynamic_runs.csv": {
+      "bytes": 15981,
+      "sha256": "27ecb7b87fcfe511e83fac1b8b6e008322a9a46b97328178477d57ce962d098f"
+    }
+  },
+  "campaign_id": "SP1_N4_CROSS_FAMILY_v3",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]",
+    "workers": 8
+  },
+  "git": {
+    "branch": "sp1-final-refactor",
+    "commit": "e2e67abe7552b60be210805626fac4f495d95138",
+    "tree_dirty": true
+  },
+  "limitations": [
+    "F-II uses dynamic average consensus on a static connected N3 graph.",
+    "F-III convergence is accepted only when primal, dual, complementarity, stationarity and consensus residuals jointly pass.",
+    "The common atomic closure is a bounded deterministic heuristic, not an exact integer solver.",
+    "F-IV is a repeated potential-game pilot with exogenous events, not a claimed Markov potential game.",
+    "The dynamic oracle is central, finite-horizon and restricted to small state spaces."
+  ],
+  "status": "executed"
+}

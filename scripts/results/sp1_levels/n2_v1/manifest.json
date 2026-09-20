@@ -2,19 +2,19 @@
   "schema_version": "sp1-level-package-v1",
   "level": "N2",
   "description": "Confirmatory heterogeneous-capacity campaign: oracle validation, the price of atomicity, a pressure-by-heterogeneity phase diagram and the certification frontier of the central solver.",
-  "generated_at_utc": "2026-08-08T14:10:02.731346+00:00",
+  "generated_at_utc": "2026-08-16T00:57:10.908482+00:00",
   "environment": {
-    "python": "3.13.9",
+    "python": "3.13.14",
     "platform": "Windows-11-10.0.26200-SP0",
     "processor": "Intel(R) Core(TM) Ultra 9 185H",
     "machine": "AMD64",
     "logical_cpu_count": 22,
     "pandas": "2.3.3",
     "numpy": "2.3.5",
-    "matplotlib": "3.10.6",
+    "matplotlib": "3.10.8",
     "scipy": "1.16.3"
   },
-  "git_commit": "06e6319dd0780a7eb01f93a4bb53ea8bad955f7b",
+  "git_commit": "aaf0034483928598f2d81c71624ba12d9548f4f0",
   "git_tree_dirty": true,
   "sources": [
     {
@@ -34,8 +34,8 @@
     },
     {
       "path": "scripts/sp1_n2_analysis.py",
-      "bytes": 32224,
-      "sha256": "bca50926336b2d45afea7265e5728a2a7cdead705e2e8b8b8419c1e972f1e650"
+      "bytes": 33434,
+      "sha256": "0197d36c539b2a5e2ca402ef5e2d6e232a5f5e60aafce79484044bb2b64573f4"
     },
     {
       "path": "scripts/results/sp1_levels/n2_v1/raw/oracle_validation_runs.csv",
@@ -112,44 +112,44 @@
   ],
   "artifacts": {
     "figures/n2_atomicity.pdf": {
-      "bytes": 59482,
-      "sha256": "6f1d114d37af701d955f180cf35df0e01b7d8a12ce155b8c229708f890d96450"
+      "bytes": 59434,
+      "sha256": "5deaf94c5a1f88d411ec81b786cb5f299a9aa1a71a6cf8fc7303582cccf8f0d0"
     },
     "figures/n2_atomicity.png": {
-      "bytes": 242297,
-      "sha256": "dc6f57f480180daf8b6f7146f14f7de28e2f96c33af815353f67b0d6202c1598"
+      "bytes": 223736,
+      "sha256": "3334ce55ac5da5ee8e150db728a999c89ebf5e469eaeb7fa4f2b80df7f9fec3e"
     },
     "figures/n2_certification.pdf": {
-      "bytes": 51069,
-      "sha256": "d92fe25955d7b3ced7eef6ae1c815fda6e7f2f0d3dfd2fb2cc66f760b8c15804"
+      "bytes": 50963,
+      "sha256": "2d5907499c9584d8267c1866713ef494b12cec83c761b636d9c68ba865b387e0"
     },
     "figures/n2_certification.png": {
-      "bytes": 288406,
-      "sha256": "4bb591b30d86b72ef70f1863fe1bc5ccc9b8989e2838bcaa82e13e3e5ba65c58"
+      "bytes": 269689,
+      "sha256": "a718f62ef5badfa87d5c617c3573281ae58819a82dae2917ff2ef103444c698b"
     },
     "figures/n2_oracle_validation.pdf": {
-      "bytes": 64393,
-      "sha256": "4c04a0dc1551fb3a30adfef3e96d5cabefeef305e39cbca3046517c3824c676e"
+      "bytes": 64438,
+      "sha256": "b945fef34d5a0bb69a9e3e97bdb76d36c09d86f1d026f1f8d2099884319b07ba"
     },
     "figures/n2_oracle_validation.png": {
-      "bytes": 233691,
-      "sha256": "33bafffa9b5bd45ae5d33497ffcc9568a2fd5a8fbabcede12253f49850438f2a"
+      "bytes": 222280,
+      "sha256": "784e9adcf99ff4db3162847869358e7c62741ea1eeaba747bcb8ff366de45202"
     },
     "figures/n2_phase_diagram.pdf": {
-      "bytes": 59707,
-      "sha256": "7d8a3e4454e874d7c1660c46dab2b9754b06d6844a856b6a2021148048920e21"
+      "bytes": 59700,
+      "sha256": "7dff2e0528dd6a1c44f6dd11a38661d844a2b41e9de517c237d842bc9d425827"
     },
     "figures/n2_phase_diagram.png": {
-      "bytes": 342237,
-      "sha256": "ad46e58a4e3b761e531cf0961af34eb574dcce6d5be0f4cdf01133a4082be98f"
+      "bytes": 317065,
+      "sha256": "2895362df9f07b43c5a7dc44b1cc84242ac933ed3f4da31153835246a0763d69"
     },
     "key_metrics.json": {
-      "bytes": 4019,
-      "sha256": "fcd820f2efddcbbbc6af975b49abb7f01e2ac25770292625bcbb3c1872363c45"
+      "bytes": 4023,
+      "sha256": "c6f030084fe5ab94f3d5004dc2f5f52140955106f6cc4b2786ca1e2e00314897"
     },
     "processed/atomicity_summary.csv": {
-      "bytes": 922,
-      "sha256": "0d48e18db63c12a3636015ab6716da6dfc8d911fce3325b81b921ec6cfb6e7b6"
+      "bytes": 925,
+      "sha256": "29d5e1253da636e14bbcb536244a17b28c6d9f1237d8273047c4919b5ed08040"
     },
     "processed/certification_summary.csv": {
       "bytes": 1784,

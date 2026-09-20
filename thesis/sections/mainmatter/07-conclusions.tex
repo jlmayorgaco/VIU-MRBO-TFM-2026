@@ -4,23 +4,23 @@
 La pregunta principal admite una respuesta condicionada. Los contratos por
 capas permiten formar coaliciones y el demostrador Cargo completa una misión en
 una planta planar reducida mediante una arquitectura híbrida e interpretable.
-Sus reglas integradas no reproducen todos los mecanismos de SP2--SP6. Las
+Sus reglas integradas no reproducen todos los mecanismos parciales de SP1--SP2. Las
 garantías pertenecen a capas distintas: un Nash no certifica viabilidad mecánica
 y una simulación satisfactoria no demuestra estabilidad global ni validez
 industrial.
 
 \subsection{Contribución y resultados principales}
 
-SP0--SP2 caracterizan la formación estratégica. La penalización suficiente obtiene cobertura o cuota realizable, pero el peor Nash carece de cota uniforme. Bajo escasez, QR elimina grupos parciales y, con el mismo cierre, el cuórum mejora el valor en $0.74$ puntos. Greedy-Q sigue siendo superior. SP2 alinea la puntuación con contribuciones marginales, aunque su índice representa servicio operacional y no fuerza o torque.
+SP1 caracteriza la formación estratégica mediante cuatro etapas. La penalización suficiente obtiene cobertura o cuota realizable, pero el peor Nash carece de cota uniforme. Bajo escasez, QR elimina grupos parciales y, con el mismo cierre, el cuórum mejora el valor en $0.74$ puntos. Greedy-Q sigue siendo superior. La contribución marginal incorpora heterogeneidad operacional, y la guardia de \emph{wrench} asigna contactos y separa cobertura nominal de factibilidad mecánica planar.
 
-SP3--SP4 introducen la interfaz física. En 600 instancias, la guardia de \emph{wrench} redujo en $0.333$ los falsos positivos, con cobertura $1.000$ y abstención $0.500$. El QP sigue siendo central y planar. El servocontrol de SP4 es localmente estable con contactos fijos y realización exacta. SP5--SP8 separan seguridad, recuperación, tráfico y red. SP6 restauró 360/360 certificados recuperables, SP7 excluyó conflictos lógicos sin representar cuerpos continuos y SP8 obtuvo una brecha media de $0.497$ en 450 mundos certificados, mientras la calidad cayó a cero en la mayor escala nominal.
+SP2 introduce la ejecución física. En 600 instancias, la guardia situada en la interfaz SP1--SP2 redujo en $0.333$ los falsos positivos, con cobertura $1.000$ y abstención $0.500$; el QP sigue siendo central y planar. El servocontrol es localmente estable con contactos fijos y realización exacta, el filtro de seguridad elimina las colisiones observadas en su campaña y la reparación restaura 360/360 certificados recuperables. SP3 separa tráfico y red: la reserva excluye conflictos lógicos sin representar cuerpos continuos y la etapa de escala obtiene una brecha media de $0.497$ en 450 mundos certificados, mientras la calidad cae a cero en la mayor escala nominal.
 
 Cargo combina las seis etapas mediante reglas propias del ejecutor y terminó
 359/360 misiones sin intersección carga--obstáculo durante el transporte. Las
 ablaciones de seguridad y reparación redujeron el éxito en $0.996$ y $0.989$.
 Con pérdida $0.25$ y retardo de hasta dos eventos, las variantes vecinal y perfecta
 completaron 90/90; la primera empleó 249.3 mensajes y 58.2~kB por mundo. Estos
-datos acreditan compatibilidad funcional, no validación integrada de SP2--SP6.
+datos acreditan compatibilidad funcional, no validación integrada de SP1--SP2.
 En Industrial 2, los tres escenarios congestionados agotaron $60$~s sin entregas
 aunque no se observaran solapamientos.
 
@@ -36,11 +36,11 @@ obstáculo, fallo y tráfico sin confundir sus métricas. OE4 mide CPU, mensajes
 bytes, retardo, pérdida y escala dentro de los modelos ensayados.
 
 OE5 se cumple como demostrador de compatibilidad funcional: reúne las seis
-etapas previstas, declara sus diferencias frente a SP2--SP6 y emplea ablaciones
+etapas previstas, declara sus diferencias frente a las etapas de SP1--SP2 y emplea ablaciones
 para los bloques de seguridad y reparación. No demuestra que las garantías de
 los SP sobrevivan a la composición. De forma independiente, la reproducibilidad
-es parcial: SP0, SP1, SP5--SP8 y Cargo son regenerables con los artefactos
-disponibles, mientras SP2--SP4 permiten reanalizar observaciones archivadas sin
+es parcial: las campañas históricas E0, E1, E5--E8 y Cargo son regenerables con los artefactos
+disponibles, mientras E2--E4 permiten reanalizar observaciones archivadas sin
 todos sus generadores históricos. El piloto CoppeliaSim aporta auditoría
 geométrica y reproducción cinemática, no validación dinámica independiente.
 
@@ -61,10 +61,10 @@ $\boldsymbol W_k^{\mathrm{req}}\in\mathcal W_{C_k}$; cardinalidad y servicio no
 son certificados mecánicos. El QP evaluado es planar y supone contactos y
 demanda conocidos.
 
-\textbf{RQ4.} SP6 restauró 360/360 certificados estáticos recuperables; Cargo,
+\textbf{RQ4.} La etapa de reparación de SP2 restauró 360/360 certificados estáticos recuperables; Cargo,
 89/90 mundos con fallo al continuar con reemplazo. La red ensayada toleró
 pérdida $0.25$ y retardo de hasta dos eventos. La batería solo se modeló como
-disponibilidad en SP2 y se varió con dos semillas por escenario en el piloto.
+disponibilidad en la etapa heterogénea de SP1 y se varió con dos semillas por escenario en el piloto.
 La exclusión lógica no evitó bloqueos congestionados.
 
 \textbf{RQ5.} Retransmitir añadió $261.3$ mensajes por agente y mejoró $0.054$
@@ -104,21 +104,24 @@ La Tabla~\ref{tab:conclusion-hypotheses} restringe cada estado al dominio ensaya
 
 HP recibe apoyo delimitado como compatibilidad funcional del demostrador. H3 no
 se sustenta y H5b queda refutada. La coexistencia observada no valida la
-integración exacta de SP2--SP6 ni implica rapidez, calidad uniforme, autonomía
+integración exacta de SP1--SP2 ni implica rapidez, calidad uniforme, autonomía
 distribuida o fiabilidad industrial.
 
 \subsection{Limitaciones}
 
-No existe una función de Lyapunov común para el sistema híbrido. El modelo usa carga planar, pose conocida, contactos fijos, fuerzas acotadas y reconstrucción rígida tras el acoplamiento. Omite soporte vertical, fricción tridimensional, deslizamiento, percepción y tracción rueda--suelo. Cargo considera una carga y un fallo simple, con líder temporal, registro global, grafo estático y pérdidas Bernoulli. SP7 usa recursos discretos y SP8 no mide energía de radio. Los intervalos describen generadores sintéticos. La razón 359/360 no estima una probabilidad industrial. Industrial 2 solo tiene dos semillas por escenario y sus métodos son adaptaciones piloto distintas de CBBA, ORCA o DMPC completos.
+No existe una función de Lyapunov común para el sistema híbrido. El modelo usa carga planar, pose conocida, contactos fijos, fuerzas acotadas y reconstrucción rígida tras el acoplamiento. Omite soporte vertical, fricción tridimensional, deslizamiento, percepción y tracción rueda--suelo. Cargo considera una carga y un fallo simple, con líder temporal, registro global, grafo estático y pérdidas Bernoulli. SP3 usa recursos discretos en su juego de tráfico y no mide energía de radio en la campaña de red. Los intervalos describen generadores sintéticos. La razón 359/360 no estima una probabilidad industrial. Industrial 2 solo tiene dos semillas por escenario y sus métodos son adaptaciones piloto distintas de CBBA, ORCA o DMPC completos.
 
 \subsection{Recomendaciones y trabajo futuro}
 
 La primera prioridad metodológica es sustituir en el demostrador las reglas
-empíricas por los mecanismos de SP2--SP6 que se quieran reclamar como integrados
+empíricas por los mecanismos de SP1--SP2 que se quieran reclamar como integrados
 y repetir sus ablaciones. La validación posterior requiere una planta física
 independiente con fricción, contacto, agarre, actuadores, masa incierta, ruido y
 saturación. Un prototipo ROS~2 debería medir edad de información, bytes
 efectivos, memoria, energía y CPU con topología móvil y pérdidas correlacionadas.
+En SP1.N4 quedan abiertas dos campañas ya delimitadas: comparar información
+FULL frente a agregados afectados (AGG) y evaluar el canal degradado con pérdida,
+retardo, reordenamiento y caída del proponente.
 Múltiples cargas exigirán un oráculo de particionamiento/MILP espacio--temporal
 y comparadores publicados de subasta, MAPF y control. La rama de empuje/caging
 necesita un modelo separado de contacto unilateral y no debe compartir las

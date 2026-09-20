@@ -52,7 +52,7 @@
 				% Fila 1: tres escenarios; cada tarjeta dispone de más ancho físico
 				\draw[scenecard] (0.08,5.979427) rectangle (6.50,11.020573);
 				\node[scenetitle] at (0.40,10.670573) {1 · Aleatorio};
-				\node[scenedesc] at (0.40,10.250573) {robots y cargas uniformes};
+				\node[scenedesc] at (0.40,10.250573) {AMR y cargas uniformes};
 				\begin{scope}[shift={(1.63,6.199427)},x=\spxplotscen,y=\spxplotscen]
 					\scenarioaxes
 					\fill[SPBlue!5,opacity=0.42] (0.015,0.015) rectangle (0.985,0.985);
@@ -68,7 +68,7 @@
 				
 				\draw[scenecard] (6.92,5.979427) rectangle (13.34,11.020573);
 				\node[scenetitle] at (7.24,10.670573) {2 · Agrupado};
-				\node[scenedesc] at (7.24,10.250573) {robots uniformes; cargas agrupadas};
+				\node[scenedesc] at (7.24,10.250573) {AMR uniformes; cargas agrupadas};
 				\begin{scope}[shift={(8.47,6.199427)},x=\spxplotscen,y=\spxplotscen]
 					\scenarioaxes
 					\node[circle,aspect=1,minimum size=9.52mm,inner sep=0pt,
@@ -93,14 +93,14 @@
 				\draw[scenecard] (13.76,5.979427) rectangle (20.18,11.020573);
 				\node[scenetitle] at (14.08,10.670573) {3 · Separado};
 				\node[scenedesc] at (14.08,10.250573)
-				{robots: $\tilde x\leq0{,}35$; cargas: $\tilde x\geq0{,}65$};
+				{AMR: $\tilde x\leq0{,}35$; cargas: $\tilde x\geq0{,}65$};
 				\begin{scope}[shift={(15.31,6.199427)},x=\spxplotscen,y=\spxplotscen]
 					\scenarioaxes
 					\fill[SPBlue!12,opacity=0.72] (0,0) rectangle (0.35,1);
 					\fill[VIUOrange!12,opacity=0.72] (0.65,0) rectangle (1,1);
 					\draw[SPBlue!58,dashed,line width=0.65pt] (0.35,0) -- (0.35,1);
 					\draw[VIUOrange!60,dashed,line width=0.65pt] (0.65,0) -- (0.65,1);
-					\node[zonelabel] at (0.17,0.06) {robots};
+					\node[zonelabel] at (0.17,0.06) {AMR};
 					\node[zonelabel] at (0.76,0.06) {cargas};
 					\node[minirobot] at (0.10,0.18) {$r_1$};
 					\node[minirobot] at (0.23,0.70) {$r_2$};
@@ -144,7 +144,7 @@
 				\draw[scenecard] (6.92,0.45) rectangle (13.34,5.491146);
 				\node[scenetitle] at (7.24,5.141146) {5 · Pasillo};
 				\node[scenedesc] at (7.24,4.721146)
-				{carga: banda ancha; robot: estrecha};
+				{carga: banda ancha; AMR: estrecha};
 				\begin{scope}[shift={(8.47,0.67)},x=\spxplotscen,y=\spxplotscen]
 					\scenarioaxes
 					\fill[VIUOrange!13,opacity=0.70] (0,0.34) rectangle (1,0.66);
@@ -159,7 +159,7 @@
 				
 				\draw[scenecard] (13.76,0.45) rectangle (20.18,5.491146);
 				\node[scenetitle] at (14.08,5.141146) {Tratamiento F · Fallo};
-				\node[scenedesc] at (14.08,4.721146) {fallo crítico de un robot asignado};
+				\node[scenedesc] at (14.08,4.721146) {retirada de un AMR asignado};
 				\begin{scope}[shift={(15.31,0.67)},x=\spxplotscen,y=\spxplotscen]
 					\scenarioaxes
 					\fill[VIUGray!13,opacity=0.62]
@@ -192,7 +192,7 @@
 				% Leyenda mínima
 				\node[minirobot] (legendrobot) at (7.40,-0.03) {};
 				\node[font=\fontsize{7.5}{8.3}\selectfont\sffamily,anchor=west]
-				at (7.70,-0.03) {robot $r_i$};
+				at (7.70,-0.03) {AMR $r_i$};
 				\node[miniload] (legendload) at (10.10,-0.03) {};
 				\node[font=\fontsize{7.5}{8.3}\selectfont\sffamily,anchor=west]
 				at (10.44,-0.03) {carga $k_j$};
@@ -205,6 +205,6 @@
 				([xshift=-1.7mm,yshift=1.7mm]legendfailed.center) --
 				([xshift=1.7mm,yshift=-1.7mm]legendfailed.center);
 				\node[font=\fontsize{7.5}{8.3}\selectfont\sffamily,anchor=west]
-				at (13.38,-0.03) {robot fallido};
+				at (13.38,-0.03) {AMR retirado};
 		\end{tikzpicture}}
 		\endgroup

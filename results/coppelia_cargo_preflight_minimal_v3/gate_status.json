@@ -1,0 +1,109 @@
+{
+  "design": {
+    "dt_sensitivity_values_s": [
+      0.005
+    ],
+    "factorial_cells": 1,
+    "paired_world_hashes_across_guards": true,
+    "perturbations_per_cell": 1,
+    "primary_runs_expected": 3,
+    "primary_runs_recorded": 3
+  },
+  "dt_sensitivity": {
+    "complete": true,
+    "dt_values_s": [
+      0.005
+    ],
+    "groups_expected": 3,
+    "groups_recorded": 3,
+    "interpretation": "single_dt_repeat_only_not_a_sensitivity_study",
+    "max_final_position_spread_m": 0.0,
+    "max_final_yaw_spread_rad": 0.0,
+    "pass": false,
+    "position_spread_limit_m": 0.05,
+    "success_disagreement_groups": 0,
+    "success_disagreement_limit": 0,
+    "yaw_spread_limit_rad": 0.05
+  },
+  "evidence": {
+    "backend_kind": "coppeliasim_mujoco",
+    "confirmatory_claim_eligible": false,
+    "evidence_class": "physical_coppeliasim_candidate",
+    "synthetic_outputs_must_not_be_cited_as_coppeliasim": false
+  },
+  "execution": {
+    "all_primary_recorded": true,
+    "failed_runs": 0,
+    "nan_runs": 0,
+    "saturation_events": 0
+  },
+  "inference": {
+    "analysis_population": "completed primary runs; one paired perturbation per cell and seed",
+    "analysis_seed": 260831,
+    "backend_kind": "coppeliasim_mujoco",
+    "bootstrap_resamples": 1000,
+    "complete": true,
+    "confidence_level": 0.95,
+    "contrasts": "all three guard pairs within each cell and endpoint",
+    "effect": "paired mean difference in binary endpoint, guard_a minus guard_b",
+    "effect_interval": "paired percentile bootstrap over the 1 declared seed pair(s)",
+    "evidence_class": "physical_coppeliasim_candidate",
+    "expected_primary_runs": 3,
+    "inferential_status": "smoke_only_no_inferential_claim",
+    "limitation": "The common controller maps bounded contact-force setpoints through wrench-error admittance to wheel velocities; exact wrench realization is not assumed. Contrasts estimate predictive classification error, not wrench-allocation tracking.",
+    "multiplicity": "Holm correction across the three guard pairs within each cell and endpoint",
+    "primary_endpoint": "false_positive_incidence = guard_accepts AND physical_transport_fails",
+    "protocol_family": "coppelia_cargo_v1",
+    "rates": "per cell and guard with two-sided Wilson score intervals",
+    "recorded_primary_runs": 3,
+    "secondary_endpoints": [
+      "false_negative_incidence = guard_rejects AND physical_transport_succeeds",
+      "misclassification_rate = guard prediction differs from physical outcome"
+    ],
+    "test": "exact two-sided McNemar test (conditional binomial on discordances)"
+  },
+  "paired_execution_repeatability": {
+    "complete": true,
+    "interpretation": "repeatability of the same controller and world across guard labels",
+    "max_final_position_spread_m": 0.0,
+    "max_final_yaw_spread_rad": 0.0,
+    "pass": true,
+    "position_spread_limit_m": 0.01,
+    "success_disagreement_limit": 0,
+    "success_disagreement_worlds": 0,
+    "worlds_expected": 1,
+    "worlds_recorded": 1,
+    "yaw_spread_limit_rad": 0.01745329252
+  },
+  "physical_scene": {
+    "config_readback_gate_pass": true,
+    "force_transmission_gate_pass": false,
+    "scene_actuation_audit_pass": true,
+    "sensor_gate_pass": true,
+    "wheel_drive_force_gate_pass": true,
+    "wheel_twist_gate_pass": false
+  },
+  "physical_scene_measurements": {
+    "config_readback_max_abs_error": 5.5511151231258e-17,
+    "dynamically_enabled_force_sensor_count_min": 4.0,
+    "expected_static_force_n_range": [
+      138.07579395813,
+      138.07579395813
+    ],
+    "force_transmission_status": [
+      "not_executed"
+    ],
+    "max_robot_drive_force_n": 12.0,
+    "measured_static_force_n_range": [
+      138.03171454841,
+      138.03171454841
+    ],
+    "pending_calibration_sentinels_are_not_measurements": true,
+    "sensor_static_relative_error_max": 0.0003192406754103,
+    "support_overlap_max_abs_error_m": 5.5511151231258e-17,
+    "valid_force_sensor_count_min": 4.0,
+    "wheel_twist_status": [
+      "not_executed"
+    ]
+  }
+}

@@ -1,0 +1,350 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[top=0.43in,bottom=0.45in,left=0.55in,right=0.55in,headheight=12pt,headsep=4pt,footskip=12pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{Noto Serif}
+\setsansfont{Noto Sans}
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage{microtype,ragged2e,setspace}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{booktabs,tabularx,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,babel}
+\usepackage{amsmath,amssymb}
+\usepackage{fancyhdr,hyperref,enumitem,multicol}
+
+\definecolor{autumn}{HTML}{E36A2E}
+\definecolor{spicy}{HTML}{C8572A}
+\definecolor{onyx}{HTML}{0C0C0C}
+\definecolor{mustard}{HTML}{FCD757}
+\definecolor{soft}{HTML}{F5F7FA}
+\definecolor{softblue}{HTML}{EAF2FD}
+\definecolor{softgreen}{HTML}{EAF7EF}
+\definecolor{softwarm}{HTML}{FDEFE8}
+\definecolor{softplum}{HTML}{F2ECFB}
+\definecolor{blue}{HTML}{2D6CC0}
+\definecolor{green}{HTML}{2E9B5F}
+\definecolor{purple}{HTML}{7B4DBA}
+\colorlet{orange}{autumn}
+\colorlet{ink}{onyx}
+\colorlet{muted}{onyx!60!white}
+\colorlet{rule}{onyx!18!white}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=spicy,
+  linkcolor=spicy,
+  pdftitle={De la asignación abstracta al transporte físico: revisión sistematizada V3},
+  pdfauthor={Jorge Luis Mayorga Taborda}
+}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\sffamily\fontsize{7.2}{7.6}\selectfont Jorge Luis Mayorga Taborda}
+\fancyhead[R]{\sffamily\fontsize{7.2}{7.6}\selectfont TFM MROB · Revisión sistematizada V3 · edición visual de seis páginas}
+\fancyfoot[C]{\sffamily\fontsize{7.6}{8}\selectfont\thepage}
+\renewcommand{\headrulewidth}{0.25pt}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.45pt}
+\setlength{\fboxsep}{4pt}
+\setstretch{1.01}
+\color{ink}
+\emergencystretch=1.5em
+\raggedbottom
+\setlist[itemize]{leftmargin=4.1mm,itemsep=.25pt,topsep=.35pt,parsep=0pt,partopsep=0pt}
+\setlist[enumerate]{leftmargin=4mm,itemsep=0pt,topsep=0pt,parsep=0pt,partopsep=0pt}
+
+\newcommand{\sect}[1]{\par\vspace{0pt}{\sffamily\fontsize{13.6}{14.3}\selectfont\bfseries\color{orange}#1\par}\vspace{1pt}\textcolor{rule}{\rule{\linewidth}{0.35pt}}\vspace{2pt}}
+\newcommand{\subh}[1]{\par\vspace{1.35pt}{\sffamily\fontsize{8.8}{9.35}\selectfont\bfseries\color{orange}#1\par}\vspace{.2pt}}
+\newcommand{\figcap}[2]{\par\vspace{.15pt}{\setstretch{1}\fontsize{7.05}{7.65}\selectfont\textbf{#1.}~\textit{#2}\par}\vspace{.15pt}}
+\newcommand{\sourcecap}[1]{\par{\setstretch{1}\fontsize{6.15}{6.65}\selectfont\itshape\centering Fuente: #1\par}}
+\newcommand{\note}[1]{\par{\setstretch{1}\fontsize{6.5}{7.05}\selectfont\color{muted}#1\par}}
+\newcommand{\citen}[1]{\textsuperscript{\,[#1]}}
+\newcommand{\boxtext}[2]{\colorbox{#1}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{\fontsize{7.55}{8.2}\selectfont #2}}}
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\input{compact_metrics.tex}
+
+\begin{document}
+\fontsize{8.2}{9.0}\selectfont
+
+% ================= PAGE 1 =================
+\sect{De la asignación abstracta al transporte físico}
+{\sffamily\fontsize{9.6}{10.3}\selectfont\bfseries Revisión sistematizada de coaliciones heterogéneas, transporte cooperativo y tráfico multi-AMR\par}
+{\fontsize{7.2}{7.8}\selectfont Corte: 13 de septiembre de 2026 · corpus analítico: \NCorpus{} documentos · síntesis visual restaurada y ampliada\par}
+
+\vspace{1mm}
+\begin{minipage}[t]{0.492\linewidth}
+\colorbox{softblue}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{\fontsize{7.35}{8.0}\selectfont
+\textbf{Resumen.} Se examina por qué formación de coaliciones, transporte físico y tráfico siguen desconectados. El registro reunió \NDiscovery{} identidades; \NCorpus{} documentos integraron el corpus, \NAdequate{} tenían texto adecuado y \NCloseRead{} recibieron lectura cercana. Las señales SP1, SP2 y SP3 fueron \NSpOne{}, \NSpTwo{} y \NSpThree{}; solo \NSpOneTwo{} enlazaron SP1--SP2, \NSpOneThree{} SP1--SP3 y ninguno SP2--SP3 o los tres. La brecha apunta a una arquitectura distribuida certificada por capas.}}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.492\linewidth}
+\colorbox{softwarm}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{\fontsize{7.35}{8.0}\selectfont
+\textbf{Abstract.} This mapping review asks why coalition formation, physical transport, and traffic coordination remain weakly connected. The registry contained \NDiscovery{} identities; \NCorpus{} acquired papers formed the corpus, \NAdequate{} had adequate text, and \NCloseRead{} were close-read. SP1, SP2, and SP3 occurred in \NSpOne{}, \NSpTwo{}, and \NSpThree{} papers; only \NSpOneTwo{} linked SP1--SP2, \NSpOneThree{} linked SP1--SP3, and none linked SP2--SP3 or all three. The gap motivates a layer-certified distributed architecture.}}
+\end{minipage}
+
+\subh{Método y regla de inferencia}
+Se ejecutaron 22 búsquedas derivadas de 16 familias conceptuales en WoS, Crossref, OpenAlex y arXiv, más rastreo manual. Se sigue PRISMA/PRISMA-S cuando aplica\citen{1,2}, sin declarar exhaustividad: WoS quedó incompleto en F01/F02, la API de arXiv fue parcial y Google Scholar no alimentó conteos. Método, arquitectura, aplicación y validación son señales multietiqueta de título/resumen; solo las \NCloseRead{} fichas localizadas sustentan afirmaciones detalladas.
+
+\begin{center}
+\includegraphics[width=0.985\linewidth]{fig01_methodological_map.pdf}
+\end{center}
+\figcap{Figura 1}{Mapa metodológico recalculado. Los 244 puntos representan el corpus V3; el contorno negro identifica lecturas cercanas y las etiquetas muestran anclas interpretativas.}
+\sourcecap{elaboración propia desde \texttt{analytic\_corpus\_v3.csv}; geometría ordinal y descriptiva, no ranking de calidad o rendimiento.}
+
+\begin{center}
+\includegraphics[width=0.985\linewidth]{fig01b_snapshot_summary.pdf}
+\end{center}
+\figcap{Figura 2}{Comparación documentada entre el corte legado y V3. Se preservan los números antiguos, pero no se confunden taxonomías distintas.}
+\sourcecap{valores legados impresos en el \texttt{.tex} entregado; V3 desde tablas de temas y rol científico.}
+
+\boxtext{softgreen}{\textbf{Resultado rector.} El campo no carece de algoritmos: carece de continuidad entre certificados. Matching, equilibrio o consenso deciden quién participa; no prueban que la coalición genere el wrench requerido ni que la huella carga--robots atraviese el tráfico sin bloqueo.}
+
+\newpage
+% ================= PAGE 2 =================
+\sect{Resultados I · qué resuelve cada familia y dónde se detiene}
+La matriz recupera la lectura discriminante del informe anterior, pero reemplaza filas no verificadas por doce fuentes con ficha localizada. Un círculo indica tratamiento explícito, un triángulo alcance parcial y un guion que el componente no fue identificado. No es una puntuación de calidad.
+
+\begin{center}
+\includegraphics[width=0.985\linewidth]{fig02_capability_matrix.pdf}
+\end{center}
+\figcap{Figura 3}{Matriz de capacidades en fuentes seleccionadas para cubrir asignación, coaliciones, transporte y coordinación.}
+\sourcecap{fichas de evidencia V3 de Ramchurn et al.\citen{3}, Liu y Shell\citen{4}, Guerrero et al.\citen{5}, Tuci et al.\citen{6}, Mazdin y Rinner\citen{11}, De Ryck et al.\citen{12}, An et al.\citen{14}, Verma et al.\citen{17}, Pi et al.\citen{10}, Muhammed et al.\citen{19}, Varghese et al.\citen{21} y Song et al.\citen{20}.}
+
+\begin{minipage}[t]{0.322\linewidth}
+\colorbox{softblue}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{\fontsize{7.05}{7.7}\selectfont\textbf{Asignación con restricciones}\par\smallskip Ramchurn et al. formulan CFSTP NP-hard y usan MIP como referencia pequeña\citen{3}; Guerrero et al. añaden plazos e interferencia y contrastan ILP con subastas\citen{5}.}}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.322\linewidth}
+\colorbox{softwarm}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{\fontsize{7.05}{7.7}\selectfont\textbf{Decisión + red o ruta}\par\smallskip Mazdin y Rinner estudian fallos y disparo de comunicación\citen{11}; De Ryck et al. acoplan asignación descentralizada y routing industrial\citen{12}.}}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.322\linewidth}
+\colorbox{softgreen}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{\fontsize{7.05}{7.7}\selectfont\textbf{Física verificada}\par\smallskip TWINBOT\citen{10}, caging con grippers blandos\citen{16} y NMPC descentralizado\citen{19} aportan hardware, pero la coalición física verificada permanece pequeña.}}
+\end{minipage}
+
+\subh{Modalidades físicas: una taxonomía que no debe colapsarse}
+\begin{center}
+\includegraphics[width=0.985\linewidth]{fig03_physical_modes.pdf}
+\end{center}
+\figcap{Figura 4}{Cuatro mecanismos de transporte. El TFM adopta carga soportada/prehensil como modo primario; empuje/caging queda como extensión con modelo propio.}
+\sourcecap{elaboración propia con la taxonomía de estrategias de transporte de Tuci et al.\citen{6} y la revisión de plataformas de An et al.\citen{14}.}
+
+\begin{minipage}[t]{0.49\linewidth}
+\subh{Qué permanece válido de los métodos clásicos}
+La optimización exacta hace explícitas capacidades, plazos y exclusiones; los mercados pueden ser óptimos bajo estructura uno-a-uno\citen{4}; los juegos expresan incentivos; consenso y comunicación por eventos coordinan estimaciones\citen{8,11}; MPC, impedancia y CBF actúan sobre dinámica y seguridad\citen{13,18,19}. Ninguna familia domina todas las interfaces.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+\subh{La distinción crucial}
+Capacidad agregada, $\sum_i c_i\ge d_k$, es necesaria pero no suficiente. La geometría de contacto, fricción, saturación y reparto de esfuerzo determinan si el wrench es realizable; luego la huella conjunta, no la ruta individual, determina factibilidad de tráfico. La revisión obliga a validar ambas interfaces por separado.
+\end{minipage}
+
+\boxtext{softwarm}{\textbf{Lectura conjunta.} Las familias no “mueren”; cambian de función dentro de composiciones: la subasta propone, el solver acota, el consenso mantiene consistencia y el controlador certifica restricciones físicas.}
+
+\newpage
+% ================= PAGE 3 =================
+\sect{Resultados II · intersecciones y presupuesto de autoridad}
+El gráfico original mezclaba discriminantes manuales y posiciones cualitativas. La edición restaurada conserva esos valores como símbolos legados y añade una medición reproducible: proporciones dentro de cada corpus y un score arquitectónico derivado de resúmenes. Así se puede ver la evolución sin atribuir precisión inexistente al corte antiguo.
+
+\begin{center}
+\includegraphics[width=0.985\linewidth]{fig04_intersections_authority.pdf}
+\end{center}
+\figcap{Figura 5}{Cobertura normalizada y presupuesto de autoridad por etapa. Los intervalos V3 son bootstrap descriptivo del score léxico, no incertidumbre poblacional.}
+\sourcecap{legado desde el \texttt{.tex} entregado; V3 desde temas, combinaciones, arquitectura, títulos y resúmenes.}
+
+\subh{Red-team: seis resultados fuertes que no cierran el sistema completo}
+\rowcolors{2}{white}{soft}
+\renewcommand{\arraystretch}{1.08}
+\setlength{\tabcolsep}{2.7pt}
+\fontsize{6.85}{7.45}\selectfont
+\begin{tabularx}{\linewidth}{L{24mm} L{57mm} Y}
+\toprule
+\textbf{Fuente} & \textbf{Resultado que sí aporta} & \textbf{Interfaz que queda abierta}\\
+\midrule
+Ramchurn et al. 2010\citen{3} & Coaliciones espacio-temporales, formulación MIP y heurísticas para un problema NP-hard. & No modela contacto, wrench ni tráfico de una carga compartida.\\
+De Ryck et al. 2021\citen{12} & Asignación descentralizada con restricciones de routing para entornos industriales. & La ruta es de robots/tareas; no certifica una huella multi-robot acoplada.\\
+Verma et al. 2025\citen{17} & Matching heterogéneo hasta 2.000 robots y 400 tareas; construcción $O(|E|)$. & Central, estático y sin física: escala computacional, no escala de transporte.\\
+Varghese et al. 2026\citen{21} & Coordinación central híbrida en Gazebo con cinco robots y reasignación dinámica. & Techo útil de simulación, pero no autoridad local ni carga compartida certificada.\\
+Muhammed et al. 2026\citen{19} & NMPC descentralizado en dos AMR, 10 Hz, RMSE $<4$ cm y reducción de red cercana al 70\%. & Pareja fija: no reclutamiento, coalición variable ni tráfico multi-coalición.\\
+Song et al. 2026\citen{20} & Autoasignación, CVT y CBF sin conocimiento previo del objeto. & Preprint y simulación: falta evidencia física y comparación end-to-end.\\
+\bottomrule
+\end{tabularx}
+\normalsize\fontsize{8.2}{9.0}\selectfont
+
+\begin{minipage}[t]{0.49\linewidth}
+\subh{La autoridad migra entre capas}
+En V3, “distribuido” aparece en \NDistributed{} resúmenes y “centralizado” en \NCentralized{}, con coexistencias. El score de la Figura 5 no prueba descentralización: obliga a preguntar quién observa el estado global, resuelve el matching, certifica contacto, autoriza movimiento, reserva recursos y decide recuperación.
+
+\subh{Escala no es una sola cifra}
+Separar $N_{sim}$, $N_{hw}$, tamaño de coalición, cargas simultáneas, CPU, memoria y mensajes. Dos robots físicos aportan evidencia mecánica; miles de agentes en matching aportan evidencia computacional. Una no sustituye a la otra.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+\subh{La intersección rara es el dato central}
+SP1 aparece en \NSpOne{} documentos, SP2 en \NSpTwo{} y SP3 en \NSpThree{}; solo \NSpOneTwo{} enlazan SP1--SP2, \NSpOneThree{} SP1--SP3, ninguno SP2--SP3 y ninguno los tres. Son conteos del corpus adquirido, no prueba de ausencia universal.
+
+\subh{Por qué importa para el TFM}
+El fallo relevante no está dentro de un bloque aislado, sino al pasar de “coalición atractiva” a “coalición físicamente viable” y de allí a “coalición que puede atravesar un sistema congestionado y recuperarse”.
+\end{minipage}
+
+\boxtext{softgreen}{\textbf{Brecha defendible.} En el corpus adquirido no se identificó una arquitectura que integre reclutamiento local de una coalición heterogénea y variable, certificación física de carga compartida, tráfico para la huella completa y recuperación online, sin autoridad global permanente. Es conclusión de esta revisión, no prioridad universal.}
+
+\newpage
+% ================= PAGE 4 =================
+\sect{Resultados III · evolución temporal, diversidad y venues}
+El dashboard recupera la composición visual de seis paneles y la alimenta íntegramente con V3. El corte legado informaba 54 registros fechados, pero no contenía la tabla anual usada por su figura; por rigor no se fabricó una línea histórica. En V3 hay 243 documentos fechados y uno sin año.
+
+\begin{center}
+\includegraphics[width=0.985\linewidth]{fig05_trends_dashboard.pdf}
+\end{center}
+\figcap{Figura 6}{Dashboard temporal y estructural del corpus V3: actividad, temas, arquitectura, diversidad de métodos, primeras señales y venues recurrentes.}
+\sourcecap{\texttt{analytic\_corpus\_v3.csv}, \texttt{theme\_period\_v3.csv} y \texttt{top\_venues\_v3.csv}; clasificación multietiqueta y 2026 incompleto.}
+
+\begin{minipage}[t]{0.49\linewidth}
+\subh{Persistencia temática, no reemplazo}
+SP1 permanece cerca de 45--50\% en los cuatro periodos; SP2 baja de 8,6\% a 2,5\% y retorna a 7,9\%; SP3 crece hasta 11,4\% en 2017--21 y queda en 7,9\% en 2022--26. La señal transversal oscila entre 25,0\% y 40,0\%. Esto no describe una sucesión de paradigmas, sino una expansión con prioridades superpuestas.
+
+\subh{Arquitectura modular}
+La señal distribuida domina a la central en todos los periodos, pero no crece monótonamente y alcanza 38,2\% en 2022--26 frente a 48,1\% en 2017--21. La central aumenta hasta 27,0\% reciente. La lectura plausible es composición híbrida por etapas, no victoria lineal de la descentralización.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+\subh{Diversidad y emergencia}
+La diversidad móvil de señales metodológicas aumenta, sobre todo después de 2015. CBF/seguridad aparece más tarde que mercados, consenso y optimización; MPC, fuerza/impedancia y MAPF son señales recientes y todavía pequeñas. “Primera señal” depende del corpus y del vocabulario: no fecha la invención de un método.
+
+\subh{Autores, venues y aplicaciones}
+El corpus contiene 807 cadenas de autor sin desambiguación y 117 venues. Lideran \emph{IEEE Access} (23), \emph{JINT} (20), \emph{Autonomous Robots} (12), arXiv (10) y \emph{Sensors} (8). Aplicaciones más señaladas: búsqueda/rescate/exploración (33), UAV (27), almacén/logística (\NWarehouse{}) y transporte/manipulación (\NTransportApp{}).
+\end{minipage}
+
+\boxtext{softwarm}{\textbf{Narrativa emergente.} La historia no es “método A sustituye a B”, sino “la arquitectura absorbe más funciones”: exacta como oráculo, mercado como mecanismo de propuesta, consenso como infraestructura, aprendizaje como módulo y MPC/CBF como capa de ejecución o seguridad.}
+
+\newpage
+% ================= PAGE 5 =================
+\sect{Resultados IV · métodos, evidencia y cadena de certificados}
+Los periodos contienen 35, 40, 79 y 89 documentos. Se comparan proporciones internas para evitar que el crecimiento del corpus se confunda con crecimiento metodológico. Cada documento puede activar varias familias; frecuencia significa atención en el corpus, no rendimiento.
+
+\begin{center}
+\includegraphics[width=0.985\linewidth]{fig06_method_evolution.pdf}
+\end{center}
+\figcap{Figura 7}{Evolución metodológica normalizada. Mercados pierden cuota relativa; aprendizaje y metaheurísticas se expanden; CBF/seguridad emerge, sin que ninguna familia sustituya a todas las demás.}
+\sourcecap{\texttt{method\_period\_v3.csv}; señales de título/resumen, categorías coexistentes y 2026 incompleto.}
+
+\begin{center}
+\includegraphics[width=0.985\linewidth]{fig07_interfaces_evidence.pdf}
+\end{center}
+\figcap{Figura 8}{Cobertura de interfaces y madurez de validación. “Caso industrial” puede ser un escenario simulado y no equivale a despliegue real.}
+\sourcecap{tablas V3 de temas, combinaciones y validación; conteos multietiqueta sobre $n=\NCorpus$.}
+
+\figcap{Figura 9}{Cadena de certificados propuesta para convertir una asignación atractiva en transporte ejecutable y recuperable.}
+\begin{center}
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily]
+\tikzset{cert/.style={rounded corners=1.2pt,draw=rule,line width=.4pt,minimum width=51mm,minimum height=17mm,align=center}}
+\node[cert,fill=softblue](s)at(27,9){\textbf{1 · Estratégico}\\miembros, habilidades y roles\\utilidad, atomicidad, compromiso};
+\node[cert,fill=softwarm](p)at(83,9){\textbf{2 · Físico}\\geometría, contacto y wrench\\actuación, estabilidad, seguridad};
+\node[cert,fill=softgreen](t)at(139,9){\textbf{3 · Tráfico}\\huella, ruta y recurso compartido\\conflicto, congestión, deadlock};
+\draw[-{Stealth[length=2mm]},muted,line width=.65pt](s)--node[above,fill=white,inner sep=1pt,font=\fontsize{6.2}{6.5}\selectfont]{acepta/rechaza}(p);
+\draw[-{Stealth[length=2mm]},muted,line width=.65pt](p)--node[above,fill=white,inner sep=1pt,font=\fontsize{6.2}{6.5}\selectfont]{coste factible}(t);
+\draw[-{Stealth[length=1.8mm]},orange,line width=.55pt](t.south)to[out=-90,in=-90,looseness=.72] node[below,fill=white,inner sep=1pt,font=\fontsize{6.2}{6.5}\selectfont]{precio de congestión / replanteamiento}(s.south);
+\end{tikzpicture}
+\end{center}
+\sourcecap{elaboración propia a partir de la discontinuidad SP1--SP3 observada.}
+
+\begin{minipage}[t]{0.322\linewidth}
+\colorbox{softblue}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{\centering\fontsize{7.05}{7.65}\selectfont\textbf{Estratégico}\par\smallskip ¿Quién participa y bajo qué utilidad, habilidad, rol y compromiso?}}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.322\linewidth}
+\colorbox{softwarm}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{\centering\fontsize{7.05}{7.65}\selectfont\textbf{Físico}\par\smallskip ¿Puede esa geometría generar el movimiento y esfuerzo sin violar límites?}}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.322\linewidth}
+\colorbox{softgreen}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{\centering\fontsize{7.05}{7.65}\selectfont\textbf{Tráfico}\par\smallskip ¿Puede la huella conjunta circular, negociar recursos y recuperarse?}}
+\end{minipage}
+
+\boxtext{softgreen}{\textbf{Implicación científica.} El aporte publicable no es otro selector de tareas aislado, sino una interfaz verificable entre decisión, mecánica y tráfico, con el oráculo central como techo de calidad y la arquitectura distribuida evaluada por coste, comunicación y degradación.}
+
+\newpage
+% ================= PAGE 6 =================
+\sect{Agenda experimental y límites de la evidencia}
+La síntesis justifica un mecanismo white-box: juego potencial/poblacional para proponer coaliciones, filtro físico para certificarlas y coste de tráfico realimentado hacia SP1. La ejecución digital debe describirse como asíncrona y sin rondas globales, no “sin reloj”.
+
+\subh{Diseño mínimo, baselines y métricas}
+\rowcolors{2}{white}{soft}
+\renewcommand{\arraystretch}{1.08}
+\setlength{\tabcolsep}{2.5pt}
+\fontsize{6.85}{7.45}\selectfont
+\begin{tabularx}{\linewidth}{C{10mm} L{35mm} L{44mm} Y}
+\toprule
+\textbf{Capa} & \textbf{Propuesta} & \textbf{Baseline/oráculo} & \textbf{Evidencia y métricas}\\
+\midrule
+SP1 & Juego local: unirse, esperar, cambiar rol o salir; payoff con compatibilidad, viaje, margen físico y congestión. & MILP/set partitioning como oráculo; CBBA/subasta distribuida; Húngaro solo si existe reducción uno-a-uno demostrada. & Factibilidad, utilidad, gap, formación, churn, CPU, mensajes y bytes.\\
+SP2 & Certificador de contacto, wrench y actuadores; pose/velocidad común y reparto de esfuerzo. & Leader--follower/estructura virtual; MPC/CBF; reparto central de wrench o impedancia. & Error de pose, residual de wrench, fuerza interna, contacto, saturación, energía y distancia mínima.\\
+SP3 & Planificar la huella completa, negociar corredores y devolver congestión a SP1. & A*/Dijkstra, priorizada, CBS/ECBS; ORCA/RVO o CBF-QP para seguridad reactiva. & Makespan, throughput, espera, conflictos, deadlock y replanteamientos.\\
+Integral & Eventos locales, temporizadores asíncronos y sustitución o disolución controlada. & Oráculo end-to-end con información global, declarado como techo. & Entrega, recuperación, carga perdida, deadline misses y dispersión entre semillas.\\
+\bottomrule
+\end{tabularx}
+\normalsize\fontsize{8.2}{9.0}\selectfont
+
+\subh{Fronteras cuantitativas localizadas}
+\rowcolors{2}{white}{soft}
+\renewcommand{\arraystretch}{1.05}
+\setlength{\tabcolsep}{2.4pt}
+\fontsize{6.55}{7.1}\selectfont
+\begin{tabularx}{\linewidth}{L{24mm} L{55mm} Y}
+\toprule
+\textbf{Fuente} & \textbf{Evidencia observada} & \textbf{Frontera de extrapolación}\\
+\midrule
+Liu y Shell 2013\citen{4} & Mercado óptimo uno-a-uno; $O(n^3\log n)$ bajo su estructura. & No certifica coaliciones, contacto ni tráfico.\\
+Verma et al. 2025\citen{17} & Hasta 2.000 robots/400 tareas; construcción $O(|E|)$. & Central, estático y determinista; no escala física.\\
+Muhammed et al. 2026\citen{19} & Dos AMR, 10 Hz, RMSE $<4$ cm; red reducida cerca de 70\%. & Coalición fija; no reclutamiento ni tráfico.\\
+Song et al. 2026\citen{20} & Autoasignación, CVT y CBF sin conocimiento previo del objeto. & Preprint y simulación; falta hardware y revisión por pares.\\
+\bottomrule
+\end{tabularx}
+\normalsize\fontsize{8.2}{9.0}\selectfont
+
+\begin{minipage}[t]{0.49\linewidth}
+\subh{Hipótesis todavía no confirmadas}
+\begin{itemize}
+\item \textbf{H1:} margen físico en el payoff reduce coaliciones inviables, con coste de utilidad nominal.
+\item \textbf{H2:} realimentar congestión reduce makespan y bloqueos frente a asignar y después enrutar.
+\item \textbf{H3:} comunicación por eventos preserva factibilidad con menos bytes bajo pérdida/latencia acotada.
+\item \textbf{H4:} el distribuido pierde calidad frente al oráculo en pequeño, pero degrada mejor en CPU/red al crecer.
+\item \textbf{H5:} sustitución local reduce recuperación si existe capacidad vecinal redundante.
+\end{itemize}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+\subh{Amenazas a la validez}
+Faltan 255 registros WoS de F01/F02 y la API de arXiv no completó la cartera. El corpus mezcla semillas históricas y descubrimiento dirigido: los porcentajes no estiman prevalencia poblacional. Solo \NCloseRead{} fuentes recibieron lectura cercana; no hubo meta-análisis por heterogeneidad de tareas, robots, métricas y escenarios. Autores sin desambiguar; 2026 incompleto; el corte legado carece de datos crudos para recomputación.
+
+\subh{Criterio de éxito}
+Instancias idénticas, semillas pareadas, distribución e intervalo de confianza, fallos incluidos y ablaciones de margen físico, congestión y comunicación. La simulación es observación empírica, no prueba global.
+\end{minipage}
+
+\subh{Referencias verificadas y fuentes primarias}
+\fontsize{4.45}{4.92}\selectfont
+\setlength{\columnsep}{4mm}
+\begin{multicols}{3}
+\begin{enumerate}[label={[\arabic*]},leftmargin=3.5mm]
+\item Page, M. J., et al. (2021). PRISMA 2020. \emph{BMJ, 372}, n71. \href{https://doi.org/10.1136/bmj.n71}{doi:10.1136/bmj.n71}.
+\item Rethlefsen, M. L., et al. (2021). PRISMA-S. \emph{Systematic Reviews, 10}, 39. \href{https://doi.org/10.1186/s13643-020-01542-z}{doi:10.1186/s13643-020-01542-z}.
+\item Ramchurn, S. D., et al. (2010). Coalition formation with spatial and temporal constraints. \emph{AAMAS}, 1181--1188. \href{https://dblp.org/rec/conf/atal/RamchurnPFTJ10}{DBLP}.
+\item Liu, L., \& Shell, D. A. (2013). Optimal market-based MRTA. \emph{RSS IX}. \href{https://doi.org/10.15607/RSS.2013.IX.033}{doi:10.15607/RSS.2013.IX.033}.
+\item Guerrero, J., Oliver, G., \& Valero, O. (2017). Coalitions with deadlines. \emph{PLOS ONE, 12}, e0170659. \href{https://doi.org/10.1371/journal.pone.0170659}{doi}.
+\item Tuci, E., Alkilabi, M. H. M., \& Akanyeti, O. (2018). Cooperative object transport review. \emph{Front. Robot. AI, 5}, 59. \href{https://doi.org/10.3389/frobt.2018.00059}{doi}.
+\item Palmer, A. W., Hill, A. J., \& Scheding, S. J. (2018). Resource contention with uncertain timing. \emph{ICRA}, 3693--3700. \href{https://doi.org/10.1109/ICRA.2018.8460981}{doi}.
+\item Savino, H. J., et al. (2020). Pose consensus with dual quaternions. \emph{J. Franklin Inst., 357}, 142--178. \href{https://doi.org/10.1016/j.jfranklin.2019.09.045}{doi}.
+\item Zitouni, F., Harous, S., \& Maamri, R. (2020). CBBA and ant colony for MRTA. \emph{IEEE Access, 8}, 27479--27494. \href{https://doi.org/10.1109/ACCESS.2020.2971585}{doi}.
+\item Pi, R., Cieślak, P., Ridao, P., \& Sanz, P. J. (2021). TWINBOT. \emph{IEEE Access, 9}, 37668--37684. \href{https://doi.org/10.1109/ACCESS.2021.3063669}{doi}.
+\item Mazdin, P., \& Rinner, B. (2021). Communication-aware coalition formation. \emph{IEEE Access, 9}, 35088--35100. \href{https://doi.org/10.1109/ACCESS.2021.3061149}{doi}.
+\item De Ryck, M., et al. (2022). Decentral task allocation with routing constraints. \emph{J. Manuf. Syst., 62}, 135--144. \href{https://doi.org/10.1016/j.jmsy.2021.11.012}{doi}.
+\item Rao, N., \& Sundaram, S. (2022). Safety-critical payload transport. \emph{arXiv:2201.13033}. \href{https://doi.org/10.48550/arXiv.2201.13033}{arXiv}.
+\item An, X., et al. (2023). MRS and cooperative object transport. \emph{IEEE OJCS, 4}, 23--36. \href{https://doi.org/10.1109/OJCS.2023.3238324}{doi}.
+\item Ferreira, B. A., et al. (2024). Distributed allocation and scheduling with dependencies. \emph{IEEE Access, 12}, 74327--74342. \href{https://doi.org/10.1109/ACCESS.2024.3404823}{doi}.
+\item Tejada, J. C., et al. (2025). Soft grippers and caging-based control. \emph{JINT, 111}, 76. \href{https://doi.org/10.1007/s10846-025-02263-y}{doi}.
+\item Verma, A., et al. (2025). CF-HMRTA. \emph{JINT, 111}, 81. \href{https://doi.org/10.1007/s10846-025-02287-4}{doi}.
+\item De Simone, M., et al. (2026). Pose/force control by visual--tactile feedback. \emph{IEEE RA-L, 11}, 4315--4322. \href{https://doi.org/10.1109/LRA.2026.3665445}{doi}.
+\item Muhammed, I., Nada, A. A., \& El-Hussieny, H. (2026). Decentralized NMPC. \emph{Sci. Rep., 16}, 9824. \href{https://doi.org/10.1038/s41598-026-41881-w}{doi}.
+\item Song, J., Bai, Y., \& Wakamiya, N. (2026). Adaptive self-allocation. \emph{arXiv:2602.19070}. \href{https://arxiv.org/abs/2602.19070}{arXiv}.
+\item Varghese, T. G., et al. (2026). Hybrid coordination framework. \emph{IEEE Access}. \href{https://doi.org/10.1109/ACCESS.2026.3680629}{doi:10.1109/ACCESS.2026.3680629}.
+\end{enumerate}
+\end{multicols}
+
+\vspace{.2mm}
+\boxtext{soft}{\fontsize{6.05}{6.55}\selectfont\textbf{Declaraciones.} Datos, scripts y derivados: \texttt{academic-review/literature-review-v3}. Ética: no aplica. Autoría: J. L. Mayorga Taborda definió el problema, supervisó fuentes y responde por la interpretación. IA: apoyo en búsqueda, extracción, código, síntesis y edición; metadatos, conteos y afirmaciones se contrastaron con artefactos trazables y fuentes primarias. Financiación externa: ninguna declarada. Conflictos: ninguno declarado.}
+
+\end{document}

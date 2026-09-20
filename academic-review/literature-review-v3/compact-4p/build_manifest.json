@@ -1,0 +1,50 @@
+{
+  "script": "academic-review/scripts/build_v3_compact_review.py",
+  "inputs": [
+    "analytic_corpus_v3.csv",
+    "discovery_registry_v3.csv",
+    "fulltext_adequacy_audit_v3.csv",
+    "close_reading_tracker_v3.csv",
+    "theme_counts_v3.csv",
+    "theme_combinations_v3.csv",
+    "method_counts_v3.csv",
+    "method_period_v3.csv",
+    "architecture_counts_v3.csv",
+    "validation_counts_v3.csv",
+    "application_counts_v3.csv"
+  ],
+  "outputs": [
+    "compact_metrics.tex",
+    "figures/fig01_corpus_flow.pdf",
+    "figures/fig02_method_evolution.pdf",
+    "figures/fig03_interfaces_evidence.pdf"
+  ],
+  "metrics": {
+    "discovery": 3014,
+    "corpus": 244,
+    "adequate": 168,
+    "close_read": 20,
+    "sp1": 115,
+    "sp2": 15,
+    "sp3": 20,
+    "sp12": 2,
+    "sp13": 10,
+    "sp23": 0,
+    "sp123": 0,
+    "transversal": 79,
+    "context": 72,
+    "distributed": 102,
+    "centralized": 56,
+    "simulation": 99,
+    "industrial": 25,
+    "physical": 12,
+    "formal": 7,
+    "warehouse": 18,
+    "transport_app": 14,
+    "auction": 40,
+    "game": 9,
+    "learning": 31,
+    "consensus": 62
+  },
+  "interpretation_rule": "Counts are descriptive title/abstract signals unless explicitly identified as close-read evidence."
+}

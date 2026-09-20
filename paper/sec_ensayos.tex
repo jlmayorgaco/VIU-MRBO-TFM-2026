@@ -1,0 +1,346 @@
+\section{Ensayos sobre planta simulada}
+\label{sec:ensayos}
+
+Todo lo anterior son demostraciones y comprobaciones numéricas de enunciados
+aislados. Esta sección reporta las campañas de simulación —tres sobre una planta
+con dinámica de ruedas, chasis y contactos, un banco reducido de trayectorias
+continuas y una planta mixta con tres cargas— y declara con precisión qué
+contrasta cada una y qué no.
+
+\subsection{Misiones completas con pérdidas de red}
+
+\begin{observacion}[Tres realizaciones de diez AMR y dos cargas]
+\label{obs:ensayo-misiones}
+Se ejecutan tres misiones con diez AMR —ocho asignados y dos en reserva— y dos
+cargas de $1{,}84\times1{,}28$~m y $2{,}04\times1{,}38$~m, con catálogo de
+cardinalidad cuatro por carga. Los parámetros de masa, inercia, semivía, radio de
+rueda, par y batería son heterogéneos y sintéticos.
+
+\begin{center}\small
+\begin{tabular}{@{}llr@{}}
+\toprule
+Caso & Configuración & Tiempo físico \\
+\midrule
+S01 & \textsf{cargo} de $44$~kg y empuje de $62$~kg & $95{,}60$~s \\
+S02 & dos cargas en \textsf{cargo}, $44$ y $62$~kg & $86{,}40$~s \\
+S03 & mixto, con $5\%$ de pérdidas en la red de motor y retransmisión
+  & $97{,}36$~s \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+El caso S03 es el pertinente para \cref{obs:perdidas}: introducir un $5\%$ de
+pérdidas con retransmisión cuesta $1{,}8\%$ de tiempo respecto de S01. Es una
+medida, no una cota, y sobre una sola semilla por caso.
+
+En S02 ambas cargas comparten el paso central en sentidos opuestos y una recibe
+autorización antes que la otra, que es el comportamiento del testigo de
+\cref{obs:posicionamiento-almacen}. Los vídeos proceden de estados y fuerzas
+integrados, no de interpolación de caminos. La evaluación de cartografía se
+ejecuta \emph{en sombra}: no modifica la planificación ni los motores, de modo
+que estos ensayos no contrastan \cref{th:mapa} ni \cref{co:tensado}.
+\end{observacion}
+
+\subsection{Cruce negociado sin regla de prioridad}
+
+El ensayo siguiente es el que más directamente interroga a este trabajo, porque
+resuelve un cruce \emph{sin} el mecanismo que aquí se propone.
+
+\begin{observacion}[Dos cargas cruzándose en un paso obligatorio]
+\label{obs:ensayo-cruce}
+Ocho AMR heterogéneos movilizan dos cargas de $44$ y $62$~kg que atraviesan en
+sentidos opuestos el mismo cuello, de $5{,}4$~m de ancho, sin rodeo exterior
+posible. No hay ruta previa, ni carril asignado, ni permiso por prioridad: cada
+$0{,}4$~s cada coalición genera propuestas de movimiento y se selecciona la
+pareja.
+
+\begin{center}\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Métrica & Paso nominal & Obstáculo revelado \\
+\midrule
+Poses completas alcanzadas & $2/2$ & $2/2$ \\
+Tiempo físico [s] & $48{,}40$ & $57{,}28$ \\
+Energía total [Wh] & $1{,}195$ & $1{,}402$ \\
+Centros simultáneos en el paso [s] & $20{,}16$ & $14{,}56$ \\
+Menor separación monitorizada [m] & $0{,}096$ & $0{,}097$ \\
+Pico de utilización del cono & $0{,}112$ & $0{,}149$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Dos lecturas. La primera, favorable a las hipótesis de este trabajo: el pico de
+utilización del cono de fricción es de $0{,}112$ y $0{,}149$, es decir que la
+adherencia opera al $11$–$15\%$ de su límite. El régimen ensayado está lejos de
+la saturación de \cref{obs:multiplicador-friccion}, y por tanto \emph{no}
+contrasta la ley de degradación en la zona donde predice parálisis.
+
+La segunda es incómoda y conviene no esquivarla: las dos coaliciones ocupan el
+paso simultáneamente durante $20{,}16$~s. El mecanismo de testigo de este trabajo
+lo habría impedido, concediendo acceso exclusivo por turnos.
+\end{observacion}
+
+\begin{observacion}[Un ensayo que cuestiona la exclusividad]
+\label{obs:ensayo-cuestiona}
+El ensayo P01 lo lleva más lejos. Con un paso de $4{,}50$~m de ancho y
+$5{,}20$~m de longitud —verificado como única conexión entre salas mediante un
+test de conectividad— las dos cargas \emph{intercambian su orden longitudinal
+dentro del pasillo}:
+
+\begin{center}\small
+\begin{tabular}{@{}lr@{}}
+\toprule
+Magnitud & Resultado \\
+\midrule
+Poses completas, con permanencia & $2$ de $2$ \\
+Fin de la ejecución física & $52{,}16$~s \\
+Intercambio de orden longitudinal & $25{,}92$~s \\
+Ambas envolventes dentro del pasillo & $26{,}40$~s \\
+Paradas dentro del pasillo & $0$~s en ambas \\
+Mínima separación entre coaliciones & $0{,}3119$~m \\
+Épocas de negociación & $131$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Cero paradas y ningún bloqueo, con las dos envolventes dentro del pasillo durante
+$26{,}40$~s. Eso acota \cref{obs:ciclo-despeje}, donde se concluye que
+el turno óptimo dura unas seis veces el tiempo de despeje, y de ahí se justifica
+el testigo exclusivo. Ese análisis \emph{presupone} que el corredor se usa por
+turnos. Si la renegociación continua permite uso simultáneo, el coste de despeje
+desaparece porque no hay conmutación que pagar, y la comparación correcta no es
+entre ciclos sino entre dos arquitecturas distintas.
+
+Lo que el ensayo no dice es igual de importante. Consume $131$ épocas de
+negociación —una cada $0{,}4$~s— y un predictor de pose por coalición, frente al
+testigo, que exige un mensaje y un desempate. No hay garantía de espera acotada
+como la del testigo, ni resultado de ausencia de bloqueo: hay un escenario en el
+que no se produjo. La conclusión honesta es que la exclusividad compra garantía y
+cuesta caudal, y que este ensayo mide lo segundo sin refutar lo primero.
+\end{observacion}
+
+\subsection{El historial de detenciones, leído con los teoremas}
+
+Los ensayos anteriores son los que salieron bien. El registro de reparación
+conserva también los que no, y su interés está en que cada detención lleva un
+diagnóstico que este trabajo puede nombrar \cite{mayorga2026m1}.
+
+\begin{observacion}[Cada modo de fallo tiene su enunciado]
+\label{obs:historial-fallos}
+\begin{center}\small
+\begin{tabular}{@{}lccl@{}}
+\toprule
+Diagnóstico del banco & Entregas & Tiempo [s] & Enunciado que lo explica \\
+\midrule
+Guardia angular excesiva & $0/2$ & $180{,}00$ & guarda leída sobre el rango,
+  no sobre la saturación (\cref{obs:rigidez-alcance}) \\
+Contacto antes de \emph{stiction} & $2/2$ & $110{,}00$ & reacción lateral
+  estática ausente en el modelo viscoso (\cref{obs:disco-compartido}) \\
+Orientación \textsf{cargo} incompatible & $0/2$ & $13{,}76$ & autoridad
+  degradada por geometría de formación (\cref{obs:incompatible}) \\
+Autoridad antes de \emph{stiction} & $1/2$ & $160{,}00$ & parálisis por
+  presupuesto: el óptimo existe y no llega a tiempo (\cref{obs:paralisis}) \\
+Sin respaldo verificado & $1/2$ & $74{,}72$ & compromiso sin testigo completo
+  (\cref{def:testigo}) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+El registro advierte que las ecuaciones y guardas cambiaron entre filas, de
+modo que no es una comparación causal ni una campaña con modelo congelado. Su
+valor aquí es distinto: muestra que las detenciones del banco no fueron
+arbitrarias, sino instancias de fenómenos que este documento predice —y que en
+dos casos, la reacción estática y la guarda sobre el rango, fueron precisamente
+los que obligaron a corregir enunciados propios.
+\end{observacion}
+
+\begin{observacion}[Lo que verifica el código y lo que no]
+\label{obs:pruebas-software}
+La fuente de entrega supera $27/27$ pruebas nombradas, entre ellas: la
+identidad Smith–par sobre diez mil casos con error $2{,}3\times10^{-13}$; la
+equivalencia de presupuestos de barrera sobre diez mil casos con error
+$1{,}6\times10^{-14}$; min-sum frente a enumeración sobre diez mil catálogos;
+la proyección frente a un optimizador independiente con brecha
+$-3{,}2\times10^{-14}$; los conos de impulso y la disipación lateral sobre diez
+mil casos; y una reacción lateral estática no nula de $0{,}024$~N\,s, que es
+justamente la que \cref{obs:disco-compartido} exige.
+
+Con pérdidas del $1\%$ en la mensajería y sin retransmisión la ejecución se
+detuvo a $23{,}92$~s por falta de instantánea confirmada; con hasta siete
+retransmisiones por enlace se registraron $42\,007$ pérdidas y otras tantas
+retransmisiones, y se completaron $2/2$ entregas. Conviene reproducir la
+salvedad del registro tal cual: las trazas con y sin retransmisión coinciden
+\emph{exactamente} en poses, pares, energía y tiempo para la misma semilla, y
+eso es consecuencia del tiempo lógico síncrono, no una demostración de
+compensación de retardos físicos. Las diez mil pruebas de cada familia tampoco
+se suman como si fuesen misiones. Son verificaciones de identidades y de
+software; la validación experimental de la construcción sigue siendo la que
+\cref{obs:ensayos-alcance} acota.
+\end{observacion}
+
+\subsection{Banco reducido de trayectorias continuas}
+
+Los ensayos siguientes proceden de una planta 2D reducida con dos agentes
+compuestos —una coalición en \textsf{cargo} de cuatro AMR bajo soportes
+solidarios, con huella rígida y radio de giro derivado de sus ruedas, y un
+empujador— y contrastan la construcción de \cref{sec:continuacion}
+\cite{mayorga2026compendio}.
+
+\begin{observacion}[Trayectoria emergente sin \emph{waypoint}]
+\label{obs:ensayo-r6}
+Los únicos datos de navegación son estado actual, objetivo, mapa de
+obstáculos, huella y la última propuesta del otro agente; la recta
+origen--destino es solo inicialización y las continuaciones se renegocian cada
+$0{,}35$--$0{,}40$~s. En la corrida principal: tiempo de misión $27{,}30$~s,
+longitudes $16{,}44$~m y $19{,}73$~m, ocupación máxima $3{,}752$ y separación
+mínima $0{,}0309$~m, sin colisión. Un optimizador central con toda la
+información que planifica antes de mover completó en los mismos $27{,}3$~s con
+pequeñas diferencias de distancia y energía, lo que muestra que ese central
+no es un oráculo certificado; el reactivo local cayó en bloqueo. La separación
+de $3{,}1$~cm es la que motiva \cref{obs:reserva-robusta}.
+\end{observacion}
+
+\begin{observacion}[Treinta mundos, siete métodos]
+\label{obs:ensayo-r10}
+Treinta mundos pareados —diez cruces, diez pasillos anchos, diez radiales— con
+la misma realización de origen, destino, obstáculo y parámetros para cada
+método:
+
+\begin{center}\small
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+Método & Éxito seguro & Cruce & Pasillo ancho & Radial & CPU mediana [s] \\
+\midrule
+Reactivo local & $0/30$ & $0/10$ & $0/10$ & $0/10$ & --- \\
+ORCA reducido (uniciclo) & $10/30$ & $0/10$ & $10/10$ & $0/10$ & $0{,}132$ \\
+Prioridad con primitivas (PIBT) & $10/30$ & $0/10$ & $10/10$ & $0/10$ & $0{,}351$ \\
+MPC distribuido por intercambio & $28/30$ & $9/10$ & $10/10$ & $9/10$ & $11{,}56$ \\
+Megajuego (horizonte deslizante y precio) & $27/30$ & $9/10$ & $10/10$ & $8/10$ & $11{,}09$ \\
+Central NMPC con toda la información & $28/30$ & $10/10$ & $10/10$ & $8/10$ & --- \\
+Mejor central (cota derivada) & $29/30$ & & & & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+En comparación pareada con corrección de Holm, el megajuego supera
+significativamente al reactivo, a ORCA y a la prioridad en tasa de éxito; no
+se detecta diferencia frente al MPC distribuido ni al central con $N=30$. En
+los veintisiete mundos seguros comunes con el MPC distribuido, las diferencias
+medianas son $0{,}000\%$ en tiempo, $+0{,}028\%$ en distancia y $+0{,}032\%$
+en energía, ninguna significativa; frente al central, $+1{,}613\%$,
+$-0{,}038\%$ y $+0{,}094\%$, con tiempo y energía detectables y distancia no.
+Por escenario: en el cruce las medianas son $31{,}6$~s (MPC distribuido),
+$30{,}8$~s (megajuego) y $29{,}8$~s (central), y es el régimen donde la
+predicción es necesaria; en el pasillo ancho todos los no reactivos completan
+y la prioridad con primitivas es la más rápida ($24{,}325$~s frente a
+$25{,}0$~s); en el radial el MPC distribuido gana un caso al megajuego, que es
+la evidencia de \cref{obs:homotopia}. Los dos métodos predictivos usaron unos
+$524$ intercambios lógicos medianos: el banco no respalda una afirmación de
+menor cómputo ni menor comunicación del megajuego.
+\end{observacion}
+
+\begin{observacion}[Alcance del banco reducido]
+\label{obs:ensayo-r10-alcance}
+La planta es 2D reducida, la energía es un proxy
+$E=\int\bigl(n_{\mathrm{AMR}}P_0+c_vv^2+c_\omega\omega^2\bigr)\mathrm dt$, las
+implementaciones de los métodos comparados son reducidas y no las de
+referencia, y $N=30$ no resuelve diferencias pequeñas. El propio informe
+propone la campaña confirmatoria: cincuenta a cien mundos por escenario con
+semilla congelada, implementaciones de referencia, márgenes robustos de
+$0{,}20$, $0{,}30$ y $0{,}50$~m, barrido de $\varepsilon=T_{\mathrm{game}}/T_{\mathrm{phys}}$,
+revisión homotópica, y repetición sobre la planta con ruedas y contacto.
+Hasta entonces, lo que el banco sostiene es la necesidad de predicción en los
+escenarios difíciles y la paridad con el MPC distribuido en la capa continua.
+\end{observacion}
+
+\subsection{Tres cargas, dos modos físicos y un solo paso}
+
+\begin{observacion}[Planta mixta con ruedas dinámicas]
+\label{obs:ensayo-mixed2d}
+Diez AMR heterogéneos —masas de $19$ a $36$~kg, parachoques de $0{,}47$ a
+$0{,}59$~m, radios de rueda de $8{,}5$ a $11$~cm, pares de $4{,}2$ a $7$~N\,m
+por motor— transportan tres cargas por una planta de $22\times14$~m con un
+único paso de $3{,}30$~m de ancho: C1 en \textsf{cargo} ($60$~kg,
+$1{,}60\times1{,}10$~m, tres AMR), C2 en \textsf{caging} por empuje perimetral
+($45$~kg, octógono de $1{,}25\times0{,}95$~m, cuatro AMR) y C3 en
+\textsf{cargo} ($95$~kg, $1{,}90\times1{,}30$~m, tres AMR)
+\cite{mayorga2026compendio}. Cada rueda tiene velocidad angular, inercia, par
+y reacción de tracción propios, con el disco de fricción compartido de
+\cref{pr:disco-friccion}; los apoyos de \textsf{cargo} son pads con giro
+libre y fuerza tangencial por deformación y velocidad relativa objetiva
+(\cref{pr:pad-energia}); en \textsf{caging} la fuerza aparece solo al contacto
+del parachoques, $f_n=[k(\delta)]_+$, y no hay tracción a distancia.
+
+\begin{center}\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Carga & Entra al paso [s] & Sale [s] & Entrega aceptada [s] \\
+\midrule
+C1 (\textsf{cargo}) & $19{,}64$ & $34{,}72$ & $63{,}04$ \\
+C3 (\textsf{cargo}) & $51{,}16$ & $72{,}76$ & $101{,}40$ \\
+C2 (\textsf{caging}) & $85{,}68$ & $104{,}88$ & $131{,}64$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+El orden $1\to3\to2$ no está escrito en ningún controlador. La corrida termina
+a $134{,}68$~s con las tres cargas dentro de tolerancias de $0{,}26$~m,
+$0{,}065$~m/s y $0{,}12$~rad, sin una sola penetración no deseada; los mínimos
+del integrador fueron $0{,}117$~m a paredes, $0{,}235$~m entre parachoques y
+$0{,}830$~m entre cargas, con a lo sumo una envolvente en el paso. Las
+deformaciones medianas de los pads fueron $0{,}79$ y $1{,}14$~mm con máximo
+$9{,}66$~mm —elásticas, no deslizamiento—, y en \textsf{caging} hubo $3{,}80$
+contactos activos de cuatro en promedio, con compresión de parachoques de
+hasta $5{,}48$~mm. Cinco semillas nominales completaron $3/3$; el
+refinamiento a $1$~ms desplazó la última entrega de $131{,}64$ a
+$132{,}04$~s; y un caso de fricción superior muy baja salió del dominio de
+adherencia y se detuvo a $0{,}16$~s, que es el límite declarado de
+\cref{obs:disco-compartido}.
+\end{observacion}
+
+\begin{observacion}[Lo que cuesta organizar turnos, medido]
+\label{obs:mixed2d-exclusividad}
+La ablación sin exclusividad del paso, con la misma protección anticolisión
+de referencias, entrega también $3/3$ y termina en $94{,}04$~s frente a
+$134{,}68$~s, con $17{,}92$~s de dos envolventes dentro del recurso y cero
+penetraciones. Es la tercera medida independiente del mismo hecho que
+\cref{obs:ensayo-cruce} y \cref{obs:ensayo-cuestiona}: la capacidad unitaria
+del corredor compra la garantía de \cref{th:ciclo-espera} y paga caudal, y
+en este banco el precio es un $30\%$ del tiempo. No demuestra que los turnos
+sean superiores para cualquier almacén ni que la ocupación compartida sea
+segura en general; dice cuánto vale, en esta planta, la ausencia de
+interbloqueo.
+\end{observacion}
+
+\begin{observacion}[Alcance de la planta mixta]
+\label{obs:mixed2d-alcance}
+Los equipos están fijados —\textsf{cargo} empieza montado y \textsf{caging}
+próximo al objeto—, la vertical es cuasiestática, y la coordinación es una
+referencia centralizada: mapa completo y un programa cuadrático cooperativo que
+modifica referencias de velocidad. No es el cierre distribuido a par del
+megajuego. El confinamiento en \textsf{caging} es observado, no certificado:
+el certificado topológico de \cref{th:cerco} no se evaluó en línea. El
+paquete supera ocho pruebas —conservación de momento del contacto, identidad
+disipativa del pad, equilibrio vertical, límites de tracción y rango del mapa
+de empujes—, y una prueba de rango detectó una geometría inicial de
+\textsf{caging} defectuosa, que es exactamente el modo de fallo que
+\cref{obs:incompatible} predice.
+\end{observacion}
+
+\begin{observacion}[Alcance de las campañas sobre la planta con ruedas]
+\label{obs:ensayos-alcance}
+Las salvedades que los propios informes de las tres campañas sobre la planta con ruedas declaran son estas. Los equipos
+parten con contacto ya adquirido: no se ensaya reclutamiento, acoplamiento ni
+descarga, de modo que \cref{th:potencial}, \cref{co:terminacion} y todo el
+\cref{sec:standby} quedan sin contrastar. Se resuelve exactamente el juego finito
+de propuestas de cada época con un predictor reducido, y no se afirma optimalidad
+global de la misión no lineal. Los parámetros son sintéticos y no corresponden a
+hardware identificado. En el ensayo con obstáculo, las propuestas de la carga en
+\textsf{cargo} se restringen a traslación con orientación objetivo nula, lo que el
+informe declara explícitamente. Y cada caso se ejecuta con una semilla.
+
+Con ese alcance, lo que las campañas aportan es evidencia de que la planta cierra
+—diez AMR, dos cargas, misiones completas, con pérdidas de red— y una medida del
+régimen de adherencia en que opera. No son la validación de la construcción
+teórica de este documento, y presentarlas como tal sería excederse.
+\end{observacion}

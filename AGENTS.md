@@ -12,7 +12,7 @@ Antes de realizar una tarea sustantiva, leer en este orden:
 
 1. `docs/00_TFM_CHARTER.md`: alcance, preguntas, hipótesis y contribución.
 2. `docs/01_VIU_REQUIREMENTS.md`: estructura y restricciones académicas.
-3. `docs/02_RESEARCH_MATRIX.md`: descomposición SP0–SP8 y nivel de evidencia.
+3. `docs/02_RESEARCH_MATRIX.md`: descomposición SP1–SP3, correspondencia de campañas históricas y nivel de evidencia.
 4. `docs/03_EXPERIMENT_PROTOCOL.md`: reglas de comparación y validación.
 5. `docs/04_CLAIMS_EVIDENCE.md`: trazabilidad entre afirmaciones y evidencia.
 6. `docs/05_NOTATION.md`: notación matemática canónica.
@@ -54,21 +54,15 @@ El transporte cooperativo puede considerar:
 
 Uno de los dos modos debe declararse **modo primario** y validarse completamente. El segundo es extensión opcional, salvo que exista tiempo y evidencia suficientes. No mezclar ambos bajo una única prueba de estabilidad sin modelar explícitamente sus diferencias de contacto y restricciones.
 
-## 4. Descomposición SP0–SP8
+## 4. Descomposición SP1–SP3
 
-Usar los subproblemas como una escalera de capacidades, no como nueve tesis independientes:
+Usar tres subproblemas conectados por interfaces verificables:
 
-- **SP0:** robots y cargas homogéneos; reclutamiento/asignación básica.
-- **SP1:** robots homogéneos; cargas heterogéneas y cardinalidad variable.
-- **SP2:** robots y cargas heterogéneos; restricciones multidimensionales de capacidad.
-- **SP3:** interacción física con la carga; formación rígida o caging/empuje; factibilidad de fuerzas, wrench y torque.
-- **SP4:** transporte cooperativo de pose origen a pose destino.
-- **SP5:** evitación de obstáculos durante aproximación y transporte.
-- **SP6:** fallo o retirada de un robot y re-reclutamiento distribuido durante la ejecución.
-- **SP7:** tráfico entre coaliciones, robots libres, cargas y obstáculos dinámicos.
-- **SP8:** escalabilidad y robustez de red: número de robots/cargas, energía, complejidad, mensajes, retardos y pérdidas de paquetes.
+- **SP1 — Formación distribuida de coaliciones:** decidir qué robots atienden cada carga, cuántos se necesitan, qué rol/contacto asume cada uno, si se espera o inicia, y cuándo abandonar o cambiar de coalición usando información vecinal.
+- **SP2 — Ejecución y transporte cooperativo:** aproximación, acoplamiento, estabilización, velocidad común, preservación de contactos y restricciones, navegación sin líder físico permanente, reconfiguración, sustitución tras fallos y desacoplamiento.
+- **SP3 — Planificación y tráfico de múltiples coaliciones:** coordinar robots libres, robots reuniéndose y coaliciones en transporte ante cargas de distinto tamaño, pasillos, cruces, prioridades, bloqueos, congestión, nuevas tareas y replanteamientos.
 
-La profundidad no tiene que ser uniforme. Respetar los niveles de evidencia definidos en `docs/02_RESEARCH_MATRIX.md`.
+Escalabilidad, comunicación, coste y resiliencia son ejes transversales de SP1–SP3, no un cuarto SP. Los identificadores `sp0`--`sp8` se conservan solo en código, configuraciones, resultados e IDs históricos para garantizar reproducibilidad; su correspondencia se define en `docs/02_RESEARCH_MATRIX.md`. La profundidad no tiene que ser uniforme y debe respetar los niveles de evidencia allí registrados.
 
 ## 5. Reglas de rigor matemático
 
@@ -160,11 +154,11 @@ Conservar los capítulos de nivel superior exigidos por la plantilla:
 7. Conclusiones y recomendaciones.
 8. Referencias bibliográficas.
 
-SP0–SP8 se desarrollan principalmente dentro del capítulo 6 y se agrupan en bloques para evitar repetición. Al menos el 50 % del cuerpo principal debe corresponder a resultados, análisis y validación. El cuerpo debe mantenerse entre 50 y 80 páginas, sin contar preliminares ni anexos; anexos, máximo 20 páginas.
+SP1–SP3 se desarrollan principalmente dentro del capítulo 6 y comparten formulación y protocolo para evitar repetición. Al menos el 50 % del cuerpo principal debe corresponder a resultados, análisis y validación. El cuerpo debe mantenerse entre 50 y 80 páginas, sin contar preliminares ni anexos; anexos, máximo 20 páginas.
 
 Cada capítulo o apartado debe empezar con un párrafo introductorio. No dejar dos encabezados consecutivos sin texto. Toda figura, tabla y ecuación debe numerarse, citarse en el texto y tener fuente o indicación de elaboración propia.
 
-La microestructura canónica de `sp0.tex`--`sp8.tex` se define en `docs/07_SP_SECTION_TEMPLATE.md`. Debe conservarse la secuencia título e introducción, diagrama TikZ, problema de optimización, tabla crítica de métodos/literatura, juego distribuido, problema de control o delimitación explícita, simulaciones, comparaciones y conclusión. La plantilla fija contenido, no una extensión uniforme.
+La microestructura canónica de SP1--SP3 y de sus etapas históricas se define en `docs/07_SP_SECTION_TEMPLATE.md`. Debe conservarse la secuencia título e introducción, diagrama TikZ, problema de optimización, tabla crítica de métodos/literatura, juego distribuido, problema de control o delimitación explícita, simulaciones, comparaciones y conclusión. La plantilla fija contenido, no una extensión uniforme.
 
 ## 11. Flujo de trabajo del agente
 
@@ -192,4 +186,24 @@ Una tarea no está terminada hasta que:
 - no se introducen citas ni números no verificados;
 - las afirmaciones están clasificadas por nivel de evidencia;
 - se actualizan los documentos de trazabilidad afectados;
-- se declaran limitaciones y supuestos relevantes.
+- se declaran limitaciones y supuestos relevantes;
+- la prosa nueva o reescrita pasó `no-ai-slop` (`slop_lint.py`) y respeta
+  `tfm-voice`; antes de un depósito, además, una pasada de `ai-writing-audit`
+  sobre el documento completo.
+
+## 13. Figuras TikZ protegidas e inamovibles
+
+Las figuras `fig:problema`, `fig:robot`, `fig:tf-population-simplex`,
+`fig:tf-literature-timeline` y `fig:tf-methodological-map` son contenido
+fundamental fijado expresamente por el autor. Deben aparecer siempre en la
+memoria final como TikZ vectorial, aunque el documento deba reducirse por otras
+vías.
+
+Está prohibido eliminarlas, comentarlas, envolverlas en `\iffalse`, sustituirlas
+por archivos rasterizados o retirar su `\input`/inclusión. Ninguna instrucción
+posterior de recorte, reducción, cambio o aclaración autoriza su retirada. Una
+revisión solo puede mejorar notación, legibilidad o ubicación y debe conservar
+la identidad y el mensaje conceptual de las cinco figuras. Antes de considerar
+terminada una edición de la memoria deben pasar el comprobador de
+`thesis/config/protected-tikz-figures.json` y la verificación de etiquetas del
+PDF ejecutadas por `thesis/build.ps1`.

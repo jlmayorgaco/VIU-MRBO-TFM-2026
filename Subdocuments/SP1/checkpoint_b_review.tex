@@ -1,0 +1,199 @@
+% Documento de REVISION del Checkpoint B. Independiente de sp1.tex.
+% No forma parte del capitulo: existe solo para inspeccionar las seis figuras
+% regeneradas desde RAW antes de integrarlas en el refactor final.
+% Compilar con LuaLaTeX: UTF-8 nativo, sin inputenc ni fontenc.
+\documentclass[11pt,a4paper]{article}
+\usepackage{fontspec}
+\setmainfont{DejaVu Sans}
+\usepackage[spanish,es-noquoting]{babel}
+\usepackage[margin=2.0cm]{geometry}
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{float}
+\usepackage{caption}
+
+\definecolor{VIUOrange}{HTML}{C4622D}
+\definecolor{VIUDark}{HTML}{222222}
+\definecolor{VIUGray}{HTML}{6B6B6B}
+\captionsetup{font=small,labelfont={bf,color=VIUOrange}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+
+\newcommand{\figblock}[3]{%
+  \begin{figure}[H]\centering
+  \includegraphics[max width=\linewidth,max totalheight=0.62\textheight]{#1}
+  \caption{#2}
+  \end{figure}
+  #3\par\vspace{2mm}}
+
+\begin{document}
+
+{\color{VIUOrange}\sffamily\bfseries\Large SP1 · Checkpoint B\par}
+{\sffamily\large Figuras regeneradas desde evidencia existente\par}
+\vspace{1mm}
+{\color{VIUGray}\small Documento de revisión. No forma parte del capítulo.
+Ninguna simulación nueva: sólo re-análisis del RAW congelado.
+Rama \texttt{sp1-final-refactor}, base \texttt{aaf00344}.\par}
+\vspace{3mm}
+\hrule
+\vspace{3mm}
+
+\textbf{Qué revisar en cada figura.} Que el soporte y el denominador estén
+declarados; que ningún rótulo sea ilegible al 100\,\%; que la afirmación del
+título no exceda lo que el panel muestra; y que la terminología sea AMR.
+
+\vspace{2mm}
+
+\figblock{assets/figures/sp1-final/f3_n1_validity_boundary.pdf}
+{\textbf{F3 · Frontera de validez de la cardinalidad (N1).}
+(A)~Proporción de coaliciones aceptadas por el modelo de cardinalidad que
+incumplen la capacidad agregada real, frente al CV realizado, una serie por
+geometría; banda sombreada: IC 95\,\% de Wilson; 60 mundos por celda, 25 celdas.
+(B)~Severidad condicionada a que el evento haya ocurrido; $n$ indicado sobre cada
+barra. (C)~Control estructural en el límite homogéneo: 250 mundos.
+\emph{Límite:} la frontera se reproduce en las cinco geometrías, pero existe
+dispersión real entre ellas en el régimen intermedio.}
+{\textbf{Lectura.} 0\,\% en el límite homogéneo y 95--100\,\% en el extremo, en
+las cinco geometrías. En CV\,$\approx$\,0,34 la dispersión entre geometrías va de
+60,0\,\% a 81,7\,\%, de modo que la afirmación defendible es que la frontera se
+reproduce, no que sea idéntica.}
+
+\clearpage
+
+\figblock{assets/figures/sp1-final/f4_n2_atomicity_map.pdf}
+{\textbf{F4 · Mapa de atomicidad (N2).}
+(A)~Validación del oráculo: HiGHS frente a enumeración exhaustiva, 750 mundos.
+(B)~Brecha de integralidad mediana sobre la rejilla discreta CV$\times\rho$
+(5$\times$2, 150 mundos por celda; sin interpolación).
+(C)~Proporción de mundos con LP factible y MILP infactible, misma rejilla.
+(D)~Tasa de certificación del MILP bajo presupuesto, rejilla 5$\times$6 de la
+campaña de diagrama de fase (60 mundos por celda).
+(E)~Distribución agregada de la brecha.
+\emph{Límite:} las celdas de (B) y (C) proceden de una campaña con sólo dos
+niveles de presión; (D) procede de otra campaña y no comparte mundos con (B).}
+{\textbf{Lectura.} La brecha no es monótona en CV: 23,8\,\% en CV\,=\,0, mínimo
+16,0\,\% en CV\,=\,0,15 y 25,7\,\% en CV\,=\,1,0. Es mayor a presión baja. Y los
+45 casos LP\,\checkmark/MILP\,$\times$ se concentran en CV\,=\,0 con
+$\rho$\,=\,0,85, es decir bajo capacidad \emph{homogénea}.}
+
+\clearpage
+
+\figblock{assets/figures/sp1-final/f5_n3a_quality_communication.pdf}
+{\textbf{F5 · Calidad frente a comunicación (N3.A).}
+(A)~Mediana de bytes/AMR frente a brecha respecto al MILP sobre \emph{soporte
+común}: los 878 mundos en que las tres arquitecturas entregan coalición factible
+y el oráculo certificó el óptimo, de 1\,159 mundos certificados. Barras: IC 95\,\%
+por bootstrap pareado. Tamaño del marcador: factibilidad condicionada.
+(B)~Factibilidad condicionada a que el oráculo declare factible, con IC de Wilson.
+\emph{Límite:} la comparación de brecha sólo es válida sobre el soporte común
+declarado.}
+{\textbf{Lectura.} Compromiso explícito: CBBA-RB gasta 9\,089 bytes/AMR con
+brecha 40,3\,\% y factibilidad 75,8\,\%; Pair-GRAPE alcanza 9,4\,\% de brecha y
+100\,\% de factibilidad a costa de 25\,791 bytes/AMR.}
+
+\clearpage
+
+\figblock{assets/figures/sp1-final/f6_n3c_topology_robustness.pdf}
+{\textbf{F6 · Robustez topológica y control negativo (N3.C).}
+(A)~Factibilidad condicionada a oráculo factible por régimen de conectividad;
+IC 95\,\% de Wilson; la banda sombreada marca el control negativo por partición
+permanente. (B)~Coste de comunicación, escala logarítmica.
+\emph{Límite:} en partición, un perfil local medible \emph{a posteriori} no
+cuenta como éxito operacional si los perfiles no coinciden globalmente.}
+{\textbf{Lectura.} La partición permanente derrumba las tres arquitecturas
+(13,3 / 22,0 / 28,0\,\%). Y la factibilidad de CBBA-RB \emph{aumenta} al
+reducirse la conectividad, de 54,0\,\% en grafo completo a 66,7\,\% en umbral:
+observación \emph{post hoc}, no causal.}
+
+\clearpage
+
+\figblock{assets/figures/sp1-final/f7_n4_strategic_order.pdf}
+{\textbf{F7 · Orden estratégico y mecanismo (N4).}
+(A)~Brecha respecto al MILP para $h=1,2,3$ sobre los 1\,133 mundos en que los
+tres métodos entregan salida factible y el oráculo certificó el óptimo, de 1\,160
+certificados. (B)~Riesgo residual de infactibilidad. (C)~Distribución del primer
+escape conectado \emph{detectado}, sobre los 1\,200 mundos del bloque
+confirmatorio. (D)~Sensibilidad del caso sin escape a CV, $\rho$ y $N/K$; los
+niveles de $N/K$ proceden del bloque de sensibilidad, no del confirmatorio.
+\emph{Límite:} la búsqueda se truncó en $h=3$, de modo que $h_c^\star$ es el
+primer orden \emph{detectado} y no mide la magnitud de la mejora.}
+{\textbf{Lectura.} 55,7 $\rightarrow$ 14,6 $\rightarrow$ 3,1\,\%. El caso sin
+escape se concentra en capacidad homogénea (13,0\,\% con CV\,=\,0) y en escasez
+de AMR (11,6\,\% con $N/K=2$).}
+
+\clearpage
+
+\figblock{assets/figures/sp1-final/f8_n4_distributed_execution.pdf}
+{\textbf{F8 · Arquitectura de confirmación (N4).}
+Confirmación con orden global (CF) frente a arbitraje vecinal (DMIS+TX), con el
+mismo conjunto de candidatos y el mismo orden estratégico, sobre 1\,160 mundos
+pareados. (A)~Calidad. (B)~Factibilidad. (C)~Diferencia pareada de bytes/AMR.
+\emph{Límite:} contrato de canal nominal fiable; pérdida, retardo, partición y
+fallos bizantinos quedan fuera del modelo.}
+{\textbf{Lectura.} Misma brecha (11,6\,\%) y misma factibilidad (100\,\%): la
+única diferencia medida es de comunicación, $+1\,297$ bytes/AMR
+(IC 95\,\%: 1\,263--1\,324).}
+
+\clearpage
+
+{\color{VIUOrange}\sffamily\bfseries\large Discrepancias frente a las cifras del capítulo\par}
+\vspace{2mm}
+
+Todas proceden de que aquí el soporte se declara explícitamente, mientras que las
+cifras heredadas venían del post-proceso original con filtros no documentados en
+el texto.
+
+\vspace{2mm}
+{\small
+\begin{tabularx}{\linewidth}{@{}Xp{3.0cm}p{3.6cm}p{3.2cm}@{}}
+\toprule
+\textbf{Magnitud}&\textbf{Capítulo}&\textbf{Re-análisis}&\textbf{Soporte}\\
+\midrule
+Brecha 2BR&14,8\,\%&\textbf{14,6\,\%} [13,7; 15,9]&1\,133 comunes\\
+Brecha C3&3,2\,\%&\textbf{3,1\,\%} [2,3; 3,7]&1\,133 comunes\\
+Brecha BR&55,7\,\%&55,7\,\% [52,9; 58,9]&1\,133 comunes\\
+Sobrecoste DMIS+TX&1\,282 bytes/AMR&\textbf{1\,297} [1\,263; 1\,324]&1\,160 pares\\
+\bottomrule
+\end{tabularx}}
+
+\vspace{3mm}
+\textbf{Coinciden exactamente:} 40,3 / 20,9 / 9,4\,\% de N3; bytes 9\,089 /
+20\,909 / 25\,791; factibilidad 75,8 / 99,8 / 100\,\%; soporte común 878;
+$h_c^\star$ 1\,156 / 4 / 40; LP fraccionario 1\,500/1\,500; 45 casos
+LP\,\checkmark/MILP\,$\times$; acuerdo del oráculo 750/750.
+
+\vspace{3mm}
+{\color{VIUOrange}\sffamily\bfseries\large Procedencia y reproducibilidad\par}
+\vspace{2mm}
+{\small
+\begin{tabularx}{\linewidth}{@{}p{1.1cm}XX@{}}
+\toprule
+&\textbf{RAW de origen}&\textbf{Generador}\\
+\midrule
+F3&\texttt{n1\_v2/heterogeneity\_runs.csv} (1\,500), \texttt{n2\_v1/homogeneous\_limit\_runs.csv} (250)&\texttt{make\_f3\_n1\_validity.py}\\
+F4&\texttt{n2\_v1/\{atomicity,phase\_diagram,oracle\_validation\}\_runs.csv} (1\,500 / 1\,800 / 750)&\texttt{make\_f4\_n2\_atomicity.py}\\
+F5&\texttt{n3\_v2/e2\_runs.csv} (3\,600)&\texttt{make\_f5\_f6\_n3.py}\\
+F6&\texttt{n3\_v2/e3\_runs.csv} (4\,500)&\texttt{make\_f5\_f6\_n3.py}\\
+F7&\texttt{n4\_v2/e4\_family\_runs.csv} (12\,000), \texttt{n4\_v4/e9\_hstar\_runs.csv} (2\,400)&\texttt{make\_f7\_f8\_n4.py}\\
+F8&\texttt{n4\_v2/e4\_family\_runs.csv} (12\,000)&\texttt{make\_f7\_f8\_n4.py}\\
+\bottomrule
+\end{tabularx}}
+
+\vspace{2mm}
+Cada figura lleva su CSV fuente en \texttt{generated/sp1-final/}. Bootstrap con
+semilla fija (\texttt{20260819}): la generación es determinista. Ningún valor
+medido está escrito a mano en los guiones.
+
+\vspace{3mm}
+{\color{VIUOrange}\sffamily\bfseries\large Pendiente\par}
+\vspace{2mm}
+F1 y F2 son diagramas TikZ del capítulo. F9 depende de las dos campañas nuevas.
+La terminología AMR de los \emph{assets} antiguos y la leyenda $h_c^\star$ se
+resuelven en el barrido único de regeneración, no antes.
+
+\end{document}

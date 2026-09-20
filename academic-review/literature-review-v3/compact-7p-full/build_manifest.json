@@ -1,0 +1,41 @@
+{
+  "built_at_utc": "2026-09-14T21:39:04.110327+00:00",
+  "output": "output/pdf/MROB_literature_review_7p_full_corpus_bibliometrics.pdf",
+  "output_sha256": "dfe3c6647ec37c2d9cd799400ace50f4e0a4fd706182c761527d3a09b8eeb9e2",
+  "pages": 7,
+  "assembly": [
+    {
+      "pages": "1-3",
+      "source": "academic-review/literature-review-v3/compact-7p-full/legacy-typography/MROB_literature_review_reference_typography.tex",
+      "source_sha256": "7fc03216e8e260a9f3436d2d116bbceb78aa7e667a1e8a4abc0b00452b9efa5c",
+      "compiled_sha256": "f2ed1aad80a19b1a9fab4e3c3005164251da470d3a4244d3feedf9986d1582eb",
+      "typography": "Noto Sans inside figures; Noto Serif for prose, captions and source lines"
+    },
+    {
+      "page": 2,
+      "source": "academic-review/literature-review-v3/compact-7p-full/legacy-typography/MROB_literature_review_reference_typography.tex",
+      "editorial_rewrite": true
+    },
+    {
+      "page": 4,
+      "source": "academic-review/literature-review-v3/compact-7p-full/MROB_literature_review_full_corpus_pages_4_7.pdf",
+      "source_page": 1
+    },
+    {
+      "pages": "5-6",
+      "source": "academic-review/literature-review-v3/compact-6p-exact/MROB_literature_review_v3_update_2p.pdf",
+      "sha256": "d9020de198dcc72e3e08c5d188f296901e0138e9b46c01445cd80ee9d9fa65e8"
+    },
+    {
+      "page": 7,
+      "source": "academic-review/literature-review-v3/compact-7p-full/MROB_literature_review_full_corpus_pages_4_7.pdf",
+      "source_page": 2
+    }
+  ],
+  "approved_visual_reference": {
+    "path": "academic-review/literature-review-v3/compact-6p-exact/legacy/academic_literature_review_reference.pdf",
+    "sha256": "840164c6e6e85be3b265c57dc033fee4f627314bfd13274776ec1fc7e9003028",
+    "role": "geometry and visual provenance"
+  },
+  "analysis_manifest": "academic-review/literature-review-v3/compact-7p-full/analysis_manifest.json"
+}

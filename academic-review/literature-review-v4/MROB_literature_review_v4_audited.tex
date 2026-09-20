@@ -1,0 +1,211 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[top=0.50in,bottom=0.52in,left=0.62in,right=0.62in,headheight=14pt,headsep=5pt,footskip=15pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{Noto Serif}
+\setsansfont{Noto Sans}
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage{microtype,ragged2e,setspace,booktabs,tabularx,array}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+\usepackage{amsmath,amssymb,fancyhdr,hyperref,pdfpages}
+
+\definecolor{autumn}{HTML}{E36A2E}
+\definecolor{onyx}{HTML}{0C0C0C}
+\definecolor{softblue}{HTML}{EAF2FD}
+\definecolor{softgreen}{HTML}{EAF7EF}
+\definecolor{softwarm}{HTML}{FDEFE8}
+\definecolor{softplum}{HTML}{F2ECFB}
+\colorlet{orange}{autumn}
+\colorlet{ink}{onyx}
+\colorlet{muted}{onyx!58!white}
+\colorlet{rule}{onyx!18!white}
+\hypersetup{colorlinks=true,urlcolor=orange,linkcolor=orange,pdftitle={Estado del arte y posicionamiento del TFM - V4 auditada},pdfauthor={Jorge Luis Mayorga Taborda}}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\sffamily\fontsize{7.3}{8}\selectfont Jorge Luis Mayorga Taborda}
+\fancyhead[R]{\sffamily\fontsize{7.3}{8}\selectfont TFM MROB · Estado del arte y posicionamiento}
+\fancyfoot[C]{\sffamily\fontsize{8.2}{8.7}\selectfont\thepage}
+\renewcommand{\headrulewidth}{0.25pt}
+\setlength{\parindent}{0pt}\setlength{\parskip}{2.2pt}
+\setstretch{1.05}\color{ink}\emergencystretch=1.5em
+\newcommand{\sect}[1]{\par\vspace{0pt}{\sffamily\fontsize{14.5}{15.5}\selectfont\bfseries\color{orange}#1\par}\vspace{1.2pt}\textcolor{rule}{\rule{\linewidth}{0.35pt}}\vspace{3pt}}
+\newcommand{\subh}[1]{\par\vspace{2.2pt}{\sffamily\fontsize{9.3}{10.2}\selectfont\bfseries\color{orange}#1\par}\vspace{.5pt}}
+\newcommand{\figcap}[2]{\par\vspace{1.0pt}{\setstretch{1}\fontsize{8.1}{8.9}\selectfont\textbf{#1.}~\textit{#2}\par}\vspace{1.0pt}}
+\newcommand{\sourcecap}[1]{\par{\setstretch{1}\fontsize{7.0}{7.7}\selectfont\itshape\centering Fuente: #1\par}}
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\input{generated/v4_metrics.tex}
+
+\begin{document}
+
+% The reference pages are embedded as vector PDF, untouched.
+\includepdf[pages=-,pagecommand={\thispagestyle{empty}}]{source/MROB_literature_review_reworked_2.pdf}
+
+\clearpage
+\setcounter{page}{10}
+\sect{Addendum V4: metodología auditable y frontera de evidencia}
+\fontsize{9.35}{10.15}\selectfont
+Esta sección conserva íntegramente las nueve páginas anteriores --incluidas sus
+figuras, composición y contenido-- y actualiza la metodología que gobierna su
+interpretación. No amplía retrospectivamente la evidencia ni transforma la
+revisión en una búsqueda exhaustiva. Separa los recuentos descriptivos, la
+evidencia técnica y las comprobaciones que aún faltan.
+
+El corpus se interpreta como \textbf{mapeo sistematizado con revisión técnica
+anidada y auditoría adversarial de la brecha}. El mapeo describe qué aparece en
+el corpus recuperado; la revisión técnica decide qué propiedades demuestra un
+trabajo; y la auditoría busca activamente antecedentes que puedan refutar la
+delimitación de la contribución. PRISMA 2020 y PRISMA-S se usan como guías de
+transparencia de reporte, no como etiqueta retrospectiva de exhaustividad.
+
+\subh{El corte V3 es reproducible, pero no representa el campo completo}
+\begin{center}\small
+\renewcommand{\arraystretch}{1.25}\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\linewidth}{L{29mm}C{13mm}C{20mm}Y}
+\toprule
+\textbf{Capa} & \textbf{$n$} & \textbf{Denominador} & \textbf{Afirmación permitida}\\
+\midrule
+Descubrimiento & \VFourDiscovery & -- & Procedencia, versiones candidatas y cribado; no propiedades técnicas.\\
+Mapeo analítico & \VFourAnalytic & \VFourDiscovery & Tendencias y señales del corpus recuperado, no prevalencia del campo.\\
+Con fecha & \VFourDated & \VFourAnalytic & Lectura temporal; 2026 permanece truncado.\\
+Texto elegible & \VFourEligible & \VFourAnalytic & Cola disponible para revisión técnica, no evidencia por defecto.\\
+Núcleo prioritario & \VFourCanonical & \VFourAnalytic & Comparación técnica que aún requiere codificación por campo.\\
+Pasajes localizados & \VFourCards & \VFourEligible & Evidencia limitada a fuente, versión, pasaje y supuesto.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+\sourcecap{Tabla derivada automáticamente del corte V3; hash abreviado del corpus analítico: \texttt{\VFourCorpusHash}.}
+
+\begin{center}
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily]
+\tikzset{stage/.style={rounded corners=1.5pt,draw=rule,line width=.42pt,minimum height=12mm,align=center,font=\fontsize{6.3}{6.8}\selectfont},arr/.style={-{Stealth[length=1.6mm]},draw=ink!70,line width=.52pt}}
+\node[stage,fill=softblue,minimum width=29mm] (d) at (15,13) {\textbf{Descubrimiento}\\\VFourDiscovery\ identidades};
+\node[stage,fill=softplum,minimum width=29mm] (m) at (52,13) {\textbf{Mapeo}\\\VFourAnalytic\ documentos};
+\node[stage,fill=softwarm,minimum width=29mm] (t) at (89,13) {\textbf{Revisión técnica}\\\VFourCanonical\ prioritarios};
+\node[stage,fill=softgreen,minimum width=29mm] (a) at (126,13) {\textbf{Auditoría adversarial}\\pasajes y contraejemplos};
+\draw[arr](d)--(m);\draw[arr](m)--(t);\draw[arr](t)--(a);
+\node[font=\fontsize{5.9}{6.4}\selectfont,text=muted,align=center] at (70,2) {La evidencia se vuelve más específica; el tamaño del corpus no sustituye la lectura de texto completo.};
+\end{tikzpicture}
+\end{center}
+\figcap{Figura V4.1}{Jerarquía de evidencia que sustituye una lectura uniforme de los conteos históricos.}
+\sourcecap{Elaboración propia a partir del corte V3.}
+
+\subh{Unidad de análisis, búsqueda y congelación}
+Una línea científica puede contener preprint, conferencia y extensión de revista.
+V4 usa el \emph{trabajo canónico} y registra qué versión sustenta cada celda;
+una versión adicional cuenta solo si cambia método, supuesto, garantía o
+resultado pertinente. Web of Science en F01/F02 y la cartera arXiv siguen
+parciales. En consecuencia, ninguna conclusión afirma saturación, cobertura
+exhaustiva ni ausencia universal.
+
+\clearpage
+\sect{La revisión técnica no confunde ausencia de mención con ausencia de capacidad}
+\fontsize{9.35}{10.15}\selectfont
+La matriz de capacidades histórica se mantiene como orientación visual, pero no
+como evidencia negativa por defecto. A partir de V4, cada una de sus celdas
+exige identificador canónico, versión, página o sección, pasaje, tipo de
+evidencia, regla de decisión y confianza.
+
+\begin{center}\small
+\renewcommand{\arraystretch}{1.34}\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\linewidth}{L{26mm}Y Y}
+\toprule
+\textbf{Valor} & \textbf{Criterio de decisión} & \textbf{Consecuencia}\\
+\midrule
+\texttt{yes} & Un pasaje, ecuación, algoritmo o experimento satisface explícitamente el criterio bajo supuestos identificados. & Evidencia positiva localizada.\\
+\texttt{partial} & Existe un componente relevante, pero falta una fase, condición, garantía o alcance material. & Se conserva separado; no se agrega implícitamente como positivo.\\
+\texttt{no} & El texto declara una exclusión o el método especificado contradice el criterio. & Requiere evidencia explícita; falta de mención no basta.\\
+\texttt{unclear} & Texto insuficiente, pasaje ambiguo o versión no accesible. & Aumenta incertidumbre, no ausencia.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+\sourcecap{Codebook V4. Los resúmenes y palabras clave solo pueden descubrir candidatos.}
+
+Las variables auditadas son heterogeneidad, coalición variable, reclutamiento
+local, transporte de carga compartida, certificado físico, autoridad local de
+ejecución, recuperación y sustitución. Un certificado físico requiere una
+prueba o restricción de geometría, contacto, fricción, \emph{wrench}, actuación o
+confinamiento que pueda aceptar o rechazar una coalición. Una suma nominal de
+capacidades o un vídeo de éxito no es un certificado. Control local posterior a
+una asignación global tampoco justifica llamar local al reclutamiento.
+
+\subh{Antecedentes usados para intentar refutar la delimitación}
+El registro adversarial no es un índice de novedad. Conserva fuentes que
+amenazan una interfaz concreta y obliga a incluir contraejemplos incómodos. Las
+fichas siguientes ya tienen pasajes localizados; su recodificación completa por
+las ocho variables sigue pendiente y no se finge como resultado.
+
+\begin{center}\scriptsize
+\renewcommand{\arraystretch}{1.25}\setlength{\tabcolsep}{3.5pt}
+\begin{tabularx}{\linewidth}{L{35mm}L{41mm}Y}
+\toprule
+\textbf{Antecedente} & \textbf{Interfaz que amenaza} & \textbf{Estado V4}\\
+\midrule
+Guerrero, Oliver y Valero (2017) & Coaliciones con restricciones y plazos & Pasaje localizado; recodificación por campo pendiente.\\
+Mazdin y Rinner (2021) & Coalición distribuida sensible a comunicación & Pasaje localizado; recodificación por campo pendiente.\\
+Ramchurn et al.\ (2010) & Restricciones espacio-temporales de coalición & Verificar versión canónica y alcance.\\
+Verma et al.\ (2025) & Heterogeneidad y formación de coaliciones & Verificar heterogeneidad y tamaño variable.\\
+Muhammed et al.\ (2026) & Ejecución descentralizada de transporte cooperativo & Verificar certificado físico y autoridad.\\
+De Simone et al.\ (2026) & Ejecución pose-fuerza de carga compartida & Verificar modalidad y alcance experimental.\\
+Song, Bai y Wakamiya (2026) & Autoasignación y transporte cooperativo & Verificar interfaz SP1--SP2 y versión.\\
+Rao y Sundaram (2022) & Integración decisión--control y seguridad & Verificar supuestos de autoridad.\\
+Pi et al.\ (2021) & Transporte cooperativo con hardware & Verificar modelo físico.\\
+An et al.\ (2023) & Comunicaciones y transporte multirrobot & Revisión de alcance, no desempeño primario.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+\sourcecap{Registro adversarial V4. Las filas priorizan lectura; no califican capacidades.}
+
+\clearpage
+\sect{Controles pendientes que delimitan la fuerza de la brecha}
+\fontsize{9.35}{10.15}\selectfont
+No se fortalece una revisión declarando como realizados controles que aún no se
+han ejecutado. Esta versión fija cuatro cierres y la forma en que deberán
+reportarse.
+
+\begin{center}\small
+\renewcommand{\arraystretch}{1.28}\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\linewidth}{L{36mm}Y L{33mm}}
+\toprule
+\textbf{Control} & \textbf{Regla predefinida} & \textbf{Estado V4}\\
+\midrule
+Validación de búsqueda & Gold set de MRTA, coalición, transporte, factibilidad, reemplazo y tráfico; calcular $R_G=|G\cap S|/|G|$. & Pendiente; $R_G\geq0.95$ es meta futura.\\
+Doble codificación & Revisar independientemente al menos 20\% del núcleo técnico y 100\% del registro adversarial; informar acuerdos y, si procede, kappa. & Pendiente; V3 fue de un revisor asistido.\\
+Sensibilidad & Recalcular con preprints dentro/fuera, solo revisados por pares, solo texto completo y extremos de \texttt{partial}. & Pendiente en ocho escenarios registrados.\\
+Version-lineage & Registrar trabajo canónico, versiones, extensión sustancial y versión usada como evidencia. & Parcial; requisito previo a un claim de prioridad.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+\sourcecap{Controles V4. Ninguno se reporta como resultado sin tabla, manifest y decisión reproducible.}
+
+Solo si la misma interfaz persiste al excluir preprints, limitarse a texto
+completo y variar el tratamiento de \texttt{partial} podrá describirse como
+robusta al protocolo. La bibliometría mantiene un papel exploratorio: coautoría,
+coocurrencia y modularidad describen estructura documental, no evidencia de
+arquitectura, calidad ni novedad.
+
+\subh{Síntesis editorial revisada}
+El corpus recuperado contiene mecanismos pertinentes para asignación, formación
+de coaliciones, transporte, comunicación y planificación. Aún no autoriza a
+afirmar que ninguna publicación haya integrado todas las piezas, ni que una
+matriz histórica pruebe por sí sola una brecha. La contribución del TFM queda
+mejor delimitada como integración verificable: decisión estratégica
+interpretable, coalición discreta, certificado físico y realimentación de coste,
+conflicto o fallo desde el tráfico a la decisión.
+
+Esta frontera obliga a comparar cada interfaz con su baseline adecuado, a usar
+el oráculo central solo como techo de información y a reportar utilidad,
+factibilidad, error físico, seguridad, comunicación, cómputo y recuperación sin
+transferir garantías entre capas. Si un antecedente posterior satisface más
+interfaces, se estrecha la formulación; la pregunta experimental permanece
+contrastable.
+
+\subh{Trazabilidad de esta liberación}
+Los recuentos se derivan automáticamente y el build falla ante un cambio de
+denominador. El PDF visual preservado tiene hash abreviado
+\texttt{\VFourReferenceHash}: ninguna de sus nueve páginas se rasterizó,
+reconstruyó o eliminó. El suplemento V4 conserva protocolo, codebook, gold set,
+plan de sensibilidad, registro adversarial y manifiesto SHA-256.
+
+\end{document}

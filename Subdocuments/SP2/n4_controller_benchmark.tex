@@ -1,0 +1,133 @@
+% --------------------------------------------------------------------------
+% N4 · Controladores y guarda muestreada
+% --------------------------------------------------------------------------
+\leveltag{CONTROL NOMINAL Y GUARDA MUESTREADA DE ADMISIBILIDAD}
+\section*{Seis leyes nominales bajo una comprobación común}
+
+El estado $x=(q_L,\xi_L)$ se integra por Euler semiimplícito con
+$\Delta t=0{,}20$ s. La dinámica de \eqref{eq:load-dynamics} convierte la
+aceleración nominal $a_L^0$ en wrench. Las ganancias se fijaron manualmente
+antes de abrir las semillas; no hubo conjunto de ajuste disjunto ni optimización
+independiente por familia. Por ello, la comparación entre leyes es descriptiva.
+La inferencia contrasta cada ley consigo misma, con y sin guarda.
+
+Las ganancias congeladas de las leyes causales fueron
+\[
+\begin{aligned}
+K_p^{\mathrm{PD}}&=(1{,}6;1{,}6;2{,}2), &
+K_d^{\mathrm{PD}}&=(2{,}4;2{,}4;2{,}2),\\
+K_i^{\mathrm{PID}}&=(0{,}12;0{,}12;0{,}08), &
+K_s^{\mathrm{RA}}&=(1{,}9;1{,}9;2{,}7),\\
+&&K_d^{\mathrm{RA}}&=(2{,}8;2{,}8;2{,}6).
+\end{aligned}
+\]
+LQR usa $Q_L=\operatorname{diag}(8;8;10;3;3;3)$ y $R=I$. En LQI,
+$Q_I=\operatorname{diag}(q_I)$ con
+$q_I=(10;10;12;3;3;3{,}5;0{,}7;0{,}7;0{,}5)$. El MPC central, con horizonte 8,
+usa $Q_M=\operatorname{diag}(8;8;10;2{,}2;2{,}2;2{,}6)$,
+$R_M=\operatorname{diag}(0{,}35;0{,}35;0{,}4)$ y cotas
+$(1{,}2;1{,}2;1{,}0)$. La Tabla~\ref{tab:sp2-methods} resume el papel y el
+límite de cada familia.
+
+Las seis leyes regulan la pose de la carga con geometría de contacto fija; no
+controlan el error de formación de cada AMR. Defínase
+\begin{equation}
+\mathcal A_{\mathcal C}(x)=\left\{a:
+\xi_L+\Delta t\,a\in\Xi_{\mathcal C}^{\mathrm{align}},\quad
+W_d(x,a)\in\widehat{\mathcal W}_{\mathcal C}\right\}.
+\label{eq:n4-admissible-acceleration}
+\end{equation}
+Las cinco leyes no predictivas usan $\widehat x_{L,\ell}$, la última estimación
+del AMR de referencia; el MPC recibe $x_L$ global y actúa como techo central. El
+consenso solo alinea copias de la pose. No se ejecutan DMPC, control distribuido
+de formación ni reparto vecinal de wrench. PID y LQI congelan la integral cuando
+interviene la guarda.
+
+En S5--S6, un filtro inspirado en CBF exige
+$n^\top a\geq-\alpha_1n^\top v-\alpha_0h$, donde
+$h=\|p_L-p_o\|-r_{\mathcal C}-r_o-d_{\mathrm{safe}}$
+\parencite{ames2017cbf}. La linealización omite la curvatura de $\ddot h$; por
+tanto, solo certifica el candidato de la muestra actual. El gobernador recorre
+$\mathcal A_\alpha=\{1,0{,}8,0{,}6,0{,}4,0{,}2\}$ y elige
+\begin{equation}
+\alpha^\star=\max\left\{\alpha\in\mathcal A_\alpha:
+\alpha\widetilde a_L^0\in\mathcal A_{\mathcal C}(x),\quad
+g_{\mathrm{CBF}}(x,\alpha\widetilde a_L^0)\geq0,\quad
+g_{\mathrm{info}}=1\right\}.
+\label{eq:n4-governor}
+\end{equation}
+Si el conjunto es vacío o la edad supera $\bar\tau=0{,}60$ s, se prueba
+$a_L^{\mathrm{br}}=-1{,}8\xi_L$ con las mismas escalas y comprobaciones.
+\textsc{Hold} solo se admite con velocidad pequeña. Si tampoco existe frenado
+certificable, el modo es \textsc{uncontrolled}: el cero comandado no garantiza
+detener una carga que ya se mueve y se requiere una parada externa.
+
+\leveltag{SIETE ESCENARIOS Y COMPARACIÓN PAREADA}
+\section*{Perturbaciones, fallo y criterio de éxito}
+
+El diseño contiene siete escenarios y 30 semillas: \SPTwoReadyWorlds{} mundos
+pareados y \SPTwoReadyDynamicRuns{} ejecuciones. S0 es nominal; S1 aumenta la
+carga a 28 kg e introduce un impulso lateral; S2 heterogeneiza ruedas, tracción
+y fricción; S3 impone pérdida $0{,}25$, retardo medio $0{,}16$ s y
+$3{,}5$ kB/s; S4 retira un contacto a 3 s y lo restaura exógenamente a 4,5 s;
+S5 añade obstáculo; S6 combina carga de 24 kg, pérdida permanente, red
+degradada, obstáculo y perturbación. Se usan cuatro AMR, uno por esquina; el
+tamaño de la coalición no es un factor del experimento.
+
+En 12 s, el éxito requiere mantener durante $0{,}80$ s
+\[
+\|e_p\|<0{,}10\ \mathrm m,\quad |e_\theta|<0{,}10\ \mathrm{rad},\qquad
+\|v_L\|<0{,}12\ \mathrm{m/s},\quad |\omega_L|<0{,}10\ \mathrm{rad/s}.
+\]
+Colisión, \emph{timeout} y
+fallo numérico cuentan como fracaso. La huella mide
+$r_{\mathcal C}=0{,}721$ m. La unidad inferencial es la semilla: cada remuestreo
+conserva sus siete escenarios y las cuatro leyes con ablación. Los 210 pares
+escenario--semilla no se tratan como observaciones independientes. Los IC usan
+5.000 remuestreos de 30 bloques, Wilcoxon sobre la diferencia media por semilla
+y corrección de Holm. La planta añade perturbación y ruido, pero fija contactos
+y omite deformación y dinámica de rueda: es simulación reducida, no validación
+física.
+
+La Figura~\ref{fig:sp2-master-n4} concentra el patrón por escenario, el terminal
+dominante, los contrastes pareados y dos medidas de admisibilidad realizada.
+\resultfigure[0.59\textheight]{figures/generated/fig-sp2-master-n4.pdf}{Benchmark N4. A: éxito geométrico de las seis leyes con guarda. B: terminal dominante; AGE, información obsoleta; KIN, límite de ruedas; SUP, soporte inviable; COL, colisión. C: efecto guarda menos crudo e IC del 95\% por 30 bloques. D: fracción y duración de violaciones realizadas para las cuatro leyes pareadas.}{fig:sp2-master-n4}
+
+\textbf{Patrón por escenario.} Las seis leyes alcanzan el terminal en S0, S2,
+S4 y S5; S1 solo registra fallos con PID. S3 separa las leyes locales del MPC
+central: el éxito agregado baja a
+$\spdecimal{\SPTwoReadySThreeSuccess}$. En S5 no se observan colisiones, pero
+esa muestra no demuestra llegada general ni invariancia continua. S6 produce el
+resultado negativo principal: éxito
+$\spdecimal{\SPTwoReadySSixSuccess}$ y colisión
+$\spdecimal{\SPTwoReadySSixCollision}$. Tras la pérdida permanente, tres
+contactos no sostienen la carga. La barrera no puede reponer el apoyo ausente ni
+prometer frenado cuando el conjunto admisible queda vacío.
+
+\textbf{Efecto pareado.} La guarda cambia el éxito geométrico en
+$+\spdecimal{\SPTwoReadyPairedSuccessDifference}$, IC del 95\%
+[$+\spdecimal{\SPTwoReadyPairedSuccessCILow}$;
+$+\spdecimal{\SPTwoReadyPairedSuccessCIHigh}$]. Para el éxito físicamente
+admisible según el sustituto 2.5D, el efecto es
+$+\spdecimal{\SPTwoReadyPairedAdmissibleSuccessDifference}$, IC
+[$+\spdecimal{\SPTwoReadyPairedAdmissibleSuccessCILow}$;
+$+\spdecimal{\SPTwoReadyPairedAdmissibleSuccessCIHigh}$]. El efecto terminal es
+positivo para PD, LQI y amortiguamiento y nulo para MPC.
+
+H6 queda \textbf{refutada}: la diferencia agregada del riesgo de colisión es
+$+\spdecimal{\SPTwoReadyPairedCollisionDifference}$, IC
+[$+\spdecimal{\SPTwoReadyPairedCollisionCILow}$;
+$+\spdecimal{\SPTwoReadyPairedCollisionCIHigh}$]. El desglose por ley es
+diagnóstico \emph{post hoc}: PD, LQI y amortiguamiento aumentan el riesgo en
+$0{,}124$, $0{,}114$ y $0{,}114$; MPC lo reduce en $0{,}143$. En estos mundos,
+mejorar la admisibilidad instantánea no equivale a mejorar la seguridad de la
+trayectoria.
+
+La fracción temporal media fuera del modelo baja de
+$\spdecimal{\SPTwoReadyPairedRawRealizedFraction}$ a
+$\spdecimal{\SPTwoReadyPairedGovernedRealizedFraction}$; el episodio continuo
+más largo, de $\spdecimal{\SPTwoReadyPairedRawMaxViolationDuration}$ s a
+$\spdecimal{\SPTwoReadyPairedGovernedMaxViolationDuration}$ s. La sensibilidad
+varía $\Delta\alpha$, no $\Delta t$: no estudia discretización temporal ni
+establece invariancia continua. El resultado exporta una interfaz operativa en
+el modelo plano, no un certificado de estabilidad híbrida ni de contacto real.

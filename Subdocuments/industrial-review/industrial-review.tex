@@ -1,0 +1,65 @@
+\PassOptionsToPackage{draft}{hyperref}
+\documentclass[12pt,a4paper]{article}
+
+% Compilar con LuaLaTeX + Biber:  .\build.ps1
+\usepackage{viu-mrob-thesis}
+\usepackage{csquotes}
+\usepackage[
+  backend=biber,
+  style=apa,
+  natbib=true,
+  hyperref=false,
+  sorting=nyt,
+  sortcites=true
+]{biblatex}
+\addbibresource{references.bib}
+\renewcommand*{\bibfont}{\raggedright}
+
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{needspace}
+
+\setviuheadertitle{Revisión industrial}
+\hypersetup{
+  pdftitle={Revisión industrial: AMR de almacén, flotas y transporte de carga},
+  pdfauthor={Jorge Luis Mayorga Taborda},
+  pdfsubject={Estado de la práctica y normativa para el TFM VIU-MROB 2026}
+}
+
+% Marca de trabajo pendiente. Se resalta en el PDF para que ningún hueco
+% llegue por descuido a una entrega. Antes de congelar el subdocumento no
+% puede quedar ninguna: `grep -rn "\pendiente" sections/`.
+\newcommand{\pendiente}[1]{%
+  \par\noindent\colorbox{VIUOrange!12}{%
+    \parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+      \footnotesize\color{VIUDark}\textbf{[PENDIENTE]}\ #1}}\par\smallskip}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Revisión industrial\par}
+  \vspace{2mm}
+  {\large AMR de almacén, gestión de flotas\
+   y transporte cooperativo de carga\par}
+  \vspace{4mm}
+  {\normalsize Jorge Luis Mayorga Taborda\par}
+  {\footnotesize Máster Universitario en Robótica --- VIU\par}
+  {\footnotesize Subdocumento de trabajo. No es un capítulo cerrado.\par}
+\end{center}
+
+\vspace{4mm}
+\tableofcontents
+\vspace{6mm}
+
+\input{sections/01-alcance-y-metodo}
+\input{sections/02-panorama-de-plataformas}
+\input{sections/03-normativa-y-seguridad}
+\input{sections/04-flotas-e-interoperabilidad}
+\input{sections/05-transporte-de-carga-en-planta}
+\input{sections/06-brecha-practica-literatura}
+
+\printbibliography[title={Referencias}]
+
+\end{document}

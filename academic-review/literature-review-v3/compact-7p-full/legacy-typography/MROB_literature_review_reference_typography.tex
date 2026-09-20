@@ -1,0 +1,295 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[top=0.50in,bottom=0.52in,left=0.62in,right=0.62in,headheight=14pt,headsep=5pt,footskip=15pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{Noto Serif}
+\setsansfont{Noto Sans}
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage{microtype,ragged2e,setspace}
+\usepackage{graphicx}
+\usepackage{booktabs,tabularx,array,multirow,longtable}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,babel}
+\usepackage{amsmath,amssymb,rotating}
+\usepackage{fancyhdr,hyperref,enumitem}
+\usepackage{multicol}
+
+% Industrial/VIU palette
+\definecolor{autumn}{HTML}{E36A2E}
+\definecolor{spicy}{HTML}{C8572A}
+\definecolor{onyx}{HTML}{0C0C0C}
+\definecolor{mustard}{HTML}{FCD757}
+\definecolor{canary}{HTML}{8CB369}
+\colorlet{orange}{autumn}
+\colorlet{ink}{onyx}
+\colorlet{muted}{onyx!58!white}
+\colorlet{rule}{onyx!18!white}
+\definecolor{soft}{HTML}{F5F7FA}
+\definecolor{softblue}{HTML}{EAF2FD}
+\definecolor{softgreen}{HTML}{EAF7EF}
+\definecolor{softwarm}{HTML}{FDEFE8}
+\definecolor{softplum}{HTML}{F2ECFB}
+\definecolor{gamecol}{HTML}{2D6CC0}
+\definecolor{controlcol}{HTML}{E36A2E}
+\definecolor{searchcol}{HTML}{2E9B5F}
+\definecolor{learncol}{HTML}{7B4DBA}
+\definecolor{foundcol}{HTML}{6F7C8E}
+
+\hypersetup{colorlinks=true,urlcolor=spicy,linkcolor=spicy,pdftitle={Marco teorico y estado del arte - multi-AMR},pdfauthor={Jorge Luis Mayorga Taborda}}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\sffamily\fontsize{7.3}{8}\selectfont Jorge Luis Mayorga Taborda}
+\fancyhead[R]{\sffamily\fontsize{7.3}{8}\selectfont TFM MROB · Marco teórico y estado del arte}
+\fancyfoot[C]{\sffamily\fontsize{8.2}{8.7}\selectfont\thepage}
+\renewcommand{\headrulewidth}{0.25pt}
+\setlength{\parindent}{0pt}\setlength{\parskip}{2.2pt}
+\setstretch{1.05}\color{ink}\emergencystretch=1.4em
+\setlist[itemize]{leftmargin=4.3mm,itemsep=.8pt,topsep=.7pt,parsep=0pt}
+\setlist[enumerate]{leftmargin=4.7mm,itemsep=.6pt,topsep=.7pt,parsep=0pt}
+
+\newcommand{\sect}[1]{\par\vspace{0pt}{\sffamily\fontsize{14.5}{15.5}\selectfont\bfseries\color{orange}#1\par}\vspace{1.2pt}\textcolor{rule}{\rule{\linewidth}{0.35pt}}\vspace{3pt}}
+\newcommand{\subh}[1]{\par\vspace{2.2pt}{\sffamily\fontsize{9.3}{10.2}\selectfont\bfseries\color{orange}#1\par}\vspace{.5pt}}
+\newcommand{\figcap}[2]{\par\vspace{1.0pt}{\setstretch{1}\fontsize{8.1}{8.9}\selectfont\textbf{#1.}~\textit{#2}\par}\vspace{1.0pt}}
+\newcommand{\sourcecap}[1]{\par{\setstretch{1}\fontsize{7.0}{7.7}\selectfont\itshape\centering Fuente: #1\par}}
+\newcommand{\note}[1]{\par{\setstretch{1}\fontsize{7.0}{7.8}\selectfont\color{muted}#1\par}}
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\newcommand{\yes}{\tikz[baseline=-0.55ex]\fill[canary!85!onyx](0,0)circle(1.18mm);}
+\newcommand{\parti}{\tikz[baseline=-0.55ex]{\begin{scope}\clip(0,0)circle(1.18mm);\fill[mustard](-1.3mm,-1.3mm) rectangle (0,1.3mm);\end{scope}\draw[onyx!55,line width=.28pt](0,0)circle(1.18mm);}}
+\newcommand{\no}{\tikz[baseline=-0.55ex]\draw[onyx!48,line width=.32pt](0,0)circle(1.18mm);}
+\newcommand{\mappointL}[7]{%
+  \filldraw[fill=#7,draw=white,line width=.64pt] (#1,#2) circle (2.38mm);
+  \node[text=white,font=\sffamily\bfseries\fontsize{5.55}{5.75}\selectfont] at (#1,#2){#5};
+  \node[anchor=west,align=left,text=#7!70!black,font=\sffamily\bfseries\fontsize{5.35}{5.60}\selectfont] at ($(#1,#2)+(0.036,0)$) {#3\,\textsuperscript{[#6]}\\[-.45mm]\fontsize{4.68}{4.95}\selectfont #4};}
+\newcommand{\mappointR}[7]{%
+  \filldraw[fill=#7,draw=white,line width=.64pt] (#1,#2) circle (2.38mm);
+  \node[text=white,font=\sffamily\bfseries\fontsize{5.55}{5.75}\selectfont] at (#1,#2){#5};
+  \node[anchor=east,align=right,text=#7!70!black,font=\sffamily\bfseries\fontsize{5.35}{5.60}\selectfont] at ($(#1,#2)+(-0.036,0)$) {#3\,\textsuperscript{[#6]}\\[-.45mm]\fontsize{4.68}{4.95}\selectfont #4};}
+% Contrato tipográfico: todo texto interno de figuras usa Noto Sans.
+\newcommand{\chip}[2]{\tikz[baseline=-0.6ex]{\filldraw[fill=#1,draw=white,line width=.35pt] (0,0) circle (1.75mm);}\,\textcolor{ink}{\sffamily #2}}
+
+\begin{document}
+
+% ================= PAGE 1 =================
+\sect{Marco teórico y estado del arte}
+\fontsize{9.35}{10.15}\selectfont
+La revisión examina cómo la literatura conecta cuatro decisiones que una misión de transporte ejecuta de manera continua: formar la coalición, comprobar su factibilidad física, mover la carga y recuperarse de un fallo. El análisis responde tres preguntas: qué mecanismos cubren cada decisión, qué evidencia respalda esa cobertura y dónde permanecen interfaces sin resolver.
+
+Se trabajó con dos niveles de evidencia. El núcleo canónico reúne 59 trabajos (38 CORE, 15 ENABLING y 6 fundacionales o de revisión) para la comparación detallada; el corpus analítico de 244 documentos sustenta las tendencias posteriores. Los preprints y las versiones publicadas se enlazaron para no duplicar líneas de trabajo. La búsqueda y el \textit{snowballing} cubrieron MRTA, formación de coaliciones, transporte de carga compartida, contacto y wrench, redes imperfectas y recuperación. ``Distribuido'' se codificó por autoridad de decisión, información disponible, dependencia de líder o servidor y mecanismo de cierre. No se infirió solo a partir de la presencia de control local.
+\normalsize
+
+El primer resultado sitúa los trabajos del núcleo según autoridad y explicitud del mecanismo. La posición es descriptiva; no representa desempeño ni calidad.
+
+\figcap{Figura 1}{Mapa metodológico agrupado del corpus académico. Horizontal: autoridad de decisión (descentralizado $\rightarrow$ centralizado). Vertical: explicitud del mecanismo (white-box $\rightarrow$ data-driven). El color identifica la familia primaria. Las posiciones son ordinales y se desplazan solo para evitar solapes.}
+\begin{center}
+\begin{tikzpicture}[x=80mm,y=54mm,font=\sffamily]
+  \fill[softblue] (-1,-1) rectangle (0,0);
+  \fill[softgreen] (0,-1) rectangle (1,0);
+  \fill[softplum!55!white] (-1,0) rectangle (0,1);
+  \fill[softwarm] (0,0) rectangle (1,1);
+  \foreach \x in {-1,-.75,-.5,-.25,0,.25,.5,.75,1} \draw[rule,line width=.28pt] (\x,-1)--(\x,1);
+  \foreach \y in {-1,-.75,-.5,-.25,0,.25,.5,.75,1} \draw[rule,line width=.28pt] (-1,\y)--(1,\y);
+  \draw[-{Stealth[length=2.3mm]},ink,line width=.68pt] (-1.04,0)--(1.075,0);
+  \draw[-{Stealth[length=2.3mm]},ink,line width=.68pt] (0,-1.04)--(0,1.09);
+  \node[anchor=south,font=\sffamily\bfseries\fontsize{7.2}{7.5}\selectfont] at (0,1.10) {data-driven};
+  \node[anchor=north,font=\sffamily\bfseries\fontsize{7.2}{7.5}\selectfont] at (0,-1.09) {white-box};
+  \node[rotate=90,anchor=south,font=\sffamily\bfseries\fontsize{7}{7.3}\selectfont] at (-1.12,0) {descentralizado};
+  \node[rotate=90,anchor=north,font=\sffamily\bfseries\fontsize{7}{7.3}\selectfont] at (1.12,0) {centralizado};
+  \node[align=center,font=\sffamily\bfseries\fontsize{6.35}{6.65}\selectfont] at (-.60,.90) {distribuido\\[-.35mm]data-driven};
+  \node[align=center,font=\sffamily\bfseries\fontsize{6.35}{6.65}\selectfont] at (.60,.90) {centralizado\\[-.35mm]data-driven};
+  \node[align=center,font=\sffamily\bfseries\fontsize{6.35}{6.65}\selectfont] at (-.60,-.90) {distribuido\\[-.35mm]white-box};
+  \node[align=center,font=\sffamily\bfseries\fontsize{6.35}{6.65}\selectfont] at (.60,-.90) {centralizado\\[-.35mm]white-box};
+
+  % data-driven, distributed / mixed
+  \mappointL{-0.82}{0.72}{Bezerra}{2025}{B}{20}{learncol}
+  \mappointL{-0.64}{0.55}{Huo}{2025}{H}{19}{learncol}
+  \mappointL{-0.46}{0.73}{Dai}{2024}{D}{17}{learncol}
+  \mappointL{-0.78}{0.35}{Shibata-RL}{2023}{S}{16}{learncol}
+  \mappointL{-0.43}{0.32}{Pandit}{2026}{P}{28}{learncol}
+  \mappointR{-0.13}{0.50}{Eoh/Park}{2021}{E}{29}{learncol}
+
+  % data-driven, centralized/mixed
+  \mappointL{0.34}{0.64}{SADCHER}{2026}{S}{25}{learncol}
+  \mappointL{0.62}{0.42}{CF-HMRTA}{2025}{C}{21}{searchcol}
+
+  % white-box distributed - staggered
+  \mappointL{-0.90}{-0.18}{Pereira}{2004}{P}{1}{controlcol}
+  \mappointL{-0.78}{-0.34}{Parker/Tang}{2006}{PT}{2}{foundcol}
+  \mappointL{-0.88}{-0.54}{Vig/Adams}{2006}{V}{3}{gamecol}
+  \mappointL{-0.69}{-0.17}{CBBA}{2009}{C}{4}{gamecol}
+  \mappointL{-0.64}{-0.39}{Service}{2011}{S}{5}{foundcol}
+  \mappointL{-0.57}{-0.60}{Chen/Sun}{2012}{CS}{6}{gamecol}
+  \mappointL{-0.45}{-0.22}{Jang}{2018}{J}{8}{gamecol}
+  \mappointL{-0.39}{-0.47}{Dutta}{2019}{D}{10}{gamecol}
+  \mappointL{-0.36}{-0.67}{Dutta}{2021}{D}{12}{gamecol}
+  \mappointL{-0.14}{-0.28}{Ebel}{2024}{E}{18}{controlcol}
+  \mappointR{-0.03}{-0.50}{Shibata}{2023}{S}{14}{controlcol}
+  \mappointR{-0.04}{-0.71}{Fukao}{2025}{F}{22}{controlcol}
+  \mappointL{-0.48}{-0.90}{GRAPE-S}{2026}{G}{24}{gamecol}
+
+  % white-box central/mixed
+  \mappointL{0.08}{-0.18}{Alonso-Mora}{2017}{AM}{7}{controlcol}
+  \mappointL{0.20}{-0.40}{Machado}{2019}{M}{9}{controlcol}
+  \mappointL{0.31}{-0.65}{Verma repl.}{2019}{V}{11}{controlcol}
+  \mappointL{0.47}{-0.22}{Elaamery}{2021}{E}{13}{controlcol}
+  \mappointL{0.59}{-0.44}{Gong}{2023}{G}{15}{controlcol}
+  \mappointL{0.76}{-0.22}{Rizzo}{2020}{R}{30}{controlcol}
+  \mappointR{0.89}{-0.40}{Loh}{2012}{L}{31}{controlcol}
+  \mappointR{0.83}{-0.64}{Yufka}{2015}{Y}{32}{controlcol}
+  \mappointR{0.61}{-0.73}{Muhammed}{2026}{M}{26}{controlcol}
+  \mappointR{0.34}{-0.88}{Sahu}{2026}{S}{27}{controlcol}
+  \mappointL{0.02}{-0.90}{Tian}{2025}{T}{23}{controlcol}
+
+  \node[star,star points=5,star point ratio=2.1,fill=orange,draw=white,line width=.8pt,minimum size=8.5mm] at (-0.18,-0.78) {};
+  \node[anchor=west,font=\sffamily\bfseries\fontsize{7.0}{7.4}\selectfont,align=left] at (-0.09,-0.75) {Este TFM\\integración};
+\end{tikzpicture}
+\end{center}
+\vspace{-0.8mm}
+\begin{center}\fontsize{8.35}{8.9}\selectfont
+\chip{gamecol}{juegos/mercados}\hspace{5.5mm}
+\chip{controlcol}{control/consenso}\hspace{5.5mm}
+\chip{searchcol}{búsqueda/heurística}\hspace{5.5mm}
+\chip{learncol}{política aprendida}\hspace{5.5mm}
+\chip{foundcol}{fundacional}
+\end{center}
+\sourcecap{elaboración propia a partir de los trabajos [1]-[32] y la codificación del corpus académico.}
+\note{El mapa separa con claridad la pertenencia lógica a una coalición de su ejecución física. Esa distinción ordena la comparación de capacidades de la página siguiente y evita atribuir a un algoritmo de asignación garantías de contacto, movimiento o recuperación que no evalúa.}
+
+\vspace{0.4mm}
+\begin{center}
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily]
+\foreach \x/\w/\bg/\tit/\n/\txt in {
+0/45/softblue/Coalition formation/18/{matching · auctions · games},
+47/45/softwarm/Shared-load transport/23/{control · wrench · caging},
+94/45/softgreen/Network and safety/15/{consensus · CBF · recovery},
+141/45/softplum/Foundational/6/{population games · GNE}}{
+  \fill[\bg,rounded corners=.8pt](\x,0)rectangle +(\w,8.6);
+  \draw[rule,rounded corners=.8pt,line width=.28pt](\x,0)rectangle +(\w,8.6);
+  \node[anchor=west,font=\sffamily\bfseries\fontsize{5.5}{5.8}\selectfont] at (\x+2,5.9){\tit};
+  \node[anchor=east,font=\sffamily\bfseries\fontsize{8.1}{8.1}\selectfont,text=orange] at (\x+\w-2,5.9){\n};
+  \node[anchor=west,font=\sffamily\fontsize{4.45}{4.75}\selectfont,text=muted] at (\x+2,2.0){\txt};}
+\end{tikzpicture}
+\end{center}
+\vspace{-0.5mm}
+\figcap{Figura 1b}{Resumen funcional del corpus por familia temática.}
+\sourcecap{elaboración propia a partir del dataset académico.}
+
+\newpage
+% ================= PAGE 2 =================
+La primera comparación funcional aplica la misma regla a los trabajos más próximos al problema del TFM. Matching, subastas y juegos hedónicos cubren atomicidad, heterogeneidad y decisión local en combinaciones distintas [4]-[6],[8],[10],[12],[24]. Alonso-Mora, Ebel, Shibata, Fukao, Tian y Muhammed, por su parte, formulan y validan aspectos del transporte cooperativo distribuido o descentralizado [7],[14],[18],[22],[23],[26]. La separación entre ambos frentes impide formular la brecha como una simple ausencia de control distribuido de carga.
+
+\figcap{Figura 2}{Matriz de capacidades de los trabajos más discriminantes. Verde = evidencia explícita; amarillo = parcial/condicionada; círculo vacío = no.}
+\begin{center}
+\sffamily
+\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2.25pt}\fontsize{7.55}{8.0}\selectfont
+\begin{tabularx}{\linewidth}{L{29mm}*{8}{C{11.6mm}}C{10.2mm}C{9.8mm}}
+\toprule
+\textbf{Trabajo} & \rotatebox{90}{\textbf{heterog.}} & \rotatebox{90}{\textbf{coal. var.}} & \rotatebox{90}{\textbf{reclut. local}} & \rotatebox{90}{\textbf{shared-load}} & \rotatebox{90}{\textbf{cert. física}} & \rotatebox{90}{\textbf{exec. dist.}} & \rotatebox{90}{\textbf{recovery}} & \rotatebox{90}{\textbf{replacement}} & \textbf{Ev.} & \textbf{C}\\
+\midrule
+Jang 2018 [8] & \no & \yes & \yes & \no & \no & \yes & \no & \no & T+S & C4\\
+Dutta 2021 [12] & \yes & \yes & \yes & \no & \no & \yes & \no & \no & T+S & C4\\
+GRAPE-S 2026 [24] & \yes & \yes & \parti & \no & \no & \yes & \no & \no & T+S & C3--4\\
+CF-HMRTA 2025 [21] & \yes & \yes & \no & \no & \no & \no & \no & \no & T+S & C0--1\\
+Huo 2025 [19] & \yes & \yes & \yes & \no & \no & \yes & \parti & \no & T+S & C3--4\\
+Bezerra 2025 [20] & \yes & \yes & \yes & \no & \no & \yes & \parti & \no & S & C4\\
+Alonso-Mora 2017 [7] & \no & \parti & \no & \yes & \yes & \parti & \parti & \no & T+S+P & C0--1\\
+Ebel 2024 [18] & \no & \no & \no & \yes & \yes & \yes & \no & \no & T+S+P & C3\\
+Shibata 2023 [14] & \no & \parti & \no & \yes & \yes & \yes & \parti & \parti & S+P & C4\\
+Muhammed 2026 [26] & \no & \no & \no & \yes & \yes & \yes & \no & \no & T+S+P & C3\\
+Verma repl. 2019 [11] & \no & \parti & \no & \yes & \parti & \no & \yes & \yes & S+P & C0--1\\
+Sahu 2026 [27] & \no & \parti & \no & \yes & \parti & \parti & \yes & \yes & S+P & C1--2\\
+\bottomrule
+\end{tabularx}
+\end{center}
+\sourcecap{elaboración propia a partir de [7],[8],[11],[12],[14],[18]-[21],[24],[26],[27].}
+
+La lectura conjunta conserva tres distinciones. Los juegos poblacionales y los GNE pueden producir una masa continua, de modo que el cierre entero debe formar parte del método. La desigualdad $\sum_i c_i\ge d_k$ tampoco certifica el transporte: se requiere $w_k^{req}\in\mathcal W(C_k)$ bajo geometría, fricción y límites de actuador. Finalmente, la escala debe separar $N_{sim}$, $N_{hw}$, robots por coalición y cargas simultáneas. Un experimento con mil robots simulados no equivale a una validación física de la misma escala.
+
+\begin{center}
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{6.25}{6.65}\selectfont]
+\tikzset{bx/.style={rounded corners=1pt,draw=rule,line width=.35pt,minimum width=41.5mm,minimum height=17mm,align=center}}
+\node[bx,fill=softblue](s)at(21,10){\textbf{Supported cargo}\\carga soportada\\wrench y límites};
+\node[bx,fill=softwarm](r)at(65,10){\textbf{Rigid attachment}\\formación rígida\\distribución de fuerza};
+\node[bx,fill=softgreen](p)at(109,10){\textbf{Pushing / caging}\\contacto unilateral\\geometría no-prehensil};
+\node[bx,fill=softplum](g)at(153,10){\textbf{Grasping / arms}\\grasp matrix\\force closure};
+\foreach \a/\b in {s/r,r/p,p/g}{\draw[-{Stealth[length=1.55mm]},muted,line width=.42pt](\a)--(\b);} 
+\end{tikzpicture}
+\end{center}
+\figcap{Figura 2b}{Modalidades físicas que no deben mezclarse bajo la etiqueta genérica \textit{cooperative transport}.}
+\sourcecap{síntesis conceptual basada en [1],[7],[9],[13]-[15],[18],[22],[23],[26],[28],[30]-[32].}
+
+\newpage
+% ================= PAGE 3 =================
+Al añadir la continuidad de la misión, la cobertura de componentes aislados deja de ser suficiente. La cuestión decisiva es si esos componentes coinciden en una misma cadena operativa y si la autoridad permanece local cuando la misión cambia de etapa. La Figura 3 contrasta ambas dimensiones sobre el núcleo curado.
+
+\figcap{Figura 3}{Síntesis estructural en dos vistas complementarias: \textbf{(a)} cobertura de intersecciones del corpus CORE y \textbf{(b)} presupuesto de centralización por etapa.}
+\begin{center}
+\begin{minipage}[t]{0.47\linewidth}
+\centering
+{\sffamily\bfseries\fontsize{7.4}{7.9}\selectfont (a) Cobertura del corpus CORE\par}
+\vspace{1.5mm}
+\begin{tikzpicture}[x=1.72mm,y=6.45mm,font=\sffamily\fontsize{5.95}{6.35}\selectfont]
+\foreach \lab/\v/\y in {Shared-load transport/23/7,Recruit/18/6,Certificación física/13/5,Shared-load + distributed/10/4,Heterog. + coalición variable/9/3,Shared-load + replacement/2/2,Heterog. + shared-load/0/1,Physical + distributed + replacement/0/0}{
+  \draw[rule,line width=.25pt] (0,\y) -- (24.8,\y);
+  \fill[orange] (0,\y-.23) rectangle (\v,\y+.23);
+  \node[anchor=east,align=right,text width=31mm] at (-1.0,\y) {\lab};
+  \node[anchor=west,font=\sffamily\bfseries] at (\v+.45,\y) {\v};}
+\draw[-{Stealth[length=1.45mm]},ink,line width=.4pt](0,-.65)--(25.3,-.65);
+\node[anchor=north]at(12.2,-.82){trabajos CORE};
+\end{tikzpicture}
+\vspace{0.3mm}
+\sourcecap{conteos del dataset académico curado; no constituyen prevalencias universales.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+\centering
+{\sffamily\bfseries\fontsize{7.4}{7.9}\selectfont (b) Presupuesto de centralización por etapa\par}
+\vspace{1.5mm}
+\begin{tikzpicture}[x=0.90mm,y=0.90mm,font=\sffamily\fontsize{5.9}{6.25}\selectfont]
+\draw[ink,line width=.45pt] (28,8)--(148,8);
+\foreach \x/\lab in {28/local,68/mixto,108/global,148/central} {\draw[ink,line width=.3pt](\x,6.7)--(\x,9.3);\node[anchor=north]at(\x,5.7){\lab};}
+\foreach \y/\lab/\x in {52/Recruit/45,41/Certify/76,30/Dock/48,19/Transport/44,8/Recover/79}{
+  \node[anchor=east,font=\sffamily\bfseries]at(23,\y){\lab};
+  \draw[rule,line width=.35pt](28,\y)--(148,\y);
+  \fill[soft](28,\y-3)rectangle(148,\y+3);
+  \fill[orange,rounded corners=.7pt](28,\y-3)rectangle(\x,\y+3);
+  \draw[orange,line width=.45pt](\x,\y-3.8)--(\x,\y+3.8);} 
+\end{tikzpicture}
+\vspace{0.3mm}
+\sourcecap{codificación de autoridad e información de los trabajos más cercanos [7],[11],[14],[18]-[21],[24],[26],[27].}
+\end{minipage}
+\end{center}
+\fontsize{8.25}{8.95}\selectfont
+Las dos vistas convergen. El corpus cubre transporte de carga compartida, reclutamiento y certificación física por separado, pero las intersecciones se reducen al añadir heterogeneidad, ejecución distribuida y sustitución. Al mismo tiempo, la autoridad residual cambia entre reclutamiento, acoplamiento, transporte y recuperación. La discontinuidad se encuentra en el paso entre etapas, no en la ausencia absoluta de cada ingrediente.
+\normalsize
+
+\rowcolors{2}{white}{soft}\fontsize{7.3}{7.8}\selectfont
+\begin{tabularx}{\linewidth}{L{25mm} C{10mm} C{10mm} C{12mm} Y}
+\toprule
+\textbf{Trabajo} & \textbf{Share} & \textbf{Repl.} & \textbf{Local rec.} & \textbf{Diferencia decisiva}\\\midrule
+Verma 2019 [11] & \yes & \yes & \no & scheduling global; hubs/ruta conocidos\\
+Sahu 2026 [27] & \yes & \yes & \no & arquitectura master/slave\\
+Shibata 2023 [14] & \yes & \parti & \no & equipo variable, no selección desde una flota mayor\\
+Ebel 2024 [18] & \yes & \no & \no & equipo fijo\\
+Bezerra 2025 [20] & \no & \no & \yes & no shared-load físico\\
+GRAPE-S 2026 [24] & \no & \no & \parti & servicio lógico, no carga compartida\\
+\bottomrule
+\end{tabularx}
+
+\vspace{1.2mm}
+\fontsize{8.25}{8.95}\selectfont
+De esta comparación se obtiene una delimitación precisa. En el corpus revisado no se identificó una arquitectura que reúna, dentro de una misma cadena operativa, reclutamiento local de una coalición heterogénea y variable desde una flota mayor, certificación física de la carga compartida y sustitución de un miembro durante el transporte, sin mantener una autoridad global permanente. Esta formulación restringe la contribución a la interfaz que permanece abierta y evita reclamar como nuevos los componentes ya resueltos.
+\normalsize
+\sourcecap{síntesis comparativa de [7],[11],[14],[18]-[21],[24],[26],[27].}
+
+\vspace{1.0mm}
+\fontsize{8.55}{9.25}\selectfont
+Esta delimitación fija qué debe buscarse en el corpus ampliado. El análisis temporal comprueba si los métodos convergen hacia esa integración o si el crecimiento reciente continúa distribuyéndose entre capas separadas.
+\normalsize
+
+\fontsize{8.55}{9.25}\selectfont
+La misma delimitación cambia la unidad de comparación. El análisis deja de clasificar cada trabajo mediante una única etiqueta global. Un sistema puede decidir localmente durante el transporte y depender de una asignación central para formar el equipo; también puede detectar un fallo de manera distribuida y delegar la selección del reemplazo en un servidor. La autoridad, la información disponible y la condición de cierre deben codificarse por etapa.
+
+Esta regla permite comparar resultados que, de otro modo, parecerían equivalentes. SP1 debe entregar una coalición entera, roles y capacidad verificable; SP2 debe devolver margen físico y causas de fallo; SP3 debe incorporar la huella de la carga y el coste de congestión. La evolución del corpus puede examinarse entonces bajo una misma lectura y esos intercambios pueden convertirse en hipótesis y métricas del TFM.
+\normalsize
+
+\end{document}

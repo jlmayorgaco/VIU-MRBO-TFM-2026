@@ -1,0 +1,113 @@
+\subsection{Qué significa exactamente «información de $n$ saltos»}
+\label{sec:informacion}
+
+Afirmar que un mecanismo es distribuido exige decir qué puede \emph{calcular}
+cada agente, no solo con quién habla. Se adopta para ello la noción de grafo de
+proximidad espacialmente distribuido \cite{bullo2009distributed}.
+
+\begin{definicion}[Grafo espacialmente distribuido]
+\label{def:espacialmente}
+Un grafo de proximidad $\Gcal_1$ es \emph{espacialmente distribuido} sobre
+$\Gcal_2$ si, para toda configuración $P$ y todo nodo $p$,
+\[
+  \Ncal_{\Gcal_1,p}(P)=\Ncal_{\Gcal_1,p}\bigl(\Ncal_{\Gcal_2,p}(P)\bigr),
+\]
+es decir, si un nodo que conoce la posición de sus vecinos en $\Gcal_2$ puede
+calcular sus vecinos en $\Gcal_1$ sin más información.
+\end{definicion}
+
+El grafo de comunicación es el de disco $\Gcal_{\mathrm{disk}}(R^{\mathrm{com}})$.
+La pregunta relevante es si el grafo de interacción del juego —el que define qué
+pares comparten barrera y qué desviaciones son conectadas— puede construirse a
+partir de lo que la radio entrega.
+
+\begin{proposicion}[Condición de implementabilidad]
+\label{pr:implementable}
+Un mecanismo cuyo grafo de interacción $\Gcal_I$ sea espacialmente distribuido
+sobre $\Gcal_{\mathrm{disk}}(R^{\mathrm{com}})$ es implementable con
+información de un salto. Los grafos de vecindad relativa y de Gabriel
+intersecados con el disco, y el grafo de Delaunay $r$-limitado
+$\Gcal_{\mathrm{LD}}(R^{\mathrm{com}})$, cumplen esa
+condición \cite[Prop.~2.9]{bullo2009distributed}; el grafo de Delaunay completo
+intersecado con el disco, no.
+\end{proposicion}
+
+\begin{observacion}[Consecuencia de diseño]
+\label{obs:eleccion-grafo}
+La elección natural para $\Gcal_I$ no es el propio grafo de disco sino
+$\Gcal_{\mathrm{LD}}(R^{\mathrm{com}})$: es espacialmente distribuido sobre él,
+por tanto implementable, y estrictamente más disperso, lo que reduce el número
+de pares que intercambian precio y el número de pares que deben
+acordar un precio en \cref{th:precio-seguridad}. Un mecanismo que use un grafo
+de interacción no espacialmente distribuido sobre el de comunicación no es
+distribuido, aunque su descripción lo sugiera.
+\end{observacion}
+
+La elección puede afinarse más, porque los grafos de proximidad se ordenan y ese
+orden tiene consecuencias operativas exactas.
+
+\begin{teorema}[Orden, conectividad y localidad]
+\label{th:jerarquia-grafos}
+Sean $\Gcal_{\mathrm{EMST}}$, $\Gcal_{\mathrm{RN}}$, $\Gcal_{\mathrm{G}}$ y
+$\Gcal_{\mathrm{D}}$ el árbol generador mínimo euclídeo, el grafo de vecindad
+relativa, el de Gabriel y el de Delaunay \cite{bullo2009distributed}. Entonces:
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em,topsep=0.2em,itemsep=0.15em]
+  \item $\Gcal_{\mathrm{EMST}}\subset\Gcal_{\mathrm{RN}}\subset
+  \Gcal_{\mathrm{G}}\subset\Gcal_{\mathrm{D}}$;
+  \item $\Gcal_{\mathrm{RN}}\cap\Gcal_{\mathrm{disco}}(R^{\mathrm{com}})$,
+  $\Gcal_{\mathrm{G}}\cap\Gcal_{\mathrm{disco}}(R^{\mathrm{com}})$ y
+  $\Gcal_{\mathrm{LD}}(R^{\mathrm{com}})$ tienen \emph{exactamente} las mismas
+  componentes conexas que el grafo de disco;
+  \item los tres son espacialmente distribuidos sobre el grafo de disco, es
+  decir, cada AMR calcula su vecindad con la información de sus vecinos de
+  disco;
+  \item en cambio $\Gcal_{\mathrm{D}}\cap\Gcal_{\mathrm{disco}}$ es subgrafo del
+  de disco pero \emph{no} es espacialmente distribuido sobre él.
+\end{enumerate}
+\end{teorema}
+
+\begin{observacion}[Qué compra esto y a qué precio]
+\label{obs:esparsificar}
+La combinación de (ii) y (iii) es lo que interesa: se puede adelgazar el grafo de
+comunicación sin perder \emph{ninguna} propiedad de conectividad, y cada AMR
+puede decidir por sí mismo qué aristas conserva. Sobre veintidós AMR con
+posiciones aleatorias, el grafo de Gabriel cortado al disco reduce las aristas
+entre un $40\%$ y un $70\%$ según el radio, y el número de componentes conexas
+coincide exactamente en los tres casos ensayados; la comprobación de (iii) no
+encuentra ninguna discrepancia entre el cálculo local y el global.
+
+El ahorro se compone con el de \cref{obs:etm-ahorro} porque actúa sobre un factor
+distinto: aquel reduce \emph{cuántas veces} se habla, este reduce \emph{con
+cuántos}. El precio es el diámetro: adelgazar alarga los caminos, y por
+\cref{th:conmutada} la tasa de mezcla empeora. Se cambian aristas por rondas, y
+qué convenga depende de si el cuello de botella es el ancho de banda o la
+latencia.
+
+El apartado (iv) es la advertencia: la restricción de Delaunay al disco parece la
+elección natural —es la dual del diagrama de Voronoi que aparece en
+\cref{th:potencia}— y sin embargo no es localmente calculable. Usarla exigiría
+información que el grafo de comunicación no entrega.
+\end{observacion}
+
+\begin{observacion}[Cuatro grafos que no son el mismo]
+\label{obs:cuatro-grafos}
+Una precisión sobre el alcance de \cref{obs:eleccion-grafo}.
+Que un grafo sea espacialmente distribuido justifica \emph{conocer a los
+vecinos} con información local; no justifica calcular con ella todo el pago
+—que puede depender de estados, mapas o restricciones que no viven en esa
+bola— ni, sobre todo, \emph{omitir} restricciones de colisión. Con huellas
+heterogéneas, la ausencia de una arista de radio entre dos AMR no excluye la
+interferencia entre las cargas grandes que transportan. Omitir un par exige
+demostrar que es seguro, o que otra restricción implica su seguridad; la
+dispersión del grafo de radio no es un sustituto de la geometría
+\cite{mayorga2026m1}. El grafo de comunicación, el de contactos, el de
+conflictos y el de revisiones son objetos distintos, y el adelgazamiento de
+\cref{obs:esparsificar} actúa sobre el primero solamente.
+\end{observacion}
+
+\figGrafos
+
+Con $n>1$ saltos la condición se relaja: basta que $\Gcal_I$ sea espacialmente
+distribuido sobre la potencia $n$-ésima del grafo de disco, lo que amplía la
+clase admisible a cambio de $n$ rondas de intercambio y de una latencia
+proporcional.

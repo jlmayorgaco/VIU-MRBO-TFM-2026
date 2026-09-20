@@ -1,0 +1,11 @@
+schema_version: 1
+family: F4_mixed_geometry_route
+description: Geometrías mixtas, centros de masa desplazados y rutas con giros.
+parameters:
+  demand_pressure: 0.95
+  heterogeneity: 0.25
+  compatibility_probability: 0.84
+  communication_degree: 5
+  shapes: [circle, square, rectangle, superellipse]
+  route_turns: [0.0, 1.5707963267948966]
+  wrench_tolerance: 0.08

@@ -12,4 +12,9 @@ Desde este directorio, en PowerShell:
 
 El PDF resultante queda en `build/main.pdf`. El script ejecuta LuaLaTeX, Biber y las pasadas adicionales necesarias para estabilizar índices y referencias. Si Perl está instalado, también puede usarse `latexmk -lualatex -interaction=nonstopmode -halt-on-error -outdir=build main.tex`.
 
+La compilación verifica antes y después de LuaLaTeX las cinco figuras TikZ
+inamovibles registradas en `config/protected-tikz-figures.json`. El proceso falla
+si falta una fuente, si una figura está desactivada o si su etiqueta no aparece
+en el auxiliar del PDF final.
+
 La plantilla LaTeX reproduce los requisitos documentados en `docs/01_VIU_REQUIREMENTS.md` y fue destilada contra el DOCX oficial conservado en `resources/`. La evidencia, diferencias corregidas y limitaciones del cotejo se registran en `docs/06_VIU_TEMPLATE_FIDELITY.md`.

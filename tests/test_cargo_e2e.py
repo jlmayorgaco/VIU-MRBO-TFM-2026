@@ -8,6 +8,7 @@ import pandas as pd
 from viu_mrob_tfm.integrated.experiment import (
     METHODS,
     _cargo_spatial_score,
+    _write_tables,
     build_audit,
     build_world,
     evaluate_hypotheses,
@@ -108,3 +109,65 @@ def test_multiscenario_inference_clusters_repeated_instances() -> None:
     hypotheses = evaluate_hypotheses(pd.DataFrame(rows)).set_index("id")
     assert hypotheses.loc["E2E-H2", "n_pairs"] == 6
     assert hypotheses.loc["E2E-H2", "n_independent_instances"] == 2
+
+
+def test_generated_document_macros_cover_reported_cargo_effects(tmp_path) -> None:
+    runs = pd.DataFrame(
+        [
+            {
+                "method": method,
+                "scenario": scenario,
+                "world_hash": f"{scenario}-0",
+                "mission_success": float(method != "no_repair"),
+                "messages": 10.0 if method == "distributed_full" else 0.0,
+                "bytes_sent": 2000.0 if method == "distributed_full" else 0.0,
+                "collision": float(method == "no_physical_guard"),
+                "mechanical_certificate_initial": 1.0,
+            }
+            for method in METHODS
+            for scenario in ("degraded_network", "failure_during_transport")
+        ]
+    )
+    summary = pd.DataFrame(
+        [
+            {
+                "method": method,
+                "n": 2,
+                "mission_success_mean": 1.0,
+                "collision_mean": 0.0,
+                "mission_time_s_mean": 1.0,
+                "recovery_time_s_mean": 0.0,
+                "messages_mean": 1.0,
+            }
+            for method in METHODS
+        ]
+    )
+    hypotheses = pd.DataFrame(
+        [
+            {
+                "id": hypothesis_id,
+                "metric": metric,
+                "n_pairs": 2,
+                "effect_a_minus_b": effect,
+                "ci95_low": effect - 0.1,
+                "ci95_high": effect + 0.1,
+                "p_holm": p_value,
+            }
+            for hypothesis_id, metric, effect, p_value in (
+                ("E2E-H1", "mission_time_s", -0.2, 0.08),
+                ("E2E-H2", "mission_success", 0.8, 1e-6),
+                ("E2E-H3", "mission_success", 0.7, 2e-5),
+            )
+        ]
+    )
+
+    (tmp_path / "tables").mkdir()
+    _write_tables(tmp_path, runs, summary, hypotheses)
+    macros = (tmp_path / "tables" / "cargo_e2e_numbers.tex").read_text(
+        encoding="utf-8"
+    )
+
+    assert "\\CargoEtwoEDegradedKilobytes" in macros
+    assert "\\CargoEtwoETimingCI" in macros
+    assert "\\CargoEtwoEGuardPHolm" in macros
+    assert "\\CargoEtwoERepairEffect" in macros

@@ -98,3 +98,77 @@ def test_seed_metadata_enrichment_does_not_promote_seed_verification() -> None:
 
     assert enriched[0]["verification_status"] == "unverified_seed"
     assert enriched[0]["metadata_verification_status"] == "metadata_verified"
+
+
+def test_parse_wos_tagged_plaintext_preserves_multiline_metadata() -> None:
+    text = """FN Clarivate Analytics Web of Science
+VR 1.0
+PT J
+AU Doe, J
+   Smith, A
+AF Doe, Jane
+   Smith, Alex
+TI Distributed multi-robot
+   coalition formation
+SO JOURNAL OF ROBOTICS
+AB A multiline abstract
+   with a continuation.
+DI 10.1234/EXAMPLE.1
+PY 2024
+TC 7
+UT WOS:000000000000001
+ER
+"""
+
+    records = module.parse_wos_tagged_plaintext(text)
+
+    assert len(records) == 1
+    assert records[0]["TI"] == "Distributed multi-robot coalition formation"
+    assert records[0]["AF"] == "Doe, Jane; Smith, Alex"
+    assert records[0]["AB"] == "A multiline abstract with a continuation."
+
+
+def test_parse_wos_tagged_plaintext_uses_each_bare_er_as_a_record_boundary() -> None:
+    records = module.parse_wos_tagged_plaintext("PT J\nTI First\nER\nPT C\nTI Second\nER\n")
+
+    assert [record["TI"] for record in records] == ["First", "Second"]
+
+
+def test_wos_tagged_record_is_metadata_only_and_keeps_query_provenance() -> None:
+    values = {
+        "title": "A field-tagged WoS record",
+        "doi": "https://doi.org/10.1234/EXAMPLE",
+        "year": "2024",
+        "ut": "WOS:000000000000001",
+        "authors": "Doe, Jane",
+        "venue": "Journal of Tests",
+        "abstract": "Metadata only.",
+        "document_type": "Article",
+        "citation_count": "3",
+    }
+
+    row = module.wos_record_from_values(values, Path("F03_primary_export.txt"))
+
+    assert row is not None
+    assert row["provenance_queries"] == "F03_primary"
+    assert row["evidence_status"] == "not_evidence"
+    assert row["screening_status"] == "pending"
+
+
+def test_partial_wos_manifest_never_claims_complete_reconciliation(tmp_path) -> None:
+    raw = tmp_path / "wos"
+    raw.mkdir()
+    export = raw / "F01_primary_wos.txt"
+    export.write_text("PT J\nTI Example\nER\n", encoding="utf-8")
+    manifest = raw / "wos_export_manifest.json"
+    manifest.write_text(
+        '{"exports":[{"file":"F01_primary_wos.txt","status":"partial"}]}',
+        encoding="utf-8",
+    )
+    original_input, original_manifest = module.INPUT, module.WOS_EXPORT_MANIFEST
+    try:
+        module.INPUT = tmp_path
+        module.WOS_EXPORT_MANIFEST = manifest
+        assert module.wos_coverage_label(module.wos_raw_files()) == "wos_partially_reconciled"
+    finally:
+        module.INPUT, module.WOS_EXPORT_MANIFEST = original_input, original_manifest

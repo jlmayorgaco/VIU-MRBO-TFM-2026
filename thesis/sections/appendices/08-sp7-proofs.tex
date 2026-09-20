@@ -1,7 +1,7 @@
-\section{Demostraciones complementarias de SP7}
+\subsection{Demostraciones complementarias de la etapa E7 (SP3)}
 \label{app:sp7-proofs}
 
-SP7 formaliza el tráfico sobre un grafo inflado con movimiento muestreado. El teorema de potencial usa catálogos finitos, recursos no ponderados y costes fijos; los invariantes del ejecutor requieren mensajes coherentes. La dinámica continua, el contacto, la localización y la red imperfecta se evalúan mediante contratos distintos.
+E7 formaliza el tráfico sobre un grafo inflado con movimiento muestreado. El teorema de potencial usa catálogos finitos, recursos no ponderados y costes fijos; los invariantes del ejecutor requieren mensajes coherentes. La dinámica continua, el contacto, la localización y la red imperfecta se evalúan mediante contratos distintos.
 
 \subsection{Identidad de potencial exacto}
 \label{app:sp7-potential-proof}
@@ -32,4 +32,4 @@ El invariante parte de una zona libre. El arbitraje asigna un propietario único
 
 Sea $S$ un conjunto finito de solicitantes persistentes. Mientras no avanza, $w_i$ aumenta. Tras cruzar, el propietario libera el testigo y abandona la competencia. En cada liberación se elige el máximo lexicográfico de $(w_i,P_i,-i)$. Si algún \(j\in S\) nunca fuese elegido, las concesiones retirarían en tiempo finito a los demás y dejarían a \(j\) como máximo, que tendría que ser seleccionado en la siguiente liberación. La contradicción usa tres hipótesis explícitas: cada propietario libera, \(S\) permanece finito y ningún agente reingresa indefinidamente.
 
-Estos invariantes certifican exclusión lógica de celdas en los instantes muestreados. La separación euclídea entre muestras depende de que la inflación represente la huella orientada y de que la interpolación respete esa envolvente. La ejecución física añade para ello una guardia como la de SP5.
+Estos invariantes certifican exclusión lógica de celdas en los instantes muestreados. La separación euclídea entre muestras depende de que la inflación represente la huella orientada y de que la interpolación respete esa envolvente. La ejecución física añade para ello una guardia como la de E5.

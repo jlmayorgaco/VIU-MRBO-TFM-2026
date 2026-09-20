@@ -1,0 +1,525 @@
+Jorge Luis Mayorga Taborda                                                                                     TFM MROB · Revisión sistematizada V3 · edición visual de seis páginas
+
+De la asignación abstracta al transporte físico
+Revisión sistematizada de coaliciones heterogéneas, transporte cooperativo y tráfico multi-AMR
+Corte: 13 de septiembre de 2026 · corpus analítico: 244 documentos · síntesis visual restaurada y ampliada
+
+ Resumen. Se examina por qué formación de coaliciones, transporte físi-                               Abstract. This mapping review asks why coalition formation, physical
+ co y tráfico siguen desconectados. El registro reunió 3 014 identidades; 244                         transport, and traffic coordination remain weakly connected. The registry
+ documentos integraron el corpus, 168 tenían texto adecuado y 20 recibie-                             contained 3 014 identities; 244 acquired papers formed the corpus, 168
+ ron lectura cercana. Las señales SP1, SP2 y SP3 fueron 115, 15 y 20; solo                            had adequate text, and 20 were close-read. SP1, SP2, and SP3 occurred in
+ 2 enlazaron SP1–SP2, 10 SP1–SP3 y ninguno SP2–SP3 o los tres. La brecha                              115, 15, and 20 papers; only 2 linked SP1–SP2, 10 linked SP1–SP3, and none
+ apunta a una arquitectura distribuida certificada por capas.                                         linked SP2–SP3 or all three. The gap motivates a layer-certified distributed
+                                                                                                      architecture.
+Método y regla de inferencia
+Se ejecutaron 22 búsquedas derivadas de 16 familias conceptuales en WoS, Crossref, OpenAlex y arXiv, más rastreo manual. Se sigue
+PRISMA/PRISMA-S cuando aplica [1,2] , sin declarar exhaustividad: WoS quedó incompleto en F01/F02, la API de arXiv fue parcial y Google
+Scholar no alimentó conteos. Método, arquitectura, aplicación y validación son señales multietiqueta de título/resumen; solo las 20 fichas
+localizadas sustentan afirmaciones detalladas.
+
+                            Mapa metodológico recalculado · corpus V3 completo y anclas de lectura cercana
+
+
+             Data-driven
+
+
+                            Zitouni 2020
+                            Song 2026                                                   Tuci 2018
+                                                                                                                                            Varghese 2026
+
+            Composición
+                                                                                      Verma 2025
+
+                                                                        Mazdin 2021
+
+
+                                                                                                    Guerrero 2017
+                      Ramchurn 2010
+                                                                                          Muhammed 2026
+ White-box / optimización
+                                                                               De Ryck 2021                     Liu--Shell 2013
+
+                                  Autoridad local                                 Híbrida/ambigua                                  Autoridad central
+
+
+                                            Aprendizaje        Juegos         Consenso                 Seguridad/CBF       Lectura cercana
+                                            Metaheurística     Mercados       Control/formación        Optimización        Mapeo título/resumen
+
+
+
+
+          Ejes ordinales derivados de señales; la posición no representa calidad, novedad ni rendimiento. Un artículo puede activar varias familias; se muestra la de mayor prioridad gráfica.
+
+
+
+Figura 1. Mapa metodológico recalculado. Los 244 puntos representan el corpus V3; el contorno negro identifica lecturas cercanas y las etiquetas muestran anclas
+interpretativas.
+                            Fuente: elaboración propia desde analytic_corpus_v3.csv; geometría ordinal y descriptiva, no ranking de calidad o rendimiento.
+
+
+
+
+                        Coalición / SP1                      Transporte / SP2                     Red / transversal                 Fundacional / survey
+
+
+                         18 115                                23          15                         15         79                        6           19
+                         legado            V3                  legado        V3                       legado       V3                    legado        V3
+
+
+
+ Cortes no intercambiables: legado n=59 (conteos de familia impresos) frente a V3 n=244 (señales multietiqueta; la cuarta tarjeta compara ‘fundacional’ con rol SURVEY).
+
+
+Figura 2. Comparación documentada entre el corte legado y V3. Se preservan los números antiguos, pero no se confunden taxonomías distintas.
+                                                Fuente: valores legados impresos en el .tex entregado; V3 desde tablas de temas y rol científico.
+
+ Resultado rector. El campo no carece de algoritmos: carece de continuidad entre certificados. Matching, equilibrio o consenso deciden quién par-
+ ticipa; no prueban que la coalición genere el wrench requerido ni que la huella carga–robots atraviese el tráfico sin bloqueo.
+
+
+
+
+                                                                                                  1
+Jorge Luis Mayorga Taborda                                                                                                 TFM MROB · Revisión sistematizada V3 · edición visual de seis páginas
+
+Resultados I · qué resuelve cada familia y dónde se detiene
+La matriz recupera la lectura discriminante del informe anterior, pero reemplaza filas no verificadas por doce fuentes con ficha locali-
+zada. Un círculo indica tratamiento explícito, un triángulo alcance parcial y un guion que el componente no fue identificado. No es una
+puntuación de calidad.
+
+
+                             Matriz discriminante de capacidades · 12 fuentes con lectura cercana
+   Ramchurn 2010                      ●                      △                     ●                    —                     —                      —                     △                     —
+
+     Liu--Shell 2013                  ●                     —                     —                      △                    —                      —                     —                     —
+
+     Guerrero 2017                    ●                      △                     ●                     △                    —                      —                     △                     —
+
+       Mazdin 2021                    ●                      △                     ●                     ●                    —                      —                     —                     △
+
+      De Ryck 2021                    ●                      △                     △                     ●                    —                      —                     ●                     —
+
+              An 2023                  △                     △                     △                     △                     ●                     △                     △                     △
+
+        Verma 2025                    ●                     ●                      ●                    —                     —                      —                     —                     —
+
+     Varghese 2026                    ●                     ●                      △                    —                     —                      —                     △                     △
+
+            Tuci 2018                 —                      △                     △                     △                     ●                     △                     —                     △
+
+                Pi 2021               —                     —                     —                      △                     ●                     ●                     —                     △
+
+  Muhammed 2026                       —                     —                     —                      ●                     ●                     ●                     —                     —
+
+          Song 2026                    △                    —                      △                     ●                     △                     —                     △                     △
+                                  Recluta              Heterog.              Coalición             Decisión            Factibilidad            Hardware                Tráfico             Recupera
+                                                                             variable               distrib.              física
+                                                                            explícito                 parcial/solo alcance                      no identificado
+    Codificación conservadora desde fichas localizadas; ‘parcial’ no equivale a implementación end-to-end. La matriz sintetiza alcance, no puntúa calidad.
+
+
+Figura 3. Matriz de capacidades en fuentes seleccionadas para cubrir asignación, coaliciones, transporte y coordinación.
+    Fuente: fichas de evidencia V3 de Ramchurn et al. [3] , Liu y Shell [4] , Guerrero et al. [5] , Tuci et al. [6] , Mazdin y Rinner [11] , De Ryck et al. [12] , An et al. [14] , Verma et al. [17] , Pi et al. [10] ,
+                                                                    Muhammed et al. [19] , Varghese et al. [21] y Song et al. [20] .
+
+ Asignación con restricciones                                              Decisión + red o ruta                                                       Física verificada
+ Ramchurn et al. formulan CFSTP NP-hard y usan                             Mazdin y Rinner estudian fallos y disparo de                                TWINBOT [10] , caging con grippers blandos [16] y
+ MIP como referencia pequeña [3] ; Guerrero et al.                         comunicación [11] ; De Ryck et al. acoplan asigna-                          NMPC descentralizado [19] aportan hardware, pe-
+ añaden plazos e interferencia y contrastan ILP                                                                                                        ro la coalición física verificada permanece peque-
+                                                                           ción descentralizada y routing industrial [12] .
+ con subastas [5] .                                                                                                                                    ña.
+
+Modalidades físicas: una taxonomía que no debe colapsarse
+
+
+                         Carga soportada                            Acople rígido                         Empuje / caging                        Grasping / brazos
+
+
+
+
+                           modo primario TFM                        contacto prehensil                       modo alternativo                    manipulación articulada
+
+
+ Las modalidades comparten el objetivo de transporte, pero no la misma cinemática, modelo de contacto ni prueba de estabilidad; no deben fusionarse bajo una única garantía.
+
+
+Figura 4. Cuatro mecanismos de transporte. El TFM adopta carga soportada/prehensil como modo primario; empuje/caging queda como extensión con modelo
+propio.
+                              Fuente: elaboración propia con la taxonomía de estrategias de transporte de Tuci et al. [6] y la revisión de plataformas de An et al. [14] .
+
+
+Qué permanece válido de los métodos clásicos                                                                     La distinción crucial∑
+La optimización exacta hace explícitas capacidades, plazos y ex-                                                 Capacidad agregada, i ci ≥ dk , es necesaria pero no suficiente. La
+clusiones; los mercados pueden ser óptimos bajo estructura uno-                                                  geometría de contacto, fricción, saturación y reparto de esfuerzo de-
+a-uno [4] ; los juegos expresan incentivos; consenso y comunicación                                              terminan si el wrench es realizable; luego la huella conjunta, no la
+por eventos coordinan estimaciones [8,11] ; MPC, impedancia y CBF ac-                                            ruta individual, determina factibilidad de tráfico. La revisión obliga
+túan sobre dinámica y seguridad [13,18,19] . Ninguna familia domina                                              a validar ambas interfaces por separado.
+todas las interfaces.
+ Lectura conjunta. Las familias no “mueren”; cambian de función dentro de composiciones: la subasta propone, el solver acota, el consenso mantiene
+ consistencia y el controlador certifica restricciones físicas.
+
+
+
+
+                                                                                                             2
+Jorge Luis Mayorga Taborda                                                                                                                               TFM MROB · Revisión sistematizada V3 · edición visual de seis páginas
+
+Resultados II · intersecciones y presupuesto de autoridad
+El gráfico original mezclaba discriminantes manuales y posiciones cualitativas. La edición restaurada conserva esos valores como símbolos
+legados y añade una medición reproducible: proporciones dentro de cada corpus y un score arquitectónico derivado de resúmenes. Así se
+puede ver la evolución sin atribuir precisión inexistente al corte antiguo.
+
+                                       (a) Coberturas en su propio denominador                                           (b) Presupuesto de autoridad por etapa
+                                                                                                                                     n=61
+
+           Transporte compartido                                                          39.0%              Reclutar
+
+                    Reclutamiento                                                30.5%
+
+                Certificación física                                22.0%
+                                                             16.9%                                                                                n=3
+          Transporte + distribuido
+                                                                                                            Certificar
+ Heterogéneo + coalición variable                           15.3%
+
+          Transporte + reemplazo              3.4%
+
+        Heterogéneo + transporte           0.0%
+                                                                                                                                       n=2
+  Físico + distribuido + reemplazo         0.0%
+                                                                                                             Acoplar
+
+                                SP1                                                               47.1%
+
+                                SP2               6.1%
+                                                                                                                                        n=7
+                                SP3                  8.2%
+                                                                                                          Transportar
+                          SP1∩SP2          0.8%
+
+                          SP1∩SP3             4.1%
+
+                          SP2∩SP3          0.0%
+                                                                                         Legado n=59                                   n=12         legado ordinal
+                              Triple 0.0%
+                                                                                         V3 n=244          Recuperar                                V3 señal léxica
+
+                                       0             10       20            30           40       50                 local      25      híbrida         75      central
+
+
+
+                Panel (a): las taxonomías legado y V3 no son equivalentes y se muestran separadas. Panel (b): media e IC bootstrap del score 0=distribuido, 50=híbrido/mixto, 100=central, solo entre resúmenes con señal arquitectónica; el legado era cualitativo.
+
+
+
+
+Figura 5. Cobertura normalizada y presupuesto de autoridad por etapa. Los intervalos V3 son bootstrap descriptivo del score léxico, no incertidumbre poblacional.
+                                                               Fuente: legado desde el .tex entregado; V3 desde temas, combinaciones, arquitectura, títulos y resúmenes.
+Red-team: seis resultados fuertes que no cierran el sistema completo
+Fuente                                     Resultado que sí aporta                                                            Interfaz que queda abierta
+
+Ramchurn et al.                            Coaliciones espacio-temporales, formulación MIP                                    No modela contacto, wrench ni tráfico de una carga compartida.
+2010 [3]                                   y heurísticas para un problema NP-hard.
+De Ryck et al.                             Asignación descentralizada con restricciones de                                    La ruta es de robots/tareas; no certifica una huella multi-robot acoplada.
+2021 [12]                                  routing para entornos industriales.
+Verma et al. 2025 [17]                     Matching heterogéneo hasta 2.000 robots y 400                                      Central, estático y sin física: escala computacional, no escala de transporte.
+                                           tareas; construcción O(|E|).
+Varghese et al.                            Coordinación central híbrida en Gazebo con                                         Techo útil de simulación, pero no autoridad local ni carga compartida certificada.
+2026 [21]                                  cinco robots y reasignación dinámica.
+Muhammed et al.                            NMPC descentralizado en dos AMR, 10 Hz, RMSE                                       Pareja fija: no reclutamiento, coalición variable ni tráfico multi-coalición.
+2026 [19]                                  < 4 cm y reducción de red cercana al 70 %.
+Song et al. 2026 [20]                      Autoasignación, CVT y CBF sin conocimiento                                         Preprint y simulación: falta evidencia física y comparación end-to-end.
+                                           previo del objeto.
+
+La autoridad migra entre capas                                                                                                              La intersección rara es el dato central
+En V3, “distribuido” aparece en 102 resúmenes y “centralizado” en                                                                           SP1 aparece en 115 documentos, SP2 en 15 y SP3 en 20; solo 2 enla-
+56, con coexistencias. El score de la Figura 5 no prueba descentraliza-                                                                     zan SP1–SP2, 10 SP1–SP3, ninguno SP2–SP3 y ninguno los tres. Son
+ción: obliga a preguntar quién observa el estado global, resuelve el                                                                        conteos del corpus adquirido, no prueba de ausencia universal.
+matching, certifica contacto, autoriza movimiento, reserva recursos                                                                         Por qué importa para el TFM
+y decide recuperación.                                                                                                                      El fallo relevante no está dentro de un bloque aislado, sino al pasar
+Escala no es una sola cifra                                                                                                                 de “coalición atractiva” a “coalición físicamente viable” y de allí a
+Separar Nsim , Nhw , tamaño de coalición, cargas simultáneas, CPU,                                                                          “coalición que puede atravesar un sistema congestionado y recupe-
+memoria y mensajes. Dos robots físicos aportan evidencia mecáni-                                                                            rarse”.
+ca; miles de agentes en matching aportan evidencia computacional.
+Una no sustituye a la otra.
+ Brecha defendible. En el corpus adquirido no se identificó una arquitectura que integre reclutamiento local de una coalición heterogénea y variable,
+ certificación física de carga compartida, tráfico para la huella completa y recuperación online, sin autoridad global permanente. Es conclusión de
+ esta revisión, no prioridad universal.
+
+
+
+
+                                                                                                                                       3
+Jorge Luis Mayorga Taborda                                                                                                                                                  TFM MROB · Revisión sistematizada V3 · edición visual de seis páginas
+
+Resultados III · evolución temporal, diversidad y venues
+El dashboard recupera la composición visual de seis paneles y la alimenta íntegramente con V3. El corte legado informaba 54 registros
+fechados, pero no contenía la tabla anual usada por su figura; por rigor no se fabricó una línea histórica. En V3 hay 243 documentos
+fechados y uno sin año.
+
+ Dashboard temporal y estructural · 243 documentos fechados de 244
+
+
+                                 (a) Actividad anual V3                                                                               (b) Cuota temática por periodo
+                                                                                                                                60
+                            30                                                                                                                                              SP1         SP3
+
+
+
+
+                                                                                                             % del periodo
+            documentos
+
+
+
+
+                                                                                                                                                                            SP2         Transversal
+                                                                                                                                40
+                            20
+
+
+                            10                                                                                                  20
+
+
+                            0                                                                                                    0
+                                 2000       2005         2010        2015          2020     2026                                      ≤2010            2011–16               2017–21          2022–26
+
+
+
+                                 (c) Señal arquitectónica                                                                             (d) Diversidad metodológica móvil
+                            60                                                                                                 1.0
+
+
+
+
+                                                                                                         Shannon normalizado
+                                         Distribuida            Leader--follower
+                                                                                                                               0.8
+            % del periodo
+
+
+
+
+                                         Central                Híbrida
+                            40
+                                                                                                                               0.6
+
+                                                                                                                               0.4
+                            20
+                                                                                                                               0.2
+
+                            0                                                                                                  0.0
+                                 ≤2010             2011–16                2017–21         2022–26                                 2002            2008               2014         2020          2026
+
+
+
+                                 (e) Primera señal observada                                                                          (f) Venues recurrentes
+      Fuerza/imp.                                                                                   IEEE Access                                                                                23
+            MAPF                                                                                                                                                                         20
+                                                                                                                               JINT
+             MPC
+                                                                                            Autonomous Robots                                                         12
+    CBF/seguridad
+                                                                                                                      arXiv                                     10
+    Metaheurística
+                                                                                                        Sensors                                            8
+      Aprendizaje
+                                                                                                                      LNCS                             7
+           Exacta
+                                                                                                    Frontiers RAI                                  6
+        Consenso
+                                 1980                  1995                2010             2026                                      0       5                10           15         20        25
+
+
+
+
+ Estructura visual restaurada. El corte legado informaba n=54 fechados, pero su tabla anual no fue entregada: no se dibuja una curva histórica ficticia. Paneles (b)--(d) son multietiqueta; 2026 está incompleto.
+
+
+
+Figura 6. Dashboard temporal y estructural del corpus V3: actividad, temas, arquitectura, diversidad de métodos, primeras señales y venues recurrentes.
+                                                       Fuente: analytic_corpus_v3.csv, theme_period_v3.csv y top_venues_v3.csv; clasificación multietiqueta y 2026 incompleto.
+
+
+Persistencia temática, no reemplazo                                                                                                                            Diversidad y emergencia
+SP1 permanece cerca de 45–50 % en los cuatro periodos; SP2 baja                                                                                                La diversidad móvil de señales metodológicas aumenta, sobre todo
+de 8,6 % a 2,5 % y retorna a 7,9 %; SP3 crece hasta 11,4 % en 2017–                                                                                            después de 2015. CBF/seguridad aparece más tarde que mercados,
+21 y queda en 7,9 % en 2022–26. La señal transversal oscila entre                                                                                              consenso y optimización; MPC, fuerza/impedancia y MAPF son seña-
+25,0 % y 40,0 %. Esto no describe una sucesión de paradigmas, sino                                                                                             les recientes y todavía pequeñas. “Primera señal” depende del cor-
+una expansión con prioridades superpuestas.                                                                                                                    pus y del vocabulario: no fecha la invención de un método.
+Arquitectura modular                                                                                                                                       Autores, venues y aplicaciones
+La señal distribuida domina a la central en todos los periodos, pe-                                                                                        El corpus contiene 807 cadenas de autor sin desambiguación y 117
+ro no crece monótonamente y alcanza 38,2 % en 2022–26 frente a                                                                                             venues. Lideran IEEE Access (23), JINT (20), Autonomous Robots
+48,1 % en 2017–21. La central aumenta hasta 27,0 % reciente. La lec-                                                                                       (12), arXiv (10) y Sensors (8). Aplicaciones más señaladas: búsque-
+tura plausible es composición híbrida por etapas, no victoria lineal                                                                                       da/rescate/exploración (33), UAV (27), almacén/logística (18) y trans-
+de la descentralización.                                                                                                                                   porte/manipulación (14).
+ Narrativa emergente. La historia no es “método A sustituye a B”, sino “la arquitectura absorbe más funciones”: exacta como oráculo, mercado
+ como mecanismo de propuesta, consenso como infraestructura, aprendizaje como módulo y MPC/CBF como capa de ejecución o seguridad.
+
+
+
+
+                                                                                                                                                       4
+Jorge Luis Mayorga Taborda                                                                          TFM MROB · Revisión sistematizada V3 · edición visual de seis páginas
+
+Resultados IV · métodos, evidencia y cadena de certificados
+Los periodos contienen 35, 40, 79 y 89 documentos. Se comparan proporciones internas para evitar que el crecimiento del corpus se
+confunda con crecimiento metodológico. Cada documento puede activar varias familias; frecuencia significa atención en el corpus, no
+rendimiento.
+                                                                                                                                  (b) Δ temprano→reciente
+                                   (a) Cuota de documentos del periodo                                                            (puntos porcentuales)
+
+       Consenso/distribución           20.0%                20.0%               31.6%               24.7%                                           +4.7
+
+            Subasta/mercado            22.9%                17.5%               16.5%               13.5%                       -9.4
+
+                  Aprendizaje           2.9%                 5.0%               17.7%               15.7%                                                       +12.8
+
+    Metaheurística evolutiva            0.0%                 5.0%               16.5%                11.2%                                                    +11.2
+
+        Control de formación           14.3%                 5.0%                5.1%                  7.9%                        -6.4
+
+ Comportamiento/enjambre                8.6%                 5.0%                0.0%                  5.6%                            -3.0
+
+             Teoría de juegos           2.9%                 5.0%                3.8%                  3.4%                                       +0.5
+
+     Seguridad reactiva/CBF             0.0%                 2.5%                2.5%                  6.7%                                              +6.7
+
+        Optimización exacta             5.7%                 0.0%                5.1%                  2.2%                            -3.5
+
+                                       ≤2010               2011–16              2017–21            2022–26                        −10         0          10
+                                       (n=35)               (n=40)               (n=79)             (n=89)
+                Señales nuevas en 2022–26: MPC 2.2%, fuerza/impedancia 2.2% y MAPF/búsqueda 2.2%. Clasificación multietiqueta de título/resumen; 2026 es un año incompleto.
+
+
+Figura 7. Evolución metodológica normalizada. Mercados pierden cuota relativa; aprendizaje y metaheurísticas se expanden; CBF/seguridad emerge, sin que ninguna
+familia sustituya a todas las demás.
+                                       Fuente: method_period_v3.csv; señales de título/resumen, categorías coexistentes y 2026 incompleto.
+
+
+                               Cobertura temática y de interfaces                                                 Madurez de validación observada
+
+ SP1: coalición/asignación                                                                        115
+                                                                                                    Simulación                                                           99 (40.6%)
+
+      SP2: transporte físico            15
+
+  SP3: planificación/tráfico                20                                      Señal de caso industrial                      25 (10.2%)
+
+                  SP1 ∩ SP2        2
+
+                  SP1 ∩ SP3            10                                                    Experimento físico          12 (4.9%)
+
+                  SP2 ∩ SP3 0
+
+                                                                                                Análisis formal        7 (2.9%)
+           SP1 ∩ SP2 ∩ SP3 0
+
+                               0        20           40         60         80         100        120              0        20          40           60           80     100
+
+            Conteos multietiqueta sobre n=244. ‘Caso industrial’ puede describir un escenario simulado; no equivale a despliegue real.
+
+Figura 8. Cobertura de interfaces y madurez de validación. “Caso industrial” puede ser un escenario simulado y no equivale a despliegue real.
+                                            Fuente: tablas V3 de temas, combinaciones y validación; conteos multietiqueta sobre n = 244.
+Figura 9. Cadena de certificados propuesta para convertir una asignación atractiva en transporte ejecutable y recuperable.
+
+
+                        1 · Estratégico                             2 · Físico                                     3 · Tráfico
+                                            acepta/rechaza
+               miembros, habilidades y roles               geometría, contacto y wrench coste factiblehuella, ruta y recurso compartido
+             utilidad, atomicidad, compromiso           actuación, estabilidad, seguridad              conflicto, congestión, deadlock
+
+
+
+
+                                                                      precio de congestión / replanteamiento
+
+
+
+                                                    Fuente: elaboración propia a partir de la discontinuidad SP1–SP3 observada.
+
+                    Estratégico                                                       Físico                                                               Tráfico
+  ¿Quién participa y bajo qué utilidad, habilidad,            ¿Puede esa geometría generar el movimiento y                      ¿Puede la huella conjunta circular, negociar
+                rol y compromiso?                                      esfuerzo sin violar límites?                                       recursos y recuperarse?
+
+ Implicación científica. El aporte publicable no es otro selector de tareas aislado, sino una interfaz verificable entre decisión, mecánica y tráfico,
+ con el oráculo central como techo de calidad y la arquitectura distribuida evaluada por coste, comunicación y degradación.
+                                                                                         5
+Jorge Luis Mayorga Taborda                                                                                                                             TFM MROB · Revisión sistematizada V3 · edición visual de seis páginas
+
+Agenda experimental y límites de la evidencia
+La síntesis justifica un mecanismo white-box: juego potencial/poblacional para proponer coaliciones, filtro físico para certificarlas y coste
+de tráfico realimentado hacia SP1. La ejecución digital debe describirse como asíncrona y sin rondas globales, no “sin reloj”.
+Diseño mínimo, baselines y métricas
+      Capa         Propuesta                                           Baseline/oráculo                                                  Evidencia y métricas
+
+      SP1  Juego local: unirse, esperar,                               MILP/set partitioning como oráculo;  Factibilidad, utilidad, gap, formación, churn, CPU, mensajes y bytes.
+           cambiar rol o salir; payoff con                             CBBA/subasta distribuida; Húngaro
+           compatibilidad, viaje, margen                               solo si existe reducción uno-a-uno
+           físico y congestión.                                        demostrada.
+    SP2    Certificador de contacto,                                   Leader–follower/estructura virtual;  Error de pose, residual de wrench, fuerza interna, contacto, saturación, energía
+           wrench y actuadores; po-                                    MPC/CBF; reparto central de wrench o y distancia mínima.
+           se/velocidad común y reparto                                impedancia.
+           de esfuerzo.
+    SP3    Planificar la huella completa,                              A*/Dijkstra, priorizada, CBS/ECBS;                                Makespan, throughput, espera, conflictos, deadlock y replanteamientos.
+           negociar corredores y devol-                                ORCA/RVO o CBF-QP para seguridad
+           ver congestión a SP1.                                       reactiva.
+  Integral Eventos locales, temporizado-                               Oráculo end-to-end con información                                Entrega, recuperación, carga perdida, deadline misses y dispersión entre semi-
+           res asíncronos y sustitución o                              global, declarado como techo.                                     llas.
+           disolución controlada.
+
+Fronteras cuantitativas localizadas
+ Fuente                               Evidencia observada                                                              Frontera de extrapolación
+                           [4]
+ Liu y Shell 2013                     Mercado óptimo uno-a-uno; O(n log n) bajo su        3
+                                                                                                                       No certifica coaliciones, contacto ni tráfico.
+                                      estructura.
+                             [17]
+ Verma et al. 2025                    Hasta 2.000 robots/400 tareas; construcción                                      Central, estático y determinista; no escala física.
+                                      O(|E|).
+ Muhammed et al.                      Dos AMR, 10 Hz, RMSE < 4 cm; red reducida                                        Coalición fija; no reclutamiento ni tráfico.
+ 2026 [19]                            cerca de 70 %.
+ Song et al. 2026 [20]                Autoasignación, CVT y CBF sin conocimiento                                       Preprint y simulación; falta hardware y revisión por pares.
+                                      previo del objeto.
+
+Hipótesis todavía no confirmadas                                                                                                         Amenazas a la validez
+      H1: margen físico en el payoff reduce coaliciones inviables, con                                                                   Faltan 255 registros WoS de F01/F02 y la API de arXiv no completó
+      coste de utilidad nominal.                                                                                                         la cartera. El corpus mezcla semillas históricas y descubrimiento di-
+      H2: realimentar congestión reduce makespan y bloqueos frente                                                                       rigido: los porcentajes no estiman prevalencia poblacional. Solo 20
+      a asignar y después enrutar.                                                                                                       fuentes recibieron lectura cercana; no hubo meta-análisis por hete-
+      H3: comunicación por eventos preserva factibilidad con menos                                                                       rogeneidad de tareas, robots, métricas y escenarios. Autores sin des-
+      bytes bajo pérdida/latencia acotada.                                                                                               ambiguar; 2026 incompleto; el corte legado carece de datos crudos
+      H4: el distribuido pierde calidad frente al oráculo en pequeño,                                                                    para recomputación.
+      pero degrada mejor en CPU/red al crecer.                                                                                           Criterio de éxito
+      H5: sustitución local reduce recuperación si existe capacidad ve-                                                                  Instancias idénticas, semillas pareadas, distribución e intervalo de
+      cinal redundante.                                                                                                                  confianza, fallos incluidos y ablaciones de margen físico, congestión
+                                                                                                                                         y comunicación. La simulación es observación empírica, no prueba
+                                                                                                                                         global.
+Referencias verificadas y fuentes primarias
+[1]   Page, M. J., et al. (2021). PRISMA 2020. BMJ, 372, n71. doi:10.1136/bmj.n71.               Inst., 357, 142–178. doi.                                                                  dencies. IEEE Access, 12, 74327–74342. doi.
+[2]   Rethlefsen, M. L., et al. (2021). PRISMA-S. Systematic Reviews, 10, 39.              [9]   Zitouni, F., Harous, S., & Maamri, R. (2020). CBBA and ant colony for MRTA.         [16]   Tejada, J. C., et al. (2025). Soft grippers and caging-based control. JINT, 111, 76.
+      doi:10.1186/s13643-020-01542-z.                                                            IEEE Access, 8, 27479–27494. doi.                                                          doi.
+[3]   Ramchurn, S. D., et al. (2010). Coalition formation with spatial and temporal       [10]   Pi, R., Cieślak, P., Ridao, P., & Sanz, P. J. (2021). TWINBOT. IEEE Access, 9,      [17]   Verma, A., et al. (2025). CF-HMRTA. JINT, 111, 81. doi.
+      constraints. AAMAS, 1181–1188. DBLP.                                                       37668–37684. doi.                                                                   [18]   De Simone, M., et al. (2026). Pose/force control by visual–tactile feedback.
+[4]   Liu, L., & Shell, D. A. (2013). Optimal market-based MRTA. RSS IX.                  [11]   Mazdin, P., & Rinner, B. (2021). Communication-aware coalition formation.                  IEEE RA-L, 11, 4315–4322. doi.
+      doi:10.15607/RSS.2013.IX.033.                                                              IEEE Access, 9, 35088–35100. doi.                                                   [19]   Muhammed, I., Nada, A. A., & El-Hussieny, H. (2026). Decentralized NMPC. Sci.
+[5]   Guerrero, J., Oliver, G., & Valero, O. (2017). Coalitions with deadlines. PLOS      [12]   De Ryck, M., et al. (2022). Decentral task allocation with routing constraints.            Rep., 16, 9824. doi.
+      ONE, 12, e0170659. doi.                                                                    J. Manuf. Syst., 62, 135–144. doi.                                                  [20]   Song, J., Bai, Y., & Wakamiya, N. (2026). Adaptive self-allocation. ar-
+[6]   Tuci, E., Alkilabi, M. H. M., & Akanyeti, O. (2018). Cooperative object transport   [13]   Rao, N., & Sundaram, S. (2022). Safety-critical payload transport. ar-                     Xiv:2602.19070. arXiv.
+      review. Front. Robot. AI, 5, 59. doi.                                                      Xiv:2201.13033. arXiv.                                                              [21]   Varghese, T. G., et al. (2026). Hybrid coordination framework. IEEE Access.
+[7]   Palmer, A. W., Hill, A. J., & Scheding, S. J. (2018). Resource contention with      [14]   An, X., et al. (2023). MRS and cooperative object transport. IEEE OJCS, 4, 23–36.          doi:10.1109/ACCESS.2026.3680629.
+      uncertain timing. ICRA, 3693–3700. doi.                                                    doi.
+[8]   Savino, H. J., et al. (2020). Pose consensus with dual quaternions. J. Franklin     [15]   Ferreira, B. A., et al. (2024). Distributed allocation and scheduling with depen-
+
+
+
+
+  Declaraciones. Datos, scripts y derivados: academic-review/literature-review-v3. Ética: no aplica. Autoría: J. L. Mayorga Taborda definió el problema, supervisó fuentes y responde
+  por la interpretación. IA: apoyo en búsqueda, extracción, código, síntesis y edición; metadatos, conteos y afirmaciones se contrastaron con artefactos trazables y fuentes primarias.
+  Financiación externa: ninguna declarada. Conflictos: ninguno declarado.
+
+
+
+
+                                                                                                                                     6
+

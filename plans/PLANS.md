@@ -1,5 +1,33 @@
 # Planes activos
 
+## Integración v2: gossip delta epistemológico del MegaJuego
+
+**Estado:** en curso (2026-09-18). Se incorporará en `pre-thesis/main-v2.tex`
+como extensión propuesta y se repartirá entre cuerpo, anexo y material
+suplementario. Los valores A/B aportados no se presentan como resultados hasta
+que existan configuración, datos, análisis y manifiesto reproducibles. Plan:
+`plans/2026-09-18-pre-thesis-v2-epistemic-delta-gossip.md`.
+
+## V3 — revisión sistematizada de mapeo y síntesis crítica
+
+**Estado:** manuscrito V3 completado el 2026-09-13 para el corpus disponible.
+El ledger quedó congelado, se ejecutó descubrimiento abierto, se analizaron 244
+documentos y se localizaron pasajes en 20 fuentes. WoS y la ejecución de la API
+de arXiv permanecen parciales y se reportan como limitaciones, no como ausencia.
+
+V3 conserva V1/V2 como corpus exploratorio, ejecuta búsquedas nuevas y
+auditables por fuente, realiza lectura cercana con localizadores y produce una
+síntesis crítica por SP1--SP3. Se clasifica como revisión sistematizada de
+mapeo alineada con PRISMA/PRISMA-S donde aplica; no como meta-análisis ni
+revisión exhaustiva mientras WoS siga parcial y las demás fuentes manuales no
+estén ejecutadas.
+
+La reconciliación posterior de WoS incorporó 154 registros crudos:
+F03--F07 completos, F01 (50/80) y F02 (50/275) parciales. La limitación y los
+hashes vigentes están en `academic-review/inputs/wos/wos_export_manifest.json`.
+La planificación completa está en
+`plans/2026-09-13-systematic-literature-review-v3.md`.
+
 ## Stage 1A — corpus candidato de revisión bibliográfica
 
 **Estado:** completado el 2026-09-12  
@@ -220,3 +248,58 @@ La exportación WoS requiere ahora una acción del usuario en la sesión
 institucional. La validación física Coppelia requiere un directorio de
 preflight aprobado y autorización explícita; ninguna de las dos condiciones
 se infiere desde los resultados CPU.
+
+## Campaña bibliográfica multisource V2 — expansión y evidencia profunda
+
+**Estado:** completada para las fuentes accesibles el 2026-09-13
+**Ruta canónica:** `academic-review/multisource-v2/`
+
+### Objetivo
+
+Extender V1 con búsquedas reproducibles y separadas por fuente en arXiv,
+Semantic Scholar, CORE, OpenAIRE, DBLP, DOAJ, Crossref y OpenAlex; enriquecer
+identificadores y acceso abierto con Unpaywall/OpenCitations; reconciliar sin
+alterar V1; y preparar la lectura profunda y los paquetes manuales para
+Google Scholar, WoS, Scopus e IEEE Xplore.
+
+### Restricciones y compuertas
+
+- [x] Ejecutar la celosía F1–F16 con ventanas primaria y fundacional según la
+  configuración versionada.
+- [x] Registrar cada petición, respuesta, error, credencial ausente y caché;
+  nunca inferir cobertura de una fuente no ejecutada.
+- [x] Mantener V1 inmutable y producir únicamente derivados V2.
+- [x] No raspar Google Scholar ni automatizar sesiones autenticadas de WoS,
+  Scopus o IEEE Xplore; generar consultas, filtros y formato de exportación
+  para revisión manual.
+- [x] Ejecutar como máximo una ronda de reparación después del primer
+  screening V2; no repetir experimentos del TFM en esta campaña.
+- [x] Separar lectura cercana verificada de texto completo, coding estructural
+  asistido y cola pendiente de verificación del autor.
+
+### Criterios de aceptación
+
+- [x] Manifiesto de campaña con hashes de configuración, código y artefactos.
+- [x] Logs por fuente, corpus reconciliado, matriz de solapamiento y análisis
+  de rendimiento marginal por fuente.
+- [x] Informe de cobertura que declare explícitamente fuentes completas,
+  parciales, pendientes y no consultadas.
+- [x] Paquetes manuales reproducibles para Scholar/WoS/Scopus/IEEE.
+- [x] Pruebas de normalización, deduplicación, parsing y de no promoción de
+  metadatos a evidencia científica.
+
+### Riesgo principal
+
+Las APIs abiertas tienen límites, políticas y coberturas distintas; una
+respuesta vacía o una credencial ausente no equivale a ausencia de literatura.
+La campaña conservará ese estado como limitación observable.
+
+### Resultado V2
+
+Se generaron 1.225 registros normalizados, 3.033 candidatos reconciliados con
+V1, 500 enriquecimientos Unpaywall, 1.789 aristas OpenCitations, 60 entradas
+en la cola de evidencia y 693 artefactos hash-bound. Crossref, OpenAlex,
+Semantic Scholar, OpenAIRE y DOAJ devolvieron resultados; arXiv quedó limitado
+por rate limit, DBLP por bloqueo de red, CORE por credencial ausente y las
+cuatro bases manuales quedaron pendientes de exportación humana. La campaña
+no afirma saturación, novedad ni lectura profunda completa.

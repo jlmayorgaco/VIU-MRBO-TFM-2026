@@ -1,4 +1,4 @@
-"""Build and validate the VIU SP1 levels working document (N1, N2 and N3)."""
+"""Build and validate the VIU SP1 levels working document (N1--N4)."""
 
 from __future__ import annotations
 
@@ -25,8 +25,9 @@ ACTIVE_LEVEL_DIRS = {
     "n1": "n1_v2",
     "n2": "n2_v1",
     "n3": "n3_v2",
+    "n4": "n4_v2",
 }
-EXPECTED_PAGES = 26
+EXPECTED_PAGES = 48
 
 
 def _read_json(path: Path) -> dict[str, object]:
@@ -38,7 +39,16 @@ def _tex_integer(value: object) -> str:
 
 
 def _tex_float(value: object, decimals: int = 3) -> str:
-    return f"{float(value):.{decimals}f}".replace(".", r"{,}")
+    """Coma decimal espanola, sin decimales que solo aportan ceros.
+
+    100,0 % se lee peor que 100 %, y 54,0 peor que 54. El valor no cambia:
+    solo se retira la parte decimal cuando es nula.
+    """
+
+    text = f"{float(value):.{decimals}f}"
+    if "." in text:
+        text = text.rstrip("0").rstrip(".")
+    return text.replace(".", r"{,}")
 
 
 def _tex_scientific(value: object, decimals: int = 2) -> str:
@@ -48,7 +58,7 @@ def _tex_scientific(value: object, decimals: int = 2) -> str:
     exponent = int(math.floor(math.log10(abs(numeric))))
     mantissa = numeric / (10**exponent)
     formatted = f"{mantissa:.{decimals}f}".replace(".", r"{,}")
-    return rf"{formatted}\times10^{{{exponent}}}"
+    return rf"{formatted} \times 10^{{{exponent}}}"
 
 
 def _tex_pvalue(value: object) -> str:
@@ -65,7 +75,7 @@ def _tex_pvalue(value: object) -> str:
         return _tex_float(numeric, 4)
     exponent = int(math.floor(math.log10(numeric)))
     mantissa = numeric / (10**exponent)
-    return rf"{_tex_float(mantissa, 1)}\times10^{{{exponent}}}"
+    return rf"{_tex_float(mantissa, 1)} \times 10^{{{exponent}}}"
 
 
 def _tex_text(value: object) -> str:
@@ -436,6 +446,11 @@ def generate_metrics_tex() -> Path:
             "NThreeCochranP": _tex_pvalue(n3["e2_cochran_p"]),
             "NThreeFriedmanQ": _tex_float(n3["e2_friedman_stat"], 1),
             "NThreeFriedmanP": _tex_pvalue(n3["e2_friedman_p"]),
+            "NThreeKendallW": _tex_float(
+                n3["e2_friedman_stat"]
+                / (n3["e2_common_support_worlds"] * (3 - 1)),
+                3,
+            ),
             "NThreeMcNemarP": _tex_pvalue(
                 max(n3["e2_mcnemar_holm"]["capacity_cbba_rb|weighted_grape"],
                     n3["e2_mcnemar_holm"]["capacity_cbba_rb|weighted_pair_grape"])
@@ -511,6 +526,105 @@ def generate_metrics_tex() -> Path:
                 macros[f"NThree{regime.capitalize()}Pct{tag}"] = _tex_float(
                     100.0 * n3[key], 1
                 )
+
+    # ------------------------------------------------------------------ N4
+    n4 = _read_json(LEVELS_OUTPUT_ROOT / "n4_v2" / "key_metrics.json")
+    n4_short = {
+        "capacity_cbba_rb": "Cbba",
+        "weighted_grape": "Grape",
+        "weighted_pair_grape": "PairGrape",
+        "geo_qpg_u": "QpgU",
+        "geo_qpg_smith": "Smith",
+        "geo_qpg_lll": "Lll",
+        "geo_qpg_p": "QpgP",
+        "geo_qpg_c3": "CThree",
+        "geo_qpg_cf": "QpgCf",
+        "geo_qpg_d": "QpgD",
+    }
+    family = n4["family_summary"]
+    contrasts = {
+        (row["left"], row["right"], row["metric"]): row
+        for row in n4["paired_contrasts"]
+    }
+    risks = {
+        (row["left"], row["right"]): row
+        for row in n4["risk_differences"]
+    }
+    c3_gap = contrasts[("geo_qpg_c3", "geo_qpg_u", "optimality_gap")]
+    smith_gap = contrasts[("geo_qpg_smith", "geo_qpg_u", "optimality_gap")]
+    lll_gap = contrasts[("geo_qpg_lll", "geo_qpg_u", "optimality_gap")]
+    d_gap = contrasts[("geo_qpg_d", "geo_qpg_cf", "optimality_gap")]
+    d_bytes = contrasts[("geo_qpg_d", "geo_qpg_cf", "bytes_per_agent")]
+    d_runtime = contrasts[("geo_qpg_d", "geo_qpg_cf", "runtime_ms")]
+    c3_risk = risks[("geo_qpg_c3", "geo_qpg_u")]
+    d_risk = risks[("geo_qpg_d", "geo_qpg_cf")]
+    scale_d = n4["scaling_fits"]["geo_qpg_d"]
+    scale_u = n4["scaling_fits"]["geo_qpg_u"]
+    scale_rows = {
+        (row["method"], int(row["N"])): row for row in n4["scaling_summary"]
+    }
+    pop_rows = {
+        (row["method"], int(row["n_robots"])): row
+        for row in n4["population_context"]
+    }
+    macros.update(
+        {
+            "NFourWorlds": _tex_integer(n4["family_worlds"]),
+            "NFourRows": _tex_integer(n4["family_rows"]),
+            "NFourCThreeGapDiffPct": _tex_float(100.0 * c3_gap["median_difference"], 1),
+            "NFourCThreeGapDiffLowPct": _tex_float(100.0 * c3_gap["ci_low"], 1),
+            "NFourCThreeGapDiffHighPct": _tex_float(100.0 * c3_gap["ci_high"], 1),
+            "NFourCThreeGapP": _tex_pvalue(c3_gap["wilcoxon_p"]),
+            "NFourCThreeRiskPct": _tex_float(100.0 * c3_risk["risk_difference"], 2),
+            "NFourCThreeRiskLowPct": _tex_float(100.0 * c3_risk["ci_low"], 2),
+            "NFourCThreeRiskHighPct": _tex_float(100.0 * c3_risk["ci_high"], 2),
+            "NFourSmithGapDiffPct": _tex_float(100.0 * smith_gap["median_difference"], 1),
+            "NFourLllGapDiffPct": _tex_float(100.0 * lll_gap["median_difference"], 1),
+            "NFourDGapDiffPct": _tex_float(100.0 * d_gap["median_difference"], 2),
+            "NFourDRiskPct": _tex_float(100.0 * d_risk["risk_difference"], 2),
+            "NFourDByteDiff": _tex_integer(round(d_bytes["median_difference"])),
+            "NFourDByteDiffLow": _tex_integer(round(d_bytes["ci_low"])),
+            "NFourDByteDiffHigh": _tex_integer(round(d_bytes["ci_high"])),
+            "NFourDRuntimeDiff": _tex_float(d_runtime["median_difference"], 1),
+            "NFourDpopWorlds": _tex_integer(n4["dpop"]["worlds"]),
+            "NFourDpopMatches": _tex_integer(n4["dpop"]["feasibility_matches"]),
+            "NFourDpopMaxError": _tex_scientific(n4["dpop"]["max_absolute_objective_error"], 2),
+            "NFourDpopMaxEntries": _tex_integer(n4["dpop"]["max_utility_entries"]),
+            "NFourDpopMaxBytes": _tex_integer(n4["dpop"]["max_payload_bytes"]),
+            "NFourScaleSlopeD": _tex_float(scale_d["runtime_ms_median"]["slope"], 2),
+            "NFourScaleSlopeDLow": _tex_float(scale_d["runtime_ms_median"]["ci_low"], 2),
+            "NFourScaleSlopeDHigh": _tex_float(scale_d["runtime_ms_median"]["ci_high"], 2),
+            "NFourScaleRSquaredD": _tex_float(scale_d["runtime_ms_median"]["r_squared"], 3),
+            "NFourScaleSlopeU": _tex_float(scale_u["runtime_ms_median"]["slope"], 2),
+            "NFourScaleSlopeULow": _tex_float(scale_u["runtime_ms_median"]["ci_low"], 2),
+            "NFourScaleSlopeUHigh": _tex_float(scale_u["runtime_ms_median"]["ci_high"], 2),
+            "NFourScaleRSquaredU": _tex_float(scale_u["runtime_ms_median"]["r_squared"], 3),
+            "NFourScaleRuntimeDMax": _tex_float(scale_rows[("geo_qpg_d", 64)]["runtime_ms_median"], 1),
+            "NFourScaleRuntimeUMax": _tex_float(scale_rows[("geo_qpg_u", 64)]["runtime_ms_median"], 1),
+            "NFourScaleBytesDMax": _tex_integer(round(scale_rows[("geo_qpg_d", 64)]["bytes_per_agent_median"])),
+            "NFourScaleBytesUMax": _tex_integer(round(scale_rows[("geo_qpg_u", 64)]["bytes_per_agent_median"])),
+            "NFourPopLogitHundredPct": _tex_float(100.0 * pop_rows[("Logit-D-annealed", 100)]["convergence_rate"], 1),
+            "NFourPopBnnHundredPct": _tex_float(100.0 * pop_rows[("BNN-D-preconditioned", 100)]["convergence_rate"], 1),
+            "NFourPopRepHundredPct": _tex_float(100.0 * pop_rows[("Replicator-D-preconditioned", 100)]["convergence_rate"], 1),
+            "NFourPopSmithHundredPct": _tex_float(100.0 * pop_rows[("Smith-D-preconditioned", 100)]["convergence_rate"], 1),
+        }
+    )
+    for method, tag in n4_short.items():
+        macros[f"NFourFeasPct{tag}"] = _tex_float(
+            100.0 * family[method]["feasibility"], 1
+        )
+        macros[f"NFourGapPct{tag}"] = _tex_float(
+            100.0 * family[method]["gap_median"], 1
+        )
+        macros[f"NFourBytes{tag}"] = _tex_integer(
+            round(family[method]["bytes_per_agent_median"])
+        )
+        macros[f"NFourRounds{tag}"] = _tex_integer(
+            round(family[method]["rounds_median"])
+        )
+        macros[f"NFourRuntime{tag}"] = _tex_float(
+            family[method]["runtime_ms_median"], 1
+        )
     lines = [
         "% Generated by scripts/build_sp1_levels_pdf.py; do not edit.",
     ]
@@ -530,12 +644,16 @@ def _run_lualatex(output_dir: Path) -> Path:
     biber = shutil.which("biber")
     if biber is None:
         raise RuntimeError("biber is required to resolve the SP1 citations.")
+    # LuaLaTeX resolves a relative output directory from ``thesis/`` because
+    # that is the compilation working directory.  Resolve it here so the
+    # builder, Biber and the post-build checks all address the same artifact.
+    output_dir = output_dir.resolve()
     command = [
         executable,
         "-interaction=nonstopmode",
         "-halt-on-error",
         "-file-line-error",
-        "-jobname=SP1_levels_N1_N2_N3",
+        "-jobname=SP1_levels_N1_N2_N3_N4",
         f"-output-directory={output_dir}",
         "sp1_levels_23p/main.tex",
     ]
@@ -572,7 +690,7 @@ def _run_lualatex(output_dir: Path) -> Path:
         str(output_dir),
         "--output-directory",
         str(output_dir),
-        "SP1_levels_N1_N2_N3",
+        "SP1_levels_N1_N2_N3_N4",
     ]
     completed = subprocess.run(
         biber_command,
@@ -602,10 +720,10 @@ def _run_lualatex(output_dir: Path) -> Path:
         "\n".join(logs),
         encoding="utf-8",
     )
-    built = output_dir / "SP1_levels_N1_N2_N3.pdf"
+    built = output_dir / "SP1_levels_N1_N2_N3_N4.pdf"
     if not built.is_file():
         raise RuntimeError(
-            "LuaLaTeX completed without producing SP1_levels_N1_N2_N3.pdf."
+            "LuaLaTeX completed without producing SP1_levels_N1_N2_N3_N4.pdf."
         )
     return built
 
@@ -701,7 +819,7 @@ def build_pdf(output_dir: Path) -> dict[str, object]:
     output_dir.mkdir(parents=True, exist_ok=True)
     metrics_path = generate_metrics_tex()
     built = _run_lualatex(output_dir)
-    final_pdf = output_dir / "SP1_levels_N1_N2_N3.pdf"
+    final_pdf = output_dir / "SP1_levels_N1_N2_N3_N4.pdf"
     if built.resolve() != final_pdf.resolve():
         shutil.copy2(built, final_pdf)
     reader = PdfReader(str(final_pdf))
@@ -733,6 +851,7 @@ def build_pdf(output_dir: Path) -> dict[str, object]:
             "N1": 6,
             "N2": 6,
             "N3": 8,
+            "N4": 22,
         },
         "style": {
             "paper": "A4",
@@ -767,7 +886,7 @@ def build_pdf(output_dir: Path) -> dict[str, object]:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Build the exact 22-page VIU SP1 levels PDF (N1, N2 and N3)."
+        description="Build the exact 48-page VIU SP1 levels PDF (N1--N4)."
     )
     parser.add_argument(
         "--output-dir",

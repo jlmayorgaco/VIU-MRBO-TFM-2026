@@ -22,6 +22,7 @@ import pandas as pd
 import statsmodels.api as smapi
 import yaml
 from matplotlib.colors import LinearSegmentedColormap
+from matplotlib.ticker import FuncFormatter
 from scipy import stats
 from statsmodels.genmod.cov_struct import Exchangeable
 from statsmodels.genmod.families import Binomial
@@ -52,10 +53,24 @@ LAYERS = (
 # Matches the N1 figures so both blocks print at the same scale.
 WIDTH_IN = 5.75
 HEIGHT_IN = 2.02
+# Los valores por defecto pegan el texto al marco; a este tamaño de letra se lee
+# como si estuviera recortado.
+LEGEND_BOX = {
+    "borderpad": 0.55,
+    "labelspacing": 0.45,
+    "handlelength": 1.7,
+    "handletextpad": 0.55,
+    "borderaxespad": 0.6,
+    "framealpha": 0.92,
+}
 
 
 def _decimal_comma(value: float, decimals: int) -> str:
     return f"{value:.{decimals}f}".replace(".", ",")
+
+
+def _spanish_tick(value: float, _position: float | None = None) -> str:
+    return f"{value:g}".replace(".", ",")
 
 
 def bootstrap_median(
@@ -547,7 +562,7 @@ def plot_atomicity(
         ylabel="Brecha de integralidad [%]",
         title="E2 · precio de la atomicidad",
     )
-    axes[0].legend(loc="upper right", fontsize=6.2)
+    axes[0].legend(loc="upper right", fontsize=6.2, **LEGEND_BOX)
 
     rates = summary.set_index("capacity_cv").loc[levels]
     axes[1].errorbar(
@@ -587,7 +602,9 @@ def plot_atomicity(
         title="E2 · dónde aparece la fracción",
         ylim=(-4, 108),
     )
-    axes[1].legend(loc="center right", fontsize=5.9)
+    # La leyenda cabía a la derecha hasta que las etiquetas crecieron: se salía
+    # del eje. Abajo al centro queda espacio libre entre 0 y 40 %.
+    axes[1].legend(loc="lower center", fontsize=5.9, **LEGEND_BOX)
     label_panels(axes)
     figure.tight_layout(pad=0.45, w_pad=1.1)
     return save_figure(figure, output_dir / "n2_atomicity", tight=False)
@@ -640,6 +657,7 @@ def plot_phase(summary: pd.DataFrame, output_dir: Path) -> list[Path]:
     axes[0].grid(False)
     bar = figure.colorbar(image, ax=axes[0], fraction=0.045, pad=0.03)
     bar.set_label("P(factible)", fontsize=7.0)
+    bar.ax.yaxis.set_major_formatter(FuncFormatter(_spanish_tick))
 
     for cv in cvs:
         block = summary.loc[summary["capacity_cv"] == cv].sort_values("pressure")
@@ -657,6 +675,8 @@ def plot_phase(summary: pd.DataFrame, output_dir: Path) -> list[Path]:
         title="E3 · capacidad desperdiciada",
     )
     axes[1].legend(loc="upper right", fontsize=5.6, ncol=2, columnspacing=0.8)
+    axes[1].xaxis.set_major_formatter(FuncFormatter(_spanish_tick))
+    axes[1].yaxis.set_major_formatter(FuncFormatter(_spanish_tick))
     label_panels(axes)
     figure.tight_layout(pad=0.45, w_pad=1.05)
     return save_figure(figure, output_dir / "n2_phase_diagram", tight=False)
@@ -709,6 +729,9 @@ def plot_certification(summary: pd.DataFrame, output_dir: Path) -> list[Path]:
         xlabel="Robots, $N$", ylabel="Brecha MIP [%]",
         title="Brecha si no certifica",
     )
+    for axis in axes:
+        axis.xaxis.set_major_formatter(FuncFormatter(_spanish_tick))
+        axis.yaxis.set_major_formatter(FuncFormatter(_spanish_tick))
     label_panels(axes)
     figure.tight_layout(pad=0.4, w_pad=0.85)
     return save_figure(figure, output_dir / "n2_certification", tight=False)

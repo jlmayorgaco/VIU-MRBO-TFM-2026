@@ -2,7 +2,7 @@ PYTHON ?= python
 PIP ?= $(PYTHON) -m pip
 export PYTHONPATH := src
 
-.PHONY: install test check compile smoke-sp0 smoke-sp1 smoke-sp5 cargo-smoke thesis clean
+.PHONY: install test check compile smoke-sp0 smoke-sp1 smoke-sp1-canonical smoke-sp1-full smoke-sp1-conference sp1-conference smoke-sp5 cargo-smoke thesis clean
 
 install:
 	$(PIP) install -e ".[dev]"
@@ -20,6 +20,18 @@ smoke-sp0:
 
 smoke-sp1:
 	$(PYTHON) -m viu_mrob_tfm.cli.run_sp1_theory --smoke
+
+smoke-sp1-canonical:
+	$(PYTHON) -m viu_mrob_tfm.cli.run_sp1_canonical --config experiments/configs/sp1_canonical_smoke.yaml
+
+smoke-sp1-full:
+	$(PYTHON) -m viu_mrob_tfm.cli.run_sp1_full --canonical-smoke
+
+smoke-sp1-conference:
+	$(PYTHON) -m viu_mrob_tfm.cli.run_sp1_conference --config experiments/configs/sp1_conference_smoke.yaml
+
+sp1-conference:
+	$(PYTHON) -m viu_mrob_tfm.cli.run_sp1_conference --config experiments/configs/sp1_conference_v1.yaml --resume
 
 smoke-sp5:
 	$(PYTHON) -m viu_mrob_tfm.cli.run_sp5 experiments/configs/sp5_payload_transport_smoke.yaml

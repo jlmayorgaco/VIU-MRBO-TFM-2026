@@ -22,6 +22,10 @@ try {
     New-Item -ItemType Directory -Force -Path "build" | Out-Null
 
     Invoke-Checked -Command "python" -Arguments @(
+        "..\scripts\check_protected_tikz_figures.py"
+    )
+
+    Invoke-Checked -Command "python" -Arguments @(
         "..\scripts\export_aws_industrial2_latex.py"
     )
 
@@ -44,6 +48,11 @@ try {
     }
     Invoke-Checked -Command "lualatex" -Arguments $latexArguments
     Invoke-Checked -Command "lualatex" -Arguments $latexArguments
+
+    Invoke-Checked -Command "python" -Arguments @(
+        "..\scripts\check_protected_tikz_figures.py",
+        "--aux", "build\main.aux"
+    )
 
     Write-Host "PDF generado en: $PSScriptRoot\build\main.pdf"
 }

@@ -104,5 +104,7 @@ def test_sp4_evidence_regenerates_audited_artifacts(tmp_path: Path) -> None:
     assert audit["status"] == "passed"
     assert audit["transport_worlds_per_method"] == 18
     assert "\\newcommand{\\SPFourDockWorlds}{108}" in macros
+    assert "\\newcommand{\\SPFourRepTimeout}{0.731}" in macros
+    assert "\\newcommand{\\SPFourCBFTimeout}{0.824}" in macros
     assert "\\newcommand{\\SPFourTransportWorlds}{18}" in macros
     assert (output / "figures" / "fig-sp4-transport-tradeoff.pdf").is_file()

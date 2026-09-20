@@ -1,0 +1,281 @@
+\section{Auditoría de fuentes: qué sostiene cada referencia}
+\label{sec:auditoria}
+
+Una bibliografía extensa no acredita profundidad. La regla que se aplica aquí es
+la inversa: \emph{cada obra citada debe sostener al menos un enunciado concreto
+de este trabajo, y se declara cuál}. Las que solo aportan contexto se declaran
+como contexto y no aparecen en el aparato de resultados.
+
+\begin{table}[!ht]
+\centering\small
+\caption{Cada fuente y el enunciado propio que la usa.}
+\label{tab:auditoria}
+\begin{tabularx}{\textwidth}{@{}p{4.6cm}p{3.5cm}X@{}}
+\toprule
+Fuente & Qué aporta & Enunciado que lo usa \\
+\midrule
+Martínez-Piazuelo, Ocampo-Martínez y Quijano \cite{martinezPiazuelo2025gne}
+  & $\delta$-disipatividad; multiplicadores distribuidos; clases de protocolo;
+    enfoque por analogía e invariancia del simplex; control prescriptivo frente a
+    no prescriptivo de restricciones acopladas; estacionariedad de Nash de las
+    clases de protocolo y sociedades mixtas; modelo de pagos con suavizado y
+    anticipación; lemas de composición por ganancia en cascada y encapsulado;
+    ranura ficticia para convertir un presupuesto en un simplex; dinámica
+    distribuida de multiplicadores y su hipótesis de grafo equilibrado; juegos
+    contractivos y déficit de contractividad
+  & \cref{obs:smith}, \cref{th:smallgain}, \cref{obs:lmi},
+    \cref{th:precio-seguridad}, \cref{obs:smith-acoplado},
+    \cref{obs:alcance-poblacional}, \cref{obs:analogia},
+    \cref{obs:prescriptivo}, \cref{obs:criterio-restricciones},
+    \cref{pr:nash-perturbado}, \cref{obs:desplazamiento-logit},
+    \cref{obs:nash-perturbado-alcance}, \cref{obs:sociedad-mixta},
+    \cref{obs:anticipacion}, \cref{pr:composiciones},
+    \cref{obs:signo-menos}, \cref{obs:convexidad-encapsulado},
+    \cref{obs:recarga}, \cref{obs:racionamiento},
+    \cref{s:equilibrado}, \cref{obs:equilibrado},
+    \cref{obs:multiplicadores-limites}, \cref{def:deficit},
+    \cref{obs:deficit-capas}, \cref{obs:deficit-ciervo} \\
+Glizer y Kelis \cite{glizer2022singular}
+  & problema extremal singular; sucesión minimizante; regularización
+  & \cref{th:autoridad}, \cref{co:guarda}, \cref{obs:autoridad-alcance} \\
+Bullo, Cortés y Martínez \cite{bullo2009distributed}
+  & grafos de proximidad espacialmente distribuidos; orden entre árbol mínimo,
+    vecindad relativa, Gabriel y Delaunay; conservación de componentes conexas;
+    nociones de complejidad temporal y de comunicación para redes robóticas
+  & \cref{def:espacialmente}, \cref{pr:implementable},
+    \cref{obs:eleccion-grafo}, \cref{th:jerarquia-grafos},
+    \cref{obs:esparsificar}, \cref{def:complejidad},
+    \cref{obs:complejidad-tarea}, \cref{obs:complejidad-propia} \\
+Ren y Beard \cite{ren2008distributed}
+  & consenso bajo topología conmutada y unión con árbol generador; metodología
+    de diseño por variable y función de coordinación; taxonomía de
+    acoplamientos; consenso de doble integrador y con entradas saturadas
+  & \cref{th:conmutada}, \cref{pr:factorizada}, \cref{tab:metodologia},
+    \cref{obs:variable-coordinacion}, \cref{obs:acoplamientos},
+    \cref{obs:segundo-orden} \\
+Weiss y Agassi \cite{weiss2023games}
+  & distinción entre dilema del prisionero y caza del ciervo; elegir el juego
+    frente a jugarlo
+  & \cref{pr:caza-ciervo}, \cref{obs:cuenca-ciervo},
+    \cref{obs:precio-no-basta} \\
+Wang, Long, Huang y Wen \cite{wang2024adaptive}
+  & cota de tiempo de asentamiento por función de Lyapunov con potencia
+    fraccionaria; consenso adaptativo en tiempo finito
+  & \cref{le:tiempo-finito}, \cref{obs:tiempo-finito-num},
+    \cref{obs:tiempo-finito-precio} \\
+Cai, Su y Huang \cite{cai2022cooperative}
+  & propiedades estructurales de los sistemas de Euler--Lagrange; observador
+    distribuido de la referencia y su condición de conectividad; principio del
+    modelo interno frente al diseño prealimentado
+  & \cref{pr:propiedades-el}, \cref{obs:propiedades-uso},
+    \cref{def:observador-dist}, \cref{pr:observador-dist},
+    \cref{obs:observador-encaja}, \cref{obs:fuga-modelo-interno} \\
+Zhao, Cui, Hua y Liu \cite{zhao2024hybrid}
+  & objeciones al muestreo periódico; disparo por eventos con temporizador y
+    tiempo mínimo garantizado; control por reinicio y margen de fase; consenso
+    bipartito sobre grafos con signo; muestreo asíncrono con pérdida de
+    paquetes y con retardo; realimentación dinámica de salida
+  & \cref{obs:objeciones-periodico}, \cref{def:etm}, \cref{pr:miet},
+    \cref{obs:temporizador-doble}, \cref{obs:miet-no-acota-max},
+    \cref{pr:reset}, \cref{obs:bipartito}, \cref{obs:hibrido-restante},
+    \cref{obs:perdidas} \\
+Lee, Dimarogonas y Kim \cite{lee2026switching}
+  & span positivo; conmutación no instantánea
+  & \cref{def:span}, \cref{th:span} \\
+Dafermos \cite{dafermos1972multiclass}
+  & asignación multiclase con peaje marginal
+  & \cref{def:clase}, \cref{th:multiclase} \\
+Arcak y Martins \cite{arcak2021dissipativity}
+  & herramientas disipativas para juegos de población
+  & \cref{obs:smith} \\
+Facchinei y Kanzow \cite{facchinei2007gne}
+  & equilibrio generalizado de Nash variacional
+  & \cref{th:vi}, \cref{obs:vi} \\
+Ames \emph{et al.} \cite{ames2017cbf}
+  & funciones de barrera de control
+  & \cref{pr:hocbf}, \cref{le:muestras} \\
+Marden, Arslan y Shamma \cite{marden2009cooperative};
+Wolpert y Tumer \cite{wolpert1999collective}
+  & utilidad marginal y potencial exacto
+  & \cref{th:potencial} \\
+Olfati-Saber y Murray \cite{olfatiSaber2004consensus}
+  & consenso y conectividad algebraica
+  & \cref{th:mapa} \\
+Thrun, Burgard y Fox \cite{thrun2005probabilistic}
+  & rejillas de ocupación en \emph{log-odds}
+  & \cref{le:aditividad}, \cref{th:mapa} \\
+Stewart \cite{stewart2000rigid}
+  & dinámica de cuerpos rígidos con fricción e impacto
+  & \cref{pr:notiron}, \eqref{eq:coulomb} \\
+Rimon y Blake \cite{rimon1996caging}
+  & \emph{caging}
+  & \cref{pr:caging} \\
+Sandholm \cite{sandholm2010population}; Quijano \emph{et al.} \cite{quijano2017role}
+  & dinámicas poblacionales y estacionariedad de Nash; interacciones restringidas
+    por estrategia sobre un grafo
+  & \cref{obs:smith}, \cref{obs:grafo-estrategias} \\
+Siegwart \emph{et al.} \cite{siegwart2011introduction}
+  & clasificación de movilidad; taxonomía de sensores; modelo de error
+    odométrico y ley de propagación; ciclo del filtro extendido
+  & \cref{def:movilidad}, \cref{obs:origen-lemas}, \cref{s:pose},
+    \cref{pr:pose}, \cref{tab:sensores}, \eqref{eq:odometria},
+    \eqref{eq:sigma-delta}, \eqref{eq:propagacion}, \cref{pr:cubo},
+    \cref{obs:emparejamiento}, \cref{def:maniobrabilidad}, \cref{th:icr-comun} \\
+Julier y Uhlmann \cite{julier1997ci}
+  & intersección de covarianzas con correlación desconocida
+  & \cref{pr:interseccion}, \cref{th:asimetria} \\
+Lozovanu y Pickl \cite{lozovanu2024positional}
+  & juegos posicionales y equilibrios estacionarios puros bajo cadena única;
+    procesos semi-Markov con recompensas; clasificación \emph{unichain} frente a
+    \emph{multichain}; descomposición en ganancia y sesgo
+  & \cref{obs:posicional}, \cref{s:unichain}, \cref{obs:multichain},
+    \cref{obs:rescate-caudal}, \cref{pr:sesgo}, \cref{obs:sesgo-desempate} \\
+Kacprzyk, Clempner y Poznyak \cite{clempner2024optimization}
+  & negociación sobre cadenas de Markov controlables; reparto del excedente
+    frente a retribución competitiva; propiedad de selección de la
+    regularización de Tikhonov; límite de la escalarización frente al frente
+    de Pareto; estructura de Stackelberg; solución de Kalai--Smorodinsky;
+    agentes aversos al riesgo en problemas de contrato; diseño conjunto de
+    observador y mecanismo; equilibrio de Nash fuerte frente a desviaciones de
+    coalición; cadenas parcialmente observables; regularización como selector de
+    equilibrio; negociación con punto de desacuerdo; sincronización de señales y
+    duración de ciclo
+  & \cref{obs:precio-vs-negociacion}, \cref{obs:criterio-reparto},
+    \cref{obs:tikhonov-selecciona}, \cref{obs:escalarizacion},
+    \cref{obs:stackelberg}, \cref{obs:kalai},
+    \cref{obs:aversion-riesgo}, \cref{obs:observador-mecanismo},
+    \cref{def:fuerte}, \cref{obs:fuerte-ciervo},
+    \cref{obs:guarda-fuerte}, \cref{obs:pura-observacion},
+    \cref{obs:tikhonov-sesgo}, \cref{obs:corredor-negociacion},
+    \cref{obs:alternancia}, \cref{obs:ciclo-despeje} \\
+Mahmoud \cite{mahmoud2021advanced}
+  & consenso resiliente ante nodos que difunden valores arbitrarios
+  & \cref{obs:consenso-resiliente}, \cref{obs:resiliente-precio} \\
+Simulador propio del megajuego (código en la entrega, resultados por semilla en CSV)
+  & planta con ruedas dinámicas y contacto; mecanismo distribuido de $n$ saltos con
+    cinco protocolos, dos aptitudes, dos pasillos, tres seguridades, dos reclutamientos
+    e hiperjuego; identidad potencial--valor y teorema de entrega ensayados
+  & \cref{th:potencial-valor}, \cref{th:entrega}, \cref{sec:ensayo-cierre} \\
+Proyecto MROB, batería R11 \cite{mrob2026r11}
+  & reparación local certificada por residual y sus controles negativos; revisión
+    conjunta frente al óptimo enumerado; más cálculo no corrige el soporte;
+    certificado de frenado postevento; ADMM frente a mejores respuestas en la
+    misma rama
+  & \cref{pr:certificado-gradiente}, \cref{obs:reparacion-local}, \cref{obs:mas-calculo},
+    \cref{obs:solver-en-rama}, \cref{obs:r11-alcance}, \cref{obs:revision-conjunta-r11},
+    \cref{obs:certificado-postevento} \\
+Mayorga, compendio v0.2 \cite{mayorga2026compendio}
+  & valor de misión sobre continuaciones ejecutables; \emph{commit} certificado por
+    cotas y presupuesto de progreso; margen vectorial y \emph{recourse}; externalidad
+    atómica exacta del juego de trayectorias; Smith en caja; separación de escalas;
+    jerarquía de óptimos; banco reducido de trayectorias continuas; fronteras de la
+    revisión de orden $h$ (compatibilidad completa, NP y W[2], energía libre, brecha
+    espectral, cuatro mecanismos); robustez de la VI, seguimiento por conectividad,
+    frontera retardo--ganancia, límite poblacional; colas MaxWeight; interbloqueo;
+    potencial afín ponderado; grado relativo con rueda
+  & \cref{def:continuaciones}, \cref{pr:commit}, \cref{pr:presupuesto-progreso},
+    \cref{pr:recourse}, \cref{th:externalidad-atomica}, \cref{pr:smith-caja},
+    \cref{pr:convolucion-intencion}, \cref{pr:conectividad-acumulada},
+    \cref{obs:escalas-num}, \cref{def:jerarquia-optimos}, \cref{le:valoracion-2c},
+    \cref{obs:ensayo-r6}, \cref{obs:ensayo-r10},
+    \cref{th:compatibilidad-completa}, \cref{th:mohr}, \cref{pr:hoeffding}, \cref{pr:implementabilidad-tu}, \cref{th:energia-libre}, \cref{th:gap-monotono}, \cref{pr:cuatro-mecanismos}, \cref{th:vi-robusta}, \cref{pr:contraccion-proyectada}, \cref{pr:seguimiento-conectividad}, \cref{pr:obsolescencia}, \cref{pr:frontera-retardo}, \cref{pr:limite-poblacion}, \cref{th:maxweight}, \cref{pr:imposibilidad-fisica}, \cref{th:ciclo-espera}, \cref{pr:potencial-afin-ponderado}, \cref{obs:gne-ineficiente}, \cref{th:grado-relativo-rueda}, \cref{le:barrera-unilateral}, \cref{le:minkowski},
+    \cref{pr:certificado-despeje}, \cref{pr:prioridad-incompleta}, \cref{obs:campanas-n123},
+    \cref{obs:ensayo-mixed2d}, \cref{obs:mixed2d-exclusividad}, \cref{obs:regimen-ventaja},
+    \cref{obs:pago-vectorial} \\
+Mayorga, monografía M1 \cite{mayorga2026m1}
+  & testigo vigente y ejecución concurrente con la negociación; reparto dual
+    en el núcleo del modelo divisible; inversión local y saltos frente a
+    condicionamiento; valor exacto de un actuador adicional; intervalo de
+    optimalidad desde gradiente aproximado; campañas de simulación
+  & \cref{th:testigo}, \cref{pr:nucleo-divisible},
+    \cref{obs:funcion-particion}, \cref{th:saltos},
+    \cref{th:actuador-adicional}, \cref{th:intervalo},
+    \cref{sec:ensayos}, \cref{pr:disco-friccion},
+    \cref{obs:disco-compartido}, \cref{th:cerco}, \cref{co:cerco-movil},
+    \cref{obs:historial-fallos}, \cref{obs:pruebas-software},
+    \cref{obs:agarre-no-monotono}, \cref{obs:precio-no-fuerza},
+    \cref{obs:cuatro-grafos}, \cref{obs:descomposicion-mapa},
+    \cref{pr:descomposicion-R}, \cref{pr:tubo}, \cref{pr:softmin-curvatura},
+    \cref{th:bellman-residual}, \cref{pr:presupuesto-error},
+    \cref{obs:equipo-barato}, \cref{pr:regulacion-local},
+    \cref{pr:ocupacion-absorbente}, \cref{obs:precios-estado},
+    \cref{pr:balance-adaptativo}, \cref{obs:parametros-compartidos},
+    \cref{pr:huella-transversal}, \cref{obs:mando-grande},
+    \cref{pr:reloj-seguro}, \cref{obs:bloque-antisimetrico},
+    \cref{pr:pad-energia}, \cref{pr:ruta-ruedas}, \cref{th:dos-monotonias},
+    \cref{pr:bateria} \\
+Okada \cite{okada2026games}
+  & bloqueo por subcoaliciones y núcleo; superaditividad como hipótesis de la
+    teoría cooperativa; valor de Shapley
+  & \cref{pr:nucleo}, \cref{obs:nucleo-vacio},
+    \cref{obs:nucleo-acoplamiento}, \cref{obs:no-superaditivo},
+    \cref{obs:shapley} \\
+Yadav \cite{yadav2023advanced}
+  & coloración propia y cota por grado máximo; teorema de Berge y caminos
+    aumentantes
+  & \cref{pr:rondas-color}, \cref{obs:rondas-num}, \cref{obs:berge} \\
+Tembine y Barreiro-Gómez \cite{tembine2021meanfield}
+  & juegos de tipo campo medio
+  & \cref{obs:campo-medio} \\
+Yildirim, Reefke y Aktas \cite{yildirim2023warehouse}
+  & niveles estratégico, táctico y operativo; tabulación de enfoques de
+    asignación y de rutas; cuatro tipos de conflicto; bloqueo como espera
+    circular; indicadores de sistema robótico
+  & \cref{tab:posicionamiento}, \cref{tab:asignacion-lit},
+    \cref{obs:hueco-literatura}, \cref{obs:rutas-lit},
+    \cref{tab:conflictos}, \cref{obs:persecucion}, \cref{obs:kpis},
+    \cref{obs:posicionamiento-almacen} \\
+Gorrostieta Hurtado (ed.) \cite{gorrostieta2019applications}:
+  cap.~1, Ismail y Sariff
+  & tres ejes de clasificación de sistemas multi-robot cooperativos
+  & \cref{sec:posicionamiento} \\
+\quad cap.~2, Martins \emph{et al.}
+  & modelo con entradas de velocidad y parámetros identificados; punto
+    controlado fuera del eje
+  & \eqref{eq:vel-dinamica}, \eqref{eq:fuera-eje}, \cref{pr:fuera-eje},
+    \cref{obs:fuera-eje-degradacion}, \cref{obs:rigidez-alcance} \\
+\quad cap.~3, Papatheodorou y Tzes
+  & cobertura colaborativa; diagrama de potencia para agentes heterogéneos;
+    ascenso de gradiente distribuido; cobertura garantizada bajo
+    incertidumbre
+  & \cref{def:cobertura}, \cref{th:potencia}, \cref{pr:ascenso},
+    \cref{obs:ascenso-muestreo}, \cref{obs:cobertura-incertidumbre} \\
+\quad cap.~5, Barber \emph{et al.}
+  & jerarquía de representación geométrica, topológica y semántica
+  & \cref{obs:jerarquia-mapas} \\
+Gerkey y Matarić \cite{gerkey2004taxonomy};
+Choi \emph{et al.} \cite{choi2009cbba};
+Sharon \emph{et al.} \cite{sharon2015cbs};
+Nakamura \emph{et al.} \cite{nakamura1989dynamics}
+  & estado del arte por capas separadas
+  & posicionamiento (\cref{sec:introduccion}); contexto, no aparato \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{observacion}[Obras consultadas que no sostienen ningun enunciado]
+\label{obs:no-usadas}
+La revisión abarcó además obras sobre cadenas de Markov controladas con medidas
+de ocupación, control adaptativo distribuido con parámetros desconocidos, control
+por modos deslizantes y formación líder--seguidor. Ninguna sostiene un enunciado
+propio de este trabajo. Se declaran como rutas de extensión: la formulación de
+\cref{pr:caudal} admite tratamiento como cadena controlada con regularización
+entrópica, y la incertidumbre paramétrica de \cref{obs:adaptacion} admite un
+estimador adaptativo con excitación persistente. Declararlas como rutas y no como
+fundamento es lo que separa una bibliografía usada de una exhibida.
+\end{observacion}
+
+\begin{observacion}[Lo que la biblioteca de robótica móvil no contiene]
+\label{obs:biblioteca-fisica}
+Conviene declarar también un hallazgo negativo, porque sostiene una afirmación
+de posicionamiento. Una búsqueda sobre las obras consultadas de robótica móvil y
+control cooperativo no encuentra ninguna aparición de \emph{wrench} como objeto
+de reparto, ni de cierre de forma, cierre de fuerza o enjaulado. Esas obras
+cubren cinemática, control de seguimiento, consenso y aplicaciones, y son la
+fuente del modelo del vehículo y de su estimación de estado; el reparto de
+esfuerzo entre varios agentes sobre un mismo cuerpo, con unilateralidad y conos
+de fricción, procede de la literatura de manipulación
+\cite{rimon1996caging,bicchi1995closure,stewart2000rigid,nakamura1989dynamics}.
+Que las dos literaturas estén separadas es precisamente el hueco que este
+trabajo ocupa, y por eso el hallazgo se declara en lugar de omitirse.
+\end{observacion}

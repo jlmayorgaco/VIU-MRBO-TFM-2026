@@ -1,0 +1,723 @@
+\section{La reserva es un bien público: el cuarto precio}
+\label{sec:standby}
+
+\Cref{co:terminacion} garantiza terminación y no eficiencia, y
+\cref{th:descomposicion} contabiliza la brecha sin acotarla. Esta sección
+exhibe una fuente de ineficiencia \emph{estructural} —no un artefacto del
+protocolo ni de la topología— y el mecanismo que la corrige. Es, además, un
+resultado contra la propia arquitectura: la reserva que el sistema necesita no
+emerge del juego tal como está planteado.
+
+\subsection{Dos fallos distintos: el de incentivo y el de coordinación}
+
+Antes de la reserva conviene separar dos formas de fracaso que se confunden, y
+que exigen remedios distintos. La literatura de decisión estratégica insiste en
+la diferencia entre el dilema del prisionero —donde desertar es dominante y
+cooperar nunca es equilibrio— y la \emph{caza del ciervo}, donde el éxito exige
+concurrencia y la elección de cada uno depende de lo que espere de los demás:
+lanzarse a la presa mayor es arriesgado, porque quien coopera y no encuentra
+compañía se queda con las manos vacías \cite{weiss2023games}.
+
+\begin{proposicion}[El reclutamiento es una caza del ciervo]
+\label{pr:caza-ciervo}
+Sea un plantel de $n$ AMR, cada uno con la opción de unirse a una coalición de
+tamaño requerido $r^\star$ o dedicarse a otra tarea con pago $w$. Unirse cuesta
+$c$ y rinde $B$ si la coalición alcanza $r^\star$, y nada si no. Si
+$B-c\ge w$ y $r^\star\ge2$, entonces \emph{tanto} el perfil en que todos se unen
+\emph{como} aquel en que ninguno lo hace son equilibrios de Nash.
+\end{proposicion}
+
+\begin{proof}
+Con todos dentro, desviarse da $w\le B-c$. Con nadie dentro, unirse en solitario
+no alcanza $r^\star\ge2$ y da $-c<w$.
+\end{proof}
+
+\begin{observacion}[La cuenca de la cooperación se estrecha con el tamaño]
+\label{obs:cuenca-ciervo}
+La coexistencia de equilibrios no es lo relevante; lo es cuál se alcanza. Sea
+$p^\star$ la creencia mínima sobre la participación ajena que hace de unirse la
+mejor respuesta. Con $n=12$, $B=10$, $c=1$ y $w=3$ se obtiene
+\[
+  \begin{array}{c|ccccccccc}
+    r^\star & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10\\\hline
+    p^\star & 0{,}045 & 0{,}123 & 0{,}205 & 0{,}290 & 0{,}376 & 0{,}463 &
+    0{,}551 & 0{,}641 & 0{,}732
+  \end{array}
+\]
+La cuenca de la cooperación, $1-p^\star$, cae de $0{,}955$ a $0{,}268$. Esto es
+un segundo motivo, independiente del físico, por el que las coaliciones grandes
+son peores: \cref{co:agarre} da la razón mecánica —la movilidad se interseca— y
+esta da la estratégica —cuanta más gente hace falta, más difícil es creer que
+acudirá—. Ambas empujan en la misma dirección y se suman.
+\end{observacion}
+
+\figCiervo
+
+\begin{observacion}[Por qué un precio no basta, y qué sí lo resuelve]
+\label{obs:precio-no-basta}
+Es tentador suponer que el instrumento del resto de este trabajo —un precio—
+resuelve también esto. Solo en parte. Subvencionando la participación con $s$ y
+con $r^\star=6$, la creencia crítica baja de $0{,}376$ a $0{,}338$ con $s=1$, a
+$0{,}241$ con $s=3$, y solo con $s=4$ llega a cero, es decir, solo entonces
+cooperar pasa a ser dominante y el mal equilibrio desaparece. Por debajo de ese
+umbral la subvención \emph{estrecha} la cuenca del fracaso pero no la elimina.
+
+La distinción importa porque el fallo no es de incentivo sino de expectativa: un
+AMR que preferiría unirse se abstiene porque no confía en que los demás acudan, y
+ningún pago moderado corrige una creencia. Lo que sí la corrige es el
+compromiso verificable, y aquí conviene notar algo sobre la propia arquitectura:
+la guarda de \textsf{REC} a \textsf{FORM} en \cref{def:automata} exige que la
+coalición esté \emph{certificada} antes de avanzar, es decir, que los miembros
+necesarios estén comprometidos. Esa guarda se introdujo por factibilidad física.
+Cumple además una segunda función que no se había nombrado: convierte una
+decisión simultánea bajo incertidumbre en una secuencial con compromiso
+observable, que es precisamente el remedio de una caza del ciervo. El certificado
+no solo comprueba que la coalición \emph{puede}; también hace creíble que
+\emph{acudirá}.
+\end{observacion}
+
+\subsection{Por qué la teoría cooperativa estándar no se aplica sin más}
+
+Antes de importar herramientas conviene comprobar la hipótesis que casi todas
+comparten. Un juego es \emph{superaditivo} si unir dos grupos disjuntos vale al
+menos lo que valen por separado, y esa condición es la que justifica, por
+ejemplo, que el valor de Shapley prediga la formación de la gran coalición
+\cite{okada2026games}.
+
+\begin{observacion}[El juego de este trabajo no es superaditivo]
+\label{obs:no-superaditivo}
+Tomando como valor de una coalición la aceleración que puede imprimir a la
+carga, corregida por la fracción de maniobras que sus contactos permiten sin
+saturar la demanda angular —es decir, con la física de
+\cref{obs:rigidez-alcance} y no con el bloqueo por rango que aquella observación
+descarta—, el valor medio por tamaño resulta $0{,}430$, $0{,}486$, $0{,}293$,
+$0{,}559$, $0{,}810$ y $1{,}053$ para coaliciones de uno a seis miembros: ni
+monótono ni cóncavo. Sobre quinientos pares disjuntos, el $78\%$ viola la
+superaditividad.
+
+La razón es la ya conocida: la capacidad se suma pero la movilidad se interseca
+(\cref{co:agarre}), y a eso se añade que cada miembro aporta masa. Unir dos
+grupos bien orientados puede producir un conjunto mal orientado que valga menos
+que cualquiera de los dos.
+
+La consecuencia es de método: los resultados de teoría cooperativa que presuponen
+superaditividad —entre ellos la predicción de la gran coalición— no son
+aplicables aquí, y la formación de coaliciones \emph{parciales} no es un defecto
+del mecanismo sino la respuesta correcta a un juego que no premia agrupar.
+\end{observacion}
+
+\subsection{La pregunta que la teoría cooperativa hace y este trabajo no hacía}
+
+Todo lo anterior compara \emph{criterios} de reparto. La teoría de juegos
+cooperativos plantea una pregunta anterior y más severa: dado un reparto,
+¿existe algún subgrupo que, rompiendo y actuando por su cuenta, mejoraría a
+\emph{todos} sus miembros? Si existe, se dice que ese subgrupo \emph{bloquea} el
+reparto. El \emph{núcleo} es el conjunto de repartos que ningún subgrupo bloquea
+\cite{okada2026games}.
+
+\begin{proposicion}[El núcleo de este juego es vacío salvo en un caso]
+\label{pr:nucleo}
+Modélese la coalición como juego de umbral: $v(S)=B$ si $\lvert S\rvert\ge
+r^\star$ y $v(S)=0$ en otro caso, que es la situación de una carga que no se
+mueve sin un mínimo de miembros. Entonces el núcleo es no vacío si y solo si
+$r^\star=n$, es decir, solo si hacen falta \emph{todos} los AMR disponibles.
+\end{proposicion}
+
+\begin{observacion}[Comprobado sobre el rango de operación]
+\label{obs:nucleo-vacio}
+Resolviendo el programa lineal que caracteriza el núcleo para todas las
+coaliciones: con $n=4$ y $r^\star=4$ el núcleo es no vacío; con $r^\star=3$ y
+$r^\star=2$, vacío. Con $n=6$: no vacío en $r^\star=6$, vacío en $4$ y en $2$.
+Con $n=8$ y $r^\star=5$, vacío.
+
+La lectura es incómoda y conviene no suavizarla: \emph{en el juego de umbral, en
+cuanto sobra un AMR, ninguna repartición del valor resiste la ruptura de un
+subgrupo}. No es un defecto del mecanismo de precios —ningún criterio lo
+evitaría, porque el núcleo está vacío—; es una propiedad de ese juego. Y la
+condición que lo salvaría, $r^\star=n$, es precisamente la que \cref{co:agarre} y
+\cref{obs:cuenca-ciervo} desaconsejan por otras razones.
+\end{observacion}
+
+\begin{proposicion}[Donde el reparto \emph{sí} es estable]
+\label{pr:nucleo-divisible}
+Considérese en cambio el reparto de esfuerzo como modelo de producción
+\emph{divisible}, $v(S)=\max\{c^{\!\top}y:\ Ay\le\sum_{i\in S}b_i,\ y\ge0\}$, con
+óptimo finito y dualidad fuerte para la gran coalición. Sea $\lambda^\star\ge0$
+una solución dual y defínase el pago $x_i=\lambda^{\star\top}b_i$. Entonces $x$
+pertenece al núcleo.
+\end{proposicion}
+
+\begin{proof}
+La dualidad fuerte da $\sum_i x_i=v(N)$. El mismo $\lambda^\star$ es dualmente
+factible para cualquier subconjunto, porque $A$ y $c$ no cambian; por dualidad
+débil, $v(S)\le\lambda^{\star\top}\sum_{i\in S}b_i=\sum_{i\in S}x_i$, de modo que
+ninguna coalición bloquea.
+\end{proof}
+
+\begin{observacion}[Dos regímenes, no uno]
+\label{obs:nucleo-dos-regimenes}
+La comprobación numérica separa los dos casos sin ambigüedad. Sobre un modelo
+divisible con cinco AMR, tres recursos y cuatro actividades, el reparto dual suma
+exactamente $v(N)=32{,}691$ y \emph{ninguna} de las coaliciones propias lo
+bloquea: el peor exceso $v(S)-\sum_{i\in S}x_i$ es $3{,}6\times10^{-15}$. Sobre
+el juego de umbral con los mismos cinco AMR, el núcleo es vacío.
+
+El alcance de \cref{obs:nucleo-vacio} es, por tanto, el juego de umbral. La arquitectura de
+precios de este trabajo \emph{sí} produce un reparto estable frente a rupturas en
+la capa donde el esfuerzo es divisible —que es el reparto de \emph{wrench}, el
+apartado (a) de \cref{obs:alcance-poblacional}—, y no puede producirlo en la capa
+de reclutamiento atómico, apartado (c). La vacuidad del núcleo es una propiedad
+de la indivisibilidad, no del mecanismo.
+
+Esto reordena también \cref{obs:nucleo-acoplamiento}: el acoplamiento rígido no
+sustituye a un núcleo vacío en general, sino específicamente en la decisión
+discreta de pertenencia. Una vez dentro, el precio dual basta.
+\end{observacion}
+
+\begin{observacion}[Y una salvedad sobre el propio modelo de juego]
+\label{obs:funcion-particion}
+Ambos cálculos suponen que el valor de una coalición depende solo de \emph{quiénes}
+la forman, es decir, que el juego admite función característica. Con corredores
+compartidos eso deja de ser cierto: si una coalición cambia de ruta modifica los
+tiempos de las demás, de modo que el valor debe escribirse $v(S,\Pcal,\rho)$ con
+la partición y el estado de recursos. Es un juego en \emph{función de partición},
+y en esa clase ni la vacuidad del núcleo ni \cref{pr:nucleo-divisible} se
+trasladan automáticamente. Sumar valores independientes de cargas que comparten
+pasillo no está autorizado, y este trabajo no lo hace fuera de esta subsección.
+\end{observacion}
+
+\begin{observacion}[Lo que sostiene la coalición no es el reparto]
+\label{obs:nucleo-acoplamiento}
+De \cref{pr:nucleo} se sigue que la estabilidad de una coalición no puede
+descansar en cómo se reparte el valor. Debe descansar en que la ruptura sea
+\emph{inviable}, no en que sea poco atractiva. Y en este sistema lo es por
+razones físicas: en \textsf{TRANS} los miembros comparten un cuerpo rígido, y
+abandonarlo no es una decisión de cartera sino una maniobra que detiene la carga
+y activa las barreras de \cref{th:astop-cuerpo}.
+
+Es decir, el acoplamiento rígido no cumple solo una función mecánica: es el
+dispositivo que sustituye a un núcleo vacío en la decisión de pertenencia
+(véase la matización de \cref{obs:nucleo-dos-regimenes}). Donde la teoría cooperativa exige
+un reparto que nadie quiera bloquear, esta arquitectura ofrece una configuración
+que nadie \emph{pueda} bloquear sin coste físico inmediato. Es una respuesta de
+ingeniería a una imposibilidad de teoría de juegos, y conviene enunciarla así en
+lugar de dejar la impresión de que el reparto por precios resuelve la
+estabilidad coalicional. No la resuelve; la traslada al contacto.
+
+Queda con ello una cuarta lectura del mismo fenómeno, junto a
+\cref{pr:caza-ciervo}, \cref{obs:deficit-capas} y \cref{obs:fuerte-ciervo}: la
+formación de coaliciones es intrínsecamente inestable en el plano de los
+incentivos, y todo lo que la sostiene en este trabajo —certificado, guarda,
+acoplamiento— son mecanismos de compromiso, no de incentivo.
+\end{observacion}
+
+\subsection{Retribuir por aportación no es repartir con equidad}
+
+Hay una tercera pregunta, distinta de las dos anteriores y que este trabajo
+responde sin haberla planteado: una vez formada la coalición y producido el
+excedente, ¿cómo se reparte? El mecanismo de precios da una respuesta
+—cada AMR cobra el precio común por lo que aporta— pero esa no es la única
+respuesta posible, y la teoría de la negociación ofrece otra
+\cite{clempner2024optimization}: repartir el excedente sobre el punto de
+desacuerdo, que aquí es el pago de no participar.
+
+\begin{observacion}[Las dos respuestas difieren]
+\label{obs:precio-vs-negociacion}
+Con dos AMR de costes cuadráticos $k_1=1$ y $k_2=3$, demanda $W=10$ y pagos de
+desacuerdo $2$ y $1$, el reparto eficiente del esfuerzo es $(7{,}5;\ 2{,}5)$ y el
+precio común, igual al coste marginal, resulta $15$. El excedente total sobre el
+desacuerdo es $72$, y se distribuye así:
+\[
+  \text{por precio: }(54{,}25;\ 17{,}75)
+  \qquad\text{frente a}\qquad
+  \text{por negociación: }(36;\ 36).
+\]
+No coinciden, y la brecha no es pequeña. Coinciden únicamente cuando costes y
+pagos de desacuerdo son simétricos: con $k_1=k_2=2$ y desacuerdos iguales, ambos
+criterios dan $(48{,}5;\ 48{,}5)$. Basta romper la simetría de costes,
+manteniendo iguales los desacuerdos, para que vuelvan a separarse:
+$(54{,}25;\ 16{,}75)$ frente a $(35{,}5;\ 35{,}5)$.
+\end{observacion}
+
+\begin{observacion}[Un tercer criterio, intermedio]
+\label{obs:kalai}
+Entre los dos anteriores existe un tercero, el de Kalai--Smorodinsky, que reparte
+el excedente en proporción a la \emph{aspiración máxima} de cada parte —lo más que
+cada una podría obtener si la otra se conformase con su punto de desacuerdo—
+\cite{clempner2024optimization}. Sobre el mismo ejemplo: con aspiraciones iguales
+coincide con el de Nash, $(36;36)$; si el AMR barato puede aspirar a más —por
+ejemplo al $100\%$ frente al $45\%$ del caro— da $(49{,}66;\ 22{,}34)$, entre el
+reparto competitivo $(54{,}25;\ 17{,}75)$ y el igualitario.
+
+Los tres criterios responden a la misma pregunta con axiomas distintos, y la
+elección no la resuelve la matemática. Lo que sí puede exigirse es que se declare
+cuál se usa, que es lo que hace \cref{obs:criterio-reparto}.
+\end{observacion}
+
+\begin{observacion}[Shapley: un cuarto criterio, y premia otra cosa]
+\label{obs:shapley}
+Cuando el núcleo es vacío —que por \cref{pr:nucleo} es el caso normal— la
+alternativa canónica es el valor de Shapley, que retribuye a cada miembro por su
+contribución marginal promediada sobre todos los órdenes de formación
+\cite{okada2026games}. Con AMR simétricos reparte a partes iguales y no aporta
+nada; su interés está en el caso heterogéneo, que es el de este trabajo.
+
+Con capacidades $(3;\ 2;\ 1;\ 1;\ 0{,}5;\ 0{,}5)$ y umbral $4$, el valor de
+Shapley da $(0{,}450;\ 0{,}183;\ 0{,}133;\ 0{,}133;\ 0{,}050;\ 0{,}050)$, frente
+al reparto proporcional a la capacidad
+$(0{,}375;\ 0{,}250;\ 0{,}125;\ 0{,}125;\ 0{,}063;\ 0{,}063)$. El más fuerte cobra
+\emph{más} que proporcional y el segundo \emph{menos}.
+
+La razón es instructiva: Shapley premia ser \emph{pivote} —estar en muchas
+coaliciones donde la propia presencia decide si se alcanza el umbral— y no tener
+mucha fuerza. Un AMR mediano puede ser prescindible en casi toda combinación y
+cobrar por debajo de su capacidad. Es un criterio con lectura física clara y
+distinta de la del precio, que retribuye por esfuerzo aportado al margen.
+\end{observacion}
+
+\begin{observacion}[Qué criterio adopta este trabajo, y por qué]
+\label{obs:criterio-reparto}
+Conviene decirlo explícitamente, porque es una elección normativa y no un
+teorema. El mecanismo de este trabajo es \emph{competitivo}: retribuye por
+aportación al margen. El AMR barato aporta más y cobra más, y quien aporta poco
+cobra poco aunque su presencia fuera necesaria para alcanzar el certificado.
+
+La alternativa negociadora repartiría el excedente por igual sobre el
+desacuerdo, con lo que un miembro imprescindible pero costoso no quedaría
+penalizado por serlo. Tiene a su favor un argumento de estabilidad de coalición:
+un miembro que se sienta mal retribuido tiene incentivo a abandonar, y por
+\cref{pr:caza-ciervo} basta con que lo crea para que el equilibrio malo gane
+terreno.
+
+Se adopta el criterio competitivo porque es el que se deriva del dual del
+programa convexo —los precios no se eligen, salen— y porque preserva la
+estructura de potencial de \cref{th:potencial}, sobre la que descansa la
+terminación. Un reparto negociado exigiría resolver un problema aparte en cada
+formación y no está garantizado que conserve esa estructura. Se declara, pues,
+como una decisión de diseño con un coste identificado, no como la única opción
+razonable.
+\end{observacion}
+
+\subsection{El concepto que descarta el mal equilibrio}
+
+\Cref{pr:caza-ciervo} exhibe dos equilibrios y \cref{obs:precio-no-basta}
+muestra que ningún pago moderado elimina el malo. Existe un refinamiento del
+concepto de equilibrio que sí lo descarta, y resulta ser el que corresponde a
+este problema.
+
+\begin{definicion}[Equilibrio fuerte]
+\label{def:fuerte}
+Un perfil es un \emph{equilibrio de Nash fuerte} si ninguna coalición de agentes
+—de cualquier tamaño, no solo un agente aislado— puede desviarse conjuntamente
+de modo que \emph{todos} sus miembros mejoren \cite{clempner2024optimization}.
+\end{definicion}
+
+\begin{observacion}[El mal equilibrio es de Nash pero no es fuerte]
+\label{obs:fuerte-ciervo}
+Con seis AMR, umbral $r^\star=4$, $B=10$, $c=1$ y $w=3$, la comprobación
+exhaustiva sobre las $2^{6}$ configuraciones y todas las coaliciones da:
+\begin{itemize}[leftmargin=1.9em,topsep=0.2em,itemsep=0.15em]
+  \item «nadie se une»: es equilibrio de Nash —ningún AMR gana desviándose
+  solo— pero \emph{no} es fuerte: una coalición de exactamente cuatro mejora a
+  los cuatro, de $3$ a $9$;
+  \item «todos se unen»: es equilibrio de Nash \emph{y} es fuerte.
+\end{itemize}
+El refinamiento separa exactamente los dos equilibrios que
+\cref{pr:caza-ciervo} no distinguía.
+\end{observacion}
+
+\begin{observacion}[La guarda del autómata implementa la desviación de coalición]
+\label{obs:guarda-fuerte}
+La consecuencia es más concreta que un refinamiento conceptual. La desviación que
+descalifica al mal equilibrio es la de una coalición de tamaño $r^\star$ que se
+compromete \emph{conjuntamente}. Y eso es literalmente lo que hace la guarda de
+\textsf{REC} a \textsf{FORM} de \cref{def:automata}: reunir exactamente los
+miembros necesarios y comprometerlos a la vez.
+
+Es decir, el certificado no solo hace creíble la cooperación
+(\cref{obs:precio-no-basta}): \emph{es} el mecanismo que ejecuta la desviación
+coalicional que el equilibrio fuerte exige. Un mecanismo que solo permitiese
+revisiones individuales se quedaría atrapado en el mal equilibrio por
+construcción, porque ninguna desviación unilateral es rentable allí.
+
+Queda así una lectura común de tres hallazgos que habían aparecido por separado:
+la multiplicidad de \cref{pr:caza-ciervo}, el déficit positivo de
+\cref{obs:deficit-capas} y el fallo de fortaleza de \cref{obs:fuerte-ciervo} son
+tres medidas del mismo fenómeno, y el compromiso conjunto es su único remedio
+estructural.
+\end{observacion}
+
+\subsection{Subprovisión de la reserva}
+
+Un AMR en reserva no transporta. Si una coalición sufre un fallo, un AMR
+disponible cerca puede sustituir al miembro perdido y salvar la carga. El
+beneficio de ese rescate lo recibe sobre todo \emph{un tercero} —la misión que
+no queda varada—, mientras que el rescatador solo captura la parte que el
+mecanismo le pague.
+
+Sea $s\in[0,1]$ la fracción de un plantel de $N$ AMR que permanece en reserva,
+$\Lambda$ el número de misiones activas, $\lambda_f$ la tasa de fallo por misión
+y $p(s)$ la probabilidad de que un fallo encuentre rescate, creciente y cóncava
+con $p(0)=0$. Sea $B$ el beneficio social de un rescate, $R$ el premio que cobra
+el rescatador y $c$ el coste de oportunidad de estar en reserva.
+
+\begin{supuesto}[Plantel de reserva separado]
+\label{s:plantel}
+$\Lambda$ no depende de $s$: la reserva se dota de un plantel distinto del que
+ejecuta las misiones activas.
+\end{supuesto}
+
+La asimetría que genera la ineficiencia no está en el precio, sino en qué
+cantidad ve cada parte. Los $Ns$ AMR en reserva son anónimos e intercambiables,
+de modo que los $\Lambda\lambda_f p(s)$ rescates por unidad de tiempo se reparten
+entre ellos por igual: cada uno ejecuta $\Lambda\lambda_f p(s)/(Ns)$, y percibe
+por tanto la \emph{media}. El planificador, en cambio, evalúa el efecto de una
+unidad más de reserva sobre el bienestar, que es la \emph{marginal} $p'(s)$.
+
+\begin{teorema}[La brecha entre la media y la marginal]
+\label{th:subprovision}
+Bajo \cref{s:plantel}, sea $s^\star$ el nivel de equilibrio, definido por la
+condición de entrada y salida
+\[
+  \frac{\Lambda\lambda_f\,p(s^\star)}{N\,s^\star}\,R\;=\;c,
+\]
+y sea $s^{\mathrm{soc}}$ el que maximiza $W(s)=\Lambda\lambda_f p(s)B-sNc$, es
+decir $\Lambda\lambda_f p'(s^{\mathrm{soc}})B=Nc$. Sea
+$\varepsilon(s)=s\,p'(s)/p(s)$ la elasticidad de $p$. Entonces:
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em,topsep=0.2em,itemsep=0.15em]
+  \item $\varepsilon(s)\le1$ para todo $s>0$, con igualdad solo si $p$ es lineal:
+  la media siempre domina a la marginal;
+  \item $s^\star=s^{\mathrm{soc}}$ si y solo si $R=B\,\varepsilon(s^{\mathrm{soc}})$;
+  \item $s^\star<s^{\mathrm{soc}}$ si y solo si $R<B\,\varepsilon(s^{\mathrm{soc}})$,
+  y $s^\star>s^{\mathrm{soc}}$ si y solo si $R>B\,\varepsilon(s^{\mathrm{soc}})$.
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}
+(i) Por concavidad $p'$ es decreciente, luego
+$p(s)=\int_0^s p'(u)\,du\ge s\,p'(s)$, que es $\varepsilon(s)\le1$.
+(ii) Imponiendo $s^\star=s^{\mathrm{soc}}$ en la condición de equilibrio y
+sustituyendo $Nc=\Lambda\lambda_f p'(s^{\mathrm{soc}})B$ se obtiene
+$R=B\,s^{\mathrm{soc}}p'(s^{\mathrm{soc}})/p(s^{\mathrm{soc}})=B\varepsilon(s^{\mathrm{soc}})$.
+(iii) $p(s)/s$ es estrictamente decreciente por concavidad, luego $s^\star(R)$ es
+estrictamente creciente en $R$; combinado con (ii) se sigue la equivalencia.
+\end{proof}
+
+\begin{observacion}[La reserva no emerge]
+\label{obs:no-emerge}
+Con $N=20$, $\Lambda=6$, $\lambda_f=0{,}05$, $c=1$, $B=40$, $R=12$ y
+$p(s)=1-e^{-3s}$, resulta $s^\star=0$ y $s^{\mathrm{soc}}=0{,}196$, con pérdida
+de bienestar $1{,}41$. Es decir: con esos parámetros \emph{ningún} AMR elige
+reserva por su cuenta, aunque el óptimo social exija que casi uno de cada cinco
+lo haga. Un banco de pruebas que asigne su reserva a mano no está tomando un
+atajo de implementación: está compensando una ineficiencia del mecanismo.
+\end{observacion}
+
+\begin{observacion}[Pagar el beneficio completo sobreprovee]
+\label{obs:sobreprovision}
+De \cref{th:subprovision}(iii) se sigue un resultado contrario a la intuición:
+entregar al rescatador el beneficio social íntegro, $R=B$, \emph{no} implementa
+el óptimo, porque $B>B\varepsilon$ siempre que $p$ sea estrictamente cóncava.
+Con los parámetros de \cref{obs:no-emerge} se obtiene
+$\varepsilon(s^{\mathrm{soc}})=0{,}735$, de modo que $R=B=40$ conduce a
+$s^\star=0{,}440$ frente a $s^{\mathrm{soc}}=0{,}196$: un $124\%$ de exceso de
+reserva. La razón es que un rescatador anónimo cobra por cada rescate que
+ejecuta —la media— mientras que su aportación al bienestar es solo la marginal.
+Corregir la externalidad no consiste en trasladar todo el beneficio, sino
+exactamente la fracción $\varepsilon$.
+\end{observacion}
+
+\subsection{El cuarto precio}
+
+La corrección es la internalización habitual de una externalidad positiva, y
+encaja en la arquitectura sin añadir capas: es \emph{otro precio}.
+
+\begin{teorema}[Implementación por prima de cobertura]
+\label{th:prima}
+Fíjese el premio del rescatador en
+$\widetilde R_\ell=B_\ell\,\varepsilon(s^{\mathrm{soc}})$ y hágase pagar a cada
+misión activa una prima por unidad de tiempo
+\[
+  q_\ell\ =\ \lambda_f\,p(s^{\mathrm{soc}})\,\widetilde R_\ell
+  \ =\ \lambda_f\,p(s^{\mathrm{soc}})\,B_\ell\,\varepsilon(s^{\mathrm{soc}}).
+\]
+Entonces: (i) el equilibrio verifica $s^\star=s^{\mathrm{soc}}$; (ii) el
+mecanismo está equilibrado en esperanza, es decir, las primas recaudadas igualan
+los pagos esperados; (iii) la prima no excede el valor esperado de la cobertura
+para la misión, $\lambda_f p(s^{\mathrm{soc}})B_\ell$, luego la participación es
+individualmente racional.
+\end{teorema}
+
+\begin{proof}
+(i) es \cref{th:subprovision}(ii). (ii) La recaudación por unidad de tiempo es
+$\Lambda\lambda_f p(s^{\mathrm{soc}})\widetilde R$ y el pago esperado es el
+mismo: hay $\Lambda\lambda_f$ fallos por unidad de tiempo, cada uno rescatado
+con probabilidad $p(s^{\mathrm{soc}})$ y retribuido con $\widetilde R$. (iii) es
+$\varepsilon\le1$ de \cref{th:subprovision}(i).
+\end{proof}
+
+\begin{observacion}[Con aversión al riesgo el margen es mucho mayor]
+\label{obs:aversion-riesgo}
+El apartado (iii) demuestra racionalidad individual para participantes
+\emph{neutrales al riesgo}: la prima no excede el valor esperado de la cobertura.
+Una flota real no es neutral —una misión varada tiene costes de reputación y de
+compromiso que crecen más que linealmente con la pérdida—, y bajo aversión al
+riesgo el resultado se refuerza en lugar de debilitarse
+\cite{clempner2024optimization}.
+
+Con utilidad exponencial y los parámetros de \cref{obs:no-emerge}, la prima
+cobrada es $13{,}065$ y el valor esperado de la cobertura $17{,}776$, de modo que
+la holgura ya es de $+4{,}71$ con neutralidad. Al aumentar la aversión, la
+disposición máxima a pagar sube a $19{,}71$, $23{,}16$, $26{,}92$ y $30{,}71$
+para coeficientes de $0{,}01$ a $0{,}12$, con holguras de $+6{,}6$ hasta
+$+17{,}6$.
+
+Hay además una consecuencia de diseño que no se sigue de la versión neutral: si
+quien opera la flota es averso al riesgo, su nivel \emph{óptimo} de reserva
+excede el $s^{\mathrm{soc}}$ de \cref{th:subprovision}, porque ese cálculo
+maximiza el bienestar esperado y no incorpora prima de riesgo alguna. El nivel de
+\cref{th:subprovision} debe leerse, por tanto, como una cota inferior del que un
+operador prudente elegiría.
+\end{observacion}
+
+\begin{observacion}[Cuánto cambia el número]
+\label{obs:prima-num}
+Con los parámetros de \cref{obs:no-emerge} la prima correcta es
+$q=\lambda_f p(s^{\mathrm{soc}})B\varepsilon=0{,}653$ por unidad de tiempo, frente
+a $0{,}889$ que resultaría de retribuir el rescate con $B$ íntegro. La diferencia
+no es un ajuste fino: es la que separa el óptimo de un exceso de reserva del
+$124\%$, con su coste de oportunidad correspondiente.
+\end{observacion}
+
+\begin{observacion}[La prima es el pago esperado, no la pérdida retenida]
+\label{obs:prima}
+Conviene no confundir tres cantidades. La \emph{pérdida esperada} de una misión
+es $\lambda_f(1-p(s))B_\ell$: lo que se pierde cuando el rescate \emph{no} llega.
+El \emph{valor esperado de la cobertura} es $\lambda_f p(s)B_\ell$: lo que la
+misión gana cuando el rescate \emph{sí} llega. Y la \emph{prima} que financia el
+mecanismo es $\lambda_f p(s)B_\ell\varepsilon$, estrictamente menor que la
+segunda por \cref{th:subprovision}(i). Las dos primeras coinciden solo si
+$p=1/2$; confundir cualquiera de ellas con la tercera desequilibra el fondo o
+distorsiona el nivel de reserva. Que la prima quede por debajo del valor de la
+cobertura es lo que hace el mecanismo aceptable para quien paga.
+\end{observacion}
+
+Con esto el mecanismo queda con cuatro familias de precios, todas obtenidas del
+mismo modo —restricción o externalidad, programa convexo, dual devuelto como
+pago— y todas difundidas por el mismo consenso:
+
+\begin{table}[!ht]
+\centering\small
+\caption{Las cuatro familias de precios y qué internaliza cada una.}
+\label{tab:precios}
+\begin{tabularx}{\textwidth}{@{}llX@{}}
+\toprule
+Precio & Recurso & Origen \\
+\midrule
+$p_k$ & capacidad de \emph{wrench} & dual del reparto \eqref{eq:qp} \\
+$\tau^c_e$ & espacio del corredor & externalidad de congestión por clase (\cref{th:multiclase}) \\
+$\lambda_{ij}$ & seguridad & multiplicador de la barrera (\cref{th:precio-seguridad}) \\
+$q_\ell$ & riesgo & externalidad de rescate (\cref{th:prima}) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{observacion}[Los cuatro precios son una escalarización, y eso tiene un límite]
+\label{obs:escalarizacion}
+Los cuatro precios convierten un problema con varios objetivos —caudal, energía,
+espacio, riesgo— en uno solo, sumando cada término con su peso. Esa operación
+tiene una limitación conocida y conviene declararla: la escalarización lineal
+alcanza únicamente los puntos del frente de Pareto que están sobre la envolvente
+convexa de la región factible. Los tramos no convexos del frente son
+inalcanzables \emph{para cualquier elección de precios}, no solo para una mala
+elección \cite{clempner2024optimization}.
+
+La comprobación es contundente. Sobre un frente con un tramo cóncavo,
+discretizado en $4001$ puntos, un barrido de cuatrocientos juegos de pesos
+alcanza $284$ puntos, el $7{,}1\%$. El resto del frente es Pareto-óptimo y
+ningún precio lo selecciona.
+
+Esto no invalida el mecanismo, pero acota lo que puede afirmarse de él. Cuando
+se dice que los precios internalizan las externalidades y conducen a un óptimo,
+se está diciendo que conducen al óptimo \emph{de la combinación ponderada
+elegida}. Si la frontera de compromisos real tiene tramos no convexos —y una
+región factible definida por restricciones combinatorias como el catálogo de
+coaliciones los tiene con facilidad—, existen puntos de operación eficientes que
+la arquitectura no puede alcanzar por ningún ajuste de precios. Alcanzarlos
+exigiría un método distinto, de los que trabajan sobre el frente en lugar de
+sobre una suma ponderada.
+\end{observacion}
+
+\begin{observacion}[Quién mueve primero]
+\label{obs:stackelberg}
+Conviene además nombrar la estructura temporal del mecanismo, que hasta aquí ha
+quedado implícita. Los peajes y la prima no se negocian con los AMR: se fijan y
+los AMR responden a ellos. Esa es una estructura de \emph{líder y seguidores}
+—de Stackelberg— y no un juego simultáneo entre iguales
+\cite{clempner2024optimization}. El diseñador anticipa la mejor respuesta de la
+población y elige el precio que la conduce al óptimo social, que es exactamente
+lo que hacen \cref{th:multiclase} y \cref{th:prima}.
+
+La precisión importa porque el equilibrio de Stackelberg y el de Nash del juego
+simultáneo no coinciden en general, y porque la capacidad del líder para
+comprometerse con un precio anunciado es una hipótesis, no un dato: si los AMR
+esperasen que el precio se renegocie tras ver su respuesta, el mecanismo pierde
+su fuerza. En esta arquitectura el compromiso lo proporciona el hecho de que el
+precio sea el dual de un programa público y verificable, no una decisión
+discrecional.
+\end{observacion}
+
+\begin{observacion}[Atribución]
+\label{obs:standby-atrib}
+La subprovisión de un bien público y su corrección pigouviana son teoría
+económica estándar, y el caso binario con beneficio a terceros es el
+\emph{dilema del voluntario}. Lo que corresponde a este trabajo es el dominio y
+la composición: la reserva de una flota como bien público \emph{espacial}
+—$p(s)$ depende de la geometría, no solo del número—, con la prima difundida
+por el mismo mecanismo de consenso que los otros tres precios y verificable
+localmente, porque el rescate es un evento físico observable por el vecindario
+que lo presencia. No se introduce ningún mecanismo nuevo: se añade un precio a
+un mercado que ya tenía tres.
+\end{observacion}
+
+\subsection{Conectividad factorizada}
+
+\Cref{th:topologia-garantizada} impone un árbol generador sobre \emph{toda} la
+flota y lo mantiene indefinidamente. Es más de lo necesario, y su coste
+—movilidad restringida— es real. La estructura de misiones permite factorizar.
+
+\begin{proposicion}[Conectividad por fases]
+\label{pr:factorizada}
+Basta con: (i) conectividad \emph{intra}-coalición permanente, que la propia
+formación garantiza por geometría cuando su diámetro no excede
+$R^{\mathrm{com}}$; y (ii) conectividad \emph{inter}-coalición únicamente
+durante la fase de reclutamiento, mientras el residuo del reparto está por
+encima del umbral de compromiso. No se requiere conectividad global permanente.
+\end{proposicion}
+
+\begin{proof}
+Los precios de \emph{wrench} y de seguridad de una coalición solo involucran a
+sus miembros, luego su consenso vive en el subgrafo intra-coalición, conexo por
+(i). El consenso de reclutamiento y de precios de carga solo debe converger
+mientras la decisión sigue abierta; una vez comprometido el perfil, su valor no
+se consulta. Aplicando \cref{th:conmutada} a la ventana de reclutamiento se
+obtiene el acuerdo requerido.
+\end{proof}
+
+\begin{observacion}[La condición de carrera]
+\label{obs:carrera}
+\Cref{pr:factorizada} traslada la exigencia a una comparación de tiempos: el
+reclutamiento debe converger antes de que las coaliciones se separen,
+\[
+  T_{\mathrm{conv}}\ <\ T_{\mathrm{desconexión}} .
+\]
+El primero se acota con la tasa de \cref{th:mapa}; el segundo, con la cinemática
+de separación y el radio $R^{\mathrm{com}}$. No se afirma que la desigualdad se
+cumpla siempre: es una condición verificable por instancia, y su violación
+significa que el compromiso debe adelantarse o la separación retrasarse. El
+ahorro respecto a \cref{th:topologia-garantizada} es que la restricción de
+movilidad se paga solo durante el reclutamiento y solo entre coaliciones.
+\end{observacion}
+
+\subsection{Dónde colocar la reserva}
+\label{sec:cobertura}
+
+\Cref{th:subprovision} da \emph{cuánta} reserva sostener y \cref{th:prima} el
+mecanismo que la sostiene, pero no dónde situarla. Esa pregunta —el
+emplazamiento de vehículos ociosos, en el vocabulario de
+\cref{tab:posicionamiento}— quedó declarada fuera. Se cierra aquí, porque
+resulta ser un problema de cobertura y porque la heterogeneidad que atraviesa
+todo el trabajo también decide su forma.
+
+\begin{definicion}[Alcance de rescate y cobertura]
+\label{def:cobertura}
+Sea $\varphi:\Omega\to\Rb_{\ge0}$ la densidad espacial de fallos, es decir la
+tasa con que se producen averías por unidad de área. Sea
+$\Rcal_i=\{q\in\Omega:\lVert q-q_i\rVert\le\varrho_i\}$ el \emph{alcance de
+rescate} del AMR $i$ situado en $q_i$, con
+$\varrho_i=v^{\max}_i\,T^{\mathrm{res}}$ el radio que puede recorrer dentro del
+plazo admisible. La cobertura de rescate es
+\[
+  \Hcal(q_1,\dots,q_n)\;=\;\int_\Omega\ \max_{i}\ \mathbf 1_{\Rcal_i}(q)\ \varphi(q)\,dq .
+\]
+\end{definicion}
+
+\begin{observacion}[La cobertura es lo que hace de $p(s)$ una función]
+\label{obs:cobertura-p}
+$\Hcal$ normalizada por $\int_\Omega\varphi$ es exactamente la probabilidad de
+que un fallo encuentre rescate a tiempo, es decir la función $p$ de
+\cref{th:subprovision}, que hasta aquí se había postulado creciente y cóncava
+sin decir de qué depende. Depende del emplazamiento: dos flotas con la misma
+fracción $s$ en reserva pueden tener coberturas muy distintas. Nivel y
+emplazamiento no son decisiones separables, y \cref{def:cobertura} es el puente
+entre ambas.
+\end{observacion}
+
+\begin{teorema}[Con AMR heterogéneos la partición correcta no es la de Voronoi]
+\label{th:potencia}
+Asígnese a cada AMR la región de la que se responsabiliza. Si los alcances
+$\varrho_i$ difieren, la partición de Voronoi —por proximidad— asigna puntos a
+AMR que no llegan a tiempo mientras otro sí llegaría. La partición que respeta
+los alcances es el \emph{diagrama de potencia}
+\[
+  \Pcal_i=\bigl\{q\in\Omega:\ \lVert q-q_i\rVert^2-\varrho_i^{\,2}
+  \ \le\ \lVert q-q_j\rVert^2-\varrho_j^{\,2},\ \ \forall j\neq i\bigr\},
+\]
+que es una teselación completa de $\Omega$ en celdas convexas y coincide con la
+de Voronoi si y solo si todos los alcances son iguales.
+\end{teorema}
+
+\begin{proof}
+La convexidad y la teselación se siguen de que las fronteras son hiperplanos:
+la condición define semiplanos, pues los términos cuadráticos $\lVert q\rVert^2$
+se cancelan. La coincidencia con Voronoi cuando $\varrho_i\equiv\varrho$ es
+inmediata. Para la inadecuación basta un contraejemplo, y se da en
+\cref{obs:voronoi-falla}.
+\end{proof}
+
+\begin{observacion}[El contraejemplo]
+\label{obs:voronoi-falla}
+Con $q_1=(0,0)$, $\varrho_1=3$ y $q_2=(4,0)$, $\varrho_2=1$, el punto $q=(2{,}5,0)$
+dista $2{,}5$ del primero y $1{,}5$ del segundo: Voronoi lo asigna al segundo,
+que \emph{no} llega —$1{,}5>1$—, mientras el primero sí llega —$2{,}5\le3$—. El
+diagrama de potencia lo asigna al primero, porque $2{,}5^2-3^2=-2{,}75$ es menor
+que $1{,}5^2-1^2=1{,}25$. Lo mismo ocurre en $q=(2,0)$.
+
+Que la partición correcta dependa de los alcances y no de las distancias es
+\cref{th:noequiv} reapareciendo en la capa espacial: los AMR no son
+intercambiables, y cualquier construcción que los trate como puntos idénticos
+—aquí, una partición por proximidad— reparte mal.
+\end{observacion}
+
+\begin{proposicion}[Reubicación distribuida con mejora garantizada]
+\label{pr:ascenso}
+Con la ley $\dot q_i=\alpha_i\,\partial\Hcal/\partial q_i$, $\alpha_i>0$, se
+tiene $\dot{\Hcal}=\sum_i\alpha_i\lVert\partial\Hcal/\partial q_i\rVert^2\ge0$:
+la cobertura crece de forma monótona. Además $\partial\Hcal/\partial q_i$ se
+evalúa como una integral sobre la frontera de $\Rcal_i$ dentro de la celda
+$\Pcal_i$, luego depende solo de los vecinos en el grafo dual y la ley es
+distribuida.
+\end{proposicion}
+
+\begin{observacion}[La monotonía no sobrevive al muestreo sin cota de paso]
+\label{obs:ascenso-muestreo}
+\Cref{pr:ascenso} es un enunciado de tiempo continuo, y conviene no leerlo como
+si valiera para la implementación. Sobre una cobertura suavizada con tres AMR y
+ochenta pasos, un paso $\alpha=0{,}10$ da monotonía estricta —cero descensos—;
+$\alpha=0{,}30$ produce cuatro descensos; y $\alpha\ge0{,}80$, treinta y nueve,
+aunque la cobertura final siga siendo mayor que la inicial. Es la misma
+situación que \cref{le:muestras}: una garantía de tiempo continuo exige una cota
+de paso explícita para trasladarse a un sistema muestreado, y omitirla convierte
+un teorema en una expectativa.
+\end{observacion}
+
+\begin{observacion}[Incertidumbre de posición: se encoge el alcance]
+\label{obs:cobertura-incertidumbre}
+Si la pose del AMR se conoce solo dentro de una región de incertidumbre de radio
+$r_i$, la cobertura \emph{garantizada} se obtiene sustituyendo $\varrho_i$ por
+$\varrho_i-r_i$. Es la misma operación que \cref{co:tensado} realiza sobre las
+barreras, con $r_i$ derivado de la misma covarianza del filtro. Aparece así por
+tercera vez el mismo patrón: una garantía se conserva bajo incertidumbre
+encogiendo el conjunto sobre el que se afirma, y el encogimiento se paga en
+prestaciones —aquí, en área cubierta— de forma continua y no catastrófica.
+\end{observacion}

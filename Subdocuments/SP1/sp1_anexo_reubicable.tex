@@ -1,0 +1,408 @@
+% ========================================================================
+% SP1 · material del anexo que pertenece a otros capitulos del TFM
+%
+% Este fichero NO se compila con sp1.tex. Los anexos son un presupuesto
+% compartido por todo el trabajo, de modo que estos bloques se insertan en
+% su capitulo de destino al integrar el main. Cada uno conserva el texto
+% exacto que tenia.
+% ========================================================================
+
+% ------------------------------------------------------------------
+% destino: capítulo de metodología
+
+% ------------------------------------------------------------------
+
+\anxsection{Protocolo Monte Carlo pareado}{anx:protocolo}
+% --------------------------------------------------------------------------
+\subsection{Protocolo Monte Carlo y trazabilidad estadística}
+
+\begin{figure}[H]\centering
+\tikzpanel{.98\linewidth}{16.0cm}{figures/protocol_pipeline.tex}
+{(b) Diseño $\rightarrow$ registro $\rightarrow$ pareamiento $\rightarrow$ inferencia}
+\caption{Protocolo Monte Carlo. Significancia estadística y relevancia práctica se
+evalúan por separado cuando ambas condiciones fueron preespecificadas.}
+\viuownsource
+\end{figure}
+
+% --------------------------------------------------------------------------
+% B. Pseudocódigo de los métodos de N3 (procedía de SP1, p. 11)
+
+% ------------------------------------------------------------------
+% destino: material de apoyo del repositorio
+% ------------------------------------------------------------------
+
+
+% ------------------------------------------------------------------
+
+\anxsection{Familias decisionales de N4}{anx:familias}
+% --------------------------------------------------------------------------
+\begin{figure}[H]\centering
+\tikzpanelfit{.78\linewidth}{11.2cm}{figures/n4/n4_taxonomy.tex}
+{Familias F-I--F-IV}
+\caption{Cuatro familias decisionales de N4, la información que comparten y la
+salida entera que cada una entrega a SP2.}
+\viuownsource
+\end{figure}
+
+{\scriptsize
+\textbf{Familias de N4: aportación y límite.}\par
+\renewcommand{\arraystretch}{1.0}
+\begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}Xl@{}}
+\toprule
+&\textbf{Ventaja}&\textbf{Límite}&\textbf{Ev.}\\
+\midrule
+F-I&Decide la variable entera que recibe SP2; potencial exacto en desviaciones
+unilaterales y terminación demostrada.&Mínimo $h$-local, no global; la etiqueta exige
+búsqueda no truncada y aquí se truncó en $h=3$.&N4.E4, N4.E9\\
+F-II&Iteración de coste bajo sobre un campo común; compara cuatro dinámicas sin
+cambiar el objetivo.&El estado continuo no es una coalición y exige $\mathcal R$;
+tras el cierre el orden de mérito cambia en el 74,8\,\%.&N4.E7\\
+F-III&Cuotas como restricción compartida, con criterio de aceptación numérico
+explícito.&Las KKT motivan el objetivo vGNE sin demostrar convergencia de la
+discretización; depende de $\mathcal R$.&N4.E7\\
+F-IV&Añade llegadas y fallos en horizonte, más próximo a la operación real.&Banco
+reducido y oráculo con información futura: frontera declarada, no contraste
+válido.&piloto\\
+\bottomrule
+\end{tabularx}%
+}%
+
+% --------------------------------------------------------------------------
+% D. Glosario de la familia F-I (procedía de SP1, p. 21)
+% --------------------------------------------------------------------------
+{\scriptsize
+\textbf{Variantes de F-I.} BR: $h=1$; 2BR: $h=2$; C3: $h=3$; Geo-ASR y Geo-LLL
+cambian la regla de revisión, no el orden; CF conserva el orden global de
+confirmación; DMIS+TX usa conflictos y versiones. La etiqueta $h$-local solo aplica
+si la búsqueda no se trunca.
+}
+
+% --------------------------------------------------------------------------
+% F. Congelación de configuraciones (procedía de SP1, p. 26)
+% --------------------------------------------------------------------------
+{\footnotesize Las configuraciones y semillas de SP1 quedaron congeladas antes de la
+revisión editorial; guiones y configuraciones se recogen en este anexo.}
+
+% ------------------------------------------------------------------
+% G. Diseno de los contrastes de N1 (procedia de SP1, p. 5)
+
+% ------------------------------------------------------------------
+% destino: capítulo de metodología
+% ------------------------------------------------------------------
+
+
+% ------------------------------------------------------------------
+
+\anxsection{Diseño de los contrastes de N1}{anx:disenon1}
+% ------------------------------------------------------------------
+{\scriptsize
+\textbf{Tabla 3. Diseño de los contrastes de N1.}\par
+\renewcommand{\arraystretch}{1.02}
+\begin{tabularx}{\linewidth}{@{}p{1.1cm}p{2.7cm}p{3.15cm}X@{}}
+\toprule
+&\textbf{Diseño}&\textbf{Estimando}&\textbf{Decisión}\\
+\midrule
+N1.E1&$5\times3\times3\times100$&ahorro frente a heurística voraz&LCB$_{95}>5\%$ + signo/Holm\\
+N1.E4&$2\times5\times30$, 5 perfiles&falso positivo / déficit&McNemar + GEE\\
+\bottomrule
+\end{tabularx}%
+}
+
+Los cuatro experimentos de N1 generaron \NOneRows{} registros.
+
+% ------------------------------------------------------------------
+% H. Traza representativa de una ejecucion F-I (procedia de SP1, p. 20)
+% ------------------------------------------------------------------
+\begin{figure}[H]\centering
+\pdfpanel{.90\linewidth}{5.2cm}{assets/figures/n4-v4/n4_fi_representative_trace.pdf}
+{Traza F-I}
+\caption{$D_4$ y $J_4$ tras cada \emph{commit} aceptado en una ejecución
+representativa. Durante la fase de cobertura $J_4$ puede aumentar mientras $D_4$
+disminuye.}
+\viuownsource
+\end{figure}
+
+% ------------------------------------------------------------------
+% I. Atlas de reglas y de orden de revision (procedia de SP1, N4)
+
+% ------------------------------------------------------------------
+% destino: material de apoyo del repositorio
+% ------------------------------------------------------------------
+
+
+% ------------------------------------------------------------------
+
+\anxsection{Esquema de los comparadores continuos}{anx:continuas}
+% ------------------------------------------------------------------
+\begin{figure}[H]\centering
+\tikzpanel{.82\linewidth}{3.8cm}{figures/n4/n4_population.tex}
+{(a) Estado continuo $\rightarrow\mathcal R(x^\star)$}
+\par\vspace{.4mm}
+\tikzpanel{.82\linewidth}{3.8cm}{figures/n4/n4_primal_dual.tex}
+{(b) Primal--dual orientado a vGNE}
+\caption{(a) Perfil continuo del símplex y su cierre entero $\mathcal R$.
+(b) Intercambio primal-dual con consenso sobre multiplicadores.}
+\viuderivedsource{\citet{sandholm2010population}, \citet{quijano2017population},
+\citet{yi2019operatorGNE} y \citet{franci2022stochasticGNE}}
+\end{figure}
+
+
+% ------------------------------------------------------------------
+% K. Orden conectado frente a mejora (procedia de SP1, N4)
+
+% ------------------------------------------------------------------
+% destino: material de apoyo del repositorio
+% ------------------------------------------------------------------
+
+
+% ------------------------------------------------------------------
+
+\anxsection{Qué entrega SP1 a SP2}{anx:interfaz}
+
+SP2 recibe únicamente coaliciones enteras cuya cobertura escalar satisface
+el modelo aditivo de SP1, y esa verificación no es una comprobación física. Las
+ejecuciones sin coalición válida conservan su estado operacional ---infactible,
+divergente, censurada por tiempo o indeterminada--- sin reinterpretarse como
+infactibilidad física.
+
+% ------------------------------------------------------------------
+% P. Diagnostico post hoc de conectividad (procedia del cuerpo, N3)
+% ------------------------------------------------------------------
+
+% ------------------------------------------------------------------
+% destino: material de apoyo del repositorio
+% ------------------------------------------------------------------
+
+
+% ------------------------------------------------------------------
+
+\anxsection{Qué responde cada nivel y con qué límite}{anx:preguntas}
+
+{\footnotesize Este resumen se traslada al capítulo de conclusiones, donde se cruzará con las hipótesis globales una vez fijada la arquitectura SP1--SP4 completa.}
+
+{\scriptsize
+La evidencia de cada fila son los contrastes N1.E1 y N1.E4, N2.E1 y N2.E2,
+N3.E2 y N3.E3, y N4.E4 y N4.E9.\par\smallskip
+\renewcommand{\arraystretch}{1.0}
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\linewidth}{@{}l>{\raggedright\arraybackslash}X
+>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
+\toprule
+&\textbf{Pregunta}&\textbf{Resultado}&\textbf{Límite}\\
+\midrule
+N1&¿cuántos AMR hacen falta?&el LP por puestos es integral y la cardinalidad es
+exacta bajo homogeneidad&deja de representar la capacidad al crecer el CV\\
+N2&¿qué AMR deben formar la coalición?&la composición entera es necesaria y el
+óptimo continuo no es ejecutable&certificación sujeta a límite temporal\\
+N3&¿qué información necesita una decisión distribuida?&las variantes GRAPE
+reducen la brecha a costa de más bytes por AMR&canal fiable; la conectividad
+condiciona el éxito\\
+N4&¿qué orden de revisión necesita el refinamiento?&$h=2$ recoge la mayor parte
+de la mejora por una fracción de los bytes de $h=3$&mínimo $h$-local, búsqueda
+truncada en $h=3$\\
+\bottomrule
+\end{tabularx}
+\par\smallskip
+El resultado transversal es que, cuando la instancia es factible y el oráculo la
+certifica, el método propuesto cubre la demanda sin exceso persistente en los
+cuatro niveles del banco descrito; en N1 esa cobertura solo se sostiene bajo
+capacidad homogénea. El coste comunicativo se mide siempre frente al oráculo,
+pero su escalado con $N$ queda fuera de estas campañas. La correspondencia con
+las hipótesis globales del trabajo se establece en el capítulo de conclusiones,
+una vez fijada la arquitectura SP1--SP4 completa.
+}
+
+% ------------------------------------------------------------------
+% R. Resultados de los comparadores continuos (procedia del cuerpo)
+% ------------------------------------------------------------------
+
+% ------------------------------------------------------------------
+% destino: material de apoyo del repositorio
+% ------------------------------------------------------------------
+
+
+% ------------------------------------------------------------------
+
+\anxsection{Resultados de los comparadores continuos}{anx:continuasres}
+
+La Figura~\ref{fig:continuas-resultados} recoge el detalle que sostiene el
+veredicto del cuerpo sobre la vía poblacional.
+
+\begin{figure}[H]\centering
+\pdfpanel{.94\linewidth}{6.8cm}{assets/figures/n4-v3/n4_fii_continuous_atomic.pdf}
+{(a) N4.E7 · F-II antes y después de $\mathcal R$}
+\par\vspace{.8mm}
+\pdfpanel{.94\linewidth}{6.8cm}{assets/figures/n4-v3/n4_fiii_residuals.pdf}
+{(b) N4.E7 · F-III: residual continuo y coalición cerrada}
+\caption{(a) Déficit continuo de las cuatro dinámicas y brecha tras el cierre
+$\mathcal R$. (b) Residual del esquema primal-dual y brecha de la coalición cerrada
+(N4.E7). Los bytes cubren la fase decisional y excluyen $\mathcal R$.}
+\label{fig:continuas-resultados}
+\viuownsource
+\end{figure}
+
+% ------------------------------------------------------------------
+% Mapa de niveles N1--N4 (procedia del cuerpo)
+% ------------------------------------------------------------------
+
+% ------------------------------------------------------------------
+% destino: material de apoyo del repositorio
+% ------------------------------------------------------------------
+
+
+% ------------------------------------------------------------------
+
+\anxsection{Mapa de niveles N1--N4}{anx:niveles}
+
+Detalle de la Figura~\ref{fig:niveles}.
+
+\begin{figure}[H]\centering
+\tikzpanel{.96\linewidth}{16.5cm}{figures/compact/fig02_level_guide.tex}
+{Niveles N1--N4}
+\caption{Estructura N1--N4 y supuesto que retira cada nivel.}
+\label{fig:niveles}
+\viuownsource
+\end{figure}
+
+% ------------------------------------------------------------------
+% Informacion disponible durante la ejecucion (procedia del cuerpo)
+% ------------------------------------------------------------------
+
+% ------------------------------------------------------------------
+% destino: material de apoyo del repositorio
+% ------------------------------------------------------------------
+
+
+% ------------------------------------------------------------------
+
+\anxsection{Informacion disponible durante la ejecucion}{anx:informacion}
+
+Detalle de la Figura~\ref{fig:n3-informacion}.
+
+\begin{figure}[H]\centering
+\tikzpanelfit{.99\linewidth}{6.5cm}{figures/compact/fig14_n3_contract.tex}
+{Información disponible durante la ejecución}
+\caption{Datos públicos, estado privado de cada AMR y papel del observador durante
+una ronda.}
+\label{fig:n3-informacion}
+\viuownsource
+\end{figure}
+
+% ------------------------------------------------------------------
+% Barrera, conflictos y confirmacion concurrente (procedia del cuerpo)
+% ------------------------------------------------------------------
+
+% ------------------------------------------------------------------
+% destino: material de apoyo del repositorio
+% ------------------------------------------------------------------
+
+
+% ------------------------------------------------------------------
+
+\anxsection{Barrera, conflictos y confirmacion concurrente}{anx:concurrencia}
+
+Detalle de la Figura~\ref{fig:concurrencia}.
+
+\begin{figure}[H]\centering
+\tikzpanel{.90\linewidth}{5.5cm}{figures/n4/n4_barrier_refinement.tex}
+{(a) Barrera y refinamiento}
+\par\vspace{.4mm}
+\tikzpanel{.90\linewidth}{5.5cm}{figures/n4/n4_conflict_graph.tex}
+{(b) Grafo de conflictos}
+\par\vspace{.4mm}
+\tikzpanel{.90\linewidth}{5.5cm}{figures/n4/n4_tx_flow.tex}
+{(c) READ-DMIS-COMMIT}
+\caption{(a) Barrera bilateral de \eqref{eq:n4-bilateral-barrier-compact} y
+refinamiento progresivo en $h$. (b) Grafo de conflictos entre propuestas con AMR o
+carga compartidos. (c) Ciclo READ--DMIS--COMMIT con versiones.}
+\label{fig:concurrencia}
+\viuderivedsource{la selección distribuida de \citet{luby1986MIS} y el
+\emph{commit} versionado de \citet{grayLamport2006Commit}}
+\end{figure}
+
+% ------------------------------------------------------------------
+% Esquema de CBBA-RB y de las variantes GRAPE (procedia del cuerpo)
+% ------------------------------------------------------------------
+
+% ------------------------------------------------------------------
+% destino: material de apoyo del repositorio
+% ------------------------------------------------------------------
+
+
+% ------------------------------------------------------------------
+
+\anxsection{Esquema de CBBA-RB y de las variantes GRAPE}{anx:metodos}
+
+Detalle de la Figura~\ref{fig:n3-metodos}.
+
+\begin{figure}[H]\centering
+\tikzpanel{.96\linewidth}{4.75cm}{figures/compact/fig15_n3_cbba.tex}
+{(a) Capacity-CBBA-RB}
+\par\vspace{.5mm}
+\tikzpanel{.96\linewidth}{4.75cm}{figures/compact/fig16_n3_grape.tex}
+{(b) Weighted-GRAPE / Pair-GRAPE}
+\caption{(a) Capacity-CBBA-RB: puja, consenso sobre ganadores y barrera de retorno.
+(b) Weighted-GRAPE y Pair-GRAPE: propuesta, inundación del máximo y aplicación
+simultánea del perfil común.}
+\label{fig:n3-metodos}
+\viuderivedsource{\citet{choiBrunetHow2009CBBA}, \citet{johnson2011acbba},
+\citet{jangShinTsourdos2018GRAPE} y \citet{dutta2021hedonic}}
+\end{figure}
+
+% ------------------------------------------------------------------
+% Topologia y robustez del grafo (procedia del cuerpo)
+% ------------------------------------------------------------------
+
+% ------------------------------------------------------------------
+% destino: material de apoyo del repositorio
+% ------------------------------------------------------------------
+
+
+% ------------------------------------------------------------------
+
+\anxsection{Topologia y robustez del grafo}{anx:topologia}
+
+Detalle de la Figura~\ref{fig:n3-topologia}.
+
+\begin{figure}[H]\centering
+\pdfpanel{.98\linewidth}{11.5cm}{assets/figures/sp1-final/f6_n3c_topology_robustness.pdf}
+{Topología y robustez}
+\caption{(A) Factibilidad condicionada al oráculo por régimen de conectividad. La
+partición permanente es control negativo y su barra mide cobertura verificable
+\emph{post hoc}, no un perfil global acordado. (B) Bytes/AMR medianos por régimen.
+(C) Conectividad algebraica $\lambda_2$ frente a $\Gamma_R$, un punto por mundo y
+solo para grafos conexos: con el grafo partido $\lambda_2=0$ y no cabe en el eje
+logarítmico (N3.E3).}
+\label{fig:n3-topologia}
+\viuownsource
+\end{figure}
+
+% ------------------------------------------------------------------
+% Agregados que intervienen en una desviacion (procedia del cuerpo)
+
+% ------------------------------------------------------------------
+% Calidad frente a coste de comunicacion (procedia del cuerpo)
+% ------------------------------------------------------------------
+
+% ------------------------------------------------------------------
+% destino: material de apoyo del repositorio
+% ------------------------------------------------------------------
+
+
+% ------------------------------------------------------------------
+
+\anxsection{Calidad frente a coste de comunicacion}{anx:pareto}
+
+Detalle de la Figura~\ref{fig:pareto}.
+
+\begin{figure}[H]\centering
+\pdfpanel{.94\linewidth}{6.6cm}{assets/figures/n4-v3/n4_cross_family_pareto.pdf}
+{Calidad, comunicación y factibilidad}
+\caption{Brecha mediana frente a bytes/AMR de los métodos de N3 y N4. El tamaño
+del marcador indica la tasa de factibilidad; la forma distingue las salidas
+enteras directas de las que requieren el cierre $\mathcal R$, cuyos bytes no se
+incluyen. Los puntos proceden de campañas distintas y se presentan como síntesis
+descriptiva, no como contraste pareado.}
+\label{fig:pareto}
+\viuownsource
+\end{figure}

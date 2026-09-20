@@ -1,0 +1,446 @@
+\section{Encaminamiento multiclase: las coaliciones son cuerpos, no puntos}
+\label{sec:multiclase}
+
+El tratamiento del tráfico en \cref{sec:megajuego} penaliza la congestión de
+forma agregada, lo que basta cuando todos los agentes ocupan lo mismo. No es el
+caso aquí: una coalición en modo \textsf{cargo} alrededor de una carga ancha
+ocupa un corredor que un AMR libre apenas roza. Ignorar esa diferencia hace que
+el mecanismo cobre lo mismo por consumos de capacidad muy distintos.
+
+\subsection{Clases de envolvente}
+
+\begin{definicion}[Clase y equivalente de capacidad]
+\label{def:clase}
+Una coalición que transporta la carga $\ell$ con su formación define una
+envolvente de ancho $w^{\mathrm{env}}_\ell$. Con $w_0$ el ancho de un AMR libre,
+su \emph{clase} es $c=\lceil w^{\mathrm{env}}_\ell/w_0\rceil$ y su equivalente de
+capacidad
+\[
+  p_c=\frac{w^{\mathrm{env}}_c}{w_0}\ \ge\ 1 .
+\]
+El flujo de capacidad del corredor $e$ es $y_e=\sum_c p_c\,x^c_e$, donde $x^c_e$
+es el flujo de clase $c$. El corredor admite la clase $c$ solo si
+$W_e\ge w^{\mathrm{env}}_c$, de modo que cada clase circula sobre su propio
+subgrafo de transitabilidad $\Gcal^c$.
+\end{definicion}
+
+El tiempo de traversa depende del flujo de capacidad, no del número de cuerpos:
+$t_e(y_e)=t^0_e\bigl(1+\alpha(y_e/C_e)^{\beta}\bigr)$.
+
+\subsection{Peaje marginal por clase}
+
+\begin{supuesto}[Coste generalizado]
+\label{s:coste-clase}
+El coste que percibe una unidad de flujo de clase $c$ al recorrer $e$ es
+$p_c\,t_e(y_e)$: proporcional al tiempo y a la capacidad que consume.
+\end{supuesto}
+
+\begin{teorema}[El peaje marginal por clase alinea el equilibrio con el óptimo]
+\label{th:multiclase}
+Bajo \cref{s:coste-clase}, con peajes
+\[
+  \tau^c_e\ =\ p_c\,y_e\,t'_e(y_e),
+\]
+todo óptimo social interior del problema
+$\min\sum_e y_e\,t_e(y_e)$ satisface la condición de Wardrop para cada clase:
+el coste con peaje $p_c t_e+\tau^c_e$ está igualado sobre los corredores que la
+clase $c$ utiliza. El encaminamiento egoísta de cada coalición sobre $\Gcal^c$
+es, por tanto, socialmente óptimo.
+\end{teorema}
+
+\begin{proof}
+La derivada del coste social respecto a $x^c_e$ es
+$\partial_{x^c_e}\sum_{e'}y_{e'}t_{e'}(y_{e'})
+=p_c\bigl[t_e(y_e)+y_e t'_e(y_e)\bigr]$.
+En un óptimo interior esa derivada está igualada sobre los corredores usados por
+la clase $c$, luego el corchete $\bigl[t_e+y_et'_e\bigr]$ lo está. El coste con
+peaje es $p_c t_e+p_c y_e t'_e=p_c\bigl[t_e+y_e t'_e\bigr]$, es decir $p_c$ por
+ese mismo corchete, y queda igualado para toda clase simultáneamente.
+\end{proof}
+
+\begin{observacion}[Comprobación numérica]
+\label{obs:multiclase-num}
+Con dos corredores en paralelo, función BPR
+($\alpha=0{,}15$, $\beta=4$, $t^0=(1{,}0,\,1{,}4)$, $C=(3{,}0,\,4{,}0)$) y dos
+clases de equivalentes $p=(1{,}0,\,2{,}5)$ con demandas $(2{,}0,\,1{,}0)$, el
+óptimo social reparte $y=(2{,}639,\,1{,}861)$ y el corchete
+$t_e+y_et'_e$ vale $1{,}449$ en ambos corredores. El coste con peaje queda
+igualado en $1{,}449$ para la clase libre y en $3{,}623$ para la clase ancha.
+\end{observacion}
+
+\begin{observacion}[Qué es clásico y qué no]
+\label{obs:multiclase-atrib}
+La asignación de tráfico multiclase con equivalentes de capacidad y peaje
+marginal es teoría establecida desde \cite{dafermos1972multiclass}; el
+\cref{th:multiclase} es su transcripción. Lo que corresponde a este trabajo es
+la interpretación de la clase: no un tipo de vehículo, sino la
+\emph{envolvente de una coalición cooperativa}, que además es endógena —cambia
+con el modo, con la geometría de contactos y con la reconfiguración de puestos—
+y observable localmente, de modo que $x^c_e$ se estima con el mismo consenso de
+\cref{th:mapa}. Y el acoplamiento con el reclutamiento: $t_e$ depende de la
+velocidad de la coalición, que es la de su miembro más lento por
+\cref{le:curvatura}, con lo que la elección de ruta y la de miembros dejan de
+ser separables.
+\end{observacion}
+
+\subsection{Admisión de tareas como estabilizador de precios}
+
+\Cref{pr:dominancia} da la condición bajo la cual la red de precios es estable,
+pero no dice cómo mantenerla. Hay una regla operativa directa.
+
+\begin{corolario}[Control de admisión]
+\label{co:admision}
+Si el lanzamiento del reclutamiento de una carga $\ell$ se autoriza solo cuando
+\[
+  E_{\ell\ell}\ \ge\ \sum_{\ell'\ \mathrm{activas}}\bigl|E_{\ell\ell'}\bigr|+m,
+  \qquad m>0,
+\]
+y las cargas que no lo cumplen esperan en una cola de admisión, entonces la
+matriz de elasticidades permanece diagonalmente dominante en todo instante y,
+por \cref{pr:dominancia}, el ajuste de precios es estable.
+\end{corolario}
+
+El precio de esta regla es explícito y hay que declararlo: la espera en cola se
+suma al plazo de la carga y compite con su urgencia. La estabilidad de precios
+se compra con latencia de lanzamiento.
+
+\begin{observacion}[Corrección sobre el certificado de la dinámica de revisión]
+\label{obs:smith-acoplado}
+\Cref{obs:smith} justifica el uso de Smith por estacionariedad de Nash y por
+satisfacer la hipótesis de los teoremas de convergencia al GNE. Conviene
+precisar el alcance: esas condiciones se establecen para juegos sin
+restricciones acopladas. Con el conjunto admisible $\Fcal(t)$ acoplado —que es
+el caso aquí— el certificado aplicable no es el de la dinámica de revisión
+aislada, sino el de su composición con la dinámica de multiplicadores
+distribuidos que gestiona las restricciones compartidas
+\cite{martinezPiazuelo2025gne}. El argumento de \cref{th:precio-seguridad}
+—multiplicador común por restricción compartida— es precisamente lo que hace
+lícita esa composición.
+\end{observacion}
+
+\subsection{El conflicto de corredor como negociación}
+
+La terna lexicográfica que resuelve un cruce es una regla de prioridad, y toda
+regla de prioridad es un punto extremo del conjunto de acuerdos posibles.
+Conviene ver dónde queda respecto de los criterios de negociación, porque el
+conflicto de corredor tiene exactamente la estructura de un problema de regateo:
+dos partes, ganancias distintas según quién pase primero, y un \emph{punto de
+desacuerdo} que es el bloqueo mutuo \cite{clempner2024optimization}.
+
+\begin{observacion}[Tres formas de resolver el mismo cruce]
+\label{obs:corredor-negociacion}
+Con dos coaliciones que obtienen $10$ y $6$ al pasar primero, $4$ y $3$ al
+esperar, y $(1;\ 0{,}5)$ en caso de bloqueo:
+\[
+  \begin{array}{lccc}
+    \text{criterio} & \text{pagos} & \text{suma} & \text{producto de excedentes}\\\hline
+    \text{lexicográfico (mecanismo actual)} & (10;\ 3) & 13{,}00 & 22{,}50\\
+    \text{Nash} & (8;\ 4) & 12{,}00 & 24{,}50\\
+    \text{Kalai--Smorodinsky} & (7{,}30;\ 4{,}35) & 11{,}65 & 24{,}26
+  \end{array}
+\]
+La regla de prioridad es la que \emph{más caudal total produce} —$13$ frente a
+$12$— y a la vez la más desigual. Los criterios de negociación compran equilibrio
+al precio de un $8\%$ de caudal.
+\end{observacion}
+
+\begin{observacion}[Cómo se implementa un punto interior]
+\label{obs:alternancia}
+El punto de Nash no corresponde a ninguna decisión pura: está en el interior del
+segmento entre «pasa la primera» y «pasa la segunda», y se realiza
+\emph{aleatorizando} quién cede. En un almacén, donde los mismos pares de rutas
+se cruzan muchas veces al día, eso no exige moneda: se implementa
+\emph{alternando} con la frecuencia adecuada sobre encuentros repetidos.
+
+Esto da una lectura útil de la terna lexicográfica. Su desempate por
+identidad —el último criterio, $-i$— es determinista y por tanto favorece
+sistemáticamente al mismo AMR en empates. Sustituirlo por una alternancia con la
+proporción de \cref{obs:corredor-negociacion} convertiría el mecanismo en una
+implementación repetida de la solución de negociación, a coste nulo en
+comunicación. Es una modificación pequeña con consecuencia distributiva, y se
+declara como opción de diseño, no como mejora demostrada de caudal: el caudal,
+de hecho, baja.
+\end{observacion}
+
+\subsection{De la geometría al número de rondas}
+
+La reserva de corredores es, vista como problema combinatorio, una coloración: dos
+coaliciones cuyos trayectos se solapan no pueden tener el mismo turno, y el número
+mínimo de turnos libres de conflicto es el número cromático del grafo de conflicto
+\cite{yadav2023advanced}. Calcularlo exactamente es NP-completo, pero no hace
+falta.
+
+\begin{proposicion}[Cota geométrica del número de turnos]
+\label{pr:rondas-color}
+Sea $\Delta$ el grado máximo del grafo de conflicto. La coloración voraz por
+grados decrecientes usa a lo sumo $\Delta+1$ turnos, y por tanto
+$\chi\le\Delta+1$. Componiendo con la cota de grado de
+\cref{pr:compatibilidad}, el número de turnos necesarios está acotado por una
+cantidad puramente geométrica:
+\[
+  \#\text{turnos}\ \le\ 1+\Bigl\lfloor \pi\big/\arcsin\bigl(d_{\min}/(2R^{\mathrm{com}})\bigr)\Bigr\rfloor .
+\]
+\end{proposicion}
+
+\begin{observacion}[Los números, y la comprobación]
+\label{obs:rondas-num}
+Para razones $d_{\min}/R^{\mathrm{com}}$ de $0{,}05$ a $0{,}5$ la cota da $126$,
+$63$, $32$, $21$ y $13$ turnos. Sobre trescientos grafos de conflicto generados
+aleatoriamente, la coloración voraz nunca excedió $\Delta+1$.
+
+Lo relevante no es la cota en sí —es holgada— sino que sea \emph{geométrica}: el
+número de turnos que un corredor puede necesitar queda determinado por la
+separación mínima y el alcance de comunicación, dos parámetros de diseño de la
+instalación. Junto con \cref{obs:ciclo-despeje}, que fija la duración de cada
+turno, se obtiene una cota del tiempo de espera en un cruce a partir de
+magnitudes que se conocen antes de desplegar la flota.
+\end{observacion}
+
+\subsection{Por qué las revisiones individuales no bastan}
+
+Hay una segunda lectura combinatoria, esta sobre la asignación misma. Emparejar
+AMR con cargas es un problema de emparejamiento, y el teorema de Berge lo
+caracteriza: un emparejamiento es máximo si y solo si no admite \emph{camino
+aumentante} \cite{yadav2023advanced}. Un camino aumentante es una cadena de
+reasignaciones, no un cambio individual.
+
+\begin{observacion}[Estable ante desviaciones individuales y sin embargo no máximo]
+\label{obs:berge}
+El caso mínimo lo muestra sin margen de duda. Sean dos AMR y dos cargas, donde
+el primero puede servir ambas y el segundo solo la primera. Con el primero
+asignado a la carga que ambos pueden servir, ningún AMR libre puede tomar una
+carga libre: la asignación es estable ante revisiones individuales. Su tamaño es
+$1$, y el máximo es $2$ —basta que el primero ceda esa carga y tome la otra—.
+Una carga queda sin servir pudiendo servirse.
+
+Esto es la versión combinatoria de \cref{obs:fuerte-ciervo}: allí el mal
+equilibrio resistía desviaciones individuales y caía ante una coalición; aquí la
+asignación subóptima resiste revisiones individuales y cae ante una cadena. Son
+el mismo hecho en dos lenguajes, y ambos apuntan al mismo remedio —permitir
+desviaciones coordinadas— que en esta arquitectura proporciona la guarda de
+\cref{obs:guarda-fuerte}.
+
+De paso acota lo que \cref{co:terminacion} garantiza: termina, y termina en un
+punto estable ante desviaciones de la clase que el protocolo admite. Ampliar esa
+clase a cadenas de longitud acotada es una mejora identificada y no implementada.
+\end{observacion}
+
+\subsection{Cuánto debe durar la reserva}
+
+La asignación de derecho de paso entre flujos que compiten por un mismo espacio
+es el problema de sincronización de semáforos, cuyo objetivo es minimizar la cola
+total \cite{clempner2024optimization}. Trasladarlo aquí obliga a incorporar algo
+que el caso vehicular puede despreciar y este no.
+
+\begin{observacion}[El despeje fija la duración del turno]
+\label{obs:ciclo-despeje}
+Un vehículo abandona el cruce en un instante; una coalición ancha y lenta
+necesita un tiempo de \emph{despeje} $L$ para salir del corredor, y durante ese
+tiempo nadie más puede entrar. Ese coste se paga en cada conmutación. Minimizando
+el retardo total sobre la duración del ciclo $C$ con reparto de verde
+proporcional a la demanda, el óptimo resulta
+\[
+  C^\star\ \approx\ 5{,}9\,L,
+\]
+con una constancia notable en $L$: la razón se mantiene entre $5{,}9$ y $6{,}0$ al
+variar $L$ desde $0{,}5$ hasta $30$~s, sobre un rango de sesenta veces. No es
+constante en la \emph{saturación} $Y=\sum_i y_i$: un barrido posterior da
+$C^\star/L\approx4{,}33/(1-Y)-0{,}57$ ($R^2=0{,}998$), es decir $4{,}7$, $5{,}9$,
+$8{,}3$ y $20{,}7$ para $Y=0{,}2$, $0{,}32$, $0{,}5$ y $0{,}8$; el valor $5{,}9$
+corresponde a $Y=0{,}32$. El
+retardo mínimo alcanzable crece linealmente con $L$: de $0{,}391$ a $23{,}46$ en
+ese mismo barrido.
+
+De aquí sale una regla de dimensionamiento que el mecanismo no tenía: \emph{el
+testigo de reserva debe retenerse del orden de seis veces el tiempo de despeje de
+la coalición más ancha que pueda usar el corredor}. Y justifica la elección de
+un testigo exclusivo frente a una alternancia rápida: con despeje grande el ciclo
+óptimo es largo, y un ciclo largo con reparto proporcional \emph{es} una
+asignación casi exclusiva por turnos. La alternancia rápida solo conviene cuando
+el despeje es pequeño, que es el caso vehicular y no el de una coalición
+acoplada.
+\end{observacion}
+
+\subsection{Exclusión, vivacidad e interbloqueo}
+
+El testigo de corredor garantiza exclusión. Conviene decir con precisión qué
+más garantiza y qué no \cite{mayorga2026compendio}.
+
+\begin{proposicion}[Invariante de un arrendamiento versionado]
+\label{pr:arrendamiento}
+Sea un recurso $z$ con estado $(o_z,\nu_z,t_z^{\exp})$: propietario o vacío,
+versión y expiración. Si (i) una concesión solo se confirma cuando el recurso
+está libre o su arrendamiento anterior expiró, (ii) cada \emph{commit}
+incrementa estrictamente $\nu_z$, y (iii) los mensajes con versión antigua se
+descartan, entonces en todo estado alcanzable hay a lo sumo un propietario
+vigente.
+\end{proposicion}
+
+\begin{proof}
+Inducción sobre \emph{commits}. Una liberación deja cero propietarios; una
+renovación conserva el mismo; una nueva concesión solo se confirma tras
+observar libre o expirado y genera una versión nueva, de modo que cualquier
+concesión concurrente basada en la versión anterior queda obsoleta y se
+descarta.
+\end{proof}
+
+\begin{proposicion}[Exclusión no implica vivacidad]
+\label{pr:exclusion-no-vivacidad}
+Existe una ejecución que satisface \cref{pr:arrendamiento} para todos los
+recursos y permanece bloqueada indefinidamente: dos recursos unitarios, la
+coalición $1$ posee $z_1$ y espera $z_2$, la coalición $2$ posee $z_2$ y
+espera $z_1$. Ningún recurso tiene dos propietarios y ninguna coalición
+progresa.
+\end{proposicion}
+
+\begin{teorema}[Ciclo de espera e interbloqueo]
+\label{th:ciclo-espera}
+Con recursos de instancia única, retención mientras se espera, ausencia de
+expropiación y liberación solo al completar la operación esperada, un
+conjunto cerrado y persistentemente bloqueado de coaliciones contiene un ciclo
+en el grafo de espera. Recíprocamente, un ciclo dirigido persistente basta
+para el interbloqueo de las coaliciones del ciclo.
+\end{teorema}
+
+\begin{proof}
+En un conjunto cerrado y bloqueado cada coalición espera un recurso poseído
+por otra del mismo conjunto, luego cada nodo tiene una arista saliente en un
+grafo finito y seguir aristas repite un nodo. En un ciclo
+$c_1\to\cdots\to c_m\to c_1$, cada una espera un recurso retenido por la
+siguiente; sin expropiación ni liberación en espera, ninguna completa la
+operación que liberaría, y el ciclo persiste.
+\end{proof}
+
+\begin{observacion}[Equidad y ausencia de interbloqueo son contratos distintos]
+\label{obs:equidad-interbloqueo}
+Una regla de envejecimiento elimina la inanición en la cola de un recurso y no
+rompe un ciclo de \cref{th:ciclo-espera} que atraviese dos recursos. Para el
+corredor, la consecuencia de diseño es concreta: el testigo debe adquirirse
+en un orden total de recursos, o liberarse mientras se espera —lo que es la
+alternancia de \cref{obs:alternancia}—, porque la exclusión por sí sola no
+garantiza que la carga llegue.
+\end{observacion}
+
+\subsection{Potencial exacto con pesos y latencias afines}
+
+\begin{proposicion}[Juego atómico ponderado afín]
+\label{pr:potencial-afin-ponderado}
+Sean coaliciones atómicas $i=1,\dots,N$ con peso físico $w_i>0$ y estrategia
+$s_i\subseteq E$ (los recursos que ocupa), carga $y_e(s)=\sum_{i:e\in s_i}w_i$
+y latencia afín $\ell_e(y)=a_ey+b_e$ con $a_e,b_e\ge0$. Con coste
+$C_i(s)=w_i\sum_{e\in s_i}\ell_e(y_e(s))$, el juego tiene potencial exacto
+\begin{equation}
+  \label{eq:potencial-afin}
+  \Phi(s)=\sum_{e\in E}\Bigl[\frac{a_e}{2}\Bigl(y_e(s)^2+\sum_{i:e\in s_i}w_i^2\Bigr)+b_ey_e(s)\Bigr],
+\end{equation}
+y posee al menos un equilibrio puro al que toda sucesión de mejoras
+unilaterales estrictas llega en tiempo finito.
+\end{proposicion}
+
+\begin{proof}
+Basta un recurso. Si $i$ entra a $e$ con carga previa $y$, el potencial
+crece $\tfrac{a_e}{2}[(y+w_i)^2-y^2+w_i^2]+b_ew_i=a_eyw_i+a_ew_i^2+b_ew_i
+=w_i\ell_e(y+w_i)$, que es su coste en $e$; si sale, la variación es el
+negativo de su coste actual. En mil desviaciones aleatorias el error de la
+identidad es $1{,}8\times10^{-14}$. Existencia y mejora finita siguen de la
+finitud de $E$.
+\end{proof}
+
+\begin{observacion}[Dónde acaba esta clase]
+\label{obs:afin-limite}
+Con pesos heterogéneos el potencial exacto existe para latencias afines y
+no en general: es la frontera clásica de los juegos de congestión ponderados
+\cite{fotakis2005selfish}. Para latencias no lineales, la vía exacta es la
+externalidad atómica de \cref{th:externalidad-atomica}, que cobra la
+contribución marginal en lugar de la latencia; el precio es que el coste ya
+no es «lo que tardo» sino «lo que causo».
+\end{observacion}
+
+\subsection{Huellas extensas: de los centros a los conjuntos}
+
+Una coalición no es un punto. Lo que sigue fija cuándo la abstracción puntual
+es válida y cuánto cuesta cuando no lo es \cite{mayorga2026compendio}.
+
+\begin{lema}[Obstáculo de configuración y obstáculo relativo]
+\label{le:minkowski}
+Fijada la orientación, un centro $p$ es libre para la huella $\bar F$ si y
+solo si $p\notin O\oplus(-\bar F)$; dos huellas con centros $p_c,p_d$
+colisionan si y solo si $p_c-p_d\in\bar F_d\oplus(-\bar F_c)$, que para
+discos de radios $R_c,R_d$ es $\lVert p_c-p_d\rVert\le R_c+R_d$. En
+consecuencia, si $\bar F_1\subseteq\bar F_2$ entonces
+$Q_{\mathrm{free}}(\bar F_2)\subseteq Q_{\mathrm{free}}(\bar F_1)$: agrandar
+una huella nunca crea caminos.
+\end{lema}
+
+\begin{proof}
+Hay colisión si y solo si existen $o\in O$ y $f\in\bar F$ con $o=p+f$, es
+decir $p\in O\oplus(-\bar F)$; la versión relativa es $p_c+f_c=p_d+f_d$; la
+suma de Minkowski es monótona por inclusión y tomar complementos la invierte.
+\end{proof}
+
+\begin{proposicion}[Certificado de despeje y su contraejemplo mínimo]
+\label{pr:certificado-despeje}
+Si $\bar F_c\subseteq B_{R_c}(0)$ y la curva de centros cumple
+$\mathrm{dist}(p(t),O)>R_c+d_{\mathrm{safe}}$ para todo $t$, la huella
+completa conserva margen $d_{\mathrm{safe}}$. La condición no es vacía en el
+otro sentido: para todo $R>0$ existe un corredor recto de ancho $0<w<2R$ en
+el que el eje central es un camino puntual y ningún disco de radio $R$ lo
+recorre.
+\end{proposicion}
+
+\begin{proof}
+Para $z$ en la huella, $\mathrm{dist}(z,O)\ge\mathrm{dist}(p,O)-\lVert z-p\rVert>d_{\mathrm{safe}}$.
+En el corredor, todo disco de radio $R$ toca una pared porque su diámetro
+excede $w$, y por \cref{le:minkowski} el espacio de centros libres es vacío.
+\end{proof}
+
+\begin{observacion}[El despeje normalizado separa exactamente los falsos positivos]
+\label{obs:despeje-normalizado}
+Con $\zeta=d_{\min}(\pi,O)/(R_c+d_{\mathrm{safe}})$, en el banco de cinco
+geometrías, cuarenta semillas y siete escalas de huella, todos los casos con
+$\zeta\le1$ fueron falsos positivos de la representación puntual y no hubo
+ninguno con $\zeta>1$; agregando radios, la tasa de falso positivo fue del
+$13{,}2\%$, y del $39{,}5\%$ para la huella grande, mientras la búsqueda con
+huella encontró camino válido en el $100\%$ y alargó el $9{,}5\%$ de los
+pares en a lo sumo cuatro celdas \cite{mayorga2026compendio}. La búsqueda A*
+sigue siendo exacta para el grafo que recibe; lo que falla es el grafo cuando
+el despeje deja de dominar la huella de la coalición.
+\end{observacion}
+
+\begin{lema}[Cota de caminos independientes y su límite]
+\label{le:caminos-independientes}
+Si $d_c$ es la longitud del camino individual más corto del agente $c$
+ignorando a los demás, toda solución conjunta factible $\pi$ cumple
+$\mathrm{SOC}(\pi)\ge\sum_cd_c$; la igualdad no implica factibilidad
+conjunta, y un plan sin coincidencia de centros sigue siendo inviable si en
+algún instante $\lVert p_i(t)-p_j(t)\rVert<R_i+R_j$.
+\end{lema}
+
+\begin{proposicion}[La planificación por prioridades no es completa]
+\label{pr:prioridad-incompleta}
+Existe una instancia factible que un orden fijo de prioridades no resuelve:
+un corredor en T con celdas $\{\ell,c,r,u\}$ y aristas $\ell-c-r$, $u-c$; el
+agente $1$ va de $u$ a $c$ y el $2$ de $\ell$ a $r$. Con prioridad para $1$,
+su camino $u\to c$ se reserva y al quedarse en su objetivo bloquea para
+siempre el único paso $\ell\to c\to r$; la solución conjunta existe: $1$
+espera en $u$, $2$ ejecuta $\ell\to c\to r$ y después $1$ entra.
+\end{proposicion}
+
+\begin{observacion}[Tres campañas, tres modos de fallo]
+\label{obs:campanas-n123}
+En ciento veinte mundos pareados con dos a cuatro coaliciones, la búsqueda
+conjunta con detector de agentes extensos completó el $100\%$; la misma
+búsqueda sobre centros con comprobación posterior de huella, el $66{,}7\%$;
+la independiente, el $8{,}3\%$; y la corrección de agentes extensos produjo
+cuarenta discordancias favorables y ninguna adversa, con McNemar exacto
+$p=2^{-39}=1{,}8\times10^{-12}$. Con una implementación pública de
+prioridad con herencia, el $100\%$ de éxito puntual cayó al $50\%$ al
+auditar huellas heterogéneas. Y con información vecinal en sesenta mundos,
+la evitación reactiva completó el $50\%$ con $35\%$ de colisiones y $15\%$ de
+interbloqueos, mientras el arrendamiento local completó el $16{,}7\%$ con cero
+colisiones y $83{,}3\%$ de interbloqueos \cite{mayorga2026compendio}. La
+última fila es \cref{pr:exclusion-no-vivacidad} medida: la exclusión compra
+seguridad y paga vivacidad, y la elección entre las dos filas no es de
+algoritmo sino de contrato, que es lo que el testigo de corredor con orden
+total de \cref{obs:equidad-interbloqueo} resuelve.
+\end{observacion}

@@ -9,7 +9,8 @@ from typing import Any
 
 
 WORKSPACE = Path(__file__).resolve().parents[1]
-RESULTS = WORKSPACE / "results" / "coppeliasim_validation"
+# Archived campaign data: moved to legacy/ in the 2026-09-02 repository cleanup.
+RESULTS = WORKSPACE / "legacy" / "results" / "coppeliasim_validation"
 DEFAULT_OUTPUT = WORKSPACE / "thesis" / "generated" / "aws-industrial2-results.tex"
 
 

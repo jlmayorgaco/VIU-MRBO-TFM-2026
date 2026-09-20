@@ -1,0 +1,55 @@
+{
+  "status": "passed",
+  "math_physical": {
+    "status": "passed",
+    "smith_rhs_sum": 0.0,
+    "smith_simplex_sum": 1.0,
+    "wrench_relative_residual": 4.083848724715925e-16,
+    "gossip_accepted_updates": 2,
+    "hocbf_value": 9.0
+  },
+  "package_audit": {
+    "status": "passed",
+    "root": "C:\\Users\\walla\\AppData\\Local\\Temp\\mrob_megagame_audit_20260920_01\\MROB_MEGAGAME_CANONICAL_PACKAGE_20260919",
+    "required_file_count": 24,
+    "missing_required_files": [],
+    "yaml_files_checked": 10,
+    "yaml_errors": [],
+    "checksum_entries_checked": 238,
+    "checksum_missing": [],
+    "checksum_mismatch": [],
+    "declared_count_convention": {
+      "manifest_payload_files": 236,
+      "package_manifest_files": 237,
+      "checksum_entries": 238,
+      "checksum_extra_declared_path": "PACKAGE_MANIFEST.json",
+      "consistent_by_inclusion": true
+    }
+  },
+  "reference_smoke": [
+    {
+      "scenario": "C:\\Users\\walla\\AppData\\Local\\Temp\\mrob_megagame_audit_20260920_01\\MROB_MEGAGAME_CANONICAL_PACKAGE_20260919\\configs\\S00_open_floor.yaml",
+      "horizon_s": 1.0,
+      "n_robots": 8,
+      "n_loads": 2,
+      "formed_coalitions": 1,
+      "mean_soc": 0.7916646950520954
+    },
+    {
+      "scenario": "C:\\Users\\walla\\AppData\\Local\\Temp\\mrob_megagame_audit_20260920_01\\MROB_MEGAGAME_CANONICAL_PACKAGE_20260919\\configs\\S01_single_bottleneck.yaml",
+      "horizon_s": 1.0,
+      "n_robots": 12,
+      "n_loads": 2,
+      "formed_coalitions": 2,
+      "mean_soc": 0.8095504352258903
+    },
+    {
+      "scenario": "C:\\Users\\walla\\AppData\\Local\\Temp\\mrob_megagame_audit_20260920_01\\MROB_MEGAGAME_CANONICAL_PACKAGE_20260919\\configs\\S02_hero_three_loads.yaml",
+      "horizon_s": 1.0,
+      "n_robots": 18,
+      "n_loads": 3,
+      "formed_coalitions": 3,
+      "mean_soc": 0.7988135895486177
+    }
+  ]
+}

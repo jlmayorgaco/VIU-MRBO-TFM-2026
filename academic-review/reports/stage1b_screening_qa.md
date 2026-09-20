@@ -1,23 +1,23 @@
 # Stage 1B screening and recall QA
 
-Run UTC: 2026-09-12T20:42:01.580852+00:00
+Run UTC: 2026-09-13T22:43:18.132377+00:00
 
 ## Frozen inputs
 
-- Stage 1A CSV SHA-256: `41fbeaed5d49a2588955ddee5718d9ac36cd9b5a013daecdb143da3d9240ef85`
-- Stage 1A JSONL SHA-256: `d169e97f710884953a09d2b6b6f83bbc32f43f4fd4d5571007fdb971bec8d6f2`
+- Stage 1A CSV SHA-256: `3e5c589af0cf149c1a12384c69fbdb6eeb8692fb058c43c5f3880c185c1ef99f`
+- Stage 1A JSONL SHA-256: `f1174a84643ad346cc54896fb499b74829c5e0a194cce1f4d39af618f881ac7e`
 - Screening protocol SHA-256: `cbbd7c321811594f790350ab57f40ee5336058e6bce281f7dbd741d36014ccb5`
 - Stage 1A inputs were not overwritten.
 
 ## Corpus and identity
 
-- Stage 1A unique candidates: **246**
-- Stage 1B candidates after identity resolution and bounded recall: **1218**
-- Additional candidate records from one-hop recall: **974**
-- Additional relevant/plausible records from recall: **463**
-- DOI recovery attempts: **5**; recovered: **2**
-- Duplicate-resolution records: **9**; decisions: `{'merge_published_preprint': 2, 'merged_alias': 2, 'retain_distinct_standard_revision': 3, 'retain_distinct_work': 2}`
-- DOI present/missing after Stage 1B: **1161/57**
+- Stage 1A unique candidates: **376**
+- Stage 1B candidates after identity resolution and bounded recall: **1331**
+- Additional candidate records from one-hop recall: **957**
+- Additional relevant/plausible records from recall: **447**
+- DOI recovery attempts: **33**; recovered: **25**
+- Duplicate-resolution records: **11**; decisions: `{'merge_published_preprint': 2, 'merged_alias': 2, 'retain_unresolved': 2, 'retain_distinct_standard_revision': 3, 'retain_distinct_work': 2}`
+- DOI present/missing after Stage 1B: **1269/62**
 
 ## Legacy seed reconciliation
 
@@ -27,25 +27,32 @@ Run UTC: 2026-09-12T20:42:01.580852+00:00
 
 ## Screening decisions
 
-- `include_fulltext`: **340**
-- `maybe_fulltext`: **280**
-- `exclude`: **598**
+- `include_fulltext`: **448**
+- `maybe_fulltext`: **283**
+- `exclude`: **600**
 - Final classifier: `deterministic_keyword_rules_v2`; semantic scope remains the frozen `screening_protocol_v1`.
 
 ### Exclusion distribution
 
 - `no_multi_robot_component`: 89
 - `no_relevant_coordination`: 9
-- `non_research_item`: 25
-- `out_of_domain`: 28
-- `wrong_robotic_problem`: 447
+- `non_research_item`: 26
+- `out_of_domain`: 30
+- `wrong_robotic_problem`: 446
 
 ## Provenance overlap
 
 - `crossref`: 189
 - `legacy_review`: 32
-- `openalex`: 1038
+- `openalex`: 1021
 - `openalex_snowball`: 986
+- `wos:F01_primary_wos_plaintext_full_record_cited_references.txt`: 50
+- `wos:F02_primary_wos_plaintext_full_record_cited_references.txt`: 50
+- `wos:F03_primary_wos_plaintext_full_record_cited_references.txt`: 14
+- `wos:F04_primary_wos_plaintext_full_record_cited_references.txt`: 13
+- `wos:F05_primary_wos_plaintext_full_record_cited_references.txt`: 23
+- `wos:F06_primary_wos_plaintext_full_record_cited_references.txt`: 3
+- `wos:F07_primary_wos_plaintext_full_record_cited_references.txt`: 1
 
 ## Recall audit
 
@@ -65,10 +72,10 @@ Run UTC: 2026-09-12T20:42:01.580852+00:00
 
 ## Coverage boundary and deviations
 
-`coverage_status=open_sources_plus_limited_snowballing`  
-`wos_status=pending_external_export`
+`coverage_status=open_sources_plus_limited_snowballing;wos_partially_reconciled`
+`wos_status=present_partial`
 
-- Web of Science remains pending and the corpus is not represented as exhaustive.
+- Web of Science is partially reconciled from the declared manual exports; F01 and F02 remain incomplete, so the corpus is not represented as exhaustive.
 - OpenAlex citation neighborhoods were used only for one-hop recall auditing.
 - No PDF corpus was downloaded; no full-text coding, novelty claim or literature review prose was produced.
 

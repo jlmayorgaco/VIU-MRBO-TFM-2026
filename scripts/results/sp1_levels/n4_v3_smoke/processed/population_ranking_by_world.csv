@@ -1,0 +1,9 @@
+world_key,scenario,pressure,capacity_cv,continuous_winner,atomic_winner,winner_mismatch,spearman_rho
+E3:clustered:p0.85:cv0.35:r12,clustered,0.85,0.35,fii_smith_R,fii_smith_R,False,1.0
+E3:corridor:p0.7:cv0.35:r7,corridor,0.7,0.35,fii_smith_R,fii_bnn_R,True,
+E3:corridor:p0.85:cv1.0:r29,corridor,0.85,1.0,fii_smith_R,fii_logit_R,True,0.9486832980505139
+E3:ring:p0.7:cv0.65:r16,ring,0.7,0.65,fii_smith_R,fii_bnn_R,True,
+E3:separated:p0.7:cv1.0:r25,separated,0.7,1.0,fii_smith_R,fii_bnn_R,True,-0.9486832980505139
+E3:separated:p0.85:cv0.0:r3,separated,0.85,0.0,fii_smith_R,fii_bnn_R,True,
+E3:uniform:p0.7:cv0.0:r0,uniform,0.7,0.0,fii_smith_R,fii_bnn_R,True,
+E3:uniform:p0.85:cv0.65:r21,uniform,0.85,0.65,fii_smith_R,fii_logit_R,True,0.4472135954999579

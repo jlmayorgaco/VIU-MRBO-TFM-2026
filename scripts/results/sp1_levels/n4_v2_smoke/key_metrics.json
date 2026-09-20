@@ -1,0 +1,284 @@
+{
+  "campaign_id": "SP1_N4_DISTRIBUTED_FAMILY_v2_SMOKE",
+  "dpop": {
+    "certified_objective_worlds": 2,
+    "feasibility_matches": 2,
+    "max_absolute_objective_error": 4.263256414560601e-14,
+    "max_payload_bytes": 2944,
+    "max_utility_entries": 363,
+    "worlds": 2
+  },
+  "family_rows": 120,
+  "family_summary": {
+    "capacity_cbba_rb": {
+      "bytes_per_agent_median": 8302.34375,
+      "feasibility": 0.75,
+      "feasibility_high": 0.9110583316059453,
+      "feasibility_low": 0.46769466506643426,
+      "gap_high": 0.7480542135220095,
+      "gap_low": 0.0985100394916654,
+      "gap_median": 0.143976200510874,
+      "label": "CBBA-RB",
+      "rounds_median": 24.5,
+      "runtime_ms_median": 23.975599979166873,
+      "worlds": 12
+    },
+    "geo_qpg_c3": {
+      "bytes_per_agent_median": 13234.375,
+      "feasibility": 1.0,
+      "feasibility_high": 1.0,
+      "feasibility_low": 0.7575059933447592,
+      "gap_high": 1.5227251702129282e-16,
+      "gap_low": -5.674714123994042e-17,
+      "gap_median": 0.0,
+      "label": "Geo-QPG-C3",
+      "rounds_median": 765.5,
+      "runtime_ms_median": 2105.1107499952195,
+      "worlds": 12
+    },
+    "geo_qpg_cf": {
+      "bytes_per_agent_median": 2964.25,
+      "feasibility": 1.0,
+      "feasibility_high": 1.0,
+      "feasibility_low": 0.7575059933447592,
+      "gap_high": 2.998125739299788e-16,
+      "gap_low": 0.0,
+      "gap_median": 6.080337663938241e-17,
+      "label": "Geo-QPG-CF (global)",
+      "rounds_median": 14.5,
+      "runtime_ms_median": 147.2473500034539,
+      "worlds": 12
+    },
+    "geo_qpg_d": {
+      "bytes_per_agent_median": 4314.875,
+      "feasibility": 1.0,
+      "feasibility_high": 1.0,
+      "feasibility_low": 0.7575059933447592,
+      "gap_high": 2.9981257392997883e-16,
+      "gap_low": 0.0,
+      "gap_median": 6.080337663938241e-17,
+      "label": "Geo-QPG-DMIS+TX",
+      "rounds_median": 14.5,
+      "runtime_ms_median": 129.7416500019608,
+      "worlds": 12
+    },
+    "geo_qpg_lll": {
+      "bytes_per_agent_median": 4989.75,
+      "feasibility": 1.0,
+      "feasibility_high": 1.0,
+      "feasibility_low": 0.7575059933447592,
+      "gap_high": 1.2551448095214475,
+      "gap_low": 0.6525803031018171,
+      "gap_median": 1.0174565007282603,
+      "label": "Geo-LLL atómico",
+      "rounds_median": 151.5,
+      "runtime_ms_median": 26.349199994001538,
+      "worlds": 12
+    },
+    "geo_qpg_p": {
+      "bytes_per_agent_median": 3778.5,
+      "feasibility": 1.0,
+      "feasibility_high": 1.0,
+      "feasibility_low": 0.7575059933447592,
+      "gap_high": 0.1366948077692156,
+      "gap_low": 1.3491698206331797e-16,
+      "gap_median": 0.013671953924477849,
+      "label": "Geo-QPG-2BR",
+      "rounds_median": 291.5,
+      "runtime_ms_median": 160.79290000197943,
+      "worlds": 12
+    },
+    "geo_qpg_smith": {
+      "bytes_per_agent_median": 520.5,
+      "feasibility": 1.0,
+      "feasibility_high": 1.0,
+      "feasibility_low": 0.7575059933447592,
+      "gap_high": 1.2068767277469585,
+      "gap_low": 0.7184834406075165,
+      "gap_median": 1.0334734647632549,
+      "label": "Geo-Smith atómico",
+      "rounds_median": 32.0,
+      "runtime_ms_median": 6.778699986170977,
+      "worlds": 12
+    },
+    "geo_qpg_u": {
+      "bytes_per_agent_median": 517.875,
+      "feasibility": 1.0,
+      "feasibility_high": 1.0,
+      "feasibility_low": 0.7575059933447592,
+      "gap_high": 1.0171937280470973,
+      "gap_low": 0.46495589446058827,
+      "gap_median": 0.5834427463446648,
+      "label": "Geo-QPG-BR",
+      "rounds_median": 29.5,
+      "runtime_ms_median": 8.961899991845712,
+      "worlds": 12
+    },
+    "weighted_grape": {
+      "bytes_per_agent_median": 20675.625,
+      "feasibility": 1.0,
+      "feasibility_high": 1.0,
+      "feasibility_low": 0.7575059933447592,
+      "gap_high": 0.16220299230614346,
+      "gap_low": 0.032911119336452355,
+      "gap_median": 0.03956501813163605,
+      "label": "GRAPE",
+      "rounds_median": 233.0,
+      "runtime_ms_median": 131.07530001434498,
+      "worlds": 12
+    },
+    "weighted_pair_grape": {
+      "bytes_per_agent_median": 24730.5,
+      "feasibility": 1.0,
+      "feasibility_high": 1.0,
+      "feasibility_low": 0.7575059933447592,
+      "gap_high": 2.6914681018745083e-16,
+      "gap_low": 0.0,
+      "gap_median": 6.080337663938241e-17,
+      "label": "Pair-GRAPE",
+      "rounds_median": 289.0,
+      "runtime_ms_median": 264.6190499945078,
+      "worlds": 12
+    }
+  },
+  "family_worlds": 12,
+  "paired_contrasts": [
+    {
+      "ci_high": -0.4649558944605881,
+      "ci_low": -0.964130347198294,
+      "left": "geo_qpg_c3",
+      "median_difference": -0.5834427463446648,
+      "metric": "optimality_gap",
+      "right": "geo_qpg_u",
+      "wilcoxon_p": 0.00048828125,
+      "worlds": 12
+    },
+    {
+      "ci_high": 0.4512822551635757,
+      "ci_low": 0.0019462490807649058,
+      "left": "geo_qpg_smith",
+      "median_difference": 0.24112290785486784,
+      "metric": "optimality_gap",
+      "right": "geo_qpg_u",
+      "wilcoxon_p": 0.0341796875,
+      "worlds": 12
+    },
+    {
+      "ci_high": 0.5915337049983751,
+      "ci_low": -0.02934501758064156,
+      "left": "geo_qpg_lll",
+      "median_difference": 0.1935742862082414,
+      "metric": "optimality_gap",
+      "right": "geo_qpg_u",
+      "wilcoxon_p": 0.06396484375,
+      "worlds": 12
+    },
+    {
+      "ci_high": 0.0,
+      "ci_low": 0.0,
+      "left": "geo_qpg_d",
+      "median_difference": 0.0,
+      "metric": "optimality_gap",
+      "right": "geo_qpg_cf",
+      "wilcoxon_p": 1.0,
+      "worlds": 12
+    },
+    {
+      "ci_high": 1362.25,
+      "ci_low": 1124.25,
+      "left": "geo_qpg_d",
+      "median_difference": 1206.75,
+      "metric": "bytes_per_agent",
+      "right": "geo_qpg_cf",
+      "wilcoxon_p": 0.00048828125,
+      "worlds": 12
+    },
+    {
+      "ci_high": -4.832349994103424,
+      "ci_low": -46.74994999368208,
+      "left": "geo_qpg_d",
+      "median_difference": -24.57074999983889,
+      "metric": "runtime_ms",
+      "right": "geo_qpg_cf",
+      "wilcoxon_p": 0.01220703125,
+      "worlds": 12
+    }
+  ],
+  "population_context_rows": 15,
+  "risk_differences": [
+    {
+      "ci_high": 0.0,
+      "ci_low": 0.0,
+      "left": "geo_qpg_c3",
+      "left_only": 0,
+      "mcnemar_p": 1.0,
+      "right": "geo_qpg_u",
+      "right_only": 0,
+      "risk_difference": 0.0,
+      "worlds": 12
+    },
+    {
+      "ci_high": 0.0,
+      "ci_low": 0.0,
+      "left": "geo_qpg_smith",
+      "left_only": 0,
+      "mcnemar_p": 1.0,
+      "right": "geo_qpg_u",
+      "right_only": 0,
+      "risk_difference": 0.0,
+      "worlds": 12
+    },
+    {
+      "ci_high": 0.0,
+      "ci_low": 0.0,
+      "left": "geo_qpg_lll",
+      "left_only": 0,
+      "mcnemar_p": 1.0,
+      "right": "geo_qpg_u",
+      "right_only": 0,
+      "risk_difference": 0.0,
+      "worlds": 12
+    },
+    {
+      "ci_high": 0.0,
+      "ci_low": 0.0,
+      "left": "geo_qpg_d",
+      "left_only": 0,
+      "mcnemar_p": 1.0,
+      "right": "geo_qpg_cf",
+      "right_only": 0,
+      "risk_difference": 0.0,
+      "worlds": 12
+    }
+  ],
+  "scaling_fits": {
+    "geo_qpg_d": {
+      "bytes_per_agent_median": {
+        "ci_high": 1.5667640687627555,
+        "ci_low": 1.5667640687627555,
+        "r_squared": 1.0,
+        "slope": 1.5667640687627555
+      },
+      "runtime_ms_median": {
+        "ci_high": 3.5348480062538328,
+        "ci_low": 3.5348480062538328,
+        "r_squared": 1.0,
+        "slope": 3.5348480062538328
+      }
+    },
+    "geo_qpg_u": {
+      "bytes_per_agent_median": {
+        "ci_high": 1.0714092608012435,
+        "ci_low": 1.0714092608012435,
+        "r_squared": 1.0,
+        "slope": 1.0714092608012435
+      },
+      "runtime_ms_median": {
+        "ci_high": 2.0143665317465453,
+        "ci_low": 2.0143665317465453,
+        "r_squared": 1.0,
+        "slope": 2.0143665317465453
+      }
+    }
+  }
+}

@@ -1,0 +1,85 @@
+schema_version: sp1-n4-family-v2
+campaign_id: SP1_N4_DISTRIBUTED_FAMILY_v2
+status: frozen_before_run
+created_utc: 2026-08-14
+
+source:
+  campaign: SP1_N4_ATOMIC_GEO_QPG_v1
+  directory: scripts/results/sp1_levels/n4_v1
+  interpretation: paired_extension_on_identical_worlds
+
+family_extension:
+  q_bar_kg: 5.0
+  workspace_m: [100.0, 100.0]
+  demand_split_alpha: 3.0
+  graph_regime: medium
+  methods: [geo_qpg_smith, geo_qpg_lll, geo_qpg_c3, geo_qpg_d]
+  primary: geo_qpg_d
+  architecture_ablation: geo_qpg_cf
+  max_rounds: 4096
+
+dpop_small:
+  base_seed: 2026081441
+  robot_load_pairs: [[6, 2], [8, 2]]
+  scenarios: [uniform, clustered, separated, ring, corridor]
+  capacity_cv: [0.35, 0.65]
+  pressure: [0.70, 0.85]
+  seeds_per_cell: 10
+  q_bar_kg: 5.0
+  workspace_m: [100.0, 100.0]
+  demand_split_alpha: 3.0
+  oracle_time_limit_s: 10.0
+  max_profiles: 2000000
+  qpg_methods: [geo_qpg_u, geo_qpg_p, geo_qpg_c3, geo_qpg_d]
+  max_rounds: 2048
+
+scaling:
+  base_seed: 2026081471
+  robot_load_pairs: [[16, 4], [32, 8], [48, 12], [64, 16]]
+  scenarios: [uniform, clustered, corridor]
+  seeds_per_cell: 5
+  capacity_cv: 0.65
+  pressure: 0.80
+  q_bar_kg: 5.0
+  workspace_m: [100.0, 100.0]
+  demand_split_alpha: 3.0
+  graph_regime: medium
+  methods: [geo_qpg_u, geo_qpg_d]
+  max_rounds: 4096
+
+population_context:
+  source: results/sp1_validation/SP1_DYNAMICS_BENCHMARK_v3/aggregated_results.csv
+  experiment: e71
+  topology: shared_dual
+  interpretation: separate_model_and_campaign_not_directly_rankable
+
+analysis:
+  confidence_level: 0.95
+  bootstrap_resamples: 4000
+  bootstrap_seed: 2026081497
+  independent_unit: world_seed
+  multiplicity: Holm within each prespecified family
+
+hypotheses:
+  H4_1:
+    question: Does a larger atomic neighbourhood reduce the MILP gap?
+    contrast: geo_qpg_c3 minus geo_qpg_u on pairwise common support
+  H4_2:
+    question: Do Smith and LLL alter the BR quality-feasibility trade-off?
+    contrasts: [geo_qpg_smith, geo_qpg_lll]
+    comparator: geo_qpg_u
+  H4_3:
+    question: Does local DMIS plus TX preserve feasibility without global ordering?
+    contrast: geo_qpg_d minus geo_qpg_cf
+  H4_4:
+    question: Does small-instance DPOP reproduce the certified MILP optimum?
+    success_rule: identical feasibility and absolute objective error below 1e-8
+  H4_5:
+    question: What empirical growth is observed over the executed N-K range?
+    interpretation: descriptive log-log slope; not an asymptotic complexity proof
+
+limitations:
+  - DMIS and TX are evaluated with reliable ordered delivery and no keeper crash.
+  - DPOP is exact only inside the explicit profile limit and is not a scalable candidate.
+  - Population dynamics use a different relaxed model and campaign; their numbers are contextual, not a direct ranking against atomic N4.
+  - No N4 result establishes transport, contact stability, collision avoidance or global optimality of the distributed heuristics.

@@ -1,0 +1,118 @@
+\section{Degradación de recursos: una sola ley para física, cómputo y red}
+\label{sec:degradacion}
+
+Los resultados anteriores acotan por separado tres cosas que parecen no tener
+relación: cuánta fuerza entrega un contacto, cómo de bien está condicionado el
+programa, y cuántas rondas necesita el acuerdo. Esta sección las reúne. La tesis
+es que las tres degradan con tres escalares espectrales y que uno de ellos tiene
+un umbral computable.
+
+\begin{definicion}[Los tres recursos]
+\label{def:recursos}
+\[
+  a=\sigma_{\min}\bigl(Q^{1/2}G_k\bigr),\qquad
+  \delta=\operatorname{dist}\bigl(S_W\Wdem,\ \partial\mathcal W(\Ccal)\bigr),\qquad
+  \eta=\text{tasa de mezcla del canal},
+\]
+respectivamente la \emph{autoridad} del acoplamiento esfuerzo--\emph{wrench},
+el \emph{margen de factibilidad} de \cref{th:robusto} y la \emph{ergodicidad}
+del grafo de información, ligada a $\lambda_2$ por \cref{th:mapa}.
+\end{definicion}
+
+\begin{teorema}[Degradación de recursos]
+\label{th:degradacion}
+Con $\varepsilon_\lambda>0$ la regularización de \eqref{eq:qp}:
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em,topsep=0.2em,itemsep=0.2em]
+  \item \textbf{Umbral de parálisis.} Si $a<a^{\dagger}:=\sqrt{\varepsilon_\lambda}$,
+  el residuo relativo de la dirección afectada excede $1/2$ y tiende a la unidad
+  cuando $a\to0$: el programa, convexo y óptimo, renuncia a corregir.
+  \item \textbf{Ley de esfuerzo.} Si $a>0$, entonces
+  $\lVert\bm\mu^{\star}\rVert\le\lVert\tilde e\rVert/a$.
+  \item \textbf{Ley de condicionamiento.} El número de condición del sistema KKT
+  crece al menos como $1/\min\{a,\delta\}$.
+  \item \textbf{Ley de rondas.} El número de rondas para alcanzar tolerancia
+  $\epsilon$ satisface
+  $R(\epsilon)\le\log(\epsilon_0/\epsilon)/\log(1/q)$ con factor de contracción
+  compuesto $q\simeq1-c\min\{a^{2},\delta,\eta\}$.
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}
+(i) es \cref{th:autoridad}(iii): en $a=\sqrt{\varepsilon_\lambda}$ el residuo
+relativo $\varepsilon_\lambda/(a^{2}+\varepsilon_\lambda)$ vale exactamente
+$1/2$, y la expresión es decreciente en $a$.
+(ii) De $\mu_j^{\star}=\sigma_j\tilde e_j/(\sigma_j^{2}+\varepsilon_\lambda)$ se
+sigue $|\mu_j^{\star}|\le\sigma_j|\tilde e_j|/\sigma_j^{2}=|\tilde e_j|/\sigma_j\le|\tilde e_j|/a$;
+sumando cuadrados, $\lVert\bm\mu^\star\rVert\le\lVert\tilde e\rVert/a$.
+(iii) es el transporte de la relación entre condicionamiento y distancia a la
+infactibilidad: exacta en forma, con constante dependiente de la
+instancia.
+(iv) compone las tasas de las tres capas: la del reparto, gobernada por el
+menor valor singular al cuadrado; la del mercado, por el margen; y la del
+consenso, por la mezcla. La contracción del ciclo es la peor de las tres.
+\end{proof}
+
+\subsection{Estatuto de cada inciso}
+
+No conviene presentar los cuatro incisos con la misma fuerza.
+
+\begin{center}\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+Inciso & Estatuto & Base \\
+\midrule
+(i) umbral & demostrado exacto & \cref{th:autoridad}, régimen interior \\
+(ii) esfuerzo & demostrado exacto & desigualdad directa \\
+(iii) condicionamiento & exacto en forma, constante por instancia & transporte \\
+(iv) rondas & ley de orden, constantes por calibrar & composición \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{observacion}[Comprobación numérica]
+\label{obs:degradacion-num}
+La ley de esfuerzo se verificó sobre instancias aleatorias de cuatro direcciones
+singulares: en todas, $\lVert\bm\mu^\star\rVert\le\lVert\tilde e\rVert/a$ con
+holgura amplia, como corresponde a una cota que satura solo cuando una única
+dirección domina. Para $\varepsilon_\lambda=0{,}04$, el residuo relativo pasa de
+$0{,}038$ en $a=1$ a $0{,}20$ en $a=0{,}4$, exactamente $0{,}50$ en
+$a=a^\dagger=0{,}2$ y $0{,}99$ en $a=0{,}02$. En la ley de rondas, el recurso
+que limita cambia con el régimen: con $(a,\delta,\eta)=(0{,}3,\,0{,}8,\,0{,}7)$
+limita la autoridad; con $(0{,}9,\,0{,}05,\,0{,}7)$, el margen; y con
+$(0{,}9,\,0{,}8,\,0{,}02)$, el canal.
+\end{observacion}
+
+\subsection{Qué unifica}
+
+\Cref{th:degradacion} da una sola explicación a fenómenos que en un banco de
+pruebas aparecen como incidencias inconexas:
+
+\begin{itemize}[leftmargin=1.4em,topsep=0.2em,itemsep=0.25em]
+  \item una coalición que pierde contacto y cuyo controlador «no reacciona»
+  —es $a\to0$ y la parálisis óptima de (i), no un fallo del solver;
+  \item una configuración cuya solución exige esfuerzos desmesurados
+  —es la ley (ii) con $a$ pequeño;
+  \item un programa que converge mal cerca de la saturación
+  —es (iii) con $\delta\to0$;
+  \item un acuerdo que tarda cuando la flota se dispersa
+  —es (iv) con $\eta$ pobre.
+\end{itemize}
+
+\begin{corolario}[Guarda espectral acoplada]
+\label{co:guarda-global}
+La condición de admisión $a\ge\kappa\sqrt{\varepsilon_\lambda}$ de
+\cref{co:guarda} no es una caja calibrada: por \cref{th:degradacion} es
+simultáneamente una cota del residuo, una cota del esfuerzo y una cota del
+condicionamiento. Fijar $\kappa$ fija las tres.
+\end{corolario}
+
+\begin{observacion}[Los tres recursos son de naturaleza distinta]
+\label{obs:recursos-distintos}
+La unificación no debe ocultar una diferencia importante. $a$ es geométrico:
+depende de dónde estén los contactos y hacia dónde miren los AMR, y la coalición
+lo controla eligiendo puestos. $\delta$ es de demanda: depende de cuánto se pide
+frente a lo que la coalición puede dar, y se controla frenando o reclutando.
+$\eta$ es de red: depende del grafo, y se controla con la topología de
+\cref{sec:topologia}. Que las tres degradaciones compartan forma no significa
+que compartan remedio.
+\end{observacion}

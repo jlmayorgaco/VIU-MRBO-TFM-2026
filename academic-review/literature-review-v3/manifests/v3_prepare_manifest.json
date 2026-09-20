@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "review_version": "V3",
+  "generated_at_utc": "2026-09-13T23:19:50.190086+00:00",
+  "inputs": {
+    "data/processed/candidate_corpus_stage2.csv": "3211592ffed1b636ba9cc0d94b3618ff067c73f398bfa63e4d6d8a8960d90fc6",
+    "data/processed/fulltext_evidence_matrix.csv": "74c93054a8a920d3c209838e5572d04972c4df6ca3086a65c2d647bce8a6e949",
+    "inputs/wos/wos_export_manifest.json": "8385a12be8475780c7b35a91781cd65c76618160a3fac65cbed8a5f1bfd75883",
+    "multisource-v2/manual-packs/web_of_science_query_pack.csv": "753f113cffc90d0780b72b1232d83cf3bd054484863c3ed1a215db6edb35a131"
+  },
+  "outputs": {
+    "literature-review-v3/data/query_ledger_v3.csv": "540235943a757d4b99286dab080adbb1ab107c9237a6aee7940e65f379d0ca25",
+    "literature-review-v3/data/seed_registry_v3.csv": "8b63e55c6037f91cd863582208a67b423658625a2e36063fd2007abefb7f5489",
+    "literature-review-v3/data/priority_reading_queue_v3.csv": "3a496a70b745c0011d479745a9dc4aef8542e0a401d33ae2673d981adba4bdbd",
+    "literature-review-v3/data/review_cards_v3.jsonl": "95c5cf4fbd644d4b773e60912402d9499615c45c50497f6d1ebf3744646b0993",
+    "literature-review-v3/reports/v3_intake_qa.md": "34e08faa92c7c01f333b36edc415df625e8cbe57381da4111e05028c2c754764"
+  },
+  "counts": {
+    "candidate_seeds": 2309,
+    "fulltext_close_reading_queue": 244,
+    "query_ledger_rows": 22
+  },
+  "evidence_boundary": "All V3 reading cards require close reading and a verified localizer before claim use."
+}

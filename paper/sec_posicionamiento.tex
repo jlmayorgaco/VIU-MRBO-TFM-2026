@@ -1,0 +1,390 @@
+\section{Dónde encaja este trabajo}
+\label{sec:posicionamiento}
+
+Antes de la formulación conviene situar el problema, porque la automatización de
+almacenes tiene un vocabulario de decisiones consolidado y no todas las
+decisiones que enumera son objeto de este trabajo. Declarar cuáles sí y cuáles
+no evita que el lector suponga cobertura donde no la hay.
+
+\subsection{Los tres niveles de decisión}
+
+La literatura de automatización de almacenes ordena las decisiones en tres
+horizontes \cite{yildirim2023warehouse}: \emph{estratégico} —selección de
+sistema, distribución en planta, trazado de pasillos, ubicación de puntos de
+recogida y entrega, ubicación de estaciones de carga—; \emph{táctico}
+—asignación de almacenamiento, gestión de pedidos, dimensionado de flota,
+mantenimiento y gestión de fallos, gestión energética—; y \emph{operativo}
+—asignación de tareas, planificación de rutas, resolución de bloqueos y
+prevención de conflictos.
+
+\begin{table}[!ht]
+\centering\small
+\caption{Decisiones industriales y resultados de este trabajo.}
+\label{tab:posicionamiento}
+\begin{tabularx}{\textwidth}{@{}p{2.0cm}p{4.0cm}X@{}}
+\toprule
+Nivel & Decisión & Resultado que la aborda \\
+\midrule
+Estratégico & trazado de pasillos y anchos
+  & \cref{pr:compatibilidad}: la cota de grado del árbol de conectividad depende
+    de $d_{\min}/R^{\mathrm{com}}$; \cref{obs:precio-astop}: el ancho del pasillo
+    fija la velocidad admisible \\
+Estratégico & emplazamiento de la reserva
+  & \cref{th:potencia} y \cref{pr:ascenso}: partición por diagrama de potencia
+    y reubicación distribuida que maximiza la cobertura de rescate \\
+Estratégico & ubicación de estaciones de carga
+  & \emph{no abordada} \\
+Estratégico & selección de sistema, ergonomía, interacción humana
+  & \emph{no abordadas} \\
+\midrule
+Táctico & gestión de fallos
+  & \cref{th:subprovision} y \cref{th:prima}: nivel de reserva y su mecanismo \\
+Táctico & gestión energética
+  & \cref{pr:caudal}: caudal sostenido con energía como restricción lineal;
+    \cref{obs:media-energia}: por qué la media no basta;
+    \cref{obs:recarga}: programación de recarga con capacidad de red \\
+Táctico & gestión de pedidos
+  & \cref{co:admision}: control de admisión que preserva la estabilidad de
+    precios \\
+Táctico & dimensionado de flota
+  & \emph{parcial}: \cref{pr:caudal} acota el caudal de una flota dada, no
+    resuelve su tamaño óptimo \\
+\midrule
+Operativo & asignación de tareas
+  & núcleo del trabajo: \cref{th:potencial}, \cref{co:terminacion},
+    \cref{th:noequiv}, \cref{pr:jerarquia} \\
+Operativo & planificación de rutas
+  & \cref{th:multiclase}: peaje marginal por clase de envolvente \\
+Operativo & bloqueos y conflictos
+  & reserva vecinal con garantía de espera acotada;
+    \cref{obs:posicionamiento-almacen} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{observacion}[Concentración y sus huecos]
+\label{obs:concentracion}
+El trabajo es denso en el nivel operativo, aporta al táctico y alcanza el
+estratégico por dos vías: la geométrica —anchos de pasillo— y la de cobertura
+—emplazamiento de la reserva, \cref{sec:cobertura}—. Tres decisiones
+industriales quedan explícitamente fuera: la selección de sistema, la
+interacción con operarios y la ubicación de estaciones de carga. Ninguna es un olvido: todas dependen de
+factores —coste, normativa, ergonomía— ajenos al formalismo empleado aquí.
+\end{observacion}
+
+\subsection{Qué distingue este problema del transporte por robot único}
+
+La literatura de robótica cooperativa clasifica los sistemas multi-agente por
+tres ejes \cite{gorrostieta2019applications}: tipo de agentes (homogéneos u
+heterogéneos), arquitectura de control (reactiva, deliberativa o híbrida) y
+comunicación (implícita o explícita). Este trabajo se sitúa en heterogéneos,
+híbrida y explícita, con la precisión de que la comunicación explícita está
+acotada a $n$ saltos y su implementabilidad se verifica con
+\cref{pr:implementable}.
+
+Lo que separa este problema de la asignación de tareas convencional no es la
+heterogeneidad —que es común— sino que la ejecución exige \textbf{contacto físico simultáneo de varios agentes sobre un mismo cuerpo}. De ahí las tres
+consecuencias que estructuran el trabajo:
+
+\begin{enumerate}[leftmargin=1.9em,topsep=0.2em,itemsep=0.3em]
+  \item la coalición debe certificar que puede producir el \emph{wrench}
+  requerido, y ese certificado tiene fronteras (\cref{obs:fronteras});
+  \item una vez acoplada, deja de ser un conjunto de puntos y pasa a ser un
+  cuerpo con envolvente, lo que cambia su consumo de espacio
+  (\cref{def:clase});
+  \item su capacidad se suma pero su movilidad se intersecta
+  (\cref{co:agarre}), de modo que coaliciones mayores no son necesariamente
+  mejores.
+\end{enumerate}
+
+\begin{observacion}[La frontera con el control de formación]
+\label{obs:frontera-formacion}
+El control de formación cooperativo resuelve que un conjunto de robots mantenga
+una geometría relativa mientras sigue una referencia. Ese problema no incluye la
+pregunta que aquí es central: \emph{qué esfuerzo aporta cada miembro y si la
+suma realiza la demanda}. La revisión de la bibliografía de robótica móvil y
+control cooperativo consultada confirma esa separación
+(\cref{obs:biblioteca-fisica}): ninguna de esas obras formula el reparto por
+\emph{wrench} resultante con unilateralidad y conos de fricción. La formación
+es condición necesaria del transporte cooperativo; no es su formulación.
+\end{observacion}
+
+\subsection{La arquitectura, nombrada}
+
+El diseño de este trabajo sigue una metodología establecida sin haberla
+declarado. Conviene nombrarla, porque el vocabulario aclara qué hace cada capa
+\cite{ren2008distributed}: (1) fijar el objetivo de cooperación y sus
+restricciones; (2) identificar la \emph{variable de coordinación} —la
+información mínima que cada vehículo necesita conocer para coordinarse— y la
+\emph{función de coordinación} que la liga al objetivo; (3) resolver el problema
+suponiendo conocimiento global; (4) construir consenso para que todos dispongan
+de esa información pese a una red imperfecta.
+
+\begin{table}[!ht]
+\centering\small
+\caption{La metodología de \cite{ren2008distributed} y su realización aquí.}
+\label{tab:metodologia}
+\begin{tabularx}{\textwidth}{@{}p{3.4cm}X@{}}
+\toprule
+Paso & Realización en este trabajo \\
+\midrule
+Objetivo y restricciones
+  & realizar $\Wdem_\ell$ con esfuerzos admisibles; restricciones de
+    unilateralidad, cono de fricción, barreras y cotas de actuador \\
+Variable de coordinación
+  & el vector de precios $p_\ell$ del ajuste \eqref{eq:tatonnement} \\
+Función de coordinación
+  & el potencial exacto de \cref{th:potencial}, que liga la variable con el
+    objetivo \\
+Esquema centralizado
+  & el programa convexo cuyo dual son esos precios \\
+Construcción de consenso
+  & \eqref{eq:tatonnement} difundido sobre el grafo de
+    \cref{th:jerarquia-grafos} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{observacion}[Por qué el precio es la variable de coordinación correcta]
+\label{obs:variable-coordinacion}
+La elección no es cosmética. Si la coalición acordase directamente el
+\emph{reparto} —quién aporta cuánto— tendría que consensuar $\lvert\Ccal_\ell
+\rvert$ magnitudes, y la carga de comunicación crecería con el tamaño de la
+coalición. Acordando el \emph{precio} se consensúan tres magnitudes, la dimensión
+del \emph{wrench} en el plano, sea cual sea el número de miembros: $2$, $8$ o
+$32$ AMR acuerdan siempre tres números, y cada uno deriva su esfuerzo
+localmente.
+
+Esa es la razón estructural de que la arquitectura escale, y explica por qué
+\cref{obs:campo-medio} puede afirmar que crecer la flota no la degrada. Es
+también la forma precisa de decir en qué sentido este trabajo es dual: se
+consensúa el multiplicador, no la asignación.
+\end{observacion}
+
+\begin{observacion}[Los cuatro acoplamientos, todos presentes]
+\label{obs:acoplamientos}
+La misma fuente clasifica el acoplamiento entre vehículos en cuatro tipos: de
+objetivo, local, pleno y dinámico. La mayoría de los problemas de control
+cooperativo exhiben uno o dos. Este los tiene los cuatro: de objetivo, porque la
+demanda de \emph{wrench} es común; local, por las barreras entre vecinos; pleno,
+por la congestión de \cref{th:multiclase}, que acopla a todos a través de los
+arcos; y dinámico, porque en \textsf{TRANS} los AMR comparten un cuerpo rígido y
+sus dinámicas quedan ligadas por \cref{eq:carga-dinamica}. Enumerarlo así es la
+forma más económica de decir por qué el problema no se reduce a ninguna de sus
+partes.
+\end{observacion}
+
+\begin{observacion}[Dos hechos estructurales del consenso de segundo orden]
+\label{obs:segundo-orden}
+Dado que los AMR son sistemas de segundo orden, dos resultados de
+\cite{ren2008distributed} acotan lo que la capa de consenso puede y no puede
+hacer, y ambos se han comprobado.
+
+El primero: el consenso de doble integrador \emph{requiere} acoplamiento en la
+velocidad relativa. Con él, la dispersión cae a $3\times10^{-14}$; acoplando
+solo posiciones, el sistema oscila indefinidamente y la dispersión se estanca en
+$1{,}95$. No es una cuestión de ganancias: el protocolo sin término de velocidad
+no converge. Esto sostiene la exigencia de \cref{obs:hibrido-restante} de un
+observador cuando la velocidad del vecino no se mide directamente.
+
+El segundo, tranquilizador: el consenso sobrevive a la saturación de las
+entradas. Con límites de $1$, $0{,}2$ y hasta $0{,}05$ el sistema sigue
+convergiendo —dispersiones de $10^{-14}$ a $10^{-7}$—, aunque más despacio. Las
+cotas de actuador de \cref{pr:cota} no comprometen, por tanto, la capa de
+acuerdo; solo la retardan.
+\end{observacion}
+
+\subsection{Frente a la literatura de asignación en almacenes}
+
+La revisión sistemática de \cite{yildirim2023warehouse} tabula los enfoques
+publicados de asignación de tareas y de planificación de rutas en almacenes
+robotizados. Conviene agruparlos para ver qué familia falta.
+
+\begin{table}[!ht]
+\centering\small
+\caption{Familias de asignación de tareas en la literatura de almacenes, según
+la tabulación de \cite{yildirim2023warehouse}, y su relación con este trabajo.}
+\label{tab:asignacion-lit}
+\begin{tabularx}{\textwidth}{@{}p{2.7cm}p{4.5cm}X@{}}
+\toprule
+Familia & Enfoques tabulados & Relación \\
+\midrule
+Reglas de despacho
+  & vehículo más cercano, menor tiempo de respuesta, plazo, prioridad,
+    uno de $N$
+  & sin garantía de optimalidad; no comprueban factibilidad física \\
+Metaheurísticas
+  & algoritmo genético, recocido simulado, búsqueda por entornos amplia
+  & óptimo no certificado; coste de cómputo no acotado por intervalo \\
+Aprendizaje
+  & \emph{deep Q-network}, redes neuronales, aprendizaje por refuerzo
+  & sin certificado por instancia \\
+Optimización exacta
+  & programación lineal, entera y mixta, flujo de coste mínimo con conflictos
+  & óptimo, pero centralizado y sin modelo de contacto \\
+Mercado
+  & subasta, negociación por red de contratos
+  & la familia más próxima; asigna tarea a \emph{un} robot, no reparte
+    esfuerzo entre varios \\
+\midrule
+\emph{Este trabajo}
+  & juego de potencial exacto con certificado de \emph{wrench}
+  & \cref{th:potencial}, \cref{th:span}, \cref{th:robusto} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{observacion}[Qué no aparece en esa tabulación]
+\label{obs:hueco-literatura}
+Ninguno de los enfoques tabulados hace las dos cosas que aquí son centrales.
+Primera: \emph{condicionar la asignación a un certificado de capacidad física}.
+Las reglas y metaheurísticas asignan por distancia, plazo o coste, sin comprobar
+que el conjunto asignado pueda producir el esfuerzo requerido; en un problema de
+transporte cooperativo eso permite formar coaliciones que no pueden mover la
+carga. Segunda: \emph{disponer de una función potencial}, que es lo que convierte
+la revisión asíncrona de decisiones en un proceso con terminación garantizada
+(\cref{co:terminacion}) en lugar de en una heurística evaluada empíricamente.
+
+La familia de mercado —subastas y red de contratos— es la más cercana en
+espíritu, pero su unidad de asignación es la pareja robot--tarea. El objeto que
+aquí se subasta no es una tarea sino una \emph{componente de esfuerzo} sobre un
+cuerpo compartido, y su precio se ajusta por un proceso de \emph{tâtonnement}
+cuyo punto de reposo es el reparto que realiza la demanda.
+\end{observacion}
+
+\begin{observacion}[Planificación de rutas: todos planifican para puntos]
+\label{obs:rutas-lit}
+La tabulación de rutas de \cite{yildirim2023warehouse} recoge esencialmente dos
+familias: variantes de $A^{\!*}$ —con retícula de estados, cooperativo,
+jerárquico con ventana, con reserva de ruta y tiempos de giro— y variantes de
+Dijkstra. Ambas planifican para vehículos tratados como puntos o como discos de
+tamaño fijo. Una coalición acoplada no es ninguna de las dos cosas: su
+envolvente depende de qué AMR la componen y de cómo se disponen, y cambia al
+recomponerse. Esa es la razón de introducir clases de envolvente
+(\cref{def:clase}) y el peaje por clase de \cref{th:multiclase}, que ninguna de
+las dos familias contempla.
+\end{observacion}
+
+\subsection{Los cuatro conflictos y qué hace el mecanismo con cada uno}
+
+La misma obra clasifica los conflictos entre robots en cuatro tipos, con tres
+respuestas típicas —esperar, replanificar o apartarse— y zonificación estática o
+dinámica como prevención.
+
+\begin{table}[!ht]
+\centering\small
+\caption{Los cuatro tipos de conflicto de \cite{yildirim2023warehouse} y el
+resultado de este trabajo que los cubre.}
+\label{tab:conflictos}
+\begin{tabularx}{\textwidth}{@{}p{2.5cm}p{4.3cm}X@{}}
+\toprule
+Tipo & Descripción & Tratamiento aquí \\
+\midrule
+Cruce & dos robots alcanzan la intersección a la vez
+  & testigo de reserva vecinal con desempate lexicográfico; espera acotada \\
+Frontal & dos robots se encuentran en sentidos opuestos
+  & reserva más peaje por clase: la envolvente ancha paga el espacio que
+    consume (\cref{th:multiclase}) \\
+Persecución & un robot alcanza a otro más lento en la misma ruta
+  & es el caso que el peaje internaliza de forma nativa: una coalición es una
+    clase lenta y ancha, y su peaje $p_c\,y_e\,t_e'(y_e)$ cobra exactamente la
+    demora que impone a los demás \\
+Ocupación & un robot pretende ir donde otro está detenido
+  & la detención en \textsf{DELIV} termina por \cref{pr:extincion}; la
+    detención por parálisis de autoridad se diagnostica con
+    \cref{th:degradacion} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{observacion}[El conflicto de persecución es el argumento del peaje]
+\label{obs:persecucion}
+De los cuatro, el de persecución es el que mejor justifica la construcción de
+\cref{sec:multiclase}. Las respuestas tabuladas en la literatura —esperar,
+replanificar, apartarse— tratan el encuentro como un evento a resolver. El peaje
+marginal lo trata como un coste a internalizar antes de que ocurra: si una
+coalición ancha y lenta va a ocupar un arco, paga por la demora que impondrá, y
+esa señal cambia la ruta que elige. Es la diferencia entre gestionar el conflicto
+y no generarlo, y es exactamente el desplazamiento hacia enfoques proactivos que
+la propia obra señala como frontera de la práctica.
+\end{observacion}
+
+\begin{observacion}[Indicadores: qué mide este trabajo y qué no]
+\label{obs:kpis}
+La misma fuente separa los indicadores de almacén —financieros, de cliente, de
+proceso— de los específicos del sistema robótico: caudal de sistema, utilización
+de robots, movimientos de estantería, eficiencia de recursos. De estos, el marco
+de \cref{pr:caudal} produce directamente el \emph{caudal sostenido} y la
+\emph{utilización}, ambos como salidas del programa lineal de medidas de
+ocupación, y admite la energía como restricción explícita. No produce los
+indicadores financieros ni los de cliente, que dependen de costes y de
+compromisos de servicio ajenos al modelo. Declarar esa frontera importa porque
+el caudal es el indicador que la literatura consultada considera el principal, y
+es precisamente el que aquí se acota.
+\end{observacion}
+
+\subsection{Cinco referentes recientes y dónde queda este trabajo}
+
+Hay cinco trabajos de 2024--2026 que resuelven partes de lo que aquí se
+construye, y conviene decir frente a cada uno qué se comparte y qué no
+\cite{mayorga2026compendio}.
+
+\begin{center}\small
+\begin{tabular}{@{}p{3.6cm}p{5.2cm}p{5.6cm}@{}}
+\toprule
+Referente & Qué resuelve & Qué queda fuera de su modelo y dentro de este \\
+\midrule
+DisCo \cite{shorinwa2024disco}: contacto implícito y coordinación distribuida
+  & fuerzas y cambios de contacto optimizados en problemas locales con
+    variables duales y comunicación vecinal; aproximarse, tocar y transportar
+    sin máquina de estados
+  & flota heterogénea en operación continua, información de $n$ saltos,
+    apoyo inferior en \textsf{cargo}, certificados de ejecución bajo una
+    física declarada (\cref{th:cerco}, \cref{pr:disco-friccion}); es la
+    referencia central, no secundaria \\
+MPC descentralizado para dos AMR diferenciales \cite{muhammed2026decentralized}
+  & dos AMR acoplados físicamente, problemas locales con restricciones de
+    coordinación y obstáculos, validación en hardware
+  & referencias tomadas de un camino geométrico previo; aquí participación y
+    movimiento responden a la misma función de valor
+    (\cref{def:continuaciones}); su validación física es la que este
+    documento no tiene \\
+NMPC distribuido por ADMM con \emph{wrench} y barreras de orden superior \cite{sambhus2026distributed}
+  & dinámica de carga, acoplamientos holónomos, consenso de trayectorias y
+    \emph{wrench}, barreras para agentes y carga; simulación y experimentos
+  & reclutamiento variable, apoyo inferior, decisiones mecánicas marginales
+    (\cref{th:actuador-adicional}) y ausencia de modos nominales; no se
+    reclama prioridad en coordinar \emph{wrench}, contacto y seguridad de
+    forma distribuida \\
+CT-TAPF / CT-TCBS \cite{zhou2026cttcbs}
+  & formación de equipos, asignación y caminos sin colisión integrados, con
+    solucionador óptimo y variantes subóptimas
+  & su optimalidad es respecto de un problema discreto; no se traslada a
+    tiempo o energía de la planta de contacto y par
+    (\cref{def:jerarquia-optimos}) \\
+DeReCo \cite{shibata2026dereco}
+  & aprendizaje multiagente con representación y coordinación separadas,
+    ejecución descentralizada desde observaciones locales, objetos no vistos
+  & adaptación por modelo y precios frente a adaptación aprendida: aquí no se
+    entrena una política por campaña pero se depende del modelo
+    (\cref{obs:parametros-compartidos}); no se supone mejor generalización \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{observacion}[El régimen donde este enfoque puede ganar, y dónde no]
+\label{obs:regimen-ventaja}
+Con una carga, equipo fijo y buena comunicación, un programa cuadrático
+central con impedancia bien ajustada es difícil de superar y el mercado añade
+negociación innecesaria; con obstáculos que exigen anticipar varios giros, el
+horizonte de un NMPC evita trampas del campo reactivo; con asignación
+combinatoria ajustada, una relajación continua no resuelve la atomicidad
+(\cref{th:mohr}); con propiedades físicas parcialmente desconocidas, los
+métodos aprendidos pueden generalizar mejor; con red fragmentada o muy
+retardada, los métodos menos dependientes de un precio compartido
+(\cref{th:vi-robusta}). El régimen candidato es otro: flota heterogénea,
+capacidad cambiante, decisiones locales y restricciones mecánicas activas. Es
+el régimen que hay que poner a prueba, no el que se supone dominado, y las
+ventajas que se pueden medir son calidad y seguridad por mensaje, por ronda y
+por milisegundo de cálculo, no «ser distribuido».
+\end{observacion}

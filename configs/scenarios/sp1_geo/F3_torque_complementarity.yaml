@@ -1,0 +1,11 @@
+schema_version: 1
+family: F3_torque_complementarity
+description: Cargas alargadas que requieren complementariedad direccional de torque.
+parameters:
+  demand_pressure: 0.95
+  heterogeneity: 0.20
+  compatibility_probability: 0.88
+  communication_degree: 5
+  shapes: [rectangle]
+  route_turns: [1.5707963267948966]
+  wrench_tolerance: 0.08

@@ -1,0 +1,41 @@
+\subsection{La capa de trayectoria: del seguidor de puntos al juego continuo}
+
+Las primeras corridas del banco movían cada coalición con un seguidor de
+puntos de espera y frenados heurísticos; las trayectorias resultantes eran
+erráticas —bucles frente al vano, zigzags de tracking— y se parecían más a un
+reactivo que al juego de trayectorias de \cref{sec:continuacion}. Se
+implementó entonces esa capa tal como está formulada allí, y el banco compara
+ambas.
+
+Cada jugador —una coalición en transporte o un AMR libre— mantiene una
+continuación de $N$ nodos separados $\Delta$ ($N=12$, $\Delta=0{,}5$~s para
+coaliciones; $N=10$, $\Delta=0{,}4$~s para AMR) y cada $0{,}2$~s la deforma
+por gradiente proyectado del coste \eqref{eq:coste-trayectoria} en su forma
+implementada: atracción terminal y de progreso hacia el siguiente punto de la
+ruta, suavidad (aceleración discreta), esfuerzo (longitud recorrida, para que
+ceder signifique frenar y no dar vueltas), límite físico de velocidad, barrera
+frente a paredes con la holgura lateral real de la carga alineada, barrera
+frente a cargas ajenas, y la externalidad atómica exacta con las
+continuaciones publicadas por los demás jugadores en los mismos instantes
+(\cref{th:externalidad-atomica}), re-muestreadas cuando los horizontes
+difieren. La única propuesta inicial es la recta al objetivo; el arranque en
+caliente desplaza la continuación conforme avanza la planta; el primer
+segmento de la continuación es la velocidad comandada al mercado de
+\emph{wrench}. Cada publicación de continuación cuenta como mensaje a los
+vecinos de $n$ saltos. La ruta discreta que la homotopía impone
+(\cref{obs:homotopia}) es explícita: carril de espera lateral con circulación
+por la derecha, eje del vano, carril de salida; quien espera el arrendamiento
+publica su posición como continuación estática, para que la propietaria no le
+ceda el paso a un plan que no va a ejecutarse —la cortesía mutua produjo
+interbloqueo en la primera versión—. Los AMR ocupados en formación o acoplados
+publican también su posición, y los libres planifican contra ellos, contra las
+cargas y contra las paredes.
+
+Dos límites de esta implementación se declaran. El gradiente es local: un
+objetivo situado tras un muro hace que la continuación resbale a lo largo de
+la pared, de ahí la ruta por puntos; y las interacciones por pares con radios
+envolventes producen desvíos amplios cuando el carril de espera de una
+coalición cae sobre el camino de salida de la otra, que es lo que se ve en
+\cref{fig:sim-plan}. Lo que el trazo ejecutado conserva de ondulación no viene
+del plan sino del lazo físico —tres AMR que giran bajo la plataforma para
+producir fuerza lateral— y se redujo con amortiguamiento de rumbo y de guiñada.

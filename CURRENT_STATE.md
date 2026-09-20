@@ -345,3 +345,34 @@ revisión y validación CPU independientes. WoS, la verificación final del auto
 de las fuentes priorizadas y la validación física Coppelia siguen siendo
 gates abiertos; no se emite afirmación de inclusión definitiva, estado del
 arte, novedad o hueco universal.
+
+## Campaña multisource V2 — 2026-09-13
+
+Se ejecutó una derivada aislada en `academic-review/multisource-v2/`, sin
+modificar los artefactos V1 ni repetir experimentos del TFM. La configuración
+`config/multisource_v2.yaml` conserva la celosía F1–F16, ventanas primaria y
+fundacional, y la procedencia por fuente.
+
+Resultado reproducible de la corrida definitiva:
+
+- 1.225 registros normalizados de descubrimiento y 3.033 candidatos en el
+  corpus reconciliado V2, partiendo de los 2.226 candidatos V1.
+- Crossref: 550 registros brutos, 494 identidades únicas, 399 nuevas frente a
+  V1; OpenAlex: 494, 430 y 338; Semantic Scholar: 50, 48 y 26; OpenAIRE: 97,
+  95 y 75; DOAJ: 34, 32 y 22.
+- arXiv quedó `rate_limited` sin nuevos registros en esta corrida; DBLP quedó
+  `network_blocked`; CORE quedó `pending_credentials` por ausencia de
+  `CORE_API_KEY`. Estos estados no se interpretan como ausencia de literatura.
+- Unpaywall devolvió 500 enriquecimientos DOI acotados y OpenCitations 1.789
+  aristas de una comprobación one-hop sobre 20 anclas DOI V1.
+- Se generaron informes por fuente, ledger V2, matriz de solapamiento,
+  rendimiento marginal, cola de evidencia de 60 registros y paquetes manuales
+  para Google Scholar, WoS, Scopus e IEEE Xplore.
+- El screening determinista V2 de título/resumen clasificó 530 registros como
+  `include_fulltext`, 166 como `maybe_fulltext` y 529 como `exclude`; todos
+  conservan `evidence_status=not_evidence`.
+
+La cola de 60 prioriza texto completo V1 ya verificado; solo 16 filas tienen
+lectura cercana explícita heredada. No se presenta la cola como lectura
+profunda completa. Las cuatro fuentes manuales siguen sin automatización y WoS
+continúa pendiente de exportación institucional.

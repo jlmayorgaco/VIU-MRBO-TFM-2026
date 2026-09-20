@@ -43,10 +43,10 @@ METHODS = (
 )
 
 METHOD_LABELS = {
-    "distributed_full": "Vecinal completo",
+    "distributed_full": "Híbrido vecinal",
     "perfect_information": "Información perfecta",
     "decoupled_local": "Vecinal sin acoplamiento espacial",
-    "no_physical_guard": "Vecinal sin guardia física",
+    "no_physical_guard": "Vecinal sin guarda física",
     "no_repair": "Vecinal sin reparación",
     "central_reference": "Referencia central",
 }
@@ -1054,6 +1054,19 @@ def build_audit(worlds: list[CargoWorld], results: list[RunResult], methods: tup
 
 
 def _write_tables(output: Path, runs: pd.DataFrame, summary: pd.DataFrame, hypotheses: pd.DataFrame) -> None:
+    def tex_number(value: float, decimals: int) -> str:
+        return f"{value:.{decimals}f}".replace(".", "{,}")
+
+    def tex_scientific(value: float) -> str:
+        if value >= 0.001:
+            return tex_number(value, 3)
+        mantissa, exponent = f"{value:.2e}".split("e")
+        return rf"${tex_number(float(mantissa), 2)}\times 10^{{{int(exponent)}}}$"
+
+    def macro_scientific(value: float) -> str:
+        mantissa, exponent = f"{value:.2e}".split("e")
+        return rf"{float(mantissa):.2f}\times10^{{{int(exponent)}}}"
+
     tables = output / "tables"
     result_lines = [
         "\\begin{tabular}{lrrrrrr}",
@@ -1064,9 +1077,9 @@ def _write_tables(output: Path, runs: pd.DataFrame, summary: pd.DataFrame, hypot
     for method in METHODS:
         row = summary[summary["method"] == method].iloc[0]
         result_lines.append(
-            f"{METHOD_LABELS[method]} & {int(row['n'])} & {row['mission_success_mean']:.3f} & "
-            f"{row['collision_mean']:.3f} & {row['mission_time_s_mean']:.2f} & "
-            f"{row['recovery_time_s_mean']:.2f} & {row['messages_mean']:.1f} \\\\"
+            f"{METHOD_LABELS[method]} & {int(row['n'])} & {tex_number(row['mission_success_mean'], 3)} & "
+            f"{tex_number(row['collision_mean'], 3)} & {tex_number(row['mission_time_s_mean'], 2)} & "
+            f"{tex_number(row['recovery_time_s_mean'], 2)} & {tex_number(row['messages_mean'], 1)} \\\\"
         )
     result_lines.extend(["\\bottomrule", "\\end{tabular}"])
     (tables / "cargo_e2e_results.tex").write_text("\n".join(result_lines) + "\n", encoding="utf-8")
@@ -1074,13 +1087,39 @@ def _write_tables(output: Path, runs: pd.DataFrame, summary: pd.DataFrame, hypot
     distributed = runs[runs["method"] == "distributed_full"]
     failure = distributed[distributed["scenario"] == "failure_during_transport"]
     degraded = distributed[distributed["scenario"] == "degraded_network"]
+    central = runs[runs["method"] == "central_reference"]
+    no_guard = runs[runs["method"] == "no_physical_guard"]
+    hypothesis_by_id = hypotheses.set_index("id")
+    timing = hypothesis_by_id.loc["E2E-H1"]
+    guard = hypothesis_by_id.loc["E2E-H2"]
+    repair = hypothesis_by_id.loc["E2E-H3"]
     macros = {
         "CargoEtwoEWorlds": int(runs["world_hash"].nunique()),
         "CargoEtwoERuns": len(runs),
         "CargoEtwoESuccess": f"{distributed['mission_success'].mean():.3f}",
+        "CargoEtwoECentralSuccess": f"{central['mission_success'].mean():.3f}",
         "CargoEtwoEFailureSuccess": f"{failure['mission_success'].mean():.3f}",
         "CargoEtwoEDegradedSuccess": f"{degraded['mission_success'].mean():.3f}",
         "CargoEtwoEMessages": f"{distributed['messages'].mean():.1f}",
+        "CargoEtwoEDegradedMessages": f"{degraded['messages'].mean():.1f}",
+        "CargoEtwoEDegradedKilobytes": f"{degraded['bytes_sent'].mean() / 1000.0:.1f}",
+        "CargoEtwoENoGuardCollision": f"{no_guard['collision'].mean():.3f}",
+        "CargoEtwoENoGuardCertified": int(no_guard["mechanical_certificate_initial"].sum()),
+        "CargoEtwoETimingEffect": f"{timing['effect_a_minus_b']:.3f}",
+        "CargoEtwoETimingCI": (
+            f"[{timing['ci95_low']:.3f};{timing['ci95_high']:.3f}]"
+        ),
+        "CargoEtwoETimingPHolm": f"{timing['p_holm']:.3f}",
+        "CargoEtwoEGuardEffect": f"{guard['effect_a_minus_b']:.3f}",
+        "CargoEtwoEGuardCI": (
+            f"[{guard['ci95_low']:.3f};{guard['ci95_high']:.3f}]"
+        ),
+        "CargoEtwoEGuardPHolm": macro_scientific(float(guard["p_holm"])),
+        "CargoEtwoERepairEffect": f"{repair['effect_a_minus_b']:.3f}",
+        "CargoEtwoERepairCI": (
+            f"[{repair['ci95_low']:.3f};{repair['ci95_high']:.3f}]"
+        ),
+        "CargoEtwoERepairPHolm": macro_scientific(float(repair["p_holm"])),
     }
     (tables / "cargo_e2e_numbers.tex").write_text(
         "\n".join(f"\\newcommand{{\\{key}}}{{{value}}}" for key, value in macros.items()) + "\n",
@@ -1090,30 +1129,74 @@ def _write_tables(output: Path, runs: pd.DataFrame, summary: pd.DataFrame, hypot
         "\\begin{tabular}{llrrrr}", "\\toprule",
         "ID & Métrica & $n$ & Efecto & IC 95\\% & $p_{Holm}$ \\\\", "\\midrule",
     ]
+    metric_labels = {
+        "mission_time_s": "tiempo de misión [s]",
+        "mission_success": "éxito de misión",
+    }
     for row in hypotheses.itertuples(index=False):
         hypothesis_lines.append(
-            f"{row.id} & {str(row.metric).replace('_', ' ')} & {int(row.n_pairs)} & {row.effect_a_minus_b:.3f} & "
-            f"[{row.ci95_low:.3f}; {row.ci95_high:.3f}] & {row.p_holm:.2e} \\\\"
+            f"{row.id} & {metric_labels.get(str(row.metric), str(row.metric))} & {int(row.n_pairs)} & "
+            f"{tex_number(row.effect_a_minus_b, 3)} & "
+            f"[{tex_number(row.ci95_low, 3)}; {tex_number(row.ci95_high, 3)}] & "
+            f"{tex_scientific(row.p_holm)} \\\\"
         )
     hypothesis_lines.extend(["\\bottomrule", "\\end{tabular}"])
     (tables / "cargo_e2e_hypotheses.tex").write_text("\n".join(hypothesis_lines) + "\n", encoding="utf-8")
 
 
-def _plot_results(output: Path, runs: pd.DataFrame, results: list[RunResult]) -> None:
-    figures = output / "figures"
+def _plot_success_matrix(path: Path, runs: pd.DataFrame) -> None:
+    """Render the confirmatory mission matrix at its final print size."""
+
     matrix = runs.pivot_table(index="method", columns="scenario", values="mission_success", aggfunc="mean").reindex(index=METHODS, columns=SCENARIOS)
-    fig, ax = plt.subplots(figsize=(8.7, 5.2))
+    short_method_labels = {
+        "distributed_full": "Híbrido vecinal",
+        "perfect_information": "Información perfecta",
+        "decoupled_local": "Sin selección espacial",
+        "no_physical_guard": "Sin guarda física",
+        "no_repair": "Sin reparación",
+        "central_reference": "Referencia central",
+    }
+    short_scenario_labels = {
+        "open_nominal": "Nominal",
+        "static_obstacle": "Obstáculo",
+        "degraded_network": "Red degradada",
+        "failure_during_transport": "Fallo + sustitución",
+    }
+    fig, ax = plt.subplots(figsize=(7.35, 2.35), layout="constrained")
     image = ax.imshow(matrix.to_numpy(), vmin=0.0, vmax=1.0, cmap="viridis", aspect="auto")
-    ax.set_xticks(range(len(SCENARIOS)), [SCENARIO_LABELS[s] for s in SCENARIOS], rotation=20, ha="right")
-    ax.set_yticks(range(len(METHODS)), [METHOD_LABELS[m] for m in METHODS])
+    ax.set_xticks(
+        range(len(SCENARIOS)),
+        [short_scenario_labels[s] for s in SCENARIOS],
+        rotation=12,
+        ha="right",
+    )
+    ax.set_yticks(range(len(METHODS)), [short_method_labels[m] for m in METHODS])
     for i in range(len(METHODS)):
         for j in range(len(SCENARIOS)):
             value = float(matrix.iloc[i, j])
-            ax.text(j, i, f"{value:.2f}", ha="center", va="center", color="white" if value < 0.55 else "black")
-    fig.colorbar(image, ax=ax, label="Tasa de misión extremo a extremo")
-    fig.tight_layout()
-    fig.savefig(figures / "fig-cargo-e2e-success.pdf", bbox_inches="tight")
+            ax.text(
+                j,
+                i,
+                f"{value:.2f}",
+                ha="center",
+                va="center",
+                color="white" if value < 0.55 else "black",
+                fontsize=10.8,
+                fontweight="semibold",
+            )
+    ax.set_title("Misión completada hasta la pose de entrega", fontsize=12.0, loc="left")
+    ax.tick_params(axis="both", labelsize=10.6)
+    ax.set_xticks(np.arange(-0.5, len(SCENARIOS), 1), minor=True)
+    ax.set_yticks(np.arange(-0.5, len(METHODS), 1), minor=True)
+    ax.grid(which="minor", color="white", linewidth=1.2)
+    ax.tick_params(which="minor", bottom=False, left=False)
+    fig.savefig(path, bbox_inches="tight", pad_inches=0.03)
     plt.close(fig)
+
+
+def _plot_results(output: Path, runs: pd.DataFrame, results: list[RunResult]) -> None:
+    figures = output / "figures"
+    _plot_success_matrix(figures / "fig-cargo-e2e-success.pdf", runs)
 
     representative_world = sorted(set(runs["world_hash"]))[0]
     selected = [result for result in results if result.world_hash == representative_world]

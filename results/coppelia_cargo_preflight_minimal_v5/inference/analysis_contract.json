@@ -1,0 +1,25 @@
+{
+  "analysis_population": "completed primary runs; one paired perturbation per cell and seed",
+  "analysis_seed": 260831,
+  "backend_kind": "coppeliasim_mujoco",
+  "bootstrap_resamples": 1000,
+  "complete": true,
+  "confidence_level": 0.95,
+  "contrasts": "all three guard pairs within each cell and endpoint",
+  "effect": "paired mean difference in binary endpoint, guard_a minus guard_b",
+  "effect_interval": "paired percentile bootstrap over the 1 declared seed pair(s)",
+  "evidence_class": "physical_coppeliasim_candidate",
+  "expected_primary_runs": 3,
+  "inferential_status": "smoke_only_no_inferential_claim",
+  "limitation": "The common controller maps bounded contact-force setpoints through wrench-error admittance to wheel velocities; exact wrench realization is not assumed. Contrasts estimate predictive classification error, not wrench-allocation tracking.",
+  "multiplicity": "Holm correction across the three guard pairs within each cell and endpoint",
+  "primary_endpoint": "false_positive_incidence = guard_accepts AND physical_transport_fails",
+  "protocol_family": "coppelia_cargo_v1",
+  "rates": "per cell and guard with two-sided Wilson score intervals",
+  "recorded_primary_runs": 3,
+  "secondary_endpoints": [
+    "false_negative_incidence = guard_rejects AND physical_transport_succeeds",
+    "misclassification_rate = guard prediction differs from physical outcome"
+  ],
+  "test": "exact two-sided McNemar test (conditional binomial on discordances)"
+}

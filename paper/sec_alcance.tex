@@ -1,0 +1,439 @@
+\section{Alcance de la abstracción poblacional y estabilidad de la red de precios}
+\label{sec:alcance}
+
+\subsection{Dónde vale tratar la flota como población}
+
+El marco de juegos de población que sostiene \cref{obs:smith} y
+\cref{th:smallgain} se enuncia para poblaciones cuyo número de agentes es
+«fijo y típicamente grande», y en el que «las identidades individuales de los
+agentes no son relevantes, solo sus estrategias»
+\cite{martinezPiazuelo2025gne}. Ambas condiciones merecen escrutinio aquí,
+porque este trabajo trata explícitamente con AMR heterogéneos y flotas de una
+decena.
+
+\begin{observacion}[Tres regímenes de validez]
+\label{obs:alcance-poblacional}
+La abstracción poblacional no se aplica de manera uniforme a las tres capas:
+\begin{enumerate}[label=(\alph*),leftmargin=2.2em,topsep=0.2em,itemsep=0.15em]
+  \item \textbf{Reparto de esfuerzo (exacta).} La masa que se distribuye es el
+  esfuerzo de contacto $\bm\lambda$, magnitud continua sobre un conjunto
+  convexo. No hay agentes que contar: la abstracción es exacta, no aproximada.
+  \item \textbf{Precios y congestión (exacta bajo convexidad).} El objeto es
+  una masa continua sobre recursos compartidos, y el análisis es el de una
+  desigualdad variacional.
+  \item \textbf{Reclutamiento (aproximada).} Aquí sí hay agentes discretos,
+  heterogéneos y pocos. La identidad \emph{sí} importa: la capacidad efectiva
+  $e_{ik}$ distingue a un AMR de otro, y un miembro de una coalición de cuatro
+  aporta una fracción no despreciable del \emph{wrench}. La hipótesis de
+  influencia individual despreciable falla por construcción.
+\end{enumerate}
+\end{observacion}
+
+Que falle en (c) no invalida el trabajo: obliga a decir qué se conserva. Se
+conserva todo lo demostrado sobre el juego \emph{atómico} —
+\cref{th:potencial}, \cref{co:terminacion}, \cref{th:noequiv},
+\cref{pr:jerarquia}, \cref{th:descomposicion}—, porque ninguno de esos
+resultados invoca población grande: están enunciados sobre perfiles discretos y
+desviaciones factibles. Lo que queda condicionado es el uso de las dinámicas
+poblacionales como \emph{descripción del transitorio} del reclutamiento.
+
+\begin{observacion}[El ruido de exploración no es un parámetro libre]
+\label{obs:ruido}
+En el límite de población grande, el proceso de revisión estocástico converge a
+la dinámica determinista con fluctuaciones que decrecen con la masa. A $N$
+finito esas fluctuaciones persisten, y su papel es doble: son el error respecto
+al límite determinista y son, a la vez, el mecanismo que permite escapar de
+terminales de mejor respuesta. De ahí una regla de diseño coherente con
+\cref{sec:nhop}: las capas que \emph{rastrean} dentro de una cuenca —reparto de
+esfuerzo, precios— deben operar con masa efectiva alta y comportamiento
+determinista; la capa que \emph{selecciona} entre cuencas —reclutamiento—
+requiere fluctuación, y por eso el logit se emplea como perturbación de
+exploración y no como descripción del reposo. La temperatura no es un parámetro
+libre: compite con $h_c^\star$ como mecanismo de escape.
+\end{observacion}
+
+\subsection{Por qué el reparto es exacto: el enfoque por analogía}
+
+El apartado (a) afirmaba exactitud sin justificarla más allá de la continuidad.
+La razón es más precisa y tiene nombre: la literatura de juegos de población
+distingue el \emph{enfoque natural} —cuando el sistema consta genuinamente de
+muchos agentes que eligen de forma esporádica y con racionalidad acotada— del
+\emph{enfoque por analogía}, en el que las variables de control de un sistema con
+restricción de tipo simplex se interpretan como el estado social de una
+población, aunque no haya población literal \cite{martinezPiazuelo2025gne}.
+
+\begin{observacion}[El reparto en cuotas es un simplex, y eso lo da todo]
+\label{obs:analogia}
+Escríbase el reparto en \emph{cuotas} $\alpha_i\ge0$ con
+$\sum_{i\in\Ccal_\ell}\alpha_i=1$, en lugar de en esfuerzos absolutos. Ese
+conjunto es exactamente un simplex, que es la estructura que el enfoque por
+analogía requiere. Y entonces las dos invariancias que las dinámicas evolutivas
+preservan por construcción —no negatividad y conservación de masa— \emph{son} las
+dos restricciones físicas del problema: la no negatividad es la unilateralidad
+de \cref{pr:notiron}, es decir que ningún AMR tira de la carga; y la
+conservación de masa es que la demanda queda íntegramente cubierta.
+
+La comprobación distingue los dos métodos donde importa. Con cuatro AMR y un
+coste cuyo mínimo sobre el plano $\sum\alpha_i=1$ tiene una componente negativa
+—$(-2;1;1;1)$—, el gradiente simple converge a ese punto: asigna cuota $-2$, que
+físicamente es un AMR \emph{tirando} de la carga. La dinámica evolutiva se
+detiene exactamente en $\alpha_0=0$ y conserva la masa a $1{,}000000$.
+
+La consecuencia práctica es que no hace falta paso de proyección, ni comprobar a
+posteriori que los esfuerzos son no negativos: la estructura de la dinámica lo
+garantiza. Lo que en otra formulación sería una restricción a imponer, aquí es
+una propiedad del método.
+\end{observacion}
+
+\subsection{Dos formas de imponer una restricción}
+
+Queda una distinción de diseño que este trabajo emplea en dos sitios sin haberla
+nombrado. Ante una restricción acoplada caben dos estrategias
+\cite{martinezPiazuelo2025gne}: la \emph{prescriptiva}, que rediseña el protocolo
+de revisión para que la restricción no pueda violarse —multiplicando la tasa de
+cambio hacia una opción por el margen que le queda—, y la \emph{no
+prescriptiva}, que deja el protocolo intacto y añade un multiplicador, es decir,
+un precio.
+
+\begin{observacion}[El precio no protege durante el transitorio]
+\label{obs:prescriptivo}
+La diferencia no es de matiz. Sobre una población con tres estrategias, donde la
+más atractiva tiene capacidad $0{,}35$, el mecanismo de precios alcanza una
+ocupación máxima de $0{,}753$ —un $115\%$ por encima de la capacidad— y permanece
+por encima de ella durante el $51\%$ del horizonte, antes de converger a
+$0{,}3495$. El protocolo prescriptivo alcanza $0{,}3500$ y \emph{nunca} la
+excede.
+
+Y no es cuestión de sintonía: subir la ganancia del ajuste de precios reduce el
+exceso pero no lo anula —$+0{,}564$ con ganancia $2$, $+0{,}403$ con $8$,
+$+0{,}227$ con $40$ y $+0{,}114$ con $200$—. Un precio impone la restricción en
+el equilibrio; un protocolo la impone en todo instante.
+\end{observacion}
+
+\begin{observacion}[El criterio que ordena la arquitectura]
+\label{obs:criterio-restricciones}
+De ahí se sigue el principio que este trabajo ya aplica sin enunciarlo: \emph{una
+restricción cuya violación es catastrófica debe imponerse de forma prescriptiva;
+una cuya violación es meramente costosa puede imponerse con un precio}. Por eso
+la separación entre vecinos se trata con barreras —\cref{pr:hocbf} y
+\cref{th:astop-cuerpo}, que dan invariancia en todo instante— y la congestión de
+corredores con peajes (\cref{th:multiclase}), que solo la internalizan en el
+equilibrio.
+
+Conviene por tanto no leer el peaje multiclase como un mecanismo de capacidad.
+No lo es: cobra la demora que una coalición ancha impone a las demás, no impide
+que el corredor se sobrecargue. Quien impide la sobrecarga es la barrera, y el
+peaje solo desincentiva llegar a ella. Confundir ambos papeles sería atribuir al
+precio una garantía que \cref{obs:prescriptivo} muestra que no puede dar.
+\end{observacion}
+
+\subsection{Qué preserva la composición y qué no}
+
+\Cref{th:smallgain} compone lazos disipativos sin decir qué operaciones conservan
+esa propiedad. Conviene enunciar las dos que este trabajo utiliza
+\cite{martinezPiazuelo2025gne}.
+
+\begin{proposicion}[Dos composiciones que conservan la disipatividad]
+\label{pr:composiciones}
+Sea $\Sigma$ un sistema $\delta$-disipativo caracterizado por $(\sigma,\Gamma)$.
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em,topsep=0.2em,itemsep=0.15em]
+  \item \emph{Ganancia en cascada}: multiplicar la salida por $\kappa\neq0$
+  conserva la $\delta$-disipatividad, con la matriz de suministro reescalada por
+  $\kappa$ en los bloques cruzados y por $\kappa^{2}$ en el segundo diagonal. En
+  particular, con $\kappa=-1$ un sistema $\delta$-pasivo se vuelve
+  $\delta$-antipasivo con el mismo $\sigma$, y recíprocamente.
+  \item \emph{Encapsulado sin memoria}: envolver un sistema escalar
+  $\delta$-pasivo con una función suave $\varphi$ conserva la $\delta$-pasividad
+  si $\varphi$ es afín, o bien si el sistema es positivo, arranca en el ortante
+  no negativo y $\varphi$ es \emph{convexa}. La función de $\delta$-almacenamiento
+  del encapsulado es $\bar S(z,\bar u)=S(z,\varphi(\bar u))$.
+\end{enumerate}
+\end{proposicion}
+
+\begin{observacion}[Por qué la realimentación negativa es lo que hace funcionar el lazo]
+\label{obs:signo-menos}
+El apartado (i) explica algo que la arquitectura usa sin justificar. La condición
+de estabilidad exige que la dinámica de decisiones sea $\delta$-pasiva y la de
+pagos $\delta$-antipasiva: son propiedades opuestas y parecería que hay que
+diseñarlas por separado. No hace falta. El signo negativo de la realimentación
+—que el precio \emph{penalice} en lugar de premiar la congestión— convierte una
+en la otra conservando el mismo $\sigma$. Que el ajuste \eqref{eq:tatonnement}
+suba el precio cuando hay exceso de demanda no es una convención económica: es lo
+que hace que el par cumpla la condición de interconexión.
+\end{observacion}
+
+\begin{observacion}[La convexidad es condición suficiente, no necesaria]
+\label{obs:convexidad-encapsulado}
+El apartado (ii) da una regla de diseño: toda no linealidad insertada en el lazo
+de precios —una función de urgencia, una ponderación de prioridad, una
+saturación— debe ser convexa o afín para que el certificado de composición se
+conserve. Los precios de este trabajo son no negativos y las funciones de coste
+convexas, de modo que la hipótesis se cumple.
+
+Conviene no exagerar el alcance, y la comprobación numérica obliga a ello.
+Ensayando el lazo encapsulado con envolturas convexas, afines y cóncavas, y con
+dos ganancias distintas, las variantes cóncavas resultaron en su mayoría
+igualmente estables. Lo que se pierde al salir de la clase convexa no es la
+estabilidad sino el \emph{certificado}: se deja de poder afirmarla por
+composición y habría que demostrarla caso por caso. La única patología observada
+fue con una envoltura de derivada no acotada en el origen, que produjo
+castañeteo en torno al reposo sin llegar a divergir.
+\end{observacion}
+
+\subsection{Restringir a quién se puede cambiar}
+
+En este trabajo un AMR no puede reasignarse a cualquier carga: solo a las que
+alcanza dentro de su bola de $n$ saltos. Eso es una \emph{interacción restringida
+por estrategia}, que se modela con un grafo cuyos nodos son las estrategias y
+cuyas aristas indican qué intercambios están permitidos, y que se emplea
+precisamente para representar estructuras de información local
+\cite{quijano2017role}. Conviene saber qué cuesta esa restricción.
+
+\begin{observacion}[Basta con que el grafo de estrategias sea conexo]
+\label{obs:grafo-estrategias}
+Sobre un juego de cuatro cargas con equilibrio de Nash
+$(0{,}4951;\ 0{,}3689;\ 0{,}1359;\ 0)$, arrancando desde un reparto muy
+desequilibrado:
+\begin{itemize}[leftmargin=1.9em,topsep=0.2em,itemsep=0.15em]
+  \item grafo completo: converge exactamente al equilibrio;
+  \item grafo camino —conexo pero con solo tres aristas de seis—: converge
+  \emph{exactamente al mismo} equilibrio, con error nulo;
+  \item grafo con dos componentes: converge a
+  $(0{,}4667;\ 0{,}3333;\ 0{,}2;\ 0)$, a distancia $0{,}079$ del equilibrio, y la
+  masa queda atrapada en cada componente con el reparto inicial, $0{,}80$ y
+  $0{,}20$.
+\end{itemize}
+
+La lectura es tranquilizadora y precisa a la vez: \emph{la escasez de aristas no
+desplaza el equilibrio; la desconexión sí}. Mientras la reachability entre cargas
+se mantenga conexa, restringir los cambios a $n$ saltos no cuesta exactitud —solo
+velocidad, por el diámetro—. Si se fragmenta, cada componente conserva su masa
+por separado y el reposo pasa a depender de cómo estuviera repartida la flota al
+fragmentarse, que es una dependencia de condición inicial que ningún resultado de
+este trabajo contempla.
+
+Esto refuerza la condición de carrera de \cref{obs:carrera} desde otro ángulo: no
+solo importa que el reclutamiento converja antes de la separación, sino que
+mientras esté activo el grafo de estrategias no se parta.
+\end{observacion}
+
+\subsection{Cuántos saltos hacen falta, y qué compra la información local}
+
+La pregunta «¿cuántos saltos necesita el mecanismo?» no tiene respuesta
+universal, pero sí la tiene para el subproblema definido positivo que resuelve
+cada rama cuadrática del reparto, y la respuesta pasa por el condicionamiento.
+
+\begin{teorema}[Inversión local y alcance de dependencia]
+\label{th:saltos}
+Sea $K=K^{\!\top}\succ0$ \cite{mayorga2026m1} con $\mu I\preceq K\preceq LI$, cuyo grafo de
+dispersión conecta dos variables cuando su bloque es no nulo, de modo que un
+producto $Kz$ cuesta una ronda de intercambio. Con $\gamma=2/(\mu+L)$,
+$\rho=(L-\mu)/(L+\mu)<1$ y $p_h(K)=\gamma\sum_{j=0}^{h}(I-\gamma K)^{j}$, que
+usa exactamente $h$ saltos de información,
+\[
+  \lVert K^{-1}-p_h(K)\rVert_2\ \le\ \frac{\rho^{\,h+1}}{\mu}.
+\]
+\end{teorema}
+
+\begin{observacion}[La cota es exacta, y el condicionamiento manda]
+\label{obs:saltos-num}
+Sobre matrices de anillo con autovalores en $[1,\kappa]$, el error medido
+coincide con la cota en todos los casos hasta precisión de máquina: con
+$\kappa=2$, $3{,}70\times10^{-2}$ en $h=2$ y $5{,}65\times10^{-6}$ en $h=10$;
+con $\kappa=50$, $0{,}887$ en $h=2$ y todavía $0{,}194$ en $h=40$.
+
+Los saltos necesarios para un error de $10^{-3}$ son $6$, $34$ y $172$ para
+$\kappa=2$, $10$ y $50$. Esto enlaza dos resultados que estaban separados: la
+degradación de autoridad de \cref{th:degradacion} empeora el condicionamiento
+del reparto, y por este teorema \emph{un reparto mal condicionado exige más
+saltos para la misma precisión}. La autoridad física y la profundidad de
+comunicación no son recursos independientes; el segundo compensa al primero, y
+a un precio geométrico en $\rho$.
+\end{observacion}
+
+Lo anterior dice cuánta información hace falta. Lo siguiente dice qué se puede
+certificar con la que hay.
+
+\begin{teorema}[Intervalo de optimalidad desde información aproximada]
+\label{th:intervalo}
+Sea una rama con conjunto cerrado y convexo, coste $\mu$-fuertemente convexo
+$\Phi$ y candidato factible $z$. Si se dispone de una aproximación local
+$\hat g$ del gradiente con $\lVert\hat g-\nabla\Phi(z)\rVert\le\varepsilon_g$ y
+un residual de estacionariedad $\varepsilon_r$ \cite{mayorga2026m1}, entonces el mínimo $\Phi^\star$
+satisface
+\[
+  \Phi(z)-\frac{(\varepsilon_r+\varepsilon_g)^{2}}{2\mu}\ \le\ \Phi^\star\ \le\ \Phi(z).
+\]
+\end{teorema}
+
+\begin{observacion}[Un certificado que se calcula con lo que se tiene]
+\label{obs:intervalo-num}
+Con $\mu=2$ y errores de gradiente de $0$, $0{,}1$ y $0{,}5$, el intervalo
+contiene al óptimo en los tres casos, y su anchura crece con el error:
+$0{,}249$, $0{,}062$ y $0{,}660$ respectivamente para los candidatos ensayados.
+
+Su valor para este trabajo es que convierte en cantidad una cosa que
+\cref{th:descomposicion} solo nombraba: la pérdida atribuible a información
+imperfecta. Cada AMR puede acotar, con su gradiente local aproximado, cuánto
+pierde su decisión respecto de la óptima; y la regla de aceptación pasa a ser
+verificable —aceptar una decisión solo cuando su intervalo la distingue de las
+alternativas—, que es la forma correcta de leer la selección con certificados
+locales que sostiene \cref{th:testigo}.
+\end{observacion}
+
+\subsection{Cuánto se aleja este juego de tener equilibrio único}
+
+Hay una magnitud que resume por qué el reclutamiento es la capa difícil y las
+otras no.
+
+\begin{definicion}[Déficit de contractividad]
+\label{def:deficit}
+Un juego de población $\Gcal=(\Pcal,\Xcal,f)$ es \emph{contractivo} si
+$(x-\tilde x)^{\!\top}(f(x)-f(\tilde x))\le0$ para todo par de distribuciones. Un
+juego cualquiera se caracteriza por su \emph{déficit}
+\[
+  \nu^\star=\inf\Bigl\{\nu:\ (x-\tilde x)^{\!\top}\bigl(f(x)-f(\tilde x)\bigr)
+  \le\nu\,\lVert x-\tilde x\rVert^{2}\Bigr\},
+\]
+que es no positivo exactamente cuando el juego es contractivo
+\cite{martinezPiazuelo2025gne}.
+\end{definicion}
+
+\begin{observacion}[Medido sobre las tres capas]
+\label{obs:deficit-capas}
+El déficit separa las capas de este trabajo con nitidez. Muestreando sobre el
+simplex:
+\begin{itemize}[leftmargin=1.9em,topsep=0.2em,itemsep=0.15em]
+  \item reparto de esfuerzo con coste convexo: $\nu^\star=-2{,}42$, contractivo;
+  \item congestión con coste creciente en la propia masa: $\nu^\star=-0{,}90$,
+  contractivo;
+  \item formación de coalición con sinergia $c$ —el pago de unirse \emph{crece}
+  con cuántos se han unido—: $\nu^\star=-0{,}13$ para $c=0$, y $+0{,}20$,
+  $+0{,}87$ y $+1{,}87$ para $c=0{,}5$, $1{,}5$ y $3$.
+\end{itemize}
+
+La lectura es que \emph{la sinergia es exactamente lo que destruye la
+contractividad}, y el déficit crece de forma aproximadamente lineal con ella. Las
+dos primeras capas son contractivas porque sus externalidades son negativas —más
+esfuerzo cuesta más, más tráfico retrasa más—; la tercera no lo es porque la suya
+es positiva: que otro se una \emph{mejora} el pago de estar dentro.
+\end{observacion}
+
+\begin{observacion}[Es la caza del ciervo, medida]
+\label{obs:deficit-ciervo}
+Esto da una segunda lectura de \cref{pr:caza-ciervo}. Un juego contractivo tiene
+equilibrio único; la multiplicidad que allí se demuestra —«todos se unen» y
+«nadie se une» conviviendo— solo es posible con déficit positivo. Coordinación
+frágil y déficit de contractividad no son dos problemas: son el mismo, medido
+desde la teoría de juegos y desde el análisis de dinámicas.
+
+Y sitúa el papel del margen de \cref{th:smallgain}: lo que ese margen debe
+absorber es precisamente $\nu^\star$. Un sistema cuya sinergia de coalición sea
+alta necesita más margen disipativo en el resto de las capas, o dicho al revés,
+la fragilidad de la coordinación se paga en la sintonía de todo lo demás.
+\end{observacion}
+
+\subsection{Qué exige de verdad difundir el precio}
+
+Este trabajo afirma que los precios se difunden «por el mismo consenso» y remite a
+\cref{th:conmutada}, cuya hipótesis es que la unión de topologías contenga un
+árbol generador. La construcción distribuida de multiplicadores exige más que
+eso, y conviene enunciarlo porque el modo de fallo es engañoso.
+
+\begin{supuesto}[Grafo equilibrado en pesos]
+\label{s:equilibrado}
+El digrafo de comunicación entre proveedores de pago es fuertemente conexo y
+\emph{equilibrado en pesos}: en cada nodo, la suma de pesos entrantes iguala a la
+de salientes \cite{martinezPiazuelo2025gne}.
+\end{supuesto}
+
+\begin{observacion}[Sin equilibrio de pesos hay acuerdo, pero es el acuerdo
+equivocado]
+\label{obs:equilibrado}
+La construcción asigna a cada población un proveedor de pago que solo observa su
+distribución local y su parte de la restricción, y difunde con una estructura
+proporcional-integral de \emph{dos} estados por nodo. El segundo estado integra
+el desacuerdo, y es lo que lleva a todos al mismo multiplicador sin que ninguno
+conozca la restricción completa.
+
+Lo que ocurre al violar \cref{s:equilibrado} no es divergencia. Sobre un lazo
+cerrado de cuatro nodos con restricción acoplada $\sum_k A_kx_k=b$ y $b=3$:
+\begin{itemize}[leftmargin=1.9em,topsep=0.2em,itemsep=0.15em]
+  \item con anillo no dirigido, equilibrado, las decisiones convergen
+  \emph{exactamente} al óptimo centralizado, el multiplicador a $1{,}2444=\lambda^\star$
+  y el error de restricción es $0{,}00000$;
+  \item con un digrafo fuertemente conexo pero no equilibrado, los nodos
+  \emph{también} alcanzan acuerdo —dispersión $9\times10^{-14}$— pero sobre el
+  valor equivocado, $1{,}4$ en lugar de $1{,}2444$, y la restricción queda
+  violada en $-0{,}583$: se entrega $2{,}417$ donde se pedía $3$.
+\end{itemize}
+
+Ese es el peligro: el sistema no avisa. Todos los nodos coinciden, el ajuste
+reposa y nada indica avería, pero el multiplicador acordado no es el que vacía el
+mercado. Un diagnóstico basado en la dispersión entre nodos —que es lo natural—
+no detectaría nada. La comprobación pertinente no es que los precios coincidan,
+sino que el residuo agregado de la restricción se anule.
+\end{observacion}
+
+\begin{observacion}[Dos limitaciones más de la construcción]
+\label{obs:multiplicadores-limites}
+Conviene declarar otras dos. Primera, la construcción distribuida está
+desarrollada para restricciones de \emph{igualdad}; las de desigualdad —como la
+capacidad de un corredor— requieren proyección adicional sobre el ortante no
+negativo, y la garantía de composición debe rehacerse en ese caso. Segunda, el
+coste de estado es el doble del que sugiere la intuición: dos variables por nodo
+y por restricción, no una. En una flota con varias cargas activas y varios
+corredores compartidos, ese factor dos multiplica el estado que cada AMR debe
+mantener y difundir, y entra en la contabilidad de \cref{def:complejidad}.
+\end{observacion}
+
+\figLazo
+
+\subsection{Estabilidad de la red de precios}
+
+El trabajo introduce precios en tres lugares —\emph{wrench}, congestión y
+seguridad (\cref{th:precio-seguridad})— y hasta aquí ha tratado cada lazo por
+separado. Con varias cargas activas simultáneamente, los lazos se acoplan: subir
+el precio de una carga atrae AMR que otra pierde. Esa interacción puede
+desestabilizar el ajuste, y conviene enunciar cuándo no lo hace.
+
+Sea $p=(p_\ell)_{\ell\in\Kcal}$ y el ajuste tipo \emph{tâtonnement}
+\begin{equation}
+  \dot p_\ell=\gamma\bigl(D_\ell-S_\ell(p)\bigr),
+  \label{eq:tatonnement}
+\end{equation}
+con $S_\ell$ la capacidad efectiva que la carga $\ell$ atrae al precio vigente.
+Sea $E$ la matriz de elasticidades cruzadas, $E_{\ell\ell'}=\partial S_\ell/\partial p_{\ell'}$.
+
+\begin{proposicion}[Dominancia diagonal y estabilidad de precios]
+\label{pr:dominancia}
+Si en el punto de equilibrio la matriz $E$ satisface
+\[
+  E_{\ell\ell}>0
+  \quad\text{y}\quad
+  E_{\ell\ell}>\sum_{\ell'\neq\ell}\bigl|E_{\ell\ell'}\bigr|
+  \qquad\text{para todo }\ell,
+\]
+entonces la linealización de \eqref{eq:tatonnement} es exponencialmente estable
+para todo $\gamma>0$.
+\end{proposicion}
+
+\begin{proof}
+La linealización es $\dot{\tilde p}=-\gamma E\tilde p$. Por el teorema de
+Gershgorin, cada autovalor de $E$ está en un disco centrado en $E_{\ell\ell}>0$
+de radio $\sum_{\ell'\neq\ell}|E_{\ell\ell'}|<E_{\ell\ell}$; ningún disco
+contiene el origen ni corta el semiplano izquierdo, luego todos los autovalores
+tienen parte real positiva y $-\gamma E$ es Hurwitz.
+\end{proof}
+
+\begin{observacion}[Cuándo se viola]
+\label{obs:cascada}
+La dominancia diagonal expresa que el efecto de un precio sobre su propia carga
+domina su efecto sobre las demás. Se degrada cuando varias cargas comparten los
+mismos AMR candidatos y sus urgencias suben a la vez: entonces las elasticidades
+cruzadas crecen y el ajuste puede oscilar. El fenómeno no es hipotético; los
+esquemas de tarificación por congestión desplegados en la práctica han exhibido
+inestabilidades de este tipo. La consecuencia de diseño es que la condición debe
+comprobarse sobre la matriz estimada, no suponerse, y que la saturación de la
+urgencia es el mecanismo directo para preservarla.
+\end{observacion}

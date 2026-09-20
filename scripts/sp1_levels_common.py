@@ -26,8 +26,10 @@ import scipy
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 LEVELS_OUTPUT_ROOT = REPOSITORY_ROOT / "scripts" / "results" / "sp1_levels"
+# Datos de campana archivados: movidos a legacy/ en la limpieza del 2026-09-02.
 GEO_SOURCE_ROOT = (
     REPOSITORY_ROOT
+    / "legacy"
     / "results"
     / "sp1_geo"
     / "SP1_TFM_GEO_QPG_SIGNAL_ENGINE_CLOSURE_BENCHMARK_v1"

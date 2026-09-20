@@ -13,15 +13,15 @@
  prop/.style={circle,draw=SPPurple,fill=white,minimum size=4.8mm,font=\tiny}]
 
 \node[font=\scriptsize\bfseries,text=black!70] at (0,4.02)
- {MISMO MUNDO: $N=6$, $K=3$, $c_i=1$, $m=(2,2,2)$};
+ {$N=6$, $K=3$, $c_i=1$, $m=(2,2,2)$};
 \node[font=\tiny,text=black!55] at (0,3.70)
- {halo: robots que deben cambiar juntos \quad línea naranja: propuesta \quad verde: commit atómico};
+ {halo: AMR modificados \quad naranja: propuesta \quad verde: \emph{commit}};
 
 % --------------------------------------------------------------- 2BR
 \node[band] (pair) at (0,2.45) {};
 \node[anchor=north west,font=\scriptsize\bfseries] at ($(pair.north west)+(.17,-.13)$)
- {Geo-QPG-2BR \textcolor{black!45}{$\mid$ desviación de hasta dos robots}};
-\node[font=\tiny\bfseries,text=black!55] at (-3.82,2.92) {BLOQUEO $1$-LOCAL};
+ {Geo-QPG-2BR \textcolor{black!45}{$\mid$ $h=2$}};
+\node[font=\tiny\bfseries,text=black!55] at (-3.82,2.92) {bloqueo $1$-local};
 \node[robot] (p-r1) at (-4.35,2.48) {$r_1$};
 \node[robot] (p-r2) at (-3.20,2.48) {$r_2$};
 \node[load] (p-k1) at (-4.35,1.78) {$k_1$\\$Q/m=2/2$};
@@ -30,9 +30,9 @@
 \draw[SPPurple,dashed,thick] (-4.02,2.42) ellipse (1.12 and .42);
 \draw[proposal] (p-r1) to[bend left=18] (p-k2);
 \draw[proposal] (p-r2) to[bend right=18] (p-k1);
-\node[rule] (p-rule) at (0,2.30) {$\Delta D=0$\\$\Delta J<0$\\dos cambios o ninguno};
+\node[rule] (p-rule) at (0,2.30) {$\Delta D=0$\\$\Delta J<0$};
 \draw[flow] (-1.55,2.30)--(p-rule.west); \draw[flow] (p-rule.east)--(1.55,2.30);
-\node[font=\tiny\bfseries,text=black!55] at (3.82,2.92) {PERFIL ACEPTADO};
+\node[font=\tiny\bfseries,text=black!55] at (3.82,2.92) {perfil aceptado};
 \node[robot,draw=SPGreen] (p2-r1) at (3.20,2.48) {$r_1$};
 \node[robot,draw=SPGreen] (p2-r2) at (4.35,2.48) {$r_2$};
 \node[load] (p2-k1) at (3.20,1.78) {$k_1$\\$Q/m=2/2$};
@@ -43,8 +43,8 @@
 % --------------------------------------------------------------- C3
 \node[band] (triple) at (0,.02) {};
 \node[anchor=north west,font=\scriptsize\bfseries] at ($(triple.north west)+(.17,-.13)$)
- {Geo-QPG-C3 \textcolor{black!45}{$\mid$ desviación de hasta tres robots}};
-\node[font=\tiny\bfseries,text=black!55] at (-3.82,.49) {BLOQUEO $2$-LOCAL};
+ {Geo-QPG-C3 \textcolor{black!45}{$\mid$ $h=3$}};
+\node[font=\tiny\bfseries,text=black!55] at (-3.82,.49) {bloqueo $2$-local};
 \node[robot] (c-r1) at (-4.52,.05) {$r_1$};
 \node[robot] (c-r2) at (-3.52,.05) {$r_2$};
 \node[robot] (c-r3) at (-2.52,.05) {$r_3$};
@@ -57,7 +57,7 @@
 \draw[proposal] (c-r3) to[bend right=10] (c-k1);
 \node[rule] (c-rule) at (0,-.13) {$r_1:1\to2$\\$r_2:2\to3$\\$r_3:3\to1$};
 \draw[flow] (-1.55,-.13)--(c-rule.west); \draw[flow] (c-rule.east)--(1.55,-.13);
-\node[font=\tiny\bfseries,text=black!55] at (3.82,.49) {CICLO ACEPTADO};
+\node[font=\tiny\bfseries,text=black!55] at (3.82,.49) {desviación aceptada};
 \node[robot,draw=SPGreen] (c2-r1) at (3.52,.05) {$r_1$};
 \node[robot,draw=SPGreen] (c2-r2) at (4.52,.05) {$r_2$};
 \node[robot,draw=SPGreen] (c2-r3) at (2.52,.05) {$r_3$};
@@ -70,18 +70,18 @@
 \node[band] (dmis) at (0,-2.41) {};
 \node[anchor=north west,font=\scriptsize\bfseries] at ($(dmis.north west)+(.17,-.13)$)
  {Geo-QPG-DMIS+TX \textcolor{black!45}{$\mid$ concurrencia segura}};
-\node[font=\tiny\bfseries,text=black!55] at (-3.82,-1.94) {PROPUESTAS VECINALES};
+\node[font=\tiny\bfseries,text=black!55] at (-3.82,-1.94) {propuestas vecinales};
 \node[prop] (d-p1) at (-4.52,-2.48) {$p_1$};
 \node[prop] (d-p2) at (-3.52,-2.48) {$p_2$};
 \node[prop] (d-p3) at (-2.52,-2.48) {$p_3$};
-\node[font=\tiny,text=black!55] at (-3.52,-3.05) {cada $p$ declara robots, cargas y versiones};
+\node[font=\tiny,text=black!55] at (-3.52,-3.05) {cada $p$ declara AMR, cargas y versiones};
 \node[rule] (d-rule) at (0,-2.56) {grafo de conflictos\\DMIS: $\{p_1,p_3\}$\\PREPARE / COMMIT};
 \draw[flow] (-1.55,-2.56)--(d-rule.west); \draw[flow] (d-rule.east)--(1.55,-2.56);
 \draw[SPPurple,thick] (d-p1)--(d-p2)--(d-p3);
 \node[prop,draw=SPGreen,fill=SPGreen!8] (d2-p1) at (2.52,-2.48) {$p_1$};
 \node[prop,draw=black!25] (d2-p2) at (3.52,-2.48) {$p_2$};
 \node[prop,draw=SPGreen,fill=SPGreen!8] (d2-p3) at (4.52,-2.48) {$p_3$};
-\node[font=\tiny\bfseries,text=black!55] at (3.52,-1.94) {LOTE COMPATIBLE};
+\node[font=\tiny\bfseries,text=black!55] at (3.52,-1.94) {propuestas compatibles};
 \draw[accept] (d2-p1)--++(0,-.43); \draw[accept] (d2-p3)--++(0,-.43);
 \node[font=\tiny,text=black!55] at (3.52,-3.05) {$v_k:4\to5$; $p_2$ se reevalúa};
 

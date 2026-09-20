@@ -1,0 +1,527 @@
+Jorge Luis Mayorga Taborda                                                                                                                                                                                    TFM MROB · Revisión académica de papers
+
+Revisión académica: protocolo y mapa metodológico
+
+La revisión distingue decisión de coalición, factibilidad física, ejecución y recuperación. El corpus canó-
+nico contiene 59 trabajos (38 CORE, 15 ENABLING y 6 fundacionales/survey); los preprints y extensiones se
+enlazan para no duplicar una misma línea. “Distribuido” se codifica por autoridad de decisión, información, lí-
+der/servidor y cierre, no solo por control local. La búsqueda y el snowballing cubren MRTA/coalition formation,
+shared-load transport, wrench/contact, redes imperfectas y recuperación. Los trabajos que sustentan el mapa
+aparecen citados en la propia figura y en las referencias de la página 4.
+Figura 1. Mapa metodológico agrupado del corpus académico. Horizontal: autoridad de decisión (descentralizado → centralizado). Vertical:
+explicitud del mecanismo (white-box → data-driven). El color identifica la familia primaria. Las posiciones son ordinales y se desplazan solo
+para evitar solapes.
+
+
+
+                                                                                                                                        data-driven
+
+
+
+                                                              distribuido                                                                                                                                      centralizado
+                                                              data-driven                                                                                                                                      data-driven
+
+
+                                                      Bezerra [20]                         D       Dai [17]
+                                             B        2025                                         2024
+
+                                                                                                                                                                                             S     SADCHER [25]
+                                                                                                                                                                                                   2026
+
+                                                                   H        Huo [19]
+                                                                            2025
+                                                                                                               Eoh/Park [29]     E
+                                                                                                                         2021
+
+                                                                                                                                                                                                                           C       CF-HMRTA [21]
+                                                                                                                                                                                                                                   2025
+                                                  S      Shibata-RL [16]
+                                                         2023                                  P        Pandit [28]
+                                                                                                        2026
+descentralizado
+
+
+
+
+                                                                                                                                                                                                                                                                   centralizado
+                                           Pereira [1]       C       CBBA [4]                                                                                         Alonso-Mora [7]
+                                   P       2004                      2009                                                                                    AM       2017
+                                                                                           J        Jang [8]                                                                                              E     Elaamery [13]               R     Rizzo [30]
+                                                                                                    2018                                                                                                        2021                              2020
+                                                                                                                                E           Ebel [18]
+                                                                                                                                            2024
+                                                  PT     Parker/Tang [2]
+                                                         2006
+                                                               S    Service [5]                                                                                                   Machado [9]                                               Loh [31]
+                                                                            2011                                                                                             M    2019                                                           2012
+                                                                                                                                                                                                                                                         L
+                                                                                                                                                                                                                       G        Gong [15]
+                                                                                                    D       Dutta [10]                [14]
+                                                                                                                                                                                                                                2023
+                                                                                                            2019          Shibata                  S
+                                             Vig/Adams [3]                                                                          2023
+                                       V     2006
+                                                                            CS     Chen/Sun [6]
+                                                                                   2012                                                                                                                                            Yufka [32]
+                                                                                                                                                                                         V       Verma repl. [11]                                  Y
+                                                                                                        D       Dutta [12]                                                                       2019                                     2015
+                                                                                                                2021         Fukao   [22]
+                                                                                                                                       F
+                                                                                                                                 2025 Este TFM                                                    Muhammed [26]
+                                                                                                                                                                                                               2026
+                                                                                                                                                                                                                       M
+                                                                                                                                             integración
+
+                                                                 distribuido                                                                                                 Sahu [27]       S                 centralizado
+                                                                                       G       GRAPE-S [24]                                             T      Tian [23]         2026
+                                                                  white-box                    2026                                                            2025                                             white-box
+
+
+
+
+                                                                                                                                             white-box
+
+
+                          juegos/mercados                                    control/consenso                                   búsqueda/heurística                                          política aprendida                                  fundacional
+
+                                  Fuente: elaboración propia a partir de los trabajos [1]-[32] y la codificación del corpus académico.
+La figura mantiene una cantidad alta de trabajos sin interpretar la distancia entre puntos como desempeño. La lectura útil es la separación entre membership
+lógico y ejecución física, y la escasez relativa de trabajos que cierran además la recomposición.
+
+
+
+            Coalition formation                              18                  Shared-load transport                                 23                   Network and safety                                15               Foundational                    6
+            matching · auctions · games                                          control · wrench · caging                                                  consensus · CBF · recovery                                         population games · GNE
+
+
+
+
+Figura 1b. Resumen funcional del corpus por familia temática.
+                                                                                               Fuente: elaboración propia a partir del dataset académico.
+
+Estado del arte discriminante: qué cubre realmente cada paper
+
+La literatura distingue dos frentes maduros: coalición lógica y ejecución física. Matching, auctions y juegos he-
+dónicos cubren atomicidad, heterogeneidad y decisión local en diferentes combinaciones [4]-[6],[8],[10],[12],[24].
+                                                                                                                                                   1
+Jorge Luis Mayorga Taborda                                                                                                                         TFM MROB · Revisión académica de papers
+
+En paralelo, Alonso-Mora, Ebel, Shibata, Fukao, Tian y Muhammed muestran que el transporte cooperativo
+distribuido o descentralizado ya cuenta con formulaciones y validación física [7],[14],[18],[22],[23],[26]. Por ello,
+la brecha no puede reducirse a “falta control distribuido de carga”.
+Figura 2. Matriz de capacidades de los trabajos más discriminantes. Verde = evidencia explícita; amarillo = parcial/condicionada; círculo
+vacío = no.
+
+
+
+
+                                                                                                                                     replacement
+                                                             reclut. local
+
+
+
+                                                                             shared-load
+
+
+
+                                                                                           cert. física
+
+
+
+                                                                                                          exec. dist.
+                                              coal. var.
+
+
+
+
+                                                                                                                        recovery
+                             heterog.
+Trabajo                                                                                                                                                 Ev.      C
+
+Jang 2018 [8]                                                                                                                                           T+S      C4
+Dutta 2021 [12]                                                                                                                                         T+S      C4
+GRAPE-S 2026 [24]                                                                                                                                       T+S     C3–4
+CF-HMRTA 2025 [21]                                                                                                                                      T+S     C0–1
+Huo 2025 [19]                                                                                                                                           T+S     C3–4
+Bezerra 2025 [20]                                                                                                                                        S       C4
+Alonso-Mora 2017 [7]                                                                                                                                  T+S+P     C0–1
+Ebel 2024 [18]                                                                                                                                        T+S+P      C3
+Shibata 2023 [14]                                                                                                                                       S+P      C4
+Muhammed 2026 [26]                                                                                                                                    T+S+P      C3
+Verma repl. 2019 [11]                                                                                                                                   S+P     C0–1
+Sahu 2026 [27]                                                                                                                                          S+P     C1–2
+
+
+                                           Fuente: elaboración propia a partir de [7],[8],[11],[12],[14],[18]-[21],[24],[26],[27].
+
+Tres lecturas obligatorias
+   Atomicidad. Population games/GNE pueden producir masa continua; el cierre entero debe evaluarse como
+   parte del método, no esconderse como posproceso.
+                                                      ∑
+   De capacidad a wrench. Para Cargo no basta i ci ≥ dk : debe verificarse wkreq ∈ W(Ck ) con geometría,
+   fricción y límites de actuador.
+   Escala. Separar Nsim , Nhw , robots por coalición y cargas simultáneas. “1000 robots simulados” no equivale a
+   1000 robots físicos.
+
+
+             Supported cargo                                Rigid attachment                                  Pushing / caging                                 Grasping / arms
+              carga soportada                                 formación rígida                                contacto unilateral                                grasp matrix
+              wrench y límites                             distribución de fuerza                           geometría no-prehensil                               force closure
+
+
+
+
+Figura 2b. Modalidades físicas que no deben mezclarse bajo la etiqueta genérica cooperative transport.
+                                        Fuente: síntesis conceptual basada en [1],[7],[9],[13]-[15],[18],[22],[23],[26],[28],[30]-[32].
+
+Intersecciones y auditoría adversarial de novedad
+
+Red-team: el replacement ya existe; el claim debe estrecharse
+Verma et al. (2019) implementa robot replacement durante transporte de payload, pero con ruta/hubs cono-
+cidos y scheduling global [11]. Sahu y Kumar (2026) integra transporte cooperativo, detección de fallo y node
+replacement, pero con arquitectura master/slave [27]. Shibata permite que agentes desaparezcan/se añadan du-
+rante control distribuido, aunque no resuelve selección de sustituto desde una flota heterogénea [14]. Estos
+trabajos invalidan claims amplios como “primer replacement”.
+
+
+
+
+                                                                                                     2
+Jorge Luis Mayorga Taborda                                                                                                     TFM MROB · Revisión académica de papers
+
+Figura 3. Síntesis estructural en dos vistas complementarias: (a) cobertura de intersecciones del corpus CORE y (b) presupuesto de centra-
+lización por etapa.
+
+                      (a) Cobertura del corpus CORE                                                      (b) Presupuesto de centralización por etapa
+
+          Shared-load transport                                            23                  Recruit
+                          Recruit                                  18
+                                                                                                Certify
+              Certificación física                         13
+       Shared-load + distributed                      10                                           Dock
+    Heterog. + coalición variable                    9
+                                                                                           Transport
+      Shared-load + replacement          2
+         Heterog. + shared-load      0
+                                                                                              Recover
+              Physical + distribu-
+              ted + replacement      0                                                                         local                         mixto                        global
+
+
+                                               trabajos CORE
+                                                                                           Fuente: codificación de autoridad e información de los trabajos más cercanos
+Fuente: conteos del dataset académico curado; no constituyen prevalencias                                        [7],[11],[14],[18]-[21],[24],[26],[27].
+                               universales.
+
+Lectura conjunta: el corpus sí cubre piezas relevantes por separado, pero la autoridad global residual cambia por capa; por eso la brecha debe formularse
+como una interfaz entre reclutamiento, certificación física, ejecución y recuperación, no como ausencia absoluta de cada ingrediente por separado.
+ Trabajo                        Share        Repl.         Local        Diferencia decisiva
+                                                            rec.
+ Verma 2019 [11]                                                        scheduling global; hubs/ruta conocidos
+ Sahu 2026 [27]                                                         arquitectura master/slave
+ Shibata 2023 [14]                                                      equipo variable, no selección desde una flota mayor
+ Ebel 2024 [18]                                                         equipo fijo
+ Bezerra 2025 [20]                                                      no shared-load físico
+ GRAPE-S 2026 [24]                                                      servicio lógico, no carga compartida
+
+
+Brecha defendible. En el corpus académico revisado no se identificó una arquitectura que integre, en una misma cadena operativa,
+reclutamiento local de una coalición heterogénea de tamaño variable desde una flota mayor + certificación física de la carga
+compartida + reemplazo online de un miembro durante el transporte, manteniendo la decisión de coalición y la ejecución sin una
+autoridad global permanente.
+                                                     Fuente: síntesis adversarial de [7],[11],[14],[18]-[21],[24],[26],[27].
+
+Síntesis, tendencias y fuentes académicas
+La síntesis temporal complementa el mapa metodológico: el volumen y la diversidad temática crecen desde 2018, mientras extitlearning/RL gana pre-
+sencia y la recuperación/recomposición sigue siendo una línea comparativamente poco cubierta. La Figura 4 resume estas tendencias y los venues
+recurrentes del corpus.
+
+
+
+
+                                                                                       3
+Jorge Luis Mayorga Taborda                                                                                                                                                                            TFM MROB · Revisión académica de papers
+
+               Actividad          académica y evolución temática del corpus (2004 2026)
+               Seis lecturas complementarias sobre volumen, composición, transición temática, diversidad y venues recurrentes
+                      Coalition / MRTA                         Transport / control                           Planning / routing                              Feasibility / contact
+                      Recovery / replacement                          Learning / RL                            Foundational / survey                                                                                     Distribuido / descentralizado (%)
+
+
+                              (a) Actividad anual y desplazamiento del foco temático                                                                                                                                                                        100
+                                                                                                                                                                                                                                               8
+
+
+
+
+                                                                                                                                                                                                                                                                 Distribuido / descentralizado (%)
+                      8
+                                                                                                                                                                                                                                                            80
+                      6
+                                                                                                                                                                                                                                           6
+       Trabajos/año
+
+
+
+
+                                                                                                                                                                              5                                                                             60
+                      4
+                                                                                                                                                                                                                         4     4
+                                     3              3                                                                                                    3                                            3                                                     40
+
+                      2
+                                                                               2                  2      2                             2                          2
+                                                                                                                                                                                                                                                            20
+                                                                     1                 1                          1                                                                         1                1
+                      0                                                                                                                                                                                                                                     0
+                                    2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 2018 2019 2020 2021 2022 2023 2024 2025 2026
+                                                                                                                                                                                           1.0
+                          (b) Cambio temático por periodos                                                   (c)  Cambio de cuota
+                                                                                                             2004 2010 2023 2026 [p.p.]
+                                                                                                                                                                                                  (d)  Diversidad temática móvil
+                                                                                                                                                                                                  ventana de 3 años
+ 2004 2010                           50%                 20%             30%                          Coal. -32                                                                            0.8
+
+
+
+
+                                                                                                                                                                          H* normalizado
+                                                                                                   Transp.                                                     +27
+ 2011 2017                           50%                 20%                20%                      Planif.                                   +5                                          0.6
+                                                                                                    Factib.                     -6
+ 2018 2022                       33%             25%             17%        17%                     Recov.                                     +5                                          0.4
+                                                                                                  Learning                                                         +32
+ 2023 2026                    18%        27%            14%              32%                         Fund. -30                                                                             0.2
+                                                                                                                                                                                           0.0
+                          0         20         40         60           80          100                                 20                  0           20                                        2004 2008 2012 2016 2020 2024
+                                           % del periodo                                                           Cambio en cuota (p.p.)                                                                                    Año
+      Coalition
+                              (e) Timeline de emergencia temática                                                                                   2026
+                                                                                                                                                                  IJRR
+                                                                                                                                                                       (f) Venues recurrentes                                                          4
+                                                                2012                                                                                                                                                                   3
+     Transport                                                                                                                                              IEEE TAC
+                                                                                           2017                                                            IEEE RA-L                                                                   3
+      Planning
+                                                                                                                                                           IEEE T-RO                                                 2
+    Feasibility                                                                                                                                           IEEE T-ASE                                                 2
+                                                                                                      2019
+     Recovery                                                                                                                                                    JIRS                                                2
+                                                                                                               2021
+ Learning / RL                                                                                                                                                   RAS                                                 2
+ Foundational                                                                                                            2022                                   ICRA                                                 2
+
+                          2004             2008                2012                 2016                 2020                   2024                                     0                        1              2                 3               4
+                                                                                   Año                                                                                                                    Número de trabajos
+                          Fuente: elaboración propia a partir del corpus académico curado (n = 54, ventana principal 2004 2026).
+                          Nota: H* = índice de diversidad temática normalizado; categorías primarias asignadas para síntesis visual.
+
+
+Figura 4. Actividad académica y evolución temática del corpus (2004–2026). El panel (a) combina volumen anual, composición temática y
+proporción de trabajos distribuidos/descentralizados; (b)–(f) resumen transición de cuota, diversidad, emergencia temática y venues recu-
+rrentes.
+                                              Fuente: elaboración propia a partir del corpus académico curado (n = 54 en la ventana principal 2004–2026).
+
+Referencias principales del mapa y del dashboard
+ 1.   Pereira, G. A. S., Campos, M. F. M., & Kumar, V. (2004). Decentralized algorithms for multi-robot manipulation via caging.               Learning. ICRA. DOI 10.1109/ICRA57147.2024.10611244.
+      IJRR. DOI 10.1177/0278364904045477.                                                                                              18.     Ebel, H., Rosenfelder, M., & Eberhard, P. (2024). Cooperative object transportation with differential-drive mobile robots.
+ 2.   Parker, L. E., & Tang, F. (2006). Building multirobot coalitions through automated task solution synthesis. Proceedings                  RAS. DOI 10.1016/j.robot.2023.104612.
+      of the IEEE. DOI 10.1109/JPROC.2006.876933.                                                                                      19.     Huo, X., et al. (2025). A Self-Learning Approach to Heterogeneous Multi-Robot Coalition Formation Under Uncertainty.
+ 3.   Vig, L., & Adams, J. A. (2006). Market-based multi-robot coalition formation. DARS 7. DOI 10.1007/4- 431- 35881- 1_23.                   IEEE T-ASE. DOI 10.1109/TASE.2024.3395283.
+ 4.   Choi, H.-L., Brunet, L., & How, J. P. (2009). Consensus-Based Decentralized Auctions for Robust Task Allocation. IEEE            20.     Bezerra, L. C. D., et al. (2025). Learning Policies for Dynamic Coalition Formation in MRTA. IEEE RA-L. DOI 10.1109/
+      T-RO. DOI 10.1109/TRO.2009.2022423.                                                                                                      LRA.2025.3592080.
+ 5.   Service, T. C., & Adams, J. A. (2011). Coalition formation for task allocation: Theory and algorithms. AAMAS. DOI                21.     Verma, A., et al. (2025). CF-HMRTA: Coalition Formation for Heterogeneous Multi-Robot Task Allocation. JIRS. DOI
+      10.1007/s10458- 010- 9123- 8.                                                                                                            10.1007/s10846- 025- 02287- 4.
+ 6.   Chen, J., & Sun, D. (2012). Coalition-based approach to task allocation of multiple robots with resource constraints. IEEE       22.     Fukao, T., et al. (2025). Cooperative transportation of an object with a nonholonomic constraint by a swarm robot. RO-
+      T-ASE. DOI 10.1109/TASE.2012.2201470.                                                                                                    BOMECH Journal. DOI 10.1186/s40648- 025- 00308- 3.
+ 7.   Alonso-Mora, J., Baker, S., & Rus, D. (2017). Multi-robot formation control and object transport in dynamic environments         23.     Tian, Y., et al. (2025). Multi-Robot Cooperative Transportation of Irregular Objects by Multi-Objective Optimization With
+      via constrained optimization. IJRR. DOI 10.1177/0278364917719333.                                                                        Distributed Control. IEEE RA-L. DOI 10.1109/LRA.2025.3597895.
+ 8.   Jang, I., Shin, H.-S., & Tsourdos, A. (2018). Anonymous Hedonic Game for Task Allocation in a Large-Scale Multiple Agent         24.     Diehl, G., & Adams, J. A. (2026). GRAPE-S: near real-time coalition formation for multiple service collectives. AAMAS.
+      System. IEEE T-RO. DOI 10.1109/TRO.2018.2858292.                                                                                         DOI 10.1007/s10458- 026- 09758- 4.
+ 9.   Machado, T., et al. (2019). Attractor dynamics approach to joint transportation by autonomous robots. Autonomous                 25.     Bichler, J., Matoses Gimenez, A., & Alonso-Mora, J. (2026). SADCHER. IEEE MRS. DOI 10.1109/MRS66243.2025.11357250.
+      Robots. DOI 10.1007/s10514- 018- 9729- 2.                                                                                        26.     Muhammed, I., Nada, A. A., & El-Hussieny, H. (2026). Real-time decentralized MPC for cooperative multi-robot object
+10.   Dutta, A., & Asaithambi, A. (2019). One-to-many bipartite matching based coalition formation for multi-robot task allo-                  transport. Scientific Reports. DOI 10.1038/s41598- 026- 41881- w.
+      cation. ICRA. DOI 10.1109/ICRA.2019.8793855.                                                                                     27.     Sahu, B., & Kumar, I. (2026). Cooperative Path Planning for Object Transportation with Fault Management. Automation.
+11.   Verma, P., et al. (2019). Loosely Coupled Payload Transport System with Robot Replacement. arXiv:1904.03049.                             DOI 10.3390/automation7010001.
+12.   Dutta, A., et al. (2021). Distributed Hedonic Coalition Formation for Multi-Robot Task Allocation. IEEE CASE. DOI                28.     Pandit, B., Shrestha, A. K., & Fern, A. (2026). Multi-Quadruped Cooperative Object Transport: Learning Decentralized
+      10.1109/CASE49439.2021.9551582.                                                                                                          Pinch-Lift-Move. ICRA/arXiv. DOI 10.48550/arXiv.2509.14342.
+13.   Elaamery, B., et al. (2021). Model Predictive Control for Cooperative Transportation with Feasibility-Aware Policy. Ro-          29.     Eoh, G., & Park, S. (2021). Cooperative Object Transportation Using Curriculum-Based Deep Reinforcement Learning.
+      botics. DOI 10.3390/robotics10030084.                                                                                                    Sensors. DOI 10.3390/s21144780.
+14.   Shibata, K., Jimbo, T., & Matsubara, T. (2023). Event-triggered communication and consensus-based control for distri-            30.     Rizzo, C., Lagrana, A., & Serrano, D. (2020). GEOMOVE: Detached AGVs for Cooperative Transportation of Large and
+      buted cooperative transport. RAS. DOI 10.1016/j.robot.2022.104307.                                                                       Heavy Loads in the Aeronautic Industry. ICARSC. DOI 10.1109/ICARSC49921.2020.9096078.
+15.   Gong, Z., et al. (2023). Design and control of a multi-mobile-robot cooperative transport system based on a novel six            31.     Loh, C. C., & Traechtler, A. (2012). Cooperative Transportation of A Load Using Nonholonomic Mobile Robots. Procedia
+      degree-of-freedom connector. ISA Transactions. DOI 10.1016/j.isatra.2023.04.006.                                                         Engineering. DOI 10.1016/j.proeng.2012.07.255.
+16.   Shibata, K., Jimbo, T., & Matsubara, T. (2023). Learning Locally, Communicating Globally: RL of MRTA for Cooperative             32.     Yufka, A., & Ozkan, M. (2015). Formation-Based Control Scheme for Cooperative Transportation by Multiple Mobile
+      Transport. IFAC-PapersOnLine. DOI 10.1016/j.ifacol.2023.10.431.                                                                          Robots. IJARS. DOI 10.5772/60972.
+17.   Dai, W., Bidwai, A., & Sartoretti, G. (2024). Dynamic Coalition Formation and Routing for MRTA via Reinforcement
+
+
+
+
+                                                                                                                                   4
+Jorge Luis Mayorga Taborda                                                                                                 TFM MROB · Revisión académica de papers
+
+Evolución metodológica y brecha de integración
+
+El núcleo curado de 59 trabajos sostiene la comparación detallada. Las tendencias e intersecciones se estudiaron sobre un corpus
+de mapeo más amplio: 3.014 identidades descubiertas y 244 documentos analíticos. De ellos, 168 admitieron extracción estructural
+y 20 se sometieron a lectura cercana.
+Los 243 documentos fechados se agrupan en periodos de 35, 40, 79 y 89 registros. La Figura 5 calcula las cuotas
+dentro de cada periodo, separando el crecimiento del corpus de los cambios de composición. Las etiquetas
+proceden del título y el resumen y pueden coexistir; miden presencia temática, no rendimiento.
+
+                                                                                                                         (b) Δ temprano→reciente
+                                   (a) Cuota de documentos del periodo                                                   (puntos porcentuales)
+
+      Consenso/distribución              20.0%            20.0%             31.6%              24.7%                                        +4.7
+
+           Subasta/mercado               22.9%            17.5%             16.5%              13.5%                    -9.4
+
+                 Aprendizaje             2.9%              5.0%             17.7%              15.7%                                                    +12.8
+
+   Metaheurística evolutiva              0.0%              5.0%             16.5%              11.2%                                                  +11.2
+
+       Control de formación              14.3%             5.0%              5.1%                 7.9%                    -6.4
+
+ Comportamiento/enjambre                 8.6%              5.0%              0.0%                 5.6%                         -3.0
+
+            Teoría de juegos             2.9%              5.0%              3.8%                 3.4%                                    +0.5
+
+     Seguridad reactiva/CBF              0.0%              2.5%              2.5%                 6.7%                                           +6.7
+
+        Optimización exacta              5.7%              0.0%              5.1%                 2.2%                         -3.5
+
+                                        ≤2010            2011–16            2017–21           2022–26                    −10          0          10
+                                        (n=35)            (n=40)             (n=79)            (n=89)
+               Señales nuevas en 2022–26: MPC 2.2%, fuerza/impedancia 2.2% y MAPF/búsqueda 2.2%. Clasificación multietiqueta de título/resumen; 2026 es un año incompleto.
+
+
+
+Figura 5. Evolución metodológica normalizada del corpus ampliado. Las categorías son multietiqueta y las cuotas se calculan dentro de cada
+periodo.
+                                   Fuente: elaboración propia desde method_period_v3.csv; 2026 incompleto y categorías coexistentes.
+
+
+                               Cobertura temática y de interfaces                                            Madurez de validación observada
+
+ SP1: coalición/asignación                                                                   115
+                                                                                               Simulación                                                        99 (40.6%)
+
+     SP2: transporte físico               15
+
+  SP3: planificación/tráfico                 20                                Señal de caso industrial                 25 (10.2%)
+
+                 SP1 ∩ SP2          2
+
+                 SP1 ∩ SP3              10                                              Experimento físico        12 (4.9%)
+
+                 SP2 ∩ SP3 0
+
+                                                                                           Análisis formal       7 (2.9%)
+          SP1 ∩ SP2 ∩ SP3 0
+
+                               0          20        40       60        80       100         120              0     20          40           60           80     100
+
+           Conteos multietiqueta sobre n=244. ‘Caso industrial’ puede describir un escenario simulado; no equivale a despliegue real.
+
+
+Figura 6. Cobertura temática, intersecciones SP1–SP3 y madurez de validación observada en el corpus ampliado.
+                          Fuente: tablas de temas, combinaciones y validación, n = 244; “caso industrial” puede describir simulación.
+
+
+Persistencia y recombinación                                                            La brecha está en los enlaces
+Consenso/distribución pasa de 20,0 % a 24,7 %; subas-                                   SP1 aparece en 115 documentos, SP2 en 15 y SP3 en
+ta/mercado baja de 22,9 % a 13,5 %; aprendizaje sube                                    20. Solo dos enlazan SP1–SP2 y diez SP1–SP3; ninguno
+de 2,9 % a 15,7 % y metaheurísticas de 0 % a 11,2 %.                                    conecta SP2–SP3 o cubre los tres. La validación sigue
+CBF/seguridad alcanza 6,7 % en el periodo reciente. Los                                 el mismo patrón: 99 documentos usan simulación, 12
+métodos se recombinan: selección, coordinación, con-                                    incluyen experimento físico y siete presentan análisis
+trol y seguridad ocupan capas distintas.                                                formal. La carencia se concentra en las interfaces.
+Consecuencia arquitectónica. Solver, mercado, consenso y control ocupan etapas diferentes. El aporte se concentra en los contratos
+que las conectan sin una autoridad global permanente.
+
+
+
+                                                                                    5
+Jorge Luis Mayorga Taborda                                                                                                                                          TFM MROB · Revisión académica de papers
+
+Arquitectura derivada y contraste experimental
+
+La brecha anterior se traduce en tres contratos. SP1 entrega una coalición entera con roles definidos; SP2 certifi-
+ca geometría, contacto, wrench y actuación; SP3 reserva recursos para la huella compuesta y realimenta el coste
+de congestión o fallo. Cada decisión debe superar el certificado de la capa siguiente. La ejecución es asíncrona,
+sin rondas globales y con periodo de muestreo explícito.
+Figura 7. Contrato de interfaces entre formación de coaliciones, factibilidad física y coordinación del tráfico.
+
+
+                           SP1 FORMACIÓN                                                         SP2 TRANSPORTE                                                                  SP3 TRÁFICO
+
+                     Decisión estratégica                                                 Factibilidad física                                                       Coordinación del tráfico
+                  capacidad, rol y compromiso                            ✓        geometría, contacto, wrench y límites                            ✓           huella, reserva, prioridad y conflicto
+
+                       CLOSED coalición entera                                                GUARDED margen físico                                                    EXECUTED misión observada
+
+
+
+
+                                                                              congestión, fallo o cambio de tarea: revisión local
+
+
+
+
+           Fuente: elaboración propia a partir de la discontinuidad observada entre SP1, SP2 y SP3; estados de ejecución según la cadena canónica del TFM.
+
+Diseño experimental derivado de la revisión
+   Capa        Mecanismo propuesto                       Baseline/oráculo                                         Evidencia y métricas
+
+     SP1       Juego local con unirse, es-               MILP/set partitioning como oráculo; Factibilidad, utilidad, gap, formación, churn, CPU, mensajes y bytes.
+               perar, cambiar rol o salir;               CBBA/subasta distribuida; Húngaro
+               payoff con compatibilidad,                solo si se demuestra reducción uno-a-
+               viaje, margen físico y conges-            uno.
+               tión.
+     SP2       Certificador de geometría,                Leader–follower/estructura virtual;                      Error de pose, residual de wrench, fuerza interna, contacto, saturación, ener-
+               contacto, wrench y actuado-               MPC/CBF; reparto central de wrench                       gía y distancia mínima.
+               res; pose/velocidad común y               o impedancia.
+               reparto de esfuerzo.
+     SP3       Planificación de la huella                A*/Dijkstra, priorizada, CBS/ECBS;                       Makespan, throughput, espera, conflictos, deadlock y replanteamientos.
+               carga–robots, negociación                 ORCA/RVO o CBF-QP para seguridad
+               de corredores y retorno del               reactiva.
+               coste de congestión a SP1.
+  Integral     Eventos locales y sustitución             Oráculo end-to-end global, presenta-                     Entrega, recuperación, carga perdida, deadlines y dispersión entre semillas.
+               o disolución controlada ante              do como techo y no como compara-
+               fallos.                                   ción arquitectónica justa.
+
+Hipótesis de integración                                         Amenazas a la validez
+  H1: el margen físico reduce coaliciones inviables con cos-     WoS sigue incompleto en F01/F02 (255 registros faltantes)
+  te acotado de utilidad.                                        y la API de arXiv no completó la cartera. Los porcentajes
+  H2: realimentar congestión reduce makespan y bloqueos          describen el corpus adquirido, no una población bibliográ-
+  frente a asignar y después enrutar.                            fica. Solo 20 fuentes recibieron lectura cercana; la heteroge-
+  H3: comunicación por eventos conserva factibilidad con         neidad de robots, cargas, métricas y escenarios impide un
+  menos bytes bajo pérdida/latencia acotada.                     meta-análisis.
+  H4: sustitución local reduce recuperación cuando existe        Reglas de contraste
+  capacidad vecinal redundante.                                  Los métodos se evaluarán sobre instancias idénticas y semi-
+Fronteras cuantitativas verificadas                              llas pareadas. Se reportarán distribuciones, intervalos, fa-
+                                                                 llos y ablaciones de margen físico, congestión y comunica-
+Liu y Shell demuestran optimalidad para matching uno-a-
+                                        [1]                      ción. La simulación aporta evidencia empírica; no acredita
+uno con O(n log n) bajo su estructura . Verma et al. es- estabilidad, convergencia ni escalabilidad global.
+             3
+
+calan a 2.000 robots/400 tareas, pero central y sin física [2] . Alcance de la brecha. En el corpus adquirido no se identificó una ar-
+Muhammed et al. validan dos AMR a 10 Hz con RMSE < 4 cm quitectura que reúna coalición local heterogénea y variable, certifica-
+y cerca de 70 % menos red, sin reclutamiento ni tráfico [3] .     ción física, tráfico de la huella completa y recuperación durante la ope-
+                                                                                                                   ración sin autoridad global permanente.
+
+Referencias complementarias
+[1] Liu, L., & Shell, D. A. (2013). Optimal market-based MRTA. RSS IX.   [2] Verma, A., et al. (2025). CF-HMRTA. JINT, 111, 81. doi:10.1007/s10846-025-   [3] Muhammed, I., Nada, A. A., & El-Hussieny, H. (2026). Decentralized NMPC.
+doi:10.15607/RSS.2013.IX.033.                                            02287-4.                                                                         Scientific Reports, 16, 9824. doi:10.1038/s41598-026-41881-w.
+
+
+ Declaraciones. Datos, scripts y derivados: academic-review/literature-review-v3. Ética: no aplica. Autoría: J. L. Mayorga Taborda definió el problema, supervisó las fuentes y
+ responde por la interpretación. IA: apoyo en búsqueda, extracción, código, síntesis y edición; metadatos, conteos y afirmaciones se contrastaron con artefactos trazables. Financiación
+ externa: ninguna declarada. Conflictos: ninguno declarado.
+
+
+
+
+                                                                                                              6
+

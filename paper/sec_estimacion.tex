@@ -1,0 +1,261 @@
+\section{Sensado y estimación de estado}
+\label{sec:estimacion}
+
+\Cref{th:mapa} resuelve la mitad cartográfica del problema de percepción: las
+rejillas en \emph{log-odds} son aditivas y por tanto promediables por consenso.
+La otra mitad —saber dónde está cada AMR— quedó como \cref{s:pose}. Esta sección
+la desarrolla, y muestra que las dos mitades no son simétricas.
+
+\subsection{Tres sensores y lo que cada uno no puede}
+
+Se distinguen sensores \emph{propioceptivos}, que miden el estado interno, y
+\emph{exteroceptivos}, que miden el entorno; y \emph{pasivos} o \emph{activos}
+según emitan energía \cite{siegwart2011introduction}.
+
+\begin{table}[!ht]
+\centering\small
+\caption{Los tres sensores del AMR y su limitación estructural.}
+\label{tab:sensores}
+\begin{tabularx}{\textwidth}{@{}p{2.7cm}p{2.4cm}p{3.0cm}X@{}}
+\toprule
+Sensor & Clase & Mide & Lo que no puede \\
+\midrule
+Encoder de rueda & propioceptivo, pasivo & giro de rueda, luego
+  $\Delta s_R,\Delta s_L$ & detectar deslizamiento: mide la rueda, no el suelo \\
+Giróscopo (IMU) & propioceptivo, pasivo & velocidad angular $\dot\theta$
+  & dar rumbo absoluto: integra, y la deriva del sesgo crece con $t$ \\
+Telémetro láser & exteroceptivo, activo & tiempo de vuelo, luego
+  alcance y azimut & funcionar sin rasgos: en un pasillo liso no informa a lo
+  largo \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{observacion}[Las limitaciones son complementarias, no redundantes]
+\label{obs:complementarios}
+El encoder falla exactamente cuando la rueda desliza, que por
+\cref{obs:multiplicador-friccion} es cuando se satura la adherencia —es decir,
+durante el empuje intenso, justo cuando la coalición más necesita saber dónde
+está—. El láser no falla ahí, pero falla en el pasillo largo y liso donde el
+encoder acierta. Fusionar no es una mejora incremental: cada sensor cubre el
+modo de fallo del otro.
+\end{observacion}
+
+\subsection{Odometría y la ley de propagación del error}
+
+Con $b$ la vía y $\Delta s=(\Delta s_R+\Delta s_L)/2$,
+$\Delta\theta=(\Delta s_R-\Delta s_L)/b$, la integración de la pose
+$p=(x,y,\theta)^{\!\top}$ es
+\begin{equation}
+  p^{+}=p+\begin{pmatrix}
+    \Delta s\cos(\theta+\Delta\theta/2)\\
+    \Delta s\sin(\theta+\Delta\theta/2)\\
+    \Delta\theta\end{pmatrix}
+  \;=:\;f(p,\Delta).
+  \label{eq:odometria}
+\end{equation}
+El modelo de error supone que los errores de las dos ruedas son independientes y
+que su varianza es proporcional al valor absoluto de la distancia recorrida
+\cite{siegwart2011introduction}:
+\begin{equation}
+  \Sigma_\Delta=\operatorname{diag}\bigl(k_R|\Delta s_R|,\ k_L|\Delta s_L|\bigr),
+  \label{eq:sigma-delta}
+\end{equation}
+con $k_R,k_L$ constantes que dependen del robot y del suelo y que se determinan
+experimentalmente. La covarianza de la pose se propaga por la ley de primer
+orden
+\begin{equation}
+  \Sigma^{+}=F_p\,\Sigma\,F_p^{\!\top}+F_\Delta\,\Sigma_\Delta\,F_\Delta^{\!\top},
+  \qquad
+  F_p=\frac{\partial f}{\partial p},\quad F_\Delta=\frac{\partial f}{\partial\Delta}.
+  \label{eq:propagacion}
+\end{equation}
+
+\begin{proposicion}[La incertidumbre transversal crece con el cubo de la distancia]
+\label{pr:cubo}
+Bajo \eqref{eq:sigma-delta}, en marcha recta de longitud $d$ la varianza del
+rumbo y la varianza longitudinal crecen como $\Theta(d)$, mientras que la
+varianza \emph{transversal} crece como $\Theta(d^{3})$.
+\end{proposicion}
+
+\begin{proof}
+El rumbo es suma de incrementos independientes de varianza proporcional al paso,
+luego $\operatorname{var}(\theta)\propto d$. El desplazamiento transversal es
+$\int_0^d\theta(u)\,du$, integral de un paseo aleatorio, y su varianza es
+$c\int_0^d\!\!\int_0^d\min(u,v)\,du\,dv=\Theta(d^{3})$.
+\end{proof}
+
+\begin{observacion}[Comprobación y consecuencia]
+\label{obs:cubo-num}
+Con $k_R=k_L=10^{-4}$ y $b=0{,}5$~m, una simulación de $4000$ realizaciones da,
+al doblar la distancia, razones de varianza de $2{,}0$ en rumbo y de
+$7{,}6$--$8{,}6$ en transversal, frente a los valores teóricos $2$ y $8$. A
+$16$~m la desviación típica transversal alcanza $1{,}05$~m.
+
+La consecuencia es la razón de ser del telémetro: \emph{ninguna calibración de
+$k_R,k_L$ salva la odometría}, porque el problema no es la constante sino el
+exponente. Reducir $k$ a la mitad retrasa el instante en que la incertidumbre
+alcanza $d_{\min}$ en un factor $2^{1/3}\approx1{,}26$ solamente. Únicamente una
+medida exteroceptiva rompe el crecimiento.
+\end{observacion}
+
+\subsection{El filtro extendido de Kalman en cinco pasos}
+
+La corrección exteroceptiva se organiza en el ciclo clásico
+\cite{siegwart2011introduction}, con $M_i$ los rasgos del mapa:
+
+\begin{enumerate}[leftmargin=2.1em,topsep=0.2em,itemsep=0.25em]
+  \item \textbf{Predicción} con \eqref{eq:odometria} y \eqref{eq:propagacion}:
+  se obtienen $\hat p^{-}$ y $\Sigma^{-}$.
+  \item \textbf{Observación}: del barrido láser se extraen rasgos $z_j$ con
+  covarianza $R_j$, obtenida propagando \eqref{eq:propagacion} sobre el ajuste
+  de recta.
+  \item \textbf{Predicción de medida}: $\hat z_i=h(\hat p^{-},M_i)$.
+  \item \textbf{Emparejamiento}: innovación $\nu_{ij}=z_j-\hat z_i$ con
+  covarianza $\Sigma_{\mathrm{IN}}=H\Sigma^{-}H^{\!\top}+R_j$; se acepta si
+  $\nu^{\!\top}\Sigma_{\mathrm{IN}}^{-1}\nu\le\chi^2_{\alpha}$.
+  \item \textbf{Estimación}: con $K=\Sigma^{-}H^{\!\top}\Sigma_{\mathrm{IN}}^{-1}$,
+  $\hat p=\hat p^{-}+K\nu$ y $\Sigma=(I-KH)\Sigma^{-}$.
+\end{enumerate}
+
+\begin{observacion}[El paso frágil es el cuarto]
+\label{obs:emparejamiento}
+Los pasos 1, 3 y 5 son álgebra. El paso 4 es una decisión discreta, y un
+emparejamiento erróneo no degrada la estimación: la corrompe, porque inyecta una
+innovación grande con covarianza pequeña. En un almacén —donde las estanterías
+son deliberadamente idénticas y periódicas— la ambigüedad de asociación es la
+norma y no la excepción. De ahí que el umbral $\chi^2$ deba fijarse conservador
+y que convenga rechazar el ciclo completo antes que aceptar un emparejamiento
+dudoso.
+\end{observacion}
+
+\subsection{Localización cooperativa y SLAM distribuido}
+
+Cuando dos AMR se miden mutuamente, la medida relativa informa a ambos. Fusionar
+promediando covarianzas es incorrecto: tras el primer intercambio las
+estimaciones dejan de ser independientes, y el promedio vuelve a contar la
+información ya compartida, produciendo una covarianza optimista.
+
+\begin{proposicion}[Fusión consistente sin conocer la correlación]
+\label{pr:interseccion}
+Sean $(\hat p_1,\Sigma_1)$ y $(\hat p_2,\Sigma_2)$ dos estimaciones de la misma
+pose con correlación cruzada desconocida. La intersección de covarianzas
+\[
+  \Sigma_{\mathrm{CI}}^{-1}=\omega\,\Sigma_1^{-1}+(1-\omega)\,\Sigma_2^{-1},
+  \qquad
+  \Sigma_{\mathrm{CI}}^{-1}\hat p_{\mathrm{CI}}
+  =\omega\,\Sigma_1^{-1}\hat p_1+(1-\omega)\,\Sigma_2^{-1}\hat p_2,
+\]
+con $\omega\in[0,1]$, es consistente para \emph{cualquier} correlación
+\cite{julier1997ci}. El precio es que $\Sigma_{\mathrm{CI}}$ domina a la
+covarianza que se obtendría conociendo la correlación: se paga conservadurismo a
+cambio de no necesitar el término cruzado.
+\end{proposicion}
+
+\begin{teorema}[Asimetría entre cartografiar y localizar]
+\label{th:asimetria}
+La cartografía cooperativa y la localización cooperativa no admiten el mismo
+tratamiento distribuido:
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em,topsep=0.2em,itemsep=0.15em]
+  \item el mapa \emph{sí} consensúa: por \cref{le:aditividad} la evidencia en
+  \emph{log-odds} es aditiva, luego el promedio de consenso de \cref{th:mapa}
+  converge a la fusión bayesiana exacta;
+  \item la pose \emph{no}: las poses viven en $SE(2)$, donde el promedio
+  aritmético no es una operación intrínseca, y además las estimaciones se
+  correlacionan al intercambiarse, de modo que el promedio subestima la
+  covarianza.
+\end{enumerate}
+En consecuencia la cartografía admite un protocolo de consenso con garantía,
+mientras que la localización cooperativa admite solo fusión conservadora
+(\cref{pr:interseccion}) o estimación conjunta centralizada.
+\end{teorema}
+
+\begin{proof}
+(i) es \cref{le:aditividad} junto con \cref{th:mapa}. (ii) tiene dos causas
+independientes: la variedad —el promedio de dos rotaciones no es en general una
+rotación, y la linealización que lo repara vale solo localmente— y la
+correlación, que invalida el promedio incluso en el caso lineal, según
+\cref{pr:interseccion}.
+\end{proof}
+
+\begin{observacion}[Por qué la asimetría no rompe la arquitectura]
+\label{obs:asimetria-consecuencia}
+\Cref{th:asimetria} no obliga a centralizar, porque las dos mitades entran en el
+mecanismo por vías distintas. El mapa entra como bien común: alimenta el
+catálogo de rutas, y ahí el consenso es correcto y demostrable. La pose entra
+como dato local: cada AMR necesita \emph{su} pose para evaluar su barrera, y de
+los demás no necesita la pose global con precisión métrica, sino la distancia
+relativa, que el láser mide directamente sin pasar por dos estimaciones
+globales. La medida relativa esquiva el problema de fusión justo en el punto
+donde importaría.
+\end{observacion}
+
+\begin{observacion}[Qué nivel de mapa usa cada capa]
+\label{obs:jerarquia-mapas}
+La navegación en interiores distingue tres niveles de representación
+\cite{gorrostieta2019applications}: \emph{geométrico} —métrico, la rejilla—,
+\emph{topológico} —nodos y adyacencias— y \emph{semántico} —etiquetas y
+relaciones sobre las que razonar—. Este trabajo usa los dos primeros y no el
+tercero: la rejilla de \cref{th:mapa} es geométrica y alimenta las barreras;
+el catálogo de rutas y el grafo de arcos de \cref{th:multiclase} son
+topológicos y alimentan el peaje.
+
+La ausencia del nivel semántico es deliberada y tiene consecuencia. Sin él, la
+prioridad de una carga entra como el escalar de urgencia del pago y no como una
+propiedad del objeto —«frágil», «refrigerado», «no inclinable»—, y restricciones
+de ese tipo tendrían que traducirse a mano a cotas sobre el \emph{twist}
+admisible. Es una vía de extensión natural, no un fundamento que falte.
+\end{observacion}
+
+\subsection{De la covarianza al margen de seguridad}
+
+\Cref{pr:pose} tensa las barreras por la incertidumbre de pose sin decir cuánto.
+El estimador lo cuantifica.
+
+\begin{corolario}[Tensado derivado del filtro]
+\label{co:tensado}
+Si el filtro entrega $\Sigma$ y se exige que la barrera se respete con
+probabilidad $1-\alpha$ bajo aproximación gaussiana, basta tensar la holgura en
+\[
+  d_{\mathrm{tens}}=\sqrt{\chi^2_{2,\,1-\alpha}\;\lambda_{\max}\bigl(\Sigma_{xy}\bigr)},
+\]
+con $\Sigma_{xy}$ el bloque posicional. Sustituyendo esta cantidad en
+\cref{le:astop} y en \cref{th:astop-cuerpo}, las garantías de invariancia se
+mantienen evaluadas sobre la pose estimada.
+\end{corolario}
+
+\begin{observacion}[Lo que el tensado cuesta y lo que cierra]
+\label{obs:tensado-coste}
+El tensado no es gratis: consume holgura, y por \cref{obs:precio-astop} la
+holgura fija la velocidad. Un filtro que degrada —porque el láser no ve rasgos o
+porque el emparejamiento se rechaza— eleva $\lambda_{\max}(\Sigma)$, tensa más y
+frena la flota. Esa cadena convierte la calidad de la estimación en un
+\emph{recurso} más, con la misma estructura que $(a,\delta,\eta)$ en
+\cref{th:degradacion}: la incertidumbre no provoca un fallo, provoca degradación
+continua del caudal.
+
+Con esto \cref{s:pose} deja de ser una hipótesis en blanco: se declara qué
+estimador la sostiene, cuánta incertidumbre produce y cómo esa incertidumbre
+entra en las garantías. Lo que sigue supuesto —y así se declara— es la
+disponibilidad de rasgos suficientes para que el paso 4 no se rechace de forma
+sostenida.
+\end{observacion}
+
+\begin{observacion}[Estimador y mecanismo se han diseñado por separado]
+\label{obs:observador-mecanismo}
+Queda una limitación estructural que conviene nombrar. Este trabajo diseña el
+estimador en esta sección y el mecanismo de precios en las anteriores, cada uno
+por su cuenta, y después acopla ambos por la vía del tensado de
+\cref{co:tensado}. Existe una formulación que los trata como un solo problema
+—\emph{diseño conjunto de observador y mecanismo}— cuya motivación es
+precisamente que el rendimiento del mecanismo depende de lo que el observador
+puede ver, y que por tanto elegirlos por separado desperdicia grados de libertad
+\cite{clempner2024optimization}.
+
+La consecuencia práctica en este sistema sería, por ejemplo, sesgar el
+emparejamiento del paso 4 hacia los rasgos que más reducen la incertidumbre
+\emph{en las direcciones que la barrera tensa}, en lugar de hacia los que más
+reducen la traza de la covarianza. No es lo mismo: la barrera solo consume la
+holgura en la dirección de aproximación al obstáculo. Se declara como diseño
+separado, con la vía de mejora identificada y no explorada.
+\end{observacion}

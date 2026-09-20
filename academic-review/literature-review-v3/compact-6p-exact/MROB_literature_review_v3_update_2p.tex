@@ -1,0 +1,158 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[top=0.50in,bottom=0.52in,left=0.62in,right=0.62in,headheight=14pt,headsep=5pt,footskip=15pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{Noto Serif}
+\setsansfont{Noto Sans}
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage{microtype,ragged2e,setspace}
+\usepackage{graphicx}
+\graphicspath{{../compact-6p/figures/}}
+\usepackage{booktabs,tabularx,array,multirow,longtable}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,babel}
+\usepackage{amsmath,amssymb,rotating}
+\usepackage{fancyhdr,hyperref,enumitem,multicol}
+
+\definecolor{autumn}{HTML}{E36A2E}
+\definecolor{spicy}{HTML}{C8572A}
+\definecolor{onyx}{HTML}{0C0C0C}
+\definecolor{mustard}{HTML}{FCD757}
+\definecolor{canary}{HTML}{8CB369}
+\colorlet{orange}{autumn}
+\colorlet{ink}{onyx}
+\colorlet{muted}{onyx!58!white}
+\colorlet{rule}{onyx!18!white}
+\definecolor{soft}{HTML}{F5F7FA}
+\definecolor{softblue}{HTML}{EAF2FD}
+\definecolor{softgreen}{HTML}{EAF7EF}
+\definecolor{softwarm}{HTML}{FDEFE8}
+\definecolor{softplum}{HTML}{F2ECFB}
+\definecolor{gamecol}{HTML}{2D6CC0}
+\definecolor{controlcol}{HTML}{E36A2E}
+\definecolor{searchcol}{HTML}{2E9B5F}
+\definecolor{learncol}{HTML}{7B4DBA}
+\definecolor{foundcol}{HTML}{6F7C8E}
+
+\hypersetup{colorlinks=true,urlcolor=spicy,linkcolor=spicy,pdftitle={Marco teorico y estado del arte para el TFM MROB},pdfauthor={Jorge Luis Mayorga Taborda}}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\sffamily\fontsize{7.3}{8}\selectfont Jorge Luis Mayorga Taborda}
+\fancyhead[R]{\sffamily\fontsize{7.3}{8}\selectfont TFM MROB · Marco teórico y estado del arte}
+\fancyfoot[C]{\sffamily\fontsize{8.2}{8.7}\selectfont\thepage}
+\renewcommand{\headrulewidth}{0.25pt}
+\setlength{\parindent}{0pt}\setlength{\parskip}{2.2pt}
+\setstretch{1.05}\color{ink}\emergencystretch=1.4em
+\setlist[itemize]{leftmargin=4.3mm,itemsep=.8pt,topsep=.7pt,parsep=0pt}
+\setlist[enumerate]{leftmargin=4.7mm,itemsep=.6pt,topsep=.7pt,parsep=0pt}
+
+\newcommand{\sect}[1]{\par\vspace{0pt}{\sffamily\fontsize{14.5}{15.5}\selectfont\bfseries\color{orange}#1\par}\vspace{1.2pt}\textcolor{rule}{\rule{\linewidth}{0.35pt}}\vspace{3pt}}
+\newcommand{\subh}[1]{\par\vspace{2.2pt}{\sffamily\fontsize{9.3}{10.2}\selectfont\bfseries\color{orange}#1\par}\vspace{.5pt}}
+\newcommand{\figcap}[2]{\par\vspace{1.0pt}{\setstretch{1}\fontsize{8.1}{8.9}\selectfont\textbf{#1.}~\textit{#2}\par}\vspace{1.0pt}}
+\newcommand{\sourcecap}[1]{\par{\setstretch{1}\fontsize{7.0}{7.7}\selectfont\itshape\centering Fuente: #1\par}}
+\newcommand{\note}[1]{\par{\setstretch{1}\fontsize{7.0}{7.8}\selectfont\color{muted}#1\par}}
+\newcommand{\citen}[1]{\textsuperscript{\,[#1]}}
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\begin{document}
+\setcounter{page}{5}
+
+% ================= PAGE 5 =================
+La comparación por periodos se apoya en el mismo corpus de mapeo: 3.014 identidades descubiertas, depuradas hasta 244 documentos analíticos. De ellos, 168 admitieron extracción estructural y 20 recibieron lectura cercana. Los 243 documentos fechados se agruparon en periodos de 35, 40, 79 y 89 registros. Las etiquetas proceden del título y el resumen, pueden coexistir y miden presencia temática, no rendimiento. La Figura 5 detalla el cambio metodológico y la Figura 6 comprueba si esa diversidad alcanza las interfaces de la misión.
+
+\begin{center}
+\includegraphics[width=0.985\linewidth]{fig06_method_evolution.pdf}
+\end{center}
+\figcap{Figura 5}{Evolución metodológica normalizada del corpus ampliado. Las categorías son multietiqueta y las cuotas se calculan dentro de cada periodo.}
+\sourcecap{elaboración propia a partir del corpus analítico consolidado; observación parcial de 2026 y categorías coexistentes.}
+
+\begin{center}
+\includegraphics[width=0.985\linewidth]{fig07_interfaces_evidence.pdf}
+\end{center}
+\figcap{Figura 6}{Cobertura temática, intersecciones SP1--SP3 y madurez de validación observada en el corpus ampliado.}
+\sourcecap{tablas de temas, combinaciones y validación, $n=244$; ``caso industrial'' puede describir simulación.}
+
+\fontsize{8.35}{9.10}\selectfont
+Leídas juntas, ambas figuras descartan una sustitución simple entre generaciones de métodos. Consenso/distribución pasa de 20,0\% a 24,7\%; subasta/mercado baja de 22,9\% a 13,5\%, pero continúa activa; aprendizaje sube de 2,9\% a 15,7\% y las metaheurísticas de 0\% a 11,2\%. La señal de CBF y seguridad alcanza 6,7\% en el periodo reciente. Selección, coordinación, control y seguridad se combinan con mayor diversidad, aunque siguen resolviendo tramos diferentes de la misión.
+
+La cobertura por subproblemas conserva un desequilibrio mayor que cualquier cambio de cuota. SP1 aparece en 115 documentos, SP2 en 15 y SP3 en 20. Solo dos enlazan SP1--SP2 y diez SP1--SP3; ninguno conecta SP2--SP3 o cubre los tres. La evidencia también permanece segmentada: 99 documentos presentan simulación, 12 experimento físico y siete análisis formal. Solver, mercado, consenso y control ocupan etapas diferentes. Esta distribución desplaza el problema desde la elección de un método aislado hacia los contratos que permiten pasar de una etapa a la siguiente sin conservar una autoridad global permanente.
+\normalsize
+
+\newpage
+% ================= PAGE 6 =================
+La brecha identificada se traduce en tres contratos. SP1 entrega una coalición entera con roles definidos; SP2 certifica geometría, contacto, wrench y actuación; SP3 reserva recursos para la huella compuesta y realimenta el coste de congestión o fallo. Cada decisión debe superar el certificado de la capa siguiente. La ejecución es asíncrona, sin rondas globales y con periodo de muestreo explícito.
+
+\figcap{Figura 7}{Contrato de interfaces entre formación de coaliciones, factibilidad física y coordinación del tráfico.}
+\begin{center}
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily]
+\tikzset{
+  stage/.style={rounded corners=1.5pt,draw=rule,line width=.45pt,minimum width=47mm,minimum height=23mm,fill=white,inner sep=0pt},
+  stagehead/.style={rounded corners=1.1pt,minimum width=45.5mm,minimum height=5.4mm,text=white,align=center,font=\sffamily\fontsize{7.0}{7.4}\selectfont},
+  stagebody/.style={align=center,font=\sffamily\fontsize{7.35}{8.25}\selectfont},
+  state/.style={rounded corners=2.2pt,minimum width=39mm,minimum height=5.2mm,fill=white,align=center,font=\sffamily\fontsize{6.45}{6.8}\selectfont},
+  checkpoint/.style={diamond,aspect=1.15,minimum size=4.8mm,inner sep=0pt,fill=orange,draw=white,line width=.45pt},
+  flow/.style={-{Stealth[length=1.8mm]},draw=muted,line width=.65pt}
+}
+\node[stage,fill=softblue!62!white] (sp1) at (24,18) {};
+\node[stage,fill=softwarm!65!white] (sp2) at (82.5,18) {};
+\node[stage,fill=softgreen!70!white] (sp3) at (141,18) {};
+
+\node[stagehead,fill=gamecol] at ([yshift=-3.25mm]sp1.north) {SP1 \enspace FORMACIÓN};
+\node[stagehead,fill=controlcol] at ([yshift=-3.25mm]sp2.north) {SP2 \enspace TRANSPORTE};
+\node[stagehead,fill=searchcol] at ([yshift=-3.25mm]sp3.north) {SP3 \enspace TRÁFICO};
+
+\node[stagebody] at ([yshift=-.3mm]sp1.center) {\textbf{Decisión estratégica}\\capacidad, rol y compromiso};
+\node[stagebody] at ([yshift=-.3mm]sp2.center) {\textbf{Factibilidad física}\\geometría, contacto, wrench y límites};
+\node[stagebody] at ([yshift=-.3mm]sp3.center) {\textbf{Coordinación del tráfico}\\huella, reserva, prioridad y conflicto};
+
+\node[state,draw=gamecol,text=gamecol] (formed) at ([yshift=4.15mm]sp1.south) {\textbf{Coalición completa}};
+\node[state,draw=controlcol,text=controlcol] (feasible) at ([yshift=4.15mm]sp2.south) {\textbf{Margen físico válido}};
+\node[state,draw=searchcol,text=searchcol] (completed) at ([yshift=4.15mm]sp3.south) {\textbf{Misión ejecutada}};
+
+\node[checkpoint] (g12) at (53.25,18) {$\color{white}\checkmark$};
+\node[checkpoint] (g23) at (111.75,18) {$\color{white}\checkmark$};
+\draw[flow] (sp1.east) -- (g12.west);
+\draw[flow] (g12.east) -- (sp2.west);
+\draw[flow] (sp2.east) -- (g23.west);
+\draw[flow] (g23.east) -- (sp3.west);
+
+\coordinate (feedbackright) at ([yshift=-10.5mm]completed.south);
+\coordinate (feedbackleft) at (feedbackright -| formed.south);
+\draw[-{Stealth[length=1.8mm]},orange,line width=.65pt]
+  (completed.south) -- (feedbackright)
+  -- node[midway,below=1.1mm,fill=white,inner sep=1.2pt,font=\sffamily\fontsize{6.4}{6.8}\selectfont,text=spicy]
+  {congestión, fallo o cambio de tarea: revisión local}
+  (feedbackleft) -- (formed.south);
+\end{tikzpicture}
+\end{center}
+\sourcecap{elaboración propia a partir de la discontinuidad observada entre SP1, SP2 y SP3; estados de ejecución según la cadena canónica del TFM.}
+
+Esta cadena permite derivar el diseño experimental sin cambiar la unidad de comparación entre capas.
+\rowcolors{2}{white}{soft}
+\renewcommand{\arraystretch}{1.08}
+\setlength{\tabcolsep}{2.6pt}
+\fontsize{7.15}{7.75}\selectfont
+\begin{tabularx}{\linewidth}{C{11mm} L{34mm} L{43mm} Y}
+\toprule
+\textbf{Capa} & \textbf{Mecanismo propuesto} & \textbf{Baseline/oráculo} & \textbf{Evidencia y métricas}\\
+\midrule
+SP1 & Juego local con unirse, esperar, cambiar rol o salir; payoff con compatibilidad, viaje, margen físico y congestión. & MILP/set partitioning como oráculo; CBBA/subasta distribuida; Húngaro solo si se demuestra reducción uno-a-uno. & Factibilidad, utilidad, gap, formación, churn, CPU, mensajes y bytes.\\
+SP2 & Certificador de geometría, contacto, wrench y actuadores; pose/velocidad común y reparto de esfuerzo. & Leader--follower/estructura virtual; MPC/CBF; reparto central de wrench o impedancia. & Error de pose, residual de wrench, fuerza interna, contacto, saturación, energía y distancia mínima.\\
+SP3 & Planificación de la huella carga--robots, negociación de corredores y retorno del coste de congestión a SP1. & A*/Dijkstra, priorizada, CBS/ECBS; ORCA/RVO o CBF-QP para seguridad reactiva. & Makespan, throughput, espera, conflictos, deadlock y replanteamientos.\\
+Integral & Eventos locales y sustitución o disolución controlada ante fallos. & Oráculo end-to-end global, presentado como techo y no como comparación arquitectónica justa. & Entrega, recuperación, carga perdida, deadlines y dispersión entre semillas.\\
+\bottomrule
+\end{tabularx}
+\normalsize
+
+\fontsize{8.50}{9.25}\selectfont
+Sobre este diseño se formulan cuatro hipótesis conectadas. H1 evalúa si el margen físico reduce coaliciones inviables con un coste acotado de utilidad. H2 contrasta si realimentar congestión disminuye makespan y bloqueos frente a asignar primero y enrutar después. H3 mide si la comunicación por eventos conserva factibilidad con menos bytes bajo pérdida y latencia acotadas. H4 compara la sustitución local con la disolución de la coalición cuando existe capacidad vecinal redundante.
+
+Tres resultados publicados fijan escalas de referencia sin resolver la cadena completa. Liu y Shell demuestran optimalidad para matching uno-a-uno con $O(n^3\log n)$ bajo su estructura\citen{33}. Verma et al. escalan a 2.000 robots y 400 tareas, pero mediante una solución central sin física\citen{21}. Muhammed et al. validan dos AMR a 10 Hz, RMSE inferior a 4 cm y cerca de 70\% menos uso de red, sin reclutamiento ni tráfico\citen{26}. El contraste del TFM usará instancias idénticas, semillas pareadas, distribuciones, intervalos, fallos y ablaciones de margen físico, congestión y comunicación.
+
+El alcance permanece condicionado por la revisión. WoS está incompleto en F01/F02, con 255 registros pendientes, y la API de arXiv no completó la cartera. Los porcentajes describen el corpus adquirido y solo 20 fuentes recibieron lectura cercana. La heterogeneidad de robots, cargas, métricas y escenarios impide un meta-análisis. En este corpus no se identificó una arquitectura que reúna coalición local heterogénea y variable, certificación física, tráfico de la huella completa y recuperación sin autoridad global permanente. La simulación del TFM aportará evidencia empírica, no una prueba de estabilidad, convergencia o escalabilidad global.
+
+Las interfaces quedan así convertidas en objetos de validación: integridad de la coalición, factibilidad física y ejecución observable. Cada capa se comparará con su baseline pertinente y el oráculo global se declarará como techo de referencia, no como una comparación arquitectónica equivalente. La estructura bibliométrica aporta el último contraste: permite comprobar si la misma separación también aparece entre autores y comunidades temáticas.
+\normalsize
+
+\end{document}

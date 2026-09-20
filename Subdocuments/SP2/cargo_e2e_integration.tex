@@ -1,0 +1,38 @@
+% --------------------------------------------------------------------------
+% Demostrador Cargo integrado · evidencia existente y auditada
+% --------------------------------------------------------------------------
+\leveltag{MISIÓN CARGO INTEGRADA HASTA LA POSE DE ENTREGA}
+\section*{Aproximación, transporte y sustitución}
+
+La campaña enlaza reclutamiento, llegada posicional de uniciclos, transporte
+planar, fallo, viaje de un sustituto y reanudación. La carga permanece inmóvil
+mientras el certificado agregado está abierto. La Figura~\ref{fig:sp2-master-cargo}
+combina la traza espacial disponible, las secuencias de fase observadas y la
+ablación por tratamiento. No reconstruye poses de AMR ni tiempos de transición:
+esos datos no se almacenaron. La misión termina al alcanzar la pose de entrega;
+la liberación física no se ejecuta.
+
+\resultfigure[0.57\textheight]{figures/generated/fig-sp2-master-cargo.pdf}{Misión Cargo integrada. A: pose de la carga en un mundo nominal representativo; la campaña no archivó trayectorias individuales de AMR. B: secuencias categóricas registradas, sin interpretarlas como eje temporal; \textsc{Recuperar} comprende llegada de reserva y revalidación lógica, no contacto físico. C: tasa de misión por tratamiento y régimen.}{fig:sp2-master-cargo}
+
+La arquitectura es híbrida. Los vecinos intercambian identificadores, pero el
+líder, los atributos, la selección espacial, la pose de carga y el reparto de
+wrench consultan estado o registro global. El \emph{docking} solo verifica
+llegada a $0{,}12$ m y velocidad inferior a $0{,}08$ m/s durante cinco muestras;
+no valida orientación, contacto ni colisiones de aproximación. Después, la
+geometría de los AMR se impone rígidamente respecto de la carga.
+
+El diseño contiene cuatro regímenes, $N\in\{4,8,12\}$, 30 semillas,
+\CargoEtwoEWorlds{} mundos y \CargoEtwoERuns{} ejecuciones. Solo el régimen de
+red degradada usa diez eventos, pérdida $0{,}25$ y retardo máximo de dos; los
+otros usan siete eventos, pérdida $0{,}02$ y retardo nulo. El método vecinal
+completo alcanza la entrega en 359/360 mundos, las 360 llegadas posicionales y
+89/90 sustituciones; la referencia central completa 360/360.
+
+Los contrastes confirmatorios matizan esa tasa. E2E-H2 respalda el bloque
+mecánico sin aislar sus componentes: efecto $0{,}996$, IC del 95\%
+$[0{,}989;1{,}000]$, $p_{\mathrm{Holm}}=5{,}79\times10^{-21}$. E2E-H3 respalda
+reparar frente a detenerse: efecto $0{,}989$, IC
+$[0{,}967;1{,}000]$, $p_{\mathrm{Holm}}=6{,}46\times10^{-27}$. E2E-H1 no muestra
+ventaja temporal ($p_{\mathrm{Holm}}=0{,}068$) y E2E-H4 no prueba equivalencia
+con información perfecta. La campaña acredita una misión simulada hasta la pose
+de entrega, no percepción, middleware, contacto 3D, liberación ni hardware.

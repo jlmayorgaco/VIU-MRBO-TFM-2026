@@ -1,35 +1,36 @@
 \begin{viuabstract}{Abstract}
-Coalition transport with heterogeneous mobile robots requires deciding which
-robots can carry a payload together and preserving that assignment as the team
-moves. This thesis evaluates a layered, interpretable architecture for this
-task. Its primary \emph{Cargo} mode models a payload supported by a rigid
-coalition and links potential games to integer closure, mechanical checks, pose
-control, safety, repair, and neighbour communication. The implementation is
-hybrid because several aggregates, per-payload optimisers, and the simulator
-registry query global information.
+Cooperative transport of heterogeneous payloads requires a suitable coalition,
+physical interaction, and traffic coordination with concurrent missions. This
+thesis structures the problem into three subproblems. SP1 decides which robots
+serve each payload, how many are needed, which role or contact each member
+assumes, and when to wait, start, or switch coalitions. SP2 addresses approach,
+docking, stabilisation, transport, and member replacement. SP3 coordinates
+routes, reservations, and priorities among free robots, assembling teams, and
+moving coalitions. The primary \emph{Cargo} mode models a supported payload as a
+planar rigid body.
 
-A sequence of models extends one-to-one assignment to coordination over
-imperfect networks. The formal analysis characterises assignment and quota
-equilibria, establishes conditions for planar wrench feasibility, proves local
-stability with fixed contacts, and proves termination of the finite repair and
-route games. Methods are evaluated on paired worlds with bounded global
-references, ablations, and 95\% confidence intervals.
+The proposal combines LP/MILP references, central and neighbour-based sampled
+primal--dual dynamics, integer closure with repair, and separate certificates
+for resources, contact, and motion. Evaluation uses paired worlds, explicit
+seeds, and global oracles as experimental ceilings. The SP1 pilot battery
+separates seven questions: a manual case (E0), relaxation (E1), connectivity
+(E2), discretisation (E3), integer recovery (E4), scale (E5), and unicycle
+arrival (E6).
 
-In 600 worlds, the planar mechanical-feasibility check reduced the false-positive
-rate by 0.333. The repair game restored all 360 recoverable certificates. The
-Cargo demonstrator completed 359 of 360 missions without payload--obstacle
-intersection during transport. The estimated timing effect did not support the predicted benefit of the
-spatial-cost term. In SP8, retransmission increased the
-conflict-free rate by 0.054 and added 261.3 messages per agent; the rate reached
-zero at 128 robots. A three-dimensional kinematic pilot recorded persistent
-deadlocks in all three congested scenarios.
+E0 reproduced the regularised LP in a controlled case, with objective errors on
+the order of \(10^{-6}\)--\(10^{-5}\). In E1, Rep-D met the relative stopping
+criterion, but only one run was comparable to the LP under the strict primal
+tolerance. E2 and E3 remain inconclusive. E4 was feasible in all eight pilot worlds, with a median
+gap of \(1.21\%\). In E5, Rep-D repair recovered feasibility at \(N=40\),
+although the fractional dynamics did not converge within the iteration budget;
+the Greedy baseline left one case infeasible. E6 achieved complete arrival in
+two scenarios but did not validate physical transport.
 
-The formal guarantees apply under their stated assumptions. The Cargo campaign
-provides evidence of functional compatibility. Because the
-integrated campaign substitutes several SP2--SP6 mechanisms, it does not
-establish a system-wide distributed guarantee. Direct validation is still
-needed for three-dimensional dynamics, wheel--ground contact, switching
-networks, hardware, and caging-based transport.
+The evidence level is C-pilot: the results verify implementation and controlled
+cases, but do not establish global convergence, optimality, or distributed
+safety for the complete system. SP2 and SP3 campaigns provide partial evidence;
+confirmatory validation, three-dimensional dynamics, wheel--ground traction,
+switching networks, hardware, and caging-based transport remain open.
 
 \keywords{Keywords}{multi-robot coordination,
   autonomous mobile robots, coalition formation,

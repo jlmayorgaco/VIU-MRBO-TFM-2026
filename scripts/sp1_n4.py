@@ -1,1019 +1,1071 @@
-"""SP1 level N4: proposed Geo-QPG method, variants and closure analysis."""
+"""Run SP1.N4: atomic Geo-QPG on the frozen N2/N3 recruitment problem.
+
+E1 is the invariant battery in ``tests/test_sp1_n4.py``.  E2 replays the N3
+worlds for descriptive continuity.  E3 opens a disjoint seed stream and runs
+the three N3 references and three Geo-QPG variants on identical worlds.
+
+The script never edits N1--N3 data.  A non-smoke output containing RAW files is
+immutable: regenerating it requires a new campaign id and output directory.
+"""
 
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
+import platform
+import subprocess
+import sys
 from pathlib import Path
+from typing import Any, Iterable, Mapping
 
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import yaml
+from scipy import stats
 
-from sp1_levels_common import (
-    COLORS,
-    FAMILY_LABELS,
-    GEO_SOURCE_ROOT,
-    LEVELS_OUTPUT_ROOT,
-    METHOD_COLORS,
-    add_sample_note,
-    artifact_records,
-    bool_to_float,
-    configure_publication_style,
-    ensure_columns,
-    family_label,
-    label_panels,
-    line_with_band,
-    method_label,
-    quantile_summary,
-    save_figure,
-    source_record,
-    write_json,
-    write_level_manifest,
+
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+SRC_ROOT = REPOSITORY_ROOT / "src"
+if str(SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(SRC_ROOT))
+if str(Path(__file__).resolve().parent) not in sys.path:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import sp1_a1_hungarian as homogeneous  # noqa: E402
+import sp1_n2_oracle as n2_oracle  # noqa: E402
+from sp1_n3_confirmatory import solve_oracle  # noqa: E402
+from viu_mrob_tfm.sp1_n3.graph import (  # noqa: E402
+    adjacency_for_regime,
+    critical_radius,
+    graph_metrics,
+)
+from viu_mrob_tfm.sp1_n3.runner import (  # noqa: E402
+    METHODS as N3_METHODS,
+    METHOD_LABELS as N3_LABELS,
+    run_method as run_n3_method,
+)
+from viu_mrob_tfm.sp1_n3.worlds import World, make_world  # noqa: E402
+from viu_mrob_tfm.sp1_n4 import (  # noqa: E402
+    LEGACY_METHODS as N4_LEGACY_METHODS,
+    METHODS as N4_METHODS,
+    METHOD_LABELS as N4_LABELS,
+    run_geo_qpg,
 )
 
 
-MAIN_METHOD = "geo_qpg_logit_physical"
-QPG_METHODS = (
-    "qpg_logit_scalar",
-    MAIN_METHOD,
-    "geo_qpg_smith_physical",
-)
-COMPARISON_METHODS = (
-    MAIN_METHOD,
-    "capacity_cbba_scalar",
-    "pair_role_grape_s_physical",
-)
+DEFAULT_CONFIG = REPOSITORY_ROOT / "experiments" / "configs" / "sp1_n4_confirmatory_v1.yaml"
+DEFAULT_OUTPUT = REPOSITORY_ROOT / "scripts" / "results" / "sp1_levels" / "n4_v1"
+ALL_METHODS = tuple(N3_METHODS) + tuple(N4_LEGACY_METHODS)
+METHOD_LABELS = {**N3_LABELS, **N4_LABELS}
+METHOD_COLORS = {
+    "capacity_cbba_rb": "#6F4AA8",
+    "weighted_grape": "#2673B8",
+    "weighted_pair_grape": "#45A2D8",
+    "geo_qpg_u": "#D97820",
+    "geo_qpg_p": "#D94A35",
+    "geo_qpg_cf": "#18855B",
+}
+METHOD_MARKERS = {
+    "capacity_cbba_rb": "s",
+    "weighted_grape": "o",
+    "weighted_pair_grape": "D",
+    "geo_qpg_u": "^",
+    "geo_qpg_p": "P",
+    "geo_qpg_cf": "*",
+}
+SCENARIO_LABELS = {
+    "uniform": "Aleatorio",
+    "clustered": "Agrupado",
+    "separated": "Separado",
+    "ring": "Anillo",
+    "corridor": "Pasillo",
+}
 
 
-def _closure_figure(
-    runs: pd.DataFrame,
-    figures_dir: Path,
-) -> tuple[list[Path], pd.DataFrame]:
-    main = runs.loc[runs["method"] == MAIN_METHOD].copy()
-    main["physical_feasible_float"] = bool_to_float(
-        main["world_physical_feasible"]
-    )
-    summary = quantile_summary(
-        main,
-        groups=("closure_stage", "n_robots", "n_loads"),
-        metrics=(
-            "physical_feasible_float",
-            "served_load_rate",
-            "robots_changed_by_recovery",
-        ),
-    )
-    figure, axes = plt.subplots(1, 2, figsize=(10.8, 4.15))
-    styles = (
-        ("RAW", COLORS["red"], "o"),
-        ("CERTIFIED", COLORS["blue"], "s"),
-        ("RECOVERED", COLORS["green"], "^"),
-    )
-    for stage, color, marker in styles:
-        block = summary.loc[summary["closure_stage"] == stage]
-        axes[0].plot(
-            block["n_robots"],
-            block["physical_feasible_float_mean"],
-            color=color,
-            marker=marker,
-            label=stage,
-        )
-        axes[1].plot(
-            block["n_robots"],
-            block["served_load_rate_median"],
-            color=color,
-            marker=marker,
-            label=stage,
-        )
-    axes[0].set(
-        xlabel="Robots, $N$",
-        ylabel="Fracción físicamente factible",
-        ylim=(-0.03, 1.03),
-        title="La decisión continua requiere cierre",
-    )
-    axes[1].set(
-        xlabel="Robots, $N$",
-        ylabel="Fracción de cargas servidas",
-        ylim=(-0.03, 1.03),
-        title="Recuperación frente a abstención",
-    )
-    axes[0].legend(loc="lower right")
-    add_sample_note(
-        axes[0],
-        "Mismos mundos y método; cambia únicamente la etapa de cierre.",
-    )
-    label_panels(axes)
-    return (
-        save_figure(figure, figures_dir / "n4_closure_ladder"),
-        summary,
-    )
-
-
-def _scenario_quality_figure(
-    runs: pd.DataFrame,
-    figures_dir: Path,
-) -> tuple[list[Path], pd.DataFrame]:
-    recovered = runs.loc[
-        (runs["closure_stage"] == "RECOVERED")
-        & runs["method"].isin(COMPARISON_METHODS)
-    ].copy()
-    recovered["welfare_per_load"] = (
-        recovered["physical_welfare"] / recovered["n_loads"]
-    )
-    summary = quantile_summary(
-        recovered,
-        groups=("family", "method"),
-        metrics=("served_load_rate", "welfare_per_load"),
-    )
-    figure, axes = plt.subplots(1, 2, figsize=(10.8, 4.25))
-    family_order = list(FAMILY_LABELS)
-    x_values = np.arange(len(family_order))
-    offsets = (-0.22, 0.0, 0.22)
-    markers = ("o", "s", "^")
-    for method, offset, marker in zip(
-        COMPARISON_METHODS, offsets, markers, strict=True
-    ):
-        block = (
-            summary.loc[summary["method"] == method]
-            .set_index("family")
-            .reindex(family_order)
-        )
-        axes[0].errorbar(
-            x_values + offset,
-            block["served_load_rate_median"],
-            yerr=np.vstack(
-                (
-                    block["served_load_rate_median"]
-                    - block["served_load_rate_p05"],
-                    block["served_load_rate_p95"]
-                    - block["served_load_rate_median"],
-                )
-            ),
-            fmt=marker,
-            color=METHOD_COLORS[method],
-            capsize=2.2,
-            label=method_label(method),
-        )
-        axes[1].errorbar(
-            x_values + offset,
-            block["welfare_per_load_median"],
-            yerr=np.vstack(
-                (
-                    block["welfare_per_load_median"]
-                    - block["welfare_per_load_p05"],
-                    block["welfare_per_load_p95"]
-                    - block["welfare_per_load_median"],
-                )
-            ),
-            fmt=marker,
-            color=METHOD_COLORS[method],
-            capsize=2.2,
-            label=method_label(method),
-        )
-    tick_labels = [
-        family_label(family).replace(" · ", "\n") for family in family_order
-    ]
-    for axis in axes:
-        axis.set_xticks(x_values, tick_labels)
-    axes[0].set(
-        ylabel="Fracción de cargas servidas",
-        ylim=(-0.03, 1.03),
-        title="Cobertura por régimen",
-    )
-    axes[1].set(
-        ylabel="Bienestar físico por carga",
-        title="Calidad después del cierre común",
-    )
-    axes[0].legend(
-        loc="lower left",
-        ncol=3,
-        columnspacing=0.8,
-        handletextpad=0.4,
-    )
-    add_sample_note(
-        axes[1],
-        "P50 y [P05, P95]; la comparación descriptiva no acredita superioridad.",
-    )
-    label_panels(axes)
-    return (
-        save_figure(figure, figures_dir / "n4_scenario_quality"),
-        summary,
-    )
-
-
-def _oracle_gap_figure(
-    runs: pd.DataFrame,
-    figures_dir: Path,
-) -> tuple[list[Path], pd.DataFrame]:
-    gaps = runs.loc[
-        (runs["method"] == MAIN_METHOD)
-        & (runs["closure_stage"] == "RECOVERED")
-    ].dropna(subset=("optimality_gap_vs_certified_milp",))
-    summary = quantile_summary(
-        gaps,
-        groups=("family", "n_robots", "n_loads"),
-        metrics=("optimality_gap_vs_certified_milp",),
-    )
-    figure, axis = plt.subplots(figsize=(8.0, 4.45))
-    family_order = list(FAMILY_LABELS)
-    data = [
-        gaps.loc[
-            gaps["family"] == family,
-            "optimality_gap_vs_certified_milp",
-        ].dropna()
-        for family in family_order
-    ]
-    boxes = axis.boxplot(
-        data,
-        tick_labels=[
-            family_label(family).replace(" · ", "\n")
-            for family in family_order
-        ],
-        patch_artist=True,
-        showfliers=False,
-        widths=0.62,
-        medianprops={"color": "white", "linewidth": 1.5},
-    )
-    for patch in boxes["boxes"]:
-        patch.set_facecolor(COLORS["blue"])
-        patch.set_edgecolor(COLORS["blue"])
-        patch.set_alpha(0.88)
-    axis.axhline(0.0, color=COLORS["dark"], linestyle=":", linewidth=1)
-    axis.set(
-        ylabel="Gap frente a MILP certificado",
-        title="Geo-QPG físico: gap condicionado a referencia válida",
-    )
-    add_sample_note(
-        axis,
-        f"n={len(gaps)} pares con certificado; ausencias conservadas como ausencias.",
-    )
-    return save_figure(figure, figures_dir / "n4_oracle_gap"), summary
-
-
-def _resource_scaling_figure(
-    runs: pd.DataFrame,
-    figures_dir: Path,
-) -> tuple[list[Path], pd.DataFrame]:
-    methods = (
-        MAIN_METHOD,
-        "qpg_logit_scalar",
-        "geo_qpg_smith_physical",
-        "capacity_cbba_scalar",
-        "pair_role_grape_s_physical",
-    )
-    recovered = runs.loc[
-        (runs["closure_stage"] == "RECOVERED")
-        & runs["method"].isin(methods)
-    ]
-    summary = quantile_summary(
-        recovered,
-        groups=("method", "n_robots", "n_loads"),
-        metrics=("runtime_total_ms", "bytes"),
-    )
-    figure, axes = plt.subplots(1, 2, figsize=(10.8, 4.15))
-    markers = ("o", "s", "^", "D", "P")
-    for method, marker in zip(methods, markers, strict=True):
-        block = summary.loc[summary["method"] == method]
-        color = METHOD_COLORS[method]
-        line_with_band(
-            axes[0],
-            block,
-            x="n_robots",
-            median="runtime_total_ms_median",
-            low="runtime_total_ms_p05",
-            high="runtime_total_ms_p95",
-            color=color,
-            label=method_label(method),
-            marker=marker,
-        )
-        line_with_band(
-            axes[1],
-            block,
-            x="n_robots",
-            median="bytes_median",
-            low="bytes_p05",
-            high="bytes_p95",
-            color=color,
-            label=method_label(method),
-            marker=marker,
-        )
-    axes[0].set(
-        xlabel="Robots, $N$",
-        ylabel="Tiempo total [ms]",
-        yscale="log",
-        title="Escalabilidad temporal observada",
-    )
-    axes[1].set(
-        xlabel="Robots, $N$",
-        ylabel="Bytes contabilizados",
-        yscale="log",
-        title="Escalabilidad comunicativa observada",
-    )
-    axes[0].legend(
-        loc="upper left",
-        ncol=2,
-        columnspacing=0.8,
-        handlelength=1.5,
-    )
-    add_sample_note(
-        axes[1],
-        "La campaña llega a N=64; no identifica el orden asintótico.",
-    )
-    label_panels(axes)
-    return (
-        save_figure(figure, figures_dir / "n4_resource_scaling"),
-        summary,
-    )
-
-
-def _signal_ablation_figure(
-    runs: pd.DataFrame,
-    figures_dir: Path,
-) -> tuple[list[Path], pd.DataFrame]:
-    signal = runs.loc[
-        (runs["closure_stage"] == "RAW")
-        & runs["method"].isin(("qpg_logit_scalar", MAIN_METHOD))
-        & runs["family"].isin(
-            ("F3_torque_complementarity", "F4_mixed_geometry_route")
-        )
-    ].copy()
-    summary = quantile_summary(
-        signal,
-        groups=("family", "method", "n_robots"),
-        metrics=(
-            "false_positive_given_committed",
-            "served_load_rate",
-            "physical_welfare",
-        ),
-    )
-    figure, axes = plt.subplots(1, 2, figsize=(10.8, 4.15))
-    for method, marker in (
-        ("qpg_logit_scalar", "o"),
-        (MAIN_METHOD, "s"),
-    ):
-        color = METHOD_COLORS[method]
-        for family, linestyle in (
-            ("F3_torque_complementarity", "-"),
-            ("F4_mixed_geometry_route", "--"),
-        ):
-            block = summary.loc[
-                (summary["method"] == method)
-                & (summary["family"] == family)
-            ]
-            label = (
-                f"{method_label(method)} · "
-                f"{family_label(family).split(' · ')[0]}"
-            )
-            axes[0].plot(
-                block["n_robots"],
-                block["false_positive_given_committed_mean"],
-                color=color,
-                marker=marker,
-                linestyle=linestyle,
-                label=label,
-            )
-            axes[1].plot(
-                block["n_robots"],
-                block["served_load_rate_median"],
-                color=color,
-                marker=marker,
-                linestyle=linestyle,
-                label=label,
-            )
-    axes[0].set(
-        xlabel="Robots, $N$",
-        ylabel="Falso positivo dado compromiso",
-        ylim=(-0.03, 1.03),
-        title="Ablación de señal antes del certificador",
-    )
-    axes[1].set(
-        xlabel="Robots, $N$",
-        ylabel="Fracción de cargas servidas",
-        ylim=(-0.03, 1.03),
-        title="Cobertura RAW asociada",
-    )
-    axes[0].legend(
-        loc="upper left",
-        ncol=2,
-        columnspacing=0.8,
-        handlelength=1.8,
-    )
-    add_sample_note(
-        axes[0],
-        "Endpoint H3 predeclarado: RAW en F3–F4; el gate de −20 pp no se alcanzó.",
-    )
-    label_panels(axes)
-    return (
-        save_figure(figure, figures_dir / "n4_signal_ablation"),
-        summary,
-    )
-
-
-def _engine_ablation_figure(
-    runs: pd.DataFrame,
-    figures_dir: Path,
-) -> tuple[list[Path], pd.DataFrame]:
-    methods = (
-        MAIN_METHOD,
-        "geo_qpg_smith_physical",
-        "pair_role_grape_s_physical",
-    )
-    recovered = runs.loc[
-        (runs["closure_stage"] == "RECOVERED")
-        & runs["method"].isin(methods)
-    ].copy()
-    recovered["welfare_per_load"] = (
-        recovered["physical_welfare"] / recovered["n_loads"]
-    )
-    summary = quantile_summary(
-        recovered,
-        groups=("method", "n_robots", "n_loads"),
-        metrics=("welfare_per_load", "served_load_rate"),
-    )
-    figure, axes = plt.subplots(1, 2, figsize=(10.8, 4.15))
-    for method, marker in zip(methods, ("o", "s", "^"), strict=True):
-        block = summary.loc[summary["method"] == method].sort_values(
-            "n_robots"
-        )
-        color = METHOD_COLORS[method]
-        axes[0].errorbar(
-            block["n_robots"],
-            block["welfare_per_load_median"],
-            yerr=np.vstack(
-                (
-                    block["welfare_per_load_median"]
-                    - block["welfare_per_load_p05"],
-                    block["welfare_per_load_p95"]
-                    - block["welfare_per_load_median"],
-                )
-            ),
-            color=color,
-            marker=marker,
-            capsize=2.4,
-            label=method_label(method),
-        )
-        axes[1].errorbar(
-            block["n_robots"],
-            block["served_load_rate_median"],
-            yerr=np.vstack(
-                (
-                    block["served_load_rate_median"]
-                    - block["served_load_rate_p05"],
-                    block["served_load_rate_p95"]
-                    - block["served_load_rate_median"],
-                )
-            ),
-            color=color,
-            marker=marker,
-            capsize=2.4,
-            label=method_label(method),
-        )
-    axes[0].set(
-        xlabel="Robots, $N$",
-        ylabel="Bienestar físico por carga",
-        title="Motor de revisión: calidad",
-    )
-    axes[1].set(
-        xlabel="Robots, $N$",
-        ylabel="Fracción de cargas servidas",
-        ylim=(-0.03, 1.03),
-        title="Equivalencia práctica de cobertura",
-    )
-    axes[0].legend(loc="lower left")
-    add_sample_note(
-        axes[1],
-        "H5 acredita equivalencia de cobertura ±0.03; no superioridad de bienestar.",
-    )
-    label_panels(axes)
-    return (
-        save_figure(figure, figures_dir / "n4_engine_ablation"),
-        summary,
-    )
-
-
-def _failure_figure(
-    runs: pd.DataFrame,
-    figures_dir: Path,
-) -> tuple[list[Path], pd.DataFrame]:
-    methods = (MAIN_METHOD, "capacity_cbba_scalar")
-    failure = runs.loc[
-        (runs["closure_stage"] == "RECOVERED")
-        & (runs["family"] == "F5_network_failure")
-        & runs["method"].isin(methods)
-    ].copy()
-    summary = quantile_summary(
-        failure,
-        groups=("method", "n_robots", "n_loads"),
-        metrics=(
-            "recourse_robot_changes",
-            "served_load_rate",
-            "lost_served_value",
-        ),
-    )
-    figure, axes = plt.subplots(1, 2, figsize=(10.8, 4.15))
-    for method, marker in zip(methods, ("o", "s"), strict=True):
-        block = summary.loc[summary["method"] == method]
-        color = METHOD_COLORS[method]
-        line_with_band(
-            axes[0],
-            block,
-            x="n_robots",
-            median="recourse_robot_changes_median",
-            low="recourse_robot_changes_p05",
-            high="recourse_robot_changes_p95",
-            color=color,
-            label=method_label(method),
-            marker=marker,
-        )
-        line_with_band(
-            axes[1],
-            block,
-            x="n_robots",
-            median="served_load_rate_median",
-            low="served_load_rate_p05",
-            high="served_load_rate_p95",
-            color=color,
-            label=method_label(method),
-            marker=marker,
-        )
-    axes[0].set(
-        xlabel="Robots, $N$",
-        ylabel="Robots cambiados por recourse",
-        title="Proxy estático posterior al fallo",
-    )
-    axes[1].set(
-        xlabel="Robots, $N$",
-        ylabel="Fracción de cargas servidas",
-        ylim=(-0.03, 1.03),
-        title="Cobertura después de recuperación",
-    )
-    axes[0].legend(loc="upper left")
-    add_sample_note(
-        axes[0],
-        "F5 es una instantánea postfallo; no mide una trayectoria dinámica.",
-    )
-    label_panels(axes)
-    return save_figure(figure, figures_dir / "n4_failure_proxy"), summary
-
-
-def _anytime_figure(
-    events: pd.DataFrame,
-    figures_dir: Path,
-) -> tuple[list[Path], pd.DataFrame]:
-    traces = events.loc[
-        (events["event"] == "qpg_trace")
-        & events["method"].isin(QPG_METHODS)
-        & events["potential"].notna()
-    ].copy()
-    traces = traces.sort_values(["method", "world_id", "iteration"])
-    groups = traces.groupby(["method", "world_id"], sort=False)
-    traces["potential_first"] = groups["potential"].transform("first")
-    traces["potential_last"] = groups["potential"].transform("last")
-    denominator = traces["potential_last"] - traces["potential_first"]
-    traces["normalized_progress"] = (
-        traces["potential"] - traces["potential_first"]
-    ) / denominator.replace(0.0, np.nan)
-    summary = quantile_summary(
-        traces,
-        groups=("method", "iteration"),
-        metrics=("normalized_progress", "max_change"),
-    )
-
-    figure, axes = plt.subplots(1, 2, figsize=(10.8, 4.15))
-    for method, marker in zip(QPG_METHODS, ("o", "s", "^"), strict=True):
-        block = summary.loc[summary["method"] == method]
-        color = METHOD_COLORS[method]
-        line_with_band(
-            axes[0],
-            block,
-            x="iteration",
-            median="normalized_progress_median",
-            low="normalized_progress_p05",
-            high="normalized_progress_p95",
-            color=color,
-            label=method_label(method),
-            marker=marker,
-        )
-        valid = block.loc[block["max_change_median"] > 0.0]
-        axes[1].plot(
-            valid["iteration"],
-            valid["max_change_median"],
-            color=color,
-            marker=marker,
-            label=method_label(method),
-        )
-    axes[0].set(
-        xlabel="Iteración digital",
-        ylabel="Progreso potencial normalizado",
-        ylim=(-0.08, 1.08),
-        title="Comportamiento anytime del potencial",
-    )
-    axes[1].set(
-        xlabel="Iteración digital",
-        ylabel="Cambio máximo de preferencia",
-        yscale="log",
-        title="Residual de actualización",
-    )
-    axes[0].legend(loc="lower right")
-    add_sample_note(
-        axes[0],
-        "Normalización por mundo; no es una prueba de convergencia global.",
-    )
-    label_panels(axes)
-    return save_figure(figure, figures_dir / "n4_anytime"), summary
-
-
-def _gate_figure(
-    gates: pd.DataFrame,
-    figures_dir: Path,
-) -> list[Path]:
-    columns = (
-        "feasibility_gate",
-        "coverage_gate",
-        "quality_gate",
-        "gap_gate",
-        "runtime_gate",
-        "bytes_gate",
-    )
-    matrix = gates.loc[:, columns].astype(float).to_numpy()
-    labels = [
-        f"{str(row.family).split('_')[0]} · N={int(row.n_robots)}"
-        for row in gates.itertuples()
-    ]
-    figure, axis = plt.subplots(figsize=(8.2, 5.7))
-    axis.imshow(
-        matrix,
-        cmap=mpl_gate_cmap(),
-        vmin=0.0,
-        vmax=1.0,
-        aspect="auto",
-        interpolation="nearest",
-    )
-    for row in range(matrix.shape[0]):
-        for column in range(matrix.shape[1]):
-            axis.text(
-                column,
-                row,
-                "P" if matrix[row, column] > 0.5 else "F",
-                ha="center",
-                va="center",
-                color="white",
-                fontsize=9.0,
-                fontweight="bold",
-            )
-    axis.set_xticks(
-        np.arange(len(columns)),
-        ("Fact.", "Cob.", "Cal.", "Gap", "CPU", "Bytes"),
-    )
-    axis.set_yticks(np.arange(len(labels)), labels)
-    axis.set(
-        title="Gate compuesto N4 frente al baseline distribuido",
-        xlabel="Criterios predeclarados",
-    )
-    axis.tick_params(axis="y", labelsize=7.2)
-    add_sample_note(
-        axis,
-        "Verde: criterio individual; rojo: fallo. Ninguna de 15 celdas pasa el conjunto.",
-    )
-    return save_figure(figure, figures_dir / "n4_composite_gates")
-
-
-def mpl_gate_cmap():
-    """Two-color map kept local to avoid another plotting dependency."""
-
-    from matplotlib.colors import ListedColormap
-
-    return ListedColormap((COLORS["red"], COLORS["green"]))
-
-
-def _build_n3_n4_comparison(
-    gates: pd.DataFrame,
-    comparison_dir: Path,
-    source_path: Path,
-) -> dict[str, object]:
-    figures_dir = comparison_dir / "figures"
-    processed_dir = comparison_dir / "processed"
-    processed_dir.mkdir(parents=True, exist_ok=True)
-    gates.to_csv(
-        processed_dir / "n3_n4_composite_gates.csv",
-        index=False,
-    )
-    figure, axis = plt.subplots(figsize=(7.4, 4.7))
-    for row in gates.itertuples():
-        family = str(row.family)
-        color = COLORS["green"] if bool(row.quality_gate) else COLORS["red"]
-        axis.scatter(
-            row.runtime_ratio,
-            row.bytes_ratio,
-            s=28 + 0.8 * row.n_robots,
-            color=color,
-            alpha=0.78,
-            edgecolor="white",
-            linewidth=0.7,
-        )
-        axis.annotate(
-            f"{family.split('_')[0]}-{int(row.n_robots)}",
-            (row.runtime_ratio, row.bytes_ratio),
-            xytext=(3, 3),
-            textcoords="offset points",
-            fontsize=6.6,
-        )
-    axis.axvline(1.0, color=COLORS["gray"], linestyle=":", linewidth=1)
-    axis.axhline(1.0, color=COLORS["gray"], linestyle=":", linewidth=1)
-    axis.set(
-        xscale="log",
-        yscale="log",
-        xlabel="Razón de runtime · N4 / baseline N3",
-        ylabel="Razón de bytes · N4 / baseline N3",
-        title="N3–N4: coste de recursos por régimen y tamaño",
-    )
-    add_sample_note(
-        axis,
-        "El área aumenta con N; verde indica gate individual de calidad, no gate compuesto.",
-    )
-    paths = save_figure(
-        figure,
-        figures_dir / "n3_n4_resource_tradeoff",
-    )
-    metrics = {
-        "cells": int(len(gates)),
-        "composite_passed": int(gates["gate_passed"].astype(bool).sum()),
-        "bytes_gate_failed": int(
-            (~gates["bytes_gate"].astype(bool)).sum()
-        ),
-        "median_runtime_ratio": float(gates["runtime_ratio"].median()),
-        "median_bytes_ratio": float(gates["bytes_ratio"].median()),
-    }
-    write_json(comparison_dir / "n3_n4_metrics.json", metrics)
-    write_json(
-        comparison_dir / "n3_n4_manifest.json",
-        {
-            "schema_version": "sp1-controlled-comparison-v1",
-            "scope": "N4 Geo-QPG versus the selected N3 distributed baseline",
-            "source": source_record(source_path),
-            "metrics": metrics,
-            "artifacts": artifact_records(
-                comparison_dir,
-                exclude_names=(
-                    "n1_n2_manifest.json",
-                    "n3_n4_manifest.json",
-                ),
-            ),
-        },
-    )
-    return {"figures": paths, "metrics": metrics}
-
-
-def build_level(
-    source_dir: Path,
-    output_dir: Path,
-    comparison_output_dir: Path,
-) -> dict[str, object]:
-    """Build N4, its ablations and the N3–N4 comparison package."""
-
-    configure_publication_style()
-    output_dir.mkdir(parents=True, exist_ok=True)
-    processed_dir = output_dir / "processed"
-    figures_dir = output_dir / "figures"
-    processed_dir.mkdir(parents=True, exist_ok=True)
-
-    runs_path = source_dir / "runs.parquet"
-    events_path = source_dir / "events.parquet"
-    summary_path = source_dir / "summary.csv"
-    hypotheses_path = source_dir / "hypothesis_results.csv"
-    gates_path = source_dir / "success_gate_results.csv"
-    metadata_path = source_dir / "method_metadata.csv"
-    config_path = source_dir / "config_frozen.yaml"
-    report_path = source_dir / "report.md"
-
-    runs = pd.read_parquet(runs_path)
-    events = pd.read_parquet(events_path)
-    hypotheses = pd.read_csv(hypotheses_path)
-    gates = pd.read_csv(gates_path)
-    ensure_columns(
-        runs,
-        (
-            "world_id",
-            "family",
-            "n_robots",
-            "n_loads",
-            "method",
-            "closure_stage",
-            "world_physical_feasible",
-            "served_load_rate",
-            "physical_welfare",
-            "runtime_total_ms",
-            "bytes",
-            "optimality_gap_vs_certified_milp",
-            "false_positive_given_committed",
-            "recourse_robot_changes",
-        ),
-    )
-
-    level_methods = set(QPG_METHODS) | set(COMPARISON_METHODS)
-    level_runs = runs.loc[runs["method"].isin(level_methods)].copy()
-
-    closure_paths, closure_summary = _closure_figure(
-        level_runs, figures_dir
-    )
-    quality_paths, quality_summary = _scenario_quality_figure(
-        level_runs, figures_dir
-    )
-    gap_paths, gap_summary = _oracle_gap_figure(level_runs, figures_dir)
-    scaling_paths, scaling_summary = _resource_scaling_figure(
-        level_runs, figures_dir
-    )
-    signal_paths, signal_summary = _signal_ablation_figure(
-        level_runs, figures_dir
-    )
-    engine_paths, engine_summary = _engine_ablation_figure(
-        level_runs, figures_dir
-    )
-    failure_paths, failure_summary = _failure_figure(
-        level_runs, figures_dir
-    )
-    anytime_paths, anytime_summary = _anytime_figure(events, figures_dir)
-    gate_paths = _gate_figure(gates, figures_dir)
-    n3_n4 = _build_n3_n4_comparison(
-        gates,
-        comparison_output_dir,
-        gates_path,
-    )
-
-    processed_frames = {
-        "closure_summary.csv": closure_summary,
-        "scenario_quality_summary.csv": quality_summary,
-        "oracle_gap_summary.csv": gap_summary,
-        "resource_scaling_summary.csv": scaling_summary,
-        "signal_ablation_summary.csv": signal_summary,
-        "engine_ablation_summary.csv": engine_summary,
-        "failure_summary.csv": failure_summary,
-        "anytime_summary.csv": anytime_summary,
-        "hypothesis_results.csv": hypotheses,
-        "composite_gates.csv": gates,
-    }
-    for name, frame in processed_frames.items():
-        frame.to_csv(processed_dir / name, index=False)
-
-    h2 = hypotheses.loc[hypotheses["hypothesis"] == "H2_closure_needed"].iloc[
-        0
-    ]
-    h4 = hypotheses.loc[
-        hypotheses["hypothesis"] == "H4_geo_qpg_vs_cbba_quality"
-    ].iloc[0]
-    h5_equivalence = hypotheses.loc[
-        hypotheses["hypothesis"]
-        == "H5_engine_practical_equivalence_coverage"
-    ].iloc[0]
-    h7 = hypotheses.loc[
-        hypotheses["hypothesis"]
-        == "H7_failure_recourse_qpg_minus_cbba"
-    ].iloc[0]
-    key_metrics = {
-        "confirmatory_worlds": int(runs["world_id"].nunique()),
-        "campaign_rows_all_methods": int(len(runs)),
-        "n4_level_rows": int(len(level_runs)),
-        "max_n": int(runs["n_robots"].max()),
-        "h2_closure_effect": float(h2["effect"]),
-        "h2_p_holm": float(h2["p_holm"]),
-        "h4_quality_effect": float(h4["effect"]),
-        "h4_gate_passed": bool(h4["gate_passed"]),
-        "h5_coverage_equivalence_effect": float(h5_equivalence["effect"]),
-        "h5_coverage_equivalence_passed": bool(
-            h5_equivalence["gate_passed"]
-        ),
-        "h7_static_recourse_ratio": float(h7["recourse_ratio"]),
-        "h7_static_gate_passed": bool(h7["gate_passed"]),
-        "composite_cells": int(len(gates)),
-        "composite_cells_passed": int(
-            gates["gate_passed"].astype(bool).sum()
-        ),
-        "bytes_gates_failed": int(
-            (~gates["bytes_gate"].astype(bool)).sum()
-        ),
-        "closure_states": ["RAW", "CERTIFIED", "RECOVERED"],
-    }
-    write_json(output_dir / "key_metrics.json", key_metrics)
-    (output_dir / "REPORT.md").write_text(
-        "\n".join(
-            (
-                "# SP1 · Nivel 4 — Geo-QPG físico y variantes",
-                "",
-                f"- Mundos confirmatorios: {key_metrics['confirmatory_worlds']:,}.",
-                (
-                    "- Filas método–mundo–cierre de la campaña completa: "
-                    f"{key_metrics['campaign_rows_all_methods']:,}."
-                ),
-                (
-                    "- H2, efecto del cierre sobre factibilidad: "
-                    f"{key_metrics['h2_closure_effect']:.4f}."
-                ),
-                (
-                    "- H4, celdas que superan el gate compuesto: "
-                    f"{key_metrics['composite_cells_passed']}/"
-                    f"{key_metrics['composite_cells']}."
-                ),
-                (
-                    "- H5: equivalencia práctica de cobertura dentro de ±0.03 "
-                    f"({key_metrics['h5_coverage_equivalence_passed']})."
-                ),
-                (
-                    "- H7: ratio de recourse estático Geo-QPG/CBBA = "
-                    f"{key_metrics['h7_static_recourse_ratio']:.3f}; "
-                    "no valida recuperación dinámica."
-                ),
-                "- La propuesta no acredita superioridad global ni escalabilidad asintótica.",
-                "",
-            )
-        ),
+def write_json(path: Path, payload: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False, sort_keys=True, default=_json_default),
         encoding="utf-8",
     )
-    all_paths = (
-        closure_paths
-        + quality_paths
-        + gap_paths
-        + scaling_paths
-        + signal_paths
-        + engine_paths
-        + failure_paths
-        + anytime_paths
-        + gate_paths
-    )
-    manifest_path = write_level_manifest(
-        output_dir=output_dir,
-        level="N4",
-        description=(
-            "Proposed neighbor-estimate Geo-QPG with signal, engine and "
-            "integer-closure ablations."
-        ),
-        sources=(
-            runs_path,
-            events_path,
-            summary_path,
-            hypotheses_path,
-            gates_path,
-            metadata_path,
-            config_path,
-            report_path,
-        ),
-        row_counts={
-            "campaign_rows": len(runs),
-            "level_rows": len(level_runs),
-            "events": len(events),
-            "closure_summary": len(closure_summary),
-            "scenario_quality_summary": len(quality_summary),
-            "oracle_gap_summary": len(gap_summary),
-            "resource_scaling_summary": len(scaling_summary),
-            "signal_ablation_summary": len(signal_summary),
-            "engine_ablation_summary": len(engine_summary),
-            "failure_summary": len(failure_summary),
-            "anytime_summary": len(anytime_summary),
-            "composite_gate_cells": len(gates),
-        },
-        claims=(
-            "The common closure materially improves physical feasibility (H2).",
-            "Coverage is practically equivalent across the tested QPG/Pair-GRAPE engines (H5 endpoint).",
-            "No family-size cell passes the complete H4 success gate.",
-        ),
-        limitations=(
-            "No global superiority, asymptotic scalability or physical transport claim is supported.",
-            "F5 is a static post-failure proxy, not dynamic recourse.",
-            "Communication bytes fail the predeclared resource gate in all 15 H4 cells.",
-        ),
-    )
+
+
+def _json_default(value: Any) -> Any:
+    if isinstance(value, (np.integer,)):
+        return int(value)
+    if isinstance(value, (np.floating,)):
+        return float(value)
+    if isinstance(value, (np.bool_,)):
+        return bool(value)
+    if isinstance(value, Path):
+        return value.as_posix()
+    raise TypeError(f"cannot serialize {type(value)!r}")
+
+
+def sha256_file(path: Path) -> str:
+    hasher = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1 << 20), b""):
+            hasher.update(chunk)
+    return hasher.hexdigest()
+
+
+def git_state() -> dict[str, Any]:
+    def run(*args: str) -> str:
+        return subprocess.run(
+            args,
+            cwd=REPOSITORY_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        ).stdout.strip()
+
     return {
-        "manifest": manifest_path,
-        "figures": all_paths,
-        "comparison": n3_n4,
-        "key_metrics": key_metrics,
+        "commit": run("git", "rev-parse", "HEAD") or "unknown",
+        "tree_dirty": bool(run("git", "status", "--porcelain")),
+        "branch": run("git", "branch", "--show-current") or "unknown",
     }
 
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(
-        description="Build the SP1 N4 Geo-QPG package."
+def load_config(path: Path, *, smoke: bool) -> dict[str, Any]:
+    config = yaml.safe_load(path.read_text(encoding="utf-8"))
+    if smoke:
+        config["campaign_id"] += "_SMOKE"
+        config["replay"]["max_worlds"] = 8
+        confirmatory = config["confirmatory"]
+        confirmatory.update(
+            base_seed=2026081391,
+            capacity_cv=[0.00, 0.65],
+            pressure=[0.85],
+            scenarios=["uniform", "corridor"],
+            seeds_per_cell=2,
+            max_rounds_qpg=512,
+        )
+    return config
+
+
+def progress(label: str, index: int, total: int) -> None:
+    if index == total or index % max(1, total // 20) == 0:
+        print(f"  {label}: {index}/{total}", flush=True)
+
+
+def world_from_row(row: pd.Series, *, q_bar: float, workspace: tuple[float, float], alpha: float) -> World:
+    return make_world(
+        world_id=str(row["world_id"]),
+        robot_count=int(row["N"]),
+        load_count=int(row["K"]),
+        q_bar=float(q_bar),
+        cv=float(row["capacity_cv"]),
+        pressure=float(row["pressure"]),
+        scenario=str(row["scenario"]),
+        workspace=workspace,
+        seed=int(row["world_seed"]),
+        alpha=float(alpha),
     )
-    parser.add_argument("--source-dir", type=Path, default=GEO_SOURCE_ROOT)
-    parser.add_argument(
-        "--output-dir",
-        type=Path,
-        default=LEVELS_OUTPUT_ROOT / "n4",
+
+
+def confirmatory_world(
+    config: Mapping[str, Any], *, scenario: str, cv: float, pressure: float, replicate: int
+) -> tuple[str, World]:
+    section = config["confirmatory"]
+    seed = homogeneous.stable_seed(
+        int(section["base_seed"]), "n4-confirmatory", scenario, pressure, replicate
     )
-    parser.add_argument(
-        "--comparison-output-dir",
-        type=Path,
-        default=LEVELS_OUTPUT_ROOT / "comparison",
+    world = make_world(
+        world_id=f"{scenario}-p{pressure}-r{replicate}",
+        robot_count=int(section["robot_count"]),
+        load_count=int(section["load_count"]),
+        q_bar=float(section["q_bar_kg"]),
+        cv=float(cv),
+        pressure=float(pressure),
+        scenario=scenario,
+        workspace=tuple(float(x) for x in section["workspace_m"]),
+        seed=seed,
+        alpha=float(section["demand_split_alpha"]),
     )
-    return parser.parse_args()
+    key = f"E3:{scenario}:p{pressure}:cv{cv}:r{replicate}"
+    return key, world
+
+
+def world_row(world_key: str, world: World) -> dict[str, Any]:
+    return {
+        "world_key": world_key,
+        "world_id": world.world_id,
+        "world_seed": world.seed,
+        "world_digest": world.digest(),
+        "scenario": world.scenario,
+        "scenario_label": SCENARIO_LABELS.get(world.scenario, world.scenario),
+        "capacity_cv": world.capacity_cv,
+        "realized_cv": world.realized_cv,
+        "pressure": world.pressure,
+        "N": world.n_robots,
+        "K": world.n_loads,
+        "total_capacity": float(world.capacities.sum()),
+        "total_demand": float(world.demands.sum()),
+        "critical_radius_m": critical_radius(world.robot_positions),
+    }
+
+
+def graph_row(world_key: str, world: World, adjacency: np.ndarray, regime: str) -> dict[str, Any]:
+    metrics = graph_metrics(adjacency).as_dict()
+    return {
+        "world_key": world_key,
+        "graph_regime": regime,
+        **{f"graph_{key}": value for key, value in metrics.items()},
+    }
+
+
+def method_row(
+    *,
+    campaign_id: str,
+    experiment: str,
+    world_key: str,
+    world: World,
+    regime: str,
+    adjacency: np.ndarray,
+    method: str,
+    oracle_row: Mapping[str, Any],
+    max_rounds_qpg: int,
+) -> dict[str, Any]:
+    if method in N3_METHODS:
+        record = run_n3_method(world, adjacency, method, regime=regime)
+        certificate = record.certificate
+        observation = record.observation
+        metrics: dict[str, Any] = {
+            "algorithm_status": observation.algorithm_status,
+            "terminal_phase": "N/A",
+            "raw_certificate": certificate.status,
+            "distance_cost": certificate.distance_cost,
+            "capacity_deficit": certificate.total_deficit,
+            "robot_conflict": certificate.conflicts,
+            "excess_capacity": certificate.excess_capacity,
+            "assigned_robots": certificate.assigned_robots,
+            "max_coalition_size": max(certificate.coalition_sizes, default=0),
+            "unserved_loads": certificate.unserved_loads,
+            "rounds": observation.rounds,
+            "messages": observation.messages,
+            "bytes": observation.bytes_sent,
+            "runtime_ms": record.runtime_ms,
+            "commits": np.nan,
+            "quota_commits": np.nan,
+            "geometry_commits": np.nan,
+            "rejected_stale": np.nan,
+            "rejected_conflict": np.nan,
+            "max_parallel_commits": np.nan,
+            "potential_monotone": np.nan,
+            "unilateral_local_minimum": np.nan,
+            "pair_local_minimum": np.nan,
+            "feasible": certificate.feasible,
+        }
+    else:
+        result = run_geo_qpg(
+            world, adjacency, method, max_rounds=int(max_rounds_qpg)
+        )
+        certificate = result.certificate
+        payload = result.as_dict()
+        metrics = {
+            "algorithm_status": payload["algorithm_status"],
+            "terminal_phase": payload["terminal_phase"],
+            "raw_certificate": certificate.status,
+            "distance_cost": certificate.distance_cost,
+            "capacity_deficit": certificate.total_deficit,
+            "robot_conflict": certificate.conflicts,
+            "excess_capacity": certificate.excess_capacity,
+            "assigned_robots": certificate.assigned_robots,
+            "max_coalition_size": max(certificate.coalition_sizes, default=0),
+            "unserved_loads": certificate.unserved_loads,
+            "rounds": result.rounds,
+            "messages": result.messages,
+            "bytes": result.bytes_sent,
+            "runtime_ms": result.runtime_ms,
+            "commits": result.commits,
+            "quota_commits": result.quota_commits,
+            "geometry_commits": result.geometry_commits,
+            "rejected_stale": result.rejected_stale,
+            "rejected_conflict": result.rejected_conflict,
+            "max_parallel_commits": result.max_parallel_commits,
+            "potential_monotone": result.potential_monotone,
+            "unilateral_local_minimum": result.unilateral_local_minimum,
+            "pair_local_minimum": result.pair_local_minimum,
+            "feasible": certificate.feasible,
+        }
+    gap = float("nan")
+    if (
+        certificate.feasible
+        and bool(oracle_row["oracle_certified"])
+        and float(oracle_row["oracle_objective"]) > 0.0
+    ):
+        gap = (
+            float(certificate.distance_cost) - float(oracle_row["oracle_objective"])
+        ) / float(oracle_row["oracle_objective"])
+    graph = graph_metrics(adjacency).as_dict()
+    return {
+        "campaign_id": campaign_id,
+        "experiment": experiment,
+        "world_key": world_key,
+        "world_id": world.world_id,
+        "world_seed": world.seed,
+        "scenario": world.scenario,
+        "N": world.n_robots,
+        "K": world.n_loads,
+        "capacity_cv": world.capacity_cv,
+        "pressure": world.pressure,
+        "graph_regime": regime,
+        "method": method,
+        "method_family": "N3_REFERENCE" if method in N3_METHODS else "N4_PROPOSED",
+        **metrics,
+        "messages_per_agent": float(metrics["messages"]) / world.n_robots,
+        "bytes_per_agent": float(metrics["bytes"]) / world.n_robots,
+        **oracle_row,
+        "optimality_gap": gap,
+        **{f"graph_{key}": value for key, value in graph.items()},
+    }
+
+
+def replay_n3(config: Mapping[str, Any]) -> tuple[pd.DataFrame, pd.DataFrame]:
+    replay = config["replay"]
+    source = REPOSITORY_ROOT / str(replay["source_dir"])
+    source_runs = pd.read_csv(source / "raw" / "e2_runs.csv")
+    source_worlds = pd.read_csv(source / "raw" / "worlds.csv")
+    source_worlds = source_worlds[source_worlds["world_key"].str.startswith("E2:")]
+    max_worlds = replay.get("max_worlds")
+    if max_worlds is not None:
+        source_worlds = source_worlds.head(int(max_worlds)).copy()
+        source_runs = source_runs[source_runs["world_key"].isin(source_worlds["world_key"])]
+    baseline = source_runs.copy()
+    baseline["feasible"] = baseline["raw_certificate"].eq("FEASIBLE")
+    baseline["method_family"] = "N3_REFERENCE"
+    baseline["terminal_phase"] = "N/A"
+    for column in (
+        "commits",
+        "quota_commits",
+        "geometry_commits",
+        "rejected_stale",
+        "rejected_conflict",
+        "max_parallel_commits",
+        "potential_monotone",
+        "unilateral_local_minimum",
+        "pair_local_minimum",
+    ):
+        baseline[column] = np.nan
+
+    q_bar = float(config["confirmatory"]["q_bar_kg"])
+    workspace = tuple(float(x) for x in config["confirmatory"]["workspace_m"])
+    alpha = float(config["confirmatory"]["demand_split_alpha"])
+    regime = str(config["confirmatory"]["graph_regime"])
+    max_rounds = int(config["confirmatory"]["max_rounds_qpg"])
+    qpg_rows: list[dict[str, Any]] = []
+    for index, (_, row) in enumerate(source_worlds.iterrows(), 1):
+        world = world_from_row(row, q_bar=q_bar, workspace=workspace, alpha=alpha)
+        if world.digest() != str(row["world_digest"]):
+            raise RuntimeError(f"N3 replay digest mismatch for {row['world_key']}")
+        adjacency = adjacency_for_regime(world.robot_positions, regime)
+        oracle_source = source_runs.loc[source_runs["world_key"] == row["world_key"]].iloc[0]
+        oracle_row = {
+            "oracle_status": oracle_source["oracle_status"],
+            "oracle_objective": float(oracle_source["oracle_objective"]),
+            "oracle_bound": float(oracle_source["oracle_bound"]),
+            "oracle_gap": float(oracle_source["oracle_gap"]),
+            "oracle_runtime_s": float(oracle_source["oracle_runtime_s"]),
+            "oracle_feasible": bool(oracle_source["oracle_feasible"]),
+            "oracle_certified": bool(oracle_source["oracle_certified"]),
+        }
+        for method in tuple(config["methods"]["proposed"]):
+            qpg_rows.append(
+                method_row(
+                    campaign_id=str(config["campaign_id"]),
+                    experiment="E2_REPLAY",
+                    world_key=str(row["world_key"]),
+                    world=world,
+                    regime=regime,
+                    adjacency=adjacency,
+                    method=method,
+                    oracle_row=oracle_row,
+                    max_rounds_qpg=max_rounds,
+                )
+            )
+        progress("E2 replay", index, len(source_worlds))
+    baseline["experiment"] = "E2_REPLAY"
+    # Align the historical deficit field with the N4 schema.
+    if "capacity_deficit" not in baseline and "total_deficit" in baseline:
+        baseline["capacity_deficit"] = baseline["total_deficit"]
+    return pd.concat([baseline, pd.DataFrame(qpg_rows)], ignore_index=True), source_worlds
+
+
+def run_confirmatory(
+    config: Mapping[str, Any]
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    section = config["confirmatory"]
+    cells = [
+        (scenario, float(cv), float(pressure), replicate)
+        for scenario in section["scenarios"]
+        for cv in section["capacity_cv"]
+        for pressure in section["pressure"]
+        for replicate in range(int(section["seeds_per_cell"]))
+    ]
+    regime = str(section["graph_regime"])
+    methods = tuple(config["methods"]["baselines"]) + tuple(config["methods"]["proposed"])
+    runs: list[dict[str, Any]] = []
+    worlds: list[dict[str, Any]] = []
+    graphs: list[dict[str, Any]] = []
+    oracles: list[dict[str, Any]] = []
+    for index, (scenario, cv, pressure, replicate) in enumerate(cells, 1):
+        key, world = confirmatory_world(
+            config,
+            scenario=scenario,
+            cv=cv,
+            pressure=pressure,
+            replicate=replicate,
+        )
+        adjacency = adjacency_for_regime(world.robot_positions, regime)
+        oracle_row = solve_oracle(world, float(section["oracle_time_limit_s"]))
+        worlds.append(world_row(key, world))
+        graphs.append(graph_row(key, world, adjacency, regime))
+        oracles.append({"world_key": key, **oracle_row})
+        for method in methods:
+            runs.append(
+                method_row(
+                    campaign_id=str(config["campaign_id"]),
+                    experiment="E3_CONFIRMATORY",
+                    world_key=key,
+                    world=world,
+                    regime=regime,
+                    adjacency=adjacency,
+                    method=method,
+                    oracle_row=oracle_row,
+                    max_rounds_qpg=int(section["max_rounds_qpg"]),
+                )
+            )
+        progress("E3 confirmatory", index, len(cells))
+    return (
+        pd.DataFrame(runs),
+        pd.DataFrame(worlds),
+        pd.DataFrame(graphs),
+        pd.DataFrame(oracles),
+    )
+
+
+def check_integrity(
+    replay: pd.DataFrame,
+    confirmatory: pd.DataFrame,
+    worlds: pd.DataFrame,
+    methods: Iterable[str],
+) -> list[str]:
+    problems: list[str] = []
+    methods = tuple(methods)
+    for name, frame in (("replay", replay), ("confirmatory", confirmatory)):
+        duplicate = frame.duplicated(["world_key", "method"]).sum()
+        if duplicate:
+            problems.append(f"{name}: {duplicate} duplicate world-method keys")
+        counts = frame.groupby("world_key")["method"].nunique()
+        if not (counts == len(methods)).all():
+            problems.append(f"{name}: not every world has all {len(methods)} methods")
+        if set(frame["method"].unique()) != set(methods):
+            problems.append(f"{name}: method set differs from the frozen list")
+        if frame[["distance_cost", "bytes", "rounds"]].isna().any().any():
+            problems.append(f"{name}: missing primary metrics")
+        if (frame["bytes"] < 0).any() or (frame["rounds"] < 0).any():
+            problems.append(f"{name}: negative communication or rounds")
+        qpg = frame[frame["method"].isin(N4_METHODS)]
+        if not qpg["potential_monotone"].astype("boolean").fillna(False).all():
+            problems.append(f"{name}: a QPG run violated potential monotonicity")
+        if (qpg["robot_conflict"] != 0).any():
+            problems.append(f"{name}: a QPG run violated atomic exclusivity")
+    if worlds["world_key"].duplicated().any():
+        problems.append("confirmatory worlds: duplicate world keys")
+    # The spatial seed is intentionally reused across CV levels so geometry,
+    # demand and graph stay paired while only the capacity stream changes.
+    if worlds.duplicated(["world_seed", "capacity_cv"]).any():
+        problems.append("confirmatory worlds: duplicate seed-CV pairs")
+    return problems
+
+
+def wilson(successes: int, total: int, confidence: float = 0.95) -> tuple[float, float, float]:
+    if total <= 0:
+        return float("nan"), float("nan"), float("nan")
+    z = float(stats.norm.ppf(0.5 + confidence / 2.0))
+    p = successes / total
+    denominator = 1.0 + z * z / total
+    centre = (p + z * z / (2.0 * total)) / denominator
+    radius = z * np.sqrt(p * (1.0 - p) / total + z * z / (4.0 * total**2)) / denominator
+    return float(p), float(centre - radius), float(centre + radius)
+
+
+def bootstrap_interval(
+    values: np.ndarray,
+    *,
+    statistic: str,
+    resamples: int,
+    seed: int,
+) -> tuple[float, float, float]:
+    values = np.asarray(values, dtype=float)
+    values = values[np.isfinite(values)]
+    if not len(values):
+        return float("nan"), float("nan"), float("nan")
+    estimator = np.mean if statistic == "mean" else np.median
+    rng = np.random.default_rng(seed)
+    draws = rng.choice(values, size=(resamples, len(values)), replace=True)
+    estimates = estimator(draws, axis=1)
+    return (
+        float(estimator(values)),
+        float(np.quantile(estimates, 0.025)),
+        float(np.quantile(estimates, 0.975)),
+    )
+
+
+def analyse_campaign(
+    frame: pd.DataFrame,
+    config: Mapping[str, Any],
+    *,
+    tag: str,
+) -> tuple[pd.DataFrame, dict[str, Any]]:
+    analysis = config["analysis"]
+    resamples = int(analysis["bootstrap_resamples"])
+    seed = int(analysis["bootstrap_seed"])
+    solvable = frame[frame["oracle_feasible"].astype(bool)].copy()
+    feasibility = solvable.pivot(index="world_key", columns="method", values="feasible")
+    certified = solvable[solvable["oracle_certified"].astype(bool)]
+    gap_wide = certified.pivot(index="world_key", columns="method", values="optimality_gap")
+    common_gap = gap_wide.dropna(subset=list(ALL_METHODS))
+
+    rows: list[dict[str, Any]] = []
+    for index, method in enumerate(ALL_METHODS):
+        block = solvable[solvable["method"] == method]
+        feasible_count = int(block["feasible"].astype(bool).sum())
+        rate, low, high = wilson(feasible_count, len(block))
+        gap = common_gap[method].to_numpy(dtype=float) if method in common_gap else np.array([])
+        gap_median, gap_low, gap_high = bootstrap_interval(
+            gap, statistic="median", resamples=resamples, seed=seed + index
+        )
+        rows.append(
+            {
+                "method": method,
+                "label": METHOD_LABELS[method],
+                "worlds": int(len(block)),
+                "feasible": feasible_count,
+                "feasibility_rate": rate,
+                "feasibility_low": low,
+                "feasibility_high": high,
+                "common_gap_worlds": int(len(common_gap)),
+                "common_gap_median": gap_median,
+                "common_gap_low": gap_low,
+                "common_gap_high": gap_high,
+                "bytes_per_agent_median": float(block["bytes_per_agent"].median()),
+                "bytes_per_agent_q25": float(block["bytes_per_agent"].quantile(0.25)),
+                "bytes_per_agent_q75": float(block["bytes_per_agent"].quantile(0.75)),
+                "messages_per_agent_median": float(block["messages_per_agent"].median()),
+                "rounds_median": float(block["rounds"].median()),
+                "runtime_ms_median": float(block["runtime_ms"].median()),
+            }
+        )
+    summary = pd.DataFrame(rows)
+
+    primary = str(config["methods"]["primary"])
+    comparator = str(config["methods"]["comparator"])
+    pair = solvable[solvable["method"].isin([primary, comparator])].pivot(
+        index="world_key", columns="method"
+    )
+    risk_difference = (
+        pair["feasible"][primary].astype(float)
+        - pair["feasible"][comparator].astype(float)
+    ).to_numpy()
+    byte_difference = (
+        pair["bytes_per_agent"][primary]
+        - pair["bytes_per_agent"][comparator]
+    ).to_numpy(dtype=float)
+    rd, rd_low, rd_high = bootstrap_interval(
+        risk_difference, statistic="mean", resamples=resamples, seed=seed + 101
+    )
+    bd, bd_low, bd_high = bootstrap_interval(
+        byte_difference, statistic="median", resamples=resamples, seed=seed + 102
+    )
+    margin = float(config["hypotheses"]["primary_joint"]["feasibility_margin"])
+    only_primary = int(np.sum(risk_difference == 1))
+    only_comparator = int(np.sum(risk_difference == -1))
+    discordant = only_primary + only_comparator
+    mcnemar_p = (
+        float(stats.binomtest(only_primary, discordant, 0.5).pvalue)
+        if discordant
+        else 1.0
+    )
+    metrics = {
+        "tag": tag,
+        "rows": int(len(frame)),
+        "worlds": int(frame["world_key"].nunique()),
+        "oracle_feasible_worlds": int(solvable["world_key"].nunique()),
+        "oracle_infeasible_worlds": int(
+            frame.loc[~frame["oracle_feasible"].astype(bool), "world_key"].nunique()
+        ),
+        "oracle_certified_worlds": int(certified["world_key"].nunique()),
+        "false_feasible_on_oracle_infeasible": int(
+            frame.loc[
+                ~frame["oracle_feasible"].astype(bool) & frame["feasible"].astype(bool)
+            ].shape[0]
+        ),
+        "common_gap_worlds": int(len(common_gap)),
+        "primary": primary,
+        "comparator": comparator,
+        "paired_worlds": int(len(risk_difference)),
+        "risk_difference": rd,
+        "risk_difference_low": rd_low,
+        "risk_difference_high": rd_high,
+        "noninferiority_margin": margin,
+        "feasibility_noninferior": bool(rd_low >= -margin),
+        "only_primary_feasible": only_primary,
+        "only_comparator_feasible": only_comparator,
+        "mcnemar_p": mcnemar_p,
+        "byte_difference_median": bd,
+        "byte_difference_low": bd_low,
+        "byte_difference_high": bd_high,
+        "bytes_lower": bool(bd_high < 0.0),
+        "joint_gate_passed": bool(rd_low >= -margin and bd_high < 0.0),
+    }
+    for _, row in summary.iterrows():
+        method = str(row["method"])
+        for column in (
+            "feasibility_rate",
+            "feasibility_low",
+            "feasibility_high",
+            "common_gap_median",
+            "bytes_per_agent_median",
+            "messages_per_agent_median",
+            "rounds_median",
+            "runtime_ms_median",
+        ):
+            metrics[f"{column}_{method}"] = float(row[column])
+    primary_row = summary.set_index("method").loc[primary]
+    comparator_row = summary.set_index("method").loc[comparator]
+    metrics["bytes_relative_reduction"] = float(
+        1.0
+        - primary_row["bytes_per_agent_median"]
+        / comparator_row["bytes_per_agent_median"]
+    )
+    metrics["rounds_relative_reduction"] = float(
+        1.0 - primary_row["rounds_median"] / comparator_row["rounds_median"]
+    )
+    metrics["runtime_ratio"] = float(
+        primary_row["runtime_ms_median"] / comparator_row["runtime_ms_median"]
+    )
+    for other, name in (
+        ("weighted_grape", "grape"),
+        ("weighted_pair_grape", "pair_grape"),
+    ):
+        differences = (
+            common_gap[primary].to_numpy(dtype=float)
+            - common_gap[other].to_numpy(dtype=float)
+        )
+        estimate, low, high = bootstrap_interval(
+            differences,
+            statistic="median",
+            resamples=resamples,
+            seed=seed + 201 + len(name),
+        )
+        nonzero = differences[~np.isclose(differences, 0.0, atol=1e-12)]
+        wilcoxon_p = (
+            float(stats.wilcoxon(nonzero, alternative="two-sided").pvalue)
+            if len(nonzero)
+            else 1.0
+        )
+        metrics[f"gap_difference_vs_{name}"] = estimate
+        metrics[f"gap_difference_vs_{name}_low"] = low
+        metrics[f"gap_difference_vs_{name}_high"] = high
+        metrics[f"gap_difference_vs_{name}_wilcoxon_p"] = wilcoxon_p
+    return summary, metrics
+
+
+def _style() -> None:
+    mpl.rcParams.update(
+        {
+            "font.family": "sans-serif",
+            "font.sans-serif": ["Arial", "Liberation Sans", "DejaVu Sans"],
+            "font.size": 8.2,
+            "axes.titlesize": 9.0,
+            "axes.labelsize": 8.4,
+            "axes.linewidth": 0.7,
+            "axes.edgecolor": "#343840",
+            "xtick.labelsize": 7.4,
+            "ytick.labelsize": 7.4,
+            "legend.fontsize": 7.0,
+            "grid.color": "#D9DEE6",
+            "grid.linewidth": 0.5,
+            "grid.alpha": 0.8,
+            "savefig.dpi": 450,
+            "savefig.bbox": "tight",
+            "pdf.fonttype": 42,
+            "ps.fonttype": 42,
+        }
+    )
+
+
+def save_figure(figure: plt.Figure, stem: Path) -> list[Path]:
+    stem.parent.mkdir(parents=True, exist_ok=True)
+    paths = [stem.with_suffix(".pdf"), stem.with_suffix(".png")]
+    for path in paths:
+        figure.savefig(path, facecolor="white", pad_inches=0.04)
+    plt.close(figure)
+    return paths
+
+
+def plot_frontier(summary: pd.DataFrame, stem: Path, *, title_suffix: str) -> list[Path]:
+    _style()
+    figure, axes = plt.subplots(
+        1, 2, figsize=(10.8, 4.25), gridspec_kw={"width_ratios": [1.18, 0.82]}
+    )
+    ax = axes[0]
+    ax.axhspan(0.98, 1.005, color="#18855B", alpha=0.06, zorder=0)
+    ax.grid(True, which="both", zorder=0)
+    for _, row in summary.iterrows():
+        method = str(row["method"])
+        gap = max(float(row["common_gap_median"]), 0.0)
+        size = 80.0 + 820.0 * min(gap, 0.55)
+        ax.errorbar(
+            float(row["bytes_per_agent_median"]),
+            float(row["feasibility_rate"]),
+            yerr=np.array(
+                [[row["feasibility_rate"] - row["feasibility_low"]],
+                 [row["feasibility_high"] - row["feasibility_rate"]]]
+            ),
+            fmt=METHOD_MARKERS[method],
+            markersize=np.sqrt(size),
+            color=METHOD_COLORS[method],
+            markeredgecolor="white",
+            markeredgewidth=0.8,
+            capsize=2.8,
+            linewidth=0.9,
+            zorder=3,
+        )
+        xoff, yoff = (5, 5)
+        if method in {"weighted_grape", "weighted_pair_grape"}:
+            yoff = -13
+        ax.annotate(
+            METHOD_LABELS[method],
+            (row["bytes_per_agent_median"], row["feasibility_rate"]),
+            xytext=(xoff, yoff),
+            textcoords="offset points",
+            fontsize=6.8,
+            color="#24272D",
+        )
+    ax.set_xscale("log")
+    ax.set_ylim(0.68, 1.015)
+    ax.set_xlabel("Bytes por agente, mediana (escala log)")
+    ax.set_ylabel(r"$P(\mathrm{factible}\mid\mathrm{or\acute{a}culo\ factible})$")
+    ax.set_title(f"Frontera comunicación--factibilidad · {title_suffix}", loc="left", fontweight="bold")
+    ax.text(
+        0.02,
+        0.035,
+        "Arriba e izquierda es preferible; el área del marcador crece con el gap MILP.",
+        transform=ax.transAxes,
+        fontsize=6.6,
+        color="#626975",
+    )
+
+    ax = axes[1]
+    x = np.arange(len(summary))
+    values = 100.0 * summary["common_gap_median"].to_numpy(dtype=float)
+    lower = values - 100.0 * summary["common_gap_low"].to_numpy(dtype=float)
+    upper = 100.0 * summary["common_gap_high"].to_numpy(dtype=float) - values
+    ax.bar(
+        x,
+        values,
+        color=[METHOD_COLORS[str(method)] for method in summary["method"]],
+        width=0.62,
+        zorder=2,
+    )
+    ax.errorbar(x, values, yerr=[lower, upper], fmt="none", color="#24272D", capsize=2.5, linewidth=0.8, zorder=3)
+    ax.set_xticks(x)
+    ax.set_xticklabels(
+        [METHOD_LABELS[str(method)].replace("Weighted-", "W-").replace("Capacity-", "") for method in summary["method"]],
+        rotation=28,
+        ha="right",
+    )
+    ax.set_ylabel("Brecha mediana al MILP (%)")
+    ax.set_title(
+        f"Calidad · soporte común n={int(summary['common_gap_worlds'].iloc[0])}",
+        loc="left",
+        fontweight="bold",
+    )
+    ax.grid(True, axis="y", zorder=0)
+    ax.spines[["top", "right"]].set_visible(False)
+    figure.subplots_adjust(wspace=0.30)
+    return save_figure(figure, stem)
+
+
+def plot_ablation(summary: pd.DataFrame, stem: Path) -> list[Path]:
+    _style()
+    block = summary[summary["method"].isin(N4_METHODS)].copy()
+    figure, axes = plt.subplots(1, 3, figsize=(10.8, 3.65))
+    labels = [METHOD_LABELS[str(method)].replace("Geo-", "") for method in block["method"]]
+    colors = [METHOD_COLORS[str(method)] for method in block["method"]]
+    panels = (
+        (100.0 * block["feasibility_rate"], "Factibilidad (%)", (75, 101)),
+        (block["bytes_per_agent_median"], "Bytes/agente (mediana)", None),
+        (block["rounds_median"], "Rondas lógicas (mediana)", None),
+    )
+    for index, (ax, (values, ylabel, ylim)) in enumerate(zip(axes, panels, strict=True)):
+        x = np.arange(len(block))
+        bars = ax.bar(x, values, color=colors, width=0.58, zorder=2)
+        ax.set_xticks(x, labels)
+        ax.set_ylabel(ylabel)
+        if ylim:
+            ax.set_ylim(*ylim)
+        ax.grid(True, axis="y", zorder=0)
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.text(-0.13, 1.04, f"({chr(97 + index)})", transform=ax.transAxes, fontweight="bold")
+        for bar, value in zip(bars, values, strict=True):
+            label = f"{value:.1f}" if value < 1000 else f"{value/1000:.1f}k"
+            ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height(), label, ha="center", va="bottom", fontsize=6.8)
+    axes[0].set_title("Misma regla, distinta vecindad y agenda", loc="left", fontweight="bold")
+    figure.subplots_adjust(wspace=0.38)
+    return save_figure(figure, stem)
+
+
+def plot_joint_gate(metrics: Mapping[str, Any], stem: Path) -> list[Path]:
+    _style()
+    figure, axes = plt.subplots(1, 2, figsize=(10.8, 3.25))
+    rd = 100.0 * float(metrics["risk_difference"])
+    rd_low = 100.0 * float(metrics["risk_difference_low"])
+    rd_high = 100.0 * float(metrics["risk_difference_high"])
+    margin = -100.0 * float(metrics["noninferiority_margin"])
+    axes[0].axvline(margin, color="#D94A35", linestyle="--", linewidth=1.0, label="margen −2 pp")
+    axes[0].errorbar(rd, 0, xerr=[[rd - rd_low], [rd_high - rd]], fmt="o", color="#18855B", capsize=4, markersize=7)
+    axes[0].set_yticks([])
+    axes[0].set_xlabel("Diferencia de factibilidad QPG-CF − GRAPE (pp)")
+    axes[0].set_title("No inferioridad preespecificada", loc="left", fontweight="bold")
+    axes[0].grid(True, axis="x")
+    axes[0].legend(frameon=False, loc="lower right")
+
+    bd = float(metrics["byte_difference_median"])
+    bd_low = float(metrics["byte_difference_low"])
+    bd_high = float(metrics["byte_difference_high"])
+    axes[1].axvline(0.0, color="#D94A35", linestyle="--", linewidth=1.0)
+    axes[1].errorbar(bd, 0, xerr=[[bd - bd_low], [bd_high - bd]], fmt="o", color="#18855B", capsize=4, markersize=7)
+    axes[1].set_yticks([])
+    axes[1].set_xlabel("Diferencia mediana de bytes/agente")
+    axes[1].set_title("Coste de comunicación pareado", loc="left", fontweight="bold")
+    axes[1].grid(True, axis="x")
+    for index, ax in enumerate(axes):
+        ax.text(-0.08, 1.05, f"({chr(97 + index)})", transform=ax.transAxes, fontweight="bold")
+        ax.spines[["top", "right", "left"]].set_visible(False)
+    figure.subplots_adjust(wspace=0.28)
+    return save_figure(figure, stem)
+
+
+def analyse_and_plot(
+    replay: pd.DataFrame,
+    confirmatory: pd.DataFrame,
+    config: Mapping[str, Any],
+    output: Path,
+) -> dict[str, Any]:
+    processed = output / "processed"
+    figures = output / "figures"
+    processed.mkdir(parents=True, exist_ok=True)
+    replay_summary, replay_metrics = analyse_campaign(replay, config, tag="E2_REPLAY")
+    confirm_summary, confirm_metrics = analyse_campaign(
+        confirmatory, config, tag="E3_CONFIRMATORY"
+    )
+    replay_summary.to_csv(processed / "e2_replay_summary.csv", index=False)
+    confirm_summary.to_csv(processed / "e3_confirmatory_summary.csv", index=False)
+    write_json(processed / "e2_replay_metrics.json", replay_metrics)
+    write_json(processed / "e3_confirmatory_metrics.json", confirm_metrics)
+    plot_frontier(replay_summary, figures / "n4_replay_frontier", title_suffix="replay N3")
+    plot_frontier(confirm_summary, figures / "n4_confirmatory_frontier", title_suffix="semillas nuevas")
+    plot_ablation(confirm_summary, figures / "n4_variants")
+    plot_joint_gate(confirm_metrics, figures / "n4_joint_gate")
+    metrics = {
+        "campaign_id": config["campaign_id"],
+        "replay": replay_metrics,
+        "confirmatory": confirm_metrics,
+    }
+    write_json(output / "key_metrics.json", metrics)
+    return metrics
+
+
+def freeze_frames(output: Path, frames: Mapping[str, pd.DataFrame]) -> dict[str, Any]:
+    raw = output / "raw"
+    raw.mkdir(parents=True, exist_ok=True)
+    frozen: dict[str, Any] = {}
+    for name, frame in frames.items():
+        path = raw / f"{name}.csv"
+        frame.to_csv(path, index=False)
+        frozen[name] = {
+            "path": path.relative_to(REPOSITORY_ROOT).as_posix(),
+            "rows": int(len(frame)),
+            "sha256": sha256_file(path),
+        }
+    return frozen
+
+
+def build_manifest(
+    *,
+    output: Path,
+    config_path: Path,
+    config: Mapping[str, Any],
+    frozen: Mapping[str, Any],
+    metrics: Mapping[str, Any],
+) -> dict[str, Any]:
+    source_paths = [
+        Path(__file__).resolve(),
+        REPOSITORY_ROOT / "src" / "viu_mrob_tfm" / "sp1_n4" / "geo_qpg.py",
+        REPOSITORY_ROOT / "src" / "viu_mrob_tfm" / "sp1_n3" / "runner.py",
+        config_path.resolve(),
+    ]
+    artifacts = []
+    for path in sorted(output.rglob("*")):
+        if path.is_file() and path.name != "manifest.json":
+            artifacts.append(
+                {
+                    "path": path.relative_to(REPOSITORY_ROOT).as_posix(),
+                    "bytes": path.stat().st_size,
+                    "sha256": sha256_file(path),
+                }
+            )
+    manifest = {
+        "schema_version": "sp1-n4-package-v1",
+        "level": "N4",
+        "campaign_id": config["campaign_id"],
+        "config": {
+            "path": config_path.relative_to(REPOSITORY_ROOT).as_posix(),
+            "sha256": sha256_file(config_path),
+        },
+        "git": git_state(),
+        "environment": {
+            "python": sys.version.split()[0],
+            "platform": platform.platform(),
+            "numpy": np.__version__,
+            "pandas": pd.__version__,
+            "scipy": __import__("scipy").__version__,
+            "matplotlib": mpl.__version__,
+        },
+        "sources": [
+            {
+                "path": path.relative_to(REPOSITORY_ROOT).as_posix(),
+                "sha256": sha256_file(path),
+            }
+            for path in source_paths
+        ],
+        "frozen_raw": frozen,
+        "row_counts": {
+            name: int(record["rows"])
+            for name, record in frozen.items()
+        },
+        "primary_joint_gate": metrics["confirmatory"]["joint_gate_passed"],
+        "artifacts": artifacts,
+        "limitations": list(config["limitations"]),
+    }
+    write_json(output / "manifest.json", manifest)
+    return manifest
+
+
+def write_report(output: Path, metrics: Mapping[str, Any], config: Mapping[str, Any]) -> None:
+    replay = metrics["replay"]
+    confirm = metrics["confirmatory"]
+    summary = pd.read_csv(output / "processed" / "e3_confirmatory_summary.csv")
+    lines = [
+        "# SP1.N4 — Geo-QPG atómico",
+        "",
+        "## Diseño",
+        "",
+        f"- Replay descriptivo: {replay['worlds']:,} mundos de N3.",
+        f"- Confirmatorio: {confirm['worlds']:,} mundos nuevos pareados.",
+        f"- Oráculo: {confirm['oracle_feasible_worlds']:,} mundos con solución y "
+        f"{confirm['oracle_infeasible_worlds']:,} infactibles.",
+        f"- Soporte común de calidad: {confirm['common_gap_worlds']:,} mundos.",
+        "- El MILP conserva el papel de techo central; no interviene en las decisiones.",
+        "",
+        "## Hipótesis conjunta preespecificada",
+        "",
+        f"- Diferencia de factibilidad QPG-CF − GRAPE: {100*confirm['risk_difference']:.2f} pp "
+        f"(IC95 % {100*confirm['risk_difference_low']:.2f}, {100*confirm['risk_difference_high']:.2f}).",
+        f"- Diferencia mediana de bytes/agente: {confirm['byte_difference_median']:.1f} "
+        f"(IC95 % {confirm['byte_difference_low']:.1f}, {confirm['byte_difference_high']:.1f}).",
+        f"- Reducción relativa de bytes: {100*confirm['bytes_relative_reduction']:.1f} %; "
+        f"ratio de tiempo CPU: {confirm['runtime_ratio']:.2f}.",
+        f"- Diferencia mediana de gap QPG-CF − GRAPE: "
+        f"{100*confirm['gap_difference_vs_grape']:.2f} pp "
+        f"(IC95 % {100*confirm['gap_difference_vs_grape_low']:.2f}, "
+        f"{100*confirm['gap_difference_vs_grape_high']:.2f}).",
+        f"- Gate conjunto: {'PASS' if confirm['joint_gate_passed'] else 'FAIL'}.",
+        "",
+        "## Resumen por método",
+        "",
+        summary.to_markdown(index=False),
+        "",
+        "## Alcance",
+        "",
+    ]
+    lines.extend(f"- {item}" for item in config["limitations"])
+    (output / "REPORT.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def main() -> None:
-    args = parse_args()
-    package = build_level(
-        args.source_dir,
-        args.output_dir,
-        args.comparison_output_dir,
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
+    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--smoke", action="store_true")
+    parser.add_argument("--analysis-only", action="store_true")
+    args = parser.parse_args()
+
+    config = load_config(args.config, smoke=args.smoke)
+    output = args.output_dir.with_name(args.output_dir.name + "_smoke") if args.smoke else args.output_dir
+    raw = output / "raw"
+    if args.analysis_only:
+        replay = pd.read_csv(raw / "e2_replay_runs.csv")
+        confirmatory = pd.read_csv(raw / "e3_confirmatory_runs.csv")
+        metrics = analyse_and_plot(replay, confirmatory, config, output)
+        write_report(output, metrics, config)
+        previous = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
+        build_manifest(
+            output=output,
+            config_path=args.config,
+            config=config,
+            frozen=previous["frozen_raw"],
+            metrics=metrics,
+        )
+        print(f"analysis: {output.resolve()}")
+        print(f"joint gate: {metrics['confirmatory']['joint_gate_passed']}")
+        return
+    if raw.exists() and any(raw.glob("*.csv")):
+        raise SystemExit(
+            f"{raw} already contains RAW. Use --analysis-only or create a new campaign id."
+        )
+
+    print(f"campaign   {config['campaign_id']}")
+    print(f"config     {sha256_file(args.config)}")
+    print(f"commit     {git_state()['commit']}  dirty={git_state()['tree_dirty']}")
+    replay, replay_worlds = replay_n3(config)
+    confirmatory, worlds, graphs, oracles = run_confirmatory(config)
+    methods = tuple(config["methods"]["baselines"]) + tuple(config["methods"]["proposed"])
+    problems = check_integrity(replay, confirmatory, worlds, methods)
+    if problems:
+        for problem in problems:
+            print(f"INTEGRITY: {problem}")
+        raise SystemExit("integrity checks failed; no package was certified")
+    frozen = freeze_frames(
+        output,
+        {
+            "e2_replay_runs": replay,
+            "e2_replay_worlds": replay_worlds,
+            "e3_confirmatory_runs": confirmatory,
+            "e3_confirmatory_worlds": worlds,
+            "e3_graph_instances": graphs,
+            "e3_oracle_runs": oracles,
+        },
     )
-    print(f"N4 package: {package['manifest'].resolve()}")
+    metrics = analyse_and_plot(replay, confirmatory, config, output)
+    write_report(output, metrics, config)
+    manifest = build_manifest(
+        output=output,
+        config_path=args.config,
+        config=config,
+        frozen=frozen,
+        metrics=metrics,
+    )
+    print(f"package    {(output / 'manifest.json').resolve()}")
+    print(f"artifacts  {len(manifest['artifacts'])}")
+    print(f"joint gate {metrics['confirmatory']['joint_gate_passed']}")
 
 
 if __name__ == "__main__":

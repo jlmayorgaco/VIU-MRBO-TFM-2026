@@ -1,0 +1,622 @@
+\section{El juego continuo de trayectorias y la ejecución mientras se calcula}
+\label{sec:continuacion}
+
+El algoritmo anterior negocia rutas de un catálogo finito. El banco de
+navegación con ciento veinte mundos aleatorizados \cite{mayorga2026compendio}
+deja el diagnóstico de esa elección: decidir solo el \emph{dónde} (ruta) deja un
+residuo de reparación del $58{,}3\%$; decidir \emph{dónde y cuándo}
+(ruta--tiempo) lo baja al $26{,}7\%$; pero revisar dentro del mismo catálogo con
+orden $h\le3$ resuelve solo $1$ de los $32$ residuos restantes. La limitación ya
+no es la profundidad de la revisión sino el catálogo: no contiene suficientes
+continuaciones factibles. Esta sección elimina el catálogo. La estrategia pasa a
+ser la trayectoria misma, y la negociación ocurre mientras la planta avanza.
+
+\subsection{Valor de misión y continuaciones ejecutables}
+
+\begin{definicion}[Continuaciones ejecutables y valor de misión]
+\label{def:continuaciones}
+Sea $d$ un compromiso discreto (coalición, modo, contactos, ruta--tiempo,
+reservas) y $Y$ el estado ampliado: estado físico y su estimación, estado de la
+red, información disponible, continuación incumbente ya certificada, sus
+márgenes y los recursos aún utilizables. El conjunto de continuaciones
+ejecutables en horizonte $H$ es
+\begin{equation}
+  \label{eq:T-continuaciones}
+  \Tcal(d,Y)=\bigl\{\tau=(x_{0:H},u_{0:H-1}):\ x_{k+1}=F(x_k,u_k,w_k),\
+  (x_k,u_k,\lambda_k)\in\mathcal K_{\mathrm{phys}}(d),\ h_j(x_k)\ge0,\
+  E_i(k)\ge E_i^{\min},\ u_i(k)\ \text{medible respecto de}\ \mathcal I_i(k),\
+  x_H\in\mathcal G\bigr\},
+\end{equation}
+y, con $\mathcal H(\tau)$ el coste acumulado de la continuación, el valor del
+compromiso es
+\begin{equation}
+  \label{eq:valor-mision}
+  V_H^\star(d,Y)=\inf_{\tau\in\Tcal(d,Y)}\mathcal H(\tau),\qquad
+  V_H^\star(d,Y)=+\infty\ \text{si}\ \Tcal(d,Y)=\emptyset .
+\end{equation}
+\end{definicion}
+
+\begin{observacion}[Principio de coherencia de valor]
+\label{obs:coherencia-valor}
+Dos decisiones heterogéneas —reclutar, cambiar de contacto, desviar una ruta,
+reemplazar un miembro— solo son comparables si se expresan como diferencias,
+cotas o gradientes de la \emph{misma} función de valor
+\eqref{eq:valor-mision}. Un coste de reclutamiento, una penalización de
+\emph{wrench} o un precio de barrera no son por sí solos el valor de la misión.
+La consecuencia no es retórica. Sobre dos mil mundos con veinte candidatos cada
+uno, un proxy escalar de coste seleccionó un candidato \emph{inviable} en el
+$76{,}15\%$ de los casos; el valor unificado, que devuelve $+\infty$ cuando
+$\Tcal(d,Y)$ es vacío, en el $0\%$ \cite{mayorga2026compendio}. La infinitud de
+\eqref{eq:valor-mision} es el mecanismo que impide que una relajación económica
+invente una fuerza, un contacto o una ruta que la planta no puede realizar.
+\end{observacion}
+
+\subsection{Regla de \emph{commit} certificado y presupuesto de progreso}
+
+El sistema distribuido rara vez dispone de $V_H^\star$ exacto. Dispone de
+cotas.
+
+\begin{proposicion}[\emph{Commit} certificado por cotas]
+\label{pr:commit}
+Sean $L_d(Y)\le V_H^\star(d,Y)\le U_d(Y)$ cotas locales, y sea $e:d\to d'$ una
+revisión discreta con operador de reinicio $R_e$ y coste de transición
+$C_e(Y)\le C_e^{+}(Y)$. Si
+\begin{equation}
+  \label{eq:commit}
+  C_e^{+}(Y)+U_{d'}(R_eY)\;\le\;L_d(Y)-\delta,\qquad \delta>0,
+\end{equation}
+entonces la revisión mejora el valor real al menos en $\delta$:
+$C_e(Y)+V_H^\star(d',R_eY)\le V_H^\star(d,Y)-\delta$.
+\end{proposicion}
+
+\begin{proof}
+$C_e(Y)+V_H^\star(d',R_eY)\le C_e^{+}(Y)+U_{d'}(R_eY)\le L_d(Y)-\delta\le
+V_H^\star(d,Y)-\delta$.
+\end{proof}
+
+\begin{observacion}[Conservadora por construcción]
+\label{obs:commit-num}
+La regla \eqref{eq:commit} no exige conocer el valor exacto y no puede producir
+un \emph{commit} falso: en el banco reducido, $1\,383$ \emph{commits}
+certificados y cero falsos \cite{mayorga2026compendio}; en veinte mil
+instancias aleatorias con cotas de holgura uniforme en $[0,0{,}5]$, $4\,817$
+\emph{commits} y cero falsos. El precio de esa garantía es que rechaza
+revisiones buenas cuya mejora es menor que la holgura de las cotas: es la
+misma asimetría que la condición de \emph{recourse} de \cref{pr:recourse}.
+\end{observacion}
+
+\begin{proposicion}[Presupuesto de progreso del testigo]
+\label{pr:presupuesto-progreso}
+Sea $W_k\ge0$ un presupuesto de valor asociado a la continuación incumbente
+(el testigo de \cref{th:testigo}). Si cada intervalo físico de duración
+$\Delta t_k$ consume al menos $\rho_0\Delta t_k$ y cada revisión aceptada
+mejora al menos $\delta$, entonces
+\begin{equation}
+  \label{eq:presupuesto-progreso}
+  0\le W_K\le W_0-\rho_0\sum_{k=0}^{K-1}\Delta t_k-N_{\mathrm{rev}}\,\delta ,
+\end{equation}
+luego el tiempo total está acotado por $W_0/\rho_0$ y el número de revisiones
+por $W_0/\delta$. Con perturbación exógena acumulada $R$, la cota de tiempo se
+desplaza a $(W_0+R)/\rho_0$.
+\end{proposicion}
+
+\begin{proof}
+Ambos términos restan de $W$ y $W$ no puede ser negativo; despejar
+\eqref{eq:presupuesto-progreso} con $N_{\mathrm{rev}}\ge0$ y con
+$\sum\Delta t_k\ge0$ da cada cota. La perturbación suma a $W_0$.
+\end{proof}
+
+\begin{observacion}[Planear y mover dejan de alternar]
+\label{obs:ejecutar-calculando}
+Mientras el optimizador mejora una propuesta, la planta ejecuta la continuación
+incumbente. \Cref{pr:presupuesto-progreso} es lo que hace legítima esa
+simultaneidad: el progreso lo garantiza el testigo, no la convergencia
+instantánea del solver, que es la lectura que ya daba \cref{pr:reloj-seguro}
+para el reloj seguro. Lo que añade es que la cota es en \emph{valor de misión},
+de modo que revisiones y tiempo físico se descuentan de la misma cantidad.
+\end{observacion}
+
+\subsection{Margen vectorial y \emph{recourse}}
+
+No es correcto sumar márgenes con unidades físicas distintas.
+
+\begin{definicion}[Margen vectorial de ejecutabilidad]
+\label{def:margen-vectorial}
+$m(d,Y)=(m_{\mathrm{sop}},m_{\mathrm{kin}},m_{\mathrm{wrench}},
+m_{\mathrm{cont}},m_{\mathrm{seg}},m_{E},m_{\mathrm{ruta}},m_{\mathrm{info}})\ge0$:
+soporte, compatibilidad cinemática (\cref{pr:ruta-ruedas}), reserva de
+\emph{wrench}, contacto, seguridad, energía, ruta e información. Un
+certificado está vigente mientras todas las componentes sean no negativas.
+\end{definicion}
+
+\begin{proposicion}[Condición suficiente de \emph{recourse}]
+\label{pr:recourse}
+Si cada componente decae a lo sumo linealmente, $\dot m_j\ge-\rho_j$, el tiempo
+mínimo antes de perder algún certificado es
+\begin{equation}
+  \label{eq:T-hold}
+  T_{\mathrm{hold}}=\min_{j:\rho_j>0}\frac{m_j(0)}{\rho_j},
+\end{equation}
+y con $T_{\mathrm{rec}}=T_{\mathrm{det}}+T_{\mathrm{com}}+T_{\mathrm{sol}}
++T_{\mathrm{apr}}+T_{\mathrm{adq}}+T_{\mathrm{commit}}$ el tiempo de
+recuperación (detección, comunicación, resolución, aproximación, adquisición
+de contacto y \emph{commit}), la condición
+\begin{equation}
+  \label{eq:recourse}
+  T_{\mathrm{rec}}<T_{\mathrm{hold}}
+\end{equation}
+garantiza que los certificados siguen vigentes cuando el reemplazo queda
+operativo.
+\end{proposicion}
+
+\begin{proof}
+$m_j(t)\ge m_j(0)-\rho_jt>0$ para $t<m_j(0)/\rho_j$; el mínimo sobre $j$ da
+\eqref{eq:T-hold}, y \eqref{eq:recourse} coloca el fin del reemplazo antes.
+\end{proof}
+
+\begin{observacion}[Qué cuantifica y qué no]
+\label{obs:recourse-num}
+La condición no afirma que toda falla sea recuperable: mide cuándo la
+ejecución incumbente compra tiempo suficiente para una revisión. En cinco mil
+fallos simulados, ningún caso certificado resultó inseguro; se certificó el
+$11{,}64\%$ mientras el $27{,}72\%$ era realmente recuperable
+\cite{mayorga2026compendio}. La condición es conservadora por un factor
+próximo a $2{,}4$, que es el precio de una cota lineal sobre cada margen. La
+misma cantidad $T_{\mathrm{hold}}$ es la que \cref{th:prima} necesita del lado
+de la reserva: la prima paga tiempo de recuperación, y \eqref{eq:recourse}
+dice cuánto tiempo hay que comprar.
+\end{observacion}
+
+\subsection{La trayectoria como estrategia}
+
+Un AMR libre es un jugador. Una coalición en \textsf{cargo} ya cerrada es
+externamente un solo jugador compuesto, porque sus apoyos no pueden separarse
+durante el transporte y su radio de giro sale de \cref{pr:ruta-ruedas}. Para
+cada jugador $a$, la estrategia es la continuación
+\begin{equation}
+  \label{eq:tau-jugador}
+  \tau_a(\cdot)=\bigl(q_a(\cdot),u_a(\cdot)\bigr),\qquad \cdot\in[t,t+H],
+\end{equation}
+sin \emph{waypoint} impuesto: la única propuesta inicial es la recta hacia el
+objetivo o la continuación desplazada del ciclo anterior. Cada jugador publica
+una ocupación prevista $\rho_a(x,\tau)\ge0$ que incorpora su huella —para
+\textsf{cargo}, la carga y el conjunto rígido de soportes—, la ocupación
+agregada es $\rho=\sum_a\rho_a$, y un precio dual local de congestión se
+actualiza en tiempo de cálculo $\sigma$ como
+\begin{equation}
+  \label{eq:precio-congestion}
+  \frac{\mathrm d\mu}{\mathrm d\sigma}(x,\tau)=\Pi_{\mathbb R_+}\bigl(\rho(x,\tau)-\rho^{\max}(x,\tau)\bigr),
+\end{equation}
+que no asigna turnos: altera gradientes y deja que espera, desvío, aceleración
+o giro emerjan como respuesta. El coste individual usado en los ensayos es
+\begin{equation}
+  \label{eq:coste-trayectoria}
+  J_a(\tau_a,\tau_{-a})=w_TT_a+w_f\lVert q_a(t+H)-q_a^{d}\rVert^2
+  +\int_t^{t+H}\bigl(w_u\lVert u_a\rVert^2+w_\kappa\kappa_a^2+B_{\mathrm{obs}}
+  +C_{\mathrm{cong}}+C_{\mathrm{int}}+C_{\mathrm{phys}}\bigr)\,\mathrm d\tau ,
+\end{equation}
+donde el término temporal es esencial: sin él, detenerse indefinidamente puede
+resultar barato.
+
+Para pocas coaliciones grandes no es correcto usar la derivada infinitesimal de
+la congestión. Sea $\mathcal H(\rho)=\int_t^{t+H}\!\!\int_\Omega
+H(\rho(x,\tau))\,\mathrm dx\,\mathrm d\tau$.
+
+\begin{teorema}[Externalidad atómica exacta]
+\label{th:externalidad-atomica}
+Si el coste de congestión de cada jugador es su contribución marginal exacta,
+$C_a^{\mathrm{cong}}=\mathcal H(\rho_{-a}+\rho_a)-\mathcal H(\rho_{-a})$, y las
+interacciones restantes son simétricas por pares, $\Phi_{ab}=\Phi_{ba}$,
+entonces
+\begin{equation}
+  \label{eq:potencial-trayectorias}
+  P(\tau)=\sum_a J_a^{0}(\tau_a)+\mathcal H\Bigl(\sum_a\rho_a\Bigr)+\sum_{a<b}\Phi_{ab}(\tau_a,\tau_b)
+\end{equation}
+es un potencial exacto del juego de trayectorias: para toda desviación
+unilateral $\tau_a\to\tau_a'$, $J_a(\tau_a',\tau_{-a})-J_a(\tau_a,\tau_{-a})
+=P(\tau_a',\tau_{-a})-P(\tau_a,\tau_{-a})$, con igualdad de diferencias
+finitas y no solo de gradientes.
+\end{teorema}
+
+\begin{proof}
+La diferencia de $J_a$ es $\Delta J_a^{0}+\mathcal H(\rho_{-a}+\rho_a')
+-\mathcal H(\rho_{-a}+\rho_a)+\sum_{b\ne a}\Delta\Phi_{ab}$, porque el término
+$\mathcal H(\rho_{-a})$ se cancela. La diferencia de $P$ es exactamente la
+misma suma: los $J_b^{0}$ y los $\Phi_{bc}$ con $b,c\ne a$ no cambian.
+\end{proof}
+
+\begin{observacion}[Verificación y lectura]
+\label{obs:externalidad-num}
+Sobre trescientas desviaciones unilaterales aleatorias con $H$ convexa no
+cuadrática y ocupaciones gaussianas, la discrepancia máxima entre
+$\Delta J_a$ y $\Delta P$ es $1{,}2\times10^{-14}$. El teorema hace del
+planificador de trayectorias una \emph{rama} del megajuego de
+\cref{th:potencial}: dentro de una rama discreta fija, el equilibrio de
+\eqref{eq:potencial-trayectorias} sobre un conjunto convexo coincide con el
+óptimo social de esa rama. La equivalencia no se extiende por sí sola a
+obstáculos no convexos, cambios de contacto ni combinatoria discreta, que es
+exactamente lo que \cref{obs:homotopia} recoge.
+\end{observacion}
+
+Numéricamente la trayectoria se representa por $K$ coeficientes B-spline,
+$q_a(\tau)=\sum_{k=1}^{K}B_k(\tau)c_{a,k}$, o por una secuencia de controles
+$(v_k,\omega_k)$; en tiempo de cálculo los coeficientes se deforman por
+$\dot c_a=-\Gamma_aK_a\nabla_{c_a}P$, y el campo deseado
+$v_a^{\mathrm{game}}=-M_a^{-1}\nabla_xC_a$ se ejecuta dentro de la envolvente
+física $u_a=U_a(q)(v_a^{\mathrm{game}})$. La versión limpia no corrige a
+posteriori: ruedas, curvatura y huella entran en $K_a$, de modo que la
+diferencia entre lo pedido y lo ejecutado es pequeña.
+
+\begin{proposicion}[Dinámica Smith en caja]
+\label{pr:smith-caja}
+Para una acción escalar $a_i\in[-T_i,T_i]$ y gradiente $\gamma_i=\partial
+J/\partial a_i$, la realización
+\begin{equation}
+  \label{eq:smith-caja}
+  \dot a_i=2\lambda_iT_i\Bigl[(T_i-a_i)[-\gamma_i]_+-(T_i+a_i)[\gamma_i]_+\Bigr]
+\end{equation}
+deja la caja invariante y desciende $J$: en $a_i=T_i$ desaparece el término
+que empuja hacia arriba y en $a_i=-T_i$ el que empuja hacia abajo.
+\end{proposicion}
+
+\begin{proof}
+En $a_i=T_i$, $\dot a_i=-2\lambda_iT_i\cdot2T_i[\gamma_i]_+\le0$; en
+$a_i=-T_i$, $\dot a_i=2\lambda_iT_i\cdot2T_i[-\gamma_i]_+\ge0$. Para el
+descenso, si $\gamma_i\ge0$ entonces
+$\gamma_i\dot a_i=-2\lambda_iT_i(T_i+a_i)\gamma_i^2\le0$, y si $\gamma_i<0$
+entonces $\gamma_i\dot a_i=-2\lambda_iT_i(T_i-a_i)\gamma_i^2\le0$; en veinte
+mil pasos con gradiente aleatorio la acción no sale de la caja.
+\end{proof}
+
+\begin{observacion}[Extragradiente: por qué]
+\label{obs:extragradiente-silla}
+Con componente rotacional, Euler simultáneo diverge. En la silla bilineal
+$F(z)=(y,-x)$ el paso explícito multiplica la norma por $(1+h^2)^{1/2}$ en
+cada iteración y el extragradiente por $(1-h^2+h^4)^{1/2}$: con $h=0{,}5$ y
+$69$ pasos, $\times2\,205$ frente a $\times7{,}7\times10^{-4}$, que es el
+régimen del contraste reportado en \cite{mayorga2026compendio}
+($\times2\,180$ frente a $1{,}43\times10^{-3}$). Es el mismo argumento de
+\cref{sec:comunicacion}: valida el mecanismo numérico, no una garantía global
+del megajuego no lineal.
+\end{observacion}
+
+\begin{proposicion}[Intención publicada con incertidumbre]
+\label{pr:convolucion-intencion}
+Si el jugador $b$ publica su pose futura como $Q_b(\tau)\sim\mathcal N(\hat
+q_b(\tau),\Sigma_b(\tau))$ y la huella se representa con núcleo gaussiano
+$K_S(d)=\exp(-\tfrac12d^{\!\top}S^{-1}d)$, la ocupación esperada es exacta:
+\begin{equation}
+  \label{eq:convolucion}
+  \mathbb E\bigl[K_S(q-Q_b)\bigr]=\frac{|S|^{1/2}}{|S+\Sigma_b|^{1/2}}
+  \exp\Bigl(-\tfrac12(q-\hat q_b)^{\!\top}(S+\Sigma_b)^{-1}(q-\hat q_b)\Bigr).
+\end{equation}
+\end{proposicion}
+
+\begin{proof}
+Es la convolución de dos gaussianas; con $400\,000$ muestras Monte Carlo la
+forma cerrada y la media muestral coinciden en $0{,}2746$ frente a $0{,}2748$.
+\end{proof}
+
+\begin{observacion}[La incertidumbre entra en el precio, no en el margen]
+\label{obs:convolucion-uso}
+\Cref{pr:convolucion-intencion} es lo que permite que la covarianza de
+\cref{co:tensado} entre en el campo de ocupación en lugar de en un ensanche
+fijo de la huella: un vecino incierto ocupa más espacio pero con menos
+densidad, y el precio \eqref{eq:precio-congestion} lo cobra en proporción. En
+el banco reducido, incorporar la incertidumbre futura al mercado bajó la
+colisión Monte Carlo a $\Delta t=1{,}2$~s del $13{,}11\%$ al $4{,}06\%$ por un
+$2{,}8\%$ más de recorrido \cite{mayorga2026compendio}.
+\end{observacion}
+
+\begin{proposicion}[Conectividad acumulada antes del conflicto]
+\label{pr:conectividad-acumulada}
+Sea $e_I$ el desacuerdo de una señal distribuida de intención o precio con
+$\dot e_I=-cL(t)e_I$ y $e_I\perp\mathbf 1$. Entonces
+$\lVert e_I(t)\rVert\le\exp\bigl(-c\int_{t_0}^{t}\lambda_2(L(s))\,\mathrm ds\bigr)\lVert e_I(t_0)\rVert$,
+y si el juego necesita un tiempo $T_G$ tras alcanzar tolerancia $\varepsilon_I$
+antes del instante de conflicto $t_c$, basta
+\begin{equation}
+  \label{eq:conectividad-acumulada}
+  \int_{t_0}^{t_c-T_G}\lambda_2(L(s))\,\mathrm ds\;\ge\;\frac1c\log\frac{\lVert e_I(t_0)\rVert}{\varepsilon_I}.
+\end{equation}
+\end{proposicion}
+
+\begin{proof}
+$\tfrac{\mathrm d}{\mathrm dt}\lVert e_I\rVert^2=-2c\,e_I^{\!\top}L e_I\le-2c\lambda_2\lVert e_I\rVert^2$
+por Rayleigh en $\mathbf 1^\perp$; integrar y exigir
+$\lVert e_I(t_c-T_G)\rVert\le\varepsilon_I$.
+\end{proof}
+
+\begin{observacion}[Lo que se defiende]
+\label{obs:conectividad-mecanismo}
+No hace falta afirmar que toda congestión aumenta $\lambda_2$. El mecanismo
+defendible es que la aproximación a un cuello crea enlaces de proximidad, y
+si la conectividad acumulada supera el presupuesto
+\eqref{eq:conectividad-acumulada}, información y precios convergen antes de la
+interacción física. En $512$ ensayos la condición no dio ningún falso positivo,
+siendo conservadora \cite{mayorga2026compendio}. Es la misma $\lambda_2$ que
+gobierna la percepción en \cref{sec:estimacion}: un solo número controla
+cuándo el mapa y cuándo el precio están listos.
+\end{observacion}
+
+\subsection{Dos relojes: separación de escalas}
+
+En cada instante físico $t_k$ se desplaza la solución anterior como arranque,
+se reciben las últimas propuestas, se ejecutan unas pocas iteraciones del
+juego en tiempo de cálculo, se aplica el primer control de la continuación
+vigente y la planta avanza. Abstractamente,
+\begin{equation}
+  \label{eq:perturbacion-singular}
+  \dot X=f\bigl(X,\pi(z,X)\bigr),\qquad \varepsilon\dot z=-F(z;X),\qquad
+  \varepsilon=\frac{T_{\mathrm{game}}}{T_{\mathrm{phys}}}\ll1 .
+\end{equation}
+
+\begin{observacion}[Seguimiento cuasiestático y sus cuatro condiciones]
+\label{obs:escalas}
+Si para $X$ congelado $F(z;X)=0$ tiene solución única $z^\star(X)$
+uniformemente exponencialmente estable y $z^\star$ es Lipschitz, la teoría de
+perturbación singular da cotas del tipo
+$\lVert z(t)-z^\star(X(t))\rVert\le c_1e^{-t/\varepsilon}\lVert z(0)-z^\star(X(0))\rVert+c_2\varepsilon$,
+y con errores de comunicación, solver, modelo y muestreo,
+$\lVert z-z^\star\rVert\le C(\varepsilon+e_{\mathrm{com}}+e_{\mathrm{sol}}+e_{\mathrm{mod}}+e_{\mathrm{mue}})$.
+Que el juego sea mucho más rápido que la planta no implica optimalidad: permite
+seguir con error pequeño el equilibrio de la rama que el solver resuelve, y si
+esa rama tiene el mínimo local equivocado, acelerar converge más rápido al
+mínimo equivocado. Para afirmar $J\approx J^\star_{\mathrm{Mega}}$ hacen
+falta además: equilibrio rápido equivalente al óptimo de la rama
+(\cref{th:externalidad-atomica} con convexidad), cobertura de las ramas
+relevantes, modelo predictivo coherente con la planta, y horizonte completo o
+valor terminal de Bellman con error acotado. Un solver infinitamente rápido
+con terminal miope resuelve un problema miope.
+\end{observacion}
+
+\begin{observacion}[Evidencia de mecanismo]
+\label{obs:escalas-num}
+En diez mundos pareados alrededor de un cruce, cambiar solo el número de
+iteraciones internas de negociación pasó el éxito seguro de $3/10$ a $9/10$:
+seis mundos mejoraron y ninguno empeoró, y el McNemar exacto con seis pares
+discordantes en la misma dirección es $p=2\cdot2^{-6}=0{,}03125$
+\cite{mayorga2026compendio}. Es evidencia del mecanismo de
+\eqref{eq:perturbacion-singular}, no una demostración del teorema; la planta
+es 2D reducida y la energía es un proxy.
+\end{observacion}
+
+\begin{observacion}[Cuatro relojes, un solo juego]
+\label{obs:cuatro-relojes}
+La política recomendada es
+$T_{\mathrm{wrench}}<T_{\mathrm{path}}<T_{\mathrm{phys}}<T_{\mathrm{coalición}}$:
+el mercado de \emph{wrench} se limpia dentro de cada paso de trayectoria, la
+trayectoria dentro de cada paso físico, y la coalición cambia en la escala más
+lenta. No son cuatro juegos: son cuatro constantes de tiempo de la misma
+estrategia híbrida, y su orden es la condición de \cref{obs:escalas} aplicada
+por capas.
+\end{observacion}
+
+\subsection{Qué significa «la mejor ruta»}
+
+\begin{definicion}[Jerarquía de referencias]
+\label{def:jerarquia-optimos}
+El óptimo completo $J^\star_{\mathrm{Mega}}=\min_{d,X,U,\lambda}J$ sujeto a
+reclutamiento, modos, contactos, dinámica, ruedas, \emph{wrench}, fricción,
+seguridad, energía, comunicación y entrega es híbrido y no convexo. Con
+coaliciones y modos congelados, una búsqueda A* conjunta espacio--tiempo sobre
+un lattice finito $\mathcal L$ con heurística admisible devuelve
+$J^\star_{\mathcal L}=\min_{\tau\in\mathcal L}J(\tau)$, y como $\mathcal L$
+restringe el continuo, $J^\star_{\mathrm{Mega}}\le J^\star_{\mathcal L}$. Un
+optimizador central continuo con toda la información devuelve el mejor
+programa no lineal encontrado, no un óptimo certificado. La brecha
+$\mathrm{Gap}=(J_{\mathrm{game}}-J_{\mathrm{oracle}})/J_{\mathrm{oracle}}$
+debe declarar siempre cuál de los tres es $J_{\mathrm{oracle}}$.
+\end{definicion}
+
+\begin{observacion}[Lectura del banco de treinta mundos]
+\label{obs:lectura-r10}
+El banco de \cref{obs:ensayo-r10} da la lectura: en la capa continua, el
+megajuego alcanza calidad numérica indistinguible de un MPC distribuido por
+intercambio de trayectorias —diferencias medianas de tiempo, distancia y
+energía de $0{,}000\%$, $+0{,}028\%$ y $+0{,}032\%$ en veintisiete mundos
+comunes, ninguna significativa tras Holm— y queda a $+1{,}6\%$ de tiempo del
+mejor central encontrado. La afirmación correcta no es «un MPC distribuido
+mejor» sino que el mismo mecanismo de precios, estrategias y
+\emph{commit} sigue siendo válido cuando la decisión pasa de trayectoria a
+coalición, contacto, \emph{wrench}, reserva o reemplazo, que el MPC
+distribuido no modela. Y en el pasillo ancho, donde la geometría no exige
+negociación, un método local ligero es más rápido: no hay superioridad
+universal que reclamar.
+\end{observacion}
+
+\begin{observacion}[La homotopía es parte del compromiso]
+\label{obs:homotopia}
+El escenario radial de \cref{obs:ensayo-r10} muestra la debilidad de la
+deformación continua: puede quedarse atrapada en una familia topológica que no
+lleva al mejor camino. La respuesta es elevar la clase de homotopía $h$ a
+componente del compromiso discreto, $d=(\Ccal_R,\Ccal_A,\mu,\sigma,h,b,\xi)$:
+dentro de una clase, \eqref{eq:potencial-trayectorias} deforma $\tau$; entre
+clases, el grafo de revisión de \cref{obs:cuatro-grafos} admite una arista
+$h\to h'$ solo si existe una transición físicamente ejecutable con testigo de
+seguridad. Optimización rápida dentro de la rama y salto discreto entre ramas:
+la pregunta teórica pasa de «cuántas iteraciones de gradiente» a «qué soporte
+de revisiones conecta todas las ramas relevantes con coste controlado», que es
+la pregunta de \cref{th:saltos}.
+\end{observacion}
+
+\begin{observacion}[Reserva robusta, no más peso]
+\label{obs:reserva-robusta}
+Los ensayos continuos dan separaciones mínimas de $3{,}1$~cm
+(\cref{obs:ensayo-r6}), demasiado pequeñas para un margen industrial. La
+corrección no es subir el peso de la penalización sino imponer una reserva:
+para dos huellas, $h_{ab}=d_{ab}(X)-d^{\mathrm{rob}}_{\mathrm{safe}}\ge0$ con
+$d^{\mathrm{rob}}_{\mathrm{safe}}=d_{\mathrm{safe}}+\overline{\Delta d}+\delta_{\mathrm{mue}}$,
+que es \cref{co:tensado} con el término de muestreo, y si el par tiene grado
+relativo $r>1$ respecto de $h$, la restricción se rederiva como barrera de
+orden superior en lugar de reutilizar una barrera de aceleración como si el
+par entrase en primer orden.
+\end{observacion}
+
+\subsection{Reparar localmente, ampliar cuando no basta, y elegir el solver dentro de la rama}
+
+Tras una perturbación que afecta a una parte limitada de la flota hay tres
+decisiones distintas: qué región renegocia ($S$), cuántos agentes cambian
+juntos ($h$) y qué precisión basta ($\varepsilon$). La batería R11
+\cite{mrob2026r11} las separa con problemas reducidos, referencias
+calculables y controles negativos; lo que sigue es lo que sobrevive.
+
+\begin{proposicion}[Certificado de calidad por residual]
+\label{pr:certificado-gradiente}
+Si $\Phi$ es diferenciable y $m$-fuertemente convexa sin restricciones,
+$0\le\Phi(x)-\Phi(x^\star)\le\lVert\nabla\Phi(x)\rVert^2/(2m)$. Si $\Phi$ es
+convexa sobre una caja $K$ y $U\in K$, la brecha de Frank--Wolfe
+$G_{\mathrm{FW}}(U)=\max_{Z\in K}\nabla\Phi(U)^{\!\top}(U-Z)$, que en una caja
+se calcula componente a componente, cumple
+$\Phi(U)-\Phi(U^\star)\le G_{\mathrm{FW}}(U)$.
+\end{proposicion}
+
+\begin{proof}
+Convexidad fuerte: $\Phi(y)\ge\Phi(x)+g^{\!\top}(y-x)+\tfrac m2\lVert y-x\rVert^2$;
+el mínimo en $y$ del lado derecho es $\Phi(x)-\lVert g\rVert^2/(2m)$, y se
+evalúa en $y=x^\star$. Con caja: $\Phi(U^\star)\ge\Phi(U)+g^{\!\top}(U^\star-U)$
+y maximizar $g^{\!\top}(U-Z)$ sobre $K$ da la cota.
+\end{proof}
+
+\begin{observacion}[Reparación local certificada: cuándo ahorra y cuándo no]
+\label{obs:reparacion-local}
+Sobre un potencial cuadrático en malla de cuatro vecinos,
+$\Phi=\tfrac m2\lVert x\rVert^2+\tfrac12\sum_{ij\in E}(x_i-x_j)^2-b^{\!\top}x$,
+una perturbación local de la demanda se repara actualizando solo una región que
+crece hasta que \cref{pr:certificado-gradiente} cae por debajo de $10^{-6}$,
+frente a actualizar toda la red con el mismo operador. Con $m=1$ y doscientas
+cincuenta perturbaciones, todas certificadas: en $N=100$ la región cuesta un
+$4{,}95\%$ más de actualizaciones; en $N=1\,024$, un $83\%$ menos; en
+$N=10\,000$, un $98{,}1\%$ menos, con intervalo bootstrap $97{,}8$--$98{,}2\%$
+y brecha real máxima $3{,}8\times10^{-7}$ \cite{mrob2026r11}. Una réplica
+propia con protocolo de expansión distinto da $65\%$ y $94{,}6\%$ menos en los
+mismos tamaños. Los controles negativos son la parte que importa: con
+perturbación difusa la región activa toda la red y gasta un $18\%$ más; con
+$m=0{,}01$ ninguna de cincuenta perturbaciones se certifica dentro de radio
+doce (réplica propia: cero de diez, brecha $2{,}7$). La hipótesis defendible
+es «localidad útil cuando perturbación y acoplamiento permiten una reparación
+local», que es la caída exponencial de la sensibilidad en programas
+estructurados por grafos \cite{shin2022exponential}, no «siempre basta un
+vecindario».
+
+Dos precisiones que evitan sobreclaims. La mejor respuesta de cada nodo,
+$x_i^{+}=(b_i+\sum_{j\in N_i}x_j)/(m+\deg i)$, es exactamente un paso de
+gradiente precondicionado por la diagonal —discrepancia $5{,}5\times10^{-16}$—,
+de modo que la ganancia viene de localizar la reparación y no del nombre del
+algoritmo. Y ahorrar actualizaciones no es ahorrar tiempo: en $N=10\,000$ la
+reparación local tardó $5{,}33$~ms frente a $5{,}06$~ms del método global y
+$0{,}96$~ms de una factorización ya preparada. Actualizaciones, mensajes, CPU y
+latencia física son cuatro magnitudes; \cref{obs:coherencia-valor} exige
+declarar cuál se reduce.
+\end{observacion}
+
+\begin{observacion}[Más cálculo reduce el retraso; no corrige el soporte]
+\label{obs:mas-calculo}
+Sobre cincuenta óptimos móviles de una red de $256$ variables con un salto no
+anunciado, pasar de una a dieciséis iteraciones por muestra reduce el error
+cuadrático medio respecto del óptimo instantáneo un $99{,}49\%$ en mediana
+pareada, mejorando las cincuenta realizaciones; pero ciento veintiocho
+iteraciones con la región congelada a radio dos quedan peor que una sola
+iteración sobre toda la red ($4{,}9\times10^{-2}$ frente a
+$2{,}6\times10^{-2}$) \cite{mrob2026r11}. Es la segunda mitad de
+\cref{obs:escalas} medida: para un operador contractivo de factor $\rho$,
+$\lVert e_{k+1}\rVert\le\rho^{K}(\lVert e_k\rVert+\lVert x^\star_{k+1}-x^\star_k\rVert)$
+explica el retraso que $K$ elimina, y una región truncada añade un sesgo que
+$K$ no toca. Lo que hay que medir en la planta es rapidez \emph{y} suficiencia
+del dominio de negociación.
+\end{observacion}
+
+\begin{observacion}[El solver dentro de la rama: un resultado que cambia el diseño]
+\label{obs:solver-en-rama}
+Sobre cincuenta programas predictivos de una carga con cuatro AMR en rama
+longitudinal fija —doce pasos de $0{,}2$~s, cuarenta y ocho variables, límites
+heterogéneos de actuación, un AMR con autoridad reducida, mismo coste, mismo
+estado y misma tolerancia $G_{\mathrm{FW}}\le10^{-7}$—, un programa cuadrático
+central, mejores respuestas cíclicas del juego potencial y un ADMM de consenso
+de dos bloques \cite{boyd2011admm} llegan al mismo óptimo (diferencia máxima
+$4\times10^{-13}$), pero con costes muy distintos: mejores respuestas,
+trescientas rondas y $630$~ms medianos; ADMM, treinta y dos rondas y
+$1{,}87$~ms; el central, $3{,}0$~ms \cite{mrob2026r11}. Una réplica propia
+reproduce la parte robusta del resultado y matiza la otra: el mismo óptimo a
+$10^{-14}$, un factor $137$ de cómputo a favor de ADMM ($10{,}6$ frente a
+$1\,450$~ms), pero rondas comparables ($116$ frente a $98$): el cociente de
+rondas depende del parámetro $\rho$ y de la implementación, y la diferencia de
+cómputo no, porque la mejor respuesta resuelve un programa interno en cada
+bloque y el paso de ADMM es proximal cerrado,
+$U_i^{+}=\Pi_{[-\bar u_i,\bar u_i]}\bigl(\rho(S_i-Y_i)/(r_i+\rho)\bigr)$.
+
+La lectura correcta es esta. El juego es la estructura de decisiones, pagos y
+precios que hace comparables coalición, contacto, ruta y reemplazo bajo la
+misma función de valor; dentro de una rama convexa, cualquier solver que
+alcance el mismo equilibrio variacional vale, y debe elegirse el eficiente.
+No hay obligación científica de que la capa continua use mejores respuestas o
+Smith para «parecer más de juegos»: los juegos poblacionales ya se combinan con
+control predictivo distribuido en la literatura \cite{barreiro2019evolutionary},
+y \cref{th:externalidad-atomica} garantiza que el equilibrio de la rama es el
+mismo sea cual sea el método. Es también la respuesta a
+\cref{obs:lectura-r10}: la paridad numérica con el MPC distribuido no es una
+coincidencia, es que resuelven el mismo problema, y el aporte está en lo que
+el MPC distribuido no modela.
+\end{observacion}
+
+\begin{observacion}[Lo que R11 no demuestra]
+\label{obs:r11-alcance}
+Mil quinientas cincuenta realizaciones de problema, no misiones: juegos
+cuadráticos en red, asignación atómica de ocho AMR, óptimos móviles, frenados
+longitudinales y programas predictivos lineales. Ninguno integra los
+mecanismos en una misma simulación física de flota abierta, ni compara con
+un MPC distribuido equipado con la misma reparación adaptativa. La hipótesis
+de sistema que queda delimitada, y que se falsaría con el mismo modelo,
+información y presupuesto, es: calidad de misión comparable a un MPC
+distribuido competente, con menos trabajo y disrupción de adaptación ante
+eventos localmente reparables.
+\end{observacion}
+
+\subsection{Tres cotas del ciclo de vida}
+
+\begin{lema}[Error de valoración de propuestas]
+\label{le:valoracion-2c}
+Si $|\hat\Psi(B)-\Psi(B)|\le c$ para toda propuesta $B$ y
+$\hat B\in\arg\min\hat\Psi$, entonces $\Psi(\hat B)\le\Psi(B^\star)+2c$.
+\end{lema}
+
+\begin{proof}
+$\Psi(\hat B)\le\hat\Psi(\hat B)+c\le\hat\Psi(B^\star)+c\le\Psi(B^\star)+2c$.
+En veinte mil sorteos con veinte propuestas y $c=0{,}3$ el exceso máximo
+observado es $0{,}546<0{,}6$.
+\end{proof}
+
+\begin{observacion}[Determinista antes que Gibbs]
+\label{obs:valoracion-gibbs}
+\Cref{le:valoracion-2c} es el término determinista que complementa a
+\cref{th:gibbs}: un solver interno de precisión $c$ entrega, antes de
+cualquier aleatorización, un ganador a lo sumo $2c$ peor en valor real. La
+condición $\beta>2c$ sobre la temperatura inversa hace que la concentración
+de Gibbs no deshaga lo que la precisión del solver garantiza.
+\end{observacion}
+
+\begin{observacion}[Salto de precio en lugar de reinicio]
+\label{obs:salto-precio}
+Cuando un miembro entra o sale, el mercado de \emph{wrench} no se reinicia: se
+aplica un paso de Newton sobre el mapa agregado,
+$p^{+}=p^{-}+(J_W^{+})^{-1}\bigl[w_d^{+}-W^{+}(p^{-})\bigr]$, y se continúa. En
+el banco reducido, las medianas de iteraciones hasta limpiar fueron $156{,}5$
+en frío, $143$ con arranque caliente y $80$ con el salto
+\cite{mayorga2026compendio}. Es la versión de evento de \cref{th:saltos}: la
+red de precios de \cref{sec:nucleo} tiene forma cerrada en el caso lineal, y
+el salto es exacto ahí y aproximado en el no lineal.
+\end{observacion}
+
+\begin{observacion}[Propuestas conjuntas frente a ranking individual]
+\label{obs:bundles}
+La unidad discreta de negociación no debe ser un AMR aislado sino la propuesta
+conjunta $(\Ccal,m,r,h)$: miembros, modo físico, geometría de contacto y clase
+de ruta. Un AMR cercano puede perder frente a uno lejano si su incorporación
+empeora la geometría de \emph{wrench}, obliga a un corredor congestionado o
+reduce la reserva. En el banco reducido, un ranking escalar por AMR alcanzó el
+$78{,}3\%$ de éxito frente al $100\%$ de las propuestas conjuntas, y cuando
+funcionó costó $1{,}394$ veces más y usó $0{,}91$ AMR extra
+\cite{mayorga2026compendio}. Es la no superaditividad de \cref{sec:standby}
+vista desde el reclutamiento: la complementariedad no se captura sumando
+valores individuales.
+\end{observacion}

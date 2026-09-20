@@ -1,11 +1,11 @@
 {
-  "generated_at_utc": "2026-09-12T22:39:48.037063+00:00",
-  "git_head_at_generation": "2d182e2606e2e67abe0f7330b19fe313bb2f2fe4",
+  "generated_at_utc": "2026-09-13T22:53:01.504256+00:00",
+  "git_head_at_generation": "3a320428b94f33a4ea49114104f6a03a1c3ef67c",
   "canonical_thesis_modified": false,
   "stage_inputs": {
-    "candidate_corpus_stage2.csv": "dee8796d4ae05a83609fd7a369fd3c013f5ea81478c8a43cacb3ca2ed4cde826",
-    "fulltext_evidence_matrix.csv": "61befd9d886ee189b292f2087bbedfc43ff2906db3aa621053636f1bb8737fa9",
-    "stage4_analysis_summary.json": "54f8f43c55d017f127f3169f525532a954d7f0367a9baf43f7f6aab0d10c0934"
+    "candidate_corpus_stage2.csv": "3211592ffed1b636ba9cc0d94b3618ff067c73f398bfa63e4d6d8a8960d90fc6",
+    "fulltext_evidence_matrix.csv": "74c93054a8a920d3c209838e5572d04972c4df6ca3086a65c2d647bce8a6e949",
+    "stage4_analysis_summary.json": "6c0acee89539e966e016928a9fb9a4e198ba3128f2848c6eb00b6783a56ea88a"
   },
   "commands": [
     "python academic-review/scripts/stage1c.py --resume",
@@ -28,5 +28,6 @@
     "final\\tfm_integration_plan.md"
   ],
   "raw_fulltext_policy": "local-only; excluded from Git; manifests and SHA-256 values are versioned",
-  "wos_status": "pending_external_export"
+  "wos_status": "present_partial",
+  "wos_coverage": "wos_partially_reconciled"
 }

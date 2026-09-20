@@ -182,3 +182,21 @@ acquisition`) y Stage 3 en `687d877e0` (`review: complete Stage 3 evidence
 coding`); Stage 4 está en `f0ea343ad` (`review: complete Stage 4 synthesis
 and gap audit`); Stage 5 está en `2d182e260` (`review: finalize academic
 literature review package`).
+
+## Multisource V2 — expansión de fuentes y evidencia
+
+El 2026-09-13 se ejecutó la campaña derivada
+`academic-review/multisource-v2/`. La configuración versionada ejecuta 22
+consultas F1–F16 con ventanas primaria/fundacional y conserva las respuestas
+RAW por fuente. La corrida produjo 1.225 registros normalizados y 3.033
+candidatos reconciliados con V1; Crossref, OpenAlex, Semantic Scholar,
+OpenAIRE y DOAJ aportaron resultados observables. Unpaywall quedó limitado a
+500 DOI y OpenCitations a una comprobación one-hop de 20 anclas.
+
+arXiv terminó `rate_limited`, DBLP `network_blocked` y CORE
+`pending_credentials`; estos estados están reflejados en los informes y no se
+interpretan como ausencia de trabajos. Google Scholar, WoS, Scopus e IEEE
+Xplore no fueron automatizados: sus paquetes manuales permanecen pendientes
+de exportación humana. La cola de evidencia contiene 60 textos completos V1
+priorizados, pero solo 16 tienen lectura cercana explícita heredada; no se
+declara lectura profunda completa, saturación ni novedad.

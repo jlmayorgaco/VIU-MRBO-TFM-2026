@@ -42,7 +42,7 @@ Preliminares: portada, resumen de 200–300 palabras, 3–5 palabras clave, índ
 
 ## 5. Requisito crítico de distribución
 
-Al menos el 50 % del cuerpo principal debe dedicarse a resultados, análisis y validación. Por ello, SP0–SP8 se ubican principalmente en el capítulo 6 y deben incluir evidencia, no solo explicación del método.
+Al menos el 50 % del cuerpo principal debe dedicarse a resultados, análisis y validación. Por ello, SP1–SP3 se desarrollan principalmente en el capítulo 6 y deben incluir evidencia, no solo explicación del método.
 
 ## 6. Presupuesto recomendado de páginas
 
@@ -59,11 +59,11 @@ Para un cuerpo objetivo de 66–74 páginas:
 | 7. Conclusiones | 4–5 | Respuesta a objetivos/hipótesis, limitaciones y recomendaciones |
 | **Total** | **67–76** | Dentro del rango VIU y con ≥50 % en capítulo 6 |
 
-Nueve subproblemas de seis páginas sumarían 54 páginas antes de introducir marco, metodología y conclusiones; esa distribución empuja el trabajo al límite o por encima de 80 páginas. La profundidad debe ser desigual y proporcional a la contribución.
+Los tres subproblemas no deben convertirse en artículos independientes ni repetir la formulación común. Su profundidad será desigual y proporcional a la contribución y a la evidencia disponible.
 
 ## 7. Microestructura recomendada para cada bloque de resultados
 
-No repetir nueve miniartículos completos. Usar una formulación común y, para cada SP o grupo de SP:
+No repetir tres miniartículos completos. Usar una formulación común y, para cada SP:
 
 1. pregunta local y cambios respecto al caso anterior;
 2. supuestos y formulación incremental;
@@ -80,3 +80,28 @@ No repetir nueve miniartículos completos. Usar una formulación común y, para 
 - `P11_02_F02a Guia Docente_12MROB_V02.pdf`.
 - `Texto Consolidado_Reglamento sobre Trabajo Fin de Título_1 (1) (2).pdf`.
 - `Anexo+I+Solicitud+TFM+-MROB_AGV.pdf`.
+
+## 9. Restricción editorial del autor: figuras TikZ inamovibles
+
+Las cinco figuras siguientes forman parte obligatoria de toda versión final de
+la memoria, con independencia del presupuesto de páginas:
+
+1. escenario de almacén, asignación distribuida y formación de coaliciones
+   (`fig:problema`);
+2. geometría y entradas del robot diferencial/uniciclo (`fig:robot`);
+3. retratos cualitativos sobre el símplex de las dinámicas replicadora, mejor
+   respuesta, logit y Smith (`fig:tf-population-simplex`);
+4. cronología y cobertura del corpus bibliográfico
+   (`fig:tf-literature-timeline`);
+5. mapa metodológico distribuido--centralizado y
+   white-box--data-driven (`fig:tf-methodological-map`).
+
+No pueden eliminarse, comentarse, encerrarse en `\iffalse`, sustituirse por una
+captura rasterizada ni excluirse de la compilación. Si fuera necesario reducir
+la memoria, se compactará primero la prosa, se ajustará el tamaño dentro de los
+límites de legibilidad o se reubicará la figura. Su fuente seguirá siendo TikZ,
+la figura permanecerá citada y numerada, y conservará la indicación de
+elaboración propia. `thesis/config/protected-tikz-figures.json` mantiene el
+registro verificable y la compilación debe fallar si alguna deja de estar activa.
+Las solicitudes posteriores de recortar, reducir, cambiar o aclarar el documento
+no revocan esta protección: estas figuras solo pueden mejorarse, nunca retirarse.

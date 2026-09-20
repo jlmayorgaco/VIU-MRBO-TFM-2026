@@ -1,0 +1,380 @@
+\section{Revisión de orden $h$: fronteras estructurales, complejidad y mezcla}
+\label{sec:cfrd}
+
+La dinámica de revisión mueve a lo sumo $h$ AMR por paso. Esta sección
+responde tres preguntas sobre ese número: cuándo $h=2$ basta y cuándo no,
+qué cuesta encontrar la revisión mínima cuando no basta, y qué determina la
+velocidad —no solo la alcanzabilidad— de la revisión estocástica
+\cite{mayorga2026compendio}.
+
+\subsection{Por qué hace falta orden dos, y por qué la factibilidad ya es dura}
+
+\begin{lema}[Barrera unilateral y escape bilateral]
+\label{le:barrera-unilateral}
+Sean dos cargas con demandas de capacidad $\bar c_\ell,\bar c_{\ell'}$
+cubiertas por dos AMR $i\in\ell$, $j\in\ell'$ con capacidades $c_i,c_j$, de
+modo que las coberturas actuales son $\sigma_\ell$ y $\sigma_{\ell'}$. Si
+$\sigma_\ell-c_i<\bar c_\ell$, $\sigma_{\ell'}-c_j<\bar c_{\ell'}$,
+$\sigma_\ell-c_i+c_j\ge\bar c_\ell$, $\sigma_{\ell'}-c_j+c_i\ge\bar c_{\ell'}$
+y el intercambio reduce el coste, entonces ninguno de los dos movimientos que
+lo componen mejora por separado —cada uno deja una carga descubierta— y
+aplicarlos a la vez mantiene la cobertura y reduce el coste.
+\end{lema}
+
+\begin{proof}
+Las dos primeras desigualdades dicen que retirar $i$ de $\ell$ o $j$ de
+$\ell'$ crea déficit y empeora el orden lexicográfico (déficit antes que
+coste); las dos siguientes, que tras el intercambio ambas quedan cubiertas;
+la última, que el coste baja.
+\end{proof}
+
+\begin{observacion}[La escalera de órdenes empieza aquí]
+\label{obs:escalera-ordenes}
+\Cref{le:barrera-unilateral} es el caso $h=2$ de lo que
+\cref{th:compatibilidad-completa} lleva a $h$ arbitrario: un intercambio que
+ningún movimiento individual realiza. Y hay dos cotas de complejidad
+distintas que conviene no confundir. Decidir si existe una asignación
+factible con dos cargas y capacidades aditivas es ya NP-duro, por reducción
+de partición: con dos cargas de demanda $\sigma/2$ y AMR de capacidades
+$c_1,\dots,c_n$ con $\sum c_i=\sigma$, hay asignación factible si y solo si
+los $c_i$ admiten una partición en dos subconjuntos de suma $\sigma/2$; una
+carga sola no bastaría, porque asignarle toda la flota siempre cubre. Y
+encontrar la reparación de orden mínimo es NP-completo y W[2]-completo por
+\cref{th:mohr}. La primera dureza es de la factibilidad; la segunda, de la
+optimalidad del recurso; la construcción $C_{2h}$ muestra que la revisión
+puede ser difícil aun cuando la factibilidad sea trivial.
+\end{observacion}
+
+\begin{proposicion}[Composición de propuestas disjuntas]
+\label{pr:composicion-disjunta}
+Propuestas que no comparten AMR ni cargas, de origen ni de destino, suman sus
+variaciones de déficit y de coste; si todas mejoran en orden lexicográfico, el
+lote también. Y si todos los candidatos se examinan y cada \emph{commit}
+reduce el mérito lexicográfico, la cadena termina en un mínimo $h$-local en a
+lo sumo $|A|-1$ cambios sobre el espacio finito $A$.
+\end{proposicion}
+
+\begin{proof}
+Déficit y coste suman sobre cargas y AMR; con soportes disjuntos cada
+propuesta altera sumandos distintos. La terminación es la de
+\cref{th:potencial}: ningún perfil se repite en un orden estricto sobre un
+conjunto finito.
+\end{proof}
+
+\subsection{Cuándo la revisión por pares no basta}
+
+Una objeción natural a los ejemplos de orden alto es que reflejen una matriz
+de compatibilidad artificialmente dispersa. La construcción siguiente la
+elimina.
+
+\begin{teorema}[Compatibilidad completa no implica reconfigurabilidad por pares]
+\label{th:compatibilidad-completa}
+Para todo $h\ge3$ existe un problema de asignación con $h$ tareas,
+compatibilidad física individual completa y restricciones aditivas de
+capacidades tal que la fibra factible contiene exactamente dos asignaciones de
+los AMR pivote y la distancia de revisión entre ellas es $h$.
+\end{teorema}
+
+\begin{proof}
+Cada tarea tiene un AMR ancla fijo y hay $h$ AMR pivote. Con $h$ capacidades
+binarias, el pivote $j$ aporta $p_j=e_j+e_{j-1}$ (índices módulo $h$) y la
+tarea $k$, contada su ancla, necesita el residual $e_k$. Todos los pivotes son
+físicamente compatibles con todas las tareas, pero por capacidad la tarea $k$
+solo puede cubrirse con los pivotes $k$ o $k+1$: el grafo bipartito
+pivote--tarea es el ciclo par $C_{2h}$, que tiene exactamente dos
+emparejamientos perfectos, y difieren en los $h$ pivotes. No hay transición
+factible de orden menor que $h$, y la rotación completa sí es factible. La
+familia se construyó para $h=3,\dots,10$: en todos los casos dos
+emparejamientos y orden mínimo exactamente $h$.
+\end{proof}
+
+\begin{observacion}[La dificultad viene del acoplamiento, no de la dispersión]
+\label{obs:fragmentacion-aleatoria}
+Con seis AMR, tres tareas, dos AMR por tarea, tres capacidades aditivas y
+compatibilidad completa, la fragmentación del grafo de revisión por pares
+aparece sola al apretar la demanda: con holgura $0{,}6$ en dos de mil
+mundos, con $0{,}8$ en el $7{,}9\%$ y con $0{,}9$ en el $10{,}8\%$
+\cite{mayorga2026compendio}. La conexión con \cref{th:saltos} es directa: el
+orden de revisión necesario es una propiedad de la fibra de capacidades, y
+\cref{th:compatibilidad-completa} dice que puede ser arbitrariamente alto sin
+que ningún AMR sea incompatible con nada.
+\end{observacion}
+
+\begin{observacion}[Revisión conjunta medida contra el óptimo enumerado]
+\label{obs:revision-conjunta-r11}
+Con ocho AMR, dos cargas y cuatro miembros por carga hay $\binom84=70$
+particiones, luego el óptimo es enumerable. En cien instancias heterogéneas
+con dos recursos aditivos y eventos que cambian costes, reducen capacidad o
+suben demanda, doce quedan globalmente inviables y se conservan como tales;
+en las ochenta y ocho factibles, el intercambio de un par encuentra el óptimo
+en $75$, hasta dos pares en $86$, y la ampliación adaptativa del orden en
+$88$: trece óptimos adicionales —siete reparaciones que el par no encuentra y
+seis factibles pero subóptimas—, McNemar exacto $p=2^{-12}=2{,}4\times10^{-4}$,
+que sobrevive a Holm \cite{mrob2026r11}. El contraejemplo reproducible es de
+manual: la capacidad de un AMR cae de $(8,8)$ a $(2,2)$, los pares se detienen
+en $48{,}88$ y una revisión conjunta de cuatro llega a $38{,}19$, un $21{,}9\%$
+mejor. Es \cref{th:compatibilidad-completa} con costes: converger bien dentro
+de un vecindario insuficiente no resuelve el problema.
+
+Y el límite, igual de medido. En cien instancias homogéneas los pares ya dan
+$100/100$: ampliar no añade calidad. Y el procedimiento adaptativo que
+certifica que no queda mejora inspecciona en mediana $85$ consultas al
+evaluador frente a $70$ de enumerar directamente: no ha demostrado evitar la
+explosión combinatoria de \cref{th:mohr}, y una búsqueda genérica de
+vecindario variable con los mismos soportes da la misma respuesta en las
+doscientas instancias. La ganancia se atribuye al soporte de revisión, no al
+vocabulario; el aporte pendiente es descubrir el bloque necesario con menos
+consultas que enumerarlo, que es \cref{obs:dicotomia} vuelta problema
+algorítmico.
+\end{observacion}
+
+\begin{observacion}[La frontera positiva: convexidad discreta]
+\label{obs:m-convexo}
+El caso contrario también está caracterizado. Si el dominio de asignaciones es
+M-convexo y el objetivo es una función M-convexa, un punto es óptimo global si
+y solo si ningún intercambio elemental $x\to x-e_i+e_j$ lo mejora
+\cite{murota2003discrete}; si cada intercambio elemental se realiza con una
+revisión de a lo sumo dos AMR, todo terminal por pares es óptimo global y los
+términos topológico y dinámico de \cref{th:descomposicion} son cero. La
+necesidad de orden alto es, por tanto, un indicador de pérdida de estructura
+de intercambio —que las cuotas y capacidades acopladas destruyen— y no un
+objetivo en sí.
+\end{observacion}
+
+\subsection{Cuánto cuesta la reparación mínima}
+
+\begin{proposicion}[Reparación por ranuras con recurso mínimo]
+\label{pr:reparacion-ranuras}
+Si cada requisito es una ranura unitaria y cada AMR ocupa a lo sumo una, tras
+un fallo la reparación con el mínimo número de AMR reasignados es un camino
+aumentante más corto desde la ranura vacía hasta un AMR libre en el grafo
+residual alternante, y se encuentra por búsqueda en anchura en
+$O(|V|+|E|)$.
+\end{proposicion}
+
+\begin{proof}
+Un camino alternante de longitud $h$ induce exactamente $h$ reasignaciones y
+conserva la ocupación de las ranuras intermedias. Recíprocamente, la
+diferencia simétrica entre el emparejamiento incompleto y cualquier reparación
+contiene un camino aumentante desde la ranura vacía hasta un AMR antes libre,
+cuyo número de AMR no excede el recurso de la reparación.
+\end{proof}
+
+\begin{teorema}[La reparación heterogénea mínima es NP-completa]
+\label{th:mohr}
+Sea el problema: dada una tarea con requisitos binarios $b_m=1$, AMR libres
+con capacidades $a_{im}\in\{0,1\}$ y un entero $h$, decidir si existe una
+coalición de a lo sumo $h$ AMR con $\sum_{i\in\Ccal}a_{im}\ge1$ para todo $m$.
+Es NP-completo incluso con una sola tarea, sin batería, sin costes y sin
+restricciones de comunicación; parametrizado por $h$ es W[2]-completo, y su
+versión de minimización hereda la aproximación voraz de factor
+$H_m\le1+\ln m$.
+\end{teorema}
+
+\begin{proof}
+Pertenencia a NP: dada la coalición se verifican las desigualdades en tiempo
+polinomial. Dureza: de recubrimiento de conjuntos \cite{karp1972reducibility},
+cada elemento del universo es un requisito $m$ y cada conjunto $S_i$ un AMR
+con $a_{im}=1$ si y solo si $m\in S_i$; hay recubrimiento de cardinalidad
+$\le h$ si y solo si hay coalición factible de cardinalidad $\le h$. La
+reducción conserva el parámetro, y recubrimiento parametrizado por $h$ es
+W[2]-completo \cite{downey2013fundamentals}.
+\end{proof}
+
+\begin{observacion}[La dicotomía operativa]
+\label{obs:dicotomia}
+Reparación por ranuras o dominio de intercambio convexo: reparación exacta
+local, polinomial, por pares. Capacidades acopladas generales: reparación de
+orden mínimo NP-dura y no tratable en $f(h)\,n^{O(1)}$ salvo colapso
+FPT$=$W[2]. Es la justificación algorítmica de usar $h$ como presupuesto de
+escalada y no como promesa de optimalidad: un bloque óptimo pequeño no hace el
+problema fácil. La caracterización matricial exhaustiva de cuándo basta $h=2$
+queda abierta.
+\end{observacion}
+
+\subsection{Del continuo al atómico con probabilidad}
+
+\begin{proposicion}[Estrechamiento probabilístico continuo--atómico]
+\label{pr:hoeffding}
+Sean decisiones atómicas independientes $S_i$ muestreadas de un perfil
+continuo, con carga $Y_z=\sum_{i=1}^{N}a_{iz}S_{iz}$ sobre cada recurso $z$ y
+$0\le a_{iz}S_{iz}\le\bar a_{iz}$. Si
+\begin{equation}
+  \label{eq:hoeffding}
+  \mathbb E[Y_z]\le C_z-\varepsilon_z,\qquad
+  \varepsilon_z=\sqrt{\tfrac12\sum_i\bar a_{iz}^2\,\log\tfrac{|Z|}{\delta}},
+\end{equation}
+entonces $\Pr\{Y_z\le C_z\ \forall z\}\ge1-\delta$.
+\end{proposicion}
+
+\begin{proof}
+Hoeffding da $\Pr\{Y_z-\mathbb EY_z\ge\varepsilon_z\}\le\exp(-2\varepsilon_z^2/\sum_i\bar a_{iz}^2)=\delta/|Z|$;
+una cota de unión sobre los $|Z|$ recursos concluye. Con doscientas
+decisiones, cuatro recursos y $\delta=0{,}05$ la violación observada por
+recurso es $4\times10^{-4}$ frente a la garantía de $1{,}25\times10^{-2}$.
+\end{proof}
+
+\begin{observacion}[Es el margen de \cref{co:tensado}, en la capa discreta]
+\label{obs:hoeffding-uso}
+El estrechamiento de \cref{co:tensado} convierte covarianza de estado en
+margen geométrico; \eqref{eq:hoeffding} convierte la aleatoriedad del cierre
+atómico en margen de capacidad. Ambos pagan lo mismo —recurso no usado— por
+lo mismo: una garantía en probabilidad sobre lo que el modelo continuo no
+resuelve. Y la cota es conservadora por un orden de magnitud, que es el precio
+de no suponer nada sobre la distribución.
+\end{observacion}
+
+\subsection{Transferencias: cuándo un bloque beneficioso es aceptable}
+
+Que el potencial suba no basta para agentes egoístas: la desviación de dos
+agentes con cambios de utilidad $(2,-1)$ tiene superávit $1>0$ y el segundo la
+rechaza sin compensación.
+
+\begin{proposicion}[Implementabilidad con presupuesto equilibrado]
+\label{pr:implementabilidad-tu}
+Sea $\Ccal$ una coalición que ejecuta un bloque con cambios de utilidad
+pretransferencia $d_i$ y ganancia de potencial $g=\sum_{i\in\Ccal}d_i$. Bajo
+utilidad cuasilineal, existe un vector de transferencias $\theta$ con
+$\sum_i\theta_i=0$ y $d_i+\theta_i>0$ para todo $i$ si y solo si $g>0$; y
+con pesos $w_i>0$ el reparto que maximiza $\sum_iw_i\log s_i$ sujeto a
+$\sum s_i=g$ es $s_i=w_ig/\sum_jw_j$.
+\end{proposicion}
+
+\begin{proof}
+Necesidad: $g=\sum_i(d_i+\theta_i)>0$. Suficiencia: $s_i=w_ig/\sum_jw_j>0$
+y $\theta_i=s_i-d_i$ suman cero. El reparto es la estacionariedad
+$w_i/s_i=\lambda$ del lagrangiano.
+\end{proof}
+
+\begin{corolario}[Equilibrio fuerte de orden $h$ con transferencias]
+\label{co:fuerte-tu}
+Si toda coalición de tamaño $\le h$ puede redistribuir con presupuesto
+equilibrado el cambio de potencial de su bloque, un estado no admite bloques
+factibles de tamaño $\le h$ con ganancia positiva si y solo si ninguna
+coalición de tamaño $\le h$ puede implementar una desviación factible que
+mejore estrictamente a todos sus miembros mediante transferencias.
+\end{corolario}
+
+\begin{observacion}[Dos lecturas que no deben mezclarse]
+\label{obs:flota-vs-estrategico}
+En control de flota, el sistema impone un bloque globalmente beneficioso y
+\cref{co:fuerte-tu} es innecesario. En la lectura estratégica es lo que
+convierte el equilibrio fuerte de \cref{def:fuerte} en un concepto con
+mecanismo: sin transferencias o sin regla eficiente de reparto la equivalencia
+desaparece, y el reparto de \cref{sec:standby} es exactamente ese mecanismo.
+\end{observacion}
+
+\subsection{Guarda robusta de ganancia}
+
+\begin{proposicion}[Aceptar solo lo que sobrevive al error]
+\label{pr:guarda-ganancia}
+Si la ganancia de un bloque se estima con estadísticas locales imperfectas,
+$|\hat g-g|\le\bar\varepsilon_g$ con
+$\bar\varepsilon_g=\sum_kL_k(\epsilon_k+\epsilon_k')+\sum_i\epsilon_i^{c}$
+(constantes de Lipschitz de los valores por tarea y errores de estado y de
+coste), y se aceptan solo bloques con $\hat g\ge\eta+\bar\varepsilon_g$,
+entonces todo bloque aceptado tiene $g\ge\eta$ y el potencial real es monótono.
+\end{proposicion}
+
+\begin{proof}
+$g\ge\hat g-\bar\varepsilon_g\ge\eta$; la cota de $\bar\varepsilon_g$ es la
+desigualdad triangular término a término.
+\end{proof}
+
+\begin{observacion}[El estimador entrega la envolvente, la guarda la usa]
+\label{obs:guarda-envolvente}
+Es la misma lógica que \cref{pr:commit}: cualquier esquema de consenso o
+estimación distribuida que entregue cotas certificadas $\epsilon_k(t)$ bajo
+conectividad conjunta y retardo acotado —el filtro de \cref{sec:estimacion} o
+el observador distribuido de \cref{sec:comunicacion}— se convierte en un
+margen de aceptación. La convergencia del estimador es resultado previo; lo
+que se aporta es usar su envolvente de error como guarda estratégica.
+\end{observacion}
+
+\subsection{Velocidad, no solo alcanzabilidad}
+
+Dos soportes conectados pueden mezclar a velocidades muy distintas. Sobre un
+grafo de revisión finito conectado $G_M=(\mathcal F,E_M)$ con potencial $\Psi$
+y temperatura inversa $\beta$, considérese la cadena reversible con tasas
+$q_{zz'}=a_{zz'}\exp\bigl(\beta(\Psi(z')-\Psi(z))/2\bigr)$, $a_{zz'}=a_{z'z}>0$,
+cuya estacionaria es $\pi(z)\propto e^{\beta\Psi(z)}$.
+
+\begin{teorema}[Disipación exacta de la energía libre]
+\label{th:energia-libre}
+Con $r_t(z)=\mu_t(z)/\pi(z)$ y $c_{zz'}=\pi(z)q_{zz'}=c_{z'z}$,
+\begin{equation}
+  \label{eq:energia-libre}
+  \frac{\mathrm d}{\mathrm dt}D_{\mathrm{KL}}(\mu_t\,\|\,\pi)
+  =-\frac12\sum_{z,z'}c_{zz'}\bigl[r_t(z')-r_t(z)\bigr]\bigl[\log r_t(z')-\log r_t(z)\bigr]\le0 .
+\end{equation}
+\end{teorema}
+
+\begin{proof}
+Derivar $D=\sum_z\mu_z\log r_z$ con conservación de masa da
+$\dot D=\sum_z\dot\mu_z\log r_z$; la ecuación maestra y el balance detallado
+simetrizan el flujo, y $(a-b)(\log a-\log b)\ge0$.
+\end{proof}
+
+\begin{teorema}[La brecha espectral crece con el soporte]
+\label{th:gap-monotono}
+Sean $M_1\subseteq M_2$ dos soportes de revisión sobre la misma fibra y el
+mismo potencial, con los mismos relojes en las aristas comunes y relojes no
+negativos en las adicionales. Con la forma de Dirichlet
+$\mathcal E_M(f,f)=\tfrac12\sum c_{zz'}[f(z')-f(z)]^2$ y
+$\gamma_M=\inf_{\mathrm{Var}_\pi f>0}\mathcal E_M(f,f)/\mathrm{Var}_\pi(f)$,
+se tiene $\gamma_{M_2}\ge\gamma_{M_1}$; si $G_{M_1}$ es desconectado,
+$\gamma_{M_1}=0$, y si $G_{M_2}$ es conectado, $\gamma_{M_2}>0$. Además
+$\lVert\mu_t/\pi-1\rVert_{L^2(\pi)}\le e^{-\gamma_Mt}\lVert\mu_0/\pi-1\rVert_{L^2(\pi)}$
+y $\lVert\mu_t-\pi\rVert_{TV}\le\tfrac12e^{-\gamma_Mt}\lVert\mu_0/\pi-1\rVert_{L^2(\pi)}$.
+\end{teorema}
+
+\begin{proof}
+$\mathcal E_{M_2}=\mathcal E_{M_1}+\tfrac12\sum_{E_2\setminus E_1}c_{zz'}[f(z')-f(z)]^2\ge\mathcal E_{M_1}$
+con la misma $\pi$, y el ínfimo del cociente de Rayleigh conserva la
+desigualdad; en un grafo finito reversible, conectividad equivale a que cero
+sea autovalor simple. Las cotas de mezcla son las estándar de cadenas
+reversibles. Sobre treinta estados con potencial aleatorio, un camino y el
+mismo camino con aristas añadidas: brecha $0{,}0014$ frente a $0{,}638$, y la
+divergencia decrece en cada uno de los treinta instantes muestreados.
+\end{proof}
+
+\begin{proposicion}[Cota de cuatro mecanismos]
+\label{pr:cuatro-mecanismos}
+Sean $\Psi_{\mathrm{rel}}$ el máximo del potencial continuo,
+$\Psi_{\mathrm{IP}}$ el máximo atómico, $\Psi_{C}$ el máximo en la componente
+alcanzable $C$ y $\pi_{\beta,C}$ la estacionaria restringida. Para la cadena
+reversible sobre $C$,
+\begin{equation}
+  \label{eq:cuatro-mecanismos}
+  \Psi_{\mathrm{rel}}-\mathbb E_{\mu_t}[\Psi]\;\le\;
+  \underbrace{\Psi_{\mathrm{rel}}-\Psi_{\mathrm{IP}}}_{\text{relajación}}
+  +\underbrace{\Psi_{\mathrm{IP}}-\Psi_{C}}_{\text{topología}}
+  +\underbrace{\frac{\log|C|}{\beta}}_{\text{temperatura}}
+  +\underbrace{\mathrm{osc}_C(\Psi)\,\lVert\mu_t-\pi_{\beta,C}\rVert_{TV}}_{\text{mezcla}},
+\end{equation}
+y el último término decae al menos como $e^{-\gamma_Mt}$.
+\end{proposicion}
+
+\begin{proof}
+Sumar y restar $\Psi_{\mathrm{IP}}$, $\Psi_C$ y $\mathbb E_\pi[\Psi]$; la cota
+de temperatura $\Psi_C-\mathbb E_{\pi}[\Psi]\le\log|C|/\beta$ es la entropía
+de Gibbs; $|\mathbb E_\pi-\mathbb E_\mu|\le\mathrm{osc}\cdot\lVert\mu-\pi\rVert_{TV}$.
+\end{proof}
+
+\begin{observacion}[Cuatro palancas que suelen mezclarse]
+\label{obs:cuatro-palancas}
+\Cref{pr:cuatro-mecanismos} refina \cref{th:descomposicion} en la capa
+estocástica: mejorar el solver continuo ataca la relajación; ampliar el
+soporte, la topología —y \cref{th:gap-monotono} dice que además acelera—;
+subir $\beta$, la temperatura; esperar, la mezcla. Ni más explotación ni menos
+ruido corrigen una componente equivocada: en los sesenta mundos difíciles del
+banco, el soporte por pares fue desconectado con brecha cero en todos, el
+soporte completo tuvo brecha positiva en todos, y no hubo una sola violación
+de la monotonía $\gamma_{H_3}\ge\gamma_{H_2}$, $\gamma_{H_4}\ge\gamma_{H_3}$;
+las medianas fueron $0$, $1{,}872$, $2{,}725$ y $2{,}523$ para $h=2,3,4$ y
+soporte completo \cite{mayorga2026compendio}. La descomposición exacta sobre
+ciento ochenta mundos da, en el estrato difícil, $3{,}78\%$ de relajación,
+$4{,}32\%$ de topología y $0{,}43\%$ de dinámica, con error de identidad
+inferior a $6\times10^{-17}$: la dinámica por pares agotó su término y quedó
+exactamente sobre el piso topológico.
+\end{observacion}

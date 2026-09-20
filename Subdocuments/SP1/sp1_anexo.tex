@@ -1,0 +1,336 @@
+% NOTA: este fichero se incluye desde sp1.tex tras \appendix.
+% ==========================================================================
+% SP1 · material desplazado fuera del cuerpo del capítulo
+%
+% Se compila como apendice de sp1.tex mediante \input. Recoge, sin perdida,
+% el material que la pasada editorial final retiro del cuerpo. Al integrar el
+% capitulo en el TFM cada bloque puede reubicarse en su destino definitivo:
+%
+%   A. Protocolo Monte Carlo pareado      -> capítulo de metodología
+%   B. Pseudocódigo de CBBA-RB y GRAPE    -> anexo de algoritmos
+%   C. Taxonomía F-I--F-IV y su tabla     -> anexo de métodos
+%   D. Glosario de la familia F-I          -> notación
+%   E. Trazabilidad e hipótesis H1/H5     -> conclusiones
+%   F. Nota de congelación de semillas    -> anexo de reproducibilidad
+%
+% Cada bloque conserva el texto exacto que tenía en el cuerpo.
+% ==========================================================================
+
+% --------------------------------------------------------------------------
+% A. Protocolo Monte Carlo pareado (procedía de SP1, p. 4)
+
+\anxsection{Pseudocódigo de los métodos de N3}{anx:pseudocodigo}
+% --------------------------------------------------------------------------
+\begin{minipage}[t]{.49\linewidth}
+{\scriptsize\textbf{Algoritmo 1. Capacity-CBBA-RB.}\par
+\begin{algorithmic}[1]
+\Require tabla local $R_i$, barreras $h_i[k]$, versión $v_i$
+\State recibir $(k,b,C,v,\tau)$ y descartar versiones antiguas
+\State fusionar ganadores por $(\Delta D,-d,-\tau)$
+\State reconstruir el prefijo de cada $k$ hasta cubrir $m_k$
+\If{$i$ queda fuera del prefijo de $k$}
+  \State $h_i[k]\gets\max\{h_i[k],b_{ik}\}$; liberar $k$
+\EndIf
+\State calcular $r_{ik}=[m_k-\sum_{j\in\widehat C_{ik}}c_j]_+$
+\If{$i$ está libre}
+  \State elegir $k^\star=\arg\max_k(\min\{c_i,r_{ik}\},-d_{ik},-\tau_i)$
+  \State pujar solo si $b_{ik^\star}>h_i[k^\star]$; elevar $v_i$
+\Else
+  \State conservar el registro vigente
+\EndIf
+\State difundir cambios; refresco completo cada $N$ activaciones
+\Ensure coalición candidata, versiones y bytes emitidos
+\end{algorithmic}}
+\end{minipage}\hfill
+\begin{minipage}[t]{.49\linewidth}
+{\scriptsize\textbf{Algoritmo 2. Weighted-/Pair-GRAPE.}\par
+\begin{algorithmic}[1]
+\Require perfil común $a$, fase $q\in\{0,1\}$, contador local
+\State intercambiar $(c_i,d_i[\cdot],v_i)$ y verificar el hash de $a$
+\State calcular la mejor desviación que reduzca $(D,J)$
+\State proponer $(\Delta D,\Delta J,i,a_i',v_i)$ o propuesta nula
+\For{$\ell=1,\ldots,N-2$}
+  \State inundar el máximo por orden total; reintentar hasta 4 veces
+\EndFor
+\State en $\ell=N-1$, aplicar una única propuesta en todos los nodos
+\State incrementar época y difundir versión y hash del perfil
+\If{no hay propuesta y $q=0$ en Pair-GRAPE}
+  \State fijar $q\gets1$; enumerar pares con un vecino
+\ElsIf{no hay propuesta}
+  \State terminar y verificar coincidencia de perfiles
+\Else
+  \State volver a la etapa de propuesta
+\EndIf
+\Ensure perfil terminal común o fallo operacional por desacuerdo
+\end{algorithmic}}
+\end{minipage}
+
+% --------------------------------------------------------------------------
+% C. Taxonomía de familias decisionales de N4 (procedía de SP1, p. 13)
+
+\anxsection{Atlas de reglas y de orden de revisión}{anx:reglas}
+% ------------------------------------------------------------------
+\begin{figure}[H]\centering
+\tikzpanelfit{.98\linewidth}{8.4cm}{figures/n4/n4_order_revision.tex}
+{Orden estratégico y regla de revisión}
+\caption{Vecindades $\mathcal V_1$, $\mathcal V_2$ y $\mathcal V_3$ frente a las
+reglas BR, ASR y LLL.}
+\viuderivedsource{la revisión de \citet{sandholm2010population} y el
+aprendizaje log-lineal de \citet{mardenShamma2012LogLinear}}
+\end{figure}
+
+\begin{figure}[H]\centering
+\tikzpanelfit{.98\linewidth}{11.2cm}{figures/n4/n4_algorithm_atlas_fi.tex}
+{BR, Geo-ASR y Geo-LLL}
+\caption{BR, Geo-ASR y Geo-LLL sobre un mismo estado inicial: regla de selección y
+desviación aceptada dentro de $\mathcal V_1(a)$.}
+\viuderivedsource{la revisión de \citet{sandholm2010population} y el
+aprendizaje log-lineal de \citet{mardenShamma2012LogLinear}}
+\end{figure}
+
+\begin{figure}[H]\centering
+\tikzpanelfit{.98\linewidth}{11.2cm}{figures/n4/n4_algorithm_atlas_coalitional.tex}
+{2BR, C3 y DMIS+TX}
+\caption{2BR y C3 sobre el mismo estado: desviaciones de orden dos y tres. DMIS+TX:
+grafo de conflictos, conjunto independiente y confirmación transaccional con
+versiones.}
+\viuderivedsource{\citet{luby1986MIS} y \citet{grayLamport2006Commit}}
+\end{figure}
+
+% ------------------------------------------------------------------
+% J. Esquema de los comparadores continuos (procedia de SP1, F-II/F-III)
+
+\anxsection{Protocolo experimental y análisis de escala}{anx:escala}
+%    Destino: capitulo comun de metodologia.
+% ------------------------------------------------------------------
+\subsection{Mundos, generadores y contraste pareado}
+
+Los mundos se generan con cinco geometrías normalizadas
+(Figura~\ref{fig:geometrias}) y la Tabla~\ref{tab:protocolo} recoge sus
+parámetros junto con la regla de inferencia. Cada semilla genera un mundo
+independiente. Dentro de un mismo mundo todos los
+métodos reciben los mismos AMR, cargas y parámetros, y el \emph{bootstrap}
+remuestrea mundos completos por celda. Las ejecuciones fallidas o censuradas se
+conservan en los datos, y Holm corrige cada familia de contrastes. Las campañas
+siguen el protocolo Monte Carlo pareado definido en el capítulo de metodología.
+
+\begin{figure}[H]\centering
+\tikzpanel{.98\linewidth}{9.8cm}{figures/compact/fig03_scenarios.tex}
+{Cinco geometrías y retirada de un AMR}
+\caption{Cinco generadores espaciales normalizados y el tratamiento con retirada
+de un AMR.}
+\label{fig:geometrias}
+\viuownsource
+\end{figure}
+
+\begin{table}[H]
+\begin{minipage}[t]{.57\linewidth}
+{\footnotesize
+\textbf{(a) Generadores espaciales.}\par
+\renewcommand{\arraystretch}{1.08}
+\begin{tabularx}{\linewidth}{@{}p{1.55cm}p{3.25cm}X@{}}
+\toprule
+\textbf{Geo.}&\textbf{AMR}&\textbf{Cargas}\\
+\midrule
+Aleatorio&$U([0,L_x]\!\times\![0,L_y])$&igual\\
+Agrupado&uniforme&dos centros + $\mathcal N(0,\Sigma)$\\
+Separado&$x\le.35L_x$&$x\ge.65L_x$\\
+Anillo&$r\in[.36,.48]L$&$r\in[.04,.22]L$\\
+Pasillo&$\sigma_y=.04L_y$&$\sigma_y=.08L_y$\\
+\bottomrule
+\end{tabularx}
+\par\smallskip
+Agrupado, Anillo y Pasillo aplican \texttt{clip}; la retirada de un AMR conserva
+la geometría Aleatorio.
+}
+\end{minipage}\hfill
+\begin{minipage}[t]{.39\linewidth}
+{\footnotesize
+\textbf{(b) Regla estadística común.}\par
+\renewcommand{\arraystretch}{1.08}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{1.9cm}>{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Respuesta}&\textbf{Inferencia}\\
+\midrule
+Binaria&riesgo pareado; \mbox{McNemar}\\
+Continua&mediana + IC \emph{bootstrap}; signo\\
+Tres o más&Friedman + Kendall $W$\\
+Censura&tiempo truncado; \mbox{supervivencia}\\
+\bottomrule
+\end{tabularx}%
+}%
+\end{minipage}
+\caption{(a) Parámetros de los cinco generadores espaciales. (b) Regla de
+inferencia aplicada según el tipo de respuesta.}
+\label{tab:protocolo}
+\viuownsource
+\end{table}
+
+% ------------------------------------------------------------------
+% M. Sensibilidad de P(h_c* > 3) (procedia del cuerpo, N4.E9)
+% ------------------------------------------------------------------
+
+\anxsection{Sensibilidad del primer escape conectado}{anx:sensibilidad}
+
+Esos \NFourHStarGtThreeN{} casos se concentran en presión alta y capacidad
+homogénea. Dentro del bloque confirmatorio, que fija $N/K=\NFourMainBlockNk$, la
+proporción sin escape detectado fue del \NFourNoEscRhoHigh\,\% con
+$\rho=0{,}85$ y del \NFourNoEscRhoLow\,\% con $\rho=0{,}70$
+($n=\NFourNoEscRhoHighN$ por nivel), y del \NFourNoEscCvZero\,\% con
+$\mathrm{CV}=0$, mientras que en los tres niveles de dispersión
+restantes no pasó del \NFourNoEscCvMid\,\%
+($n=\NFourNoEscCvZeroN$ por nivel).
+
+La relación $N/K$ se barre en un bloque de sensibilidad aparte, de
+\NFourRatioBlockN{} mundos, así que sus cifras no comparten denominador con las
+anteriores: \NFourNoEscNkTwo\,\% con $N/K=2$, \NFourNoEscNkThree\,\% con $N/K=3$ y
+\NFourNoEscNkFour\,\% con $N/K=4$ ($n=\NFourNoEscNkTwoN$ por nivel). Dentro de
+ese bloque, la tasa sin escape disminuye de forma marcada al pasar de dos a cuatro
+AMR por carga; no se compara con CV ni con la presión, que provienen de otro
+diseño.
+
+Los dos bloques responden a diseños distintos: el confirmatorio fija
+$N/K=\NFourMainBlockNk$ y barre CV y presión, mientras que el de sensibilidad
+barre $N/K$. Sus porcentajes no son términos de una misma descomposición.
+
+% ------------------------------------------------------------------
+% N. Formulacion de los comparadores continuos (procedia del cuerpo)
+% ------------------------------------------------------------------
+
+\anxsection{Formulación de los comparadores continuos}{anx:formulacion}
+
+\begin{minipage}[t]{.49\linewidth}
+\textbf{Dinámicas poblacionales}
+\citep{sandholm2010population,quijano2017population}.
+Cada AMR reparte una unidad de masa entre las $K+1$ opciones, con $x_i$ en el
+símplex $\mathcal X_i$. La cobertura es $Q_k(x)=\sum_ic_i^{\rm pay}x_{ik}$, el
+déficit relativo $r_k=[1-Q_k(x)/m_k]_+$ y $\overline{d}_{ik}$ la distancia
+normalizada. Con ellos:
+\begin{equation}
+\begin{aligned}
+\label{eq:n4-fii-potential}
+\widetilde\Phi(x)&=-\frac{\alpha}{2}\sum_kr_k(x)^2
+-\frac{\beta}{N}\sum_{i,k}\overline{d}_{ik}x_{ik},\\[-1mm]
+F_{ik}&=\partial_{x_{ik}}\widetilde\Phi .
+\end{aligned}
+\tag{7}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\dot x_{ik}^{\rm Rep}&=x_{ik}(F_{ik}-\overline{F}_i),\\
+\dot x_{ik}^{\rm Smith}&=\sum_qx_{iq}[F_{ik}-F_{iq}]_+
+\\[-1mm]&\quad-x_{ik}\sum_q[F_{iq}-F_{ik}]_+,\\
+\dot x_{ik}^{\rm BNN}&=[F_{ik}-\overline{F}_i]_+
+\\[-1mm]&\quad-x_{ik}\sum_q[F_{iq}-\overline{F}_i]_+,\\
+\dot x_{ik}^{\rm Logit}&=
+\frac{e^{F_{ik}/\tau}}{\sum_qe^{F_{iq}/\tau}}-x_{ik}.
+\end{aligned}
+\tag{8}
+\end{equation}
+$\overline{F}_i=\sum_qx_{iq}F_{iq}$ es el pago medio de $i$ y $\overline{d}_{ik}=d_{ik}/\max_{j,q}d_{jq}$.
+\end{minipage}\hfill
+\begin{minipage}[t]{.49\linewidth}
+\textbf{Primal-dual con restricción compartida.}
+\begin{equation}
+\begin{aligned}
+g_k(x)&=1-\frac{Q_k(x)}{m_k}\le0,\\[-1mm]
+J_i&=\frac1N\sum_k\overline{d}_{ik}x_{ik}+\frac\epsilon2\|x_i\|^2 .
+\end{aligned}
+\tag{9}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\min_{x_i\in\mathcal X_i}\quad&J_i(x_i)\\[-1mm]
+\mathrm{s.a.}\quad&g(x)\le0,\qquad i=1,\ldots,N .
+\end{aligned}
+\tag{10}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\dot x_i&=\Pi_{T_{\mathcal X_i}}[-\nabla_{x_i}\mathcal L_i],\\[-1mm]
+\dot\lambda_k&=\Pi_{T_{\mathbb R_+}}[g_k(x)] .
+\end{aligned}
+\tag{11}
+\label{eq:n4-primal-dual}
+\end{equation}
+con $\mathcal L_i=J_i(x_i)+\lambda^{\!\top}g(x)$.
+\begin{equation}
+\begin{aligned}
+\dot\lambda_{ik}&=\Pi_{T_{\mathbb R_+}}
+\!\bigl[\widehat g_{ik}\\[-1mm]
+&\qquad-\gamma\!\sum_{j\in\mathcal N_i}
+(\lambda_{ik}-\lambda_{jk})\bigr].
+\end{aligned}
+\tag{12}
+\label{eq:n4-consensus}
+\end{equation}
+$\widehat g_{ik}$ es la estimación local que $i$ mantiene de $g_k$.
+\begin{equation}
+\label{eq:n4-kkt}
+\begin{gathered}
+0\in\mathbf F(x^\star)+\nabla g(x^\star)^\top\lambda^\star
++N_{\mathcal X}(x^\star),\\
+g(x^\star)\le0,\ \lambda^\star\ge0,\ 
+{\lambda^\star}^{\!\top}g(x^\star)=0 .
+\end{gathered}
+\tag{13}
+\end{equation}
+$\mathbf F(x)=(\nabla_{x_i}J_i(x))_{i}$ es el pseudogradiente y $N_{\mathcal X}$ el
+cono normal a $\mathcal X=\prod_i\mathcal X_i$.
+\end{minipage}
+
+% ------------------------------------------------------------------
+% O. Nota de interfaz SP1 -> SP2 (procedia de la sintesis)
+% ------------------------------------------------------------------
+
+\anxsection{Orden conectado frente a mejora}{anx:hstar}
+% ------------------------------------------------------------------
+\begin{figure}[H]\centering
+\pdfpanel{.90\linewidth}{5.2cm}{assets/figures/n4-v4/n4_hstar_gap_link.pdf}
+{Orden conectado frente a mejora}
+\caption{Mejora de brecha por categoría de $h_c^\star$, sobre los
+\NFourHStarLinkN{} mundos en que BR terminó con salida factible y las tres brechas
+quedan definidas. Con $h_c^\star=3$ ($n=\NFourHStarLinkThreeN$) y sin escape
+detectado ($n=\NFourHStarLinkGtThreeN$) se muestran las observaciones
+individuales, no una densidad estimada.}
+\viuownsource
+\end{figure}
+
+% ------------------------------------------------------------------
+% L. Protocolo experimental de SP1 (procedia del cuerpo, p. 3)
+
+% ------------------------------------------------------------------
+% destino: documentación de interfaz SP1--SP2
+% ------------------------------------------------------------------
+
+
+\anxsection{Diagnóstico post hoc de conectividad}{anx:conectividad}
+
+Como diagnóstico posterior a la campaña se comprobó si una medida agregada de
+densidad basta para ordenar los regímenes. Sobre el área de trabajo $A=L_xL_y$,
+la escala de conectividad de los grafos geométricos aleatorios
+\citep{penrose2003RandomGeometric} sugiere el índice adimensional
+$\Gamma_R=\pi NR^2/(A\log N)$, que aquí no es un umbral, y ese índice no separa
+los regímenes. Mundos etiquetados igual ocupan
+rangos solapados, porque cuatro de los cinco generadores no reparten los AMR de
+forma uniforme y la geometría cambia la densidad efectiva a igualdad de
+multiplicador.
+
+La conectividad algebraica tampoco los separa mundo a mundo. Con $L_G$ el
+laplaciano del grafo de comunicación, $\lambda_2(L_G)$ ---su segundo autovalor más
+pequeño--- crece cuanto más fuertemente unida está la red. Decrece de forma
+monótona en mediana al ralear el grafo, pero los rangos de dos regímenes
+contiguos se solapan igual que los de $\Gamma_R$. Lo que sí tiene, y
+$\Gamma_R$ no, es una propiedad exacta: vale cero si y solo si el grafo está
+desconectado. La etiqueta de régimen describe
+entonces una consigna de diseño experimental. No mide la conectividad que cada
+mundo acaba teniendo.
+
+% ------------------------------------------------------------------
+% Q. Preguntas por nivel (procedia del cuerpo; destino: conclusiones)
+% ------------------------------------------------------------------
+
+% ------------------------------------------------------------------
+% destino: capítulo de conclusiones
+% ------------------------------------------------------------------
+

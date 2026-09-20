@@ -1,24 +1,24 @@
 # Stage 2 full-text acquisition QA
 
-Run UTC: 2026-09-12T22:13:27.033800+00:00
+Run UTC: 2026-09-13T22:46:57.596799+00:00
 
 ## Frozen inputs and access policy
 
-- Stage 1C queue SHA-256: `e61c7187d2434bbbe13599f8b6392a8693c01414b9e40f335de65685cc3e3ae8`
-- Stage 1C corpus SHA-256: `02ebed7559b0749783c8610f5399ed9733aa198c213aa2a76d5748ba01adc4d8`
+- Stage 1C queue SHA-256: `37e6700972c0f625a8dc8bbea58914073d4031d27158cec495bf2ffb4c4146d4`
+- Stage 1C corpus SHA-256: `2296f21702b01e20cb9e5fedccc744bc497f18a4e2c215060f542b6dc7ca783d`
 - Stage 2 configuration SHA-256: `9850b6104b5916eef3dca0ab3c4921a311d96d3073535113ddae2acbdcfd03a2`
-- Queue records processed: **1057**
+- Queue records processed: **1150**
 - Access policy: **legal/open public routes only**; no credentials, proxy, paywall bypass, or robots restriction override.
 - Metadata routes: OpenAlex OA locations and Crossref public links; DOI landing pages are not treated as OA routes.
 
 ## Acquisition statuses
 
-- `abstract_only`: **30**
-- `acquired_html`: **86**
-- `acquired_pdf`: **144**
+- `abstract_only`: **123**
+- `acquired_html`: **96**
+- `acquired_pdf`: **148**
 - `acquired_xml`: **0**
 - `retrieval_error`: **21**
-- `unavailable_legally`: **776**
+- `unavailable_legally`: **762**
 
 Acquired objects are retained only when the candidate DOI or title is observed
 in the extracted PDF/HTML/XML. Mismatched objects and objects without
@@ -26,11 +26,11 @@ extractable identity are not promoted to the local corpus.
 
 ## Identity and sources
 
-- Identity statuses: `identity_verified_doi`=149, `identity_verified_title`=81, `not_applicable`=827
-- Verified acquired objects: **230**
-- Acquired file bytes: **422,905,524**
-- Top final source hosts: `link.springer.com`=88, `arxiv.org`=26, `ieeexplore.ieee.org`=19, `pmc.ncbi.nlm.nih.gov`=8, `xplorestaging.ieee.org`=7, `www.frontiersin.org`=6, `hal.science`=5, `www.cambridge.org`=5, `www.roboticsproceedings.org`=4, `ojs.aaai.org`=3, `publications.ri.cmu.edu`=3, `www.nature.com`=2
-- API events: **9**; terminal API failures: **0**
+- Identity statuses: `identity_verified_doi`=161, `identity_verified_title`=83, `not_applicable`=906
+- Verified acquired objects: **244**
+- Acquired file bytes: **444,582,094**
+- Top final source hosts: `link.springer.com`=97, `arxiv.org`=26, `ieeexplore.ieee.org`=18, `xplorestaging.ieee.org`=10, `pmc.ncbi.nlm.nih.gov`=8, `www.frontiersin.org`=7, `hal.science`=5, `www.cambridge.org`=5, `www.roboticsproceedings.org`=4, `ojs.aaai.org`=3, `publications.ri.cmu.edu`=3, `journals.plos.org`=2
+- API events: **112**; terminal API failures: **0**
 
 ## Validation
 

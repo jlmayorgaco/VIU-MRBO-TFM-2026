@@ -1,0 +1,49 @@
+{
+  "audit_skill": "citation-audit",
+  "verdict": "ERROR",
+  "reason_code": "reviewer_error_after_root_verification",
+  "summary": "Las 21 citas pasaron la comprobación local de existencia, metadatos y contexto, pero el revisor fresco independiente no emitió dictamen.",
+  "audited_input_hashes": {
+    "references.bib": "sha256:fcfeb6f54abfb1f16a39862ad8166c57044a77d18330d9e67b1b7469b92b5d77",
+    "sp2.tex": "sha256:8790b7f6a5de4db424a6ef961b5e7707c45a28783c69efc85ee0a77a383cf021",
+    "n4_controller_benchmark.tex": "sha256:289a6b211be79f88b460296faba2e890b1d04a92c2df7f42c06c91c429e3276c",
+    "cargo_e2e_integration.tex": "sha256:227c2358a922f37239dcc27d4c0ec6622a9a4721759fbd48e6b1e578d98d47b6"
+  },
+  "trace_path": ".aris/traces/citation-audit/2026-08-20_run01/",
+  "thread_id": "/root/sp2_citation_audit",
+  "reviewer_model": "gpt-5.4",
+  "reviewer_reasoning": "xhigh",
+  "generated_at": "2026-08-21T02:06:52.3517166Z",
+  "details": {
+    "total_entries": 21,
+    "counts": {
+      "KEEP": 21,
+      "FIX": 0,
+      "REPLACE": 0,
+      "REMOVE": 0
+    },
+    "per_entry": [
+      {"key":"activmedia2003pioneer","verdict":"KEEP","axis_failures":[],"note":"Manual primario; URL verificada mediante índice web."},
+      {"key":"alonsomora2017transport","verdict":"KEEP","axis_failures":[]},
+      {"key":"ames2017cbf","verdict":"KEEP","axis_failures":[]},
+      {"key":"bicchi1995closure","verdict":"KEEP","axis_failures":[]},
+      {"key":"bullo2009distributed","verdict":"KEEP","axis_failures":[]},
+      {"key":"carlone2011linearGraphSlam","verdict":"KEEP","axis_failures":[]},
+      {"key":"desai2001formation","verdict":"KEEP","axis_failures":[]},
+      {"key":"fink2008caging","verdict":"KEEP","axis_failures":[]},
+      {"key":"grisetti2007gridMapping","verdict":"KEEP","axis_failures":[]},
+      {"key":"howard2005multirobotSlam","verdict":"KEEP","axis_failures":[]},
+      {"key":"kalman1960optimal","verdict":"KEEP","axis_failures":[]},
+      {"key":"kia2019dynamicConsensus","verdict":"KEEP","axis_failures":[]},
+      {"key":"lee2025switching","verdict":"KEEP","axis_failures":[]},
+      {"key":"mayne2000mpc","verdict":"KEEP","axis_failures":[]},
+      {"key":"nakamura1989dynamics","verdict":"KEEP","axis_failures":[]},
+      {"key":"olson2011apriltag","verdict":"KEEP","axis_failures":[]},
+      {"key":"ortega2002passivity","verdict":"KEEP","axis_failures":[]},
+      {"key":"pereira2004caging","verdict":"KEEP","axis_failures":[]},
+      {"key":"ren2004virtual","verdict":"KEEP","axis_failures":[]},
+      {"key":"rosenfelder2024force","verdict":"KEEP","axis_failures":[],"note":"Año de volumen 2024; publicación en línea registrada por Crossref en 2023."},
+      {"key":"yoshikawa1993coordinated","verdict":"KEEP","axis_failures":[]}
+    ]
+  }
+}

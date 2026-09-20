@@ -1,0 +1,11 @@
+schema_version: 1
+family: F2_scarce_priority
+description: Demanda por encima de la capacidad nominal con prioridades no uniformes.
+parameters:
+  demand_pressure: 1.20
+  heterogeneity: 0.22
+  compatibility_probability: 0.86
+  communication_degree: 5
+  shapes: [circle, rectangle]
+  route_turns: [0.0, 1.5707963267948966]
+  wrench_tolerance: 0.08

@@ -1,0 +1,150 @@
+\section{Información como recurso, y tres precisiones necesarias}
+\label{sec:informacion2}
+
+Las secciones anteriores tratan la información como restricción —quién habla con
+quién— pero no como \emph{recurso} que la coalición pueda adquirir. Esta sección
+cierra esa asimetría y, de paso, precisa tres puntos donde los enunciados
+previos admiten una lectura más fuerte de la que sostienen.
+
+\subsection{Reducir incertidumbre amplía lo certificable}
+
+Los parámetros de la carga —masa $m_\ell$, inercia $I_\ell$, coeficiente de
+fricción— rara vez se conocen con exactitud. Sea $\Theta$ el conjunto de
+parámetros compatibles con lo observado y
+\begin{equation}
+  \Kcal(d,X;\Theta)\defeq\bigcap_{\theta\in\Theta}\Kcal(d,X;\theta)
+  \label{eq:factibilidad-robusta}
+\end{equation}
+la factibilidad robusta de un compromiso $d$: las acciones válidas para
+\emph{todo} parámetro compatible.
+
+\begin{proposicion}[Monotonía de la información]
+\label{pr:monotonia-info}
+A estado y problema congelados, $\Theta_2\subseteq\Theta_1$ implica
+$\Kcal(d,X;\Theta_1)\subseteq\Kcal(d,X;\Theta_2)$.
+\end{proposicion}
+
+\begin{proof}
+Una acción válida para todo $\theta\in\Theta_1$ lo es en particular para todo
+$\theta$ de cualquier subconjunto. La inclusión de conjuntos invierte el sentido
+al intersecar sobre menos índices.
+\end{proof}
+
+El enunciado es elemental y su consecuencia no lo es: \textbf{reducir incertidumbre válida amplía el conjunto de
+continuaciones certificables sin añadir un solo AMR}. Con velocidad $1$~m/s y fuerza de frenado $60$~N, una masa desconocida en
+$[50,150]$~kg obliga a reservar $1{,}25$~m de distancia de parada; si la
+observación estrecha el intervalo a $[70,90]$~kg, bastan $0{,}75$~m. La
+información no crea capacidad física: elimina conservadurismo.
+
+\begin{corolario}[Medir es una acción del juego]
+\label{co:medir}
+La parte discreta $d_i$ de \cref{def:estrategia} admite una acción adicional
+—ejecutar una maniobra informativa— cuyo pago es la ampliación de
+$\Kcal(d,X;\Theta)$ que produce, y cuyo coste es el tiempo y el riesgo de la
+maniobra. La decisión «reclutar otro AMR» y la decisión «demostrar que los
+actuales bastan» compiten en el mismo potencial.
+\end{corolario}
+
+\begin{observacion}[Seguir bien no es haber identificado]
+\label{obs:identificacion}
+Que la carga siga la trayectoria con error pequeño no implica que sus parámetros
+sean identificables. Con el regresor planar
+$\bigl[F_x,F_y,T_z\bigr]^{\!\top}=Y_\ell\,[m_\ell,I_\ell]^{\!\top}+\epsilon$ y
+maniobras puramente rectilíneas, la columna asociada a $I_\ell$ es nula y la
+inercia angular no se identifica por bien que se siga la recta. Análogamente,
+$|f_t|\le\mu N$ durante adherencia da una \emph{cota inferior} de $\mu$, no su
+valor. Una maniobra informativa debe además ser físicamente segura: su coste y
+su riesgo entran en la misión, y no puede añadirse un término de exploración
+suponiendo que todo movimiento informativo está permitido.
+\end{observacion}
+
+\subsection{Precisión 1: el orden de los cuantificadores}
+
+\Cref{th:robusto} afirma $S_W\Wdem+\delta\mathbb B\subseteq\mathcal W(\Ccal)$, es
+decir: \emph{para toda} perturbación admisible \emph{existe} un reparto que la
+realiza. Ese es el orden $\forall\theta\,\exists u$, correcto cuando la
+perturbación se \emph{mide} y el programa se resuelve de nuevo con ella.
+
+No es el orden que hace falta cuando el reparto debe fijarse antes de conocer la
+perturbación. Entonces se requiere $\exists u\,\forall\theta$, estrictamente más
+fuerte y en general no implicado por el anterior.
+
+\begin{observacion}[Los dos órdenes no son equivalentes]
+\label{obs:cuantificadores}
+Con $u\in[-2,2]$ y $\theta\in\{-1,+1\}$, la restricción $\theta u\ge1$ es
+factible para cada $\theta$ por separado —$u=-2$ sirve para $\theta=-1$ y $u=2$
+para $\theta=+1$— y ningún $u$ la satisface para ambos. Certificar una coalición
+comprobando cada escenario con un control distinto produce un certificado falso
+si el escenario no será conocido en el momento de actuar.
+\end{observacion}
+
+\subsection{Precisión 2: un grafo dirigido acuerda, pero acuerda mal}
+
+\Cref{th:mapa} supone grafo no dirigido, y la hipótesis no es cosmética. Bajo
+$\dot x=-Lx$ con digrafo fuertemente conexo, el estado converge a
+$\mathbf 1\pi^{\!\top}x(0)$ con $\pi^{\!\top}L=0$; la media aritmética se
+conserva solo si el grafo es balanceado en peso.
+
+\begin{observacion}[Acuerdo sobre el valor equivocado]
+\label{obs:digrafo}
+Con
+$L=\bigl[\begin{smallmatrix}1&-1&0\\0&1&-1\\-2&0&2\end{smallmatrix}\bigr]$ se
+obtiene $\pi=(0{,}4,\,0{,}4,\,0{,}2)$; partiendo de $x(0)=(0,0,9)$ los tres
+agentes convergen a $1{,}8$, mientras la media es $3$. Todos coinciden y todos
+se equivocan. Si ese valor alimenta la minimización de
+$\Phi(z)=\tfrac12\sum_i(z-a_i)^2$, el exceso de coste es $2{,}16$.
+La consecuencia para \cref{th:mapa} y para el acuerdo de precios de
+\cref{th:precio-seguridad} es que \emph{no basta comprobar que las copias convergen}: hay que demostrar que el agregado al que convergen es el que el
+objetivo social requiere. El árbol generador de \cref{th:topologia-garantizada}
+debe entenderse, por tanto, como subgrafo no dirigido.
+\end{observacion}
+
+\subsection{Precisión 3: el mercado no es un descenso, es un punto de silla}
+
+\Cref{th:muestreada} presenta la actualización de precios como descenso de
+gradiente sobre la función dual $F$, y como tal converge para
+$0<\gamma<2/L$. Esa lectura es válida cuando $\nabla F$ se evalúa de forma
+exacta, es decir, resolviendo el problema primal interior hasta optimalidad en
+cada paso.
+
+Una implementación distribuida rara vez hace eso: actualiza primal y dual
+simultáneamente. El operador conjunto
+\begin{equation}
+  F(u,\lambda)=
+  \begin{pmatrix}\nabla\Phi(u)+A^{\!\top}\lambda\\ b-Au\end{pmatrix}
+  \label{eq:operador-silla}
+\end{equation}
+tiene parte antisimétrica y \emph{no} es el gradiente de ninguna función en el
+par de variables.
+
+\begin{proposicion}[El paso de Euler simultáneo diverge]
+\label{pr:euler-diverge}
+Para la silla $\mathcal L(x,\lambda)=x\lambda$, el paso explícito
+$z^{k+1}=z^k-hF(z^k)$ satisface $\|z^{k+1}\|^2=(1+h^2)\|z^k\|^2$, luego diverge
+para todo $h>0$. El paso extragradiente
+$y^k=z^k-hF(z^k)$, $z^{k+1}=z^k-hF(y^k)$ satisface
+$\|z^{k+1}\|^2=(1-h^2+h^4)\|z^k\|^2$, que decrece para $0<h<1$.
+\end{proposicion}
+
+\begin{proof}
+Con $F(x,\lambda)=(\lambda,-x)$, el paso explícito da
+$z^{+}=\bigl((x-h\lambda),(\lambda+hx)\bigr)$ y desarrollando el cuadrado los
+términos cruzados se cancelan, quedando $(1+h^2)\|z\|^2$. Para el
+extragradiente, $F(y)=(\lambda+hx,\,-x+h\lambda)$ y
+$z^{+}=\bigl((1-h^2)x-h\lambda,\ hx+(1-h^2)\lambda\bigr)$, cuyo cuadrado es
+$\bigl[(1-h^2)^2+h^2\bigr]\|z\|^2=(1-h^2+h^4)\|z\|^2$.
+\end{proof}
+
+Numéricamente, con $h=0{,}4$ y norma inicial unidad, tras sesenta iteraciones el
+paso explícito alcanza $85{,}85$ y el extragradiente $1{,}3\times10^{-2}$.
+
+\begin{observacion}[Consecuencia de diseño]
+\label{obs:extragradiente}
+Antes de atribuir una oscilación de precios a la física del contacto o a la
+dinámica poblacional conviene auditar el esquema de integración del lazo
+primal--dual. El extragradiente no es una aportación de este trabajo: es una
+familia establecida para desigualdades variacionales. Lo que aquí se afirma es
+que \cref{th:muestreada} cubre el caso de gradiente dual exacto y \emph{no} el
+de actualización simultánea, y que en ese segundo caso hace falta un esquema con
+paso predictor--corrector.
+\end{observacion}

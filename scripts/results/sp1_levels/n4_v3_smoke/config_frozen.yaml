@@ -1,0 +1,108 @@
+schema_version: sp1-n4-cross-family-v3
+campaign_id: SP1_N4_CROSS_FAMILY_v3_SMOKE
+status: frozen_before_run
+created_utc: 2026-08-14
+static:
+  source_directory: scripts/results/sp1_levels/n4_v1
+  source_worlds: raw/e3_confirmatory_worlds.csv
+  source_runs: scripts/results/sp1_levels/n4_v2/raw/e4_family_runs.csv
+  q_bar_kg: 5.0
+  workspace_m:
+  - 100.0
+  - 100.0
+  demand_split_alpha: 3.0
+  graph_regime: medium
+  max_worlds: 8
+  existing_methods:
+  - capacity_cbba_rb
+  - weighted_grape
+  - weighted_pair_grape
+  - geo_qpg_u
+  - geo_qpg_p
+  - geo_qpg_c3
+  - geo_qpg_d
+  population_methods:
+  - replicator
+  - smith
+  - bnn
+  - logit
+  population:
+    deficit_penalty: 24.0
+    distance_weight: 1.0
+    temperature: 0.15
+    max_iterations: 300
+    tolerance: 0.001
+    consensus_tolerance: 0.001
+    history_stride: 100
+    step_by_method:
+      replicator: 0.002
+      smith: 0.002
+      bnn: 0.002
+      logit: 0.002
+  closure:
+    max_chain_length: 8
+    max_nodes_per_augmentation: 5000
+    candidates_per_load: 16
+  vgNE:
+    regularization: 0.02
+    central_max_iterations: 1000
+    distributed_max_iterations: 500
+    tolerance: 0.0005
+    primal_step: 0.08
+    dual_step: 0.025
+    history_stride: 100
+dynamic:
+  base_seed: 2026081489
+  robot_count: 5
+  load_count: 3
+  q_bar_kg: 5.0
+  workspace_m:
+  - 100.0
+  - 100.0
+  demand_split_alpha: 3.0
+  capacity_cv: 0.65
+  pressure: 0.65
+  graph_regime: medium
+  scenarios:
+  - uniform
+  - corridor
+  seeds_per_scenario: 1
+  gamma: 0.95
+  deficit_weight: 20.0
+  distance_weight: 1.0
+  switch_weight: 0.75
+  max_rounds: 2048
+  max_oracle_states: 20000
+analysis:
+  independent_unit: world_seed
+  confidence_level: 0.95
+  bootstrap_resamples: 400
+  bootstrap_seed: 2026081499
+  multiplicity: Holm_by_question_family
+  static_endpoint: atomic_assignment_after_common_closure
+  continuous_ranking: higher_potential_is_better
+  atomic_ranking: feasible_first_then_lower_MILP_gap
+hypotheses:
+  RQ_D:
+    question: Does the continuous ranking of F-II survive the common atomic closure?
+    null: continuous and post-closure winners coincide in every paired world
+  RQ_E:
+    question: Do distributed dual prices improve post-closure realizability at high
+      pressure?
+    contrast: distributed_pd_vgne_R minus fii_smith_R
+    high_pressure: 0.85
+  RQ_F:
+    question: What quality-communication-computation frontier is observed across F-I
+      to F-III?
+  RQ_G:
+    question: Does future-event information improve over myopic static re-solving?
+    comparison: perfect_foresight_dp versus myopic_cold and event_triggered_warm
+limitations:
+- F-II uses dynamic average consensus on a static connected N3 graph.
+- F-III convergence is accepted only when primal, dual, complementarity, stationarity
+  and consensus residuals jointly pass.
+- The common atomic closure is a bounded deterministic heuristic, not an exact integer
+  solver.
+- F-IV is a repeated potential-game pilot with exogenous events, not a claimed Markov
+  potential game.
+- The dynamic oracle is central, finite-horizon and restricted to small state spaces.

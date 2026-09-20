@@ -1,0 +1,21 @@
+{
+  "generated_at_utc": "2026-09-14T21:38:55.951566+00:00",
+  "script": "academic-review/scripts/build_v3_full_corpus_bibliometrics.py",
+  "input": "literature-review-v3/data/analytic_corpus_v3.csv",
+  "input_sha256": "0398ef95ef421c021a0fbf2d8f2c4dfbf117d1ba664e75b8bb982cf68a36d297",
+  "outputs": {
+    "literature-review-v3/compact-7p-full/figures/fig04_academic_trends_full_corpus.pdf": "0705a97b1cb141e0a32a24db148be962b2093fc8e56f77f9bb2241ad7e615f3f",
+    "literature-review-v3/compact-7p-full/figures/fig08_bibliometric_clusters_full_corpus.pdf": "bb0e9eefc6a2acaddbc0a4fe72fe5052374c230551363fc78a7afdd9ece3dda8",
+    "literature-review-v3/compact-7p-full/data/full_corpus_bibliometric_metrics.json": "55e3f4d463244e1e3d38b088dbaeb69aa10452f3c4fe6386fc64929c01490d2f"
+  },
+  "parameters": {
+    "diversity_window_years": 3,
+    "diversity_normalizer": "log(7)",
+    "author_recurrence_threshold": 2,
+    "author_component_minimum_size": 3,
+    "topic_edge_minimum_cooccurrence": 2,
+    "topic_community_algorithm": "networkx.louvain_communities",
+    "topic_community_seed": 20260914,
+    "topic_community_resolution": 1.0
+  }
+}

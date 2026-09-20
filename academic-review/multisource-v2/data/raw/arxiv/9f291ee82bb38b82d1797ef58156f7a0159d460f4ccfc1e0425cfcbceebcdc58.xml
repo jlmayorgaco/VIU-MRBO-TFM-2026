@@ -1,0 +1,595 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/G2acvO+TRbndFvXQ26mzJ4PuCcs</id>
+  <title>arXiv Query: search_query=all:heterogeneous AND all:multi-robot AND all:task AND all:allocation&amp;id_list=&amp;start=0&amp;max_results=25</title>
+  <updated>2026-09-13T02:11:22Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=all:heterogeneous+AND+(all:multi-robot+AND+(all:task+AND+all:allocation))&amp;start=0&amp;max_results=25&amp;id_list=" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>25</opensearch:itemsPerPage>
+  <opensearch:totalResults>87</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/2006.15482v2</id>
+    <title>Robot Inner Attention Modeling for Task-Adaptive Teaming of Heterogeneous Multi Robots</title>
+    <updated>2021-03-14T20:19:14Z</updated>
+    <link href="https://arxiv.org/abs/2006.15482v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2006.15482v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Attracted by team scale and function diversity, a heterogeneous multi-robot system (HMRS), where multiple robots with different functions and numbers are coordinated to perform tasks, has been widely used for complex and large-scale scenarios, including disaster search and rescue, site surveillance, and social security. However, due to the variety of the task requirements, it is challenging to accurately compose a robot team with appropriate sizes and functions to dynamically satisfy task needs while limiting the robot resource cost to a low level. To solve this problem, in this paper, a novel adaptive cooperation method, inner attention (innerATT), is developed to flexibly team heterogeneous robots to execute tasks as task types and environment change. innerATT is designed by integrating a novel attention mechanism into a multi-agent actor-critic reinforcement learning architecture. With an attention mechanism, robot capability will be analyzed to flexibly form teams to meet task requirements. Scenarios with different task variety ("Single Task", "Double Task", and "Mixed Task") were designed. The effectiveness of the innerATT was validated by its accuracy in flexible cooperation.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2020-06-28T01:25:35Z</published>
+    <arxiv:comment>submission for the Robotics Science and Systems (RSS) 2020 workshop -- Heterogeneous Multi-Robot Task Allocation and Coordination</arxiv:comment>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Chao Huang</name>
+    </author>
+    <author>
+      <name>Rui Liu</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2009.04593v2</id>
+    <title>Resilient Task Allocation in Heterogeneous Multi-Robot Systems</title>
+    <updated>2021-01-07T17:37:38Z</updated>
+    <link href="https://arxiv.org/abs/2009.04593v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2009.04593v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>For a multi-robot system equipped with heterogeneous capabilities, this paper presents a mechanism to allocate robots to tasks in a resilient manner when anomalous environmental conditions such as weather events or adversarial attacks affect the performance of robots within the tasks. Our primary objective is to ensure that each task is assigned the requisite level of resources, measured as the aggregated capabilities of the robots allocated to the task. By keeping track of task performance deviations under external perturbations, our framework quantifies the extent to which robot capabilities (e.g., visual sensing or aerial mobility) are affected by environmental conditions. This enables an optimization-based framework to flexibly reallocate robots to tasks based on the most degraded capabilities within each task. In the face of resource limitations and adverse environmental conditions, our algorithm minimally relaxes the resource constraints corresponding to some tasks, thus exhibiting a graceful degradation of performance. Simulated experiments in a multi-robot coverage and target tracking scenario demonstrate the efficacy of the proposed approach.</summary>
+    <category term="cs.MA" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2020-09-09T22:42:46Z</published>
+    <arxiv:comment>A modified version has been submitted to IEEE Robotics and Automation Letters</arxiv:comment>
+    <arxiv:primary_category term="cs.MA"/>
+    <author>
+      <name>Siddharth Mayya</name>
+    </author>
+    <author>
+      <name>Diego S. D'antonio</name>
+    </author>
+    <author>
+      <name>David Saldaña</name>
+    </author>
+    <author>
+      <name>Vijay Kumar</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2007.00100v1</id>
+    <title>Robust Multi-Agent Task Assignment in Failure-Prone and Adversarial Environments</title>
+    <updated>2020-06-30T21:00:17Z</updated>
+    <link href="https://arxiv.org/abs/2007.00100v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2007.00100v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The problem of assigning agents to tasks is a central computational challenge in many multi-agent autonomous systems. However, in the real world, agents are not always perfect and may fail due to a number of reasons. A motivating application is where the agents are robots that operate in the physical world and are susceptible to failures. This paper studies the problem of Robust Multi-Agent Task Assignment, which seeks to find an assignment that maximizes overall system performance while accounting for potential failures of the agents. We investigate both, stochastic and adversarial failures under this framework. For both cases, we present efficient algorithms that yield optimal or near-optimal results.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.MA" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2020-06-30T21:00:17Z</published>
+    <arxiv:comment>6 pages, 3 figures, 3 algorithms; submitted to the Workshop on Heterogeneous Multi-Robot Task Allocation and Coordination (RSS 2020)</arxiv:comment>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Russell Schwartz</name>
+      <arxiv:affiliation>University of Maryland, College Park</arxiv:affiliation>
+    </author>
+    <author>
+      <name>Pratap Tokekar</name>
+      <arxiv:affiliation>University of Maryland, College Park</arxiv:affiliation>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2203.00119v1</id>
+    <title>Efficient Task Allocation in Smart Warehouses with Multi-delivery Stations and Heterogeneous Robots</title>
+    <updated>2022-02-28T22:24:24Z</updated>
+    <link href="https://arxiv.org/abs/2203.00119v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2203.00119v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The task allocation problem in multi-robot systems (MRTA) is an NP-hard problem whose viable solutions are usually found by heuristic algorithms. Considering the increasing need of improvement on logistics, the use of robots for increasing the efficiency of logistics warehouses is becoming a requirement. In a smart warehouse the main tasks consist of employing a fleet of automated picking and mobile robots that coordinate by picking up items from a set of orders from the shelves and dropping them at the delivery stations. Two aspects generally justify multi-robot task allocation complexity: (i) environmental aspects, such as multi-delivery stations and dispersed robots (since they remain in constant motion) and (ii) fleet heterogeneity, where robots' traffic speed and capacity loads are different from each other. Despite these properties have been widely researched in the literature, they usually are investigated separately. This work proposes a scalable and efficient task allocation algorithm for smart warehouses with multi-delivery stations and heterogeneous fleets. Our strategy employs a novel cost estimator, which computes costs as a function of the robots' variable characteristics and capacity while they receive new tasks. For validating the strategy a series of experiments is performed simulating the operation of smart warehouses with multiple delivery stations and heteregenous fleets. The results show that our strategy generates routes costing up to $33$\% less than the routes generated by a state-of-the-art task allocation algorithm and $96$\% faster in test instances representing our target scenario. Considering single-delivery stations and non-dispersed robots, we reduced the number of robots by up to $18$\%, allocating tasks $92$\% faster, and generating routes whose costs are statistically similar to the routes generated by the state-of-the-art algorithm.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2022-02-28T22:24:24Z</published>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>George S. Oliveira</name>
+    </author>
+    <author>
+      <name>Juha Röning</name>
+    </author>
+    <author>
+      <name>Patricia D. M. Plentz</name>
+    </author>
+    <author>
+      <name>Jônata T. Carvalho</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2003.03344v1</id>
+    <title>Adaptive Task Allocation for Heterogeneous Multi-Robot Teams with Evolving and Unknown Robot Capabilities</title>
+    <updated>2020-03-06T18:23:47Z</updated>
+    <link href="https://arxiv.org/abs/2003.03344v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2003.03344v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>For multi-robot teams with heterogeneous capabilities, typical task allocation methods assign tasks to robots based on the suitability of the robots to perform certain tasks as well as the requirements of the task itself. However, in real-world deployments of robot teams, the suitability of a robot might be unknown prior to deployment, or might vary due to changing environmental conditions. This paper presents an adaptive task allocation and task execution framework which allows individual robots to prioritize among tasks while explicitly taking into account their efficacy at performing the tasks---the parameters of which might be unknown before deployment and/or might vary over time. Such a \emph{specialization} parameter---encoding the effectiveness of a given robot towards a task---is updated on-the-fly, allowing our algorithm to reassign tasks among robots with the aim of executing them. The developed framework requires no explicit model of the changing environment or of the unknown robot capabilities---it only takes into account the progress made by the robots at completing the tasks. Simulations and experiments demonstrate the efficacy of the proposed approach during variations in environmental conditions and when robot capabilities are unknown before deployment.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.SY" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="math.OC" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2020-03-06T18:23:47Z</published>
+    <arxiv:comment>Submitted and accepted for the 2020 IEEE International Conference on Robotics and Automation (ICRA)</arxiv:comment>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Yousef Emam</name>
+    </author>
+    <author>
+      <name>Siddharth Mayya</name>
+    </author>
+    <author>
+      <name>Gennaro Notomista</name>
+    </author>
+    <author>
+      <name>Addison Bohannon</name>
+    </author>
+    <author>
+      <name>Magnus Egerstedt</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2101.05694v4</id>
+    <title>Temporal Logic Task Allocation in Heterogeneous Multi-Robot Systems</title>
+    <updated>2022-02-13T14:48:06Z</updated>
+    <link href="https://arxiv.org/abs/2101.05694v4" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2101.05694v4" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In this paper, we consider the problem of optimally allocating tasks, expressed as global Linear Temporal Logic (LTL) specifications, to teams of heterogeneous mobile robots. The robots are classified in different types that capture their different capabilities, and each task may require robots of multiple types. The specific robots assigned to each task are immaterial, as long as they are of the desired type. Given a discrete workspace, our goal is to design paths, i.e., sequences of discrete states, for the robots so that the LTL specification is satisfied. To obtain a scalable solution to this complex temporal logic task allocation problem, we propose a hierarchical approach that first allocates specific robots to tasks using the information about the tasks contained in the Nondeterministic Buchi Automaton (NBA) that captures the LTL specification, and then designs low-level executable plans for the robots that respect the high-level assignment. Specifically, we first prune and relax the NBA by removing all negative atomic propositions. This step is motivated by "lazy collision checking" methods in robotics and allows to simplify the planning problem by checking constraint satisfaction only when needed. Then, we extract sequences of subtasks from the relaxed NBA along with their temporal orders, and formulate a Mixed Integer Linear Program (MILP) to allocate these subtasks to the robots. Finally, we define generalized multi-robot path planning problems to obtain low-level executable robot plans that satisfy both the high-level task allocation and the temporal constraints captured by the negative atomic propositions in the original NBA. We show that our method is complete for a subclass of LTL that covers a broad range of tasks and present numerical simulations demonstrating that it can generate paths with lower cost, considerably faster than existing methods.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2021-01-14T16:18:52Z</published>
+    <arxiv:comment>47pages, 17 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Xusheng Luo</name>
+    </author>
+    <author>
+      <name>Michael M. Zavlanos</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2105.05586v1</id>
+    <title>A Resilient and Energy-Aware Task Allocation Framework for Heterogeneous Multi-Robot Systems</title>
+    <updated>2021-05-12T11:05:35Z</updated>
+    <link href="https://arxiv.org/abs/2105.05586v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2105.05586v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In the context of heterogeneous multi-robot teams deployed for executing multiple tasks, this paper develops an energy-aware framework for allocating tasks to robots in an online fashion. With a primary focus on long-duration autonomy applications, we opt for a survivability-focused approach. Towards this end, the task prioritization and execution -- through which the allocation of tasks to robots is effectively realized -- are encoded as constraints within an optimization problem aimed at minimizing the energy consumed by the robots at each point in time. In this context, an allocation is interpreted as a prioritization of a task over all others by each of the robots. Furthermore, we present a novel framework to represent the heterogeneous capabilities of the robots, by distinguishing between the features available on the robots, and the capabilities enabled by these features. By embedding these descriptions within the optimization problem, we make the framework resilient to situations where environmental conditions make certain features unsuitable to support a capability and when component failures on the robots occur. We demonstrate the efficacy and resilience of the proposed approach in a variety of use-case scenarios, consisting of simulations and real robot experiments.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.SY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2021-05-12T11:05:35Z</published>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Gennaro Notomista</name>
+    </author>
+    <author>
+      <name>Siddharth Mayya</name>
+    </author>
+    <author>
+      <name>Yousef Emam</name>
+    </author>
+    <author>
+      <name>Christopher Kroninger</name>
+    </author>
+    <author>
+      <name>Addison Bohannon</name>
+    </author>
+    <author>
+      <name>Seth Hutchinson</name>
+    </author>
+    <author>
+      <name>Magnus Egerstedt</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1903.08641v2</id>
+    <title>An Optimal Task Allocation Strategy for Heterogeneous Multi-Robot Systems</title>
+    <updated>2019-09-02T21:42:53Z</updated>
+    <link href="https://arxiv.org/abs/1903.08641v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1903.08641v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>For a team of heterogeneous robots executing multiple tasks, we propose a novel algorithm to optimally allocate tasks to robots while accounting for their different capabilities. Motivated by the need that robot teams have in many real-world applications of remaining operational for long periods of time, we allow each robot to choose tasks taking into account the energy consumed by executing them, besides the global specifications on the task allocation. The tasks are encoded as constraints in an energy minimization problem solved at each point in time by each robot. The prioritization of a task over others -- effectively signifying the allocation of the task to that particular robot -- occurs via the introduction of slack variables in the task constraints. Moreover, the suitabilities of certain robots towards certain tasks are also taken into account to generate a task allocation algorithm for a team of robots with heterogeneous capabilities. The efficacy of the developed approach is demonstrated both in simulation and on a team of real robots.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2019-03-20T17:57:49Z</published>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Gennaro Notomista</name>
+    </author>
+    <author>
+      <name>Siddharth Mayya</name>
+    </author>
+    <author>
+      <name>Seth Hutchinson</name>
+    </author>
+    <author>
+      <name>Magnus Egerstedt</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2411.02062v3</id>
+    <title>Heterogeneous Multi-robot Task Allocation for Long-Endurance Missions in Dynamic Scenarios</title>
+    <updated>2025-11-26T09:00:14Z</updated>
+    <link href="https://arxiv.org/abs/2411.02062v3" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2411.02062v3" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We present a framework for Multi-Robot Task Allocation (MRTA) in heterogeneous teams performing long-endurance missions in dynamic scenarios. Given the limited battery of robots, especially for aerial vehicles, we allow for robot recharges and the possibility of fragmenting and/or relaying certain tasks. We also address tasks that must be performed by a coalition of robots in a coordinated manner. Given these features, we introduce a new class of heterogeneous MRTA problems which we analyze theoretically and optimally formulate as a Mixed-Integer Linear Program. We then contribute a heuristic algorithm to compute approximate solutions and integrate it into a mission planning and execution architecture capable of reacting to unexpected events by repairing or recomputing plans online. Our experimental results show the relevance of our newly formulated problem in a realistic use case for inspection with aerial robots. We assess the performance of our heuristic solver in comparison with other variants and with exact optimal solutions in small-scale scenarios. In addition, we evaluate the ability of our replanning framework to repair plans online.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-11-04T13:05:11Z</published>
+    <arxiv:comment>20 pages, 10 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.RO"/>
+    <arxiv:journal_ref>IEEE Transactions on Robotics, 2025</arxiv:journal_ref>
+    <author>
+      <name>Alvaro Calvo</name>
+    </author>
+    <author>
+      <name>Jesus Capitan</name>
+    </author>
+    <arxiv:doi>10.1109/TRO.2025.3626651</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1109/TRO.2025.3626651" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2409.13824v2</id>
+    <title>Adaptive Task Allocation in Multi-Human Multi-Robot Teams under Team Heterogeneity and Dynamic Information Uncertainty</title>
+    <updated>2025-03-11T01:09:43Z</updated>
+    <link href="https://arxiv.org/abs/2409.13824v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2409.13824v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Task allocation in multi-human multi-robot (MH-MR) teams presents significant challenges due to the inherent heterogeneity of team members, the dynamics of task execution, and the information uncertainty of operational states. Existing approaches often fail to address these challenges simultaneously, resulting in suboptimal performance. To tackle this, we propose ATA-HRL, an adaptive task allocation framework using hierarchical reinforcement learning (HRL), which incorporates initial task allocation (ITA) that leverages team heterogeneity and conditional task reallocation in response to dynamic operational states. Additionally, we introduce an auxiliary state representation learning task to manage information uncertainty and enhance task execution. Through an extensive case study in large-scale environmental monitoring tasks, we demonstrate the benefits of our approach.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-09-20T18:05:42Z</published>
+    <arxiv:comment>ICRA 2025</arxiv:comment>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Ziqin Yuan</name>
+    </author>
+    <author>
+      <name>Ruiqi Wang</name>
+    </author>
+    <author>
+      <name>Taehyeon Kim</name>
+    </author>
+    <author>
+      <name>Dezhong Zhao</name>
+    </author>
+    <author>
+      <name>Ike Obi</name>
+    </author>
+    <author>
+      <name>Byung-Cheol Min</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2305.15288v1</id>
+    <title>Concurrent Constrained Optimization of Unknown Rewards for Multi-Robot Task Allocation</title>
+    <updated>2023-05-24T16:09:47Z</updated>
+    <link href="https://arxiv.org/abs/2305.15288v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2305.15288v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Task allocation can enable effective coordination of multi-robot teams to accomplish tasks that are intractable for individual robots. However, existing approaches to task allocation often assume that task requirements or reward functions are known and explicitly specified by the user. In this work, we consider the challenge of forming effective coalitions for a given heterogeneous multi-robot team when task reward functions are unknown. To this end, we first formulate a new class of problems, dubbed COncurrent Constrained Online optimization of Allocation (COCOA). The COCOA problem requires online optimization of coalitions such that the unknown rewards of all the tasks are simultaneously maximized using a given multi-robot team with constrained resources. To address the COCOA problem, we introduce an online optimization algorithm, named Concurrent Multi-Task Adaptive Bandits (CMTAB), that leverages and builds upon continuum-armed bandit algorithms. Experiments involving detailed numerical simulations and a simulated emergency response task reveal that CMTAB can effectively trade-off exploration and exploitation to simultaneously and efficiently optimize the unknown task rewards while respecting the team's resource constraints.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.MA" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-05-24T16:09:47Z</published>
+    <arxiv:comment>9 pages, 5 figures, to be published in RSS 2023</arxiv:comment>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Sukriti Singh</name>
+    </author>
+    <author>
+      <name>Anusha Srikanthan</name>
+    </author>
+    <author>
+      <name>Vivek Mallampati</name>
+    </author>
+    <author>
+      <name>Harish Ravichandar</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2405.02484v1</id>
+    <title>Hierarchically Decentralized Heterogeneous Multi-Robot Task Allocation System</title>
+    <updated>2024-05-03T21:18:46Z</updated>
+    <link href="https://arxiv.org/abs/2405.02484v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2405.02484v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>With plans to send humans to the Moon and further, the supply of resources like oxygen, water, fuel, etc., can be satiated by performing In-Situ Resource Utilization (ISRU), where resources from the extra-terrestrial body are extracted to be utilized. These ISRU missions can be carried out by a Multi-Robot System (MRS). In this research, a high-level auction- based Multi-Robot Task Allocation (MRTA) system is developed for coordinating tasks amongst multiple robots with distinct capabilities. A hierarchical decentralized coordination architecture is implemented in this research to allocate the tasks amongst the robots for achieving intentional cooperation in the Multi-Robot System (MRS). 3 different policies are formulated that govern how robots should act in the multiple auction situations of the auction-based task allocation system proposed in this research, and their performance is evaluated in a 2D simulation called pyrobosim using ROS2. The decentralized coordination architecture and the auction-based MRTA make the MRS highly scalable, reliable, flexible, and robust.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-05-03T21:18:46Z</published>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Sujeet Kashid</name>
+    </author>
+    <author>
+      <name>Ashwin D. Kumat</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2309.12589v1</id>
+    <title>A Multi-Robot Task Assignment Framework for Search and Rescue with Heterogeneous Teams</title>
+    <updated>2023-09-22T02:30:46Z</updated>
+    <link href="https://arxiv.org/abs/2309.12589v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2309.12589v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In post-disaster scenarios, efficient search and rescue operations involve collaborative efforts between robots and humans. Existing planning approaches focus on specific aspects but overlook crucial elements like information gathering, task assignment, and planning. Furthermore, previous methods considering robot capabilities and victim requirements suffer from time complexity due to repetitive planning steps. To overcome these challenges, we introduce a comprehensive framework__the Multi-Stage Multi-Robot Task Assignment. This framework integrates scouting, task assignment, and path-planning stages, optimizing task allocation based on robot capabilities, victim requirements, and past robot performance. Our iterative approach ensures objective fulfillment within problem constraints. Evaluation across four maps, comparing with a state-of-the-art baseline, demonstrates our algorithm's superiority with a remarkable 97 percent performance increase. Our code is open-sourced to enable result replication.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-09-22T02:30:46Z</published>
+    <arxiv:comment>The 2023 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS 2023 Advances in Multi-Agent Learning - Coordination, Perception, and Control Workshop)</arxiv:comment>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Hamid Osooli</name>
+    </author>
+    <author>
+      <name>Paul Robinette</name>
+    </author>
+    <author>
+      <name>Kshitij Jerath</name>
+    </author>
+    <author>
+      <name>S. Reza Ahmadzadeh</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/1810.11541v1</id>
+    <title>Human-Robot Trust Integrated Task Allocation and Symbolic Motion planning for Heterogeneous Multi-robot Systems</title>
+    <updated>2018-10-26T21:52:55Z</updated>
+    <link href="https://arxiv.org/abs/1810.11541v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1810.11541v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>This paper presents a human-robot trust integrated task allocation and motion planning framework for multi-robot systems (MRS) in performing a set of tasks concurrently. A set of task specifications in parallel are conjuncted with MRS to synthesize a task allocation automaton. Each transition of the task allocation automaton is associated with the total trust value of human in corresponding robots. Here, the human-robot trust model is constructed with a dynamic Bayesian network (DBN) by considering individual robot performance, safety coefficient, human cognitive workload and overall evaluation of task allocation. Hence, a task allocation path with maximum encoded human-robot trust can be searched based on the current trust value of each robot in the task allocation automaton. Symbolic motion planning (SMP) is implemented for each robot after they obtain the sequence of actions. The task allocation path can be intermittently updated with this DBN based trust model. The overall strategy is demonstrated by a simulation with 5 robots and 3 parallel subtask automata.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.MA" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2018-10-26T21:52:55Z</published>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Huanfei Zheng</name>
+    </author>
+    <author>
+      <name>Zhanrui Liao</name>
+    </author>
+    <author>
+      <name>Yue Wang</name>
+    </author>
+    <arxiv:doi>10.1115/DSCC2018-9161</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1115/DSCC2018-9161" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2312.07234v1</id>
+    <title>Designing Heterogeneous Robot Fleets for Task Allocation and Sequencing</title>
+    <updated>2023-12-12T12:58:54Z</updated>
+    <link href="https://arxiv.org/abs/2312.07234v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2312.07234v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We study the problem of selecting a fleet of robots to service spatially distributed tasks with diverse requirements within time-windows. The problem of allocating tasks to a fleet of potentially heterogeneous robots and finding an optimal sequence for each robot is known as multi-robot task assignment (MRTA). Most state-of-the-art methods focus on the problem when the fleet of robots is fixed. In contrast, we consider that we are given a set of available robot types and requested tasks, and need to assemble a fleet that optimally services the tasks while the cost of the fleet remains under a budget limit. We characterize the complexity of the problem and provide a Mixed-Integer Linear Program (MILP) formulation. Due to poor scalability of the MILP, we propose a heuristic solution based on a Large Neighbourhood Search (LNS). In simulations, we demonstrate that the proposed method requires substantially lower budgets than a greedy algorithm to service all tasks.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-12-12T12:58:54Z</published>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Nils Wilde</name>
+    </author>
+    <author>
+      <name>Javier Alonso-Mora</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2402.02833v1</id>
+    <title>Behavior Tree Capabilities for Dynamic Multi-Robot Task Allocation with Heterogeneous Robot Teams</title>
+    <updated>2024-02-05T09:44:30Z</updated>
+    <link href="https://arxiv.org/abs/2402.02833v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2402.02833v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>While individual robots are becoming increasingly capable, with new sensors and actuators, the complexity of expected missions increased exponentially in comparison. To cope with this complexity, heterogeneous teams of robots have become a significant research interest in recent years. Making effective use of the robots and their unique skills in a team is challenging. Dynamic runtime conditions often make static task allocations infeasible, therefore requiring a dynamic, capability-aware allocation of tasks to team members. To this end, we propose and implement a system that allows a user to specify missions using Bheavior Trees (BTs), which can then, at runtime, be dynamically allocated to the current robot team. The system allows to statically model an individual robot's capabilities within our ros_bt_py BT framework. It offers a runtime auction system to dynamically allocate tasks to the most capable robot in the current team. The system leverages utility values and pre-conditions to ensure that the allocation improves the overall mission execution quality while preventing faulty assignments. To evaluate the system, we simulated a find-and-decontaminate mission with a team of three heterogeneous robots and analyzed the utilization and overall mission times as metrics. Our results show that our system can improve the overall effectiveness of a team while allowing for intuitive mission specification and flexibility in the team composition.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2024-02-05T09:44:30Z</published>
+    <arxiv:comment>To be published in the Proceedings of the IEEE International Conference on Robotics and Automation 2024 (IEEE ICRA 2024)</arxiv:comment>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Georg Heppner</name>
+    </author>
+    <author>
+      <name>David Oberacker</name>
+    </author>
+    <author>
+      <name>Arne Roennau</name>
+    </author>
+    <author>
+      <name>Rüdiger Dillmann</name>
+    </author>
+    <arxiv:doi>10.1109/ICRA57147.2024.10610515</arxiv:doi>
+    <link rel="related" href="https://doi.org/10.1109/ICRA57147.2024.10610515" title="doi"/>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2501.06058v5</id>
+    <title>Capability-Aware Shared Hypernetworks for Flexible Heterogeneous Multi-Robot Coordination</title>
+    <updated>2025-09-10T19:13:14Z</updated>
+    <link href="https://arxiv.org/abs/2501.06058v5" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2501.06058v5" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Recent advances have enabled heterogeneous multi-robot teams to learn complex and effective coordination skills. However, existing neural architectures that support heterogeneous teaming tend to force a trade-off between expressivity and efficiency. Shared-parameter designs prioritize sample efficiency by enabling a single network to be shared across all or a pre-specified subset of robots (via input augmentations), but tend to limit behavioral diversity. In contrast, recent designs employ a separate policy for each robot, enabling greater diversity and expressivity at the cost of efficiency and generalization. Our key insight is that such tradeoffs can be avoided by viewing these design choices as ends of a broad spectrum. Inspired by recent work in transfer and meta learning, and building on prior work in multi-robot task allocation, we propose Capability-Aware Shared Hypernetworks (CASH), a soft weight sharing architecture that uses hypernetworks to efficiently learn a flexible shared policy that dynamically adapts to each robot post-training. By explicitly encoding the impact of robot capabilities (e.g., speed and payload) on collective behavior, CASH enables zero-shot generalization to unseen robots or team compositions. Our experiments involve multiple heterogeneous tasks, three learning paradigms (imitation learning, value-based, and policy-gradient RL), and SOTA multi-robot simulation (JaxMARL) and hardware (Robotarium) platforms. Across all conditions, we find that CASH generates appropriately-diverse behaviors and consistently outperforms baseline architectures in terms of performance and sample efficiency during both training and zero-shot generalization, all with 60%-80% fewer learnable parameters.</summary>
+    <category term="cs.MA" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-01-10T15:39:39Z</published>
+    <arxiv:comment>22 pages, 8 figures, equal authorship between Kevin Fu and Shalin Anand Jain Manuscript accepted for publication at the 9th Conference on Robot Learning (CoRL 2025), Seoul, Korea</arxiv:comment>
+    <arxiv:primary_category term="cs.MA"/>
+    <author>
+      <name>Kevin Fu</name>
+    </author>
+    <author>
+      <name>Shalin Anand Jain</name>
+    </author>
+    <author>
+      <name>Pierce Howell</name>
+    </author>
+    <author>
+      <name>Harish Ravichandar</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2505.08419v1</id>
+    <title>HMR-ODTA: Online Diverse Task Allocation for a Team of Heterogeneous Mobile Robots</title>
+    <updated>2025-05-13T10:22:51Z</updated>
+    <link href="https://arxiv.org/abs/2505.08419v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2505.08419v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Coordinating time-sensitive deliveries in environments like hospitals poses a complex challenge, particularly when managing multiple online pickup and delivery requests within strict time windows using a team of heterogeneous robots. Traditional approaches fail to address dynamic rescheduling or diverse service requirements, typically restricting robots to single-task types. This paper tackles the Multi-Pickup and Delivery Problem with Time Windows (MPDPTW), where autonomous mobile robots are capable of handling varied service requests. The objective is to minimize late delivery penalties while maximizing task completion rates. To achieve this, we propose a novel framework leveraging a heterogeneous robot team and an efficient dynamic scheduling algorithm that supports dynamic task rescheduling. Users submit requests with specific time constraints, and our decentralized algorithm, Heterogeneous Mobile Robots Online Diverse Task Allocation (HMR-ODTA), optimizes task assignments to ensure timely service while addressing delays or task rejections. Extensive simulations validate the algorithm's effectiveness. For smaller task sets (40-160 tasks), penalties were reduced by nearly 63%, while for larger sets (160-280 tasks), penalties decreased by approximately 50%. These results highlight the algorithm's effectiveness in improving task scheduling and coordination in multi-robot systems, offering a robust solution for enhancing delivery performance in structured, time-critical environments.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-05-13T10:22:51Z</published>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Ashish Verma</name>
+    </author>
+    <author>
+      <name>Avinash Gautam</name>
+    </author>
+    <author>
+      <name>Tanishq Duhan</name>
+    </author>
+    <author>
+      <name>V. S. Shekhawat</name>
+    </author>
+    <author>
+      <name>Sudeept Mohan</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2508.02015v1</id>
+    <title>A Group Consensus-Driven Auction Algorithm for Cooperative Task Allocation Among Heterogeneous Multi-Agents</title>
+    <updated>2025-08-04T03:25:37Z</updated>
+    <link href="https://arxiv.org/abs/2508.02015v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2508.02015v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In scenarios like automated warehouses, assigning tasks to robots presents a heterogeneous multi-task and multi-agent task allocation problem. However, existing task allocation study ignores the integration of multi-task and multi-attribute agent task allocation with heterogeneous task allocation. In addition, current algorithms are limited by scenario constraints and can incur significant errors in specific contexts. Therefore, this study proposes a distributed heterogeneous multi-task and multi-agent task allocation algorithm with a time window, called group consensus-based heterogeneous auction (GCBHA). Firstly, this method decomposes tasks that exceed the capability of a single Agent into subtasks that can be completed by multiple independent agents. And then groups similar or adjacent tasks through a heuristic clustering method to reduce the time required to reach a consensus. Subsequently, the task groups are allocated to agents that meet the conditions through an auction process. Furthermore, the method evaluates the task path cost distance based on the scenario, which can calculate the task cost more accurately. The experimental results demonstrate that GCBHA performs well in terms of task allocation time and solution quality, with a significant reduction in the error rate between predicted task costs and actual costs.</summary>
+    <category term="cs.MA" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-08-04T03:25:37Z</published>
+    <arxiv:primary_category term="cs.MA"/>
+    <author>
+      <name>Gang Wang</name>
+    </author>
+    <author>
+      <name>Hongfang Han</name>
+    </author>
+    <author>
+      <name>Xiaowei Liu</name>
+    </author>
+    <author>
+      <name>Hanfeng Jiang</name>
+    </author>
+    <author>
+      <name>Ming Zhang</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2005.03902v1</id>
+    <title>Multi-Robot Task Allocation and Scheduling Considering Cooperative Tasks and Precedence Constraints</title>
+    <updated>2020-05-08T08:35:52Z</updated>
+    <link href="https://arxiv.org/abs/2005.03902v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2005.03902v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In order to fully exploit the advantages inherent to cooperating heterogeneous multi-robot teams, sophisticated coordination algorithms are essential. Time-extended multi-robot task allocation approaches assign and schedule a set of tasks to a group of robots such that certain objectives are optimized and operational constraints are met. This is particularly challenging if cooperative tasks, i.e. tasks that require two or more robots to work directly together, are considered. In this paper, we present an easy-to-implement criterion to validate the feasibility, i.e. executability, of solutions to time-extended multi-robot task allocation problems with cross schedule dependencies arising from the consideration of cooperative tasks and precedence constraints. Using the introduced feasibility criterion, we propose a local improvement heuristic based on a neighborhood operator for the problem class under consideration. The initial solution is obtained by a greedy constructive heuristic. Both methods use a generalized cost structure and are therefore able to handle various objective function instances. We evaluate the proposed approach using test scenarios of different problem sizes, all comprising the complexity aspects of the regarded problem. The simulation results illustrate the improvement potential arising from the application of the local improvement heuristic.</summary>
+    <category term="eess.SY" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2020-05-08T08:35:52Z</published>
+    <arxiv:primary_category term="eess.SY"/>
+    <author>
+      <name>Esther Bischoff</name>
+    </author>
+    <author>
+      <name>Fabian Meyer</name>
+    </author>
+    <author>
+      <name>Jairo Inga</name>
+    </author>
+    <author>
+      <name>Sören Hohmann</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2011.01164v2</id>
+    <title>Data-Driven Adaptive Task Allocation for Heterogeneous Multi-Robot Teams Using Robust Control Barrier Functions</title>
+    <updated>2020-11-10T16:41:18Z</updated>
+    <link href="https://arxiv.org/abs/2011.01164v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2011.01164v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Multi-robot task allocation is a ubiquitous problem in robotics due to its applicability in a variety of scenarios. Adaptive task-allocation algorithms account for unknown disturbances and unpredicted phenomena in the environment where robots are deployed to execute tasks. However, this adaptivity typically comes at the cost of requiring precise knowledge of robot models in order to evaluate the allocation effectiveness and to adjust the task assignment online. As such, environmental disturbances can significantly degrade the accuracy of the models which in turn negatively affects the quality of the task allocation. In this paper, we leverage Gaussian processes, differential inclusions, and robust control barrier functions to learn environmental disturbances in order to guarantee robust task execution. We show the implementation and the effectiveness of the proposed framework on a real multi-robot system.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.SY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2020-11-02T18:03:30Z</published>
+    <arxiv:comment>Submitted to the 2021 IEEE International Conference on Robotics and Automation (ICRA)</arxiv:comment>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Yousef Emam</name>
+    </author>
+    <author>
+      <name>Gennaro Notomista</name>
+    </author>
+    <author>
+      <name>Paul Glotfelter</name>
+    </author>
+    <author>
+      <name>Magnus Egerstedt</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2303.02486v2</id>
+    <title>Initial Task Allocation for Multi-Human Multi-Robot Teams with Attention-based Deep Reinforcement Learning</title>
+    <updated>2023-07-07T17:48:23Z</updated>
+    <link href="https://arxiv.org/abs/2303.02486v2" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2303.02486v2" rel="related" type="application/pdf" title="pdf"/>
+    <summary>Multi-human multi-robot teams have great potential for complex and large-scale tasks through the collaboration of humans and robots with diverse capabilities and expertise. To efficiently operate such highly heterogeneous teams and maximize team performance timely, sophisticated initial task allocation strategies that consider individual differences across team members and tasks are required. While existing works have shown promising results in reallocating tasks based on agent state and performance, the neglect of the inherent heterogeneity of the team hinders their effectiveness in realistic scenarios. In this paper, we present a novel formulation of the initial task allocation problem in multi-human multi-robot teams as contextual multi-attribute decision-make process and propose an attention-based deep reinforcement learning approach. We introduce a cross-attribute attention module to encode the latent and complex dependencies of multiple attributes in the state representation. We conduct a case study in a massive threat surveillance scenario and demonstrate the strengths of our model.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2023-03-04T19:32:22Z</published>
+    <arxiv:comment>Accepted to IROS2023</arxiv:comment>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Ruiqi Wang</name>
+    </author>
+    <author>
+      <name>Dezhong Zhao</name>
+    </author>
+    <author>
+      <name>Byung-Cheol Min</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2501.01531v1</id>
+    <title>A Global Games-Inspired Approach to Multi-Robot Task Allocation for Heterogeneous Teams</title>
+    <updated>2025-01-02T20:42:20Z</updated>
+    <link href="https://arxiv.org/abs/2501.01531v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2501.01531v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>In this article we propose a game-theoretic approach to the multi-robot task allocation problem using the framework of global games. Each task is associated with a global signal, a real-valued number that captures the task execution progress and/or urgency. We propose a linear objective function for each robot in the system, which, for each task, increases with global signal and decreases with the number assigned robots. We provide conditions on the objective function hyperparameters to induce a mixed Nash equilibrium, i.e., solutions where all robots are not assigned to a single task. The resulting algorithm only requires the inversion of a matrix to determine a probability distribution over the robot assignments. We demonstrate the performance of our algorithm in simulation and provide direction for applications and future work.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.MA" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="eess.SY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2025-01-02T20:42:20Z</published>
+    <arxiv:comment>12 pages, 8 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Logan Beaver</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2109.03089v1</id>
+    <title>Distributed Allocation and Scheduling of Tasks with Cross-Schedule Dependencies for Heterogeneous Multi-Robot Teams</title>
+    <updated>2021-09-07T13:44:28Z</updated>
+    <link href="https://arxiv.org/abs/2109.03089v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2109.03089v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>To enable safe and efficient use of multi-robot systems in everyday life, a robust and fast method for coordinating their actions must be developed. In this paper, we present a distributed task allocation and scheduling algorithm for missions where the tasks of different robots are tightly coupled with temporal and precedence constraints. The approach is based on representing the problem as a variant of the vehicle routing problem, and the solution is found using a distributed metaheuristic algorithm based on evolutionary computation (CBM-pop). Such an approach allows a fast and near-optimal allocation and can therefore be used for online replanning in case of task changes. Simulation results show that the approach has better computational speed and scalability without loss of optimality compared to the state-of-the-art distributed methods. An application of the planning procedure to a practical use case of a greenhouse maintained by a multi-robot system is given.</summary>
+    <category term="cs.RO" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.AI" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2021-09-07T13:44:28Z</published>
+    <arxiv:primary_category term="cs.RO"/>
+    <author>
+      <name>Barbara Arbanas Ferreira</name>
+    </author>
+    <author>
+      <name>Tamara Petrović</name>
+    </author>
+    <author>
+      <name>Matko Orsag</name>
+    </author>
+    <author>
+      <name>J. Ramiro Martínez-de-Dios</name>
+    </author>
+    <author>
+      <name>Stjepan Bogdan</name>
+    </author>
+  </entry>
+  <entry>
+    <id>http://arxiv.org/abs/2603.14622v1</id>
+    <title>Progress-Based Fault Detection and Health-Aware Task Allocation for Heterogeneous Multi-Robot Systems</title>
+    <updated>2026-03-15T21:37:27Z</updated>
+    <link href="https://arxiv.org/abs/2603.14622v1" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/2603.14622v1" rel="related" type="application/pdf" title="pdf"/>
+    <summary>We present a progress-based fault detection module and its integration with dynamic task allocation for heterogeneous robot teams. The detector monitors a normalized task-completion signal with a lightweight Kalman filter (KF) and a normalized innovation squared (NIS) test, augmented with a low-rate stall gate, an uncertainty gate, and debounce logic. Health estimates influence the allocator via health-weighted costs and health-dependent masks; reallocation is event-triggered and regularized with an $\ell_1$ assignment-change penalty to limit reassignment churn while preserving feasibility through slack variables. The detector has constant per-robot update cost, and the allocation remains a convex quadratic program (QP). Experiments on a common team-task setup evaluate measurement-noise increases, velocity-slip biases, communication dropouts, and task abandonment. The results show timely detection in the noise and bias cases, maintained task completion with limited reassignment, and the expected observability delays under communication dropouts.</summary>
+    <category term="eess.SY" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2026-03-15T21:37:27Z</published>
+    <arxiv:comment>Accepted for publication in the Proceedings of the 2026 American Control Conference (ACC)</arxiv:comment>
+    <arxiv:primary_category term="eess.SY"/>
+    <author>
+      <name>Jack Cline</name>
+    </author>
+    <author>
+      <name>Christian Macaranas</name>
+    </author>
+    <author>
+      <name>Siavash Farzan</name>
+    </author>
+  </entry>
+</feed>

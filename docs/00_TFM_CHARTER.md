@@ -27,10 +27,10 @@ Las aportaciones complementarias —caging, reparto de wrench, obstáculos, trá
 
 ## 5. Preguntas de investigación
 
-- **RQ1 — Coaliciones y heterogeneidad:** ¿Bajo qué condiciones de demanda, heterogeneidad, recursos y parámetros de la dinámica emergen coaliciones factibles sin déficit ni sobrerreclutamiento persistente?
-- **RQ2 — Acoplamiento y comunicación:** ¿Cómo modifican el acoplamiento decisión–movimiento y la comunicación local el equilibrio, el tiempo de formación y el rendimiento del transporte?
-- **RQ3 — Factibilidad física:** ¿Cómo deben incorporarse fuerza, torque y geometría de contacto para distinguir una coalición nominalmente válida de otra físicamente ejecutable?
-- **RQ4 — Degradación y resiliencia:** ¿Cómo se degrada el sistema ante congestión, batería limitada, retardos, pérdidas de paquetes y fallos parciales de robots?
+- **RQ1 — Formación distribuida:** ¿Bajo qué condiciones de demanda, heterogeneidad, roles de contacto, información vecinal y parámetros de la dinámica se forman coaliciones factibles sin déficit ni sobrerreclutamiento persistente?
+- **RQ2 — Ejecución cooperativa:** ¿Cómo deben acoplarse reclutamiento, aproximación, contacto, estabilización y control de pose para transportar una carga sin líder físico permanente y dentro de las restricciones mecánicas y de seguridad?
+- **RQ3 — Planificación y tráfico:** ¿Cómo pueden coordinarse robots libres, robots en reunión y coaliciones en transporte para resolver prioridades, cruces, bloqueos, congestión y replanteamientos con información local?
+- **RQ4 — Degradación y resiliencia:** ¿Cómo se degrada y recupera el sistema ante batería limitada, fallos parciales, cambios de tarea, retardos y pérdidas de paquetes?
 - **RQ5 — Coste de la descentralización:** ¿Cuál es el coste computacional, comunicativo y operacional de la descentralización frente a un oráculo central y a referentes distribuidos comparables?
 
 ## 6. Hipótesis operacionales
@@ -38,35 +38,34 @@ Las aportaciones complementarias —caging, reparto de wrench, obstáculos, trá
 Las hipótesis finales deben fijarse después de ejecutar pilotos; no deben incluir umbrales arbitrarios sin justificación.
 
 - **HP:** Una ley distribuida que combine dinámicas poblacionales, información espacial local y certificados físicos de factibilidad puede producir coaliciones de cardinalidad y capacidad adecuadas para transportar cargas heterogéneas, con estabilidad operacional y un desempeño competitivo frente a métodos centralizados y distribuidos de referencia.
-- **H1:** El payoff con umbrales de déficit y exceso recluta recursos suficientes sin sobreasignación persistente cuando la instancia es factible.
-- **H2:** Incorporar un certificado físico específico de la modalidad —soporte, rigidez y wrench para Cargo; contacto unilateral y confinamiento para empuje/caging— reduce coaliciones nominalmente válidas pero físicamente inviables.
-- **H3:** El acoplamiento espacial conserva su ventaja bajo comunicación local por encima de una región crítica de conectividad.
-- **H4:** La recoalición local recupera la tarea tras un fallo parcial cuando la capacidad remanente admite una coalición física.
+- **H1:** En SP1, un payoff con déficit, exceso, utilidad de tarea, costes de espera/cambio y un certificado de rol/contacto recluta recursos suficientes sin sobreasignación persistente cuando la instancia es factible.
+- **H2:** En SP2, incorporar un certificado físico específico de la modalidad —soporte, rigidez y wrench para Cargo; contacto unilateral y confinamiento para empuje/caging— reduce coaliciones nominalmente válidas pero físicamente inviables y permite ejecutar el transporte bajo los supuestos declarados.
+- **H3:** En SP3, la coordinación local de rutas, reservas y prioridades reduce conflictos observables, aunque la no observabilidad remota limita las garantías globales bajo red imperfecta.
+- **H4:** La recoalición local recupera la tarea tras un fallo parcial cuando la capacidad remanente admite una coalición física y existe una ruta de sustitución segura.
 - **H5:** El método distribuido presenta menor crecimiento de coste que el oráculo combinatorio y mantiene una calidad cuantificable al aumentar la escala.
 
 No fijar “80 % del óptimo” o “95 % de éxito” hasta contar con un piloto, una razón industrial o una referencia que justifique esos umbrales.
 
 ## 7. Alcance priorizado
 
-### Núcleo obligatorio
+El TFM se organiza en tres subproblemas canónicos. Las campañas históricas conservan sus códigos `sp0`--`sp8` únicamente como identificadores técnicos de artefactos; no constituyen nueve subproblemas vigentes.
 
-1. SP0: formulación y prueba mínima.
-2. SP1: cardinalidad variable.
-3. SP2: capacidades y requisitos heterogéneos.
-4. SP4: transporte origen–destino con pose.
-5. SP6: fallo y re-reclutamiento.
-6. SP8: escalabilidad, coste de comunicación y gap frente a oráculo para instancias pequeñas.
+### SP1 — Formación distribuida de coaliciones
 
-### Extensión seleccionada
+Decide qué robots atienden cada carga, cuántos se necesitan, qué rol o contacto asume cada uno, cuándo conviene esperar o iniciar, y cuándo abandonar o cambiar de coalición. El método debe aproximar la referencia global mediante estado propio, percepción local y mensajes vecinales. Este SP contiene el problema de reclutamiento y el certificado previo de factibilidad de la coalición.
 
-- **Modo primario Cargo:** la caja se soporta sobre varios robots y se transporta como un cuerpo compuesto; SP3--SP6 deben modelar formación rígida, reparto de soporte y wrench.
-- **Rama secundaria empuje/caging:** los robots desplazan la caja mediante contactos unilaterales y trayectorias de empuje realimentadas por la pose estimada de la carga. Solo se denomina caging cuando existe un certificado de confinamiento geométrico.
-- SP5 como capa de seguridad/evitación evaluada experimentalmente.
+### SP2 — Ejecución y transporte cooperativo
+
+Con la coalición formada, los robots se aproximan, se acoplan, estabilizan la carga, generan una velocidad común, preservan contactos y restricciones físicas, navegan sin líder físico permanente, reconfiguran la geometría, sustituyen miembros degradados o fallidos y completan el desacoplamiento. El modo primario es **Cargo**, con carga soportada como cuerpo compuesto, formación rígida y reparto de wrench. Empuje/caging permanece como extensión secundaria y requiere su propio modelo de contacto y confinamiento.
+
+### SP3 — Planificación y tráfico de múltiples coaliciones
+
+Coordina simultáneamente robots libres, robots reuniéndose y coaliciones que transportan cargas de tamaños distintos. Incluye pasillos, cruces, prioridades, bloqueos, congestión, nuevas tareas y replanteamientos. La escala, el coste computacional/comunicativo y la degradación de red se evalúan aquí y transversalmente en SP1--SP3; no forman un cuarto SP.
 
 ### Alcance condicionado
 
-- SP7, tráfico multi-coalición completo, se trata como estudio exploratorio o trabajo futuro salvo evidencia suficiente.
-- La rama empuje/caging queda como extensión de evidencia objetivo C y no comparte automáticamente las garantías formales del modo Cargo.
+- La validación dinámica completa se concentra en Cargo; empuje/caging queda en evidencia objetivo C salvo resultados adicionales.
+- La planificación multi-coalición continua y completa se limita a la evidencia disponible; las garantías de exclusión discreta no se transfieren automáticamente a cuerpos continuos.
 - No se promete optimalidad global del sistema acoplado completo.
 
 ## 8. Criterios de éxito del TFM

@@ -25,6 +25,7 @@ from typing import Any
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from matplotlib.ticker import FuncFormatter
 from scipy import stats
 
 from sp1_n3_common import N3_OUTPUT_ROOT, REPOSITORY_ROOT, write_json
@@ -49,6 +50,14 @@ REGIME_LABELS = {
     "threshold": "Umbral",
     "partitioned": "Partido",
 }
+
+
+def _method_label(method: str) -> str:
+    return METHOD_LABELS[method].replace("Capacity-CBBA-RB", "CBBA-RB")
+
+
+def _comma_tick(value: float, _position: float | None = None) -> str:
+    return f"{value:g}".replace("-", "−").replace(".", ",")
 
 
 # ------------------------------------------------------------------ helpers
@@ -160,6 +169,10 @@ def analyse_e2(runs: pd.DataFrame, resamples: int) -> tuple[dict[str, Any], pd.D
         metrics[f"e2_feasible_rate_{method}"] = rate
         metrics[f"e2_gap_median_{method}"] = median
     summary = pd.DataFrame(rows)
+    summary["common_gap_n"] = 0
+    summary["common_gap_median"] = float("nan")
+    summary["common_gap_low"] = float("nan")
+    summary["common_gap_high"] = float("nan")
 
     # A method must never claim a world the oracle proved impossible.
     impossible = runs.loc[runs["oracle_status"] == "INFEASIBLE"]
@@ -208,6 +221,11 @@ def analyse_e2(runs: pd.DataFrame, resamples: int) -> tuple[dict[str, Any], pd.D
             metrics[f"e2_common_gap_median_{method}"] = median
             metrics[f"e2_common_gap_low_{method}"] = low
             metrics[f"e2_common_gap_high_{method}"] = high
+            selector = summary["method"] == method
+            summary.loc[selector, "common_gap_n"] = int(len(wide))
+            summary.loc[selector, "common_gap_median"] = median
+            summary.loc[selector, "common_gap_low"] = low
+            summary.loc[selector, "common_gap_high"] = high
         if len(wide) >= 3:
             statistic, p = stats.friedmanchisquare(
                 *[wide[method].to_numpy() for method in METHODS]
@@ -294,23 +312,28 @@ def plot_e2(summary: pd.DataFrame, path: Path) -> list[Path]:
     )
     axes[0].set(
         xticks=x, ylim=(0, 1.05),
-        ylabel="P(RAW factible | oráculo factible)",
+        ylabel="P(factible | oráculo factible)",
         title="Factibilidad condicionada al oráculo",
     )
-    axes[0].set_xticklabels([METHOD_LABELS[m] for m in summary["method"]], rotation=12)
+    axes[0].set_xticklabels([_method_label(m) for m in summary["method"]], rotation=12)
     axes[1].bar(
-        x, summary["gap_median"],
+        x, summary["common_gap_median"],
         yerr=[
-            summary["gap_median"] - summary["gap_low"],
-            summary["gap_high"] - summary["gap_median"],
+            summary["common_gap_median"] - summary["common_gap_low"],
+            summary["common_gap_high"] - summary["common_gap_median"],
         ],
         color=[COLORS[m] for m in summary["method"]], capsize=3.2, width=0.58,
     )
     axes[1].set(
         xticks=x, ylabel="Brecha mediana frente al MILP",
-        title="Calidad donde el oráculo certificó el óptimo",
+        title=(
+            "Calidad en soporte común "
+            f"(n={int(summary['common_gap_n'].max())})"
+        ),
     )
-    axes[1].set_xticklabels([METHOD_LABELS[m] for m in summary["method"]], rotation=12)
+    axes[1].set_xticklabels([_method_label(m) for m in summary["method"]], rotation=12)
+    for axis in axes:
+        axis.yaxis.set_major_formatter(FuncFormatter(_comma_tick))
     for axis, letter in zip(axes, "ab"):
         axis.text(-0.09, 1.06, f"({letter})", transform=axis.transAxes, fontweight="bold")
     return _save(figure, path)
@@ -325,20 +348,35 @@ def plot_e3(summary: pd.DataFrame, path: Path) -> list[Path]:
         axes[0].plot(
             block["bytes_per_agent"], block["rate"],
             marker=MARKERS[method], color=COLORS[method],
-            label=METHOD_LABELS[method], linewidth=1.2, markersize=5,
+            label=_method_label(method), linewidth=1.2, markersize=5,
         )
-        for _, row in block.iterrows():
-            axes[0].annotate(
-                REGIME_LABELS[row["graph_regime"]],
-                (row["bytes_per_agent"], row["rate"]),
-                xytext=(3, 3), textcoords="offset points", fontsize=6.2, color="#444",
-            )
+        if method == "capacity_cbba_rb":
+            for _, row in block.iterrows():
+                axes[0].annotate(
+                    REGIME_LABELS[row["graph_regime"]],
+                    (row["bytes_per_agent"], row["rate"]),
+                    xytext=(4, 4), textcoords="offset points", fontsize=6.2,
+                    color="#444",
+                )
     axes[0].set(
-        xscale="log", xlabel="Bytes por agente (mediana)",
-        ylabel="P(RAW factible | oráculo factible)",
+        xscale="log", xlabel="Bytes/AMR (mediana)",
+        ylabel="P(factible | oráculo factible)",
         title="Frontera comunicación–factibilidad (solo conexos)",
     )
     axes[0].legend(loc="lower right")
+    axes[0].set_ylim(0.50, 1.06)
+    axes[0].text(
+        0.5,
+        0.955,
+        "secuencia común: Umbral → Medio → Denso → Completo",
+        transform=axes[0].transAxes,
+        ha="center",
+        va="bottom",
+        fontsize=6.5,
+        color="#555",
+    )
+    axes[0].xaxis.set_major_formatter(FuncFormatter(_comma_tick))
+    axes[0].yaxis.set_major_formatter(FuncFormatter(_comma_tick))
 
     control = summary.loc[summary["graph_regime"] == NEGATIVE_CONTROL]
     width = 0.34
@@ -357,11 +395,12 @@ def plot_e3(summary: pd.DataFrame, path: Path) -> list[Path]:
         width, color="#C8102E", label="partición (control)",
     )
     axes[1].set(
-        xticks=x, ylim=(0, 1.05), ylabel="P(RAW factible | oráculo factible)",
+        xticks=x, ylim=(0, 1.05), ylabel="P(factible | oráculo factible)",
         title="Control negativo: partición permanente",
     )
-    axes[1].set_xticklabels([METHOD_LABELS[m] for m in METHODS], rotation=12)
+    axes[1].set_xticklabels([_method_label(m) for m in METHODS], rotation=12)
     axes[1].legend(loc="upper right")
+    axes[1].yaxis.set_major_formatter(FuncFormatter(_comma_tick))
     for axis, letter in zip(axes, "ab"):
         axis.text(-0.09, 1.06, f"({letter})", transform=axis.transAxes, fontweight="bold")
     return _save(figure, path)

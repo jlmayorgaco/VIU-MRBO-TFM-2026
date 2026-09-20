@@ -1,0 +1,154 @@
+\section{Cierre: un solo valor, un solo juego, y la entrega como teorema}
+\label{sec:cierre}
+
+Las partes anteriores construyen piezas —potencial híbrido, mercado de
+\emph{wrench}, juego de trayectorias, testigo, barreras, arrendamiento— y cada
+una tiene su garantía. Falta el enunciado que las une: que el mecanismo
+distribuido, ejecutado por robots con ruedas y contacto e información de $n$
+saltos, entrega la carga. Esta sección lo enuncia con sus hipótesis, lo
+demuestra por composición, y en \cref{sec:ensayo-cierre} lo ensaya sobre la
+planta con el mecanismo distribuido y no con un controlador central.
+
+\subsection{El potencial es el valor de misión}
+
+El potencial de \cref{th:potencial} y el valor $V_H^\star$ de
+\cref{def:continuaciones} se enunciaron como objetos distintos. No lo son.
+
+\begin{definicion}[Valor de misión unificado]
+\label{def:valor-unificado}
+Sea $z=(d,c)$ el perfil híbrido: parte discreta $d=(d_i)_i$ con
+$d_i\in\{\mathrm{idle}\}\cup\{(k,\mu,s)\}$ y parte continua $c$ (esfuerzos,
+continuaciones). Para cada carga $k$ sea $\Ccal_k(d)$ la coalición que $d$ le
+asigna, $\mathcal T_k(\Ccal_k,Y)$ sus continuaciones ejecutables
+\eqref{eq:T-continuaciones} y $V_k(\Ccal_k,Y)=\sup_{\tau\in\mathcal T_k}
+\bigl[B_k\,\mathbf 1_{\text{entrega}}(\tau)-\mathcal H_k(\tau)\bigr]$ su valor
+(con $V_k=-\infty$ si $\mathcal T_k=\emptyset$ y $V_k$ definido por
+prospecto creciente en $|\Ccal_k|$ cuando $|\Ccal_k|<r_k^\star$). El valor de
+misión es
+\begin{equation}
+  \label{eq:valor-unificado}
+  \Vcal(z,Y)=\sum_k V_k(\Ccal_k(d),Y)-\sum_i c_i(d_i,Y)-\Gamma(z,Y),
+\end{equation}
+con $c_i$ el coste privado de $i$ (viaje, batería) y $\Gamma$ los
+acoplamientos simétricos (congestión atómica de
+\cref{th:externalidad-atomica}, exclusividad de puesto, arrendamientos).
+\end{definicion}
+
+\begin{teorema}[El potencial híbrido es el valor de misión]
+\label{th:potencial-valor}
+Si el pago de cada AMR se construye como utilidad marginal del valor
+unificado, $J_i(z)=\Vcal(z,Y)-\Vcal(z_i^{0},z_{-i},Y)$ con
+$z_i^{0}=\mathrm{idle}$, entonces $\Phi\equiv\Vcal$ es un potencial exacto del
+megajuego en el sentido de \cref{th:potencial}: para toda desviación
+unilateral factible, discreta, continua o mixta,
+$J_i(z_i',z_{-i})-J_i(z_i,z_{-i})=\Vcal(z_i',z_{-i})-\Vcal(z_i,z_{-i})$. En
+particular, dentro de una rama discreta fija $d$, el juego continuo tiene
+potencial $\Vcal(d,\cdot)$, que coincide con $-$ la suma de valores
+$V_H^\star$ de \cref{def:continuaciones} salvo la constante $\sum_kB_k$; y el
+equilibrio de \cref{pr:commit} y el de \cref{th:externalidad-atomica} son el
+mismo objeto medido en la misma unidad.
+\end{teorema}
+
+\begin{proof}
+El término $\Vcal(z_i^0,z_{-i},Y)$ no depende de $z_i$ y se cancela en la
+diferencia, exactamente como en \cref{th:potencial}; que $\Vcal$ sea el
+potencial es entonces la definición. La identificación con $V_H^\star$ es
+\eqref{eq:valor-mision} con $\mathcal H=\mathcal H_k$ y la indicatriz de
+entrega, sumada sobre cargas. La externalidad atómica de $\Gamma$ es
+simétrica por \cref{th:externalidad-atomica}, luego no rompe la exactitud.
+\end{proof}
+
+\begin{observacion}[Lo que esto cierra y lo que no]
+\label{obs:potencial-valor-alcance}
+Cierra la objeción de que reclutamiento, contacto, ruta y reemplazo se
+comparasen en unidades distintas: \cref{obs:coherencia-valor} deja de ser un
+principio y pasa a ser una identidad. No cierra la optimalidad: el máximo de
+$\Vcal$ es el óptimo de misión, pero el mecanismo solo garantiza llegar a un
+equilibrio de orden $h$ de $\Vcal$, y \cref{th:descomposicion} mide la
+distancia.
+\end{observacion}
+
+\subsection{El teorema de entrega}
+
+\begin{supuesto}[Hipótesis del cierre]
+\label{s:cierre}
+\begin{enumerate}[label=(A\arabic*),leftmargin=2.6em,topsep=0.2em,itemsep=0.1em]
+  \item \emph{Finitud y valor.} El conjunto de partes discretas es finito y
+  $\Vcal$ es el valor unificado de \cref{def:valor-unificado}, con revisiones
+  aceptadas solo si mejoran $\Vcal$ al menos $\epsilon_{\mathrm{sw}}>0$
+  (histéresis de \cref{th:dwell}), certificadas por \cref{pr:commit}.
+  \item \emph{Certificado físico.} Una coalición pasa a formación solo si su
+  margen de \emph{wrench} es no negativo con la geometría de puestos declarada
+  (\cref{th:span}, \cref{th:cert}) y, en \textsf{caging}, si la formación
+  cierra (\cref{th:cerco}); tras la formación se recertifica con las
+  capacidades observadas (\cref{obs:certificado-postevento}).
+  \item \emph{Mercado y rama convexa.} Dentro de cada rama, el reparto de
+  esfuerzos es el reposo de \cref{th:N-precios} con paso admisible
+  (\cref{th:N-ventana}) y los límites de contacto son convexos (disco en
+  \textsf{cargo}, semieje en \textsf{caging}).
+  \item \emph{Testigo y progreso.} Cada coalición en transporte mantiene una
+  continuación incumbente cuyo presupuesto $W$ decrece al menos $\rho_0$ por
+  unidad de tiempo físico fuera de las paradas seguras
+  (\cref{pr:presupuesto-progreso}), y el corredor se arrienda con orden total
+  (\cref{pr:arrendamiento}, \cref{th:ciclo-espera}).
+  \item \emph{Seguridad.} Las barreras de coalición y de AMR son factibles en
+  todo estado alcanzado con el estrechamiento de \cref{le:muestras}, y una
+  parada segura existe desde cualquier estado alcanzado.
+\end{enumerate}
+\end{supuesto}
+
+\begin{teorema}[Entrega segura por el mecanismo distribuido]
+\label{th:entrega}
+Bajo \cref{s:cierre}, con información de $n$ saltos y sin ningún nodo que
+conozca el estado completo:
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em,topsep=0.2em,itemsep=0.1em]
+  \item la capa discreta termina: el número de revisiones aceptadas en toda la
+  misión es a lo sumo $(\Vcal_{\max}-\Vcal(z_0))/\epsilon_{\mathrm{sw}}$, y
+  entre dos revisiones de un mismo AMR media al menos
+  $2\epsilon_{\mathrm{sw}}/L_{\mathrm{sw}}$;
+  \item toda coalición que pasa a formación tiene margen de \emph{wrench} no
+  negativo con las capacidades reales, luego existe un reparto de esfuerzos
+  admisible para la demanda de diseño, y el mercado converge a él;
+  \item ninguna barrera se viola y no hay interbloqueo en el corredor;
+  \item cada carga cuya coalición entra en transporte con presupuesto $W_0$ es
+  entregada antes de $W_0/\rho_0$ unidades de tiempo de avance, y la misión
+  termina en tiempo finito con todas las cargas certificables entregadas.
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}
+(i) Por \cref{th:potencial-valor}, cada revisión aceptada aumenta $\Vcal$ al
+menos $\epsilon_{\mathrm{sw}}$ (\cref{pr:commit} garantiza que la mejora
+certificada es real); $\Vcal$ está acotado superiormente sobre un conjunto
+finito de partes discretas con óptimo continuo único por rama (A3), luego el
+número de aceptaciones es finito con la cota dada, y la permanencia mínima es
+\cref{th:dwell}. (ii) La certificación de (A2) con capacidades observadas es
+\cref{th:span}: margen no negativo equivale a que la demanda de diseño
+pertenezca al conjunto realizable, que es convexo por (A3); el reposo de
+\cref{th:N-precios} existe, es único y la iteración con el paso de
+\cref{th:N-ventana} converge a él; en \textsf{caging} la unilateralidad entra
+en el conjunto realizable como semiejes y \cref{th:cerco} garantiza que la
+carga no escapa de la formación. (iii) Con (A5), \cref{pr:hocbf} y
+\cref{le:muestras} dan invariancia del conjunto seguro bajo ejecución
+muestreada; el arrendamiento con orden total excluye el ciclo de espera por
+\cref{th:ciclo-espera}, luego no hay interbloqueo, y \cref{pr:arrendamiento}
+excluye dos coaliciones en el corredor. (iv) Fuera de las paradas seguras el
+presupuesto decrece al menos $\rho_0$ por unidad de tiempo
+(\cref{pr:presupuesto-progreso}); las paradas seguras son finitas en número y
+duración porque solo las produce la espera del arrendamiento, que termina por
+(iii). Al agotarse $W$ la carga está en el conjunto terminal por definición
+del testigo (\cref{th:testigo}); las coaliciones liberadas vuelven al
+reclutamiento y (i) acota las revisiones restantes.
+\end{proof}
+
+\begin{observacion}[Qué no dice el teorema, y por qué es útil de todos modos]
+\label{obs:entrega-alcance}
+No dice que la misión sea óptima: dice que termina, con entrega, sin
+colisión y sin interbloqueo, bajo cinco hipótesis que son cada una un
+enunciado anterior del documento. Tampoco dice que (A5) sea gratis: la
+existencia de una parada segura desde todo estado alcanzado es la hipótesis
+fuerte, y \cref{th:grado-relativo-rueda} dice que la barrera correcta para la
+carga es de cuarto orden en el par. Lo que el teorema aporta es la lista de
+lo que hay que verificar en una planta concreta para reclamar la entrega, y
+esa lista es la que \cref{sec:ensayo-cierre} recorre.
+\end{observacion}

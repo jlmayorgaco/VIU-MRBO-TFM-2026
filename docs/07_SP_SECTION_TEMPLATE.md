@@ -2,16 +2,16 @@
 
 ## 1. Propósito y obligatoriedad
 
-Este documento define la microestructura de `sp0.tex`--`sp8.tex` dentro de `thesis/sections/mainmatter/06-results-and-analysis/`. Se aplica al crear, completar o revisar un subproblema. Complementa `docs/01_VIU_REQUIREMENTS.md`; no modifica los capítulos superiores de la plantilla VIU.
+Este documento define la microestructura de los tres subproblemas canónicos dentro de `thesis/sections/mainmatter/06-results-and-analysis/`. Los archivos históricos `sp0.tex`--`sp8.tex` se conservan como etapas experimentales internas por trazabilidad. Complementa `docs/01_VIU_REQUIREMENTS.md`; no modifica los capítulos superiores de la plantilla VIU.
 
-La secuencia es obligatoria como contrato de contenido, pero la profundidad es desigual: SP0--SP2 y los SP de evidencia A/B requieren mayor desarrollo formal; una extensión de nivel C puede ser más breve. Puede agruparse contenido común en `index.tex` o entre SP adyacentes para evitar nueve miniartículos repetitivos. Nunca se inventa una sección de control, una prueba o una comparación solo para llenar la plantilla.
+La secuencia es obligatoria como contrato de contenido, pero la profundidad es desigual: SP1 concentra la formulación estratégica; SP2, el acoplamiento físico; y SP3, la coordinación multi-coalición. Una etapa de evidencia C puede ser más breve. El contenido común se agrupa en `index.tex` para evitar repetir tres miniartículos. Nunca se inventa una sección de control, una prueba o una comparación solo para llenar la plantilla.
 
-Excepción narrativa documentada para SP0: al ser un caso de calibración cuyo resultado central es la caracterización del juego, el bloque de juego puede preceder a la tabla de métodos. La tabla y el protocolo aparecen inmediatamente después para que la proposición motive la comparación. Esta excepción no modifica el orden de SP1--SP8 ni elimina ningún bloque obligatorio.
+Excepción narrativa documentada para la etapa de calibración uno-a-uno de SP1 (campaña histórica `sp0`): su bloque de juego puede preceder a la tabla de métodos. La tabla y el protocolo aparecen inmediatamente después para que la proposición motive la comparación. Esta excepción no elimina ningún bloque obligatorio.
 
 La plantilla maestra del autor se integra como una ampliación de este contrato: cada SP debe incluir un contraejemplo incremental, declarar la cadena de información realmente ejecutada, clasificar el estado de sus aportes y separar límite teórico de límite práctico. No se altera el orden exigido por la memoria VIU ni se obliga a una extensión uniforme.
 
 
-Cada SP es una `\subsection` del capítulo 6 y debe comenzar en una página nueva mediante `\clearpage` antes de su inclusión. Debe comenzar con un párrafo introductorio y no puede haber dos encabezados consecutivos sin texto intermedio.
+Cada SP canónico es una `\subsection` del capítulo 6 y debe comenzar en una página nueva mediante `\clearpage`. Sus etapas internas son `\subsubsection` y sus bloques usan `\paragraph`. Cada nivel debe comenzar con texto introductorio; no puede haber dos encabezados consecutivos sin texto intermedio.
 
 ## 2. Secuencia canónica
 
@@ -41,7 +41,7 @@ Usar `\subsection{SPX: ...}` y `\label{subsec:spx}`. El primer párrafo debe res
 
 No comenzar con definiciones aisladas ni repetir la formulación común del capítulo 6.
 
-El incremento debe acompañarse de un contraejemplo mínimo: dos soluciones que satisfacen la propiedad de SPX-1, pero solo una satisface la propiedad nueva de SPX. La figura puede representar ese contraste; si no lo hace, el texto debe describirlo y enlazar su demostración o evidencia. SP0 usa como frontera dos asignaciones factibles/Nash con costes distintos.
+El incremento debe acompañarse de un contraejemplo mínimo: dos soluciones que satisfacen la interfaz del SP anterior, pero solo una satisface la propiedad nueva. La figura puede representar ese contraste; si no lo hace, el texto debe describirlo y enlazar su demostración o evidencia. La calibración uno-a-uno de SP1 usa como frontera dos asignaciones factibles/Nash con costes distintos.
 
 La introducción termina declarando el último estado realmente acreditado de la cadena `OBSERVED--ESTIMATED--RAW--CLOSED--GUARDED--EXECUTED`, no el estado que se pretende alcanzar en una campaña futura.
 
@@ -152,7 +152,7 @@ Cuando exista movimiento o interacción física, se añade una segunda capa, sin
 8. integrador, paso de muestreo, saturaciones y condiciones numéricas;
 9. interfaz exacta entre decisión, estimación, control y comunicación.
 
-En SP0--SP2 no existe todavía planta física, pero sí existe regulación estratégica de cobertura, cuota o capacidad. Debe formularse ese lazo y después delimitar que las poses solo parametrizan costes. No se fabrica una ley de movimiento ni se llama estabilidad física a la terminación de una dinámica estratégica finita.
+En las primeras etapas de SP1 no existe todavía planta física, pero sí regulación estratégica de cobertura, cuota o capacidad. Debe formularse ese lazo y después delimitar que las poses solo parametrizan costes. La etapa de rol/contacto cierra SP1 con un certificado previo; la ejecución física comienza en SP2. No se fabrica una ley de movimiento ni se llama estabilidad física a la terminación de una dinámica estratégica finita.
 
 ### 3.7 Simulaciones
 
@@ -280,19 +280,13 @@ El siguiente esqueleto fija el orden, no el contenido matemático. Los comentari
 % Respuesta local, evidencia, limitación y cambio que hereda SPX+1.
 ```
 
-## 5. Adaptación mínima por escalón
+## 5. Adaptación mínima por subproblema
 
 | SP | Núcleo estratégico | Bloque de control/acoplamiento |
 |---|---|---|
-| SP0 | Asignación uno-a-uno homogénea | Regular déficit y duplicidad a cero; poses estáticas y sin transporte |
-| SP1 | Cardinalidad variable | Regular error de cuota/cierre; bajo escasez, referencia seleccionada todo-o-nada; sin planta física |
-| SP2 | Capacidades y requisitos heterogéneos | Regular déficit de capacidad mediante una estimación de capacidad agregada; sin ejecución mecánica |
-| SP3 | Certificado de coalición físicamente ejecutable | Regular residual de wrench y congestión de slots; añadir docking, soporte/contacto y sensores de la modalidad |
-| SP4 | Selección acoplada con transporte origen--destino | Seguimiento de pose y estabilidad del cuerpo/carga |
-| SP5 | Decisión compatible con seguridad | CBF-QP, ORCA u otra capa según modelo y modalidad |
-| SP6 | Re-reclutamiento tras fallo | Reconfiguración y recuperación física |
-| SP7 | Juego de tráfico o prioridad | Evitación multi-coalición y resolución de conflictos |
-| SP8 | Política local bajo red imperfecta y escala | Efecto de muestreo, retardo y pérdidas sobre ejecución/control |
+| SP1 | Asignación, cardinalidad, heterogeneidad, espera/cambio y roles/contactos | Regular déficit, exceso y cierre; certificar capacidad y rol/contacto antes de ejecutar; sin transporte físico |
+| SP2 | Activación y adaptación de la coalición durante la misión | Aproximación, docking, estabilización, pose, contacto, seguridad, reconfiguración, sustitución y liberación |
+| SP3 | Rutas, reservas, prioridades y replanteamiento local | Coordinar huellas y estados de misión; separar exclusión discreta, seguridad continua y efecto de red/escala |
 
 ## 6. Lista de cierre de un SP
 

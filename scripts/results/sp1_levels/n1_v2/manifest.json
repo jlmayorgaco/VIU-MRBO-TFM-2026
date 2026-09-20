@@ -2,19 +2,19 @@
   "schema_version": "sp1-level-package-v1",
   "level": "N1",
   "description": "Confirmatory homogeneous Hungarian campaign: spatial quality, controlled scaling, static post-failure re-allocation and an out-of-domain heterogeneous-capacity audit.",
-  "generated_at_utc": "2026-08-08T04:13:20.911037+00:00",
+  "generated_at_utc": "2026-08-19T15:44:41.090269+00:00",
   "environment": {
-    "python": "3.13.9",
+    "python": "3.13.14",
     "platform": "Windows-11-10.0.26200-SP0",
     "processor": "Intel(R) Core(TM) Ultra 9 185H",
     "machine": "AMD64",
     "logical_cpu_count": 22,
     "pandas": "2.3.3",
     "numpy": "2.3.5",
-    "matplotlib": "3.10.6",
+    "matplotlib": "3.10.8",
     "scipy": "1.16.3"
   },
-  "git_commit": "10b5e7da225f1d862a7821f2023f0caa0c6ddb6d",
+  "git_commit": "e2e67abe7552b60be210805626fac4f495d95138",
   "git_tree_dirty": true,
   "sources": [
     {
@@ -24,8 +24,8 @@
     },
     {
       "path": "scripts/sp1_n1.py",
-      "bytes": 115087,
-      "sha256": "a3478773c62032ad478a488c7dd19f479d0d2f6595ce6e99e431112625887390"
+      "bytes": 115801,
+      "sha256": "5c728507ee310324ad247733e111fd9842cd1a26af8c21fc8eaca2d891fd0004"
     },
     {
       "path": "scripts/sp1_levels_common.py",
@@ -112,56 +112,56 @@
   ],
   "artifacts": {
     "figures/n1_central_scaling.pdf": {
-      "bytes": 58757,
-      "sha256": "676b5c313045e63ee9eebcaa9fb956c316c3725a168ed637870d53f96d7b492e"
+      "bytes": 58654,
+      "sha256": "8a041abe14115bb05328f32d6b933715f4a189b0ea4bbd670c3a575d667dcd39"
     },
     "figures/n1_central_scaling.png": {
-      "bytes": 487922,
-      "sha256": "ba7ec2f97ef2aec8a7976b0a97e04950e679c66e760da80eae26078336c60836"
+      "bytes": 458811,
+      "sha256": "7d1fe6e86d66551a4d9effa86b63c8119d666991a3315ff4e91f65e8bc8d8b80"
     },
     "figures/n1_failure_recovery.pdf": {
-      "bytes": 52124,
-      "sha256": "477e94f42461b9ecd71428f300ccfed2228f29cf88cbe95f259769ad16dcd951"
+      "bytes": 52055,
+      "sha256": "ce805dbd0340945ce43719d6ca7ec57162755e9f5410ddeea1cfc22340e6426b"
     },
     "figures/n1_failure_recovery.png": {
-      "bytes": 326669,
-      "sha256": "0b37cad7ab33831c18728c750a0c7b253bc433c15115e9091a6684c8bd2182e9"
+      "bytes": 302480,
+      "sha256": "22471c5cd991a1caf76d8fb4a3c10618314b4a6846398ee6130bd4241fdc2c5f"
     },
     "figures/n1_heterogeneity_boundary.pdf": {
-      "bytes": 61041,
-      "sha256": "6cc7a51a860d4692507625ba3f0310f9b503660a52a110d74e58484148bfeea3"
+      "bytes": 60692,
+      "sha256": "45b139d35cf6514aa2b557f96e19e0153633d3db964b009b16f04d68066047fc"
     },
     "figures/n1_heterogeneity_boundary.png": {
-      "bytes": 345370,
-      "sha256": "ddbf8e42d7b80de8dec3c9b444c1ebc0ed8b2582ff638b92f656c361e599e6f3"
+      "bytes": 323583,
+      "sha256": "30a4502cc8d74757c13847646aace1f7a7eeb5bc5ab51017df8aef067ebb09b4"
     },
     "figures/n1_operating_envelope.pdf": {
-      "bytes": 65049,
-      "sha256": "3ec2c696828632acf6545e405e60dd2d5cb4f3de3bb5df415e7a5d4baa42856a"
+      "bytes": 65264,
+      "sha256": "5da157c03dc10bbf0df3369531092c1ecacbcb4e8d491a4bd6137a3811cda2a0"
     },
     "figures/n1_operating_envelope.png": {
-      "bytes": 451696,
-      "sha256": "75b1c6b1fe167959741c771cfc293b3e60b373096e0f5a85d160c0f301ffca2f"
+      "bytes": 413548,
+      "sha256": "79d166f23617d78373e5187323a5e7baf37c062e99e8f86577fef939a33d8235"
     },
     "figures/n1_quality_scenarios.pdf": {
-      "bytes": 68367,
-      "sha256": "1348a31c845d86ad5058807dfb5d0b0f81ab0b955067c3ff7c70690e943d6074"
+      "bytes": 69163,
+      "sha256": "3bb937923f65183e64c5d4b0976feba9810a4654522557fb49833a684ab3de5b"
     },
     "figures/n1_quality_scenarios.png": {
-      "bytes": 437283,
-      "sha256": "d4d8ecfa09eb9598fb8bba4af988f44747bcb0ad65fd13299cec874ffc84d381"
+      "bytes": 392972,
+      "sha256": "f7d2588d2536e9969cc67ad5c8bb6e95eb277531b1b6794942237fdfd940772b"
     },
     "figures/n1_validity_boundary.pdf": {
-      "bytes": 65513,
-      "sha256": "e24ef9b325ec091dd8c59bb92f7e21120eca506ee62c6c45436d30877e000e34"
+      "bytes": 66088,
+      "sha256": "1a5ddb375d374a67ad40062f5b365ed7de4560fadad39ea5c9e19f13cce7d138"
     },
     "figures/n1_validity_boundary.png": {
-      "bytes": 437610,
-      "sha256": "1ab725917c3a8a4ba160cf4646c59348fefb2b92109c0d04878d9bcd30775f64"
+      "bytes": 416077,
+      "sha256": "f747af823d43109ae9b5dbe61839a296bd28f4bd30e75127db605d4b482baf8e"
     },
     "key_metrics.json": {
-      "bytes": 7321,
-      "sha256": "71cf9296ed2d04c32a1d635fa61e1d6fd8f74c3ffe5cfb84e37f29a451509296"
+      "bytes": 7319,
+      "sha256": "4c3be6611ea6e63a09c4db76099598eecfd5a97d250ef2f6789c3b1c4c8c8335"
     },
     "processed/failure_summary.csv": {
       "bytes": 2578,
@@ -184,8 +184,8 @@
       "sha256": "902f17b88447fcba4367a633b3b78f79834370d4b63e6785937c8d22b644bcf4"
     },
     "processed/quality_scenario_summary.csv": {
-      "bytes": 2734,
-      "sha256": "747c20d43658fc74125b0ed16393f35ca4f726fe2d9a4baa0499df3b8dbd0d23"
+      "bytes": 2733,
+      "sha256": "102869a95b43e48f2ce88172bc515581365bf7478ecc678c4d378181e366f28e"
     },
     "processed/scaling_summary.csv": {
       "bytes": 1657,

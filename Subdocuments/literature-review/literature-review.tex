@@ -1,0 +1,66 @@
+\PassOptionsToPackage{draft}{hyperref}
+\documentclass[12pt,a4paper]{article}
+
+% Compilar con LuaLaTeX + Biber:  .\build.ps1
+\usepackage{viu-mrob-thesis}
+\usepackage{csquotes}
+\usepackage[
+  backend=biber,
+  style=apa,
+  natbib=true,
+  hyperref=false,
+  sorting=nyt,
+  sortcites=true
+]{biblatex}
+\addbibresource{references.bib}
+\renewcommand*{\bibfont}{\raggedright}
+
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{needspace}
+
+\setviuheadertitle{Revisión de literatura}
+\hypersetup{
+  pdftitle={Revisión de literatura: coordinación multi-robot, coaliciones y transporte cooperativo},
+  pdfauthor={Jorge Luis Mayorga Taborda},
+  pdfsubject={Estado del arte para el TFM VIU-MROB 2026}
+}
+
+% Marca de trabajo pendiente. Se resalta en el PDF para que ningún hueco
+% llegue por descuido a una entrega. Antes de congelar el subdocumento no
+% puede quedar ninguna: `grep -rn "\pendiente" sections/`.
+\newcommand{\pendiente}[1]{%
+  \par\noindent\colorbox{VIUOrange!12}{%
+    \parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+      \footnotesize\color{VIUDark}\textbf{[PENDIENTE]}\ #1}}\par\smallskip}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Revisión de literatura\par}
+  \vspace{2mm}
+  {\large Coordinación multi-robot, formación de coaliciones\
+   y transporte cooperativo\par}
+  \vspace{4mm}
+  {\normalsize Jorge Luis Mayorga Taborda\par}
+  {\footnotesize Máster Universitario en Robótica --- VIU\par}
+  {\footnotesize Subdocumento de trabajo. No es un capítulo cerrado.\par}
+\end{center}
+
+\vspace{4mm}
+\tableofcontents
+\vspace{6mm}
+
+\input{sections/01-alcance-y-metodo}
+\input{sections/02-asignacion-de-tareas}
+\input{sections/03-formacion-de-coaliciones}
+\input{sections/04-consenso-y-control-distribuido}
+\input{sections/05-juegos-y-dinamicas-poblacionales}
+\input{sections/06-transporte-cooperativo}
+\input{sections/07-sintesis-y-hueco}
+
+\printbibliography[title={Referencias}]
+
+\end{document}

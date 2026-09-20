@@ -162,7 +162,7 @@ def write_csv(path: Path, rows: list[dict[str, Any]], fields: Iterable[str] | No
             writer.writerow({field: row.get(field, "") for field in fields})
 
 
-def ensure_stage1c_frozen() -> dict[str, Any]:
+def ensure_stage1c_frozen(*, rebaseline: bool = False) -> dict[str, Any]:
     manifest_path = MANIFESTS / "stage1c_freeze_manifest.json"
     if not QUEUE.exists() or not CORPUS.exists():
         raise FileNotFoundError("Stage 1C candidate corpus and queue are required inputs")
@@ -173,13 +173,20 @@ def ensure_stage1c_frozen() -> dict[str, Any]:
     if manifest_path.exists():
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         if manifest.get("files") != observed:
-            raise RuntimeError(f"Stage 1C input changed after freeze: expected {manifest.get('files')}, observed {observed}")
-        return manifest
+            if not rebaseline:
+                raise RuntimeError(f"Stage 1C input changed after freeze: expected {manifest.get('files')}, observed {observed}")
+            stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+            archive = manifest_path.with_name(f"{manifest_path.stem}.superseded_{stamp}{manifest_path.suffix}")
+            archived = dict(manifest)
+            archived.update({"status": "superseded", "superseded_at_utc": utc_now(), "superseded_reason": "rebaseline_requested_after_upstream_reconciliation"})
+            archive.write_text(json.dumps(archived, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        else:
+            return manifest
     manifest = {
         "created_at_utc": utc_now(),
         "status": "immutable_input",
         "files": observed,
-        "note": "Stage 2 must never overwrite Stage 1C corpus or queue.",
+        "note": "Stage 2 must never overwrite Stage 1C corpus or queue. A prior freeze, if any, is archived before an explicit rebaseline.",
     }
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return manifest
@@ -572,8 +579,9 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--resume", action="store_true", help="reuse API and full-text caches and candidate manifests")
     parser.add_argument("--force", action="store_true", help="refresh API/download caches and reacquire candidates")
+    parser.add_argument("--rebaseline", action="store_true", help="archive a stale Stage 1C freeze and bind this stage to the current input")
     args = parser.parse_args()
-    freeze = ensure_stage1c_frozen()
+    freeze = ensure_stage1c_frozen(rebaseline=args.rebaseline)
     config = yaml.safe_load(CONFIG.read_text(encoding="utf-8")) or {}
     config_hash = sha256_path(CONFIG)
     env = BOOT.dotenv_values(ENV)

@@ -10,8 +10,10 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import importlib.util
 import json
 import subprocess
+import sys
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
@@ -35,6 +37,20 @@ CLAIM_SUPPORT_STATUSES = (
     "unclear",
     "not_tested",
 )
+
+
+def load_bootstrap_module():
+    path = BASE / "scripts" / "bootstrap_literature.py"
+    spec = importlib.util.spec_from_file_location("bootstrap_for_stage5", path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Cannot load WoS coverage helpers from {path}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+BOOT = load_bootstrap_module()
 
 
 def utc_now() -> str:
@@ -97,8 +113,26 @@ def main() -> int:
         raise FileNotFoundError("Stage 2 corpus and Stage 3 matrix are required")
     matrix = read_csv(MATRIX)
     corpus = read_csv(CORPUS)
-    if len(matrix) != 1057 or len({row.get("candidate_id") for row in matrix}) != len(matrix):
-        raise RuntimeError("Stage 5 invariant failure: expected 1057 unique matrix rows")
+    matrix_ids = [row.get("candidate_id", "") for row in matrix]
+    expected_ids = {
+        row.get("candidate_id", "")
+        for row in corpus
+        if row.get("screening_decision") in {"include_fulltext", "maybe_fulltext"}
+    }
+    if len(matrix_ids) != len(set(matrix_ids)) or set(matrix_ids) != expected_ids:
+        raise RuntimeError("Stage 5 invariant failure: the evidence matrix must contain each and only the Stage 2 full-text-queue candidate")
+    wos_coverage = BOOT.wos_coverage_label(BOOT.wos_raw_files())
+    wos_status = "present_partial" if wos_coverage == "wos_partially_reconciled" else ("present_complete" if wos_coverage == "wos_reconciled" else "pending_external_export")
+    wos_summary = (
+        "La exportación de Web of Science está parcialmente reconciliada: se incorporaron los archivos declarados, pero F01 y F02 solo contienen sus primeros 50 registros; por ello no se declara exhaustividad."
+        if wos_coverage == "wos_partially_reconciled"
+        else "La exportación de Web of Science continúa pendiente, por lo que no se declara exhaustividad."
+    )
+    wos_next_step = (
+        "Completar los tramos de exportación faltantes de F01 y F02"
+        if wos_coverage == "wos_partially_reconciled"
+        else "Completar la exportación WoS"
+    )
     stage4_summary = json.loads((TABLES / "stage4_analysis_summary.json").read_text(encoding="utf-8"))
     interface_rows = read_csv(TABLES / "analysis_16_tfm_interface_coverage_detail.csv")
     core = read_csv(FINAL / "core_papers.csv")
@@ -139,8 +173,7 @@ de título/resumen, una ronda acotada de snowballing y una ronda única de
 reparación con ocho familias dirigidas. Las familias de reparación cubrieron
 juegos poblacionales/evolutivos/potenciales, seguridad y CBF, contexto
 industrial, formación/docking, coordinación multi-agent, transporte colectivo,
-fuerza/wrench y AMR/AGV logístico. La exportación de Web of Science continúa
-pendiente, por lo que no se declara exhaustividad.
+fuerza/wrench y AMR/AGV logístico. {wos_summary}
 
 Stage 2 usó exclusivamente rutas públicas legales/open observadas en metadatos
 o enlaces públicos de Crossref. No se usaron credenciales, proxy institucional,
@@ -233,7 +266,7 @@ demostrada.
    mecánica o de colisión.
 4. Para SP3 comparar planificación/tráfico con el baseline que corresponda al
    escenario y medir bloqueos, colisiones, makespan, throughput y recuperación.
-5. Completar la exportación WoS y una lectura humana de los candidatos
+5. {wos_next_step} y realizar una lectura humana de los candidatos
    prioritarios antes de redactar novelty claims o afirmar estado del arte.
 
 ## Respuestas explícitas a las preguntas del TFM
@@ -311,7 +344,7 @@ protocolo del repositorio.
 
 La revisión soporta una base comparativa y una agenda de lectura, pero no
 demuestra novedad, optimalidad, convergencia, estabilidad, robustez ni
-escalabilidad. La auditoría adversarial y la ausencia de exportación WoS
+escalabilidad. La auditoría adversarial y la cobertura WoS parcial
 obligan a tratar la combinación SP1-SP3 como hipótesis de posicionamiento.
 """
     (FINAL / "literature_review_compact.md").write_text(compact, encoding="utf-8")
@@ -374,15 +407,15 @@ registro en `references/LITERATURE_LEDGER.md` y mapeo a `docs/04_CLAIMS_EVIDENCE
         {"claim_id": "C01", "claim_text": f"El derivado Stage 1C contiene {len(corpus)} candidatos y la cola Stage 2 contiene {len(matrix)} registros.", "claim_type": "review_descriptive", "support_status": "supported", "candidate_id": "", "DOI": "", "evidence_location": "data/processed/candidate_corpus_stage2.csv;data/processed/fulltext_evidence_matrix.csv", "source_artifacts": "data/processed/candidate_corpus_stage2.csv;data/processed/fulltext_evidence_matrix.csv", "source_candidate_ids": "", "allowed_use": "metodología de revisión", "notes": "Cifra derivada directamente de artefactos congelados del pipeline; no es una afirmación sobre impacto científico."},
         {"claim_id": "C02", "claim_text": f"Se verificaron {evidence_counts['fulltext_verified']} objetos de texto completo mediante identidad DOI/título.", "claim_type": "acquisition_descriptive", "support_status": "supported", "candidate_id": fulltext_ids, "DOI": fulltext_dois, "evidence_location": "logs/stage2_fulltext_acquisition.csv;reports/stage2_acquisition_qa.md", "source_artifacts": "logs/stage2_fulltext_acquisition.csv;reports/stage2_acquisition_qa.md", "source_candidate_ids": fulltext_ids, "allowed_use": "describir cobertura de evidencia", "notes": "El soporte es operativo y de identidad; no convierte el coding estructural en validación científica de resultados."},
         {"claim_id": "C03", "claim_text": "Las señales de método, teoría, física y experimentación son indicadores de coding estructural, no verificación de resultados.", "claim_type": "evidence_boundary", "support_status": "supported", "candidate_id": "", "DOI": "", "evidence_location": "reports/stage3_fulltext_qa.md;config/stage3_codebook.yaml", "source_artifacts": "reports/stage3_fulltext_qa.md;config/stage3_codebook.yaml", "source_candidate_ids": "", "allowed_use": "limitación metodológica", "notes": "Límite explícito del protocolo de extracción y del primer pase automatizado."},
-        {"claim_id": "C04", "claim_text": "La combinación completa SP1-SP3 no puede declararse ausente ni novedosa con el corpus actual.", "claim_type": "novelty_boundary", "support_status": "unclear", "candidate_id": prior_ids, "DOI": prior_dois, "evidence_location": "reports/adversarial_novelty_audit.md;tables/stage4_analysis_summary.json", "source_artifacts": "reports/adversarial_novelty_audit.md;tables/stage4_analysis_summary.json", "source_candidate_ids": prior_ids, "allowed_use": "auditoría de novedad, no claim final", "notes": "Hipótesis de gap retenida: requiere exportación WoS y lectura cercana antes de cualquier conclusión de novedad."},
-        {"claim_id": "C05", "claim_text": "El siguiente paso requerido es lectura cercana de prior art, exportación WoS y validación experimental según el protocolo del repositorio.", "claim_type": "research_action", "support_status": "supported", "candidate_id": "", "DOI": "", "evidence_location": "final/tfm_integration_plan.md;reports/stage4_synthesis_qa.md", "source_artifacts": "final/tfm_integration_plan.md;reports/stage4_synthesis_qa.md", "source_candidate_ids": "", "allowed_use": "plan de trabajo", "notes": "Acción derivada de las limitaciones registradas; no es un resultado bibliográfico."},
+        {"claim_id": "C04", "claim_text": "La combinación completa SP1-SP3 no puede declararse ausente ni novedosa con el corpus actual.", "claim_type": "novelty_boundary", "support_status": "unclear", "candidate_id": prior_ids, "DOI": prior_dois, "evidence_location": "reports/adversarial_novelty_audit.md;tables/stage4_analysis_summary.json", "source_artifacts": "reports/adversarial_novelty_audit.md;tables/stage4_analysis_summary.json", "source_candidate_ids": prior_ids, "allowed_use": "auditoría de novedad, no claim final", "notes": f"Hipótesis de gap retenida: requiere {wos_next_step.lower()} y lectura cercana antes de cualquier conclusión de novedad."},
+        {"claim_id": "C05", "claim_text": f"El siguiente paso requerido es lectura cercana de prior art, {wos_next_step.lower()} y validación experimental según el protocolo del repositorio.", "claim_type": "research_action", "support_status": "supported", "candidate_id": "", "DOI": "", "evidence_location": "final/tfm_integration_plan.md;reports/stage4_synthesis_qa.md", "source_artifacts": "final/tfm_integration_plan.md;reports/stage4_synthesis_qa.md", "source_candidate_ids": "", "allowed_use": "plan de trabajo", "notes": "Acción derivada de las limitaciones registradas; no es un resultado bibliográfico."},
     ]
     write_csv(FINAL / "claim_source_matrix.csv", claims)
     (FINAL / "review_limitations.md").write_text(f"""# Limitaciones de la revisión
 
 - La cobertura depende de Crossref/OpenAlex, snowballing limitado y rutas OA
-  públicas; Web of Science no fue incorporado.
-- La cola de 1057 registros produjo 230 textos completos verificados, por lo
+  públicas; estado de Web of Science: `{wos_status}`.
+- La cola de {len(matrix)} registros produjo {evidence_counts['fulltext_verified']} textos completos verificados, por lo
   que muchas familias permanecen con evidencia de resumen/metadatos.
 - El coding de Stage 3 es un primer pase estructural automatizado. No sustituye
   lectura humana de ecuaciones, tablas, figuras, supuestos y protocolos.
@@ -418,7 +451,8 @@ registro en `references/LITERATURE_LEDGER.md` y mapeo a `docs/04_CLAIMS_EVIDENCE
         ],
         "outputs": [str(path.relative_to(BASE)) for path in sorted(FINAL.iterdir()) if path.is_file()],
         "raw_fulltext_policy": "local-only; excluded from Git; manifests and SHA-256 values are versioned",
-        "wos_status": "pending_external_export",
+        "wos_status": wos_status,
+        "wos_coverage": wos_coverage,
     }
     (FINAL / "reproducibility_manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (FINAL / "reproducibility_manifest.md").write_text(f"""# Manifest de reproducibilidad
@@ -428,7 +462,7 @@ registro en `references/LITERATURE_LEDGER.md` y mapeo a `docs/04_CLAIMS_EVIDENCE
 - Corpus Stage 2 SHA-256: `{sha256(CORPUS)}`
 - Matriz Stage 3 SHA-256: `{sha256(MATRIX)}`
 - Resumen Stage 4 SHA-256: `{sha256(TABLES / 'stage4_analysis_summary.json')}`
-- WoS: `pending_external_export`
+- WoS: `{wos_status}` (`{wos_coverage}`)
 
 Ejecutar en orden:
 
@@ -458,7 +492,7 @@ Run UTC: {utc_now()}
 - Final novelty conclusion: **withheld**
 
 The package is integration-ready as a conservative review artifact. It does
-not replace close reading, WoS reconciliation, or experimental validation.
+not replace close reading, complete WoS reconciliation, or experimental validation.
 """
     (REPORTS / "stage5_final_package_qa.md").write_text(qa, encoding="utf-8")
     print(qa)

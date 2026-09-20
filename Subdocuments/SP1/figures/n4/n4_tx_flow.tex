@@ -7,10 +7,10 @@
 \node[stage,draw=SPGreen!65] (mis) at (0,.65) {\textbf{DMIS}\\vecinos de conflicto};
 \node[stage,draw=VIUOrange!75] (prep) at (2.35,.65) {\textbf{PREPARE}\\validar y bloquear};
 \node[stage,draw=SPGreen!70,fill=SPGreen!6] (commit) at (4.7,1.25) {\textbf{COMMIT}\\escribir todo};
-\node[stage,draw=SPRed!70,fill=SPRed!5] (abort) at (4.7,-.35) {\textbf{ABORT}\\no escribir};
+\node[stage,draw=SPRed!70,fill=SPRed!5] (abort) at (4.7,-.35) {\textbf{ABORT}\\liberar reservas};
 \draw[arr] (read)--(prop); \draw[arr] (prop)--(mis); \draw[arr] (mis)--(prep);
 \draw[arr] (prep)--(commit); \draw[->,thick,draw=SPRed] (prep)--(abort);
 \draw[->,thin,draw=SPBlue] (commit.north) |- ++(0,.55) -| (read.north);
 \node[font=\tiny,text=black!55] at (0,-.72)
- {proponente local por transacción; sin coordinador global de flota};
+ {sin orden global de confirmación};
 \end{tikzpicture}

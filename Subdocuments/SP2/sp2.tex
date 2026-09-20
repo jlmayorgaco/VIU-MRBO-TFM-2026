@@ -1,0 +1,1188 @@
+\PassOptionsToPackage{draft}{hyperref}
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{viu-mrob-thesis}
+\usepackage{csquotes}
+\usepackage{multicol}
+\usepackage{needspace}
+\usepackage[
+  backend=biber,
+  style=apa,
+  natbib=true,
+  hyperref=false,
+  sorting=nyt,
+  sortcites=true
+]{biblatex}
+\addbibresource{references.bib}
+\renewcommand*{\bibfont}{\raggedright}
+
+\input{generated/sp2_ready_metrics.tex}
+\input{generated/sp2_smoke_metrics.tex}
+\input{generated/cargo_e2e_numbers.tex}
+
+\renewcommand{\viuownsource}{%
+  \par\nobreak\vspace{0.8mm}\noindent
+  \makebox[\linewidth][c]{\footnotesize\itshape Elaboración propia.}%
+  \par
+}
+
+\setviuheadertitle{SP2 · Ejecución y transporte cooperativo}
+\hypersetup{
+  pdftitle={SP2: ejecución y transporte cooperativo con Pioneer 3-DX},
+  pdfauthor={Jorge Luis Mayorga Taborda},
+  pdfsubject={Rigidez cinemática, fuerzas, información local y validez física}
+}
+
+\newcommand{\leveltag}[1]{%
+  \Needspace{5.5\baselineskip}%
+  \noindent\colorbox{VIUDark}{%
+    \parbox{\dimexpr\textwidth-2\fboxsep\relax}{%
+      \color{white}\sffamily\bfseries\small #1%
+    }%
+  }\par\smallskip
+}
+
+\newcommand{\resultfigure}[4][0.40\textheight]{%
+  \begin{center}
+    \includegraphics[width=\textwidth,height=#1,keepaspectratio]{#2}
+    \captionof{figure}{#3}
+    \label{#4}
+    \viuownsource
+  \end{center}
+}
+
+% Silueta cenital reutilizable del Pioneer 3-DX. Los cinco argumentos son
+% coordenadas, orientación, identificador y escala. El triángulo marca el frente.
+\newcommand{\pioneericon}[5]{%
+  \begin{scope}[shift={(#1,#2)},rotate=#3,scale=#5]
+    \fill[VIUDark!88] (-.24,-.38) rectangle (.22,-.30);
+    \fill[VIUDark!88] (-.24,.30) rectangle (.22,.38);
+    \draw[fill=SPBlue!10,draw=SPBlue,line width=.75pt,rounded corners=.08cm]
+      (-.42,-.28) rectangle (.34,.28);
+    \draw[fill=SPBlue,draw=SPBlue] (.32,-.17)--(.54,0)--(.32,.17)--cycle;
+    \draw[SPBlue!70!black,line width=.45pt]
+      (.23,-.13) arc[start angle=-58,end angle=58,radius=.23];
+    \node[font=\sffamily\bfseries\tiny,text=VIUDark] at (-.07,0) {#4};
+  \end{scope}%
+}
+
+\newtheorem{sp2prop}{Proposición}
+\newtheorem{sp2lema}{Lema}
+
+\ExplSyntaxOn
+\NewDocumentCommand{\spdecimal}{m}
+  {
+    \tl_set:Nx \l_tmpa_tl {#1}
+    \tl_replace_all:Nnn \l_tmpa_tl {.} {{,}}
+    \tl_use:N \l_tmpa_tl
+  }
+\ExplSyntaxOff
+
+\begin{document}
+
+\viuromanfoliofalse
+\pagenumbering{arabic}
+\setcounter{page}{1}
+% Mantiene el interlineado VIU de 1,5 y recupera espacio mediante separaciones
+% editoriales, no reduciendo la tipografía ni la escala de la Figura 1.
+\setlength{\parskip}{1.5pt plus .5pt}
+\setlength{\abovedisplayskip}{5pt plus 1pt minus 1pt}
+\setlength{\belowdisplayskip}{5pt plus 1pt minus 1pt}
+\setlength{\abovedisplayshortskip}{3pt plus 1pt}
+\setlength{\belowdisplayshortskip}{3pt plus 1pt}
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+
+% --------------------------------------------------------------------------
+% Página 1 · Introducción y frontera física
+% --------------------------------------------------------------------------
+\leveltag{CARGA RÍGIDA Y CONFINAMIENTO GEOMÉTRICO}
+\section*{SP2: ejecución y transporte cooperativo}
+
+El objetivo de SP2 no termina en decidir si una coalición es factible. SP1
+entrega los miembros; SP2 estudia cómo llevar la carga hasta una pose sin
+rebasar restricciones de movilidad, contacto e información. La campaña evalúa
+una versión acotada, con geometría de contacto fija y planta plana, que escala
+la aceleración nominal $a_L^0$ mediante $\alpha\in[0,1]$ antes de aplicarla:
+
+\[
+ a_L=\alpha a_L^0,\qquad
+ \xi_L^+\in\Xi_{\mathcal C}^{\mathrm{align}},\qquad
+ W_d(a_L)\in\widehat{\mathcal W}_{\mathcal C},\qquad
+ g_{\mathrm{info}}=1 .
+\]
+
+En las cinco leyes locales, $g_{\mathrm{info}}$ solo controla la edad de la
+estimación del AMR de referencia. No informa sobre la frescura conjunta de la
+coalición. El MPC central usa estado global y fija esta guarda a uno.
+
+Una orden eficaz en un modelo sin contacto puede quedar bloqueada al añadir
+estas comprobaciones, lo que modifica la dinámica de lazo cerrado. El efecto se
+mide con contrastes pareados dentro de cada familia. Promediar reguladores
+distintos mezclaría modelos y sintonías.
+
+En \textbf{Cargo}, modo primario, cada AMR sostiene la carga mediante un
+acoplamiento que transmite fuerza planar y permite el giro propio del chasis.
+En \textbf{caging}, extensión no prehensil, contactos unilaterales mantienen el
+confinamiento; sus normales $f_{n,i}^{E}\geq0$ producen el wrench ilustrativo
+$W_\Sigma^{E}=(F_\Sigma^{E},\tau_\Sigma^{E})$. La
+Figura~\ref{fig:sp2-frontera} distingue las condiciones de cierre y fuerza
+\parencite{bicchi1995closure,pereira2004caging}.
+
+\clearpage
+\begin{center}
+\resizebox{.98\linewidth}{!}{%
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,
+  font=\fontsize{9.6}{11}\selectfont\sffamily]
+  \tikzset{
+    modepanel/.style={rounded corners=2mm,fill=SPFloor,draw=SPGrid,line width=.7pt},
+    scene/.style={rounded corners=1.2mm,fill=white,draw=SPGrid,line width=.6pt},
+    stage/.style={rounded corners=1.2mm,fill=white,draw=SPGrid,line width=.65pt,
+      minimum width=2.18cm,text width=1.96cm,minimum height=.90cm,
+      align=center,font=\fontsize{7.8}{8.8}\selectfont,inner sep=2.2pt},
+    flow/.style={->,line width=1.1pt,draw=VIUOrange,
+      shorten >=2.2pt,shorten <=2.2pt},
+    unilateral/.style={->,line width=1.35pt,draw=VIUOrange},
+    contactforce/.style={->,draw=SPRed,shorten >=.5pt,line cap=round},
+    resultant/.style={->,line width=1.45pt,draw=SPBlue,line cap=round},
+    motion/.style={->,line width=1.35pt,draw=SPBlue},
+    factcard/.style={rounded corners=1mm,draw=SPGrid,line width=.6pt,align=center}
+  }
+
+  % Dos secuencias temporales, cada una con estado inicial y final.
+  \draw[modepanel] (0,2.26) rectangle (7.15,9.92);
+  \draw[modepanel] (7.85,2.26) rectangle (15.00,9.92);
+  \fill[SPBlue!9,rounded corners=2mm] (0,8.82) rectangle (7.15,9.92);
+  \fill[VIUOrange!10,rounded corners=2mm] (7.85,8.82) rectangle (15.00,9.92);
+  \node[anchor=west,font=\bfseries,text=VIUDark] at (.30,9.53)
+    {CARGO · TRANSPORTE RÍGIDO};
+  \node[anchor=west,font=\fontsize{8}{9.2}\selectfont,text=SPBlue!80!black] at (.30,9.08)
+    {pivotes solidarios; chasis con giro libre};
+  \node[anchor=west,font=\bfseries,text=VIUDark] at (8.15,9.53)
+    {CAGING · EMPUJE CONFINADO};
+  \node[anchor=west,font=\fontsize{8}{9.2}\selectfont,text=VIUOrange!85!black] at (8.15,9.08)
+    {cerco reconfigurable sin vía de escape};
+
+  % Cuatro ventanas con la misma retícula: dos estados por modalidad.
+  \foreach \xa/\xb in {.18/3.34,3.81/6.97,8.03/11.19,11.66/14.82}{
+    \draw[scene] (\xa,3.62) rectangle (\xb,8.62);
+  }
+  \foreach \x in {.92,1.76,2.60,4.55,5.39,6.23,8.77,9.61,10.45,
+                   12.40,13.24,14.08}{
+    \draw[SPGrid!45,line width=.28pt] (\x,3.82)--(\x,8.16);
+  }
+  \foreach \y in {4.54,5.58,6.62,7.66}{
+    \draw[SPGrid!45,line width=.28pt] (.34,\y)--(3.18,\y);
+    \draw[SPGrid!45,line width=.28pt] (3.97,\y)--(6.81,\y);
+    \draw[SPGrid!45,line width=.28pt] (8.19,\y)--(11.03,\y);
+    \draw[SPGrid!45,line width=.28pt] (11.82,\y)--(14.66,\y);
+  }
+  \node[anchor=west,font=\fontsize{8}{9.2}\selectfont\bfseries,text=VIUDark] at (.38,8.35)
+    {(a) ANTES · $t_0$};
+  \node[anchor=west,font=\fontsize{8}{9.2}\selectfont\bfseries,text=SPBlue!80!black] at (4.01,8.35)
+    {(b) DESPUÉS · $t_f$};
+  \node[anchor=west,font=\fontsize{8}{9.2}\selectfont\bfseries,text=VIUDark] at (8.23,8.35)
+    {(c) ANTES · $t_0$};
+  \node[anchor=west,font=\fontsize{8}{9.2}\selectfont\bfseries,text=VIUOrange!85!black] at (11.86,8.35)
+    {(d) DESPUÉS · $t_f$};
+  \node[font=\bfseries,text=SPBlue] at (3.58,6.02) {$\Longrightarrow$};
+  \node[font=\bfseries,text=VIUOrange] at (11.42,6.02) {$\Longrightarrow$};
+
+  % El contenido de las cuatro escenas queda centrado en la nueva altura útil.
+  \begin{scope}[yshift=17.5mm]
+  % (a) Cargo inicial: cuatro plataformas bajo las esquinas y rumbo común.
+  \pioneericon{.88}{3.88}{14}{}{.43}
+  \pioneericon{2.24}{3.88}{14}{}{.43}
+  \pioneericon{.88}{4.66}{14}{}{.43}
+  \pioneericon{2.24}{4.66}{14}{}{.43}
+  \draw[rounded corners=.7mm,fill=VIUOrange!18,fill opacity=.72,
+    draw=VIUOrange,draw opacity=1,line width=1pt]
+    (.86,3.87) rectangle (2.25,4.67);
+  \node[font=\bfseries\fontsize{8}{9.2}\selectfont] at (1.56,4.28) {carga $\mathcal L$};
+  \foreach \p in {(.88,3.88),(2.24,3.88),(.88,4.66),(2.24,4.66)}{
+    \fill[white,draw=VIUDark,line width=.6pt] \p circle (2.4pt);
+    \fill[VIUDark] \p circle (1pt);
+  }
+  \draw[motion] (1.53,4.95)--node[above,font=\fontsize{8}{9.2}\selectfont\bfseries] {$v_L$} (2.65,5.38);
+  \node[font=\fontsize{8}{9.2}\selectfont\bfseries,text=VIUDark] at (1.56,3.36)
+    {pivotes fijos · $r_i$ constante};
+
+  % (b) Cargo final: el conjunto se traslada y rota sin deformar la formación.
+  \draw[motion,dashed] (4.18,3.52).. controls (4.48,3.90) and (4.76,4.15)..
+    node[below right,font=\fontsize{8}{9.2}\selectfont\bfseries] {$\Delta p_L$} (5.02,4.34);
+  \begin{scope}[rotate around={14:(5.72,4.62)}]
+    \pioneericon{5.04}{4.23}{0}{}{.43}
+    \pioneericon{6.40}{4.23}{0}{}{.43}
+    \pioneericon{5.04}{5.01}{0}{}{.43}
+    \pioneericon{6.40}{5.01}{0}{}{.43}
+    \draw[rounded corners=.7mm,fill=VIUOrange!18,fill opacity=.72,
+      draw=VIUOrange,draw opacity=1,line width=1pt]
+      (5.02,4.22) rectangle (6.41,5.02);
+    \node[font=\bfseries\fontsize{8}{9.2}\selectfont,rotate=14] at (5.72,4.63) {carga $\mathcal L$};
+    \foreach \p in {(5.04,4.23),(6.40,4.23),(5.04,5.01),(6.40,5.01)}{
+      \fill[white,draw=VIUDark,line width=.6pt] \p circle (2.4pt);
+      \fill[VIUDark] \p circle (1pt);
+    }
+  \end{scope}
+  \draw[SPBlue,->,line width=1pt] (5.10,5.28)
+    arc[start angle=160,end angle=62,radius=.42];
+  \node[font=\fontsize{8}{9.2}\selectfont\bfseries,text=SPBlue!80!black] at (5.62,5.42)
+    {$\Delta\theta_L$};
+  \node[font=\fontsize{8}{9.2}\selectfont\bfseries,text=VIUDark] at (5.42,3.36)
+    {$r_i$ permanece fijo};
+
+  % (c) Caging inicial: contacto unilateral y carga apoyada en el suelo.
+  \draw[SPGreen!70!black,dashed,line width=.75pt,rounded corners=3mm]
+    (8.30,3.45) rectangle (10.70,5.16);
+  \draw[motion,dashed] (9.48,4.30)--node[above left,font=\fontsize{8}{9.2}\selectfont\bfseries] {$v_L$}
+    (10.42,5.16);
+  \draw[rounded corners=.7mm,fill=VIUOrange!13,draw=VIUOrange,line width=1pt]
+    (8.86,3.90) rectangle (10.16,4.67);
+  \node[font=\bfseries\fontsize{8}{9.2}\selectfont] at (9.51,4.29) {carga $\mathcal L$};
+  \pioneericon{8.34}{4.28}{0}{}{.46}
+  \pioneericon{10.68}{4.28}{180}{}{.46}
+  \pioneericon{9.51}{5.13}{-90}{}{.44}
+  \pioneericon{9.51}{3.46}{90}{}{.44}
+  \draw[unilateral] (8.61,4.28)--(8.82,4.28);
+  \draw[unilateral] (10.41,4.28)--(10.20,4.28);
+  \draw[unilateral] (9.51,4.88)--(9.51,4.71);
+  \draw[unilateral] (9.51,3.72)--(9.51,3.86);
+  \node[font=\fontsize{8}{9.2}\selectfont\bfseries,text=SPGreen!48!black] at (9.51,3.27)
+    {cerco cerrado · sin unión};
+
+  % (d) Caging final: la carga cambia de pose y los contactos se reubican.
+  \draw[motion,dashed] (11.89,3.47).. controls (12.18,3.80) and (12.47,4.05)..
+    node[below right,font=\fontsize{8}{9.2}\selectfont\bfseries] {$\Delta p_L$} (12.73,4.27);
+  \begin{scope}[rotate around={14:(13.42,4.58)}]
+    \draw[SPGreen!70!black,dashed,line width=.75pt,rounded corners=3mm]
+      (12.24,3.73) rectangle (14.60,5.42);
+    \draw[rounded corners=.7mm,fill=VIUOrange!13,draw=VIUOrange,line width=1pt]
+      (12.77,4.19) rectangle (14.07,4.96);
+    \node[font=\bfseries\fontsize{8}{9.2}\selectfont,rotate=14] at (13.25,4.38) {$\mathcal L$};
+
+    % Contactos descentrados: sus normales unilaterales generan fuerza y momento.
+    \pioneericon{12.29}{4.35}{0}{}{.46}
+    \pioneericon{14.55}{4.81}{180}{}{.46}
+    \pioneericon{13.15}{5.39}{-90}{}{.44}
+    \pioneericon{13.70}{3.76}{90}{}{.44}
+    \draw[contactforce,line width=1.55pt]
+      (12.54,4.35)--(13.04,4.35);
+    \draw[contactforce,line width=.95pt]
+      (14.30,4.81)--(14.00,4.81);
+    \draw[contactforce,line width=.80pt]
+      (13.15,5.15)--(13.15,4.91);
+    \draw[contactforce,line width=1.35pt]
+      (13.70,4.00)--(13.70,4.45);
+    \foreach \p in {(12.78,4.35),(14.06,4.81),(13.15,4.95),(13.70,4.20)}{
+      \fill[SPRed] \p circle (1.25pt);
+    }
+
+    \draw[resultant] (13.40,4.56)--
+      node[below right,font=\fontsize{8}{9.2}\selectfont\bfseries,text=SPBlue] {$F_\Sigma^{E}$} (13.91,4.90);
+  \end{scope}
+  \draw[VIUOrange,->,line width=1.05pt]
+    (13.89,5.15) arc[start angle=18,end angle=145,radius=.32];
+  \node[font=\fontsize{8}{9.2}\selectfont\bfseries,text=VIUOrange!85!black] at (13.56,5.29)
+    {$\tau_\Sigma^{E}$};
+  \node[font=\fontsize{8}{9.2}\selectfont\bfseries,text=SPGreen!48!black] at (13.42,3.27)
+    {$F_\Sigma^{E}$ traslada · $\tau_\Sigma^{E}$ gira};
+  \end{scope}
+
+  \node[factcard,draw=SPGreen!60!black,fill=SPGreen!7,minimum width=6.30cm,
+    minimum height=.84cm] at (3.58,2.88)
+    {{\fontsize{8}{9.2}\selectfont\bfseries\color{SPGreen!48!black}CARGO · PIVOTES SOLIDARIOS}\\[-.4mm]
+     {\fontsize{8}{9.2}\selectfont $r_i$ fijo; el rumbo del chasis no queda bloqueado}};
+  \node[factcard,draw=VIUOrange,fill=VIUOrange!7,minimum width=6.30cm,
+    minimum height=.84cm] at (11.42,2.88)
+    {{\fontsize{8}{9.2}\selectfont\bfseries\color{VIUOrange!85!black}CAGING · CERCO RECONFIGURABLE}\\[-.4mm]
+     {\fontsize{8}{9.2}\selectfont $f_{n,i}^{E}\geq0$: empujes $\rightarrow W_\Sigma^{E}$}};
+  \node[circle,fill=white,draw=VIUDark!35,inner sep=1.7pt,font=\bfseries\normalsize]
+    at (7.50,2.88) {$\neq$};
+  \node[font=\fontsize{8}{9.2}\selectfont\bfseries,text=VIUDark,align=center] at (7.50,1.78)
+    {La pose cambia en ambos modos; la restricción física que se conserva es distinta.};
+
+  % Cadena contractual completa: una salida auditable por capa.
+  \node[stage,draw=VIUDark,fill=VIUDark!4] (sp1) at (1.06,.50)
+    {\textbf{SP1}\\[-.4mm]{\fontsize{6.8}{7.8}\selectfont coalición \textsc{closed}}};
+  \node[stage,draw=SPBlue,fill=SPBlue!3] (n1) at (3.64,.50)
+    {\textbf{N1 · RUEDAS}\\[-.4mm]{\fontsize{6.8}{7.8}\selectfont $\Xi_{\mathcal C}^{\mathrm{align}}$}};
+  \node[stage,draw=VIUOrange,fill=VIUOrange!3,text width=2.04cm] (n2) at (6.22,.50)
+    {{\fontsize{7}{8}\selectfont\bfseries\mbox{N2 · CONTACTO}}\\[-.4mm]
+     {\fontsize{6.8}{7.8}\selectfont $\widehat{\mathcal W}_{\mathcal C}$}};
+  \node[stage,draw=SPPurple,fill=SPPurple!3] (n3) at (8.80,.50)
+    {\textbf{N3 · ESTADO}\\[-.4mm]{\fontsize{6.8}{7.8}\selectfont $\hat x_L,\tau_{\mathrm{age}}$}};
+  \node[stage,draw=SPGreen,fill=SPGreen!3] (n4) at (11.38,.50)
+    {\textbf{N4 · CARGO}\\[-.4mm]{\fontsize{6.8}{7.8}\selectfont EXEC/BRK · HOLD}};
+  \node[stage,draw=VIUDark,fill=VIUDark!4] (sp3) at (13.96,.50)
+    {\textbf{SP3}\\[-.4mm]{\fontsize{6.8}{7.8}\selectfont $\widehat{\mathcal U}_{\mathcal C}$}};
+  \draw[flow] (sp1)--(n1);
+  \draw[flow] (n1)--(n2);
+  \draw[flow] (n2)--(n3);
+  \draw[flow] (n3)--(n4);
+  \draw[flow] (n4)--(sp3);
+\end{tikzpicture}
+}
+\captionof{figure}{Modos físicos e interfaz de SP2. Cargo conserva la geometría de los pivotes; caging mantiene un cerco mediante empujes unilaterales. La cadena inferior explicita la salida verificable de SP1, N1--N4 y SP3. Los vectores no están a escala. Elaboración propia.}
+\label{fig:sp2-frontera}
+\end{center}
+
+\begin{contribucion}{Cadena acreditada de ejecución}
+\estadoaporte{N1 demostrado; N2--N4 y Cargo validados empíricamente en planta
+reducida; instrumentación y planta Pioneer~3-DX pendientes.}
+SP1 entrega la coalición en \textsc{closed}. Las medidas \textsc{observed}
+alimentan \textsc{estimated}; el regulador produce \textsc{raw}; y las
+comprobaciones de ruedas, soporte, wrench e información deciden el paso a
+\textsc{guarded}. Solo N4 alcanza \textsc{executed}, y únicamente en la planta
+reducida. Si pierde autoridad, SP2 solicita una reconfiguración a SP1; no ejecuta
+otro juego ni una recoalición distribuida. Las herramientas aisladas son
+conocidas: la aportación evaluada encadena sus condiciones y mide qué órdenes
+dejan de ser ejecutables al incorporar cada capa.
+\end{contribucion}
+
+% --------------------------------------------------------------------------
+% Modelo mecánico transversal
+% --------------------------------------------------------------------------
+\clearpage
+\leveltag{UNA PLANTA MECÁNICA, DOS LEYES DE CONTACTO}
+\section*{Modelo Euler--Lagrange común a Cargo y caging}
+
+Cargo y caging no requieren dos leyes de movimiento incompatibles. Comparten la
+dinámica de los AMR y de la carga; difieren en la restricción que genera las
+reacciones de contacto. Sea
+$q=(q_L,q_1,\ldots,q_N)\in SE(2)^{N+1}$ la configuración del conjunto. En una
+carta local, $q$ tiene $3(N+1)$ coordenadas y satisface la ecuación de
+Lagrange--d'Alembert
+\begin{equation}
+M(q)\ddot q+C(q,\dot q)\dot q+D(q)\dot q+g(q)
+=B(q)\tau+J_c(q)^\top\lambda+A(q)^\top\gamma_A+d,
+\qquad A(q)\dot q=0 .
+\label{eq:sp2-unified-el}
+\end{equation}
+$M$ es definida positiva; $C\dot q$, $D\dot q$ y $g$ reúnen términos
+giroscópicos, disipativos y gravitatorios; $B\tau$ contiene los pares de rueda;
+$J_c^\top\lambda$, las reacciones de contacto; $A^\top\gamma_A$, las fuerzas que
+imponen la rodadura sin deslizamiento lateral; y $d$, las perturbaciones no
+modeladas. Para el AMR diferencial $i$, la fila no holónoma es
+\begin{equation}
+A_i(q_i)=\begin{bmatrix}-\sin\theta_i&\cos\theta_i&0\end{bmatrix},
+\qquad -\sin\theta_i\dot x_i+\cos\theta_i\dot y_i=0.
+\label{eq:sp2-nonholonomic-row}
+\end{equation}
+En el plano horizontal, la gravedad no entra en las tres coordenadas de
+$q_L$; su efecto vertical reaparece en el reparto de soporte de
+\eqref{eq:vertical-support}.
+
+\paragraph{Cargo: contacto bilateral.}
+El pivote soportado por el robot $i$ conserva el desplazamiento $r_i$ respecto
+de la carga:
+\begin{equation}
+\phi_i^{C}(q)=p_i-p_L-R(\theta_L)r_i=0,
+\qquad J_C(q)\dot q=0,
+\qquad J_C=\frac{\partial\phi^{C}}{\partial q}.
+\label{eq:sp2-cargo-bilateral}
+\end{equation}
+La reacción bilateral puede mantener la unión en ambas direcciones dentro de
+los límites del acoplamiento. Al proyectar \eqref{eq:sp2-unified-el} sobre la
+carga se obtiene el modelo planar usado por la guarda mecánica,
+\begin{equation}
+M_L\ddot q_L+D_L\dot q_L
+=T(\theta_L)G_{\mathcal C}\mathbf f+W_{\mathrm{ext}},
+\label{eq:sp2-payload-el}
+\end{equation}
+donde $G_{\mathcal C}$ transforma las reacciones individuales $\mathbf f$ en
+wrench de la carga. La matriz puede permanecer fija en el marco solidario
+mientras no cambien los contactos.
+
+\paragraph{Caging: contacto unilateral.}
+En empuje no se impone \eqref{eq:sp2-cargo-bilateral}. Si $g_i^{E}(q)$ es la
+separación normal, las reacciones cumplen
+\begin{equation}
+0\leq f_{n,i}^{E}\ \perp\ g_i^{E}(q)\geq0,
+\qquad |f_{t,i}^{E}|\leq\mu_i f_{n,i}^{E},
+\qquad
+\mathbf f_i^{E}=f_{n,i}^{E}n_i^{E}+f_{t,i}^{E}t_i^{E}.
+\label{eq:sp2-caging-complementarity}
+\end{equation}
+La primera relación expresa complementariedad: una separación positiva anula
+la fuerza normal; una fuerza normal positiva exige contacto. Para el conjunto
+activo $\mathcal A(t)$, la carga obedece
+\begin{equation}
+M_L\ddot q_L+D_L\dot q_L
+=\sum_{i\in\mathcal A(t)}G_i^{E}(q_L)\mathbf f_i^{E}+W_{\mathrm{ext}}.
+\label{eq:sp2-caging-el}
+\end{equation}
+El cambio de $\mathcal A(t)$ convierte el modelo en híbrido. Estas ecuaciones
+determinan cómo se mueve la carga cuando existen fuerzas; no prueban que el
+objeto esté encerrado. Esa propiedad exige que la componente libre que contiene
+$q_L$ en $SE(2)$ no alcance una configuración de escape
+\parencite{bicchi1995closure,pereira2004caging}. El verificador disponible al
+final de SP2 fija $\theta_L$ y explora solo $(x_L,y_L)$; por tanto, no acredita
+caging completo ni que tres robots basten. La formulación tampoco incorpora una
+ley de impacto o restitución: describe fases persistentes de contacto y su
+conmutación.
+
+\section*{Caso nominal: carga cuadrada sostenida por tres AMR}
+
+El siguiente caso cierra la cadena fuerza--wrench--movimiento sin convertirla en
+resultado experimental. Considérese una lámina cuadrada uniforme de lado $a$ y
+masa $m_L$. Su inercia polar es $J_L=m_La^2/6$ y
+$M_L=\operatorname{diag}(m_L,m_L,J_L)$. Los apoyos
+\begin{equation}
+r_1=\begin{bmatrix}a/2\\0\end{bmatrix},\qquad
+r_2=\begin{bmatrix}-a/2\\a/2\end{bmatrix},\qquad
+r_3=\begin{bmatrix}-a/2\\-a/2\end{bmatrix}
+\label{eq:sp2-square-supports}
+\end{equation}
+contienen el centro de masa en su triángulo. El equilibrio vertical da
+\begin{equation}
+n_1=\frac{m_Lg_0}{2},\qquad
+n_2=n_3=\frac{m_Lg_0}{4}.
+\label{eq:sp2-square-normal-loads}
+\end{equation}
+Para $m_L=18$ kg y $g_0=9{,}81$ m/s$^2$, las reacciones son
+$88{,}29$, $44{,}15$ y $44{,}15$ N. La geometría, no el número de robots,
+determina el reparto.
+
+Con $\mathbf f=(f_{x,1},f_{y,1},\ldots,f_{x,3},f_{y,3})$, la matriz de agarre
+\parencite{nakamura1989dynamics,yoshikawa1993coordinated} es
+\begin{equation}
+G_3=\begin{bmatrix}
+1&0&1&0&1&0\\
+0&1&0&1&0&1\\
+0&a/2&-a/2&-a/2&a/2&-a/2
+\end{bmatrix},
+\qquad W_C^{L}=G_3\mathbf f .
+\label{eq:sp2-square-grasp}
+\end{equation}
+Así se separan dos decisiones: el servocontrol calcula el wrench requerido y el
+repartidor busca fuerzas admisibles que lo realicen.
+
+Sea $T_f>0$ la duración y $s=t/T_f\in[0,1]$. El polinomio
+$h(s)=10s^3-15s^4+6s^5$ anula velocidad y aceleración en ambos extremos. Una
+referencia suave entre $q_0$ y $q_f$ es
+\begin{equation}
+q_d(t)=q_0+h(t/T_f)
+\begin{bmatrix}
+x_f-x_0\\ y_f-y_0\\
+\operatorname{wrap}(\theta_f-\theta_0)
+\end{bmatrix}.
+\label{eq:sp2-quintic-reference}
+\end{equation}
+Defínanse $e=q_L-q_d$, con el error angular envuelto en $(-\pi,\pi)$, y
+$\dot e=\dot q_L-\dot q_d$. Para el modelo nominal de
+\eqref{eq:sp2-payload-el}, el wrench de par calculado es
+\begin{equation}
+W_d^0=M_L\ddot q_d+D_L\dot q_L-K_D\dot e-K_Pe,
+\qquad G_3\mathbf f=T(\theta_L)^\top W_d^0.
+\label{eq:sp2-computed-wrench}
+\end{equation}
+
+\Needspace{17\baselineskip}
+\begin{sp2prop}[Estabilidad del Cargo nominal]
+Supónganse contactos bilaterales fijos, $M_L\succ0$ constante,
+$K_P\succ0$, $K_D\succ0$, ausencia de perturbaciones y saturaciones, y
+realización exacta de \eqref{eq:sp2-computed-wrench}. Mientras el error angular
+permanezca en la carta $(-\pi,\pi)$, el equilibrio $(e,\dot e)=(0,0)$ es
+asintóticamente estable.
+\end{sp2prop}
+\begin{proof}
+Sustituir \eqref{eq:sp2-computed-wrench} en
+\eqref{eq:sp2-payload-el} produce
+$M_L\ddot e+K_D\dot e+K_Pe=0$. Para
+\begin{equation}
+V(e,\dot e)=\tfrac12\dot e^\top M_L\dot e+
+\tfrac12e^\top K_Pe
+\label{eq:sp2-cargo-lyapunov}
+\end{equation}
+se obtiene $\dot V=-\dot e^\top K_D\dot e\leq0$. El mayor conjunto invariante
+contenido en $\{\dot e=0\}$ satisface $K_Pe=0$; por tanto, $e=0$, y el principio
+de invariancia concluye la convergencia.
+\end{proof}
+
+El resultado no se transfiere al caging, a cambios de contacto ni a la planta
+Pioneer~3-DX sin identificar. Tampoco añade un controlador al benchmark N4:
+formaliza el caso nominal que la guarda intenta aproximar mediante órdenes de
+aceleración, soporte secuencial y reparto de wrench.
+
+% --------------------------------------------------------------------------
+% Alcance y comparación metodológica
+% --------------------------------------------------------------------------
+\leveltag{EJECUCIÓN CAUSAL BAJO RESTRICCIONES ACOPLADAS}
+\section*{Objetivo de control y límites de validez}
+
+En Cargo, la referencia de pose se convierte en ejecución nominal, frenado
+activo, mantenimiento de una carga ya detenida o declaración de pérdida de
+autoridad. La variable $m$ denota el índice temporal; $k$ se reserva para las
+cargas, de acuerdo con la notación general del TFM.
+
+\paragraph{Ejecución causal y reconfiguración.}
+Sean $x_{L,m}=(q_{L,m},\xi_{L,m})$, la coalición vigente $\mathcal C_m$, la
+referencia $q_L^\star$ y la historia local $\mathcal I_{i,m}$. En el modelo
+reducido, las cinco leyes no predictivas se calculan en un AMR de referencia $\ell$
+(el primero de la coalición) a partir de su última estimación. El MPC recibe el
+estado global y actúa solo como techo central. La actualización ejecutada es
+\begin{equation}
+\begin{aligned}
+a_{L,m}^0&=
+\begin{cases}
+\pi_\ell(\mathcal I_{\ell,m},q_L^\star), & \text{cinco leyes locales},\\
+\pi_{\mathrm{MPC}}(x_{L,m},q_L^\star), & \text{MPC central reducido},
+\end{cases}\\
+x_{L,m+1}&=\mathsf F_{\Delta t}(x_{L,m},a_{L,m},d_m),\quad
+\xi_{L,m+1}\in\Xi_{\mathcal C_m}^{\mathrm{align}},\\
+W_d(x_{L,m},a_{L,m})&\in\widehat{\mathcal W}_{\mathcal C_m},\quad
+g_{\mathrm{info},m}=1 .
+\end{aligned}
+\label{eq:sp2-execution-problem}
+\end{equation}
+El objetivo operativo es hallar el primer instante $M$ que alcanza el terminal y
+mantiene las restricciones de \eqref{eq:sp2-execution-problem} desde $m=0$
+hasta $M-1$. Las políticas ensayadas no optimizan $M\Delta t$ de forma global.
+Para las leyes locales,
+$g_{\mathrm{info},m}=\mathbf 1[\tau_{\mathrm{age},\ell,m}\leq\bar\tau]$; en
+MPC vale uno por definición. En los escenarios con obstáculo, la guarda muestreada
+propone $\widetilde a_{L,m}^0=\mathsf B_m(x_{L,m},a_{L,m}^0)$; en los demás,
+$\widetilde a_{L,m}^0=a_{L,m}^0$. La orden ejecutada la determina el modo
+$\sigma_m\in\{\mathrm{EXECUTE},\mathrm{BRAKE},\mathrm{HOLD},
+\mathrm{UNCONTROLLED}\}$:
+\begin{equation}
+a_{L,m}=\begin{cases}
+\alpha_m \widetilde a_{L,m}^0, & \mathrm{EXECUTE},\quad \alpha_m>0,\\
+\beta_m a_{L,m}^{\mathrm{br}}, & \mathrm{BRAKE},\quad
+a_{L,m}^{\mathrm{br}}=-K_v\xi_{L,m},\ \beta_m>0,\\
+0, & \mathrm{HOLD},\quad \|\xi_{L,m}\|\leq\varepsilon_v,\\
+0, & \mathrm{UNCONTROLLED}\quad\text{(sin orden certificable)}.
+\end{cases}
+\label{eq:sp2-operational-modes}
+\end{equation}
+En \eqref{eq:sp2-operational-modes}, cada candidato nominal o de frenado se
+vuelve a comprobar conjuntamente frente
+a ruedas, soporte, $\widehat{\mathcal W}_{\mathcal C_m}$, edad de información y
+guarda de obstáculo. En \textsc{uncontrolled}, el cero representa ausencia de
+autoridad comandada en la planta reducida, no una parada física garantizada; se
+registra el fallo y se solicita reconfiguración.
+El estado debe permanecer durante $0{,}80$ s en
+\begin{equation}
+\mathcal E=\left\{x_L:
+\begin{aligned}
+\|p_L-p_L^\star\|_2&\leq0{,}10\ \mathrm m,
+&|\operatorname{wrap}(\theta_L-\theta_L^\star)|&\leq0{,}10\ \mathrm{rad},\\
+\|v_L\|_2&\leq0{,}12\ \mathrm{m/s},
+&|\omega_L|&\leq0{,}10\ \mathrm{rad/s}
+\end{aligned}\right\}.
+\label{eq:sp2-terminal-set}
+\end{equation}
+La maniobra termina cuando el estado permanece en
+\eqref{eq:sp2-terminal-set} durante el intervalo prescrito. El mismo criterio se
+aplica a todas las aproximaciones causales y a los mismos mundos. Los resultados
+describen el modelo reducido; la optimalidad global y la
+estabilidad del sistema híbrido completo quedan fuera de esta comparación.
+
+La Tabla~\ref{tab:sp2-methods} sitúa la comparación. Ninguno de los métodos que
+resume cubre a la vez movilidad diferencial, contacto, información local y
+control de la carga; su última columna identifica la restricción ausente. Se
+denomina \emph{wrench} planar al vector conjunto de fuerza
+longitudinal, fuerza transversal y momento alrededor de la carga,
+$W=(F_x,F_y,\tau_z)$.
+\begin{table}[H]
+\centering
+\fontsize{8.0}{8.55}\selectfont
+\setlength{\tabcolsep}{3.2pt}
+\renewcommand{\arraystretch}{0.88}
+\caption{Métodos, papel experimental y restricción que no resuelven por sí solos.}
+\label{tab:sp2-methods}
+\begin{tabularx}{\textwidth}{p{2.05cm} p{2.65cm} p{3.25cm} X}
+\toprule
+Método & Papel en SP2 & Información y arquitectura & Garantía o límite pertinente \\
+\midrule
+Líder--seguidor \parencite{desai2001formation} & Referencia distribuida & Estado del líder sobre un árbol & Trata movilidad no holónoma; no certifica soporte ni wrench \\
+Estructura virtual \parencite{ren2004virtual} & Estimación/consenso & Referencia común en grafo vecinal & El error depende de conectividad y canal; no representa contacto \\
+PD/PID & Baseline causal de pose & Última estimación del AMR de referencia & Sin restricciones explícitas; PID añade integral acotada \\
+LQR/LQI \parencite{kalman1960optimal} & Sustituto lineal & Doble integrador local; LQI añade integral & Optimalidad solo para el modelo y pesos fijados \\
+Rigidez--amortiguamiento \parencite{ortega2002passivity} & Baseline energético & Error de pose y velocidad local & No es una realización port--Hamiltoniana ni prueba pasividad \\
+MPC \parencite{mayne2000mpc} & Techo central & Estado global; horizonte 8 & Restringe aceleración, no contactos; no es DMPC/NMPC \\
+Conmutación \parencite{lee2025switching} & Contraste de literatura & MILP--QP central entre eventos & Sus garantías no se transfieren al contacto de Cargo \\
+Guarda SP2 & Capa transversal & N1 + N2 + edad de N3 & Certifica el candidato muestreado; no la trayectoria física continua \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+La equivalencia cinemática, la factibilidad secuencial de soporte y wrench, la
+calidad informativa bajo canal local y la comparación pareada de control se
+establecen bajo supuestos distintos. En
+particular, la restauración de S4 es exógena y el MPC recibe estado global.
+
+% --------------------------------------------------------------------------
+% Página 3 · N1 formulación
+% --------------------------------------------------------------------------
+\leveltag{COMPATIBILIDAD ENTRE CUERPO RÍGIDO Y RUEDAS}
+\section*{Condiciones para el movimiento de cuerpo rígido}
+
+El modelo cinemático omite masa y fricción. Supone seguimiento exacto y
+acoplamientos sin holgura. El pivote de cada AMR se sitúa en el punto medio de su eje. El
+acoplamiento fija ese punto respecto a la carga y permite el giro propio del
+AMR; una unión que también bloquee el rumbo requiere otro modelo. Si $r_i$ es
+la posición del pivote en el marco de la carga,
+$J=\left[\begin{smallmatrix}0&-1\\1&0\end{smallmatrix}\right]$ y
+$R(\theta_L)$ la rotación plana, entonces
+\begin{align}
+v_i^{\mathrm{piv}}&=v+\omega J R(\theta_L)r_i,
+\label{eq:pivot-velocity}\\
+a_i^{\mathrm{piv}}&=\dot v+\dot\omega J R(\theta_L)r_i
+-\omega^2R(\theta_L)r_i.
+\label{eq:pivot-acceleration}
+\end{align}
+Las expresiones \eqref{eq:pivot-velocity}--\eqref{eq:pivot-acceleration} fijan
+la cinemática del pivote. Sea
+$\mathbf e_i=(\cos\theta_i,\sin\theta_i)$. La restricción no holónoma exige
+una velocidad longitudinal con signo $v_{i,\parallel}$ tal que
+\begin{equation}
+v_i^{\mathrm{piv}}=v_{i,\parallel}\mathbf e_i.
+\label{eq:heading-alignment}
+\end{equation}
+La rama $v_{i,\parallel}>0$ corresponde a avance y
+$v_{i,\parallel}<0$ a marcha atrás. El rumbo
+admisible puede ser la dirección de $v_i^{\mathrm{piv}}$ o esa misma dirección
+más $\pi$. Cuando $\|v_i^{\mathrm{piv}}\|>0$, ambas ramas comparten la tasa
+\begin{equation}
+\dot\theta_i^\star=
+\frac{v_{i,x}^{\mathrm{piv}}a_{i,y}^{\mathrm{piv}}-
+v_{i,y}^{\mathrm{piv}}a_{i,x}^{\mathrm{piv}}}
+{\|v_i^{\mathrm{piv}}\|^2}.
+\label{eq:heading-rate}
+\end{equation}
+Si $r_i^w$, $\ell_i^w$ y $\bar\omega_{w,i}$ denotan el radio de rueda, la
+semivía y el límite de velocidad angular, las ruedas deben satisfacer
+\begin{equation}
+\dot\varphi_{i,L/R}=\frac{1}{r_i^w}
+\left(v_{i,\parallel}\mp\ell_i^w\dot\theta_i^\star\right),
+\qquad |\dot\varphi_{i,L/R}|\leq\bar\omega_{w,i}.
+\label{eq:wheel-speeds}
+\end{equation}
+
+La equivalencia anterior es exclusivamente cinemática. La dinámica de cada
+Pioneer~3-DX está contenida en \eqref{eq:sp2-unified-el}; para evaluarla en
+hardware aún deben identificarse inercia, disipación, pares de rueda y reacción
+del acoplamiento. La campaña actual no proporciona esos parámetros.
+
+El margen de viabilidad cinemática de la orden se escribe como
+\begin{equation}
+m_{\mathrm{kin}}=
+1-\max_{i\in\mathcal C}\max_{s\in\{L,R\}}
+\frac{|\dot\varphi_{i,s}|}{\bar\omega_{w,i}},
+\label{eq:kinematic-margin}
+\end{equation}
+donde $\bar\omega_{w,i}$ es el límite de rueda del AMR $i$. En
+\eqref{eq:kinematic-margin}, $m_{\mathrm{kin}}>0$ indica holgura,
+$m_{\mathrm{kin}}=0$ corresponde a
+saturación y $m_{\mathrm{kin}}<0$ rechaza la orden. La definición permanece
+finita cuando una rueda está detenida y comparte el umbral cero con el margen
+mecánico definido más adelante. El registro conserva el AMR y la rueda limitantes.
+
+\begin{sp2prop}[Equivalencia cinemática]
+Considérese un intervalo en el que los pivotes tienen velocidad distinta de cero
+y la velocidad de la carga es continuamente diferenciable. Bajo los supuestos
+anteriores, supóngase además que cada rumbo inicial satisface
+\eqref{eq:heading-alignment}. La coalición reproduce $\xi_L$ si y solo si cada
+AMR admite una rama continua $(v_{i,\parallel},\theta_i)$ que cumple desde
+\eqref{eq:pivot-velocity} hasta \eqref{eq:wheel-speeds}.
+\end{sp2prop}
+\begin{proof}
+Derivar $p_i=p_L+R(\theta_L)r_i$ da
+\eqref{eq:pivot-velocity}. La cinemática diferencial obliga a
+\eqref{eq:heading-alignment} y transforma
+$(v_{i,\parallel},\dot\theta_i)$ en las dos
+velocidades de rueda de \eqref{eq:wheel-speeds}. Recíprocamente, esas igualdades
+realizan la derivada de $p_i$ sin componente lateral. Como la posición inicial
+del pivote coincide con el anclaje y la rama de rumbo es continua, la relación
+rígida se conserva en el intervalo.
+\end{proof}
+
+\begin{sp2lema}[Ventana de validez]
+El conjunto realizable es
+$\Xi_{\mathcal C}^{\mathrm{align}}=
+\bigcap_{i\in\mathcal C}\Xi_i^{\mathrm{align}}$. En un giro puro alrededor de
+un centro instantáneo, con $d_i^{\mathrm{ICR}}$ igual a la distancia del pivote
+a ese centro,
+\begin{equation}
+|\omega|\leq
+\min_{i\in\mathcal C}
+\frac{r_i^w\bar\omega_{w,i}}{d_i^{\mathrm{ICR}}+\ell_i^w}.
+\label{eq:pure-rotation-bound}
+\end{equation}
+\end{sp2lema}
+La rueda exterior del AMR con menor cociente fija la cota. Un pivote inmóvil
+vuelve singular \eqref{eq:heading-rate} y deja el caso fuera de la proposición.
+También quedan fuera la aceleración de rueda, el par motor y la estabilidad del
+contacto.
+
+La cadena necesaria queda fijada por las ecuaciones anteriores: geometría rígida
+en el anclaje, velocidad sin componente lateral y conversión a las dos ruedas.
+El pivote es una idealización cinemática, no un acoplamiento mecánico adicional.
+
+
+% --------------------------------------------------------------------------
+% Página 4 · N1 experimento
+% --------------------------------------------------------------------------
+\leveltag{ENVOLVENTE DE MOVILIDAD DE LA FORMACIÓN}
+\section*{Barrido de radio y velocidad angular}
+
+La formación cardinal se evaluó con radios entre $0{,}20$ y $1{,}00$ m,
+velocidades longitudinales entre $0$ y $0{,}30$ m/s y 61 valores de $\omega$
+hasta $1{,}50$ rad/s. El radio de rueda fue $0{,}06$ m y la vía $0{,}32$ m. Para
+cada una de 30 semillas, los límites nominales $12$, $10$, $8$ y $6$ rad/s se
+perturbaron de forma independiente en un intervalo de $\pm18\%$. El comparador
+básico solo compara la rapidez del pivote con
+$r_i^w\bar\omega_{w,i}$; la comprobación
+completa calcula la tasa de rumbo y ambas ruedas.
+
+Los paneles A, B y D de la Figura~\ref{fig:sp2-master-n1-n2} cuantifican cómo el
+radio y la velocidad longitudinal reducen el margen angular y cuántas órdenes
+acepta por error el comparador básico.
+
+\textbf{Resultado N1.} Comprobar solo la rapidez de cada pivote sobreestima la
+movilidad de la coalición. El barrido contiene \SPTwoReadyNOneRows{} órdenes y
+el comparador básico acepta
+\SPTwoReadyNOneFalse{} que la comprobación conjunta rechaza: el 12,4~\% de las
+órdenes ensayadas. El análisis identifica el AMR y la rueda limitantes en cada
+rechazo. La fracción factible disminuye de forma monótona entre el menor y el
+mayor radio ensayados, en consonancia con \eqref{eq:pure-rotation-bound}. Las
+proporciones pertenecen a la cuadrícula fijada y no definen una ley asintótica
+para una población de robots.
+
+\leveltag{RETIRADA DE UN ROBOT Y MONOTONÍAS OPUESTAS}
+\section*{Efecto de retirar un AMR}
+
+Si el AMR $j$ abandona la carga, la condición cinemática pasa a ser
+\begin{equation}
+\xi_L\in\Xi_{\mathcal C\setminus\{j\}}^{\mathrm{align}}
+=\bigcap_{i\in\mathcal C\setminus\{j\}}\Xi_i^{\mathrm{align}}.
+\label{eq:n1-removal}
+\end{equation}
+La intersección de \eqref{eq:n1-removal} crece al retirar una restricción cinemática. La capacidad
+mecánica, en cambio, evoluciona en la dirección opuesta.
+
+\begin{sp2prop}[Monotonicidades opuestas]
+Sea $j\in\mathcal C$ y supóngase que la reacción nula pertenece al conjunto local
+admisible de cada contacto. Si $\mathcal W_{\mathcal C}$ denota el conjunto
+físico completo, unión sobre todos los repartos normales factibles, entonces
+\begin{equation}
+\Xi_{\mathcal C\setminus\{j\}}^{\mathrm{align}}
+\supseteq\Xi_{\mathcal C}^{\mathrm{align}},
+\qquad
+\mathcal W_{\mathcal C\setminus\{j\}}\subseteq\mathcal W_{\mathcal C}.
+\label{eq:opposite-monotonicity}
+\end{equation}
+Por tanto, el conjunto de órdenes cinemática y mecánicamente admisibles no es,
+en general, monótono con el número de robots.
+\end{sp2prop}
+\begin{proof}
+La primera inclusión resulta de eliminar $\Xi_j^{\mathrm{align}}$ de una
+intersección. Para
+la segunda, cualquier reparto de los AMR restantes también es un reparto de
+$\mathcal C$ si se asigna reacción nula a $j$. La inclusión no se transfiere al
+oráculo secuencial de contacto, que vuelve a seleccionar un reparto vertical al cambiar
+la coalición. No existe una inclusión uniforme
+para la condición conjunta. Si $j$ limita las ruedas pero su reacción óptima es
+nula, retirarlo amplía el conjunto de órdenes admisibles. Si $j$ no limita las ruedas pero su
+reacción es imprescindible para equilibrar el peso o el momento, retirarlo lo
+reduce. Estos dos casos construyen las dos direcciones posibles.
+\end{proof}
+
+La retirada exige repetir ambas comprobaciones. Con límites de rueda
+heterogéneos tampoco es válido sustituir la intersección por una media: basta que
+un AMR exceda su cota para rechazar la orden común. El enunciado describe el
+estado posterior a la retirada; no modela el transitorio de desacoplamiento.
+
+% --------------------------------------------------------------------------
+% Página 5 · N2 formulación
+% --------------------------------------------------------------------------
+\leveltag{SOPORTE, FRICCIÓN Y EQUILIBRIO DE LA CARGA}
+\section*{Soporte vertical y equilibrio plano}
+
+La capa mecánica enlaza la aceleración solicitada con ese \emph{wrench} de
+contacto. En el marco inercial se calcula
+\begin{equation}
+W_d^0=M_La_L^0+D_L\xi_L-\widehat W_{\mathrm{ext}}^0,
+\qquad
+W_d=T(\theta_L)^\top W_d^0,
+\label{eq:load-dynamics}
+\end{equation}
+donde $T(\theta_L)=\operatorname{diag}(R(\theta_L),1)$ expresa el wrench en el
+marco de la carga. El signo negativo evita contar dos veces una perturbación ya
+incluida en la dinámica. La implementación registra $W_d^0$ y $W_d$ antes de
+llamar al repartidor.
+
+El modelo 2.5D mantiene la carga horizontal y resuelve primero el soporte
+vertical. Si $n_i$ es la reacción normal del AMR $i$, $r_i=(x_i,y_i)$ su
+posición y $(x_c,y_c)$ la proyección del centro de masa, el equilibrio
+cuasiestático exige
+\begin{equation}
+\sum_{i\in\mathcal C} n_i=m_Lg,
+\qquad
+\sum_i(x_i-x_c)n_i=0,
+\qquad
+\sum_i(y_i-y_c)n_i=0,
+\qquad 0\leq n_i\leq\bar n_i.
+\label{eq:vertical-support}
+\end{equation}
+Siguiendo la matriz de agarre planar usada en manipulación cooperativa
+\parencite{nakamura1989dynamics,yoshikawa1993coordinated}, una reacción
+$\mathbf t_i=(t_{i,x},t_{i,y})$, expresada en el marco de la carga, contribuye a
+\begin{equation}
+W_{\mathcal C}=G_{\mathcal C}\mathbf t,
+\qquad
+G_{\mathcal C}=\begin{bmatrix}
+1&0&\cdots&1&0\\
+0&1&\cdots&0&1\\
+-r_{1,y}&r_{1,x}&\cdots&-r_{n,y}&r_{n,x}
+\end{bmatrix}.
+\label{eq:grasp-matrix}
+\end{equation}
+La matriz \eqref{eq:grasp-matrix} conserva fuerza y momento. El oráculo ejecuta dos etapas. Primero obtiene $n^\star$ resolviendo
+\begin{equation}
+\min_n\ \sum_i\left(\frac{n_i-n_i^{\mathrm{nom}}}{m_Lg}\right)^2
+\quad\text{sujeto a \eqref{eq:vertical-support}},
+\label{eq:vertical-support-program}
+\end{equation}
+con $n_i^{\mathrm{nom}}=m_Lg/|\mathcal C|$ recortado a las cotas del contacto.
+El problema \eqref{eq:vertical-support-program} es un QP convexo con
+restricciones lineales. La implementación reutiliza SLSQP para conservar una
+única interfaz de restricciones acotadas, sin atribuirle una ventaja algorítmica.
+La solución solo se acepta si supera el control de residual siguiente. Para no
+mezclar N y N\,m, sea
+$L_{\mathcal C}=\max\{0{,}1\ \mathrm m,\max_i\|r_i-r_c\|_2\}$ y defínase
+\begin{equation}
+r_{\mathrm{sup}}=\left\|\left(
+\frac{\sum_i n_i-m_Lg}{m_Lg},
+\frac{\sum_i(y_i-y_c)n_i}{m_LgL_{\mathcal C}},
+\frac{\sum_i(x_i-x_c)n_i}{m_LgL_{\mathcal C}}
+\right)\right\|_\infty .
+\label{eq:support-normalized-residual}
+\end{equation}
+El reparto se acepta si el residual de \eqref{eq:support-normalized-residual}
+satisface $r_{\mathrm{sup}}\leq10^{-7}$.
+
+Después se fijan esas reacciones. Aquí $\mu_{L,i}$ corresponde al contacto
+carga--plataforma. En un modelo identificado, $\alpha_i\in(0,1]$ sería la
+fracción de la reacción rueda--suelo soportada por el eje motriz y
+$N_{g,i}=\alpha_i(m_i g+n_i^\star)$. El experimento no mide $\alpha_i$, la
+adherencia lateral ni el par del Pioneer: fija directamente $\bar t_i$ desde
+la configuración experimental. Una extensión
+anisótropa distinguiría, para el rumbo $\mathbf e_i$, las cotas
+$|\mathbf e_i^\top\mathbf t_i|\leq F_{\mathrm{drive},i}$ y
+$|\mathbf e_i^{\perp\top}\mathbf t_i|\leq F_{\mathrm{lat},i}$. El LP ejecutado usa en
+cambio un radio isotrópico inscrito; es un sustituto 2.5D, no una identificación
+de la envolvente de tracción del Pioneer 3-DX.
+La capacidad tangencial inscrita del contacto $i$ es
+\begin{equation}
+\ell_i=\cos(\pi/16)\min(\mu_{L,i} n_i^\star,\bar t_i),\qquad
+\mathcal T_i=\{\mathbf t_i:d_h^\top\mathbf t_i\leq\ell_i, h=1,\ldots,16\},
+\label{eq:local-force-set}
+\end{equation}
+donde, en \eqref{eq:local-force-set}, $d_h$ son normales unitarias. Si $\mathcal N_{\mathcal C}$ reúne todos
+los repartos normales que satisfacen \eqref{eq:vertical-support}, el conjunto
+físico completo y la sección que usa el oráculo son, respectivamente,
+\begin{equation}
+\mathcal W_{\mathcal C}=\bigcup_{n\in\mathcal N_{\mathcal C}}
+\{G_{\mathcal C}\mathbf t:\mathbf t_i\in\mathcal T_i(n_i)\},\qquad
+\widehat{\mathcal W}_{\mathcal C}=\{G_{\mathcal C}\mathbf t:
+\mathbf t_i\in\mathcal T_i(n_i^\star)\}.
+\label{eq:physical-sequential-wrench-sets}
+\end{equation}
+La Proposición de monotonías opuestas se refiere a $\mathcal W_{\mathcal C}$ de
+\eqref{eq:physical-sequential-wrench-sets}.
+El oráculo secuencial vuelve a calcular $n^\star$ al cambiar la coalición y no
+hereda necesariamente esa inclusión. El objetivo vertical, por su parte,
+aproxima un reparto uniforme en vez de maximizar la capacidad tangencial: otro reparto normal
+factible podría admitir un wrench que la sección
+$\widehat{\mathcal W}_{\mathcal C}$ rechaza.
+
+El primer LP minimiza la utilización con balance exacto:
+\begin{equation}
+\begin{aligned}
+\rho^\star=\min_{\mathbf t,\rho}\quad &\rho,\\
+\text{sujeto a}\quad &G_{\mathcal C}\mathbf t=W_d,\\
+&d_h^\top\mathbf t_i\leq\rho\ell_i,\quad \rho\geq0.
+\end{aligned}
+\label{eq:wrench-allocation}
+\end{equation}
+La orden se acepta si la etapa vertical es factible, el balance normalizado es
+menor que $\epsilon_W$ y $\rho^\star\leq1+\epsilon_\rho$. Si se rechaza, un
+segundo LP, con $\rho\leq1$, minimiza
+$\|Q_W(s^++s^-)\|_1$ sujeto a
+$G_{\mathcal C}\mathbf t+s^+-s^-=W_d$. Esta segunda solución solo diagnostica
+el wrench físicamente alcanzable; no puede convertir el rechazo en aceptación.
+Así desaparece la dependencia de un peso entre utilización y holgura. Se guarda
+\[
+m_{\mathrm{wrench}}=1-\rho^\star,
+\quad P_{\ker G_{\mathcal C}}=I-G_{\mathcal C}^{\dagger}G_{\mathcal C},
+\quad \rho_{\mathrm{int}}=
+\frac{\|P_{\ker G_{\mathcal C}}\mathbf t\|_2}{\|\mathbf t\|_2+\varepsilon}.
+\]
+Las demandas aceptadas pertenecen a $\widehat{\mathcal W}_{\mathcal C}$; las rechazadas
+conservan su utilización o residual para explicar el fallo. El procedimiento usa
+información global y actúa como oráculo mecánico
+\parencite{nakamura1989dynamics,yoshikawa1993coordinated}.
+
+% --------------------------------------------------------------------------
+% Página 6 · N2 experimento
+% --------------------------------------------------------------------------
+\leveltag{CAPACIDAD DE WRENCH BAJO DEMANDA Y DISPERSIÓN}
+\section*{Capacidad escalar, LP bilateral y contacto 2.5D}
+
+El experimento compara el oráculo de \eqref{eq:wrench-allocation} con dos
+relajaciones. La primera descarta geometría y acepta cuando la
+capacidad escalar supera la fuerza solicitada. La segunda usa el LP bilateral
+\begin{equation}
+\min_{\mathbf t,\eta^{N2}}\ \eta^{N2}
+\quad\text{sujeto a}\quad
+G_{\mathcal C}\mathbf t=W_d,\quad
+|t_{i,x}|,|t_{i,y}|\leq\eta^{N2}\bar t_i,\quad \eta^{N2}\geq0.
+\label{eq:wrench-lp-pilot}
+\end{equation}
+El LP \eqref{eq:wrench-lp-pilot} comprueba el momento, pero no el peso ni la fricción. El tercer modelo
+resuelve soporte, polígono de Coulomb y límites de tracción heterogéneos. Las
+posiciones rectangulares reciben ruido gaussiano de $0{,}025$ m. Se fijaron 30
+semillas por celda y los factores
+\begin{equation}
+d\in\{0{,}20,0{,}40,0{,}60,0{,}80\}\ \mathrm{m},
+\pi^{N2}\in\{0{,}2,0{,}4,0{,}6,0{,}8,1{,}0,1{,}2\},
+\label{eq:n2-pilot-factors}
+\end{equation}
+Con los factores de \eqref{eq:n2-pilot-factors}, la demanda es
+\begin{equation}
+W_d(\pi^{N2})=(40\pi^{N2},\ 10\pi^{N2},\ 12\pi^{N2}).
+\label{eq:n2-pilot-demand}
+\end{equation}
+La escala $\pi^{N2}$ es adimensional; las dos primeras componentes se expresan
+en N y la tercera, en N\,m. La dispersión $d$ controla el brazo disponible para
+producir momento.
+La masa de la carga es $18$ kg. Las 30 semillas describen variación geométrica
+dentro de la cuadrícula ensayada; no reproducen incertidumbre de contacto medida.
+
+La Figura~\ref{fig:sp2-master-n1-n2} reúne la envolvente N1, sus falsos
+positivos, los tres modelos N2 y la lectura conjunta de ambos barridos. El panel
+C mantiene la misma cuadrícula de demanda y geometría al añadir soporte y
+fricción.
+\resultfigure[0.55\textheight]{figures/generated/fig-sp2-master-n1-n2.pdf}{De coalición seleccionada a coalición ejecutable. A: envolvente de ruedas. B: falsa aceptación del criterio simple. C: escalera de modelos mecánicos. D: efecto opuesto de la escala geométrica en los dos barridos; no es una estimación causal común.}{fig:sp2-master-n1-n2}
+
+\textbf{Resultado N2.} Tener fuerza total suficiente no garantiza producir la
+fuerza y el momento solicitados. La capacidad escalar y el LP bilateral aceptan
+las \SPTwoReadyNTwoRows{}
+demandas. El oráculo 2.5D acepta \SPTwoReadyNTwoFeasible{} y rechaza
+\SPTwoReadyNTwoFalse{}, el \spdecimal{\SPTwoReadyNTwoRejectRate}~\% del
+barrido, que ambos modelos simplificados habían aceptado. En esta cuadrícula,
+el LP bilateral coincide con la capacidad escalar en todos los casos. El
+contraejemplo de momento prueba que no son equivalentes en general, aunque la
+campaña no observó esa diferencia. Los rechazos del modelo 2.5D se
+concentran en el menor brazo ensayado, donde el momento exige fuerzas que
+superan la adherencia de los contactos débiles. El residual y la utilización
+quedan almacenados por ejecución; los fallos permanecen en el denominador.
+
+\leveltag{FRONTERA MECÁNICA Y SUPUESTOS DE CONTACTO}
+\section*{Necesidad y suficiencia de las comprobaciones}
+
+El barrido fija la orientación de los contactos, el centro de masa y la dirección
+de la fuerza. Esos paneles cubren, en consecuencia, una sola
+familia de wrenches y no cualquier maniobra.
+
+\paragraph{Contraejemplo de capacidad escalar.}
+Si $\bar t_i$ acota la norma de cada reacción, la desigualdad triangular hace
+necesaria la condición $\sum_i\bar t_i\geq\|F_d\|$. No es suficiente para
+producir $W_d=(F_d,\tau_d)$: si todos los contactos coinciden con el centro,
+$r_i\times\mathbf t_i=0$ y cualquier $\tau_d\neq0$ resulta inviable, por grande
+que sea la capacidad escalar. Las relajaciones de
+\eqref{eq:wrench-allocation} contienen el conjunto factible original; por eso,
+aceptar mediante capacidad agregada o caja bilateral tampoco prueba soporte ni
+fricción.
+
+El brazo $d$ actúa en sentidos opuestos en N1 y N2. Aumentarlo facilita el
+momento de \eqref{eq:n2-pilot-demand}, mientras una formación más extendida
+reduce la envolvente cinemática. N2 modifica la dispersión geométrica, pero
+mantiene el número de miembros; por esa razón no valida
+\eqref{eq:opposite-monotonicity}.
+
+% --------------------------------------------------------------------------
+% Página 7 · N3 formulación
+% --------------------------------------------------------------------------
+\leveltag{ESTIMACIÓN LOCAL DEL ESTADO Y DEL CONTACTO}
+\section*{Pioneer 3-DX: SLAM, pose relativa y contacto}
+
+El manual del fabricante documenta una base diferencial con motores CC
+reversibles, encoders ópticos en cuadratura y sonar
+\parencite{activmedia2003pioneer}. El manual no documenta LiDAR, IMU, cámara ni
+sensor de fuerza para la unidad disponible; la arquitectura los incorpora como
+instrumentación añadida que deberá calibrarse. Encoders y sonar pertenecen a la
+base documentada; LiDAR, IMU, cámara, fiduciales y medida de contacto son una
+cadena propuesta, todavía no integrada \parencite{olson2011apriltag}.
+
+
+\paragraph{Transferencia instrumentada al Pioneer 3-DX.}
+Una transferencia física exigiría combinar el RBPF con encoder, IMU y LiDAR de
+\textcite{grisetti2007gridMapping}, un grafo relativo en $SE(2)$
+\parencite{howard2005multirobotSlam,carlone2011linearGraphSlam}, fiduciales entre
+base y carga \parencite{olson2011apriltag} y una confirmación de contacto
+calibrada. Esa cadena no se ejecuta en N3: la campaña recibe estados sintéticos
+y compara líder--seguidor con estructura virtual
+\parencite{desai2001formation,ren2004virtual}. El primero retransmite el estado
+por un árbol y el segundo actualiza copias vecinales por consenso
+\parencite{kia2019dynamicConsensus,bullo2009distributed}; por tanto, N3 solo
+mide calidad informativa y coste de red.
+
+% --------------------------------------------------------------------------
+% Página 8 · N3 experimento
+% --------------------------------------------------------------------------
+\leveltag{CALIDAD DE ESTIMACIÓN Y COSTE DE LA RED LOCAL}
+\section*{Retardo, degradación, alcance y ancho de banda}
+
+Cada condición de red se ejecuta con cuatro AMR, 80 actualizaciones y 30
+semillas. El canal degradado combina pérdida $0{,}25$, una retransmisión y
+$5$ kB/s, por lo que el diseño no aísla el efecto de la pérdida. Se registran tráfico,
+latencia, edad y RMSE con ruido común de pose
+$(0{,}020\ \mathrm m;\ 0{,}020\ \mathrm m;\ 0{,}010\ \mathrm{rad})$. El canal es
+abstracto: no ejecuta SLAM, fusión IMU--encoder ni fiduciales; el estado
+verdadero solo puntúa el error.
+
+La Figura~\ref{fig:sp2-n3-comm} informa por separado el error de estimación, la
+edad del estado y el coste de comunicación. Un intervalo que cruza cero impide
+afirmar una diferencia.
+\resultfigure[0.30\textheight]{figures/generated/fig-sp2-n3-quality-communication.pdf}{Bytes entregados, RMSE, diferencia pareada, edad y razón de entrega bajo cuatro condiciones de red; las barras del contraste indican IC del 95\%.}{fig:sp2-n3-comm}
+
+\textbf{Resultado N3.} Transmitir más información no mejora siempre la
+estimación: bajo el canal degradado, los mensajes adicionales envejecen en la
+cola y la ventaja cambia de signo. En \SPTwoReadyNThreeRows{} ejecuciones,
+líder--seguidor y estructura virtual
+ofrecen en promedio \SPTwoReadyNThreeLeaderBytes{} y
+\SPTwoReadyNThreeVirtualBytes{} bytes, de los que se entregan
+\SPTwoReadyNThreeLeaderDeliveredBytes{} y
+\SPTwoReadyNThreeVirtualDeliveredBytes{};
+sus RMSE agregados son
+$(\spdecimal{\SPTwoReadyNThreeLeaderPositionRMSE}\ \mathrm m,
+\spdecimal{\SPTwoReadyNThreeLeaderYawRMSE}\ \mathrm{rad})$ y
+$(\spdecimal{\SPTwoReadyNThreeVirtualPositionRMSE}\ \mathrm m,
+\spdecimal{\SPTwoReadyNThreeVirtualYawRMSE}\ \mathrm{rad})$. Bajo el canal
+degradado, la diferencia virtual menos líder es
+$\spdecimal{\SPTwoReadyNThreeLossyPositionDifference}$ m, IC del 95\%
+$[\spdecimal{\SPTwoReadyNThreeLossyPositionCILow},
+\spdecimal{\SPTwoReadyNThreeLossyPositionCIHigh}]$, lo que refuta la mejora
+uniforme. En ese canal, las razones de entrega son
+$\spdecimal{\SPTwoReadyNThreeLossyLeaderDelivery}$ y
+$\spdecimal{\SPTwoReadyNThreeLossyVirtualDelivery}$, casi iguales, pero la edad
+media en línea pasa de $\spdecimal{\SPTwoReadyNThreeLossyLeaderAge}$ s a
+$\spdecimal{\SPTwoReadyNThreeLossyVirtualAge}$ s. La estructura virtual ofrece
+640 mensajes frente a 240 y su cola a 5 kB/s acumula estados obsoletos; esa
+diferencia protocolaria explica el cambio de signo. Los datos cubren cuatro AMR
+y un anillo; no caracterizan otros tamaños o grafos.
+
+\input{n4_controller_benchmark.tex}
+\input{cargo_e2e_integration.tex}
+
+% --------------------------------------------------------------------------
+% Página 9 · Extensión caging, Figura 5 conservada
+% --------------------------------------------------------------------------
+\leveltag{ESTABILIDAD NOMINAL DEL SEGUIMIENTO RÍGIDO}
+\section*{Qué garantiza el lazo y qué lo condiciona}
+
+Las dos secciones anteriores acotan cuándo una orden es cinemáticamente
+admisible y cuándo el wrench pedido es realizable. Falta decir qué ocurre con el
+error de pose cuando ambas condiciones se cumplen. Sea
+$e=(x_L-x_d,\;y_L-y_d,\;\operatorname{wrap}(\theta_L-\theta_d))$ el error frente
+a una referencia dos veces derivable y
+\begin{equation}
+W_d^0=M_La_d^0+D_L\xi_L-K_D\dot e-K_Pe,
+\qquad K_P\succ0,\ K_D\succ0 .
+\label{eq:computed-wrench}
+\end{equation}
+
+\begin{sp2prop}[Convergencia del error de pose]
+Si la referencia se mantiene en la envolvente cinemática de la coalición, el
+reparto de fuerzas realiza exactamente el wrench de \eqref{eq:computed-wrench},
+los parámetros $M_L$ y $D_L$ son los del modelo y no hay saturación ni
+perturbación no modelada, entonces $e\to0$ y $\dot e\to0$.
+\end{sp2prop}
+
+Sustituyendo \eqref{eq:computed-wrench} en \eqref{eq:sp2-payload-el} queda
+$M_L\ddot e+K_D\dot e+K_Pe=0$. Con
+$V=\tfrac12\dot e^\top M_L\dot e+\tfrac12e^\top K_Pe$ se obtiene
+$\dot V=-\dot e^\top K_D\dot e\leq0$, y el mayor conjunto invariante contenido
+en $\{\dot V=0\}$ es el origen. La envoltura de ángulo hace que el resultado sea
+local: excluye el conjunto de errores de rumbo de magnitud $\pi$.
+
+Las cuatro hipótesis no son formalidades, y dos de ellas las mide este capítulo.
+La primera falla en \SPTwoReadyNOneFalse{} de las \SPTwoReadyNOneRows{} órdenes
+del barrido, que el comparador por pivote aceptaría y la comprobación conjunta
+rechaza. La segunda falla en \SPTwoReadyNTwoFalse{} de \SPTwoReadyNTwoRows{}
+casos, en los que el reparto no realiza el wrench dentro de los conos de
+fricción. El
+lazo no es incondicionalmente estable: es estable dentro de una envolvente cuyo
+tamaño se ha medido, y los experimentos N1 y N2 son precisamente la medida de
+cuántas veces se sale de ella. Los parámetros dinámicos del Pioneer no están
+identificados, así que la tercera hipótesis queda declarada y no verificada.
+
+\leveltag{CIERRE GEOMÉTRICO BAJO CONTACTO UNILATERAL}
+\section*{Verificador traslacional en cuadrícula}
+
+El confinamiento no prehensil sigue una relación de contacto distinta de Cargo
+\parencite{pereira2004caging,fink2008caging}, formalizada en
+\eqref{eq:sp2-caging-complementarity} y \eqref{eq:sp2-caging-el}. El verificador
+de esta sección trabaja sobre la separación $g_i^{E}$ y no sobre las reacciones:
+comprueba geometría de escape, no equilibrio de fuerzas. Sea $\mathcal F_{\delta_{xy}}$ el
+conjunto de celdas libres y $\operatorname{Comp}_{\delta_{xy}}(q_0)$ la
+componente alcanzable desde $q_0$ mediante cuatro vecinos. El cierre se
+certifica mediante
+\begin{equation}
+\operatorname{conf}_{\delta_{xy}}(q_0)=1
+\quad\Longleftrightarrow\quad
+\operatorname{Comp}_{\delta_{xy}}(q_0)
+\cap\partial\mathcal F_{\delta_{xy}}=\varnothing .
+\label{eq:grid-cage}
+\end{equation}
+
+
+Con $21\times21$ celdas y $\delta_{xy}=0{,}05$ m, el verificador cierra el anillo
+y detecta la abertura, pero omite orientación, fricción, modos y fuerzas
+\parencite{pereira2004caging,fink2008caging}. Como referencias dinámicas,
+\textcite{lee2025switching} emplean conmutación central MILP--QP y
+\textcite{rosenfelder2024force}, control de fuerza; el DMPC vecinal no se
+implementa aquí.
+
+La Tabla~\ref{tab:sp2-evidence} separa el tamaño de cada campaña de la
+afirmación que permite sostener. Esta lectura evita tratar una simulación
+cinemática, un contraste pareado y un verificador geométrico como evidencias
+intercambiables.
+\begin{table}[H]
+\centering
+\fontsize{8.4}{8.95}\selectfont
+\setlength{\tabcolsep}{3.0pt}
+\renewcommand{\arraystretch}{0.94}
+\caption{Resultados de SP2, unidad experimental y límite de validez.}
+\label{tab:sp2-evidence}
+\input{generated/sp2_evidence_summary.tex}
+\end{table}
+
+% --------------------------------------------------------------------------
+% Página 12 · Síntesis y transición a SP3
+% --------------------------------------------------------------------------
+\leveltag{CONCLUSIÓN DE SP2 Y ENVOLVENTE PARA LA PLANIFICACIÓN}
+\section*{Resultado exportado e interfaz con SP3}
+
+La cota de \eqref{eq:pure-rotation-bound} y la
+Figura~\ref{fig:sp2-master-n1-n2} impiden que SP3 trate la coalición como un
+punto. Su envolvente computada es
+\begin{equation}
+\widehat{\mathcal U}_{\mathcal C}=
+\{u:\xi_L(u)\in\Xi_{\mathcal C}^{\mathrm{align}},\ W_d(u)\in
+\widehat{\mathcal W}_{\mathcal C},\ g_{\mathrm{CBF}}\geq0,\ g_{\mathrm{info}}=1\}.
+\label{eq:virtual-vehicle}
+\end{equation}
+El contrato conserva rejilla, margen, huella, $\mathcal A_\alpha$, terminal y
+modos. N1 fija la equivalencia
+cinemática; N2 encuentra \SPTwoReadyNTwoFalse{} falsos positivos; N3 descarta
+una mejora informativa uniforme; N4 mejora terminal y admisibilidad, pero
+refuta H6; Cargo llega en 359/360 misiones y sustituye en 89/90. No se validan
+acoplamiento físico, liberación, estabilidad, SLAM, fuerza ni 3D; caging queda
+geométrico. La Tabla~\ref{tab:sp2-evidence} conserva esa frontera al exportar el
+resultado a SP3.
+
+\end{document}

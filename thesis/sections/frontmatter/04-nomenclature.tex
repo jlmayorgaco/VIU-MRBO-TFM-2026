@@ -30,23 +30,23 @@
   \item[$W_k$] \emph{Wrench} requerido o aplicado a la carga $k$.
   \item[$T_{\mathrm{coal}},T_{\mathrm{rec}}$] Tiempos de formación de coalición y de recuperación.
   \item[$J$] Coste o función social de referencia.
-  \item[$X,\mathcal B_N$] Asignación relajada y politopo de matrices doblemente estocásticas de SP0.
-  \item[$\pi_k,\rho,\gamma,\tau$] Precio de tarea y parámetros primal--dual/entrópicos candidatos de SP0.
-  \item[$\mathcal G_A,\mathcal G_C$] Grafos de asignación y de comunicación robot--robot de SP0.
+  \item[$X,\mathcal B_N$] Asignación relajada y politopo de matrices doblemente estocásticas de la etapa E0 de SP1.
+  \item[$\pi_k,\rho,\gamma,\tau$] Precio de tarea y parámetros primal--dual/entrópicos candidatos de la etapa E0 de SP1.
+  \item[$\mathcal G_A,\mathcal G_C$] Grafos de asignación y de comunicación robot--robot de la etapa E0 de SP1.
   \item[$e_\pi^t,q,R^\star$] Desacuerdo de precios, contracción espectral y radio crítico de conectividad.
   \item[Brecha] Diferencia de rendimiento respecto al oráculo central.
-  \item[$c_i^{\mathrm{pay}},c^{\mathrm{ref}}$] Carga útil nominal, en kg, y escala de referencia de SP2, en kg.
+  \item[$c_i^{\mathrm{pay}},c^{\mathrm{ref}}$] Carga útil nominal, en kg, y escala de referencia de la etapa E2 de SP1, en kg.
   \item[$\delta_C^{\mathrm{ref}},c_C^{\mathrm{ref}},f_C^{\mathrm{ref}}$] Escalas de distancia, carga útil y fuerza de la regla Cargo, en m, kg y N.
-  \item[$a_{ik},e_{ik}$] Disponibilidad operacional y contribución normalizada de servicio de SP2. Ambas adimensionales.
-  \item[$d_k^{\mathrm{srv}}$] Umbral adimensional de servicio operacional de la carga $k$ en SP2.
+  \item[$a_{ik},e_{ik}$] Disponibilidad operacional y contribución normalizada de servicio de la etapa E2 de SP1. Ambas adimensionales.
+  \item[$d_k^{\mathrm{srv}}$] Umbral adimensional de servicio operacional de la carga $k$ en la etapa E2 de SP1.
   \item[$G_C(q),\boldsymbol\lambda_C$] Matriz de agarre y esfuerzos de contacto de la coalición $C$.
   \item[$Q_W,\rho_k^W$] Normalización dimensional y residual adimensional del certificado de \emph{wrench}.
-  \item[$h_j,v_k^{\mathrm{fil}}$] Holgura de barrera, en m, y velocidad traslacional filtrada, en m/s, de SP5.
+  \item[$h_j,v_k^{\mathrm{fil}}$] Holgura de barrera, en m, y velocidad traslacional filtrada, en m/s, de la etapa E5 de SP2.
   \item[$\scriptstyle W_k^{\mathrm{nom}},W_k^{\mathrm{fil}},W_k^{\mathrm{apl}}$] \emph{Wrenches} nominal, filtrado y aplicado tras el reparto acotado.
   \item[$\varepsilon_{\mathrm{act}}$] Error de realización aplicado que reúne discretización, saturación, predicción y reparto.
   \item[$D_6,\lambda_6,\delta_{\min}$] Déficit, penalización y menor mejora unilateral positiva del juego de recuperación.
-  \item[$\mathcal R_i^7,P_7,\theta_7$] Catálogo de rutas, pares en conflicto y umbral suficiente de penalización de SP7.
-  \item[$\mathcal E_{ir}^8,G_C^8$] Recursos ocupados por una ruta y grafo de comunicación entre coaliciones de SP8.
+  \item[$\mathcal R_i^7,P_7,\theta_7$] Catálogo de rutas, pares en conflicto y umbral suficiente de penalización de la etapa E7 de SP3.
+  \item[$\mathcal E_{ir}^8,G_C^8$] Recursos ocupados por una ruta y grafo de comunicación entre coaliciones de la etapa E8 de SP3.
   \item[AMR] \emph{Autonomous Mobile Robot}.
   \item[AWS] \emph{Amazon Web Services}. La escena usa como procedencia el almacén de AWS RoboMaker.
   \item[BNN] Dinámica de Brown--von Neumann--Nash.
@@ -65,7 +65,7 @@
   \item[PD] Control proporcional--derivativo.
   \item[QP] \emph{Quadratic Programming}.
   \item[QR] Cierre entero por ordenamiento y cuórum.
-  \item[SP] Subproblema de la escalera incremental SP0--SP8.
+  \item[SP] Subproblema canónico: SP1, formación; SP2, ejecución; o SP3, tráfico multi-coalición.
   \item[VE] Equilibrio variacional.
   \item[VO/RVO] \emph{Velocity Obstacle} y \emph{Reciprocal Velocity Obstacle}.
 \end{description}

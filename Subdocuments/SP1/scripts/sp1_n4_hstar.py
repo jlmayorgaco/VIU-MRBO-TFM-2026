@@ -46,6 +46,11 @@ DEFAULT_CONFIG = REPOSITORY_ROOT / "experiments" / "configs" / "sp1_n4_hstar_v4.
 DEFAULT_OUTPUT = REPOSITORY_ROOT / "scripts" / "results" / "sp1_levels" / "n4_v4"
 CATEGORIES = ("2", "3", ">3")
 CATEGORY_COLORS = {"2": "#2F6FB0", "3": "#D64B3C", ">3": "#6C727A"}
+CATEGORY_LABELS = {
+    "2": r"$h_c^\star=2$",
+    "3": r"$h_c^\star=3$",
+    ">3": "sin escape detectado\nhasta $h=3$",
+}
 METHOD_LABELS = {
     "geo_qpg_u": "BR (h=1)",
     "geo_qpg_p": "2BR (h<=2)",
@@ -409,7 +414,7 @@ def _stacked_bars(
             color=CATEGORY_COLORS[category],
             edgecolor="white",
             linewidth=0.5,
-            label=f"h*{category}" if category.startswith(">") else f"h*={category}",
+            label=CATEGORY_LABELS[category],
         )
         for index, (value, base) in enumerate(zip(values, bottom, strict=True)):
             if value >= 0.10:
@@ -417,7 +422,7 @@ def _stacked_bars(
         bottom += values
     ax.set_xticks(x, labels)
     ax.set_ylim(0.0, 1.0)
-    ax.set_ylabel("Proporción de mínimos BR")
+    ax.set_ylabel("Proporción de terminales BR")
     ax.grid(axis="y")
     ax.set_axisbelow(True)
     ax.yaxis.set_major_formatter(FuncFormatter(cross.spanish_tick))
@@ -476,20 +481,20 @@ def plot_hstar_ratio(frame: pd.DataFrame, output: Path) -> None:
                 ax.text(column_index, row_index, f"{100*value:.0f} %", ha="center", va="center", color="white" if value > 0.55 else "#202124", fontweight="bold", fontsize=8)
         ax.set_xticks(range(len(ratios)), [cross.spanish_number(value) for value in ratios])
         ax.set_yticks(range(len(cvs)), [cross.spanish_number(value) for value in cvs])
-        ax.set_xlabel("Robots por carga N/K")
+        ax.set_xlabel("AMR por carga N/K")
         ax.set_ylabel("CV de capacidad")
-        ax.set_title(f"ρ={cross.spanish_number(pressure)}: P(h*>3)")
+        ax.set_title(f"ρ={cross.spanish_number(pressure)}: sin escape hasta $h=3$")
     overall = ratio.groupby(["robots_per_load", "hstar_category"]).size().unstack(fill_value=0).reindex(columns=CATEGORIES, fill_value=0)
     proportions = overall.div(overall.sum(axis=1), axis=0)
     bottom = np.zeros(len(overall))
     x = np.arange(len(overall))
     for category in CATEGORIES:
         values = proportions[category].to_numpy(float)
-        label = f"h*{category}" if category.startswith(">") else f"h*={category}"
+        label = CATEGORY_LABELS[category]
         axes[2].bar(x, values, bottom=bottom, width=0.64, color=CATEGORY_COLORS[category], edgecolor="white", label=label)
         bottom += values
     axes[2].set_xticks(x, [cross.spanish_number(value) for value in overall.index])
-    axes[2].set_xlabel("Robots por carga N/K")
+    axes[2].set_xlabel("AMR por carga N/K")
     axes[2].set_ylabel("Proporción")
     axes[2].set_ylim(0.0, 1.0)
     axes[2].grid(axis="y")
@@ -644,7 +649,7 @@ def plot_fi_trace(trace: pd.DataFrame, endpoints: pd.DataFrame, output: Path) ->
     axes[0, 1].set_title("B. Coste geométrico durante la ejecución")
     axes[0, 1].set_ylabel("J(a) [m]")
     axes[1, 0].set_title("C. Orden de la desviación aceptada")
-    axes[1, 0].set_ylabel("Robots que cambian")
+    axes[1, 0].set_ylabel("AMR que cambian")
     axes[1, 0].set_yticks([1, 2, 3])
     order = list(METHOD_LABELS)
     endpoint = endpoints.set_index("method").loc[order]
@@ -656,7 +661,7 @@ def plot_fi_trace(trace: pd.DataFrame, endpoints: pd.DataFrame, output: Path) ->
     )
     axes[1, 1].bar_label(bars, fmt="%.0f", padding=2, fontsize=7.5)
     axes[1, 1].set_xticks(np.arange(len(order)), [METHOD_LABELS[method].replace(" ", "\n", 1) for method in order])
-    axes[1, 1].set_ylabel("Bytes por agente")
+    axes[1, 1].set_ylabel("Bytes por AMR")
     axes[1, 1].set_title("D. Coste de comunicación al terminar")
     for ax in axes.flat:
         ax.grid(True)

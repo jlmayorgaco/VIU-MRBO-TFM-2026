@@ -1,0 +1,27 @@
+experiment_id: SP2_CANONICAL_SMOKE_v1
+protocol_family: sp2_supported_caging_reduced_v1
+mode: smoke
+output_dir: results/sp2_canonical/SP2_CANONICAL_SMOKE_v1
+
+n1:
+  formation_radii_m: [0.25, 0.50, 0.75, 1.00]
+  forward_speed_mps: 0.18
+  max_omega_rad_s: 1.40
+  omega_samples: 71
+  wheel_radius_m: 0.06
+  track_width_m: 0.32
+  max_wheel_speed_rad_s: [12.0, 10.0, 8.0, 6.0]
+
+n2:
+  force_limits_n: [8.0, 8.0, 8.0, 8.0]
+  dispersion_m: [0.20, 0.40, 0.60, 0.80]
+  pressure_levels: [0.2, 0.4, 0.6, 0.8, 1.0, 1.2]
+  seeds: [6200, 6201, 6202, 6203, 6204, 6205, 6206, 6207, 6208, 6209, 6210, 6211]
+
+n3:
+  robots: 4
+  updates: 20
+
+sp2e:
+  grid_size: 21
+  resolution_label: "0.05 m/celda; orientación omitida"

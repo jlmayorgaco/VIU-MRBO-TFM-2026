@@ -1,18 +1,18 @@
-\input{../results/processed/sp2/SP2_EFFECTIVE_CAPACITY_EVIDENCE_v1/tables/sp2_numbers.tex}
+\input{../legacy/results/processed/sp2/SP2_EFFECTIVE_CAPACITY_EVIDENCE_v1/tables/sp2_numbers.tex}
 
-\subsection{SP2: servicio operacional heterogéneo}
-\label{subsec:sp2}
+\subsubsection{Etapa 1.3: servicio operacional heterogéneo}
+\label{subsubsec:sp1-heterogeneity}
 
-Dos coaliciones de igual cardinalidad pueden producir valores distintos de servicio $S_k$. SP2 conserva la exclusividad, el cierre y las poses estáticas, y asigna a cada pareja robot--carga una contribución calculada con carga útil nominal, batería y distancia. Este índice sirve para comparar disponibilidad operacional; la factibilidad mecánica se evalúa por separado.
+Dos coaliciones de igual cardinalidad pueden producir valores distintos de servicio $S_k$. E2 conserva la exclusividad, el cierre y las poses estáticas, y asigna a cada pareja robot--carga una contribución calculada con carga útil nominal, batería y distancia. Este índice sirve para comparar disponibilidad operacional; la factibilidad mecánica se evalúa por separado.
 
-\subsubsection{Índice operacional de servicio}
+\paragraph{Índice operacional de servicio}
 
 La Figura~\ref{fig:sp2-scenario} compara $C_k^A$, con $S_k=8$, y $C_k^B$, con $S_k=12$. Para el umbral $d_k^{\mathrm{srv}}=10$, únicamente $C_k^B$ cubre la demanda.
 
 \begin{figure}[!htbp]
   \centering
   \begin{spdiagram}
-    \spdrawarena{SP2 \textbar\ misma cardinalidad, distinto servicio}
+    \spdrawarena{E2 \textbar\ misma cardinalidad, distinto servicio}
     \node[spload,minimum width=1.55cm,minimum height=0.88cm] (load) at (6.65, 2.75) {$L_k$};
     \node[spannotation] at (6.65, 1.78) {$d_k^{\mathrm{srv}}=10$};
     \node[sprobot] (r1) at (1.35, 4.10) {$R_1$};
@@ -35,7 +35,7 @@ La Figura~\ref{fig:sp2-scenario} compara $C_k^A$, con $S_k=8$, y $C_k^B$, con $S
     \node[splegend,anchor=west] at (5.46, 0.42) {asignación que completa};
     \node[splegend,anchor=west] at (9.00, 0.42) {$e_{ik}$ en unidades de servicio};
   \end{spdiagram}
-  \caption{Vista conceptual de SP2: dos coaliciones con cardinalidad dos y distinto servicio operacional.}
+  \caption{Vista conceptual de E2: dos coaliciones con cardinalidad dos y distinto servicio operacional.}
   \label{fig:sp2-scenario}
   \viuownsource
 \end{figure}
@@ -65,7 +65,7 @@ y, con una escala de referencia $c^{\mathrm{ref}}=1\,\mathrm{kg}$, la contribuci
 
 El factor $a_{ik}$ representa disponibilidad y $e_{ik}$ expresa servicio normalizado, no masa. La elección $c^{\mathrm{ref}}=1\,\mathrm{kg}$ fija la escala, mientras $\psi_{ik}^d$ penaliza el desplazamiento inicial sin modificar la carga útil nominal. Los experimentos suponen compatibilidad unitaria y omiten restricciones independientes de soporte y balance energético.
 
-\subsubsection{Problemas formales de referencia}
+\paragraph{Problemas formales de referencia}
 
 Cobertura parcial y completitud son estimandos distintos. Dos MILP globales usan $x_{ik}\in\{0,1\}$ y servicio cubierto $s_k\in[0,d_k^{\mathrm{srv}}]$, con exclusividad por robot.
 
@@ -107,13 +107,13 @@ La referencia de puntuación añade $z_k\in\{0, 1\}$, activo solo si se cumplen 
 
 $V_k$ es adimensional y $E_{ik}^{\mathrm{trav}}$ se mide en Wh, de modo que los coeficientes tienen unidades inversas. Los dos MILP reciben la matriz completa $[e_{ik}]$, las demandas y los costes; se consideran exactos únicamente en las instancias cuyo optimizador certifica brecha nula.
 
-\subsubsection{Métodos de comparación}
+\paragraph{Métodos de comparación}
 
 Los dos MILP fijan referencias globales para cobertura y completitud. Frente a ellos se evalúan asignadores con información agregada, reglas locales o vecinales y modelos de imitación. El Húngaro expandido y CBBA-capacidad modifican los problemas estudiados en sus fuentes, por lo que sus garantías originales no se transfieren a esta comparación \parencite{kuhn1955Hungarian,choiBrunetHow2009CBBA}. En la Tabla~\ref{tab:sp2-methods}, $S$ denota puestos, $d$ rasgos y $P$ pesos.
 
 \begin{table}[!htbp]
   \centering
-  \caption{Comparación computacional de métodos en SP2.}
+  \caption{Comparación computacional de métodos en E2.}
   \label{tab:sp2-methods}
   \viutablefont
   \setlength{\tabcolsep}{1.45pt}
@@ -122,10 +122,10 @@ Los dos MILP fijan referencias globales para cobertura y completitud. Frente a e
     \toprule
     Método/fuente & Clase & Coste & Arq./información & Parámetros & Garantía/límite \\
     \midrule
-    MILP de puntuación & 0--1 MILP; NP-difícil por la selección opcional heredada de SP1 & Exponencial en peor caso; optimizador con límite temporal y brecha & Central; todos los pares, demandas, costes y recompensas & Tres pesos; límite temporal & Certificado de optimalidad con brecha cero; prioriza completitud. \\
+    MILP de puntuación & 0--1 MILP; NP-difícil por la selección opcional heredada de E1 & Exponencial en peor caso; optimizador con límite temporal y brecha & Central; todos los pares, demandas, costes y recompensas & Tres pesos; límite temporal & Certificado de optimalidad con brecha cero; prioriza completitud. \\
     MILP de cobertura & 0--1 MILP; clase específica no demostrada & Exponencial en el peor caso del optimizador & Central; capacidades efectivas y demandas globales & Dos pesos; límite temporal & Techo certificado para cobertura normalizada; completitud fuera del objetivo. \\
     Húngaro expandido \parencite{kuhn1955Hungarian} & Aproximación LAP en P & $O(M^3)$, $M=\max\{N,S\}$ & Central; matriz robot--puesto global & Número y regla de puestos & Exactitud para el LAP expandido; capacidad aproximada mediante puestos. \\
-    Voraz de capacidad & Problema entero NP-difícil; heurística & $O(NK\log(NK))$ si se ordena una vez & Local/secuencial con candidatos disponibles & Desempate & Selección dependiente del orden y del déficit visible; carece de cota. \\
+    Voraz de capacidad & Problema entero NP-difícil; heurística & $O(NK\log NK)$ si se ordena una vez & Local/secuencial con candidatos disponibles & Desempate & Selección dependiente del orden y del déficit visible; carece de cota. \\
     Aproximación CBBA-capacidad \parencite{choiBrunetHow2009CBBA} & MRTA con capacidades; heurística & $O(NK)$ por barrido de pujas más consenso & Pujas y conflictos entre vecinos & Tres parámetros de puntuación & Consenso sobre pujas modificadas; garantía CBBA original inaplicable. \\
     Replicator/BNN/Smith \parencite{sandholm2010population} & Ordenación secuencial, sin EDO & $O(NK)$ por matriz de puntuaciones & Déficit agregado o visibilidad limitada & Cuatro/cinco parámetros ajustados & Ordenación finita; las garantías de la dinámica continua quedan fuera de esta implementación. \\
     Primal--dual global/local & Relajación continua; cierre entero heurístico & $O(NK)$ por actualización de puntuación/precio & Global agregado o vecinal local & Cinco ganancias/pasos & Precios continuos con cierre heurístico; carece de certificado para la solución entera. \\
@@ -135,9 +135,9 @@ Los dos MILP fijan referencias globales para cobertura y completitud. Frente a e
   \viusource{elaboración propia a partir de los métodos ejecutados y las fuentes citadas}
 \end{table}
 
-\subsubsection{Juego de capacidad y alineación marginal}
+\paragraph{Juego de capacidad y alineación marginal}
 
-\begin{contribucion}{puntuación de servicio y potencial marginal de SP2}
+\begin{contribucion}{puntuación de servicio y potencial marginal de E2}
 Durante una decisión se fija la matriz $E=[e_{ik}]$ para separar el efecto de la heterogeneidad del cambio de estado. La variable $\rho_{ik}\in[0,1]$ expresa la preferencia continua del robot $i$ por la carga $k$ y satisface $\sum_k\rho_{ik}\leq1$. Con la presión saturada $\sigma(r)=[1-r]_+$ aplicada a $r_k=S_k(\rho)/d_k^{\mathrm{srv}}$ y un coste normalizado $g_{ik}$, las puntuaciones son
 
 \begin{equation}
@@ -168,9 +168,9 @@ Por la regla de la cadena, $\partial\Phi/\partial\rho_{ik}=f_{ik}^{\mathrm{marg}
 
 El contrato distribuido requiere que cada robot conozca $e_{ik}$ y $(d_k^{\mathrm{srv}},V_k)$, además de estimar $S_k$ con mensajes vecinales. En la campaña, las reglas recibieron el déficit global salvo la variante primal--dual de radio limitado; las variantes Smith se implementaron como ordenaciones secuenciales y no como integraciones de la EDO.
 
-\subsubsection{Regulación del déficit de capacidad}
+\paragraph{Regulación del déficit de capacidad}
 
-La salida regulada en SP2 es el déficit relativo de servicio:
+La salida regulada en E2 es el déficit relativo de servicio:
 \begin{equation}
  z_{2,k}(\rho)=
  \left[1-\frac{S_k(\rho)}{d_k^{\mathrm{srv}}}\right]_+,
@@ -192,13 +192,13 @@ La realimentación mínima del robot $i$ está formada por su contribución $e_{
 donde $F_i$ puede ser Smith, BNN, replicator o gradiente proyectado. La Proposición~\ref{prop:sp2-marginal-alignment} establece la identidad $\partial\Phi/\partial\rho_{ik}=f_{ik}^{\mathrm{marg}}$ para agregados exactos y $E$ fija. El cierre entero y la estabilidad muestreada requieren resultados adicionales.
 
 La campaña ejecutó una ordenación secuencial con $\widehat S_{ik}=S_k$ en casi todas las reglas y mantuvo fijas las posiciones, la batería y $E$. Este contraste aísla la puntuación; la ley continua y el observador vecinal no forman parte del estimando.
-\subsubsection{Diseño experimental}
+\paragraph{Diseño experimental}
 
 Las semillas $3100$--$3139$ producen $\SPTwoWorlds$ mundos pareados por método y $\SPTwoComparisonRows$ observaciones método--mundo. El endpoint principal es la completitud; la Tabla~\ref{tab:sp2-design} resume los escenarios, las métricas auxiliares y la inferencia. La ablación plano--marginal reutiliza los mundos para cuatro reglas y las dos referencias, con $\SPTwoAblationRows$ comprobaciones válidas.
 
 \begin{table}[!htbp]
   \centering
-  \caption{Factores y estimandos de la campaña SP2.}
+  \caption{Factores y estimandos de la campaña E2.}
   \label{tab:sp2-design}
   \viutablefont
   \begin{tabularx}{0.94\textwidth}{>{\raggedright\arraybackslash}p{2.5cm} Y}
@@ -210,21 +210,21 @@ Las semillas $3100$--$3139$ producen $\SPTwoWorlds$ mundos pareados por método 
     Inferencia & Friedman/Kendall y Wilcoxon por mundo, medias pareadas con \mbox{bootstrap} y corrección de Holm; contrastes preespecificados para puntuación marginal y primal--dual frente a voraz. \\
     \bottomrule
   \end{tabularx}
-  \viusource{elaboración propia a partir del protocolo experimental de SP2}
+  \viusource{elaboración propia a partir del protocolo experimental de E2}
 \end{table}
 
 Los datos publicados reproducen el postproceso, las tablas y las figuras. La ausencia del generador de instancias impide repetir la creación de mundos y limita la reproducibilidad de la simulación.
 
-\subsubsection{Resultados}
+\paragraph{Resultados}
 
 La referencia de cobertura alcanzó una cobertura media de $\SPTwoCoverageCoverage$ y completó $\SPTwoCoverageSuccess$ de las cargas. El oráculo de puntuación redujo la cobertura a $\SPTwoScoreCoverage$ y elevó la completitud a $\SPTwoScoreSuccess$. La diferencia cuantifica el intercambio entre repartir servicio parcial y cerrar cargas en los dos objetivos MILP (Tabla~\ref{tab:sp2-main-results}).
 
 \begin{table}[!htbp]
   \centering
-  \caption[SP2 en 1560 mundos pareados. Diferencia de cobertura frente al oráculo de cobertura.]{SP2 en $\SPTwoWorlds$ mundos pareados. ``Dif. cobertura'' se define en~\eqref{eq:sp2-capacity-oracle} y no constituye una brecha universal.}
+  \caption[E2 en 1560 mundos pareados. Diferencia de cobertura frente al oráculo de cobertura.]{E2 en $\SPTwoWorlds$ mundos pareados. ``Dif. cobertura'' se define en~\eqref{eq:sp2-capacity-oracle} y no constituye una brecha universal.}
   \label{tab:sp2-main-results}
-  \resizebox{\textwidth}{!}{\input{../results/processed/sp2/SP2_EFFECTIVE_CAPACITY_EVIDENCE_v1/tables/sp2_comparison.tex}}
-  \viusource{elaboración propia a partir de los datos procesados de SP2}
+  \resizebox{\textwidth}{!}{\input{../legacy/results/processed/sp2/SP2_EFFECTIVE_CAPACITY_EVIDENCE_v1/tables/sp2_comparison.tex}}
+  \viusource{elaboración propia a partir de los datos procesados de E2}
 \end{table}
 
 Entre los métodos aproximados, la red neuronal obtuvo la menor brecha de puntuación, $\SPTwoNeuralGap$, con completitud $\SPTwoNeuralSuccess$ y $\SPTwoNeuralRuntime\,\mathrm{ms}$ de CPU media. Smith fue más barata, $\SPTwoSmithRuntime\,\mathrm{ms}$, pero alcanzó una brecha de $\SPTwoSmithGap$ y completitud $\SPTwoSmithSuccess$. La regla interpretable reduce el coste computacional, aunque no encabeza la calidad de asignación.
@@ -233,18 +233,18 @@ La ablación de la Tabla~\ref{tab:sp2-ablation} evalúa el factor marginal dentr
 
 \begin{table}[!htbp]
   \centering
-  \caption{Ablación pareada de las puntuaciones plana y marginal en SP2.}
+  \caption{Ablación pareada de las puntuaciones plana y marginal en E2.}
   \label{tab:sp2-ablation}
-  \resizebox{0.82\textwidth}{!}{\input{../results/processed/sp2/SP2_EFFECTIVE_CAPACITY_EVIDENCE_v1/tables/sp2_ablation.tex}}
-  \viusource{elaboración propia a partir de los datos procesados de SP2}
+  \resizebox{0.82\textwidth}{!}{\input{../legacy/results/processed/sp2/SP2_EFFECTIVE_CAPACITY_EVIDENCE_v1/tables/sp2_ablation.tex}}
+  \viusource{elaboración propia a partir de los datos procesados de E2}
 \end{table}
 
 Para la variante primal--dual ejecutada, la diferencia media de completitud frente al voraz fue $\SPTwoPDEffect$ (IC del 95\,\% $[\SPTwoPDCILow,\SPTwoPDCIHigh]$, $p_{\mathrm{Holm}}=\SPTwoPDPHolm$). Sus selecciones dispersaron capacidad entre cargas sin reflejar la prioridad todo-o-nada; esta observación describe la parametrización ensayada, mientras la corrección marginal sí mejoró la regla secuencial.
 
 Dos amenazas dominan la validez externa. El índice mezcla disponibilidad y distancia sin un modelo mecánico, de modo que una asignación operacionalmente cubierta puede ser físicamente inviable. Además, el uso generalizado del déficit global impide atribuir los resultados a una implementación vecinal; los rangos reportados corresponden a los mundos evaluados.
 
-\subsubsection{Síntesis}
+\paragraph{Síntesis}
 
 La heterogeneidad rompe la equivalencia entre cardinalidad y cobertura, y el objetivo agregado puede repartir capacidad sin completar cargas. Con $E$ fija, el factor $e_{ik}/d_k^{\mathrm{srv}}$ alinea el campo con el gradiente de~\eqref{eq:sp2-potential}; en la ablación también concentró mejor el servicio. Entre los métodos aproximados, la red neuronal obtuvo la menor brecha y la variante primal--dual quedó por debajo del voraz en completitud.
 
-El umbral $S_k\geq d_k^{\mathrm{srv}}$ puede cumplirse aunque los robots carezcan de puntos de contacto o de brazos de palanca capaces de equilibrar el torque. Ese contraejemplo motiva el certificado geométrico de \emph{wrench} de SP3.
+El umbral $S_k\geq d_k^{\mathrm{srv}}$ puede cumplirse aunque los robots carezcan de puntos de contacto o de brazos de palanca capaces de equilibrar el torque. Ese contraejemplo motiva el certificado geométrico de \emph{wrench} de E3.

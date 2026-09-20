@@ -1,0 +1,67 @@
+{
+  "artifact_sha256": {
+    "coppeliasim.log": "87bc8e37da73f28bf593caf3a41e497b4011d52c552c83c93df77150a64b250f",
+    "failures.csv": "fb6c12a412642beb108259171927ed689acb6df68f0a7ef4d23681c9eab68137",
+    "gate_status.json": "b9a91a2b301b61cb636f4f6a359fb2d3d8fb563f6c994cc362e8d5383aa8b557",
+    "inference\\analysis_contract.json": "85fc65b43ed53f1f1eb1c54c899225d4282015b1fb1c581158719c20ddc94818",
+    "inference\\cell_guard_rates.csv": "c615589fbb1e808727058f5a7f5a2bd2965f5cd42d09eedd66ee2acb1282b4c0",
+    "inference\\paired_guard_contrasts.csv": "122656535ad42099d7f5a2238bcaa7155af3deddf94acad19d4a6de49b3928d1",
+    "protocol\\config_snapshot.yaml": "9c7e545323284f02039651888b481470265da9fb5468d3bc1abac97f8eb0714d",
+    "protocol\\design.csv": "9d49025952e82e9ca82fbbe29d18fe33b4d06f66c7f26015fba41a3705c7ceb6",
+    "protocol\\seed_registry.csv": "97dc8d184417b9ec1c06234bee40bd81e9bf95631f046efc9b1b18948e0d08e2",
+    "runs.csv": "d1a1edc70f2763f1415824c5bc9c8202a4d1e4e9c0fac2a1aa1fc436e93b78fc",
+    "series.csv.gz": "e0ada04b513268e7b45a18ade45f1fb1a51c5411b7de199ce23e64087887c2df",
+    "summary.csv": "d2d0b65867b5c91dbb7b325984db2f5610c23390af6ec7b955e55445051466d1"
+  },
+  "backend": {
+    "actuator_contract": "wheel_velocity_only",
+    "backend_kind": "coppeliasim_mujoco",
+    "engine": "mujoco",
+    "evidence_class": "physical_coppeliasim_candidate",
+    "simulator_version": "4.10.0",
+    "synchronous_stepping": true,
+    "wrench_realization": "bounded_contact_setpoints_indirectly_realized_by_wheel_velocity"
+  },
+  "configuration_sha256": "4964dd6347de9c21eef7ae33e3da51325e10e3179aa9a864144fef802421e41d",
+  "controller_id": "cargo_pose_wrench_admittance_wheel_v2",
+  "controller_scope": "pose PD -> bounded contact-force setpoints -> wrench-error admittance -> wheel velocities; setpoints are indirectly realized and exact wrench realization is not assumed",
+  "design_sha256": "8af6bd7f22309ddb0569146698c1fbb5af0ca1eeac42d5e00b4c3ca0a5c27507",
+  "experiment_id": "COPPELIA_CARGO_PREFLIGHT_MINIMAL_v1",
+  "generated_at_utc": "2026-09-09T01:20:50.332526+00:00",
+  "implementation_sha256": {
+    "__init__.py": "6ceae2a8122f07c0d644c1755fcfd28092b4a2ee5e5858589938bc3096ff848c",
+    "backends.py": "6426d7a69181af4dffe2b8d82e5b1000e6aaf059bdd5dca603ceb31ec8d9bc77",
+    "campaign.py": "2f8d239417550b01cd9891ec3d81f36b1ac510c641e1b4a59e527d6277396a7d",
+    "config.py": "fe3695128a20f452f0f50dedae2b604e0536146bacca166ad098492ae5bb9006",
+    "controller.py": "32987e4965b984121521a5c3f67e6e9c553b4370dc19d9c3c39ac4dba9c79245",
+    "coppelia_backend.py": "910e2151a4b90faf4c1c62f876ccf84dea4022008a11662941807558afc07fd7",
+    "design.py": "23d788fc507bd3f2de9ec8a0bdd1cd54206ee892ee06e311b1eefae9e8b04b10",
+    "guards.py": "29a53ee12c44bb388527883470af069baad3ca55b6c77bf681aca11ca6ffa3f7",
+    "inference.py": "d6c0687aadc857fdde27b6df14962430a3218775b4fa1b03167a211583a8b14e"
+  },
+  "mode": "smoke",
+  "protocol_family": "coppelia_cargo_v1",
+  "run_counts": {
+    "accepted": 6,
+    "completed": 6,
+    "failed": 0,
+    "rejected": 0,
+    "total": 6
+  },
+  "scene_audit_sha256": "8ac08b36f51c1ae40f6220835a3932516d8ab93ca23f6c5a0203d77bc6275f17",
+  "scene_sha256": "e36a4a915bf3feda628d5eabd8bed56f601860d6b54544407cc09d73b8b31ebe",
+  "scientific_use": "physical_candidate_subject_to_gate_status",
+  "seed_registry": [
+    260900
+  ],
+  "software": {
+    "git_commit": "e2e67abe7552b60be210805626fac4f495d95138",
+    "git_dirty": true,
+    "numpy": "2.3.5",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]",
+    "scipy": "1.16.3"
+  },
+  "source_config_sha256": "9fe8f4ce821d43899ae31a85348a4c896cab1087bc19e94d665c9331a2759a58",
+  "status": "complete"
+}

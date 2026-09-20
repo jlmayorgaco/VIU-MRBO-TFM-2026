@@ -1,0 +1,192 @@
+\section{Degradación de autoridad: el certificado como regularización de un problema singular}
+\label{sec:autoridad}
+
+La \cref{obs:autoridad} señaló que un par sin autoridad instantánea no puede
+corregir su barrera, pero lo hizo de forma binaria: el coeficiente de control se
+anula o no se anula. La situación real es continua, y su descripción exacta
+cambia el criterio de diseño.
+
+\subsection{Los tres regímenes}
+
+Sea $A=Q^{1/2}G_k$ con descomposición en valores singulares $A=U\Sigma V^{\!\top}$
+y $\tilde e=Q^{1/2}\Wdem_k$. Con el cambio ortogonal $\bm\lambda=V\bm\mu$, el
+programa \eqref{eq:qp} se desacopla en problemas escalares independientes, uno
+por dirección singular:
+\begin{equation}
+  \min_{\mu_j}\ \tfrac12\bigl(\sigma_j\mu_j-\tilde e_j\bigr)^{2}
+  +\tfrac{\varepsilon_\lambda}{2}\,\mu_j^{2}.
+  \label{eq:escalar}
+\end{equation}
+
+\begin{teorema}[Degradación de autoridad]
+\label{th:autoridad}
+En el régimen interior de \eqref{eq:qp}, para cada dirección singular $j$:
+\[
+  \mu_j^{\star}=\frac{\sigma_j\,\tilde e_j}{\sigma_j^{2}+\varepsilon_\lambda},
+  \qquad
+  \text{residuo}_j=\sigma_j\mu_j^{\star}-\tilde e_j
+  =-\frac{\varepsilon_\lambda\,\tilde e_j}{\sigma_j^{2}+\varepsilon_\lambda}.
+\]
+En consecuencia:
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em,topsep=0.2em,itemsep=0.15em]
+  \item \emph{autoridad plena} si $\sigma_j^{2}\gg\varepsilon_\lambda$:
+  $\mu_j^{\star}\to\tilde e_j/\sigma_j$ y el residuo tiende a cero, con esfuerzo
+  que crece como $1/\sigma_j$;
+  \item \emph{parálisis óptima} si $\sigma_j^{2}\ll\varepsilon_\lambda$:
+  $\mu_j^{\star}\to\sigma_j\tilde e_j/\varepsilon_\lambda\to0$ y el residuo
+  tiende a $-\tilde e_j$. El programa es estrictamente convexo y su solución es
+  única y óptima, y sin embargo \emph{renuncia} a corregir el error;
+  \item el umbral está en $\sigma^{\dagger}=\sqrt{\varepsilon_\lambda}$, donde el
+  residuo es exactamente la mitad de la demanda proyectada.
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}
+Derivando \eqref{eq:escalar} respecto a $\mu_j$ e igualando a cero se obtiene
+$\sigma_j(\sigma_j\mu_j-\tilde e_j)+\varepsilon_\lambda\mu_j=0$, de donde
+$\mu_j^{\star}(\sigma_j^{2}+\varepsilon_\lambda)=\sigma_j\tilde e_j$. La
+expresión del residuo resulta de sustituir. Los tres regímenes son los límites
+$\sigma_j^2/\varepsilon_\lambda\to\infty$, $\to0$ y $=1$.
+\end{proof}
+
+\begin{observacion}[La parálisis óptima no es un fallo del solver]
+\label{obs:paralisis}
+El caso (ii) merece énfasis porque contradice la intuición: un QP correctamente
+planteado, convexo y resuelto con exactitud, decide no mover la carga. No hay
+error numérico ni infactibilidad. La regularización que garantiza unicidad
+—necesaria para el \cref{co:agarre} y para la contracción del solver— es la
+misma que produce la renuncia cuando la autoridad es escasa. Es un compromiso
+estructural del planteamiento, no un defecto de implementación.
+\end{observacion}
+
+\begin{observacion}[La regularización no solo estabiliza: elige]
+\label{obs:tikhonov-selecciona}
+Conviene añadir algo que el enunciado anterior deja implícito y que mejora la
+lectura del parámetro $\varepsilon_\lambda$. La regularización empleada es de
+tipo Tikhonov, y ese esquema tiene una propiedad de \emph{selección}: cuando el
+problema sin regularizar admite infinitas soluciones, la solución regularizada
+converge, al hacer $\varepsilon_\lambda\to0$, a la de \emph{norma mínima} entre
+todas las óptimas \cite{clempner2024optimization}.
+
+Comprobación sobre un sistema de rango deficiente con infinitas soluciones: la
+distancia a la solución de norma mínima es $1{,}1\times10^{-1}$ para
+$\varepsilon=10^{-1}$, $1{,}2\times10^{-3}$ para $10^{-3}$ y
+$1{,}4\times10^{-9}$ para $10^{-9}$.
+
+La lectura para este trabajo es que $\varepsilon_\lambda$ cumple tres funciones a
+la vez, no una: garantiza unicidad, produce la parálisis de
+\cref{th:autoridad}(ii) cuando la autoridad escasea, y —cuando la autoridad
+sobra y el reparto es indeterminado— selecciona el de \emph{menor esfuerzo total}.
+Esa tercera función es deseable y merece enunciarse: en una coalición
+sobreactuada, donde muchos repartos realizan la misma demanda, el mecanismo no
+elige uno arbitrario sino el más barato.
+\end{observacion}
+
+\begin{teorema}[Valor exacto de un actuador adicional]
+\label{th:actuador-adicional}
+Sea $V(K)=\tfrac12 d^{\!\top}K^{-1}d$ el coste óptimo del reparto para una
+demanda $d$, y sea un candidato opcional que añade un canal escalar $b$ con coste
+propio $c\,u^{2}/2$, $c>0$, de modo que $K^{+}=K+bb^{\!\top}/c$. La disminución
+óptima de coste es exactamente \cite{mayorga2026m1}
+\[
+  V(K)-V(K^{+})\;=\;\frac{\bigl(b^{\!\top}K^{-1}d\bigr)^{2}}
+  {2\,\bigl(c+b^{\!\top}K^{-1}b\bigr)}\ \ge\ 0 .
+\]
+\end{teorema}
+
+\begin{proof}
+Por Sherman--Morrison,
+$(K+bb^{\!\top}/c)^{-1}=K^{-1}-K^{-1}bb^{\!\top}K^{-1}/(c+b^{\!\top}K^{-1}b)$;
+sustituyendo en $V$ se obtiene la expresión. El denominador es positivo porque
+$c>0$ y $K\succ0$.
+\end{proof}
+
+\begin{observacion}[Qué hace valioso a un recluta]
+\label{obs:actuador-valor}
+La fórmula, verificada a precisión de máquina sobre instancias aleatorias, no es
+una heurística y separa dos cosas que se confunden. El numerador
+$(b^{\!\top}K^{-1}d)^{2}$ mide la \emph{alineación} del canal con la dirección que
+la demanda encarece; el denominador incorpora el coste propio y la
+\emph{redundancia} con lo ya disponible, $b^{\!\top}K^{-1}b$. Un canal de gran
+capacidad nominal en una dirección que no importa, o que duplica lo que la
+coalición ya tiene, vale poco; uno modesto que corrige la dirección cara vale
+mucho.
+
+Es la versión cuantitativa de \cref{obs:brazo} —donde toca importa tanto como
+cuánto empuja— y da al reclutamiento un criterio exacto de admisión marginal:
+el valor de un candidato es un número calculable a partir de $K^{-1}d$, que la
+coalición ya posee. También precisa la lectura de \cref{obs:shapley}: Shapley
+premia ser pivote en muchas coaliciones; este teorema premia ser útil en
+\emph{esta}, y ambos criterios pueden discrepar sobre el mismo AMR.
+\end{observacion}
+
+\begin{observacion}[La misma selección sesga hacia la inacción]
+\label{obs:tikhonov-sesgo}
+Conviene mirar esa propiedad con desconfianza allí donde el objeto seleccionado
+no es un esfuerzo sino una decisión. La regularización elige por \emph{norma
+mínima}, no por bienestar, y en un problema de formación de coalición la
+alternativa de norma mínima es «nadie se une».
+
+La comprobación matiza el riesgo y conviene reproducirla con precisión. Sobre un
+potencial de doble pozo con el equilibrio activo estrictamente mejor, la
+regularización lo selecciona correctamente para $\varepsilon\le0{,}5$, y solo con
+$\varepsilon=2$ se pasa al pasivo. Pero si los dos pozos están igualados, la
+regularización rompe el empate a favor del pasivo para \emph{todo}
+$\varepsilon>0$ ensayado, de $0{,}5$ a $10^{-3}$.
+
+Hay por tanto una ventana: $\varepsilon$ suficientemente pequeño para no invertir
+la preferencia, y suficientemente grande para dar el condicionamiento que se
+buscaba. Y hay un patrón común con \cref{th:autoridad}: la
+regularización que produce la parálisis óptima de \cref{th:autoridad}(ii) en la
+capa de esfuerzo produciría, aplicada a la capa de decisión, la misma inclinación
+a no hacer nada. Ambas son la misma preferencia por la norma pequeña, y en las
+dos hay que decidir a sabiendas.
+\end{observacion}
+
+\subsection{El caso singular}
+
+Cuando $\sigma_j=0$ con $\tilde e_j\neq0$, el término de tarea deja de depender
+del control en esa dirección: no existe solución clásica que anule el residuo.
+La familia $\{\bm\mu^{\star}(\varepsilon_\lambda)\}_{\varepsilon_\lambda>0}$ es
+entonces una \emph{sucesión minimizante} del problema singular, en el sentido
+preciso de \cite{glizer2022singular}, donde la solución de un problema
+extremal singular no es un elemento sino una sucesión, y la regularización de
+control barato es el método constructivo para obtenerla.
+
+El certificado de \eqref{eq:qp} es, por tanto, la regularización de un problema
+que en la frontera es singular. Esa lectura tiene una consecuencia práctica:
+cuando $\sigma_j\to0$, no procede refinar el solver ni bajar $\varepsilon_\lambda$
+esperando convergencia, porque el límite no existe como control admisible. Lo
+que procede es rechazar la configuración.
+
+\begin{corolario}[La guarda de autoridad se acopla a la regularización]
+\label{co:guarda}
+Un criterio de admisión de la forma $\sigma_{\min}(Q^{1/2}G_k)\ge\sigma_{\mathrm{tol}}$
+con $\sigma_{\mathrm{tol}}$ elegido de forma independiente es incoherente. La
+guarda debe exigir
+\[
+  \sigma_{\min}\bigl(Q^{1/2}G_k\bigr)\ \ge\ \kappa\sqrt{\varepsilon_\lambda},
+  \qquad \kappa>1,
+\]
+de modo que el residuo relativo quede acotado por $1/(\kappa^{2}+1)$. La
+profundidad de la guarda y la regularización del programa son un solo parámetro
+de diseño, no dos.
+\end{corolario}
+
+\begin{proof}
+Sustituyendo $\sigma_j=\kappa\sqrt{\varepsilon_\lambda}$ en la expresión del
+residuo de \cref{th:autoridad} se obtiene
+$|\text{residuo}_j|/|\tilde e_j|=\varepsilon_\lambda/(\kappa^{2}\varepsilon_\lambda+\varepsilon_\lambda)
+=1/(\kappa^{2}+1)$, y la cota es decreciente en $\sigma_j$.
+\end{proof}
+
+\begin{observacion}[Alcance]
+\label{obs:autoridad-alcance}
+\Cref{th:autoridad} describe el régimen interior, en el que las restricciones de
+cono y de caja no están activas; con restricciones activas la solución queda
+caracterizada por las condiciones KKT y el conjunto activo. La lectura cualitativa —degradación continua con umbral en
+$\sqrt{\varepsilon_\lambda}$— se conserva, pero las expresiones cerradas no.
+Tampoco se afirma nada sobre el juego diferencial completo: el resultado es del
+problema congelado, que es donde \cite{glizer2022singular} delimitan su
+propio análisis.
+\end{observacion}

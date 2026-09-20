@@ -1,0 +1,100 @@
+\section{Ensayo del mecanismo distribuido sobre la planta con ruedas y contacto}
+\label{sec:ensayo-cierre}
+
+\Cref{th:entrega} lista lo que hay que verificar. Esta sección lo verifica
+sobre un simulador propio en el que el mecanismo de este documento —y no un
+controlador central— gobierna la misión, con información de $n$ saltos, y
+compara los enfoques que la teoría dejó abiertos: cinco protocolos de
+revisión, dos aptitudes, dos políticas de pasillo, tres capas de seguridad,
+dos reclutamientos y un hiperjuego con creencias erróneas. El código es parte
+de la entrega (\texttt{viu\_mrob\_tfm.megajuego}) y cada cifra procede de un
+CSV con semilla.
+
+\subsection{La planta declarada}
+
+La planta mide $22\times14$~m con un muro central y un único hueco de
+$3{,}3$~m. Ocho AMR diferenciales heterogéneos —masa
+$19$--$36$~kg, radio de rueda $8{,}5$--$11$~cm, par $4{,}2$--$7$~N\,m por
+motor, parachoques de $0{,}47$--$0{,}59$~m— tienen cada rueda con inercia
+$J_w$, par, tracción por deslizamiento $F=c_g(r_w\omega-v)$ y disco de
+fricción compartido con la reacción lateral (\cref{pr:disco-friccion}); el
+chasis integra masa e inercia con la restricción lateral ideal salvo
+saturación del disco, que se registra. Dos cargas rígidas de $60$ y $95$~kg
+(huellas $1{,}6\times1{,}1$ y $1{,}9\times1{,}3$~m) nacen en lados opuestos
+del muro con destinos al otro lado: ambas deben cruzar el hueco en sentidos
+contrarios. En \textsf{cargo} tres pads con giro libre por carga transmiten
+$f=k\epsilon+du$ con límite $\mu_{\mathrm{top}}N_i$ y la carga va levantada
+(sin fricción de suelo); una carga no levantada tiene fricción de Coulomb con
+el suelo. Hay contacto AMR--carga para quien no la transporta, contacto
+carga--carga por separación de ejes, y paredes con penetración registrada.
+Paso físico $5$~ms, paso de control $20$~ms, horizonte $300$~s.
+
+\subsection{El mecanismo, tal como se ejecuta}
+
+Cada AMR recibe solo lo que llega por inundación acotada a $n=2$ saltos con
+radio de $9$~m, incluidos los anuncios de las cargas. Su parte discreta
+$z_i\in\{\mathrm{idle}\}\cup\{(k,\mu,s)\}$ se revisa con relojes de Poisson
+a $1$~Hz, histéresis $\epsilon_{\mathrm{sw}}=0{,}5$ y permanencia mínima de
+$2$~s, evaluando el potencial $\Phi$ de \cref{th:potencial-valor} sobre su
+información: valor de coalición por aptitud, coste de viaje y batería. La
+aptitud \emph{vector} certifica el margen de \emph{wrench} de
+\cref{th:span} sobre las columnas reales de los puestos; la \emph{escalar}
+suma capacidades. El puesto se arrienda con versión ante el tender de la
+carga (\cref{pr:arrendamiento}). Dos hallazgos de diseño salieron del propio
+ensayo y valen como resultados: sin crédito parcial convexo por progreso hacia
+$r^\star$ nadie se une primero —la caza del ciervo de
+\cref{pr:caza-ciervo}, medida—, y para empujar o tirar hay que comandar par
+con el deslizamiento que la fuerza exige, $\Delta\omega=f/(2c_gr_w)$, porque
+un lazo de velocidad de rueda anula el feedforward de fuerza. Formada la
+coalición, el mercado de \emph{wrench} de \cref{th:N-precios} corre cuatro
+rondas por paso de control con respuesta local de cada miembro a su precio, y
+cada pad se sirve por su desplazamiento. La trayectoria de la carga sigue
+puntos de espera alineados con el eje del hueco; el pasillo se arrienda con
+orden total (\emph{lease}) o se negocia con un precio de congestión sin
+exclusividad (\emph{price}). La seguridad \emph{nested} combina la barrera
+de coalición (frenado frente a paredes y cargas) con la barrera por AMR en
+navegación; \emph{coalition} quita la segunda; \emph{none} deja solo la
+repulsión de contacto. En el hiperjuego cada AMR cree las capacidades ajenas y
+las masas con error uniforme de $\pm35\%$, y la recertificación al formar
+usa las capacidades observadas (\cref{obs:certificado-postevento}). El
+reclutamiento \emph{gne\_pd} sustituye la revisión atómica por dinámicas de
+Smith sobre cuotas continuas con multiplicadores de capacidad y atomiza a los
+doce segundos.
+
+\subsection{Lo que se mide}
+
+Éxito (las dos cargas entregadas dentro de tolerancia antes del horizonte),
+tiempo de misión, energía eléctrica $\sum[\tau\omega]_+/\eta$, separación
+mínima entre AMR no acoplados y entre cargas, penetración máxima en paredes,
+eventos de deslizamiento, mensajes lógicos, revisiones aceptadas,
+certificados falsos y rechazos por recertificación, y tiempo con dos cargas
+dentro del hueco. Cada configuración se ejecuta sobre semillas comunes; el
+éxito se compara por pares con McNemar exacto frente a la referencia (Smith,
+aptitud vector, arrendamiento, seguridad anidada, reclutamiento atómico,
+creencias exactas) y los intervalos son de Wilson.
+
+%% RESULTADOS: se insertan desde results/megajuego/SUMMARY.json
+\input{sec_ensayo_cierre_resultados}
+
+\input{sec_ensayo_cierre_interp}
+
+\input{sec_ensayo_cierre_plan}
+
+\input{sec_ensayo_cierre_figs}
+
+\subsection{Lo que el ensayo no cubre: empuje unilateral}
+
+El modo \textsf{caging} se implementó con la misma planta —parachoques
+unilateral $f_n=k_b[\delta]_+$ con fricción tangencial, caja con fricción de
+suelo, cuatro empujadores con dos traseros separados y dos laterales— y el
+mecanismo lo recluta y lo certifica: la formación se cierra en $12$--$17$~s con
+los cuatro empujadores alineados con sus normales, y la caja avanza y cruza el
+hueco en varias corridas. Pero el transporte no es estable en orientación con
+el controlador aquí implementado: una caja deslizante empujada por robots que
+no pueden tirar ni deslizar de lado gira, pierde a sus empujadores y exige
+re-formaciones que se encadenan. No se reporta como éxito ni entra en el
+banco. Lo que sí deja es una lección consistente con
+\cref{th:grado-relativo-rueda} y con \cref{obs:reserva-robusta}: la
+orientación de un cuerpo empujado unilateralmente no es una variable que un
+mercado de fuerzas pueda comandar; es una restricción que la geometría de la
+formación debe imponer, y ese es el problema abierto que queda enunciado.

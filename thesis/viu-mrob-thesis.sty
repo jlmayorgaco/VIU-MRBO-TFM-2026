@@ -23,9 +23,12 @@
   Ligatures=TeX
 ]
 \RequirePackage{etoolbox}
-\newfontfamily\viutocpagenumberfont{TeX Gyre Heros}
-% Arial pierde visualmente el punto de la i en los romanos pequeños del
-% índice. La fuente alternativa se limita a la columna de folios del ToC.
+% Fidelidad a la plantilla: la columna de folios del índice va en Arial, como
+% todo lo demás. Antes usaba TeX Gyre Heros porque Arial pierde visualmente el
+% punto de la i en los romanos pequeños; el problema existe igual en Word, que
+% también compone esos folios en Arial, así que imitarlo es lo correcto y evita
+% una segunda familia tipográfica en el PDF (aparecía en las páginas 2-13).
+\newfontfamily\viutocpagenumberfont{Arial}
 \patchcmd{\@dottedtocline}
   {\normalfont \normalcolor #5}
   {\normalfont\viutocpagenumberfont \normalcolor #5}
@@ -41,9 +44,22 @@
 ]{geometry}
 \RequirePackage{setspace}
 \RequirePackage{microtype}
-\onehalfspacing
+% Interlineado idéntico al de la plantilla Word, no al de \onehalfspacing.
+%
+% Word: estilo Normal con w:spacing w:line="360" w:lineRule="auto" = 1,5 líneas.
+% Una «línea sencilla» de Word es la altura hhea de la fuente:
+%   Arial: (ascender 1854 + descender 434 + lineGap 67) / 2048 upm
+%          x 12 pt = 13,799 pt      ->   x 1,5 = 20,698 pt
+% El \baselineskip real de este documento (Arial vía fontspec) medido sobre el
+% PDF es 14,4448 pt, no los 14,5 nominales de la clase 12pt. El factor es
+%   20,698 / 14,4448 = 1,4329
+% \onehalfspacing daba 1,241 -> 17,93 pt medidos, un 13 % más apretado que Word.
+% Verificar tras cualquier cambio de fuente: la separación de líneas del cuerpo
+% en el PDF debe salir 20,70 pt.
+\setstretch{1.4329}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{6pt plus 1pt}
+% Word: w:spacing w:after="120" twips = 6 pt exactos, sin elasticidad.
+\setlength{\parskip}{6pt}
 
 \RequirePackage{graphicx}
 \RequirePackage[table,dvipsnames]{xcolor}
@@ -123,12 +139,60 @@
 \RequirePackage{multirow}
 \RequirePackage{enumitem}
 
+\RequirePackage{type1cm}  % CM escalable a cualquier tamano:
+% sin el, los subindices anidados piden <5 pt, no existen en Type 1 y
+% LaTeX emite 19 avisos de sustitucion de tamano.
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
 \RequirePackage{amsthm}
-\RequirePackage[noOT1]{newtxmath}
+% Matemáticas en Computer Modern, el aspecto canónico de LaTeX.
+% Antes se cargaba newtxmath, un math basado en Times que junto al texto
+% Arial se leía como el editor de ecuaciones de Word. Basta con NO cargar
+% ningún paquete matemático: con fontspec[no-math] el math queda en el
+% Computer Modern por defecto y el texto sigue intacto en Arial.
+%
+% NO usar \RequirePackage{lmodern}: ese paquete redefine tambien rmdefault
+% y sfdefault, saca Arial del cuerpo y mete LMRoman/LMSans en el texto,
+% lo que incumple el Arial 12 de la plantilla VIU (comprobado: Arial-Bold
+% y Arial-Italic desaparecian del PDF y aparecian 4 Overfull).
 \RequirePackage{mathtools}
 \RequirePackage{bm}
+
+% \mathsf se usa para la transpuesta ($x^{\mathsf T}$, 27 apariciones). Pedía
+% la familia Arial en codificación OT1, que no existe, y LaTeX la sustituía por
+% Computer Modern: cmr12 y cmr9 llegaban al PDF en ocho páginas. Computer
+% Modern es el delator tipográfico de LaTeX. Se declara en la codificación TU
+% de fontspec para que la transpuesta salga en Arial como el resto del texto.
+\DeclareMathAlphabet{\mathsf}{TU}{\sfdefault}{m}{n}
+\SetMathAlphabet{\mathsf}{bold}{TU}{\sfdefault}{b}{n}
+
+% Algoritmos con estilo IEEE y palabras clave en español, idénticos a los de
+% Subdocuments/SP1 para que el documento final sea homogéneo. Sustituir prosa
+% que narra un procedimiento por su pseudocódigo compacta y sube el nivel: el
+% capítulo 6 no tenía ni un algoritmo en 60 páginas.
+\RequirePackage{algorithm}
+\RequirePackage{algpseudocode}
+\floatname{algorithm}{Algoritmo}
+\renewcommand{\algorithmicrequire}{\textbf{\textcolor{VIUOrange}{Entrada:}}}
+\renewcommand{\algorithmicensure}{\textbf{\textcolor{VIUOrange}{Salida:}}}
+\algrenewcommand\algorithmicif{\textcolor{VIUOrange}{\textbf{si}}}
+\algrenewcommand\algorithmicthen{\textcolor{VIUOrange}{\textbf{entonces}}}
+\algrenewcommand\algorithmicelse{\textcolor{VIUOrange}{\textbf{si no}}}
+\algrenewcommand\algorithmicfor{\textcolor{VIUOrange}{\textbf{para}}}
+\algrenewcommand\algorithmicforall{\textcolor{VIUOrange}{\textbf{para cada}}}
+\algrenewcommand\algorithmicwhile{\textcolor{VIUOrange}{\textbf{mientras}}}
+\algrenewcommand\algorithmicdo{\textcolor{VIUOrange}{\textbf{hacer}}}
+\algrenewcommand\algorithmicreturn{\textcolor{VIUOrange}{\textbf{devolver}}}
+\algrenewcommand\algorithmicfunction{\textcolor{VIUOrange}{\textbf{función}}}
+\algrenewcommand\alglinenumber[1]{\scriptsize\textcolor{VIUGray}{#1:}}
+\algrenewcommand\algorithmiccomment[1]{\hfill\textcolor{VIUGray}{\itshape\% #1}}
+\algtext*{EndIf}
+\algtext*{EndFor}
+\algtext*{EndWhile}
+\algtext*{EndFunction}
+\makeatletter
+\renewcommand{\ALG@beginalgorithmic}{\fontsize{9}{10.5}\selectfont}
+\makeatother
 
 \RequirePackage{caption}
 \RequirePackage{float}
@@ -174,8 +238,9 @@
 \titleformat{\section}[hang]
   {\sffamily\bfseries\color{VIUOrange}\fontsize{18}{22}\selectfont}
   {\thesection.}{0.45em}{}
+% Word «heading 2»: 16 pt, #E65113, SIN negrita (el estilo no lleva <w:b/>).
 \titleformat{\subsection}[hang]
-  {\sffamily\bfseries\color{VIUOrange}\fontsize{16}{20}\selectfont}
+  {\sffamily\color{VIUOrange}\fontsize{16}{20}\selectfont}
   {\thesubsection.}{0.4em}{}
 \titleformat{\subsubsection}[hang]
   {\sffamily\color{VIUOrange}\fontsize{14}{18}\selectfont}
@@ -246,6 +311,11 @@
 \newtheorem{definicion}{Definición}[section]
 \theoremstyle{remark}
 \newtheorem{observacion}{Observación}[section]
+
+% Demostración de síntesis: el argumento completo sin los pasos rutinarios.
+% Misma convención que Subdocuments/SP1. La versión larga va al anexo.
+\newcommand{\viupruebasintesis}[1]{%
+  {\small\textit{Demostración (síntesis).} #1\hfill$\square$\par}}
 
 % Convención visual de originalidad. Esta caja identifica una formulación o
 % resultado producido en el TFM; no implica por sí sola prioridad universal,

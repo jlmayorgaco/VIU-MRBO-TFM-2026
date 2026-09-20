@@ -1,0 +1,645 @@
+\section{Modelo mecánico: robot, carga y contacto}
+\label{sec:modelo-fisico}
+
+Las ecuaciones de \cref{sec:dinamica} bastan para derivar la cota de esfuerzo,
+pero no exhiben de dónde salen las restricciones ni qué distingue realmente los
+dos modos de transporte. Esta sección desarrolla el modelo completo.
+
+\subsection{El AMR: formulación lagrangiana con restricción no holónoma}
+
+Sea $q_i=(x_i,y_i,\theta_i)$ el vector de coordenadas generalizadas. La rueda no
+desliza lateralmente, lo que impone la restricción de Pfaff
+\begin{equation}
+  \dot x_i\sin\theta_i-\dot y_i\cos\theta_i=0
+  \qquad\Longleftrightarrow\qquad
+  A(q_i)\,\dot q_i=0,
+  \quad A(q_i)=\bigl(\sin\theta_i,\ -\cos\theta_i,\ 0\bigr).
+  \label{eq:pfaff}
+\end{equation}
+Esta restricción no es integrable: no proviene de ninguna relación entre las
+coordenadas, solo entre sus velocidades. De ahí el término \emph{no holónoma} y
+de ahí que el AMR pueda alcanzar cualquier pose y no pueda hacerlo en cualquier
+dirección instantánea.
+
+Aplicando Euler--Lagrange con multiplicador $\lambda_i$ asociado a
+\eqref{eq:pfaff},
+\begin{equation}
+  M(q_i)\ddot q_i+C(q_i,\dot q_i)\dot q_i+F(\dot q_i)
+  \;=\;B(q_i)\,\tau_i+A(q_i)^{\!\top}\lambda_i,
+  \label{eq:lagrange}
+\end{equation}
+con $M$ simétrica definida positiva, $C$ los términos centrípetos y de Coriolis,
+$F$ la fricción, $B$ la matriz de entrada y $\tau_i=(\tau_{iL},\tau_{iR})$ los
+pares de rueda.
+
+\paragraph{Reducción y eliminación del multiplicador.}
+Sea $S(q_i)$ una base del núcleo de $A$, es decir $A(q_i)S(q_i)=0$:
+\begin{equation}
+  S(q_i)=
+  \begin{pmatrix}\cos\theta_i&0\\ \sin\theta_i&0\\ 0&1\end{pmatrix},
+  \qquad
+  \dot q_i=S(q_i)\,\eta_i,\quad \eta_i=(v_i,\omega_i).
+  \label{eq:reduccion}
+\end{equation}
+Premultiplicando \eqref{eq:lagrange} por $S^{\!\top}$ desaparece el término
+$S^{\!\top}A^{\!\top}\lambda_i=0$ y queda el modelo reducido
+\begin{equation}
+  M_1\dot\eta_i+C_1(q_i,\dot q_i)\,\eta_i+F_1=B_1\tau_i,
+  \qquad
+  M_1=S^{\!\top}MS,\ \ B_1=S^{\!\top}B,\ \
+  C_1=S^{\!\top}M\dot S+S^{\!\top}CS,
+  \label{eq:reducido}
+\end{equation}
+que es la forma usada en \eqref{eq:ruedas}. El número de columnas de $S$ es
+exactamente el grado de movilidad $\delta_m$ de \cref{def:movilidad}: la
+reducción lagrangiana y la clasificación cinemática son el mismo objeto visto
+desde dos lados.
+
+\begin{observacion}[El multiplicador es la fuerza que las ruedas deben dar]
+\label{obs:multiplicador-friccion}
+Eliminar $\lambda_i$ del modelo no lo elimina de la física. $A^{\!\top}\lambda_i$
+es la fuerza lateral de restricción, y quien la ejerce es el rozamiento
+neumático--suelo. La restricción \eqref{eq:pfaff} solo se cumple mientras
+\[
+  |\lambda_i|\ \le\ \mu_{\mathrm{sd}}\,m_ig ,
+\]
+y cuando se excede, la rueda desliza y el modelo reducido
+\eqref{eq:reducido} deja de describir el sistema. La no holonomía no es una
+propiedad geométrica incondicional: es una restricción que se sostiene mientras
+haya adherencia. Es el mismo límite que aparece en \cref{pr:cota}, ahora con su
+origen identificado.
+\end{observacion}
+
+\subsection{Un solo disco de fricción por rueda}
+
+\Cref{obs:multiplicador-friccion} acota el multiplicador lateral por
+$\mu_{\mathrm{sd}}m_ig$ como si la sujeción lateral dispusiera de un presupuesto
+propio. No lo tiene: la fuerza de contacto de cada rueda vive en \emph{un} disco
+de Coulomb, y la tracción longitudinal y la reacción lateral lo comparten
+\cite{mayorga2026m1}.
+
+\begin{proposicion}[Paso de fricción de máxima disipación]
+\label{pr:disco-friccion}
+Con geometría y normales congeladas, sean $v^{*}$ las velocidades tras las fuerzas
+no incluidas en el subpaso, $M\succ0$ la inercia y $A$ el mapa de deslizamientos
+de ambas ruedas. El impulso de fricción es
+\[
+  j^\star\in\arg\min_{j\in\Dcal}\ \tfrac12\,j^{\!\top}AM^{-1}A^{\!\top}j+(Av^{*})^{\!\top}j,
+  \qquad
+  \Dcal=\bigl\{j:\ \lVert j_s\rVert_2\le\mu_sN_s\Delta t,\ s\in\{L,R\}\bigr\},
+\]
+y $v^{+}=v^{*}+M^{-1}A^{\!\top}j^\star$. Las dos componentes de cada rueda comparten
+el disco: no hay presupuestos longitudinal y lateral independientes.
+\end{proposicion}
+
+\begin{observacion}[Lo que cuesta empujar fuerte: sujeción lateral]
+\label{obs:disco-compartido}
+Sobre el subproblema de una rueda con $R=\mu N\Delta t=0{,}180$~N\,s y una demanda
+lateral fija, la sujeción lateral disponible cae de $0{,}180$ a $0{,}176$,
+$0{,}164$ y $0{,}145$ al pedir tracción longitudinal creciente, con el impulso
+siempre en la frontera del disco. Es decir: \emph{cuanto más empuja un AMR, menos
+capacidad le queda para no derrapar}. Esto refina la lectura de
+\cref{obs:multiplicador-friccion}: la cota lateral no es una constante sino lo
+que sobra del disco tras la tracción, y la parálisis por adherencia de
+\cref{th:degradacion} llega antes de lo que sugiere el presupuesto lateral aislado.
+
+Hay además una razón de modelado para este núcleo. La regularización viscosa
+$F_y=-C_y v_\perp$ es disipativa pero da $F_y=0$ cuando $v_\perp=0$: no puede
+representar una reacción lateral \emph{estática}, que es exactamente lo que
+sostiene a una coalición acoplada en reposo. El programa anterior sí la produce
+—impulso lateral $0{,}180$ con velocidad transversal nula— y por eso es el que
+se ejecuta en la planta de \cref{sec:ensayos}. No se afirma que sea una
+implementación completa de los métodos impulso–momento en que se inspira.
+\end{observacion}
+
+\figDisco
+
+\subsection{Tres propiedades que hacen tratable el modelo}
+
+Escribir \eqref{eq:lagrange} no basta: lo que permite controlarlo son tres
+propiedades estructurales de todo sistema de Euler--Lagrange
+\cite{cai2022cooperative}, que conviene enunciar porque cada una sostiene una
+pieza distinta de este trabajo.
+
+\begin{proposicion}[Propiedades estructurales]
+\label{pr:propiedades-el}
+Para el modelo \eqref{eq:lagrange} con $C$ construida con los símbolos de
+Christoffel:
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em,topsep=0.2em,itemsep=0.15em]
+  \item $M(q)\succeq k_m I$ con $k_m>0$, luego $M(q)^{-1}$ está acotada
+  uniformemente;
+  \item $\dot M(q)-2C(q,\dot q)$ es antisimétrica, y en consecuencia
+  $z^{\!\top}\bigl(\dot M-2C\bigr)z=0$ para todo $z$;
+  \item la dinámica es lineal en los parámetros: existe una matriz de regresión
+  \emph{conocida} $Y$ tal que
+  \[
+    M(q)x+C(q,\dot q)y+G(q)\;=\;Y(q,\dot q,x,y)\,\Theta
+  \]
+  para todo $x,y$, con $\Theta$ el vector constante de parámetros inciertos.
+\end{enumerate}
+\end{proposicion}
+
+\begin{observacion}[Qué sostiene cada una]
+\label{obs:propiedades-uso}
+La primera acota $\lVert M^{-1}\rVert$ y es lo que permite despejar
+aceleraciones sin que las cotas de \cref{pr:cota} degeneren.
+
+La segunda es la propiedad de pasividad, y es la razón de que la energía sirva
+como función de Lyapunov: el término de Coriolis no realiza trabajo neto, de modo
+que al derivar $\tfrac12\dot e^{\!\top}M\dot e$ ese término se cancela
+exactamente en lugar de tener que acotarse. Toda la construcción disipativa de
+\cref{th:smallgain} descansa sobre esta cancelación en la capa mecánica.
+Comprobación: sobre un sistema de dos grados de libertad con configuraciones
+aleatorias, $\lVert(\dot M-2C)+(\dot M-2C)^{\!\top}\rVert_\infty$ resulta del
+orden de $10^{-7}$, que es el ruido de la diferenciación numérica, y
+$\dot q^{\!\top}(\dot M-2C)\dot q\approx4\times10^{-9}$.
+
+La tercera es la más consecuente para \cref{obs:adaptacion}. Allí se declaró que
+la incertidumbre paramétrica queda abierta; ahora puede decirse algo más
+preciso: esa incertidumbre entra \emph{linealmente}, con regresor conocido, y esa
+linealidad es exactamente lo que hace posible estimarla en línea. La
+comprobación numérica da igualdad a precisión de máquina. Lo que separa
+\cref{obs:adaptacion} de un estimador operativo no es, por tanto, una dificultad
+estructural, sino la excitación persistente.
+\end{observacion}
+
+\subsection{Lo que la adaptación cierra, y lo que deja igual}
+
+\Cref{obs:propiedades-uso} deja la incertidumbre paramétrica a un estimador con
+excitación persistente. La identidad que ese estimador necesita puede escribirse
+con precisión, y con ella se ve qué cierra y qué no \cite{mayorga2026m1}.
+
+\begin{proposicion}[Balance adaptativo condicionado]
+\label{pr:balance-adaptativo}
+Dentro de una rama regular con entradas realizables, sea
+$M(q)\dot v+C(q,\dot q)v+g(q)=u+d$, $v_r$ una referencia diferenciable y
+$s=v-v_r$. Supóngase la parametrización
+$M\dot v_r+Cv_r+g=Y(q,\dot q,v_r,\dot v_r)\,\theta$ de
+\cref{pr:propiedades-el}(iii) y $\dot M-2C$ antisimétrica. Con el mando y la
+adaptación
+\[
+  u=Y\hat\theta-Ks,\qquad \dot{\hat\theta}=-\Gamma Y^{\!\top}s,\qquad K\succ0,\ \Gamma\succ0,
+\]
+y un residual total $r$ que recoge perturbación y diferencia entre entrada
+solicitada y realizada, el almacenamiento
+$V=\tfrac12 s^{\!\top}Ms+\tfrac12\tilde\theta^{\!\top}\Gamma^{-1}\tilde\theta$
+satisface $\dot V=-s^{\!\top}Ks+s^{\!\top}r$; y si $k=\lambda_{\min}(K)$,
+$\dot V\le-\tfrac{k}{2}\lVert s\rVert^{2}+\lVert r\rVert^{2}/(2k)$.
+\end{proposicion}
+
+\begin{proof}
+Al derivar, $s^{\!\top}(\dot M/2-C)s=0$ por antisimetría; los términos
+$s^{\!\top}Y\tilde\theta$ y $\tilde\theta^{\!\top}\Gamma^{-1}\dot{\tilde\theta}$ se
+cancelan por la ley de adaptación. Quedan el amortiguamiento y la potencia del
+residual.
+\end{proof}
+
+\begin{observacion}[Comprobado, con sus tres límites]
+\label{obs:adaptacion-num}
+Sobre el sistema de dos grados de libertad de \cref{obs:propiedades-uso} con
+parámetros iniciales errados hasta un $50\%$: con $r=0$ y sin excitación, $s$
+cae a $2{,}7\times10^{-3}$ mientras $\lVert\tilde\theta\rVert$ solo baja de
+$1{,}42$ a $1{,}07$; con excitación, $s$ cae a $4{,}6\times10^{-3}$ y
+$\lVert\tilde\theta\rVert$ de $0{,}59$ a $0{,}055$; con $r\neq0$, $s$ queda
+acotado en $3{,}4\times10^{-2}$ sin anularse. La identidad $\dot V=-s^{\!\top}Ks$
+se verifica por diferencias con error medio $3\times10^{-5}$ en el caso sin
+excitación.
+
+Tres límites que la derivación declara y que se mantienen aquí. Primero, la
+desigualdad no es una prueba de estabilidad entrada--estado del vector completo
+$(s,\tilde\theta)$: el término negativo no domina el error paramétrico, y
+$\tilde\theta\to0$ no se deduce sin excitación —el ensayo lo muestra—. Proyección
+de estimaciones, fugas o hipótesis de excitación exigen un análisis adicional y no
+se añaden sin modificar la prueba. Segundo, la adaptación reduce el error de
+realización de una continuación, pero el juego y el filtro de barrera deben
+seguir contabilizando $r$: una saturación de par o una pérdida de contacto no
+desaparecen por actualizar $\hat\theta$. Tercero, si la planta está subactuada
+$u$ no puede tratarse como fuerza arbitraria, que es exactamente la situación de
+\cref{pr:fuera-eje} cuando el punto controlado está sobre el eje.
+\end{observacion}
+
+\begin{observacion}[Parámetros propios y parámetros compartidos]
+\label{obs:parametros-compartidos}
+Hay además una separación que la arquitectura debe respetar. Las masas e inercias
+de los AMR son \emph{propias}: no debe imponerse consenso entre las $m_i$ de AMR
+distintos, y cada uno estima lo suyo. La masa y la inercia de la carga son
+\emph{compartidas}: su estimación cooperativa debe distinguir qué medidas son
+independientes y cuáles son copias de una misma observación, que es el mismo
+problema de correlación que \cref{pr:interseccion} resuelve de forma conservadora
+para las poses. Estimar la carga promediando ingenuamente las estimaciones de
+sus portadores vuelve a contar la misma evidencia, y por \cref{th:asimetria} no
+hay un consenso exacto disponible para ese objeto.
+\end{observacion}
+
+\subsection{El punto controlado y por qué conviene sacarlo del eje}
+
+Un AMR industrial no acepta pares: acepta \emph{referencias de velocidad}
+$(u^{r},\omega^{r})$, que su electrónica interna sigue. El modelo utilizable en
+control es entonces el de \cite{gorrostieta2019applications}, donde
+\eqref{eq:reducido} se completa con la dinámica de seguimiento
+\begin{equation}
+  \begin{pmatrix}\dot u\\ \dot\omega\end{pmatrix}
+  =\begin{pmatrix}
+     \tfrac{\theta_3}{\theta_1}\omega^{2}-\tfrac{\theta_4}{\theta_1}u\\[2pt]
+    -\tfrac{\theta_5}{\theta_2}u\,\omega-\tfrac{\theta_6}{\theta_2}\omega
+   \end{pmatrix}
+  +\begin{pmatrix}\tfrac{1}{\theta_1}&0\\ 0&\tfrac{1}{\theta_2}\end{pmatrix}
+   \begin{pmatrix}u^{r}\\ \omega^{r}\end{pmatrix}
+  +\begin{pmatrix}\delta_u\\ \delta_\omega\end{pmatrix},
+  \label{eq:vel-dinamica}
+\end{equation}
+con $\theta=(\theta_1,\dots,\theta_6)$ parámetros identificables
+experimentalmente y $\delta$ la incertidumbre paramétrica. Las cotas de
+\cref{pr:cota} se trasladan a $(u^{r},\omega^{r})$ por esta relación.
+
+La observación decisiva es sobre \emph{qué punto} se controla. Sea $h$ el punto
+situado a distancia $a$ del centro del eje a lo largo del rumbo —el pusher, la
+pinza, el punto de contacto—. Su velocidad es
+\begin{equation}
+  \dot h=M(\psi,a)\begin{pmatrix}u\\ \omega\end{pmatrix},
+  \qquad
+  M(\psi,a)=\begin{pmatrix}\cos\psi&-a\sin\psi\\ \sin\psi&a\cos\psi\end{pmatrix},
+  \qquad \det M=a .
+  \label{eq:fuera-eje}
+\end{equation}
+
+\begin{proposicion}[La no holonomía no restringe al punto de contacto]
+\label{pr:fuera-eje}
+Para $a\neq0$, $M(\psi,a)$ es invertible con valores singulares $1$ y $|a|$,
+luego $\sigma_{\min}(M)=\min(1,|a|)$. En consecuencia el punto $h$ puede recibir
+\emph{cualquier} velocidad planar, y la velocidad angular requerida para una
+velocidad lateral unitaria crece como $1/a$.
+\end{proposicion}
+
+\begin{proof}
+$M^{\!\top}M=\operatorname{diag}(1,a^{2})$, de donde los valores singulares. Para
+$a\neq0$ el sistema $\dot h=Mv$ tiene solución única
+$v=M^{-1}\dot h$, y la componente angular de $M^{-1}$ escala como $1/a$.
+\end{proof}
+
+\begin{observacion}[La ley de degradación en la geometría del chasis]
+\label{obs:fuera-eje-degradacion}
+La comprobación numérica da $\sigma_{\min}=\min(1,a)$ exacto, y para $1$~m/s
+lateral se requieren $15{,}3$~rad/s con $a=0{,}05$~m, $3{,}82$ con $a=0{,}2$ y
+$0{,}76$ con $a=1$: el producto $|\omega|\,a$ es constante. El offset $a$ es,
+por tanto, un parámetro de \emph{autoridad} con la misma ley $1/a$ de
+\cref{th:degradacion}, ahora no en la geometría del contacto sino en la del
+chasis. Un pusher pegado al eje es cinemáticamente casi singular; alejarlo
+compra maniobrabilidad de forma exactamente cuantificada. Es una consecuencia de
+diseño mecánico que sale del mismo teorema.
+\end{observacion}
+
+\subsection{Funciones transversales: lo que cuesta sacar el punto del eje}
+
+\Cref{pr:fuera-eje} muestra que un punto adelantado del eje admite cualquier
+velocidad planar. La construcción general de ese hecho son las \emph{funciones
+transversales}: coordenadas auxiliares invertibles sobre las que se diseña el
+controlador, con un error geométrico ajustable respecto de la pose física. Lo que
+esa construcción añade a este trabajo es una cota explícita de ese error, que es
+lo que las barreras necesitan \cite{mayorga2026m1}.
+
+\begin{proposicion}[Del error transversal a una huella segura]
+\label{pr:huella-transversal}
+Sean $(\bar p,\bar\phi)$ las coordenadas físicas y $(p,\phi)$ las auxiliares,
+$p=\bar p+R(\phi)(f_1,f_2)^{\!\top}$, $\phi=\bar\phi-f_3$, con
+$f_3=\epsilon_2\cos\xi$, $0<\epsilon_2<\pi/2$,
+$f_1=\epsilon_1\sin\xi\,\sin f_3/f_3$ y $f_2=\epsilon_1\sin\xi\,(1-\cos f_3)/f_3$.
+Entonces $\lVert p-\bar p\rVert\le\epsilon_1$ y $|\bar\phi-\phi|\le\epsilon_2$, y
+para un cuerpo compacto contenido en un disco de radio $R_b$ la distancia de
+Hausdorff entre sus huellas física y auxiliar está acotada por
+\[
+  \delta_b=\epsilon_1+2R_b\sin(\epsilon_2/2),
+\]
+y si la pose auxiliar tiene además error de seguimiento $(\varepsilon_p,\varepsilon_\phi)$
+respecto de una pose nominal,
+$\delta_b\le\epsilon_1+\varepsilon_p+2R_b\sin\bigl(\min\{\pi,\epsilon_2+\varepsilon_\phi\}/2\bigr)$.
+\end{proposicion}
+
+\begin{observacion}[Comprobación y uso]
+\label{obs:huella-num}
+Sobre trescientas poses aleatorias por caso, el desplazamiento máximo de todo
+punto material del cuerpo entre las dos huellas queda en el $77$–$79\%$ de
+$\delta_b$ para $(\epsilon_1,\epsilon_2)$ de $(0{,}05;\,0{,}2)$ a
+$(0{,}2;\,1{,}0)$ con $R_b=0{,}6$: la cota se respeta con margen. El uso es
+directo: cuando el controlador actúa sobre la pose auxiliar, las barreras de
+\cref{pr:hocbf} deben tensarse en $\delta_b$ además del tensado por incertidumbre
+de \cref{co:tensado}. Son dos inflaciones distintas de la huella —una por
+estimación, otra por diseño del controlador— y se suman.
+\end{observacion}
+
+\begin{observacion}[El precio en mando, con número]
+\label{obs:mando-grande}
+Reducir el error geométrico no tiene coste de actuación nulo, y el caso más
+simple lo fija. Para el punto adelantado $z=p+\ell\,e(\theta)$ se tiene
+$\omega=(Se)^{\!\top}\dot z/\ell$: con una velocidad lateral auxiliar de
+$0{,}2$~m/s y $|\omega|\le1{,}5$~rad/s hace falta $\ell\ge0{,}133$~m, y usar
+$\ell=0{,}05$~m exigiría $4$~rad/s. Es la ley $1/a$ de
+\cref{obs:fuera-eje-degradacion} convertida en regla de dimensionamiento del
+pusher: $\ell_{\min}=v_{\mathrm{lat}}/\omega_{\max}$. Un \emph{offset} pequeño
+compra precisión geométrica y la paga en demanda angular, y el control virtual
+adicional no es un motor nuevo: la no holonomía no desaparece, se desplaza a la
+saturación de $\omega$.
+\end{observacion}
+
+\figAMR
+
+\subsection{La carga y cómo la afectan los contactos}
+
+La carga es un cuerpo rígido planar de pose $\xi_\ell\in SE(2)$ y \emph{twist}
+$\zeta_\ell=(V_x,V_y,\Omega)$. Su dinámica en el marco del cuerpo es
+\begin{equation}
+  M_\ell\dot\zeta_\ell+C_\ell(\zeta_\ell)\zeta_\ell+D_\ell\zeta_\ell
+  \;=\;\sum_{i\in\Ccal_\ell}G_{i}\,f_i\;+\;w^{\mathrm{ext}}_\ell,
+  \qquad
+  M_\ell=\operatorname{diag}(m_\ell,m_\ell,I_\ell),
+  \label{eq:carga-dinamica}
+\end{equation}
+donde $D_\ell$ recoge la resistencia al avance —fricción de arrastre contra el
+suelo, que para una carga apoyada es $\mu_s m_\ell g$ y no un término viscoso—,
+$w^{\mathrm{ext}}_\ell$ las perturbaciones, y $G_i$ el mapa que lleva la fuerza
+de contacto del AMR $i$ al \emph{wrench} resultante:
+\begin{equation}
+  G_i=\begin{pmatrix} R(\psi_\ell)^{\!\top} & 0\\[2pt] (r_i)^{\perp\top} & 1\end{pmatrix},
+  \qquad
+  G_i f_i=\begin{pmatrix} f_i^{\mathrm{lin}}\\ r_i^{\perp}\!\cdot f_i^{\mathrm{lin}}+m_i^{c}\end{pmatrix},
+  \label{eq:mapa-contacto}
+\end{equation}
+con $r_i$ el vector del centro de masa al punto de contacto y $m^c_i$ el par de
+contacto, nulo si el contacto es puntual sin fricción de giro.
+
+\begin{observacion}[Por qué el brazo importa tanto como la fuerza]
+\label{obs:brazo}
+\Cref{eq:mapa-contacto} muestra que la contribución al par es
+$r_i^{\perp}\!\cdot f_i^{\mathrm{lin}}$: solo cuenta la componente de la fuerza
+perpendicular al brazo. Un AMR que empuja radialmente hacia el centro de masa
+aporta fuerza y \emph{cero} par, por grande que sea su empuje. Esa es la razón
+geométrica de que la cardinalidad no baste (\cref{th:noequiv}) y de que el rango
+tampoco (\cref{th:span}): la capacidad de una coalición depende de dónde toca,
+no solo de cuánto empuja.
+\end{observacion}
+
+\subsection{Modo \textsf{cargo}: acoplamiento bilateral}
+
+En \textsf{cargo} el AMR se acopla a un puesto mediante un elemento de contacto
+capaz de transmitir tracción y compresión —una pinza, un enganche o un apoyo con
+retención—. El contacto es \emph{bilateral}: la fuerza puede tener cualquier
+signo en la dirección normal.
+
+Sea $\rho_i$ el anclaje material en el marco de la carga y
+$\epsilon_i=p_i-\xi_\ell\oplus\rho_i$ el error de acoplamiento. Un modelo de
+acoplamiento elástico con amortiguamiento da
+\begin{equation}
+  f_i=K_{\mathrm{pad}}\,\epsilon_i-D_{\mathrm{pad}}\,u_i,
+  \qquad
+  u_i=H(r_i)\zeta_\ell-\bigl(v_ie(\theta_i)+\omega_iJR(\theta_i)a_i\bigr),
+  \label{eq:pad}
+\end{equation}
+con $u_i$ la velocidad relativa en el contacto. La condición de adherencia
+$\|f_i\|\le\mu_{c,i}N_i$ delimita el régimen en que \eqref{eq:pad} es válido.
+
+Las propiedades del modo se siguen de la bilateralidad:
+\begin{enumerate}[leftmargin=1.9em,topsep=0.2em,itemsep=0.2em]
+  \item el conjunto realizable es un \emph{subespacio} local, no un cono, luego
+  la caracterización de \cref{th:span} se relaja: basta rango completo si las
+  cotas no saturan;
+  \item aparecen fuerzas internas $\bm\lambda^{0}\in\ker G_\Ccal$ que aprietan
+  sin mover (\cref{th:rigidizacion}), con el compromiso de
+  \cref{co:agarre};
+  \item la formación queda sujeta a la restricción de rigidez
+  $A_{\mathrm{kin}}\zeta_\ell=0$ de \cref{pr:rigidez}, que puede bloquear
+  maniobras que cada AMR podría ejecutar por separado.
+\end{enumerate}
+
+\begin{proposicion}[Identidad energética del \emph{pad} isotrópico]
+\label{pr:pad-energia}
+Con el acoplamiento \eqref{eq:pad} escrito como $f_i=k_i\epsilon_i-d_iu_i$ y
+$\dot\epsilon_i=-u_i+\Omega S\epsilon_i$, con fuerzas opuestas aplicadas en el
+mismo punto y $k_i,d_i>0$,
+\[
+  f_i^{\!\top}u_i+\frac{d}{dt}\Bigl(\tfrac12 k_i\lVert\epsilon_i\rVert^{2}\Bigr)
+  \;=\;-d_i\lVert u_i\rVert^{2}.
+\]
+\end{proposicion}
+
+\begin{proof}
+Sustituir ambas ecuaciones cancela $k_i\epsilon_i^{\!\top}u_i$; el término de
+rotación es nulo porque $\epsilon_i^{\!\top}S\epsilon_i=0$.
+\end{proof}
+
+\begin{observacion}[El acoplamiento es pasivo, y eso es lo que se compone]
+\label{obs:pad-pasivo}
+La identidad se verifica a $4{,}5\times10^{-17}$ sobre trayectorias aleatorias, y
+dice que el \emph{pad} es un elemento pasivo con almacenamiento
+$\tfrac12k_i\lVert\epsilon_i\rVert^{2}$ y disipación $d_i\lVert u_i\rVert^{2}$: es
+exactamente la clase de bloque que \cref{th:smallgain} compone, y por eso el
+acoplamiento elástico entra en la red disipativa sin hipótesis adicional. Su
+límite lo declara la planta: la ley no puede conservar su anclaje como si
+siguiera adherida cuando sale del cono de fricción, y la política posterior a una
+pérdida general del apoyo requiere un modelo de deslizamiento y readquisición que
+no está aquí \cite{mayorga2026m1}.
+\end{observacion}
+
+\begin{proposicion}[Levantar una ruta de carga hasta cada rueda]
+\label{pr:ruta-ruedas}
+Para el apoyo $i$ en $r_i=R(\psi_\ell)\rho_i$, la velocidad del punto material es
+$u_i=V_\ell+\Omega S r_i$ y su aceleración
+$\dot u_i=\dot V_\ell+\dot\Omega Sr_i-\Omega^{2}r_i$. Para seguir la curva sin
+deslizamiento lateral, el rumbo del AMR debe girar a
+\[
+  \omega_i=\frac{(Su_i)^{\!\top}\dot u_i}{\lVert u_i\rVert^{2}},\qquad u_i\neq0,
+\]
+y las velocidades de rueda son $\omega_{w,iL/R}=(v_i\mp b_i\omega_i)/r_{w,i}$ con
+$v_i=e_i^{\!\top}u_i$. El espacio de \emph{twists} de carga compatibles con la
+rodadura, antes de aplicar cotas de velocidad, tiene dimensión
+$3-\operatorname{rank}A_{\mathrm{kin}}$.
+\end{proposicion}
+
+\begin{observacion}[Lo que esto añade a la rigidez, y su singularidad]
+\label{obs:ruta-ruedas}
+La expresión de $\omega_i$ reproduce la derivada numérica del ángulo del vector
+velocidad con error $1{,}6\times10^{-5}$ sobre una trayectoria curva de la
+carga. Es la conexión que faltaba entre \cref{pr:rigidez} y \cref{pr:cota}: una
+ruta de la carga no impone solo compatibilidad de \emph{twist}, impone una
+velocidad angular y unas velocidades de rueda concretas a cada AMR, y son estas
+las que deben caber en sus cotas. Dos precisiones. La dimensión
+$3-\operatorname{rank}A_{\mathrm{kin}}$ vale \emph{antes} de cotas y con el
+contacto sobre el eje, que es exactamente el régimen que
+\cref{obs:rigidez-alcance} acota; y un \emph{swivel} no hace omnidireccional al
+AMR: permite reorientar el chasis en reposo, no elimina la restricción lateral
+instantánea. La fórmula de $\omega_i$ es singular en $u_i=0$ —apoyo momentáneamente
+parado—, y ahí no se usa: se planifica la continuación de orientación, que es una
+de las guardas de \cref{def:automata}.
+\end{observacion}
+
+\subsection{Modo \textsf{caging}: contacto unilateral y confinamiento}
+
+En \textsf{caging} no hay agarre. Los AMR rodean la carga y la empujan; el
+contacto es \emph{unilateral} y obedece la complementariedad
+\eqref{eq:complementariedad} con la ley de Coulomb \eqref{eq:coulomb}. Por
+\cref{pr:notiron} ningún contacto tira: solo comprime.
+
+La diferencia esencial con \textsf{cargo} no es la ley de contacto sino
+\emph{qué se garantiza}. En \textsf{cargo} se controla la pose de la carga; en
+\textsf{caging} se garantiza que la carga no escapa, y su pose dentro de la
+jaula queda parcialmente libre.
+
+\begin{definicion}[Jaula]
+\label{def:jaula}
+La coalición $\Ccal$ en configuración $q$ \emph{enjaula} a la carga si la
+componente conexa del espacio libre de configuración de la carga que la contiene
+es acotada.
+\end{definicion}
+
+\Cref{def:jaula} es topológica y no dice cómo comprobarla. El siguiente
+certificado es geométrico, conservador y calculable \cite{mayorga2026m1}.
+
+\begin{teorema}[Cerco por polígono de centros]
+\label{th:cerco}
+Supóngase que la carga contiene, para toda orientación, un disco de radio $r_L$
+centrado en su referencia $P_L$, y que cada AMR contiene un disco rígido ocupado
+de radio $r_i$ centrado en $p_i$. Sean $p_1,\dots,p_m$ los vértices de un
+polígono simple cerrado, de área no nula, que contiene estrictamente a $P_L$. Si
+para cada índice cíclico
+\[
+  \lVert p_{i+1}-p_i\rVert\ \le\ (r_i+r_L)+(r_{i+1}+r_L),
+  \qquad
+  \lVert P_L-p_i\rVert\ >\ r_i+r_L ,
+\]
+entonces la referencia de la carga no puede salir del interior sin colisión entre
+discos ocupados.
+\end{teorema}
+
+\begin{proof}
+Cada disco de radio $r_i+r_L$ en torno a $p_i$ es región prohibida para $P_L$.
+Sobre el segmento $[p_i,p_{i+1}]$ los intervalos cubiertos desde sus extremos se
+solapan por la primera desigualdad, luego todo el segmento pertenece a la unión
+prohibida, y con él la frontera poligonal completa. Por el teorema de la curva de
+Jordan, una curva continua que abandone el interior cruza esa frontera y por
+tanto una región prohibida. La segunda desigualdad garantiza que el estado
+inicial es libre.
+\end{proof}
+
+\begin{corolario}[Cerco móvil condicionado]
+\label{co:cerco-movil}
+La pertenencia al interior se conserva para un cerco en movimiento si centros y
+carga evolucionan de forma continua, el polígono permanece simple y no
+degenerado, y sus segmentos siguen cubiertos en todo instante.
+\end{corolario}
+
+\begin{observacion}[Suficiente, no necesario, y comprobado]
+\label{obs:cerco-num}
+Con seis AMR de radio ocupado $0{,}30$~m y carga con disco inscrito $0{,}35$~m,
+un cerco de radio $1{,}10$~m cumple las desigualdades y un muestreo de cuatro
+mil trayectorias rectas de escape no encuentra ninguna libre; con radio
+$1{,}60$~m las desigualdades fallan y el escape se encuentra. Tres salvedades
+que el propio desarrollo declara y que se mantienen aquí: un círculo exterior
+que solo encierre las ruedas no sirve, porque el disco ocupado debe ser rígido;
+el criterio es suficiente y no necesario —una carga rectangular puede quedar
+confinada aunque su disco inscrito no lo reconozca—; y bajo incertidumbre,
+apretar las distancias entre vecinos no certifica simplicidad robusta del
+polígono, de modo que la rutina rechaza la afirmación robusta cuando no dispone
+de esa prueba. Se incorpora precisamente para no llamar \emph{caging} a
+cualquier empuje.
+\end{observacion}
+
+\begin{observacion}[Tres condiciones, tres exigencias]
+\label{obs:jerarquia-contacto}
+Conviene no confundir tres nociones de la teoría del agarre:
+\emph{cierre de forma}, que inmoviliza la carga por geometría sin fricción;
+\emph{cierre de fuerza}, que permite generar un \emph{wrench} arbitrario con
+fricción; y \emph{enjaulado}, que solo impide el escape. La primera es la más
+exigente y la última la más débil, y esa debilidad es su ventaja: enjaular exige
+menos AMR y menos precisión de contacto. \Cref{pr:caging} da una condición
+suficiente por curva cerrada, y es una condición topológica —de componente
+conexa— no de fuerzas. Nada de la biblioteca de robótica móvil consultada
+formula esta jerarquía; procede de la literatura de manipulación
+\cite{rimon1996caging,bicchi1995closure}.
+\end{observacion}
+
+\begin{observacion}[Las dos resiliencias]
+\label{obs:dos-resiliencias}
+De \cref{obs:jerarquia-contacto} se sigue una diferencia operativa importante
+ante el fallo de un miembro. En \textsf{cargo}, perder un AMR reduce el conjunto
+realizable y puede invalidar el certificado: la resiliencia es una propiedad
+\emph{dual}, verificable con el margen de \cref{th:robusto} sobre la coalición
+reducida. En \textsf{caging}, perder un AMR solo importa si abre la jaula: la
+resiliencia es una propiedad \emph{topológica}, verificable sobre componentes
+conexas. Son certificados de naturaleza distinta y ninguno implica el otro; un
+modo híbrido —jaula más un mínimo de puestos de \emph{wrench}— exige comprobar
+los dos.
+\end{observacion}
+
+\figCarga
+
+\subsection{Los límites de movimiento y cómo se componen}
+
+Cinco restricciones acotan lo que la coalición puede hacer, y actúan a la vez:
+
+\begin{table}[!ht]
+\centering\small
+\caption{Los límites del movimiento y su origen.}
+\label{tab:limites}
+\begin{tabularx}{\textwidth}{@{}p{3.5cm}p{4.6cm}X@{}}
+\toprule
+Límite & Expresión & Origen \\
+\midrule
+Par de actuador & $|\tau_{i\{L,R\}}|\le\bar\tau_i$ & motor \\
+Adherencia de tracción & $|\lambda_i|\le\mu_{\mathrm{sd}}m_ig$
+  & validez de \eqref{eq:pfaff} (\cref{obs:multiplicador-friccion}) \\
+Esfuerzo de contacto & $0\le\lambda\le\bar\lambda_i$ con
+  $\bar\lambda_i$ de \cref{pr:cota} & mínimo de par y adherencia \\
+Curvatura y velocidad & $v_i\le v^{\max}/(1+|\kappa_i|b_i/2)$
+  & $\delta_s=0$ (\cref{le:curvatura}) \\
+Frenado & $v_i\le\sqrt{2a^{\max}_i(h_{\min}-d_{\min})}$
+  & factibilidad del QP (\cref{le:astop}) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{observacion}[El límite activo cambia con la situación]
+\label{obs:limite-activo}
+Los cinco no son redundantes y ninguno domina siempre. En un pasillo despejado
+manda la curvatura; junto a un obstáculo, el frenado; con carga pesada, la
+adherencia; en maniobra de giro con contacto rígido, la compatibilidad
+$A_{\mathrm{kin}}$. Reportar cuál está activo en cada instante es diagnóstico
+barato y explica detenciones que de otro modo parecen arbitrarias: cada una es
+un límite distinto saturando.
+\end{observacion}
+
+\begin{teorema}[El grado relativo incluye las ruedas]
+\label{th:grado-relativo-rueda}
+En la reducción longitudinal con rueda dinámica y contacto flexible,
+\[
+  F_g=c_g(r_w\omega-v),\quad f=k_t(x-P)+d_t(v-V),\quad
+  M\dot V=f-b_LV,\quad m\dot v=F_g-f-b_av,\quad J_w\dot\omega=\tau-r_wF_g-b_w\omega ,
+\]
+con $c_g,r_w,m,M,J_w,d_t>0$, la posición $P$ de la carga tiene grado relativo
+cuatro respecto del par $\tau$, con coeficiente $d_tc_gr_w/(MmJ_w)$ en
+$P^{(4)}$; la posición del AMR tiene grado relativo tres, con coeficiente
+$c_gr_w/(mJ_w)$; y si $d_t=0$ y $k_t>0$, el de la carga sube a cinco con
+coeficiente $k_tc_gr_w/(MmJ_w)$.
+\end{teorema}
+
+\begin{proof}
+$\dot P=V$ y $\ddot P=(f-b_LV)/M$ dependen del estado; $\dddot P$ contiene
+$\dot f$, que contiene $\dot v$ y con él $F_g$, que depende de $\omega$ pero no
+del par instantáneo; derivar una vez más introduce $\dot\omega$ y con él
+$c_gr_w\tau/J_w$, multiplicado por $d_t/(Mm)$. Si $d_t=0$ esa vía desaparece
+y hace falta otra derivada, a través de $k_t\dot v$. Las tres cadenas se
+comprobaron con derivación simbólica sobre el modelo declarado.
+\end{proof}
+
+\begin{observacion}[Barrera de cuarto orden y sensibilidad $T^4$ del precio]
+\label{obs:grado-cuatro}
+Dos consecuencias. La barrera de \cref{obs:rigidez-alcance} sobre la
+posición de la carga debe derivarse hasta cuarto orden —con ganancias iguales,
+$h^{(4)}+4\alpha h^{(3)}+6\alpha^2\ddot h+4\alpha^3\dot h+\alpha^4h\ge0$, con
+las cuatro condiciones auxiliares iniciales no negativas— y no reutilizar una
+barrera de aceleración como si el par entrase en primer orden. Y un precio de
+ocupación espacial que actúe sobre la posición predicha tiene sensibilidad de
+orden $T^4$ al par en esta reducción, $\tfrac{c\,T^4}{24}B_P\,\tau$, de modo
+que la constante de la ventana de \cref{th:N-ventana} depende de la física
+actuada y no puede heredarse de una planta sin rueda. Saturación, cambio de
+contacto y anulación del coeficiente direccional degradan la autoridad; el
+teorema es del modelo ideal.
+\end{observacion}

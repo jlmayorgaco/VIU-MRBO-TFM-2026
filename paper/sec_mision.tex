@@ -1,0 +1,487 @@
+\section{La misión como autómata de fases}
+\label{sec:mision}
+
+Los resultados anteriores describen mecanismos —reclutar, certificar, encaminar,
+frenar— sin decir cómo se encadenan. Esta sección los organiza en un autómata
+con guardas y muestra que las tres fases no son tres sistemas distintos: son el
+mismo objeto con conjuntos admisibles anidados.
+
+\subsection{Fases y guardas}
+
+\begin{definicion}[Autómata de misión]
+\label{def:automata}
+Para cada carga $\ell$, el modo
+$m_\ell\in\{\textsf{REC},\textsf{FORM},\textsf{TRANS},\textsf{DELIV}\}$ evoluciona
+según
+\[
+  \textsf{REC}\ \xrightarrow{\ \text{coalición certificada}\ }\ \textsf{FORM}
+  \ \xrightarrow{\ \text{contacto y autoridad}\ }\ \textsf{TRANS}
+  \ \xrightarrow{\ \text{demanda extinta}\ }\ \textsf{DELIV},
+\]
+con una transición de excepción a \textsf{RESC} desde cualquier fase ante fallo,
+y retorno a \textsf{TRANS} tras sustitución. Las guardas son, respectivamente:
+el margen de \cref{th:robusto} junto con el span positivo de \cref{th:span};
+la compatibilidad cinemática de \cref{pr:rigidez} junto con la guarda espectral
+de \cref{co:guarda}; y la extinción de \cref{pr:extincion}.
+\end{definicion}
+
+\figAutomata
+
+\begin{proposicion}[Los conjuntos admisibles se anidan]
+\label{pr:anidados}
+Los conjuntos admisibles de las tres fases satisfacen
+\[
+  \Kcal_{\textsf{REC}}\ \supseteq\ \Kcal_{\textsf{FORM}}\ \supseteq\ \Kcal_{\textsf{TRANS}} .
+\]
+\end{proposicion}
+
+\begin{proof}
+Al pasar a \textsf{FORM} se añaden las restricciones de aproximación al puesto y
+las cotas de esfuerzo de \cref{pr:cota}. Al pasar a \textsf{TRANS} se añaden las
+igualdades de rigidez de \cref{th:rigidizacion} —que sustituyen desigualdades
+internas por igualdades, restringiendo estrictamente— y las barreras de la
+envolvente compuesta de \cref{pr:barrera-compuesta}. Añadir restricciones no
+amplía el conjunto.
+\end{proof}
+
+\Cref{pr:anidados} explica por qué la conmutación es delicada en un solo
+sentido: avanzar de fase siempre es admisible si la guarda se cumple, porque el
+estado ya pertenece al conjunto mayor; retroceder —disolver una coalición
+rígida— sale del conjunto pequeño y requiere la comprobación de holgura de
+\cref{pr:rigidizacion-admisible}.
+
+\subsection{Compatibilidad cinemática de la formación}
+
+En modo \textsf{cargo}, el acoplamiento rígido impide deslizamiento lateral del
+contacto: el punto material de la carga que coincide con el AMR $i$ debe moverse
+a lo largo del rumbo de este.
+
+\begin{proposicion}[Restricción de rigidez]
+\label{pr:rigidez}
+Con $r_i$ el vector de contacto en el marco de la carga y
+$\xi_\ell=(V_x,V_y,\Omega)$ su \emph{twist}, la ausencia de deslizamiento
+lateral en todos los contactos equivale a $A_{\mathrm{kin}}\xi_\ell=0$ con filas
+\[
+  [A_{\mathrm{kin}}]_i=\bigl(-\sin\theta_i,\ \cos\theta_i,\ e_i^{\!\top}r_i\bigr).
+\]
+La dimensión del espacio de maniobras rígidas admisibles es
+$3-\operatorname{rank}A_{\mathrm{kin}}$, y una maniobra deseada $\xi^d_\ell$ es
+realizable sin deslizamiento si y solo si $A_{\mathrm{kin}}\xi^d_\ell=0$.
+\end{proposicion}
+
+\begin{proof}
+La velocidad del punto material en $r_i$ es $V_\ell+\Omega\,Jr_i$ con $J$ la
+rotación de $\pi/2$. La condición de no deslizamiento lateral es
+$e_i^{\perp\top}(V_\ell+\Omega Jr_i)=0$. Desarrollando,
+$e_i^{\perp\top}V_\ell=-\sin\theta_i V_x+\cos\theta_i V_y$ y
+$e_i^{\perp\top}Jr_i=e_i^{\!\top}r_i$, lo que da la fila enunciada.
+\end{proof}
+
+\begin{observacion}[De dónde sale la incompatibilidad de orientación]
+\label{obs:incompatible}
+Si $\operatorname{rank}A_{\mathrm{kin}}=3$ el único \emph{twist} sin
+deslizamiento es el nulo: la coalición está bloqueada aunque cada AMR tenga
+autoridad individual. Y si $\sigma_{\min}(A_{\mathrm{kin}})$ es pequeño, el
+\emph{twist} admisible existe pero exige esfuerzos que crecen como su inverso.
+Esta es la misma estructura de \cref{th:degradacion}: la incompatibilidad de
+orientación no es un caso aparte, es autoridad degradada por geometría de
+formación en lugar de por geometría de contacto.
+\end{observacion}
+
+\begin{observacion}[Alcance de la restricción: el contacto no está en el eje]
+\label{obs:rigidez-alcance}
+\Cref{pr:rigidez} deriva $A_{\mathrm{kin}}$ de exigir que el punto de contacto se
+mueva a lo largo del rumbo del AMR, lo que sitúa implícitamente el contacto en el
+centro del eje de tracción. Físicamente no es así: el pusher o la pinza están
+adelantados una distancia $a>0$, y por \cref{pr:fuera-eje} un punto fuera del eje
+admite \emph{cualquier} velocidad planar. La igualdad
+$A_{\mathrm{kin}}\zeta_\ell=0$ deja entonces de ser una restricción sobre el
+\emph{twist} de la carga.
+
+Lo que queda en su lugar es una condición de saturación: para realizar
+$\zeta_\ell$, cada AMR necesita
+$(u_i,\omega_i)=M(\psi_i,a_i)^{-1}\bigl(V_\ell+\Omega J r_i\bigr)$, y esas
+demandas deben caber en sus cotas de \cref{pr:cota}, con la demanda angular
+creciendo como $1/a_i$.
+
+La corrección mejora el resultado en vez de debilitarlo. El bloqueo por rango
+—$\operatorname{rank}A_{\mathrm{kin}}=3$ y sólo el \emph{twist} nulo admisible—
+es un artefacto de $a=0$; con contactos reales el fenómeno no desaparece, pero
+cambia de naturaleza: pasa de imposibilidad discreta a saturación continua,
+gobernada por la misma ley $1/a$ de \cref{obs:fuera-eje-degradacion}. Una
+coalición mal orientada no queda bloqueada, queda lenta, y eso es exactamente lo
+que \cref{th:degradacion} predice para todos los demás recursos. La guarda de
+\cref{def:automata} debe leerse, en consecuencia, sobre la saturación y no sobre
+el rango.
+\end{observacion}
+
+\subsection{Frenado admisible: descargar la hipótesis de factibilidad}
+
+\Cref{pr:hocbf} garantiza invariancia \emph{si el programa es factible en todo
+estado alcanzado}, y esa hipótesis quedó sin descargar. La construcción
+siguiente la convierte en propiedad.
+
+\begin{lema}[Cota de velocidad por frenado]
+\label{le:astop}
+Sea $a^{\max}_i$ la deceleración máxima del AMR $i$ y $h_{\min}$ la holgura
+mínima a un obstáculo o vecino. Si se impone como barrera adicional
+\[
+  v_i\ \le\ \sqrt{2\,a^{\max}_i\,(h_{\min}-d_{\min})},
+\]
+entonces la maniobra de frenado a deceleración máxima es siempre admisible, y en
+consecuencia el conjunto admisible del programa de movimiento es no vacío desde
+todo estado alcanzable.
+\end{lema}
+
+\begin{proof}
+La distancia de frenado desde $v_i$ es $v_i^{2}/(2a^{\max}_i)$, que bajo la cota
+enunciada no excede $h_{\min}-d_{\min}$. Frenar es por tanto una acción que
+respeta todas las barreras, luego el conjunto admisible las contiene.
+\end{proof}
+
+\begin{corolario}[Invariancia incondicional]
+\label{co:invariancia-incondicional}
+Bajo \cref{le:astop} y con prioridad lexicográfica de las restricciones de
+seguridad en el programa, la conclusión de \cref{pr:hocbf} se sostiene sin la
+hipótesis de factibilidad: el conjunto seguro es invariante desde todo estado
+inicial admisible, con independencia de lo que decidan las capas superiores.
+\end{corolario}
+
+\begin{observacion}[El precio de la garantía]
+\label{obs:precio-astop}
+La cota de \cref{le:astop} es restrictiva cuando la holgura es escasa: con
+$a^{\max}=1{,}2$~m/s$^2$ y $d_{\min}=0{,}5$~m, una holgura de $0{,}6$~m limita a
+$0{,}49$~m/s, mientras que $2{,}0$~m permite $1{,}90$~m/s. La velocidad de
+operación queda determinada por la holgura disponible, no elegida. Esa pérdida
+de caudal entra en $\Delta_{\mathrm{dyn}}$ y compite con la cota de grado de
+\cref{pr:compatibilidad}: pasillos estrechos limitan a la vez la velocidad y el
+árbol de conectividad.
+\end{observacion}
+
+\subsection{Frenar el cuerpo no es frenar los AMR}
+
+\Cref{le:astop} acota la velocidad de cada AMR por su propia deceleración. En
+\textsf{TRANS} eso ya no basta: quien debe detenerse es el cuerpo compuesto, cuya
+masa incluye la carga y cuya capacidad de frenado no es la suma de los motores
+sino lo que el conjunto de \emph{wrench} realizable permite en la dirección
+contraria al avance.
+
+\begin{teorema}[Frenado del cuerpo compuesto]
+\label{th:astop-cuerpo}
+Sea $m_{\mathrm{tot}}=m_\ell+\sum_{i\in\Ccal_\ell}m_i$, sea $\hat v$ la dirección
+del movimiento del cuerpo y sea
+\[
+  F_{\mathrm{fren}}(\hat v)\;=\;h_{\mathcal W(\Ccal_\ell)}(-\hat v)
+  \;=\;\max_{w\in\mathcal W(\Ccal_\ell)}\bigl(-\hat v^{\!\top}w^{\mathrm{lin}}\bigr)
+\]
+la función soporte del conjunto de \emph{wrench} realizable en la dirección de
+frenado. Supóngase $F_{\mathrm{fren}}$ constante a lo largo de la maniobra, o
+sustitúyase por su mínimo sobre las direcciones barridas. Si se impone la barrera
+\begin{equation}
+  h_{\mathrm{cuerpo}}
+  \;=\;h-d_{\min}-\frac{m_{\mathrm{tot}}\lVert V_\ell\rVert^{2}}
+  {2\,F_{\mathrm{fren}}(\hat v)}\ \ge\ 0,
+  \label{eq:barrera-cuerpo}
+\end{equation}
+entonces desde todo estado con $h_{\mathrm{cuerpo}}\ge0$ el frenado a capacidad
+máxima es realizable y $h_{\mathrm{cuerpo}}$ se mantiene no negativa: el cuerpo
+se detiene dentro de su holgura.
+\end{teorema}
+
+\begin{proof}
+Factibilidad: por definición de función soporte existe
+$w\in\mathcal W(\Ccal_\ell)$ con $-\hat v^{\!\top}w^{\mathrm{lin}}=F_{\mathrm{fren}}$, y
+ese \emph{wrench} imprime la deceleración $F_{\mathrm{fren}}/m_{\mathrm{tot}}$.
+Invariancia: con ese control $\dot{\lVert V_\ell\rVert}=-F_{\mathrm{fren}}/m_{\mathrm{tot}}$,
+luego
+\[
+  \frac{d}{dt}\Bigl[\frac{m_{\mathrm{tot}}\lVert V_\ell\rVert^{2}}{2F_{\mathrm{fren}}}\Bigr]
+  =\frac{m_{\mathrm{tot}}\lVert V_\ell\rVert}{F_{\mathrm{fren}}}\,\dot{\lVert V_\ell\rVert}
+  =-\lVert V_\ell\rVert .
+\]
+Como la holgura no decrece más deprisa que la velocidad de acercamiento,
+$\dot h\ge-\lVert V_\ell\rVert$, se obtiene
+$\dot h_{\mathrm{cuerpo}}\ge-\lVert V_\ell\rVert+\lVert V_\ell\rVert=0$.
+\end{proof}
+
+\begin{observacion}[La capacidad de frenar es un \emph{wrench}]
+\label{obs:frenado-soporte}
+\Cref{th:astop-cuerpo} no añade una teoría nueva: la reutiliza. El objeto que
+mide la capacidad de frenado es la misma función soporte con la que
+\cref{th:robusto} mide el margen de realizabilidad, evaluada en otra dirección.
+Seguridad del cuerpo y certificado de mercado dejan de ser dos comprobaciones
+independientes y pasan a ser dos evaluaciones del mismo conjunto
+$\mathcal W(\Ccal_\ell)$. En particular, todo lo que estrecha ese conjunto —fricción
+baja, un AMR perdido, contacto mal orientado— reduce a la vez la capacidad de
+transportar y la de detenerse.
+
+Una simulación con cuatro contactos aleatorios, $m_{\mathrm{tot}}=400$~kg y
+esfuerzos acotados a $150$~N da $F_{\mathrm{fren}}$ entre $106$ y $223$~N, con
+velocidades admisibles de $1{,}15$ a $1{,}67$~m/s desde $3$~m de holgura; en las
+tres realizaciones el cuerpo se detiene con $h_{\mathrm{cuerpo}}$ tocando cero
+sin cruzarlo, que es el comportamiento de una barrera ajustada.
+\end{observacion}
+
+\begin{observacion}[Certificar con la autoridad que queda, no con la que había]
+\label{obs:certificado-postevento}
+El criterio de autorización de una maniobra de frenado ante un obstáculo que
+aparece a distancia $d$ es $d\ge d_s+vT_{\mathrm{reac}}+v^2/(2\underline a)$,
+y la única decisión es qué $\underline a$ se usa. En mil frenados
+longitudinales de una carga de $600$--$1\,400$~kg con cuatro apoyos, velocidad
+$0{,}3$--$0{,}7$~m/s, retardo de reacción y una pérdida parcial de autoridad
+uniforme entre el $40\%$ y el $100\%$ de la nominal, el certificado con la
+autoridad anterior al evento autorizó $809$ maniobras de las que $176$ no eran
+seguras —$21{,}8\%$ de falsas aceptaciones, intervalo $19{,}0$--$24{,}8\%$—;
+el certificado con la cota inferior válida de la autoridad posterior autorizó
+$303$ sin ninguna falsa aceptación, con cota superior de Clopper--Pearson del
+$1{,}21\%$, y rechazó $330$ maniobras que en realidad eran seguras
+\cite{mrob2026r11}. Tres lecturas. La cota es conservadora por construcción,
+que es el mismo precio que \cref{pr:recourse} y \cref{pr:commit}. Rechazar un
+certificado no crea una maniobra de rescate: $367$ episodios estaban fuera de
+la región de frenado seguro con cualquier certificado, y la barrera de
+\cref{th:astop-cuerpo} es la que debe haber evitado llegar ahí. Y el mismo
+criterio aplicado por cualquier otro planificador produce las mismas mil
+decisiones: la ventaja es usar una cota física válida tras el evento, no una
+propiedad del juego.
+\end{observacion}
+
+
+\begin{observacion}[Cuál de las dos cotas manda]
+\label{obs:dos-frenados}
+Las cotas de \cref{le:astop} y \cref{th:astop-cuerpo} no son comparables a
+priori y deben imponerse ambas. En \textsf{REC} y \textsf{FORM} solo aplica la
+primera, porque no hay cuerpo. En \textsf{TRANS} suele mandar la segunda, porque
+$m_{\mathrm{tot}}$ es mayor que la masa del AMR en un factor grande mientras que
+$F_{\mathrm{fren}}$ está limitada por la fricción disponible y no por los
+motores. Ese cambio de cota al cruzar la guarda de \textsf{FORM} a
+\textsf{TRANS} es una discontinuidad de velocidad admisible que el planificador
+debe anticipar: la coalición ha de frenar \emph{antes} de acoplarse, no después.
+\end{observacion}
+
+\subsection{La entrega no necesita orden}
+
+\begin{proposicion}[Extinción del precio y disolución]
+\label{pr:extincion}
+Sea la demanda de \emph{wrench} generada por el seguimiento,
+$\Wdem_\ell=M_\ell\dot\xi^d_\ell+D_\ell\xi^d_\ell$. Si al aproximarse al destino
+$\xi^d_\ell\to0$, entonces $\Wdem_\ell\to0$; el precio del ajuste
+\eqref{eq:tatonnement} converge a cero, y con él el pago por participar. En
+consecuencia la coalición se disuelve por la misma dinámica de revisión que la
+formó, sin orden explícita de liberación.
+\end{proposicion}
+
+\begin{proof}
+Con $\Wdem_\ell\to0$ el punto de reposo del ajuste con fuga $d_p>0$ es
+$p_\ell=0$. Por \cref{th:potencial}, el pago de pertenecer a la coalición
+incluye el término proporcional al precio; anulado este, la desviación a
+\textsf{libre} deja de estar penalizada y el potencial deja de premiar la
+permanencia.
+\end{proof}
+
+\begin{observacion}[Comprobación numérica]
+\label{obs:extincion-num}
+Con $\xi^d$ decreciendo con la distancia al destino, el ajuste de precios da
+$\lVert p\rVert=0{,}999$ a $5$~m, $0{,}499$ a $0{,}5$~m, $0{,}050$ a $0{,}05$~m y
+exactamente cero en el destino. La disolución es gradual y proporcional, no un
+evento discreto: los esfuerzos de contacto se relajan antes de que el cuerpo
+compuesto deje de existir.
+\end{observacion}
+
+\subsection{Ejecutar mientras se sigue negociando}
+
+Hay una carencia en todo lo anterior que los ensayos de \cref{sec:ensayos}
+exhiben sin ambigüedad. El autómata de \cref{def:automata} encadena fases y
+\cref{th:multiclase} tarifa rutas, pero ninguno describe lo que el banco hace en
+realidad: recalcular propuestas de trayectoria cada $0{,}4$~s y ejecutar sin
+detenerse mientras el optimizador sigue trabajando. Esa capa merece su propio
+enunciado, porque tiene garantías propias.
+
+\begin{definicion}[Testigo vigente]
+\label{def:testigo}
+Un \emph{testigo} es un plan completo desde el conjunto de creencia actual hasta
+el objetivo, que incluye un tubo válido ante las perturbaciones declaradas, las
+guardas y reinicializaciones seguras, una ocupación temporal coherente y una
+política de ejecución local, con la salida de cada tramo contenida en la entrada
+del siguiente. Su coste restante admite una envolvente $\Vcal$ que decrece al
+menos $\ell_0\Delta t>0$ por unidad de tiempo físico fuera del objetivo.
+\end{definicion}
+
+\begin{teorema}[Seguridad y progreso con testigo vigente]
+\label{th:testigo}
+Supóngase que existe un testigo completo inicial de coste $\Vcal_0$, que la
+ejecución no se detiene durante el cálculo —sigue el testigo vigente—, que toda
+sustitución se confirma con la misma versión e instante de activación dentro de
+un tubo de entrada válido, y que no hay Zenón. Admítanse únicamente las
+sustituciones cuyo coste restante, incluida la transición física, no exceda al
+del testigo vigente, y cuéntense como \emph{estrictas} las que además descienden
+al menos $\delta>0$ \cite{mayorga2026m1}. Entonces la ejecución es segura, alcanza el objetivo en
+tiempo no mayor que $\Vcal_0/\ell_0$, su coste acumulado no supera $\Vcal_0$, y
+el número de revisiones estrictas no excede $\lfloor\Vcal_0/\delta\rfloor$.
+
+En particular, \emph{no se exige que el optimizador no lineal converja antes de
+cada mando}.
+\end{teorema}
+
+\begin{observacion}[Comprobación de las tres cotas]
+\label{obs:testigo-num}
+Sobre ocho realizaciones con $\Vcal_0=100$, $\ell_0=2$ y $\delta=5$ —cotas
+teóricas de $50$~s, coste $100$ y $20$ revisiones estrictas— los tiempos medidos
+van de $10{,}0$ a $20{,}0$~s, los costes de $26{,}1$ a $52{,}1$, y las revisiones
+estrictas de $4$ a $8$. Las tres cotas se respetan en todas las realizaciones, y
+las propuestas que empeoran el coste restante se rechazan sin detener la
+ejecución.
+\end{observacion}
+
+\begin{observacion}[Qué cambia esto respecto del resto del documento]
+\label{obs:testigo-alcance}
+Tres cosas. Primera, da la cota de tiempo que \cref{obs:complejidad-propia}
+declaraba ausente, aunque solo para la capa de trayectoria y en función de
+$\Vcal_0$ y $\ell_0$, que dependen de la instancia. Segunda, explica por qué el
+ensayo P01 puede sostener $131$ épocas de negociación sin detenerse ni una vez
+dentro del pasillo: la negociación no es un preludio de la ejecución sino
+concurrente con ella. Tercera, invierte la relación habitual con la
+optimalidad: no se busca el óptimo y luego se ejecuta, sino que se ejecuta algo
+admisible y se acepta toda mejora que llegue, con el número de mejoras acotado
+por el presupuesto inicial.
+
+La hipótesis crítica es la existencia del testigo inicial, que en este trabajo
+proporciona el certificado de \cref{th:robusto} junto con la factibilidad de
+frenado de \cref{le:astop}. Y hay una salvedad energética que conviene no
+esconder en un coste terminal: una batería finita con consumo auxiliar positivo
+no permite sostener indefinidamente la condición terminal, de modo que el
+mantenimiento seguro del objetivo debe declararse con horizonte o con recarga,
+que es lo que hace \cref{pr:caudal}.
+\end{observacion}
+
+\subsection{La versión esperada: progreso con residual de Bellman}
+
+\Cref{th:testigo} es determinista y exige que cada sustitución no aumente el
+coste restante. Su contrapartida en esperanza admite un residual por unidad de
+duración, y es la que corresponde a un catálogo con transiciones inciertas
+\cite{mayorga2026m1}.
+
+\begin{teorema}[Progreso esperado con residual por unidad de duración]
+\label{th:bellman-residual}
+Sea $W\ge0$ una función de valor finita y fija durante la ejecución, con
+$W(g)=0$ en el objetivo. En cada estado no terminal se ejecuta una continuación
+$b$ de duración $\tau\ge\tau_{\min}>0$ y coste esperado
+$c(z,b)\ge\ell_0\,\mathbb E[\tau\mid z,b]$, $\ell_0>0$. Si toda continuación
+seleccionada satisface
+\[
+  c(z,b)+\mathbb E\bigl[W(z')\mid z,b\bigr]-W(z)\ \le\ \varrho\,\mathbb E[\tau\mid z,b],
+  \qquad 0\le\varrho<\ell_0,
+\]
+y el sistema puede continuar hasta el objetivo, entonces
+\[
+  \mathbb E[T_g]\ \le\ \frac{W(z_0)}{\ell_0-\varrho},
+  \qquad
+  \mathbb E[J]\ \le\ \frac{\ell_0}{\ell_0-\varrho}\,W(z_0),
+\]
+y sin eventos de Zenón el objetivo se alcanza casi seguramente.
+\end{teorema}
+
+\begin{proof}
+Sumando la desigualdad a lo largo de las decisiones hasta $n\wedge N_g$ y usando
+esperanza iterada, $\mathbb E\sum c_k\le W(z_0)-\mathbb E\,W(z_{n\wedge N_g})
++\varrho\,\mathbb E\sum\tau_k$. Como $W\ge0$ y $c_k\ge\ell_0\mathbb E[\tau_k]$,
+resulta $(\ell_0-\varrho)\mathbb E\sum\tau_k\le W(z_0)$; el límite por
+convergencia monótona da ambas cotas. Una probabilidad positiva de infinitas
+decisiones sin entrega haría infinito el tiempo esperado por $\tau\ge\tau_{\min}$,
+contradicción.
+\end{proof}
+
+\begin{observacion}[Comprobación y alcance]
+\label{obs:bellman-num}
+Sobre una cadena de seis estados con dos continuaciones por estado —lenta y
+rápida, de duraciones $2{,}0$ y $0{,}8$— y veinte mil realizaciones, con
+$W(z_0)=12$ y $\ell_0=1$: $\mathbb E[T_g]=8{,}75$ frente a la cota $12$, y
+$\mathbb E[J]=10{,}06$ frente a $12$. No es una cota determinista del peor
+tiempo, y la seguridad física \emph{no} se hereda: solo si cada continuación y
+sus transiciones son seguras por separado, que es lo que \cref{def:testigo}
+exige. Su utilidad es permitir error numérico controlado sin resolver
+exactamente cada juego: $\varrho$ es el residuo de Bellman que se tolera por
+segundo de maniobra.
+\end{observacion}
+
+\begin{proposicion}[Presupuesto de error de una evaluación local]
+\label{pr:presupuesto-error}
+Sean $R=c+PW-W(z)$ el residual verdadero y $\hat R=\hat c+\hat P\hat W-\hat W(z)$
+el calculado con información local. Si $|\hat c-c|\le\epsilon_c$,
+$\lVert\hat W-W\rVert_\infty\le\epsilon_V$, $\lVert\hat P-P\rVert_1\le\epsilon_P$ y
+$\lVert W\rVert_\infty\le M_W$, entonces
+$|\hat R-R|\le\epsilon_c+2\epsilon_V+M_W\epsilon_P$.
+\end{proposicion}
+
+\begin{observacion}[Cuándo pedir más información y cuándo seguir]
+\label{obs:presupuesto-uso}
+La regla $\hat R+\epsilon_R\le\varrho\,\underline\tau$, con
+$\underline\tau\le\mathbb E[\tau]$, es suficiente para la hipótesis de
+\cref{th:bellman-residual}. Eso convierte al presupuesto en una decisión
+operativa: si con la información disponible el residual certificado cabe en
+$\varrho\underline\tau$, se ejecuta; si no, se solicita más información o se
+sigue el respaldo vigente. Es el mismo criterio de \cref{th:intervalo} llevado
+del valor de una rama al progreso de la misión, y enlaza con \cref{th:saltos}:
+cada salto adicional reduce $\epsilon_V$ y $\epsilon_P$ a un ritmo que fija el
+condicionamiento. La proposición no proporciona por sí sola las cotas de
+cartografía, contacto o probabilidad —$\epsilon_V,\epsilon_P$ deben
+identificarse y validarse—, y así se declara.
+\end{observacion}
+
+\begin{observacion}[Qué valor debe comparar el reclutamiento]
+\label{obs:equipo-barato}
+Un ejemplo sin solver fija la moraleja. Dos continuaciones cuestan $1$ y $4$
+unidades; la primera conduce a un estado cuya mejor entrega restante cuesta
+$100$, la segunda a uno que cuesta $5$. El criterio inmediato elige la primera y
+paga $101$; el de Bellman elige la segunda y paga $9$. El equipo barato al
+principio puede ser caro hasta el final, y el reclutamiento debe comparar
+coste hasta la entrega, no coste de la maniobra. Dos salvedades más: con
+criterio descontado en tiempo físico hay que usar el factor de duración
+$\mathbb E[e^{-\beta\tau}W(z')]$ y no un descuento idéntico para maniobras de
+distinta duración; y una abstracción por pose sola no suele ser markoviana
+cuando contactos, desgaste, información o reservas tienen memoria, de modo que
+hay que ampliar el estado, usar una creencia, o acotar el error de abstracción.
+\end{observacion}
+
+\subsection{Qué garantiza el encadenamiento y qué no}
+
+\begin{teorema}[Propiedades de la misión encadenada]
+\label{th:mision}
+Supóngase: admisión certificada en cada reclutamiento; conectividad factorizada
+(\cref{pr:factorizada}); guarda de compatibilidad (\cref{pr:rigidez}) y
+espectral (\cref{co:guarda}) en la adquisición; cota de frenado
+(\cref{le:astop}); y ganancia pequeña entre capas (\cref{th:smallgain}).
+Entonces:
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em,topsep=0.2em,itemsep=0.15em]
+  \item el estado permanece en el conjunto seguro en todo instante y en toda
+  fase, incondicionalmente (\cref{co:invariancia-incondicional});
+  \item cada transición de fase está gobernada por una guarda verificable
+  localmente, y la frecuencia de conmutación está acotada por
+  \cref{th:dwell};
+  \item la degradación de autoridad se detecta antes de sufrirse, porque la
+  guarda espectral se evalúa sobre el estado predicho (\cref{co:guarda});
+  \item la entrega ocurre por extinción del precio, sin coordinación adicional
+  (\cref{pr:extincion}).
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}
+(i) es \cref{co:invariancia-incondicional} aplicado en cada fase, y las
+restricciones se anidan por \cref{pr:anidados}, luego la invariancia de la fase
+más restrictiva implica la de las anteriores. (ii) reúne las guardas de
+\cref{def:automata} con el tiempo de permanencia. (iii) y (iv) son
+\cref{co:guarda} y \cref{pr:extincion}.
+\end{proof}
+
+\begin{observacion}[Lo que este teorema no afirma]
+\label{obs:mision-limites}
+No se afirma optimalidad de la misión completa. En particular, \emph{no} se
+sostiene que el coste total se descomponga en la suma de los óptimos por fase
+más términos de interfaz acotados: cada fase resuelve su problema tomando como
+dado el resultado de la anterior, y esa secuencialidad es precisamente una de
+las fuentes de $\Delta_{\mathrm{dyn}}$ en \cref{th:descomposicion}. Tampoco se
+afirman cotas de tiempo por fase: acotar $T_{\textsf{REC}}$ exige la tasa de
+mezcla efectiva del canal, y acotar $T_{\textsf{TRANS}}$ exige el número de
+conflictos, que depende de la instancia. Lo que el encadenamiento garantiza es
+seguridad, verificabilidad de las guardas y terminación de la disolución; no
+rendimiento.
+\end{observacion}

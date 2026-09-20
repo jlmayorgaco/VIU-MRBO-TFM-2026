@@ -1,15 +1,15 @@
 {
-  "created_at_utc": "2026-09-12T21:03:30.147624+00:00",
+  "created_at_utc": "2026-09-13T22:43:40.695261+00:00",
   "status": "immutable_input",
   "files": {
     "data\\processed\\fulltext_queue_stage1c.csv": {
-      "bytes": 1478674,
-      "sha256": "e61c7187d2434bbbe13599f8b6392a8693c01414b9e40f335de65685cc3e3ae8"
+      "bytes": 1800517,
+      "sha256": "37e6700972c0f625a8dc8bbea58914073d4031d27158cec495bf2ffb4c4146d4"
     },
     "data\\processed\\candidate_corpus_stage1c.csv": {
-      "bytes": 2952653,
-      "sha256": "02ebed7559b0749783c8610f5399ed9733aa198c213aa2a76d5748ba01adc4d8"
+      "bytes": 3265068,
+      "sha256": "2296f21702b01e20cb9e5fedccc744bc497f18a4e2c215060f542b6dc7ca783d"
     }
   },
-  "note": "Stage 2 must never overwrite Stage 1C corpus or queue."
+  "note": "Stage 2 must never overwrite Stage 1C corpus or queue. A prior freeze, if any, is archived before an explicit rebaseline."
 }

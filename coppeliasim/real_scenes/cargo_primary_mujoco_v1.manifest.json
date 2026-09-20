@@ -1,0 +1,399 @@
+{
+  "builder_status": {
+    "actuation_contract": "wheel_velocity_only",
+    "aliases": {
+      "/CargoPrimary/R1": {
+        "object_type": 0,
+        "persistent_uid": {
+          "__buff__": "C3B59BE5FD9D2479"
+        }
+      },
+      "/CargoPrimary/R1/leftMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "7E7EB4337B573049"
+        }
+      },
+      "/CargoPrimary/R1/rightMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "43C81165292C06F2"
+        }
+      },
+      "/CargoPrimary/R1/supportSensor": {
+        "object_type": 12,
+        "persistent_uid": {
+          "__buff__": "5EF39D0243EFEB81"
+        }
+      },
+      "/CargoPrimary/R2": {
+        "object_type": 0,
+        "persistent_uid": {
+          "__buff__": "C3B59BE5FD9D2479"
+        }
+      },
+      "/CargoPrimary/R2/leftMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "7E7EB4337B573049"
+        }
+      },
+      "/CargoPrimary/R2/rightMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "43C81165292C06F2"
+        }
+      },
+      "/CargoPrimary/R2/supportSensor": {
+        "object_type": 12,
+        "persistent_uid": {
+          "__buff__": "938735F0CE6D2129"
+        }
+      },
+      "/CargoPrimary/R3": {
+        "object_type": 0,
+        "persistent_uid": {
+          "__buff__": "C3B59BE5FD9D2479"
+        }
+      },
+      "/CargoPrimary/R3/leftMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "7E7EB4337B573049"
+        }
+      },
+      "/CargoPrimary/R3/rightMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "43C81165292C06F2"
+        }
+      },
+      "/CargoPrimary/R3/supportSensor": {
+        "object_type": 12,
+        "persistent_uid": {
+          "__buff__": "2191CD17CDCA5CE0"
+        }
+      },
+      "/CargoPrimary/R4": {
+        "object_type": 0,
+        "persistent_uid": {
+          "__buff__": "C3B59BE5FD9D2479"
+        }
+      },
+      "/CargoPrimary/R4/leftMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "7E7EB4337B573049"
+        }
+      },
+      "/CargoPrimary/R4/rightMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "43C81165292C06F2"
+        }
+      },
+      "/CargoPrimary/R4/supportSensor": {
+        "object_type": 12,
+        "persistent_uid": {
+          "__buff__": "13484FBFF117327F"
+        }
+      },
+      "/CargoPrimary/payload": {
+        "object_type": 0,
+        "persistent_uid": {
+          "__buff__": "7B1488382688F231"
+        }
+      }
+    },
+    "aliases_resolve_to_distinct_handles": true,
+    "calibration_status": "pending_preflight",
+    "distinct_alias_handle_count": 17,
+    "embedded_runtime_sha256": "4a8f46a7dd2c934c9b73ad120819c30454bdec6ae7abea06fb918a0deb01c5c7",
+    "engine": "mujoco",
+    "force_sensor_count": 4,
+    "generator_version": "cargo-primary-scene-v1",
+    "loop_closure_count": 4,
+    "mode": "build",
+    "output": "coppeliasim/real_scenes/cargo_primary_mujoco_v1.ttt",
+    "passive_yaw_joint_count": 4,
+    "payload_alias": "/CargoPrimary/payload",
+    "required_alias_count": 17,
+    "robot_count": 4,
+    "runtime_script_count": 1,
+    "simulator_version": 41000,
+    "status": "ok",
+    "wheel_joint_count": 8
+  },
+  "generator_version": "cargo-primary-scene-v1",
+  "inputs": {
+    "addon": {
+      "path": "scripts/coppelia_cargo/cargo_primary_scene_builder.lua",
+      "sha256": "91db957e294ad0c5e835000566240b84f8f50122e9bd43864667ee85f21082a5"
+    },
+    "coppeliasim_executable": {
+      "path": "coppeliasim-installation://coppeliaSim.exe",
+      "sha256": "f0f50704416997f3be1d1458770d62aa48d009c0102124760072e0a40b55fc23"
+    },
+    "pioneer_model": {
+      "path": "coppeliasim-installation://models/robots/mobile/pioneer p3dx.ttm",
+      "sha256": "e0e1c6a77868ecfbedc65eeb96675a7475724f554cf248f2ebe1d8bf1fef23d7"
+    },
+    "runtime": {
+      "path": "scripts/coppelia_cargo/cargo_primary_scene_runtime.lua",
+      "sha256": "4a8f46a7dd2c934c9b73ad120819c30454bdec6ae7abea06fb918a0deb01c5c7"
+    }
+  },
+  "log": "coppeliasim/real_scenes/cargo_primary_mujoco_v1.builder.log",
+  "reload_validation_status": {
+    "actuation_contract": "wheel_velocity_only",
+    "aliases": {
+      "/CargoPrimary/R1": {
+        "object_type": 0,
+        "persistent_uid": {
+          "__buff__": "C3B59BE5FD9D2479"
+        }
+      },
+      "/CargoPrimary/R1/leftMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "7E7EB4337B573049"
+        }
+      },
+      "/CargoPrimary/R1/rightMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "43C81165292C06F2"
+        }
+      },
+      "/CargoPrimary/R1/supportSensor": {
+        "object_type": 12,
+        "persistent_uid": {
+          "__buff__": "5EF39D0243EFEB81"
+        }
+      },
+      "/CargoPrimary/R2": {
+        "object_type": 0,
+        "persistent_uid": {
+          "__buff__": "C3B59BE5FD9D2479"
+        }
+      },
+      "/CargoPrimary/R2/leftMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "7E7EB4337B573049"
+        }
+      },
+      "/CargoPrimary/R2/rightMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "43C81165292C06F2"
+        }
+      },
+      "/CargoPrimary/R2/supportSensor": {
+        "object_type": 12,
+        "persistent_uid": {
+          "__buff__": "938735F0CE6D2129"
+        }
+      },
+      "/CargoPrimary/R3": {
+        "object_type": 0,
+        "persistent_uid": {
+          "__buff__": "C3B59BE5FD9D2479"
+        }
+      },
+      "/CargoPrimary/R3/leftMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "7E7EB4337B573049"
+        }
+      },
+      "/CargoPrimary/R3/rightMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "43C81165292C06F2"
+        }
+      },
+      "/CargoPrimary/R3/supportSensor": {
+        "object_type": 12,
+        "persistent_uid": {
+          "__buff__": "2191CD17CDCA5CE0"
+        }
+      },
+      "/CargoPrimary/R4": {
+        "object_type": 0,
+        "persistent_uid": {
+          "__buff__": "C3B59BE5FD9D2479"
+        }
+      },
+      "/CargoPrimary/R4/leftMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "7E7EB4337B573049"
+        }
+      },
+      "/CargoPrimary/R4/rightMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "43C81165292C06F2"
+        }
+      },
+      "/CargoPrimary/R4/supportSensor": {
+        "object_type": 12,
+        "persistent_uid": {
+          "__buff__": "13484FBFF117327F"
+        }
+      },
+      "/CargoPrimary/payload": {
+        "object_type": 0,
+        "persistent_uid": {
+          "__buff__": "7B1488382688F231"
+        }
+      }
+    },
+    "aliases_resolve_to_distinct_handles": true,
+    "calibration_status": "pending_preflight",
+    "distinct_alias_handle_count": 17,
+    "embedded_runtime_sha256": "4a8f46a7dd2c934c9b73ad120819c30454bdec6ae7abea06fb918a0deb01c5c7",
+    "engine": "mujoco",
+    "force_sensor_count": 4,
+    "generator_version": "cargo-primary-scene-v1",
+    "loop_closure_count": 4,
+    "mode": "validate",
+    "output": "coppeliasim/real_scenes/cargo_primary_mujoco_v1.ttt",
+    "passive_yaw_joint_count": 4,
+    "payload_alias": "/CargoPrimary/payload",
+    "required_alias_count": 17,
+    "robot_count": 4,
+    "runtime_script_count": 1,
+    "simulator_version": 41000,
+    "status": "ok",
+    "wheel_joint_count": 8
+  },
+  "scene": {
+    "bytes": 2047774,
+    "path": "coppeliasim/real_scenes/cargo_primary_mujoco_v1.ttt",
+    "sha256": "e36a4a915bf3feda628d5eabd8bed56f601860d6b54544407cc09d73b8b31ebe"
+  },
+  "schema": "viu-cargo-scene-manifest-v1",
+  "scientific_use": "Scene construction evidence only. This manifest does not establish any physical, calibration, stability, safety, or confirmatory gate.",
+  "semantic_contract": {
+    "actuation_contract": "wheel_velocity_only",
+    "aliases": {
+      "/CargoPrimary/R1": {
+        "object_type": 0,
+        "persistent_uid": {
+          "__buff__": "C3B59BE5FD9D2479"
+        }
+      },
+      "/CargoPrimary/R1/leftMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "7E7EB4337B573049"
+        }
+      },
+      "/CargoPrimary/R1/rightMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "43C81165292C06F2"
+        }
+      },
+      "/CargoPrimary/R1/supportSensor": {
+        "object_type": 12,
+        "persistent_uid": {
+          "__buff__": "5EF39D0243EFEB81"
+        }
+      },
+      "/CargoPrimary/R2": {
+        "object_type": 0,
+        "persistent_uid": {
+          "__buff__": "C3B59BE5FD9D2479"
+        }
+      },
+      "/CargoPrimary/R2/leftMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "7E7EB4337B573049"
+        }
+      },
+      "/CargoPrimary/R2/rightMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "43C81165292C06F2"
+        }
+      },
+      "/CargoPrimary/R2/supportSensor": {
+        "object_type": 12,
+        "persistent_uid": {
+          "__buff__": "938735F0CE6D2129"
+        }
+      },
+      "/CargoPrimary/R3": {
+        "object_type": 0,
+        "persistent_uid": {
+          "__buff__": "C3B59BE5FD9D2479"
+        }
+      },
+      "/CargoPrimary/R3/leftMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "7E7EB4337B573049"
+        }
+      },
+      "/CargoPrimary/R3/rightMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "43C81165292C06F2"
+        }
+      },
+      "/CargoPrimary/R3/supportSensor": {
+        "object_type": 12,
+        "persistent_uid": {
+          "__buff__": "2191CD17CDCA5CE0"
+        }
+      },
+      "/CargoPrimary/R4": {
+        "object_type": 0,
+        "persistent_uid": {
+          "__buff__": "C3B59BE5FD9D2479"
+        }
+      },
+      "/CargoPrimary/R4/leftMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "7E7EB4337B573049"
+        }
+      },
+      "/CargoPrimary/R4/rightMotor": {
+        "object_type": 1,
+        "persistent_uid": {
+          "__buff__": "43C81165292C06F2"
+        }
+      },
+      "/CargoPrimary/R4/supportSensor": {
+        "object_type": 12,
+        "persistent_uid": {
+          "__buff__": "13484FBFF117327F"
+        }
+      },
+      "/CargoPrimary/payload": {
+        "object_type": 0,
+        "persistent_uid": {
+          "__buff__": "7B1488382688F231"
+        }
+      }
+    },
+    "calibration_status": "pending_preflight",
+    "embedded_runtime_sha256": "4a8f46a7dd2c934c9b73ad120819c30454bdec6ae7abea06fb918a0deb01c5c7",
+    "engine": "mujoco",
+    "force_sensor_count": 4,
+    "generator_version": "cargo-primary-scene-v1",
+    "loop_closure_count": 4,
+    "passive_yaw_joint_count": 4,
+    "payload_alias": "/CargoPrimary/payload",
+    "robot_count": 4,
+    "runtime_script_count": 1,
+    "simulator_version": 41000,
+    "wheel_joint_count": 8
+  },
+  "status": "structurally_valid_not_physically_calibrated"
+}

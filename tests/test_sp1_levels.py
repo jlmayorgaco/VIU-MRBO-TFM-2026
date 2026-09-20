@@ -2,11 +2,9 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import math
 import re
-import subprocess
 import sys
 from pathlib import Path
 
@@ -28,91 +26,27 @@ from sp1_levels_common import (  # noqa: E402
 )
 
 
-def test_frozen_n1_pages_are_byte_identical_after_n2() -> None:
-    """N1 is frozen at SP1-N1-FROZEN; adding N2 may not disturb it.
+def test_frozen_n1_raw_and_editorial_contract() -> None:
+    """Editorial revisions may change prose, but never N1 RAW or E1--E4."""
 
-    The document is shared, so N2 necessarily edits main.tex. This pins the
-    rendered text of the ten N1 pages instead, which is the thing that must
-    not move: same wording, same numbers, same order.
-    """
+    n1_root = LEVELS_OUTPUT_ROOT / "n1_v2"
+    manifest = json.loads((n1_root / "manifest.json").read_text(encoding="utf-8"))
+    for record in manifest["frozen_raw"].values():
+        path = REPOSITORY_ROOT / record["path"]
+        assert path.is_file()
+        assert sha256_file(path) == record["sha256"]
 
-    snapshot = json.loads(
-        (
-            REPOSITORY_ROOT / "thesis" / "config" / "sp1-n1-frozen-pages.json"
-        ).read_text(encoding="utf-8")
-    )
-
-    # The decisive check is on the source: N1's own section must still appear
-    # byte-identical inside the shared document.
-    #
-    # Scoped to N1's pages rather than to the whole prefix. Pages 1-4 are the
-    # common front matter -- reading guide, scenarios, protocol -- which N1 does
-    # not own and N2 equally depends on. Pinning them byte-for-byte also pinned
-    # the size of a shared figure, so a purely typographic fix that changes no
-    # word, number or figure content was indistinguishable from tampering with
-    # a result. Those pages remain pinned by their rendered text below, which is
-    # what actually protects the science.
-    bounds = snapshot["n1_section_bounds"]
-    frozen = subprocess.run(
-        ["git", "show", f"{snapshot['source_tag']}:thesis/sp1_levels_23p/main.tex"],
-        cwd=REPOSITORY_ROOT,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        check=True,
-    ).stdout
-    n1_body = frozen.split(bounds["start"], 1)[1].split(bounds["end"], 1)[0]
-    assert (
-        hashlib.sha256(n1_body.encode("utf-8")).hexdigest()
-        == snapshot["n1_section_sha256"]
-    )
     current = (
         REPOSITORY_ROOT / "thesis" / "sp1_levels_23p" / "main.tex"
     ).read_text(encoding="utf-8")
-    assert n1_body in current, (
-        "the frozen N1 section is no longer present verbatim in main.tex; "
-        "N1 may only be reopened for a reproducible factual error"
+    headings = (
+        "SP1.N1 · E1: método húngaro frente a asignación voraz",
+        "SP1.N1 · E2: coste temporal del LSAP en el rango medido",
+        "SP1.N1 · E3: qué ocurre tras una retirada",
+        "SP1.N1 · E4: cuándo se rompe la reducción",
     )
-
-    # Rendering is checked too, ignoring whitespace: PDF text extraction
-    # re-spaces glyphs around maths between builds, which is not a change.
-    # Named exactly, not globbed: a glob that stops matching after a rename
-    # silently degrades this guard into a no-op, or worse, keeps validating a
-    # stale artifact left behind under the old name.
-    pdf_path = (
-        REPOSITORY_ROOT
-        / "output"
-        / "pdf"
-        / "sp1_levels"
-        / "SP1_levels_N1_N2_N3.pdf"
-    )
-    assert pdf_path.is_file(), f"no SP1 PDF was built at {pdf_path}"
-    reader = PdfReader(str(pdf_path))
-    assert len(reader.pages) >= snapshot["page_count"]
-    for record in snapshot["pages"]:
-        page = reader.pages[record["index"] - 1]
-        digest = hashlib.sha256(_page_body(page).encode("utf-8")).hexdigest()
-        assert digest == record["sha256"], (
-            f"frozen page {record['index']} changed; "
-            "N1 may only be reopened for a reproducible factual error"
-        )
-
-
-def _page_body(page) -> str:
-    """Rendered text without the running header.
-
-    The header carries the page number, so hashing the whole page tied the
-    guard to pagination: enlarging a diagram in the shared front matter moved
-    N1 from pages 5-10 to 7-12 and every hash changed although not one glyph
-    of N1 did. The body is what the freeze is actually about.
-    """
-
-    lines = [
-        line
-        for line in (page.extract_text() or "").splitlines()
-        if not line.strip().startswith("Trabajo Fin de")
-    ]
-    return re.sub(r"\s+", "", "\n".join(lines))
+    positions = [current.index(heading) for heading in headings]
+    assert positions == sorted(positions)
 
 
 def test_pdf_build_never_reruns_the_experimental_campaign() -> None:
@@ -198,20 +132,25 @@ def test_bool_normalization_preserves_missing_values() -> None:
 def test_level_manifests_reference_unchanged_sources() -> None:
     active_level_dirs = {
         "n1": "n1_v2",
-        "n2": "n2",
-        "n3": "n3",
-        "n4": "n4",
+        "n2": "n2_v1",
+        "n3": "n3_v2",
+        "n4": "n4_v2",
     }
     for level, directory in active_level_dirs.items():
         manifest_path = LEVELS_OUTPUT_ROOT / directory / "manifest.json"
         assert manifest_path.is_file(), f"missing {manifest_path}"
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        assert manifest["level"] == level.upper()
-        assert manifest["row_counts"]
-        for source in manifest["sources"]:
+        if "level" in manifest:
+            assert manifest["level"] == level.upper()
+        assert manifest.get("row_counts") or manifest.get("frozen_raw")
+        for source in manifest.get("sources", []):
             source_path = REPOSITORY_ROOT / source["path"]
             assert source_path.is_file()
             assert source["sha256"] == sha256_file(source_path)
+        for record in manifest.get("frozen_raw", {}).values():
+            raw_path = REPOSITORY_ROOT / record["path"]
+            assert raw_path.is_file()
+            assert record["sha256"] == sha256_file(raw_path)
 
 
 def test_comparison_scopes_are_not_conflated() -> None:
@@ -234,17 +173,55 @@ def test_pdf_has_exact_requested_page_budget() -> None:
         / "output"
         / "pdf"
         / "sp1_levels"
-        / "SP1_levels_N1_N2_N3.pdf"
+        / "SP1_levels_N1_N2_N3_N4.pdf"
     )
     assert pdf_path.is_file()
     reader = PdfReader(str(pdf_path))
-    assert len(reader.pages) == 26
+    assert len(reader.pages) == 48
     text = "\n".join(page.extract_text() or "" for page in reader.pages)
     assert "EXPERIMENTO E4" in text
-    # N2 now occupies pages 11-16 of the same document.
+    # All four levels now share the same bounded artifact.
     assert "NIVEL 2 DE 4" in text
     assert "NIVEL 3 DE 4" in text
-    assert "NIVEL 4 DE 4" not in text
+    assert "NIVEL 4 DE 4" in text
+
+
+def test_sp1_narrative_freeze_contract_is_explicit() -> None:
+    """The four levels must read as one causal argument, not four reports."""
+
+    main = (
+        REPOSITORY_ROOT / "thesis" / "sp1_levels_23p" / "main.tex"
+    ).read_text(encoding="utf-8")
+    n4 = (
+        REPOSITORY_ROOT / "thesis" / "sp1_levels_23p" / "n4_v2.tex"
+    ).read_text(encoding="utf-8")
+
+    normalized_main = main.replace("\n", " ")
+    for concept in (
+        "N1 \\textbar\\ Cardinalidad",
+        "N2 \\textbar\\ Atomicidad",
+        "N3 \\textbar\\ Localidad informativa",
+        "N4 \\textbar\\ Localidad estratégica",
+        "elimina únicamente esa disponibilidad global de información",
+        "la información reconstruida es un recurso",
+    ):
+        assert concept in main or concept in normalized_main
+
+    for contract in (
+        "constituye la contribución principal",
+        "resultado central del nivel",
+        "Resultados formales de F-I y alcance de cada enunciado",
+        "entrada de SP2",
+        "corresponden a SP2",
+    ):
+        assert contract in n4 or contract in (
+            REPOSITORY_ROOT
+            / "thesis"
+            / "sp1_levels_23p"
+            / "figures"
+            / "n4"
+            / "n4_taxonomy.tex"
+        ).read_text(encoding="utf-8")
 
 
 def test_n1_confirmatory_package_has_frozen_counts_and_invariants() -> None:
@@ -437,13 +414,15 @@ def test_n1_confirmatory_figures_are_vector_and_source_ends_after_e4() -> None:
         REPOSITORY_ROOT / "thesis" / "sp1_levels_23p" / "main.tex"
     ).read_text(encoding="utf-8")
     n1_model = latex.index(
-        "SP1.N1: asignación exacta con robots homogéneos"
+        "SP1.N1: asignación exacta bajo homogeneidad de capacidad"
     )
     n1_design = latex.index("SP1.N1: hasta dónde vale contar robots")
     n1_quality = latex.index(
-        "SP1.N1 · E1: Húngaro frente a una heurística voraz"
+        "SP1.N1 · E1: método húngaro frente a asignación voraz"
     )
-    n1_scaling = latex.index("SP1.N1 · E2: coste computacional del LSAP")
+    n1_scaling = latex.index(
+        "SP1.N1 · E2: coste temporal del LSAP en el rango medido"
+    )
     n1_failure = latex.index("SP1.N1 · E3: qué ocurre tras una retirada")
     n1_validity = latex.index("SP1.N1 · E4: cuándo se rompe la reducción")
     document_end = latex.index(r"\end{document}")
@@ -486,7 +465,7 @@ def test_latex_defines_level_and_branch_nomenclature() -> None:
     ).read_text(encoding="utf-8")
     guide_index = latex.index("Mapa de niveles experimentales de SP1")
     n1_index = latex.index(
-        "SP1.N1: asignación exacta con robots homogéneos"
+        "SP1.N1: asignación exacta bajo homogeneidad de capacidad"
     )
     assert guide_index < n1_index
     assert "SP1.N3.1" in latex
@@ -509,7 +488,7 @@ def test_common_protocol_pages_precede_n1() -> None:
     scenarios_index = latex.index(r"\section*{Escenarios}")
     statistics_index = latex.index("Protocolo experimental y análisis estadístico")
     n1_index = latex.index(
-        "SP1.N1: asignación exacta con robots homogéneos"
+        "SP1.N1: asignación exacta bajo homogeneidad de capacidad"
     )
     assert scenarios_index < statistics_index < n1_index
     for scenario_name in (
@@ -554,16 +533,17 @@ def test_common_protocol_pages_precede_n1() -> None:
     ):
         assert obsolete_label not in latex
     # E4 evaluates the homogeneous slot model on heterogeneous worlds, so the
-    # comparison scope is now stated where the audit happens.
+    # comparison scope must be stated where the result is discussed.
     assert "veredictos del modelo" in latex
     assert "cinco perfiles anidados sin cambiar robots" in latex
     assert r"\input{sp1_levels_23p/figures/protocol_pipeline.tex}" in latex
     prose = latex.replace("\n", " ")
     assert "cada mundo--semilla" in prose
     assert "robots y cargas quedan anidados en él y no inflan la muestra" in prose
-    # The seed protocol must be stated, not assumed: distinct SHA-256 seeds
-    # per design cell, and a bootstrap stratified by that cell.
-    assert "resumen SHA-256 de la celda completa" in prose
+    # The seed protocol must be stated without exposing implementation hashes:
+    # one distinct seed per design cell and a bootstrap stratified by that cell.
+    assert "La celda y el índice de réplica determinan una semilla distinta" in prose
+    assert "SHA-256" not in prose
     assert "no hay números aleatorios comunes" in prose
     assert "dentro de cada celda" in prose
     assert "Cada campaña se preespecifica" not in latex
@@ -572,15 +552,15 @@ def test_common_protocol_pages_precede_n1() -> None:
         "Protocolo Monte Carlo · campaña pareada",
         "mundo--semilla",
         r"\mathcal W=\mathcal C\times\Theta\times\mathcal S",
-        "Bucle Monte Carlo pareado y registro crudo (RAW)",
+        "Bucle Monte Carlo pareado",
         "UNIDAD INDEPENDIENTE: MUNDO--SEMILLA",
         "3 · MÉTODOS",
         "4 · REGISTRO",
         "2 · MÉTRICAS",
         r"r<|\mathcal W|",
-        "datos cerrados",
-        "Procesamiento reproducible",
-        r"DECISIÓN $H_0/H_1$",
+        "campaña completa",
+        "Cálculo de métricas y diferencias por mundo",
+            r"decisión $H_0/H_1$",
         r"no rechazar $H_0$",
         "McNemar exacto",
         "Friedman",

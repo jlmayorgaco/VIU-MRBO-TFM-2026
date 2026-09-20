@@ -1,0 +1,634 @@
+\section{Operación sostenida: la jornada no es una entrega repetida}
+\label{sec:operacion}
+
+Todo lo anterior optimiza \emph{una} misión: formar la coalición, certificar el
+\emph{wrench}, encaminar y entregar. Una flota industrial no hace una misión:
+encadena transporte, espera y recarga durante horas. Esta sección muestra que
+ambos objetivos discrepan, y da el marco en el que la discrepancia se mide.
+
+\subsection{Medidas de ocupación con duración}
+
+Sea $z$ el estado operativo de un AMR —carga transportada, batería, situación—
+y $b$ una \emph{continuación} admisible desde $z$, de duración $\tau_{zb}$,
+recompensa $r_{zb}$ y consumo $e_{zb}$. Sea $q_{zb}\ge0$ la frecuencia por
+unidad de tiempo con que se ejecuta esa continuación. El régimen estacionario
+satisface el balance de flujo y una normalización que \emph{pesa por duración},
+porque no todas las maniobras duran lo mismo:
+\begin{equation}
+  \sum_b q_{zb}=\sum_{y,b}P(z\mid y,b)\,q_{yb},
+  \qquad
+  \sum_{z,b}\tau_{zb}\,q_{zb}=1,
+  \qquad q_{zb}\ge0 .
+  \label{eq:ocupacion}
+\end{equation}
+
+\begin{proposicion}[Caudal como programa lineal]
+\label{pr:caudal}
+Sobre el conjunto \eqref{eq:ocupacion}, el caudal de entregas por unidad de
+tiempo es $\sum_{z,b}r_{zb}q_{zb}$ y su máximo es el valor de un programa
+lineal. Las restricciones de recurso —energía media, ocupación de cargadores,
+disponibilidad de AMR— son lineales en $q$ y se añaden sin cambiar la clase de
+problema. El valor óptimo acota superiormente el caudal sostenido de cualquier
+política estacionaria admisible.
+\end{proposicion}
+
+\begin{proof}
+El balance y la normalización son lineales, el objetivo también, y toda política
+estacionaria induce una medida de ocupación admisible; el máximo del programa no
+puede ser inferior al caudal de ninguna de ellas.
+\end{proof}
+
+La formulación anterior es la de un proceso semi-Markov con recompensas, en el
+que el tiempo entre transiciones es una variable aleatoria y no una constante
+\cite{lozovanu2024positional}; la normalización por duración de
+\eqref{eq:ocupacion} es lo que distingue ese caso del markoviano ordinario. Esa
+literatura obliga además a declarar una hipótesis que el enunciado anterior
+omite.
+
+\begin{supuesto}[Cadena única]
+\label{s:unichain}
+La cadena inducida por toda política estacionaria admisible es \emph{unichain}:
+su matriz límite tiene todas las filas iguales, o equivalentemente, las
+probabilidades límite no dependen del estado inicial.
+\end{supuesto}
+
+\begin{observacion}[Qué falla sin esa hipótesis]
+\label{obs:multichain}
+Sin \cref{s:unichain} el valor de \cref{pr:caudal} sigue siendo una cota sobre el
+conjunto de medidas de ocupación admisibles, pero deja de ser alcanzable desde un
+estado dado. El contraejemplo es mínimo: con tres estados en que el primero cae
+irremediablemente en una clase recurrente de recompensa nula y el tercero forma
+otra clase de recompensa unitaria, el programa lineal devuelve $1{,}0000$
+—colocando toda la masa en la clase buena— mientras que la recompensa media
+alcanzable es $0{,}0000$ desde los dos primeros estados y $1{,}0000$ solo desde
+el tercero. La matriz límite tiene dos filas distintas, que es la firma del caso
+\emph{multichain}.
+
+Para una flota real la hipótesis se lee así: todo estado degradado ha de ser
+recuperable, de modo que exista una única clase recurrente de operación. Si un
+AMR varado fuera irrecuperable, el modelo se partiría en clases y el
+dimensionamiento basado en \cref{pr:caudal} prometería un caudal que la
+instalación no puede dar.
+\end{observacion}
+
+\begin{observacion}[El rescate entra en el caudal como un número]
+\label{obs:rescate-caudal}
+La conexión con \cref{sec:standby} no es solo cualitativa. Modelando la flota con
+tres situaciones —operativa, averiada y recargando— y haciendo variar la tasa de
+rescate $p$, el valor del programa lineal es $0$ para $p=0$, $0{,}273$ para
+$p=0{,}02$, $0{,}600$ para $p=0{,}10$ y $0{,}774$ para $p=0{,}40$, y en todos los
+casos con $p>0$ coincide con lo alcanzable desde cualquier estado inicial hasta
+la cuarta cifra.
+
+Queda así cerrada una cadena que atraviesa tres secciones: el emplazamiento de la
+reserva determina la cobertura de \cref{def:cobertura}; la cobertura \emph{es} la
+función $p$ de \cref{th:subprovision}; y $p$ entra en este programa lineal
+fijando el caudal. Nivel de reserva, dónde ponerla y cuánto se produce son tres
+lecturas de un mismo número.
+
+Conviene señalar también qué ocurre en el extremo: con $p=0$ el programa devuelve
+exactamente cero, y lo hace correctamente, porque la avería pasa a ser la única
+clase recurrente. El modelo no falla ahí; avisa.
+\end{observacion}
+
+\subsection{Óptimo por entrega frente a óptimo por jornada}
+
+\begin{observacion}[Una coalición rápida puede ser mala para la jornada]
+\label{obs:eco-fast}
+Con batería en $\{0,1,2,3\}$ y tres continuaciones —\textsf{ECO}: $5$~s, consume
+$1$, entrega $1$; \textsf{FAST}: $3$~s, consume $3$, entrega $1$; y recarga:
+$4$~s, repone $1$— el ciclo puro \textsf{FAST} dura $3+3\times4=15$~s y da
+$0{,}0667$ entregas/s, mientras el ciclo \textsf{ECO} dura $5+4=9$~s y da
+$0{,}1111$. El programa lineal \eqref{eq:ocupacion} devuelve exactamente
+$1/9=0{,}1111$.
+
+\textsf{FAST} gana la entrega aislada —tres segundos frente a cinco— y pierde la
+jornada por un factor $1{,}67$. La selección de coalición que solo mira la
+misión en curso está optimizando la magnitud equivocada.
+\end{observacion}
+
+\begin{observacion}[El transitorio no persiste]
+\label{obs:transitorio}
+Una enumeración de políticas deterministas arrancando con batería llena da
+$0{,}1121$, ligeramente por encima del valor estacionario. La diferencia es la
+ventaja de partir cargado, que se consume una sola vez. El valor del programa
+lineal es el caudal de largo plazo, y es el que debe usarse para dimensionar.
+\end{observacion}
+
+Esa diferencia tiene nombre y estructura propia, y conviene dárselos, porque
+resulta ser el criterio que falta cuando el caudal no decide.
+
+\begin{proposicion}[Ganancia y sesgo]
+\label{pr:sesgo}
+Para una política estacionaria con cadena aperiódica, el valor acumulado en
+horizonte $T$ desde el estado $z$ se descompone como
+\[
+  V_T(z)\;=\;g\,T\;+\;h(z)\;+\;o(1),
+\]
+donde $g$ es la ganancia —el caudal de \cref{pr:caudal}— y $h$ el \emph{sesgo},
+solución de $(I-P+\Pi)h=r-g\mathbf 1$ normalizada por $\Pi h=0$. El sesgo mide la
+ventaja o desventaja de partir de un estado concreto, y se consume una sola vez
+\cite{lozovanu2024positional}.
+\end{proposicion}
+
+\begin{observacion}[El caudal no siempre decide, y entonces decide el sesgo]
+\label{obs:sesgo-desempate}
+Dos cadenas con la misma ganancia pueden tener sesgos muy distintos. Con dos
+estados y recompensa unitaria en el primero, la cadena de mezcla rápida
+—$P_{ij}=1/2$— y la de mezcla lenta —permanencia $0{,}9$— tienen ambas
+$g=0{,}5$, y sesgos $(0{,}5;-0{,}5)$ y $(2{,}5;-2{,}5)$ respectivamente: un factor
+cinco. La descomposición se verifica a precisión de máquina, con error
+$10^{-13}$ para $T=2000$.
+
+La consecuencia para el dimensionamiento es concreta. \Cref{pr:caudal} puede
+tener varias soluciones óptimas con idéntico caudal, y el programa lineal no
+distingue entre ellas. El sesgo sí: prefiere las políticas cuya ventaja de
+partida se agota antes, es decir, las de mezcla rápida. Y esa preferencia
+coincide con la que impone la capa de comunicación, porque la mezcla rápida es
+también lo que acorta la complejidad temporal de \cref{def:complejidad}. Cuando
+el caudal empata, conviene romper el empate por sesgo, y hacerlo no exige
+información nueva: se calcula del mismo modelo.
+
+Lo medido en \cref{obs:transitorio} es, por tanto, un sesgo.
+\end{observacion}
+
+\begin{observacion}[Media no es garantía]
+\label{obs:media-energia}
+Una restricción de energía \emph{media} en \eqref{eq:ocupacion} no impide agotar
+la batería en una realización concreta. La seguridad energética se conserva
+admitiendo únicamente continuaciones compatibles con el estado real y su
+reserva, es decir, restringiendo el conjunto admisible por estado, no el
+promedio. Es el mismo principio que separa $\hat\theta$ de $\Theta$ en
+\cref{obs:adaptacion}.
+\end{observacion}
+
+\subsection{El puente exacto entre ocupación, precios de estado y revisión}
+
+\Cref{pr:caudal} plantea la jornada como programa de ocupación con criterio
+promedio. Para una misión que \emph{termina} —hay entrega— la formulación
+pertinente es la absorbente, y su dual es lo que enlaza esta capa con el residual
+de \cref{th:bellman-residual} \cite{mayorga2026m1}.
+
+\begin{proposicion}[Ocupación absorbente, precios de estado y coste reducido]
+\label{pr:ocupacion-absorbente}
+Sea $m_{zb}\ge0$ el número esperado de ejecuciones de la continuación $b$ desde
+el estado $z$ antes de la entrega. Los balances en los estados no terminales son
+$\sum_b m_{zb}-\sum_{y,b}P(z\mid y,b)\,m_{yb}=\nu_z$, y el problema de ocupación
+es $\min\{c^{\!\top}m:\ Bm=\nu,\ m\ge0\}$. Su dual es
+\[
+  \max_V\ \nu^{\!\top}V
+  \quad\text{s.a.}\quad
+  V(z)-\sum_{z'}P(z'\mid z,b)\,V(z')\ \le\ c(z,b),
+\]
+y el coste reducido $A_V(z,b)=c(z,b)+\sum_{z'}P(z'\mid z,b)V(z')-V(z)$ es no
+negativo, nulo sobre el soporte de la ocupación óptima, y coincide con el
+residual de Bellman de \cref{th:bellman-residual} tomando $W=V$.
+\end{proposicion}
+
+\begin{observacion}[Comprobación, y qué cuenta $m$]
+\label{obs:ocupacion-num}
+Sobre un proceso absorbente de cinco estados y tres continuaciones por estado,
+el primal y el dual coinciden a $1{,}3\times10^{-15}$; el coste reducido mínimo
+es exactamente cero y su valor absoluto sobre el soporte de $m$ no supera
+$4{,}4\times10^{-16}$. La política recuperada normalizando $m_{zb}$ por estado
+coincide con la de $\arg\min_b A_V(z,b)$ en los cinco estados visitados.
+
+Dos precisiones que la derivación exige. Primera: $m$ cuenta usos esperados;
+\emph{no se reparte físicamente una carga entre futuros incompatibles}, y cada
+realización ejecuta una continuación atómica y segura. La ocupación es una
+herramienta de valoración, no una fracción de la carga. Segunda: la política
+estacionaria se recupera normalizando $m_{zb}$ por su suma en el estado, con
+tratamiento aparte de los estados no visitados, donde $m$ no informa.
+\end{observacion}
+
+\begin{observacion}[Los precios de estado dan el incentivo correcto]
+\label{obs:precios-estado}
+Esto cierra un círculo que estaba abierto entre tres secciones. El pago que la
+dinámica de revisión debe ver para elegir continuaciones es $-A_V$: con él, la
+comparación por pares prefiere las continuaciones de coste reducido nulo, que son
+las óptimas, y \cref{obs:equipo-barato} deja de ser una advertencia para
+convertirse en regla —comparar $c+PV-V$, no $c$—. Los precios de estado $V$ son
+un dual como lo son los precios de \emph{wrench} y de corredor, y se difunden
+del mismo modo; y el residual $\varrho$ que \cref{th:bellman-residual} tolera por
+unidad de duración es el error con que se conoce $A_V$, que
+\cref{pr:presupuesto-error} acota. Lo que sigue sin cubrir es la identificación
+de $c$ y $P$ para una instalación concreta, que es la calibración que
+\cref{obs:operacion-abierto} declara pendiente.
+\end{observacion}
+
+\subsection{Un solo potencial para seleccionar y para ejecutar}
+
+Hay una exigencia de coherencia que atraviesa \cref{th:potencial},
+\cref{th:testigo} y \cref{obs:precios-estado} y que conviene enunciar como
+principio: \emph{la función que selecciona participantes debe valorar el mismo
+problema que autoriza ejecutar} \cite{mayorga2026m1}. Una formulación coherente
+—todavía no equivalente al catálogo aproximado de la rama física, y así se
+declara— es el valor de misión
+\[
+  V_t(d)=\inf_{(X,U)\in\Tcal(d,Y_t)}\Phi_t(d,X,U),
+  \qquad
+  \Phi_t=V_f(X_{t+H})+\int_t^{t+H}\bigl[\ell_0\mathbf 1_{X\notin G}+\ell_E+\ell_U+\ell_R+\ell_{\mathrm{cambio}}\bigr]ds,
+\]
+con unidades normalizadas por escalas declaradas y pesos no negativos. Tres
+rasgos lo distinguen de un coste de trayectoria ordinario: se cuenta la energía
+de \emph{toda} la flota relevante, incluido el AMR excluido que debe retirarse;
+el conjunto objetivo $G$ exige posición, orientación, velocidades y
+\emph{permanencia}, y la descarga vertical es un requisito aparte; y el término
+$\ell_{\mathrm{cambio}}$ cobra las reconfiguraciones, que es lo que hace del
+autómata de \cref{def:automata} un objeto valorado y no solo secuenciado. Con
+$J_i=\Phi$ para todos —juego de interés común— o con costes marginales cuya
+diferencia unilateral sea la del potencial, el pseudogradiente
+$F=\operatorname{col}_i\nabla_{z_i}J_i$ es el de \cref{th:vi}, y el reposo de la
+revisión y el óptimo del testigo son el mismo punto.
+
+\begin{proposicion}[Batería sin regeneración y reserva en línea]
+\label{pr:bateria}
+Sin recuperación de energía, una aproximación de la potencia de batería del
+AMR $i$ es
+\[
+  P^{\mathrm{bat}}_i=P^{\mathrm{aux}}_i+P^{\mathrm{loss}}_i
+  +\sum_{s\in\{L,R\}}\frac{[\tau_{is}\,\omega_{w,is}]_+}{\eta_{is}},
+  \qquad
+  \dot E_i=-P^{\mathrm{bat}}_i,
+  \qquad
+  E_i\ \ge\ E^{\mathrm{retorno}}_i+E^{\mathrm{reserva}}_i ,
+\]
+y la desigualdad debe comprobarse en línea sobre la realización, no solo
+prefijarse en el catálogo.
+\end{proposicion}
+
+\begin{observacion}[Lo que el corchete positivo cambia]
+\label{obs:bateria-num}
+La potencia mecánica negativa —frenado, descenso— no se convierte
+automáticamente en recarga. Sobre una misión de $1500$~s con un paquete de
+$100$~Wh, contar esa potencia como recarga deja $90{,}2$~Wh; con el corchete
+positivo quedan $61{,}5$~Wh. La diferencia, $28{,}7$~Wh, es un $29\%$ del paquete:
+un catálogo que trate el frenado como recuperación sobreestima la autonomía en
+esa magnitud y autoriza continuaciones que la reserva no cubre. Es la versión
+con número de \cref{obs:media-energia}: la restricción media de \cref{pr:caudal}
+dimensiona la jornada, pero la desigualdad de reserva se comprueba en cada
+realización con el estado real, y una reserva prefijada en el catálogo no
+sustituye esa comprobación.
+\end{observacion}
+
+\subsection{Programar la recarga: la ranura ficticia}
+
+\Cref{obs:media-energia} advierte que una restricción de energía media no protege
+una realización concreta, y \cref{tab:posicionamiento} declara la gestión de
+recarga como abordada solo parcialmente. Hay una construcción que la cubre, y su
+interés está en un detalle de formulación.
+
+El obstáculo es que un presupuesto energético es una \emph{desigualdad} —cada AMR
+necesita al menos $E_k$— mientras que la maquinaria de \cref{obs:analogia} exige
+un simplex, es decir, una igualdad. El puente es añadir una \emph{ranura
+ficticia} que absorbe la holgura \cite{martinezPiazuelo2025gne}: con ella el
+presupuesto pasa de «$\le$» a «$=$» sin cambiar el problema, y toda la
+invariancia queda disponible.
+
+\begin{observacion}[Un programa de recarga con tres restricciones a la vez]
+\label{obs:recarga}
+Con cuatro AMR, cinco franjas horarias, tarifa con valle en la tercera, tope de
+potencia por AMR y capacidad del cuadro $C=2{,}2$, el mecanismo produce un
+programa que satisface simultáneamente tres cosas de tres maneras distintas:
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em,topsep=0.2em,itemsep=0.15em]
+  \item la masa del simplex se conserva exactamente —$6{,}000000$, $5{,}000000$,
+  $7{,}500000$, $5{,}000000$—, por la estructura de la dinámica;
+  \item el tope de potencia por AMR y franja se respeta en todo instante, porque
+  se impone de forma prescriptiva, multiplicando la tasa por el margen restante
+  (\cref{obs:prescriptivo});
+  \item la capacidad del cuadro se excede en $2{,}211$ frente a $2{,}2$ —un
+  $0{,}5\%$—, porque se impone con precio, y un precio solo actúa en el
+  equilibrio.
+\end{enumerate}
+Las tres restricciones del mismo problema se comportan exactamente como
+\cref{obs:criterio-restricciones} predice según el instrumento con que se
+imponen. Es la comprobación más directa de ese criterio que contiene el trabajo.
+\end{observacion}
+
+\begin{observacion}[Qué hace el mecanismo cuando no hay energía para todos]
+\label{obs:racionamiento}
+En el ensayo la demanda total, $11{,}5$, supera a la capacidad agregada,
+$5\times2{,}2=11$. El mecanismo no falla ni declara infactibilidad: el precio de
+capacidad sube hasta $8{,}7$–$9{,}6$, próximo a la penalización de no cargar,
+y el déficit se reparte —$0{,}17$, $0$, $0{,}18$ y $0{,}30$ entre los cuatro
+AMR—. Que el precio sombra de la capacidad tienda al valor de la demanda no
+servida es lo económicamente correcto, y significa que el racionamiento emerge
+del mismo mecanismo en lugar de requerir una lógica aparte.
+
+Lo que sigue sin abordarse es el \emph{emplazamiento} de las estaciones, que es
+una decisión estratégica distinta. La programación temporal, en cambio, queda
+cubierta por esta construcción.
+\end{observacion}
+
+\subsection{La capa discreta como juego posicional}
+
+La selección dentro del catálogo de continuaciones es un problema sobre un grafo
+de estados y decisiones, que es exactamente la clase de los \emph{juegos
+posicionales} \cite{lozovanu2024positional}: los jugadores controlan posiciones
+de un grafo dirigido, las estrategias estacionarias puras asignan a cada
+posición controlada un sucesor, y el interés está en la existencia de
+equilibrios en estrategias \emph{estacionarias y puras} —no aleatorizadas—,
+que es lo que un ejecutor determinista puede implementar.
+
+\begin{observacion}[Qué aporta esa lectura]
+\label{obs:posicional}
+Dos cosas concretas. Primera, cuando el grafo de dependencias entre cargas es
+acíclico —por disjunción de equipos o por precedencia de recursos—, la selección
+óptima se calcula por suma mínima sobre el grafo en tiempo polinómico, sin
+enumerar el catálogo. Segunda, la existencia de equilibrio en estrategias
+estacionarias puras es lo que legitima que el mecanismo devuelva una decisión
+determinista y reproducible, en lugar de una distribución sobre continuaciones.
+Ambas son propiedades de la capa discreta y no se transfieren a las variables
+continuas de \cref{def:estrategia}.
+
+La segunda requiere una hipótesis. La
+existencia de equilibrio de Nash en estrategias estacionarias \emph{puras} está
+demostrada para los juegos posicionales estocásticos con criterio descontado, y
+con criterio promedio \emph{bajo la propiedad de cadena única}
+\cite{lozovanu2024positional}. Es la misma \cref{s:unichain} que exige
+\cref{pr:caudal}, y no es casualidad: ambas afirmaciones dependen de que el
+comportamiento asintótico no dependa del estado de partida. Sin ella, lo que se
+garantiza es equilibrio en estrategias mixtas, y el mecanismo tendría que
+devolver una distribución sobre continuaciones en lugar de una decisión.
+\end{observacion}
+
+\begin{observacion}[Y hay una segunda condición, sobre lo que se observa]
+\label{obs:pura-observacion}
+La garantía de estrategia pura tiene además un supuesto tácito que conviene
+sacar a la luz: se refiere al juego sobre el \emph{estado}. Un AMR no decide
+sobre el estado sino sobre lo que observa a $n$ saltos, y dos estados distintos
+pueden producir la misma observación. En ese régimen —el de las cadenas
+parcialmente observables— la política óptima sobre observaciones es en general
+\emph{aleatorizada} \cite{clempner2024optimization}.
+
+La comprobación es tajante. Con tres estados de los que dos son indistinguibles
+y una acción distinta óptima en cada uno, las cuatro políticas deterministas
+sobre observaciones rinden $0{,}22439$, mientras que aleatorizar al observar la
+clase ambigua rinde $0{,}40690$: un $81\%$ más. Una política determinista debe
+tratar igual a dos estados que exigen acciones opuestas; aleatorizar reparte el
+acierto entre ambos.
+
+La consecuencia para este trabajo es de alcance, no de corrección: la
+reproducibilidad que \cref{obs:posicional} atribuye al mecanismo vale mientras la
+información local baste para distinguir las situaciones que exigen decisiones
+distintas. Cuando no baste —dos coaliciones candidatas indistinguibles a $n$
+saltos— insistir en determinismo tiene un coste medible, y la alternativa
+correcta es aleatorizar. Es otra vía por la que la calidad de la información
+entra en el rendimiento, junto a \cref{obs:tensado-coste}.
+\end{observacion}
+
+\subsection{Las estadísticas de la jornada son exactas, no asintóticas}
+
+Los indicadores de la capa discreta —fracción de flota en reserva, caudal
+esperado, probabilidad de cumplir un plazo— se han tratado hasta aquí como
+magnitudes a simular. No hace falta: tienen forma cerrada.
+
+\begin{teorema}[Distribución estacionaria de Gibbs]
+\label{th:gibbs}
+Sea $\Psi$ el potencial exacto de \cref{th:potencial} sobre el conjunto finito
+de configuraciones $\sigma$, y considérese la revisión asíncrona que propone un
+cambio según la regla logit y lo acepta con probabilidad de Metropolis. Entonces
+la cadena es reversible y su distribución estacionaria es exactamente
+\[
+  \pi(\sigma)=\frac{e^{-\beta\Psi(\sigma)}}{Z},
+  \qquad Z=\sum_{\sigma'}e^{-\beta\Psi(\sigma')} .
+\]
+En consecuencia: (i) la distribución es exacta para $N$ finito, sin invocar
+población grande; (ii) todo indicador expresable como esperanza bajo $\pi$ se
+obtiene de $Z$ y sus derivadas; (iii) al crecer $\beta$, $\pi$ se concentra en
+$\arg\min\Psi$.
+\end{teorema}
+
+\begin{proof}
+Con propuesta $q$ y aceptación
+$\alpha(\sigma\!\to\!\sigma')=\min\{1,\,q(\sigma|\sigma')e^{-\beta\Psi(\sigma')}/
+(q(\sigma'|\sigma)e^{-\beta\Psi(\sigma)})\}$ se verifica el balance detallado
+$\pi(\sigma)P(\sigma,\sigma')=\pi(\sigma')P(\sigma',\sigma)$ por construcción,
+luego $\pi$ es estacionaria; la irreducibilidad sobre el catálogo da unicidad.
+(iii) es inmediato de la forma exponencial.
+\end{proof}
+
+\begin{observacion}[Comprobación]
+\label{obs:gibbs-num}
+Sobre una cadena de seis configuraciones con potencial aleatorio y $\beta=2$, la
+estacionaria calculada como vector propio del operador de transición coincide con
+$e^{-\beta\Psi}/Z$ con error $1{,}1\times10^{-16}$: exactitud numérica, no
+aproximación.
+\end{observacion}
+
+\begin{observacion}[El mismo recorrido calcula el óptimo y la partición]
+\label{obs:semianillo}
+El cálculo de $\min_\sigma\Psi$ por programación dinámica sobre el catálogo y el
+cálculo de $Z$ son el mismo recorrido del mismo grafo con dos pares de
+operadores: $(\min,+)$ devuelve el óptimo y $(+,\times)$ devuelve la partición.
+El puente entre ambos es
+\[
+  -\beta^{-1}\ln\!\sum_{y}e^{-\beta h(y)}
+  \;=\;\min_y h(y)\;-\;\beta^{-1}\ln\!\sum_{y}e^{-\beta(h(y)-\min h)},
+  \qquad\text{luego}\quad
+  0\le \min_y h(y)+\beta^{-1}\ln\!\sum_y e^{-\beta h(y)}\le\frac{\ln|Y|}{\beta}.
+\]
+Con $|Y|=12$ el error medido es $0{,}018$ para $\beta=20$ frente a una cota de
+$0{,}124$, y $1{,}8\times10^{-4}$ para $\beta=100$ frente a $0{,}025$.
+
+Es la misma desigualdad de \emph{log-sum-exp} que acota la brecha de la
+envolvente compuesta en \cref{pr:barrera-compuesta}. Aparece dos veces por la
+misma razón: en ambos sitios se sustituye un extremo por una versión suave para
+poder derivar, y en ambos el precio de la suavización es logarítmico en el número
+de términos.
+\end{observacion}
+
+\begin{observacion}[Lo que cuesta la exactitud]
+\label{obs:gibbs-precio}
+Dos precios, y conviene decirlos. El primero: la exactitud de \cref{th:gibbs}
+exige el test de aceptación. Con propuesta logit pura la estacionaria es de Gibbs
+solo si los vecindarios de revisión son regulares —si todas las configuraciones
+ofrecen el mismo conjunto de alternativas—, condición que un catálogo real no
+cumple. Añadir la aceptación de Metropolis es barato y convierte una
+estacionaria aproximada en exacta.
+
+El segundo: $\beta$ grande concentra en el óptimo pero enlentece la exploración,
+porque el tiempo de escape de una cuenca de profundidad $\Delta$ crece como
+$e^{\beta\Delta}$. Precisión de la selección y velocidad de exploración son el
+mismo parámetro tirando en sentidos opuestos, y esa tensión no se elimina: se
+elige dónde situarse en ella.
+\end{observacion}
+
+\subsection{El reposo del logit no es un equilibrio de Nash}
+
+Hay un tercer precio de la temperatura, más serio que los dos anteriores porque
+afecta a \emph{dónde} se detiene el mecanismo y no solo a cuándo.
+
+\begin{proposicion}[Estacionariedad de Nash perturbada]
+\label{pr:nash-perturbado}
+Las dinámicas evolutivas de comparación por pares —como la de Smith, que gobierna
+el reparto de esfuerzo— y las de exceso de pago separable son \emph{Nash
+estacionarias}: se detienen exactamente en $\arg\max_{\tilde x}\tilde x^{\!\top}p$.
+Las de mejor respuesta perturbada —el logit, que gobierna el reclutamiento— no lo
+son. Satisfacen en su lugar la estacionariedad de Nash \emph{perturbada}: se
+detienen en $\arg\max_{\tilde x}\{\tilde x^{\!\top}p-\omega(\tilde x)\}$, donde
+$\omega$ es la perturbación asociada al protocolo \cite{martinezPiazuelo2025gne}.
+\end{proposicion}
+
+\begin{observacion}[Cuánto se desplaza, medido]
+\label{obs:desplazamiento-logit}
+La consecuencia es que el reposo del reclutamiento no es el equilibrio del juego
+sino el del juego perturbado, y la distancia entre ambos es $\Theta(1/\beta)$.
+Sobre un juego de población con tres estrategias, el producto
+$\beta\lVert x_{\mathrm{logit}}-x_{\mathrm{Nash}}\rVert$ converge a
+$0{,}275$ para un equilibrio interior —$0{,}228$ con $\beta=10$ hasta $0{,}275$
+con $\beta=200$— y se estabiliza en torno a $0{,}37$ cuando el equilibrio está en
+la frontera. Es decir, la desviación decae como el inverso de la temperatura
+inversa, sin anularse nunca a $\beta$ finito.
+
+La temperatura tiene por tanto \emph{tres} efectos y no dos: concentra la
+distribución estacionaria (\cref{th:gibbs}), enlentece la mezcla de forma
+exponencial (\cref{obs:gibbs-precio}) y desplaza el reposo respecto del
+equilibrio exacto. Los tres empujan en direcciones incompatibles: subir $\beta$
+corrige el desplazamiento y arruina la exploración.
+\end{observacion}
+
+\begin{observacion}[Qué obliga a corregir en los enunciados]
+\label{obs:nash-perturbado-alcance}
+Conviene precisar el alcance de lo afirmado en otras secciones. Lo demostrado
+sobre el reparto de esfuerzo y los precios no se ve afectado, porque esas capas
+usan comparación por pares y son Nash estacionarias. Lo que queda condicionado es
+la lectura del reposo del \emph{reclutamiento}: no debe leerse como un equilibrio
+del juego original, sino del perturbado, con la desviación acotada arriba.
+
+Esto es coherente con lo que \cref{obs:ruido} ya sostenía —el logit se emplea
+como perturbación de exploración y no como descripción del reposo— pero lo hace
+cuantitativo: la diferencia entre ambas lecturas es $\Theta(1/\beta)$ y no
+cualitativa.
+\end{observacion}
+
+\begin{observacion}[Los AMR pueden decidir con reglas distintas]
+\label{obs:sociedad-mixta}
+Un corolario práctico compensa lo anterior. Una sociedad \emph{mixta}, en la que
+unas poblaciones revisan por mejor respuesta perturbada y otras por comparación
+por pares o exceso de pago, sigue satisfaciendo la condición que sostiene la
+estabilidad asintótica —en su versión perturbada—
+\cite{martinezPiazuelo2025gne}. La arquitectura de este trabajo \emph{es} una
+sociedad mixta: logit en la capa discreta, comparación por pares en la continua.
+
+La lectura de diseño es más amplia que eso: los AMR no necesitan compartir regla
+de decisión. Una flota que mezcle generaciones o fabricantes, con lógicas de
+revisión distintas, conserva las garantías mientras cada regla pertenezca a una
+de las tres clases. Es una forma de heterogeneidad distinta de la de capacidades —hasta aquí solo eran heterogéneas las capacidades— y que resulta
+admisible sin cambiar nada.
+\end{observacion}
+
+\subsection{El límite de población}
+
+\Cref{obs:alcance-poblacional} declaró que la abstracción poblacional es
+aproximada en el reclutamiento porque $N$ es pequeño y las identidades importan.
+El otro extremo tiene su propia teoría.
+
+\begin{observacion}[Qué ocurre cuando la flota crece]
+\label{obs:campo-medio}
+Al crecer $N$ con la razón cargas/AMR fija, la interacción de cada agente con el
+resto pasa a depender solo de la \emph{distribución} de estrategias y no de las
+identidades: es el régimen de campo medio \cite{tembine2021meanfield}. En ese
+límite la hipótesis de influencia individual despreciable se recupera y el
+análisis poblacional se vuelve exacto, con brecha que decrece con $N$. La
+consecuencia útil no es el límite en sí, sino su lectura sobre el diseño: la
+arquitectura no se degrada de forma catastrófica al crecer la flota —mejora—, y
+los resultados atómicos de \cref{th:potencial} y \cref{th:descomposicion} siguen
+valiendo en todo el rango porque no invocan población grande. El régimen difícil
+es el intermedio, que es donde opera un almacén real.
+\end{observacion}
+
+\subsection{Posicionamiento frente a la práctica industrial}
+
+La literatura de automatización de almacenes define el bloqueo como la
+incapacidad de varios robots de avanzar porque cada uno pretende ocupar la
+posición que otro ocupa \cite{yildirim2023warehouse}: una espera circular. Las
+estrategias documentadas son mayoritariamente \emph{reactivas} —detectar el
+ciclo, pausar robots, poner el tiempo de tarea a infinito, apagar unos segundos,
+o declarar al vecino como obstáculo para forzar el recálculo— y la propia obra
+señala que la práctica puntera se desplaza hacia enfoques \emph{proactivos}, que
+buscan ruta alternativa antes de que el conflicto ocurra.
+
+\begin{observacion}[Dónde encaja el mecanismo de este trabajo]
+\label{obs:posicionamiento-almacen}
+El mecanismo de reserva vecinal de este trabajo es proactivo por construcción: la coalición solicita el
+testigo \emph{antes} de entrar en la zona compartida, y la terna lexicográfica
+$(w_i,P_i,-i)$ decide sin recálculo global. La diferencia con las estrategias
+tabuladas en esa literatura no es el mecanismo —las reservas por ventana
+temporal existen— sino la garantía: el resultado de ausencia condicional de
+inanición acota la espera bajo hipótesis explícitas, mientras que las soluciones
+industriales reportadas son heurísticas evaluadas empíricamente. Y el peaje
+multiclase de \cref{th:multiclase} añade algo que esa literatura no contempla:
+discriminar por la envolvente de la coalición, no solo por prioridad de tarea.
+\end{observacion}
+
+\begin{observacion}[Lo que la capa operativa aún no cierra]
+\label{obs:operacion-abierto}
+\Cref{pr:caudal} da el caudal máximo de un modelo de estados agregado; no
+predice el caudal de una instancia concreta con geometría, congestión y fallos.
+Enlazar ambos exige poblar $\tau_{zb}$ y $P(z\mid y,b)$ con medidas de campaña, y
+esa calibración no se hace aquí. Se declara, por tanto, como marco de
+dimensionamiento y no como predicción validada.
+\end{observacion}
+
+\subsection{Colas de tareas: estabilidad y lo que la física no deja estabilizar}
+
+La jornada es una cola: las tareas llegan mientras otras se ejecutan. El
+criterio de estabilidad es el clásico de servicio por peso máximo
+\cite{tassiulas1992stability}, y lo que importa aquí es que se conserva con
+servicio aproximado y que tiene un límite físico \cite{mayorga2026compendio}.
+
+\begin{teorema}[Estabilidad con servicio de peso máximo aproximado]
+\label{th:maxweight}
+Sea $Q_k(t+1)=[Q_k(t)-S_k(t)]_++A_k(t)$ con
+$\mathbb E[A(t)\,|\,Q(t)]=\lambda$, segundos momentos uniformemente acotados
+y servicios en una región compacta $\Sigma$. Si existe $\epsilon>0$ con
+$\lambda+\epsilon\mathbf 1\in\mathrm{conv}(\Sigma)$ y la política satisface
+$Q(t)^{\!\top}\mathbb E[S(t)\,|\,Q(t)]\ge\max_{s\in\Sigma}Q(t)^{\!\top}s-B$,
+entonces las colas son fuertemente estables y
+\begin{equation}
+  \label{eq:maxweight}
+  \limsup_{T}\frac1T\sum_{t=0}^{T-1}\sum_k\mathbb E[Q_k(t)]\le\frac{B_0+B}{\epsilon},
+\end{equation}
+con $B_0$ dependiente de los segundos momentos. Si en el modelo reducido el
+servicio maximiza $Q^{\!\top}S(s)-G(s)$ con $0\le G\le G_{\max}$, la hipótesis
+se cumple con $B=G_{\max}$.
+\end{teorema}
+
+\begin{proof}
+Con $V=\lVert Q\rVert^2/2$ y $([q-s]_++a)^2\le q^2+s^2+a^2+2q(a-s)$, la
+deriva es $\le B_0+Q^{\!\top}\lambda-Q^{\!\top}\mathbb E[S\,|\,Q]\le B_0+B-\epsilon\lVert Q\rVert_1$
+porque $\max_sQ^{\!\top}s\ge Q^{\!\top}(\lambda+\epsilon\mathbf 1)$;
+telescopar. Para el servicio penalizado,
+$Q^{\!\top}S(\hat s)\ge Q^{\!\top}S(s^\star)-G_{\max}$.
+\end{proof}
+
+\begin{proposicion}[Imposibilidad fuera de la región física]
+\label{pr:imposibilidad-fisica}
+Sea $\Sigma_{\mathrm{phys}}$ la región de vectores de servicio que satisfacen
+el certificado físico. Si existe $w\ge0$ con
+$w^{\!\top}\lambda>\sup_{s\in\Sigma_{\mathrm{phys}}}w^{\!\top}s$, ninguna
+política que respete el certificado estabiliza todas las colas con tasa
+media de llegadas $\lambda$.
+\end{proposicion}
+
+\begin{proof}
+El servicio acumulado ponderado en $T$ pasos es a lo sumo
+$T\sup_sw^{\!\top}s$, y las llegadas ponderadas crecen como
+$Tw^{\!\top}\lambda$; la diferencia, que acota inferiormente
+$w^{\!\top}Q(T)$, diverge linealmente.
+\end{proof}
+
+\begin{observacion}[El caudal es una región, no un número]
+\label{obs:region-caudal}
+\Cref{th:maxweight} y \cref{pr:imposibilidad-fisica} dan al programa de
+ocupación de \cref{s:unichain} su lectura de colas: el caudal sostenible no
+es un escalar sino la envolvente convexa de los vectores de servicio que el
+certificado admite, y una demanda fuera de ella no se estabiliza con ninguna
+regla de prioridad. El término de retraso acumulado del potencial de misión
+es exactamente el peso $Q$ de \cref{th:maxweight}, de modo que negociar con
+él es servir por peso máximo salvo una penalización acotada. Con tres colas,
+tasas $0{,}3$ y cinco vectores de servicio, una réplica reducida con
+penalización uniforme en $[0,0{,}4]$ mantiene el atraso medio en $5{,}1$
+tareas durante doscientos mil pasos.
+\end{observacion}

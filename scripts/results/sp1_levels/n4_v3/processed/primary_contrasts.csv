@@ -1,0 +1,6 @@
+question,metric,left,right,pairs,median_difference,ci_low,ci_high,p_value_uncorrected,p_value_holm
+RQ-E,feasible,fiii_distributed_vgne_R,fii_smith_R,600,0.055,0.03666666666666667,0.075,1.0244548320770264e-08,1.0244548320770264e-08
+RQ-E,optimality_gap,fiii_distributed_vgne_R,fii_smith_R,521,-0.0739063493281042,-0.09654798344818599,-0.050678034789657794,5.585321777346853e-35,2.7926608886734267e-34
+RQ-E,closure_operations,fiii_distributed_vgne_R,fii_smith_R,600,0.0,0.0,0.0,2.546246185908508e-17,1.0184984743634031e-16
+RQ-G,discounted_cost,perfect_foresight_dp,myopic_cold,30,-0.4864131383561172,-0.6491854446673324,-0.41522395817805513,1.862645149230957e-09,5.587935447692871e-09
+RQ-G,discounted_cost,perfect_foresight_dp,event_triggered_warm,30,-0.41522395817805513,-0.4864187274308422,-0.32884590254358814,1.862645149230957e-09,5.587935447692871e-09

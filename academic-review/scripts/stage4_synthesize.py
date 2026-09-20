@@ -12,8 +12,10 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import importlib.util
 import json
 import re
+import sys
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -36,6 +38,20 @@ REPORTS = BASE / "reports"
 FINAL = BASE / "final"
 for directory in [TABLES, FIGURES, REPORTS, FINAL]:
     directory.mkdir(parents=True, exist_ok=True)
+
+
+def load_bootstrap_module():
+    path = BASE / "scripts" / "bootstrap_literature.py"
+    spec = importlib.util.spec_from_file_location("bootstrap_for_stage4", path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Cannot load WoS coverage helpers from {path}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+BOOT = load_bootstrap_module()
 
 
 def utc_now() -> str:
@@ -188,6 +204,12 @@ def main() -> int:
                 generated.unlink()
     matrix = pd.read_csv(MATRIX, dtype=str, keep_default_na=False)
     corpus = pd.read_csv(CORPUS, dtype=str, keep_default_na=False)
+    wos_coverage = BOOT.wos_coverage_label(BOOT.wos_raw_files())
+    wos_note = (
+        "Web of Science is partially reconciled from declared exports; F01 and F02 remain incomplete."
+        if wos_coverage == "wos_partially_reconciled"
+        else "No complete Web of Science reconciliation is available."
+    )
     if matrix["candidate_id"].duplicated().any() or corpus["candidate_id"].duplicated().any():
         raise RuntimeError("Stage 4 input invariant failure: duplicate candidate IDs")
     merged = matrix.merge(corpus[["candidate_id", "industrial_context", "heterogeneity", "coalition_or_team", "physical_transport", "contact_or_wrench", "local_communication", "robustness_or_failures", "problem_family", "method_family", "robot_type", "screening_decision"]], on="candidate_id", how="left", suffixes=("", "_screening"))
@@ -323,7 +345,7 @@ def main() -> int:
         "",
         "## Status",
         "",
-        "This is a review-dataset audit, not a novelty determination. The corpus has no Web of Science export and the coding is a deterministic structural first pass. No statement below should be read as proof that the TFM contribution is new.",
+        f"This is a review-dataset audit, not a novelty determination. {wos_note} The coding is a deterministic structural first pass. No statement below should be read as proof that the TFM contribution is new.",
         "",
         "## Strong prior-art candidates for close reading",
         "",
@@ -341,7 +363,7 @@ def main() -> int:
         "- SP1 coalition formation: prior-art candidates are present in the corpus; the remaining question is whether a white-box local potential/population-game mechanism adds a verified capability beyond existing coalition, auction, consensus, or distributed-optimization methods.",
         "- SP2 rigid/prehensile transport: payload, contact, wrench, formation, and manipulation terms occur in the corpus; close reading must test whether mechanical feasibility and wrench distribution are jointly modeled rather than merely mentioned.",
         "- SP3 multi-coalition traffic: planning, safety, warehouse, and logistics signals occur, but their coupling to active transport coalitions must be coded from full text before any gap claim.",
-        "- Cross-interface claim: the dataset does not establish that the complete SP1-SP3 combination is absent. Treat integration as a hypothesis to test against the ranked prior-art records and the pending WoS export.",
+        "- Cross-interface claim: the dataset does not establish that the complete SP1-SP3 combination is absent. Treat integration as a hypothesis to test against the ranked prior-art records and complete WoS reconciliation.",
         "",
         "## Prohibited conclusions at this stage",
         "",
@@ -363,8 +385,9 @@ Run UTC: {utc_now()}
 
 All counts and figures are derived from CSV inputs at run time. The novelty
 audit is adversarial by design: it reports strong prior-art candidates and
-explicitly withholds a final novelty conclusion until close reading and the
-pending Web of Science export are available.
+explicitly withholds a final novelty conclusion until close reading and
+complete Web of Science reconciliation are available. Current WoS coverage:
+`{wos_coverage}`.
 """
     (REPORTS / "stage4_synthesis_qa.md").write_text(qa, encoding="utf-8")
     print(qa)

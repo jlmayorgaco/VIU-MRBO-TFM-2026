@@ -17,14 +17,14 @@
 \draw[draw=SPGrid,line width=0.55pt] (0.01,5.72) -- (13.49,5.72);
 \draw[sparena] (0.01,0.10) rectangle (13.49,6.35);
 \node[n2title] at (0.28,6.03)
-  {Dos hechos que la cardinalidad de N1 no puede expresar};
+  {Dos instancias con capacidad agregada suficiente};
 \draw[draw=SPGrid,line width=0.55pt] (6.75,0.35) -- (6.75,5.50);
 
 % ---- Izquierda: capacidad agregada suficiente pero no particionable -------
 \node[n2title,text=SPRed!70!black] at (0.32,5.32)
   {A · Suma suficiente, reparto imposible};
 \node[n2body,text width=5.85cm] at (0.32,4.98) {%
-  Dos robots de $4$\,kg y dos cargas de $5$ y $3$\,kg.
+  Dos AMR de $4$\,kg y dos cargas de $5$ y $3$\,kg.
   La oferta iguala exactamente a la demanda.};
 
 % Apilados en vertical: en la disposición horizontal previa, la flecha ra--la
@@ -39,17 +39,17 @@
 \draw[spassign,draw=SPRed] (rb) -- (la);
 \node[n2math] at (3.40,2.55) {$\sum_i c_i=8=\sum_k m_k$};
 \node[n2body,text width=5.85cm] at (0.32,2.24) {%
-  La carga de $5$\,kg no la levanta ningún robot solo, así que exige los dos y
+  La carga de $5$\,kg no la levanta ningún AMR solo, así que exige los dos y
   la de $3$\,kg se queda sin nadie.};
 \node[n2bad,text width=4.70cm] at (3.05,1.02)
   {INFACTIBLE con $\rho=1$: la capacidad agregada es\\
    necesaria, no suficiente};
 
-% ---- Derecha: la relajación asigna fracciones de robot -------------------
+% ---- Derecha: la relajación asigna fracciones de AMR   -------------------
 \node[n2title,text=SPBlue!70!black] at (7.05,5.32)
   {B · Relajación fraccional de reclutamiento};
 \node[n2body,text width=5.85cm] at (7.05,4.98) {%
-  Dos robots de $3$\,kg y una carga de $4$\,kg; uno está cerca
+  Dos AMR de $3$\,kg y una carga de $4$\,kg; uno está cerca
   ($d=1$) y el otro lejos ($d=10$).};
 
 \node[n2chip,text width=1.30cm] (sa) at (8.10,3.86) {$c_1=3$\\$d=1$};
@@ -64,7 +64,6 @@
 \node[n2chip,text width=2.30cm] at (8.30,1.72) {LP\; $J=4{,}33$};
 \node[n2ok,text width=2.55cm] at (11.15,1.72) {MILP\; $J=11$};
 \node[n2body,text width=6.20cm] at (7.05,1.44) {%
-  La relajación reparte fracción de capacidad por carga; una coalición física
-  debe reclutar el agente entero. La brecha no es ruido numérico: nace del
-  requisito atómico.};
+  La relajación reparte fracción de capacidad por carga; una coalición
+  ejecutable debe reclutar el AMR entero.};
 \end{tikzpicture}

@@ -1,16 +1,16 @@
-\subsection{SP6: juego potencial de re-reclutamiento tras un fallo}
-\label{subsec:sp6}
+\subsubsection{Etapa 2.3: re-reclutamiento y sustitución tras un fallo}
+\label{subsubsec:sp2-recovery}
 
-Cuando falla un miembro, la coalición puede perder el certificado de soporte, fuerza o torque aun con la carga detenida. SP6 publica ese déficit y permite que las reservas revisen su participación antes de reanudar la misión. La campaña considera una carga y un fallo; el reemplazo viaja a velocidad acotada hacia un contacto prefijado en una trayectoria libre.
+Cuando falla un miembro, la coalición puede perder el certificado de soporte, fuerza o torque aun con la carga detenida. E6 publica ese déficit y permite que las reservas revisen su participación antes de reanudar la misión. La campaña considera una carga y un fallo; el reemplazo viaja a velocidad acotada hacia un contacto prefijado en una trayectoria libre.
 
-\subsubsection{Fallo y reserva}
+\paragraph{Fallo y reserva}
 
 El reemplazo solo se moviliza después de que las revisiones locales reduzcan $D_6(\boldsymbol x)$ a cero, y la guardia vuelve a comprobar el certificado antes del arribo (Figura~\ref{fig:sp6-scenario}).
 
 \begin{figure}[!htbp]
   \centering
   \begin{spdiagram}
-    \spdrawarena{SP6-C \textbar\ fallo, juego de reparación y guardia}
+    \spdrawarena{E6-C \textbar\ fallo, juego de reparación y guardia}
     \draw[spcoalition] (0.55, 1.02) rectangle (5.15, 4.48);
     \node[spannotation] at (2.85, 4.18) {A \textbar\ $t=t_f$};
     \node[spload] (loadA) at (2.70, 2.65) {$L_k$};
@@ -52,12 +52,12 @@ El reemplazo solo se moviliza después de que las revisiones locales reduzcan $D
     \draw[spmotion] (9.75, 0.34) -- (10.55, 0.34);
     \node[splegend,anchor=west] at (10.68, 0.34) {arribo};
   \end{spdiagram}
-  \caption{SP6-C: la carga publica su déficit, las reservas revisan su participación y la guardia impide reabrir una coalición insuficiente.}
+  \caption{E6-C: la carga publica su déficit, las reservas revisan su participación y la guardia impide reabrir una coalición insuficiente.}
   \label{fig:sp6-scenario}
   \viuownsource
 \end{figure}
 
-\subsubsection{Problema de optimización de referencia}
+\paragraph{Problema de optimización de referencia}
 
 Sea $\mathcal R_k$ la reserva, $n_R=|\mathcal R_k|$, $A_6$ los recursos, $\boldsymbol d_k^6$ el déficit y $\boldsymbol c_i^6$ la contribución normalizada. Sus tres componentes son soporte, fuerza y torque. $x_i$ recluta y $\kappa_i^6$ agrega desplazamiento y cambio adimensionales.
 
@@ -72,13 +72,13 @@ El oráculo central resuelve
 \end{equation}
 La enumeración de los $2^{n_R}$ perfiles certifica el coste mínimo postfallo con información global y sirve como techo para los métodos locales.
 
-\subsubsection{Métodos de comparación}
+\paragraph{Métodos de comparación}
 
 ALLIANCE aporta el antecedente de activación alternativa \parencite{parker1998alliance}; las subastas dinámicas, ACBBA y CBBA-PR motivan la revisión asíncrona tras eventos \parencite{nanjanath2006dynamicAuctions,johnson2011acbba,buckman2019cbbaPr}. Como esas fuentes no incorporan el certificado de \emph{wrench} usado aquí, la Tabla~\ref{tab:sp6-methods} distingue el mecanismo de reasignación de la guardia física.
 
 \begin{table}[!htbp]
   \centering
-  \caption{Métodos ejecutados y alcance de comparación en SP6-C.}
+  \caption{Métodos ejecutados y alcance de comparación en E6-C.}
   \label{tab:sp6-methods}
   \scriptsize
   \setlength{\tabcolsep}{3pt}
@@ -96,7 +96,7 @@ ALLIANCE aporta el antecedente de activación alternativa \parencite{parker1998a
   \viuownsource
 \end{table}
 
-\subsubsection{Juego de reparación}
+\paragraph{Juego de reparación}
 
 Defínanse el déficit residual y el coste de movilización
 \begin{equation}
@@ -165,7 +165,7 @@ La construcción del Anexo~\ref{app:sp6-proofs} usa un soporte de coste $M$ y do
 La utilidad enlaza el déficit físico con la decisión de cada reserva. El umbral del Teorema~\ref{thm:sp6-feasible-nash} excluye equilibrios deficitarios y los costes positivos excluyen miembros redundantes. Estas condiciones no controlan el coste del peor equilibrio, que puede crecer sin cota frente al oráculo.
 \end{contribucion}
 
-\subsubsection{Movimiento del reemplazo}
+\paragraph{Movimiento del reemplazo}
 
 Una decisión guardada no reanuda instantáneamente el transporte. Para el reemplazo $i$, sean $\ell_i$ la distancia al contacto, $v_i^{\min}>0$ una velocidad garantizada y $\tau_s$ el asentamiento. Si la detección tarda como máximo $\bar\tau_d$ y entre mejoras aceptadas transcurre como máximo $\bar\tau_a$, se obtiene la siguiente cota condicionada.
 
@@ -183,14 +183,14 @@ Si el lado derecho no supera el tiempo seguro remanente $T_{\mathrm{safe}}$, el 
 
 El término $\ell_i/v_i^{\min}$ aproxima el viaje por un segmento libre y omite el giro y la evitación; $\tau_s$ representa el asentamiento por separado. La campaña evalúa cierre, restauración del certificado y puntualidad hasta el contacto.
 
-\subsubsection{Diseño experimental}
+\paragraph{Diseño experimental}
 
-\input{../results/processed/sp6/SP6_RECOVERY_CONFIRMATORY_v1/tables/sp6_numbers.tex}
+\input{../legacy/results/processed/sp6/SP6_RECOVERY_CONFIRMATORY_v1/tables/sp6_numbers.tex}
 El diseño contiene \SPSixWorlds{} mundos pareados y \SPSixRuns{} ejecuciones. De ellos, \SPSixRecoverableWorlds{} disponen de reserva suficiente y \SPSixIrrecoverableWorlds{} carecen de un recurso; el endpoint principal es la restauración del certificado.
 
 \begin{table}[!htbp]
   \centering
-  \caption{Diseño experimental de SP6-C.}
+  \caption{Diseño experimental de E6-C.}
   \label{tab:sp6-design}
   \viutablefont
   \begin{tabularx}{0.94\textwidth}{>{\raggedright\arraybackslash}p{2.4cm} Y}
@@ -203,19 +203,19 @@ El diseño contiene \SPSixWorlds{} mundos pareados y \SPSixRuns{} ejecuciones. D
     Controles & Enumeración de perfiles, correspondencia de utilidad y potencial, condición de Nash, ascenso estricto, imposibilidad y cota temporal. \\
     \bottomrule
   \end{tabularx}
-  \viusource{elaboración propia a partir del protocolo experimental de SP6}
+  \viusource{elaboración propia a partir del protocolo experimental de E6}
 \end{table}
 
-\subsubsection{Resultados}
+\paragraph{Resultados}
 
 En los 480 mundos, todo método que intenta reparar alcanza una tasa de certificado de $0.75$, pues una cuarta parte de las instancias es imposible por construcción (Tabla~\ref{tab:sp6-results}).
 
 \begin{table}[!htbp]
   \centering
-  \caption{Resultados agregados de SP6-C sobre 480 mundos pareados por método.}
+  \caption{Resultados agregados de E6-C sobre 480 mundos pareados por método.}
   \label{tab:sp6-results}
   \scriptsize
-  \resizebox{\textwidth}{!}{\input{../results/processed/sp6/SP6_RECOVERY_CONFIRMATORY_v1/tables/sp6_results.tex}}
+  \resizebox{\textwidth}{!}{\input{../legacy/results/processed/sp6/SP6_RECOVERY_CONFIRMATORY_v1/tables/sp6_results.tex}}
   \viuownsource
 \end{table}
 
@@ -230,8 +230,8 @@ No se definió una función que combinara coste, puntualidad y comunicación; el
 
 La validez depende sobre todo del certificado aditivo y de la calibración exponencial de $\delta_{\min}$ fuera de línea. Un QP geométrico y una trayectoria con obstáculos podrían cambiar tanto la coalición elegida como la puntualidad; los fallos múltiples no se ensayaron.
 
-\subsubsection{Síntesis}
+\paragraph{Síntesis}
 
 Con reserva suficiente y una penalización por encima del umbral, los Nash puros coinciden con reparaciones factibles mínimas por inclusión y la mejor respuesta termina en un número finito de cambios. Las 480 instancias respetaron esa caracterización. El plazo estrecho reveló la limitación operativa: restaurar el certificado produjo éxito temporal \SPSixTightPotentialSuccess{}, por debajo de \SPSixTightGreedySuccess{} del voraz.
 
-$\operatorname{PoS}_6=1$ garantiza que existe un Nash óptimo, pero $\operatorname{PoA}_6=+\infty$ permite equilibrios arbitrariamente caros. SP7 toma las coaliciones restauradas como agentes compuestos y evalúa sus conflictos de ruta.
+$\operatorname{PoS}_6=1$ garantiza que existe un Nash óptimo, pero $\operatorname{PoA}_6=+\infty$ permite equilibrios arbitrariamente caros. E7 toma las coaliciones restauradas como agentes compuestos y evalúa sus conflictos de ruta.

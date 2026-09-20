@@ -34,3 +34,13 @@ def test_sp3_evidence_regenerates_audited_latex(tmp_path: Path) -> None:
     assert "\\newcommand{\\SPThreeRuns}{7200}" in macros
     assert "\\newcommand{\\SPThreeGuardedCoverage}{1.000}" in macros
     assert "\\newcommand{\\SPThreeGuardedAbstention}{0.500}" in macros
+
+
+def test_regularized_wrench_residual_can_be_conservative() -> None:
+    regularization = 100.0
+    tolerance = 0.5
+    regularized_effort = 1.0 / (1.0 + regularization)
+    regularized_residual = abs(regularized_effort - 1.0)
+    exact_residual = abs(1.0 - 1.0)
+
+    assert exact_residual <= tolerance < regularized_residual

@@ -36,6 +36,8 @@ SP_LABELS: tuple[str, ...] = (
 SP_SCOPE_CODES: tuple[int, ...] = (0, 0, 0, 0, 0, 1, 0, 2, 0)
 
 _YEAR_RE = re.compile(r"\(((?:19|20)\d{2})\)")
+_APA_NO_DATE_RE = re.compile(r"\(\s*s\.\s*f\.\s*\)", re.IGNORECASE)
+_URL_RE = re.compile(r"https?://[^\s)\]]+")
 _SP_RE = re.compile(r"SP(\d)(?:\s*(?:--|–|-)\s*(?:SP)?(\d))?")
 _UNESCAPED_PIPE_RE = re.compile(r"(?<!\\)\|")
 
@@ -45,7 +47,7 @@ class LedgerEntry:
     """Verified ledger entry with the fields required by the coverage audit."""
 
     key: str
-    year: int
+    year: int | None
     subproblems: frozenset[int]
 
 
@@ -65,6 +67,28 @@ def _parse_subproblems(topic: str) -> frozenset[int]:
     return frozenset(subproblems)
 
 
+def _validate_undated_web_reference(
+    *,
+    key: str,
+    reference: str,
+    url_cell: str,
+    evidence: str,
+    date_match: re.Match[str],
+) -> None:
+    """Require auditable metadata before accepting an APA ``(s. f.)`` row."""
+
+    author = reference[: date_match.start()].strip().rstrip(".,; ")
+    title = reference[date_match.end() :].strip().lstrip(". ").strip()
+    if not author:
+        raise ValueError(f"Verified undated web row {key} has no author")
+    if not title:
+        raise ValueError(f"Verified undated web row {key} has no title")
+    if _URL_RE.search(url_cell) is None:
+        raise ValueError(f"Verified undated web row {key} has no HTTP(S) URL")
+    if not evidence.strip() or evidence.strip().casefold() in {"-", "—", "n/a", "na"}:
+        raise ValueError(f"Verified undated web row {key} has no verification evidence")
+
+
 def parse_verified_entries(ledger_text: str) -> tuple[LedgerEntry, ...]:
     """Parse verified Markdown-table rows without inferring missing metadata."""
 
@@ -75,16 +99,31 @@ def parse_verified_entries(ledger_text: str) -> tuple[LedgerEntry, ...]:
         cells = _split_markdown_row(line)
         if len(cells) < 8:
             raise ValueError(f"Malformed ledger row at line {line_number}")
-        key, state, reference, _, topic = cells[:5]
+        key, state, reference, url_cell, topic, _, evidence = cells[:7]
         if state != "VERIFICADA":
             continue
         year_match = _YEAR_RE.search(reference)
-        if year_match is None:
-            raise ValueError(f"Verified ledger row {key} has no publication year")
+        year: int | None
+        if year_match is not None:
+            year = int(year_match.group(1))
+        else:
+            no_date_match = _APA_NO_DATE_RE.search(reference)
+            if no_date_match is None:
+                raise ValueError(
+                    f"Verified ledger row {key} has no publication year or APA (s. f.) marker"
+                )
+            _validate_undated_web_reference(
+                key=key,
+                reference=reference,
+                url_cell=url_cell,
+                evidence=evidence,
+                date_match=no_date_match,
+            )
+            year = None
         entries.append(
             LedgerEntry(
                 key=key.strip("`"),
-                year=int(year_match.group(1)),
+                year=year,
                 subproblems=_parse_subproblems(topic),
             )
         )
@@ -103,7 +142,9 @@ def coverage_counts(
             sum(
                 1
                 for entry in materialized
-                if sp in entry.subproblems and start <= entry.year <= end
+                if entry.year is not None
+                and sp in entry.subproblems
+                and start <= entry.year <= end
             )
             for start, end in periods
         )

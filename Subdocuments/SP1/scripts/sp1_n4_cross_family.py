@@ -98,6 +98,23 @@ def spanish_tick(value: float, _position: float | None = None) -> str:
     return spanish_number(value)
 
 
+def spanish_log_tick(value: float, _position: float | None = None) -> str:
+    """Marca de un eje logaritmico: siempre potencia de diez.
+
+    Mezclar 0,001 con 1,0 x 10^{-4} en el mismo eje obliga al lector a cambiar
+    de sistema a mitad de la escala.
+    """
+
+    if value <= 0:
+        return ""
+    exponent = int(round(math.log10(value)))
+    if not math.isclose(value, 10.0**exponent, rel_tol=1e-9):
+        return ""
+    if exponent == 0:
+        return "1"
+    return rf"$10^{{{exponent}}}$"
+
+
 def latex_decimal(value: float, digits: int) -> str:
     return f"{value:.{digits}f}".replace(".", r"{,}")
 
@@ -765,6 +782,7 @@ def plot_population(static: pd.DataFrame, ranking: pd.DataFrame, output: Path) -
     for patch in boxes["boxes"]:
         patch.set(facecolor="#DDEAF7", edgecolor="#2F6FB0", linewidth=0.9)
     axes[0].set_yscale("log")
+    axes[0].yaxis.set_major_formatter(FuncFormatter(spanish_log_tick))
     axes[0].set_ylabel("Déficit continuo final [kg]")
     axes[0].set_title("A | Estado continuo final")
     boxes = axes[1].boxplot(gap, tick_labels=labels, patch_artist=True, showfliers=False)
@@ -793,7 +811,10 @@ def plot_population(static: pd.DataFrame, ranking: pd.DataFrame, output: Path) -
     for ax in axes:
         ax.grid(True, axis="y")
         ax.tick_params(axis="x", rotation=18)
-        ax.yaxis.set_major_formatter(FuncFormatter(spanish_tick))
+        # El eje logaritmico ya tiene su propio formateador; sobrescribirlo aqui
+        # devolveria la mezcla de 0,001 con 1,0 x 10^{-4} en la misma escala.
+        if ax.get_yscale() != "log":
+            ax.yaxis.set_major_formatter(FuncFormatter(spanish_tick))
     save_figure(fig, output / "n4_fii_continuous_atomic")
 
 

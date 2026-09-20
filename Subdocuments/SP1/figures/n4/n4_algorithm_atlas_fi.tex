@@ -14,26 +14,24 @@
  flow/.style={->,thick,draw=black!40}]
 
 \node[font=\scriptsize\bfseries,text=black!70] at (0,4.02)
- {MISMO MUNDO: $N=6$, $K=3$, $c_i=1$, $m=(2,2,2)$};
-\node[font=\tiny,text=black!55] at (0,3.70)
- {los robots grises permanecen fijos; cada fila cambia únicamente la regla de revisión unilateral};
+ {$N=6$, $K=3$, $c_i=1$, $m=(2,2,2)$};
 
 % --------------------------------------------------------------- BR
 \node[band] (br) at (0,2.45) {};
 \node[anchor=north west,font=\scriptsize\bfseries] at ($(br.north west)+(.17,-.13)$)
- {Geo-QPG-BR \textcolor{black!45}{$\mid$ elige el máximo}};
-\node[font=\tiny\bfseries,text=black!55] at (-3.82,2.92) {ANTES};
+ {Geo-QPG-BR \textcolor{black!45}{$\mid$ $\arg\max_k g_i(k)$}};
+\node[font=\tiny\bfseries,text=black!55] at (-3.82,2.92) {antes};
 \node[robot] (br-r) at (-4.52,2.48) {$r_1$\\$c=1$};
 \node[load] (br-k1) at (-4.62,1.78) {$k_1$\\$Q/m=3/2$};
 \node[load] (br-k2) at (-3.52,1.78) {$k_2$\\$Q/m=1/2$};
 \node[load] (br-k3) at (-2.42,1.78) {$k_3$\\$Q/m=2/2$};
 \draw[assign] (br-r)--(br-k1);
 \draw[proposal] (br-r) to[bend left=18] (br-k2);
-\node[font=\tiny,fill=white,inner sep=.8pt] at (-3.32,2.24) {$g=.8$};
+\node[font=\tiny,fill=white,inner sep=.8pt] at (-3.34,2.30) {$g_i=0{,}8$};
 \node[rule] (br-rule) at (0,2.30) {$k^\star=\arg\max_k g_i(k)$\\commit si $\Delta\Psi<_{\rm lex}0$};
 \draw[flow] (-1.72,2.30)--(br-rule.west);
 \draw[flow] (br-rule.east)--(1.72,2.30);
-\node[font=\tiny\bfseries,text=black!55] at (3.82,2.92) {DESPUÉS};
+\node[font=\tiny\bfseries,text=black!55] at (3.82,2.92) {después};
 \node[robot,draw=SPGreen] (br2-r) at (3.52,2.48) {$r_1$\\$c=1$};
 \node[load] (br2-k1) at (2.42,1.78) {$k_1$\\$Q/m=2/2$};
 \node[load] (br2-k2) at (3.52,1.78) {$k_2$\\$Q/m=2/2$};
@@ -43,21 +41,21 @@
 % --------------------------------------------------------------- ASR
 \node[band] (asr) at (0,.02) {};
 \node[anchor=north west,font=\scriptsize\bfseries] at ($(asr.north west)+(.17,-.13)$)
- {Geo-ASR \textcolor{black!45}{$\mid$ sorteo proporcional entre mejoras}};
-\node[font=\tiny\bfseries,text=black!55] at (-3.82,.49) {PROPUESTAS};
+ {Geo-ASR \textcolor{black!45}{$\mid$ $\Pr(k)\propto[g_i(k)]_+$}};
+\node[font=\tiny\bfseries,text=black!55] at (-3.82,.49) {propuestas};
 \node[robot] (as-r) at (-4.52,.05) {$r_1$\\$c=1$};
 \node[load] (as-k1) at (-4.62,-.65) {$k_1$\\$Q/m=3/2$};
 \node[load] (as-k2) at (-3.52,-.65) {$k_2$\\$Q/m=1/2$};
 \node[load] (as-k3) at (-2.42,-.65) {$k_3$\\$Q/m=1/2$};
 \draw[assign] (as-r)--(as-k1);
 \draw[proposal,line width=1.15pt] (as-r) to[bend left=12] (as-k2);
-\node[font=\tiny,fill=white,inner sep=.8pt] at (-3.20,-.14) {$P=.6$};
+\node[font=\tiny,fill=white,inner sep=.8pt] at (-3.52,-.30) {$P=0{,}6$};
 \draw[proposal,line width=.55pt] (as-r) to[bend left=24] (as-k3);
-\node[font=\tiny,fill=white,inner sep=.8pt] at (-2.30,.14) {$P=.4$};
+\node[font=\tiny,fill=white,inner sep=.8pt] at (-2.42,-.30) {$P=0{,}4$};
 \node[rule] (as-rule) at (0,-.13) {$P_i(k)=\dfrac{[g_i(k)]_+}{\sum_q[g_i(q)]_+}$\\misma vecindad $h=1$};
 \draw[flow] (-1.72,-.13)--(as-rule.west);
 \draw[flow] (as-rule.east)--(1.72,-.13);
-\node[font=\tiny\bfseries,text=black!55] at (3.82,.49) {MUESTRA};
+\node[font=\tiny\bfseries,text=black!55] at (3.82,.49) {muestra};
 \node[robot,draw=SPGreen] (as2-r) at (3.52,.05) {$r_1$\\$c=1$};
 \node[load] (as2-k1) at (2.42,-.65) {$k_1$\\$Q/m=2/2$};
 \node[load] (as2-k2) at (3.52,-.65) {$k_2$\\$Q/m=2/2$};
@@ -67,8 +65,8 @@
 % --------------------------------------------------------------- LLL
 \node[band] (lll) at (0,-2.41) {};
 \node[anchor=north west,font=\scriptsize\bfseries] at ($(lll.north west)+(.17,-.13)$)
- {Geo-LLL \textcolor{black!45}{$\mid$ exploración de Gibbs}};
-\node[font=\tiny\bfseries,text=black!55] at (-3.82,-1.94) {ESTADO FACTIBLE};
+ {Geo-LLL \textcolor{black!45}{$\mid$ $\Pr(k)\propto e^{\beta u_i(k)}$}};
+\node[font=\tiny\bfseries,text=black!55] at (-3.82,-1.94) {factible};
 \node[robot] (ll-r) at (-3.52,-2.38) {$r_1$\\$c=1$};
 \node[load] (ll-k1) at (-4.62,-3.08) {$k_1$\\$Q/m=2/2$};
 \node[load] (ll-k2) at (-3.52,-3.08) {$k_2$\\$Q/m=2/2$};
@@ -79,7 +77,7 @@
 \node[rule] (ll-rule) at (0,-2.56) {$P_i(k)\propto e^{\beta u_i(k)}$\\puede aceptar $\Delta\Psi>0$};
 \draw[flow] (-1.72,-2.56)--(ll-rule.west);
 \draw[flow] (ll-rule.east)--(1.72,-2.56);
-\node[font=\tiny\bfseries,text=black!55] at (3.82,-1.94) {PASO EXPLORATORIO};
+\node[font=\tiny\bfseries,text=black!55] at (3.82,-1.94) {paso exploratorio};
 \node[robot,draw=SPRed] (ll2-r) at (2.52,-2.38) {$r_1$\\$c=1$};
 \node[load] (ll2-k1) at (2.42,-3.08) {$k_1$\\$Q/m=3/2$};
 \node[load] (ll2-k2) at (3.52,-3.08) {$k_2$\\$Q/m=1/2$};

@@ -1,13 +1,13 @@
 \begingroup
 		\pgfmathsetlengthmacro{\spxunitintro}{.90*\linewidth/13.5}
 		\begin{tikzpicture}[x=\spxunitintro,y=.90cm]
-			\spdrawarena{Asignación multi-robot: método húngaro por puestos frente a MILP heterogéneo}
+			\spdrawarena{Asignación por puestos frente a MILP con capacidad individual}
 			\draw[draw=SPGrid,line width=0.8pt] (6.75,0.75) -- (6.75,4.65);
 			
 			\node[sptitle,fill=SPBlue!9,anchor=west] at (0.35,4.35)
-			{Robots homogéneos · método húngaro};
+			{AMR homogéneos · método húngaro};
 			\node[spmuted,anchor=west] at (0.35,3.92)
-			{$c_i^{\mathrm{pay}}=\bar c^{\mathrm{pay}}$, pero $m_1\neq m_2$};
+			{$c_i^{\mathrm{pay}}=\overline{c}^{\mathrm{pay}}$, pero $m_1\neq m_2$};
 			\draw[spcoalition] (0.45,1.66) rectangle (1.55,3.69);
 			\node[sprobot,minimum size=6.4mm,font=\tiny\bfseries]
 			(hr1) at (1.00,3.38) {$r_1$};
@@ -47,7 +47,7 @@
 			\draw[spassign] (hr4) -- (hs21);
 			
 			\node[sptitle,fill=SPGreen!9,anchor=west] at (7.05,4.35)
-			{Robots y cargas heterogéneos · MILP};
+			{AMR y cargas heterogéneos · MILP};
 			\node[spmuted,anchor=west] at (7.05,3.92)
 			{$c^{\mathrm{pay}}=(1,1,2,2)$;\quad $m=(4,2)$};
 			\draw[spcoalition] (7.20,1.83) rectangle (8.20,3.72);

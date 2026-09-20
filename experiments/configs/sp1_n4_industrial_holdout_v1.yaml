@@ -1,0 +1,150 @@
+schema_version: sp1-n4-industrial-holdout-v1
+campaign_id: SP1_N4_INDUSTRIAL_HOLDOUT_v1
+status: frozen_before_run
+created_utc: 2026-08-19
+base_seed: 2026081902
+
+# ---------------------------------------------------------------------------
+# POR QUE EXISTE ESTA CAMPANA
+#
+# Los cinco generadores de SP1 (uniform, clustered, separated, ring, corridor)
+# son geometrias normalizadas que se usaron para DESARROLLAR el metodo. Todo lo
+# que el capitulo afirma sobre h_c* y sobre la utilidad de las revisiones
+# bilaterales se ha medido sobre ese mismo banco.
+#
+# Esta campana somete el metodo a cuatro plantas de tipo industrial que no
+# participaron en su diseno. El objetivo NO es ganar. El objetivo es responder:
+#
+#     ¿se reproduce fuera del banco de desarrollo la utilidad de las
+#      revisiones bilaterales?
+#
+# Un resultado negativo se reporta igual y mejora el capitulo: acota el dominio
+# de validez en vez de dejarlo implicito.
+# ---------------------------------------------------------------------------
+
+q_bar_kg: 5.0
+workspace_m: [100.0, 100.0]
+
+generator:
+  capacity_distribution: lognormal_renormalized
+  demand_split_alpha: 3.0
+  source: nuevo   # requiere implementar los cuatro layouts de abajo
+
+# ---------------------------------------------------------------------------
+# BANCO CONGELADO: 4 x 3 x 2 x 20 = 480 mundos
+# ---------------------------------------------------------------------------
+layouts:
+  cross_aisle:
+    description: pasillos principales cruzados por transversales; cargas en las intersecciones
+    amr_placement: uniforme sobre los pasillos
+    load_placement: intersecciones con jitter gaussiano
+  parallel_aisles:
+    description: pasillos paralelos sin transversales; vecindad casi unidimensional
+    amr_placement: uniforme dentro de cada pasillo
+    load_placement: uniforme dentro de cada pasillo
+  docks_staging:
+    description: muelles en un borde y zona de preparacion enfrente
+    amr_placement: banda de muelles
+    load_placement: banda de preparacion
+  open_bottleneck:
+    description: dos areas abiertas unidas por un unico paso estrecho
+    amr_placement: reparto desigual entre las dos areas
+    load_placement: reparto desigual, invertido respecto a los AMR
+
+regimes:
+  nominal:   {robot_count: 16, load_count: 5, pressure: 0.70}
+  loaded:    {robot_count: 16, load_count: 5, pressure: 0.85}
+  stressed:  {robot_count: 16, load_count: 6, pressure: 0.95}
+
+# Solo redes CONECTADAS: la particion permanente ya cumplio su papel de control
+# negativo en N3.E3 y aqui solo anadiria ruido.
+networks:
+  medium:    1.50      # multiplicador de r_c
+  threshold: 1.05
+
+seeds_per_cell: 20
+total_worlds: 480      # 4 layouts x 3 regimenes x 2 redes x 20 semillas
+
+capacity_cv: 0.65      # fijo: la heterogeneidad ya se barrio en N1 y N3
+
+# ---------------------------------------------------------------------------
+# METODOS: NINGUNO NUEVO
+# ---------------------------------------------------------------------------
+methods:
+  - milp_highs               # oraculo, limite de tiempo declarado
+  - capacity_cbba_rb
+  - weighted_pair_grape
+  - geo_qpg_u                # BR,  h = 1
+  - geo_qpg_p_dmis           # 2BR con DMIS+TX, h = 2
+  - geo_qpg_c3               # C3,  h = 3, como referencia de rescate
+oracle_time_limit_s: 60.0
+total_runs: 2880           # 480 x 6
+
+# ---------------------------------------------------------------------------
+# HIPOTESIS PREESPECIFICADAS
+# ---------------------------------------------------------------------------
+hypotheses:
+  primary:
+    id: H-N4H.1
+    null: >-
+      en el banco industrial, pasar de h=1 a h=2 no reduce la brecha mediana
+      frente al MILP sobre el soporte comun
+    alternative: >-
+      la reduccion existe y su IC 95 % pareado excluye el cero
+    decision: >-
+      IC 95 % bootstrap pareado por mundo de la diferencia 2BR menos BR
+  secondary:
+    id: H-N4H.2
+    alternative: >-
+      la distribucion de h_c* en el banco industrial difiere de la del banco de
+      desarrollo
+    test: chi-cuadrado sobre las tres categorias; descriptivo por layout
+  tertiary:
+    id: H-N4H.3
+    alternative: >-
+      el sobrecoste en bytes/AMR de DMIS+TX se mantiene en el mismo orden de
+      magnitud que en el banco de desarrollo
+    test: IC 95 % pareado; sin claim causal
+
+metrics:
+  primary:
+    - p_feasible                 # P(factible | oraculo factible)
+    - gap_vs_milp_common_support
+  secondary:
+    - p_hstar_equals_2
+    - p_hstar_equals_3
+    - p_no_escape_through_3
+    - bytes_per_amr
+    - runtime_ms
+  per_layout: true               # todas se reportan tambien desglosadas
+
+analysis:
+  confidence_level: 0.95
+  bootstrap_resamples: 4000
+  gap_requires: oracle_status == OPTIMAL and method feasible
+  common_support: >-
+    mundos en que los cinco metodos distribuidos entregan salida factible y el
+    oraculo certifico el optimo
+  multiplicity: Holm por familia; la familia primaria son los contrastes de brecha
+  search_truncation: h_max = 3, identico al banco de desarrollo
+  wording_rule: >-
+    la categoria residual se nombra "sin escape conectado detectado hasta h=3",
+    nunca "h_c* > 3"
+
+acceptance:
+  holdout_disjoint: >-
+    ningun world_digest puede coincidir con los de n1_v2, n2_v1, n3_v2, n4_v2,
+    n4_v3 ni n4_v4. Comprobacion obligatoria antes del analisis.
+  frozen_before_run: >-
+    este fichero no se modifica despues de la primera ejecucion. Cualquier
+    cambio exige nuevo campaign_id y degrada la ejecucion previa a piloto.
+  oracle_certified_fraction_min: 0.85
+  report_regardless_of_sign: >-
+    si Geo-QPG rinde peor fuera de su banco de desarrollo, se reporta y se
+    incorpora a Limitaciones como acotacion del dominio de validez
+
+implementation_notes:
+  pending: >-
+    los cuatro layouts no existen todavia en src/viu_mrob_tfm/sp1_n3/worlds.py.
+    Deben implementarse y cubrirse con pruebas de regresion del generador ANTES
+    de ejecutar, y su codigo se congela junto con este fichero.

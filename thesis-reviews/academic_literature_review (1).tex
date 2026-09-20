@@ -1,0 +1,329 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[top=0.50in,bottom=0.52in,left=0.62in,right=0.62in,headheight=14pt,headsep=5pt,footskip=15pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{Noto Serif}
+\setsansfont{Noto Sans}
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage{microtype,ragged2e,setspace}
+\usepackage{graphicx}
+\usepackage{booktabs,tabularx,array,multirow,longtable}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,babel}
+\usepackage{amsmath,amssymb,rotating}
+\usepackage{fancyhdr,hyperref,enumitem}
+\usepackage{multicol}
+
+% Industrial/VIU palette
+\definecolor{autumn}{HTML}{E36A2E}
+\definecolor{spicy}{HTML}{C8572A}
+\definecolor{onyx}{HTML}{0C0C0C}
+\definecolor{mustard}{HTML}{FCD757}
+\definecolor{canary}{HTML}{8CB369}
+\colorlet{orange}{autumn}
+\colorlet{ink}{onyx}
+\colorlet{muted}{onyx!58!white}
+\colorlet{rule}{onyx!18!white}
+\definecolor{soft}{HTML}{F5F7FA}
+\definecolor{softblue}{HTML}{EAF2FD}
+\definecolor{softgreen}{HTML}{EAF7EF}
+\definecolor{softwarm}{HTML}{FDEFE8}
+\definecolor{softplum}{HTML}{F2ECFB}
+\definecolor{gamecol}{HTML}{2D6CC0}
+\definecolor{controlcol}{HTML}{E36A2E}
+\definecolor{searchcol}{HTML}{2E9B5F}
+\definecolor{learncol}{HTML}{7B4DBA}
+\definecolor{foundcol}{HTML}{6F7C8E}
+
+\hypersetup{colorlinks=true,urlcolor=spicy,linkcolor=spicy,pdftitle={Revision academica de papers - multi-AMR},pdfauthor={Jorge Luis Mayorga Taborda}}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\sffamily\fontsize{7.3}{8}\selectfont Jorge Luis Mayorga Taborda}
+\fancyhead[R]{\sffamily\fontsize{7.3}{8}\selectfont TFM MROB · Revisión académica de papers}
+\fancyfoot[C]{\sffamily\fontsize{8.2}{8.7}\selectfont\thepage}
+\renewcommand{\headrulewidth}{0.25pt}
+\setlength{\parindent}{0pt}\setlength{\parskip}{2.2pt}
+\setstretch{1.05}\color{ink}\emergencystretch=1.4em
+\setlist[itemize]{leftmargin=4.3mm,itemsep=.8pt,topsep=.7pt,parsep=0pt}
+\setlist[enumerate]{leftmargin=4.7mm,itemsep=.6pt,topsep=.7pt,parsep=0pt}
+
+\newcommand{\sect}[1]{\par\vspace{0pt}{\sffamily\fontsize{14.5}{15.5}\selectfont\bfseries\color{orange}#1\par}\vspace{1.2pt}\textcolor{rule}{\rule{\linewidth}{0.35pt}}\vspace{3pt}}
+\newcommand{\subh}[1]{\par\vspace{2.2pt}{\sffamily\fontsize{9.3}{10.2}\selectfont\bfseries\color{orange}#1\par}\vspace{.5pt}}
+\newcommand{\figcap}[2]{\par\vspace{1.0pt}{\setstretch{1}\fontsize{8.1}{8.9}\selectfont\textbf{#1.}~\textit{#2}\par}\vspace{1.0pt}}
+\newcommand{\sourcecap}[1]{\par{\setstretch{1}\fontsize{7.0}{7.7}\selectfont\itshape\centering Fuente: #1\par}}
+\newcommand{\note}[1]{\par{\setstretch{1}\fontsize{7.0}{7.8}\selectfont\color{muted}#1\par}}
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\newcommand{\yes}{\tikz[baseline=-0.55ex]\fill[canary!85!onyx](0,0)circle(1.18mm);}
+\newcommand{\parti}{\tikz[baseline=-0.55ex]{\begin{scope}\clip(0,0)circle(1.18mm);\fill[mustard](-1.3mm,-1.3mm) rectangle (0,1.3mm);\end{scope}\draw[onyx!55,line width=.28pt](0,0)circle(1.18mm);}}
+\newcommand{\no}{\tikz[baseline=-0.55ex]\draw[onyx!48,line width=.32pt](0,0)circle(1.18mm);}
+\newcommand{\mappointL}[7]{%
+  \filldraw[fill=#7,draw=white,line width=.64pt] (#1,#2) circle (2.38mm);
+  \node[text=white,font=\sffamily\bfseries\fontsize{5.55}{5.75}\selectfont] at (#1,#2){#5};
+  \node[anchor=west,align=left,text=#7!70!black,font=\sffamily\bfseries\fontsize{5.35}{5.60}\selectfont] at ($(#1,#2)+(0.036,0)$) {#3\,\textsuperscript{[#6]}\\[-.45mm]\fontsize{4.68}{4.95}\selectfont #4};}
+\newcommand{\mappointR}[7]{%
+  \filldraw[fill=#7,draw=white,line width=.64pt] (#1,#2) circle (2.38mm);
+  \node[text=white,font=\sffamily\bfseries\fontsize{5.55}{5.75}\selectfont] at (#1,#2){#5};
+  \node[anchor=east,align=right,text=#7!70!black,font=\sffamily\bfseries\fontsize{5.35}{5.60}\selectfont] at ($(#1,#2)+(-0.036,0)$) {#3\,\textsuperscript{[#6]}\\[-.45mm]\fontsize{4.68}{4.95}\selectfont #4};}
+\newcommand{\chip}[2]{\tikz[baseline=-0.6ex]{\filldraw[fill=#1,draw=white,line width=.35pt] (0,0) circle (1.75mm);}\,\textcolor{ink}{#2}}
+
+\begin{document}
+
+% ================= PAGE 1 =================
+\sect{Revisión académica: protocolo y mapa metodológico}
+La revisión distingue \textbf{decisión de coalición, factibilidad física, ejecución y recuperación}. El corpus canónico contiene 59 trabajos (38 CORE, 15 ENABLING y 6 fundacionales/survey); los preprints y extensiones se enlazan para no duplicar una misma línea. ``Distribuido'' se codifica por autoridad de decisión, información, líder/servidor y cierre, no solo por control local. La búsqueda y el \textit{snowballing} cubren MRTA/coalition formation, shared-load transport, wrench/contact, redes imperfectas y recuperación. Los trabajos que sustentan el mapa aparecen citados en la propia figura y en las referencias de la página 4.
+
+\figcap{Figura 1}{Mapa metodológico agrupado del corpus académico. Horizontal: autoridad de decisión (descentralizado $\rightarrow$ centralizado). Vertical: explicitud del mecanismo (white-box $\rightarrow$ data-driven). El color identifica la familia primaria. Las posiciones son ordinales y se desplazan solo para evitar solapes.}
+\begin{center}
+\begin{tikzpicture}[x=80mm,y=54mm,font=\sffamily]
+  \fill[softblue] (-1,-1) rectangle (0,0);
+  \fill[softgreen] (0,-1) rectangle (1,0);
+  \fill[softplum!55!white] (-1,0) rectangle (0,1);
+  \fill[softwarm] (0,0) rectangle (1,1);
+  \foreach \x in {-1,-.75,-.5,-.25,0,.25,.5,.75,1} \draw[rule,line width=.28pt] (\x,-1)--(\x,1);
+  \foreach \y in {-1,-.75,-.5,-.25,0,.25,.5,.75,1} \draw[rule,line width=.28pt] (-1,\y)--(1,\y);
+  \draw[-{Stealth[length=2.3mm]},ink,line width=.68pt] (-1.04,0)--(1.075,0);
+  \draw[-{Stealth[length=2.3mm]},ink,line width=.68pt] (0,-1.04)--(0,1.09);
+  \node[anchor=south,font=\bfseries\fontsize{7.2}{7.5}\selectfont] at (0,1.10) {data-driven};
+  \node[anchor=north,font=\bfseries\fontsize{7.2}{7.5}\selectfont] at (0,-1.09) {white-box};
+  \node[rotate=90,anchor=south,font=\bfseries\fontsize{7}{7.3}\selectfont] at (-1.12,0) {descentralizado};
+  \node[rotate=90,anchor=north,font=\bfseries\fontsize{7}{7.3}\selectfont] at (1.12,0) {centralizado};
+  \node[align=center,font=\bfseries\fontsize{6.35}{6.65}\selectfont] at (-.60,.90) {distribuido\\[-.35mm]data-driven};
+  \node[align=center,font=\bfseries\fontsize{6.35}{6.65}\selectfont] at (.60,.90) {centralizado\\[-.35mm]data-driven};
+  \node[align=center,font=\bfseries\fontsize{6.35}{6.65}\selectfont] at (-.60,-.90) {distribuido\\[-.35mm]white-box};
+  \node[align=center,font=\bfseries\fontsize{6.35}{6.65}\selectfont] at (.60,-.90) {centralizado\\[-.35mm]white-box};
+
+  % data-driven, distributed / mixed
+  \mappointL{-0.82}{0.72}{Bezerra}{2025}{B}{20}{learncol}
+  \mappointL{-0.64}{0.55}{Huo}{2025}{H}{19}{learncol}
+  \mappointL{-0.46}{0.73}{Dai}{2024}{D}{17}{learncol}
+  \mappointL{-0.78}{0.35}{Shibata-RL}{2023}{S}{16}{learncol}
+  \mappointL{-0.43}{0.32}{Pandit}{2026}{P}{28}{learncol}
+  \mappointR{-0.13}{0.50}{Eoh/Park}{2021}{E}{29}{learncol}
+
+  % data-driven, centralized/mixed
+  \mappointL{0.34}{0.64}{SADCHER}{2026}{S}{25}{learncol}
+  \mappointL{0.62}{0.42}{CF-HMRTA}{2025}{C}{21}{searchcol}
+
+  % white-box distributed - staggered
+  \mappointL{-0.90}{-0.18}{Pereira}{2004}{P}{1}{controlcol}
+  \mappointL{-0.78}{-0.34}{Parker/Tang}{2006}{PT}{2}{foundcol}
+  \mappointL{-0.88}{-0.54}{Vig/Adams}{2006}{V}{3}{gamecol}
+  \mappointL{-0.69}{-0.17}{CBBA}{2009}{C}{4}{gamecol}
+  \mappointL{-0.64}{-0.39}{Service}{2011}{S}{5}{foundcol}
+  \mappointL{-0.57}{-0.60}{Chen/Sun}{2012}{CS}{6}{gamecol}
+  \mappointL{-0.45}{-0.22}{Jang}{2018}{J}{8}{gamecol}
+  \mappointL{-0.39}{-0.47}{Dutta}{2019}{D}{10}{gamecol}
+  \mappointL{-0.36}{-0.67}{Dutta}{2021}{D}{12}{gamecol}
+  \mappointL{-0.14}{-0.28}{Ebel}{2024}{E}{18}{controlcol}
+  \mappointR{-0.03}{-0.50}{Shibata}{2023}{S}{14}{controlcol}
+  \mappointR{-0.04}{-0.71}{Fukao}{2025}{F}{22}{controlcol}
+  \mappointL{-0.48}{-0.90}{GRAPE-S}{2026}{G}{24}{gamecol}
+
+  % white-box central/mixed
+  \mappointL{0.08}{-0.18}{Alonso-Mora}{2017}{AM}{7}{controlcol}
+  \mappointL{0.20}{-0.40}{Machado}{2019}{M}{9}{controlcol}
+  \mappointL{0.31}{-0.65}{Verma repl.}{2019}{V}{11}{controlcol}
+  \mappointL{0.47}{-0.22}{Elaamery}{2021}{E}{13}{controlcol}
+  \mappointL{0.59}{-0.44}{Gong}{2023}{G}{15}{controlcol}
+  \mappointL{0.76}{-0.22}{Rizzo}{2020}{R}{30}{controlcol}
+  \mappointR{0.89}{-0.40}{Loh}{2012}{L}{31}{controlcol}
+  \mappointR{0.83}{-0.64}{Yufka}{2015}{Y}{32}{controlcol}
+  \mappointR{0.61}{-0.73}{Muhammed}{2026}{M}{26}{controlcol}
+  \mappointR{0.34}{-0.88}{Sahu}{2026}{S}{27}{controlcol}
+  \mappointL{0.02}{-0.90}{Tian}{2025}{T}{23}{controlcol}
+
+  \node[star,star points=5,star point ratio=2.1,fill=orange,draw=white,line width=.8pt,minimum size=8.5mm] at (-0.18,-0.78) {};
+  \node[anchor=west,font=\bfseries\fontsize{7.0}{7.4}\selectfont,align=left] at (-0.09,-0.75) {Este TFM\\integración};
+\end{tikzpicture}
+\end{center}
+\vspace{-0.8mm}
+\begin{center}\fontsize{8.35}{8.9}\selectfont
+\chip{gamecol}{juegos/mercados}\hspace{5.5mm}
+\chip{controlcol}{control/consenso}\hspace{5.5mm}
+\chip{searchcol}{búsqueda/heurística}\hspace{5.5mm}
+\chip{learncol}{política aprendida}\hspace{5.5mm}
+\chip{foundcol}{fundacional}
+\end{center}
+\sourcecap{elaboración propia a partir de los trabajos [1]-[32] y la codificación del corpus académico.}
+\note{La figura mantiene una cantidad alta de trabajos sin interpretar la distancia entre puntos como desempeño. La lectura útil es la separación entre \textit{membership} lógico y ejecución física, y la escasez relativa de trabajos que cierran además la recomposición.}
+
+\vspace{0.4mm}
+\begin{center}
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily]
+\foreach \x/\w/\bg/\tit/\n/\txt in {
+0/45/softblue/Coalition formation/18/{matching · auctions · games},
+47/45/softwarm/Shared-load transport/23/{control · wrench · caging},
+94/45/softgreen/Network and safety/15/{consensus · CBF · recovery},
+141/45/softplum/Foundational/6/{population games · GNE}}{
+  \fill[\bg,rounded corners=.8pt](\x,0)rectangle +(\w,8.6);
+  \draw[rule,rounded corners=.8pt,line width=.28pt](\x,0)rectangle +(\w,8.6);
+  \node[anchor=west,font=\bfseries\fontsize{5.5}{5.8}\selectfont] at (\x+2,5.9){\tit};
+  \node[anchor=east,font=\bfseries\fontsize{8.1}{8.1}\selectfont,text=orange] at (\x+\w-2,5.9){\n};
+  \node[anchor=west,font=\fontsize{4.45}{4.75}\selectfont,text=muted] at (\x+2,2.0){\txt};}
+\end{tikzpicture}
+\end{center}
+\vspace{-0.5mm}
+\figcap{Figura 1b}{Resumen funcional del corpus por familia temática.}
+\sourcecap{elaboración propia a partir del dataset académico.}
+
+\newpage
+% ================= PAGE 2 =================
+\sect{Estado del arte discriminante: qué cubre realmente cada paper}
+La literatura distingue dos frentes maduros: \textbf{coalición lógica} y \textbf{ejecución física}. Matching, auctions y juegos hedónicos cubren atomicidad, heterogeneidad y decisión local en diferentes combinaciones [4]-[6],[8],[10],[12],[24]. En paralelo, Alonso-Mora, Ebel, Shibata, Fukao, Tian y Muhammed muestran que el transporte cooperativo distribuido o descentralizado ya cuenta con formulaciones y validación física [7],[14],[18],[22],[23],[26]. Por ello, la brecha no puede reducirse a ``falta control distribuido de carga''.
+
+\figcap{Figura 2}{Matriz de capacidades de los trabajos más discriminantes. Verde = evidencia explícita; amarillo = parcial/condicionada; círculo vacío = no.}
+\begin{center}
+\renewcommand{\arraystretch}{1.45}\setlength{\tabcolsep}{2.25pt}\fontsize{7.55}{8.0}\selectfont
+\begin{tabularx}{\linewidth}{L{29mm}*{8}{C{11.6mm}}C{10.2mm}C{9.8mm}}
+\toprule
+\textbf{Trabajo} & \rotatebox{90}{\textbf{heterog.}} & \rotatebox{90}{\textbf{coal. var.}} & \rotatebox{90}{\textbf{reclut. local}} & \rotatebox{90}{\textbf{shared-load}} & \rotatebox{90}{\textbf{cert. física}} & \rotatebox{90}{\textbf{exec. dist.}} & \rotatebox{90}{\textbf{recovery}} & \rotatebox{90}{\textbf{replacement}} & \textbf{Ev.} & \textbf{C}\\
+\midrule
+Jang 2018 [8] & \no & \yes & \yes & \no & \no & \yes & \no & \no & T+S & C4\\
+Dutta 2021 [12] & \yes & \yes & \yes & \no & \no & \yes & \no & \no & T+S & C4\\
+GRAPE-S 2026 [24] & \yes & \yes & \parti & \no & \no & \yes & \no & \no & T+S & C3--4\\
+CF-HMRTA 2025 [21] & \yes & \yes & \no & \no & \no & \no & \no & \no & T+S & C0--1\\
+Huo 2025 [19] & \yes & \yes & \yes & \no & \no & \yes & \parti & \no & T+S & C3--4\\
+Bezerra 2025 [20] & \yes & \yes & \yes & \no & \no & \yes & \parti & \no & S & C4\\
+Alonso-Mora 2017 [7] & \no & \parti & \no & \yes & \yes & \parti & \parti & \no & T+S+P & C0--1\\
+Ebel 2024 [18] & \no & \no & \no & \yes & \yes & \yes & \no & \no & T+S+P & C3\\
+Shibata 2023 [14] & \no & \parti & \no & \yes & \yes & \yes & \parti & \parti & S+P & C4\\
+Muhammed 2026 [26] & \no & \no & \no & \yes & \yes & \yes & \no & \no & T+S+P & C3\\
+Verma repl. 2019 [11] & \no & \parti & \no & \yes & \parti & \no & \yes & \yes & S+P & C0--1\\
+Sahu 2026 [27] & \no & \parti & \no & \yes & \parti & \parti & \yes & \yes & S+P & C1--2\\
+\bottomrule
+\end{tabularx}
+\end{center}
+\sourcecap{elaboración propia a partir de [7],[8],[11],[12],[14],[18]-[21],[24],[26],[27].}
+
+\subh{Tres lecturas obligatorias}
+\begin{itemize}
+\item \textbf{Atomicidad.} Population games/GNE pueden producir masa continua; el cierre entero debe evaluarse como parte del método, no esconderse como posproceso.
+\item \textbf{De capacidad a wrench.} Para Cargo no basta $\sum_i c_i\ge d_k$: debe verificarse $w_k^{req}\in\mathcal W(C_k)$ con geometría, fricción y límites de actuador.
+\item \textbf{Escala.} Separar $N_{sim}$, $N_{hw}$, robots por coalición y cargas simultáneas. ``1000 robots simulados'' no equivale a 1000 robots físicos.
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{6.25}{6.65}\selectfont]
+\tikzset{bx/.style={rounded corners=1pt,draw=rule,line width=.35pt,minimum width=41.5mm,minimum height=17mm,align=center}}
+\node[bx,fill=softblue](s)at(21,10){\textbf{Supported cargo}\\carga soportada\\wrench y límites};
+\node[bx,fill=softwarm](r)at(65,10){\textbf{Rigid attachment}\\formación rígida\\distribución de fuerza};
+\node[bx,fill=softgreen](p)at(109,10){\textbf{Pushing / caging}\\contacto unilateral\\geometría no-prehensil};
+\node[bx,fill=softplum](g)at(153,10){\textbf{Grasping / arms}\\grasp matrix\\force closure};
+\foreach \a/\b in {s/r,r/p,p/g}{\draw[-{Stealth[length=1.55mm]},muted,line width=.42pt](\a)--(\b);} 
+\end{tikzpicture}
+\end{center}
+\figcap{Figura 2b}{Modalidades físicas que no deben mezclarse bajo la etiqueta genérica \textit{cooperative transport}.}
+\sourcecap{síntesis conceptual basada en [1],[7],[9],[13]-[15],[18],[22],[23],[26],[28],[30]-[32].}
+
+\newpage
+% ================= PAGE 3 =================
+\sect{Intersecciones y auditoría adversarial de novedad}
+\figcap{Figura 3}{Síntesis estructural en dos vistas complementarias: \textbf{(a)} cobertura de intersecciones del corpus CORE y \textbf{(b)} presupuesto de centralización por etapa.}
+\begin{center}
+\begin{minipage}[t]{0.47\linewidth}
+\centering
+{\sffamily\bfseries\fontsize{7.4}{7.9}\selectfont (a) Cobertura del corpus CORE\par}
+\vspace{1.5mm}
+\begin{tikzpicture}[x=1.72mm,y=6.45mm,font=\sffamily\fontsize{5.95}{6.35}\selectfont]
+\foreach \lab/\v/\y in {Shared-load transport/23/7,Recruit/18/6,Certificación física/13/5,Shared-load + distributed/10/4,Heterog. + coalición variable/9/3,Shared-load + replacement/2/2,Heterog. + shared-load/0/1,Physical + distributed + replacement/0/0}{
+  \draw[rule,line width=.25pt] (0,\y) -- (24.8,\y);
+  \fill[orange] (0,\y-.23) rectangle (\v,\y+.23);
+  \node[anchor=east,align=right,text width=31mm] at (-1.0,\y) {\lab};
+  \node[anchor=west,font=\bfseries] at (\v+.45,\y) {\v};}
+\draw[-{Stealth[length=1.45mm]},ink,line width=.4pt](0,-.65)--(25.3,-.65);
+\node[anchor=north]at(12.2,-.82){trabajos CORE};
+\end{tikzpicture}
+\vspace{0.3mm}
+\sourcecap{conteos del dataset académico curado; no constituyen prevalencias universales.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}
+\centering
+{\sffamily\bfseries\fontsize{7.4}{7.9}\selectfont (b) Presupuesto de centralización por etapa\par}
+\vspace{1.5mm}
+\begin{tikzpicture}[x=0.90mm,y=0.90mm,font=\sffamily\fontsize{5.9}{6.25}\selectfont]
+\draw[ink,line width=.45pt] (28,8)--(148,8);
+\foreach \x/\lab in {28/local,68/mixto,108/global,148/central} {\draw[ink,line width=.3pt](\x,6.7)--(\x,9.3);\node[anchor=north]at(\x,5.7){\lab};}
+\foreach \y/\lab/\x in {52/Recruit/45,41/Certify/76,30/Dock/48,19/Transport/44,8/Recover/79}{
+  \node[anchor=east,font=\bfseries]at(23,\y){\lab};
+  \draw[rule,line width=.35pt](28,\y)--(148,\y);
+  \fill[soft](28,\y-3)rectangle(148,\y+3);
+  \fill[orange,rounded corners=.7pt](28,\y-3)rectangle(\x,\y+3);
+  \draw[orange,line width=.45pt](\x,\y-3.8)--(\x,\y+3.8);} 
+\end{tikzpicture}
+\vspace{0.3mm}
+\sourcecap{codificación de autoridad e información de los trabajos más cercanos [7],[11],[14],[18]-[21],[24],[26],[27].}
+\end{minipage}
+\end{center}
+\note{Lectura conjunta: el corpus sí cubre piezas relevantes por separado, pero la autoridad global residual cambia por capa; por eso la brecha debe formularse como una interfaz entre reclutamiento, certificación física, ejecución y recuperación, no como ausencia absoluta de cada ingrediente por separado.}
+
+\subh{Red-team: el replacement ya existe; el claim debe estrecharse}
+\textbf{Verma et al. (2019)} implementa \textit{robot replacement} durante transporte de payload, pero con ruta/hubs conocidos y \textit{scheduling} global [11]. \textbf{Sahu y Kumar (2026)} integra transporte cooperativo, detección de fallo y \textit{node replacement}, pero con arquitectura \textit{master/slave} [27]. Shibata permite que agentes desaparezcan/se añadan durante control distribuido, aunque no resuelve selección de sustituto desde una flota heterogénea [14]. Estos trabajos invalidan claims amplios como ``primer replacement''.
+
+\rowcolors{2}{white}{soft}\fontsize{7.3}{7.8}\selectfont
+\begin{tabularx}{\linewidth}{L{25mm} C{10mm} C{10mm} C{12mm} Y}
+\toprule
+\textbf{Trabajo} & \textbf{Share} & \textbf{Repl.} & \textbf{Local rec.} & \textbf{Diferencia decisiva}\\\midrule
+Verma 2019 [11] & \yes & \yes & \no & scheduling global; hubs/ruta conocidos\\
+Sahu 2026 [27] & \yes & \yes & \no & arquitectura master/slave\\
+Shibata 2023 [14] & \yes & \parti & \no & equipo variable, no selección desde una flota mayor\\
+Ebel 2024 [18] & \yes & \no & \no & equipo fijo\\
+Bezerra 2025 [20] & \no & \no & \yes & no shared-load físico\\
+GRAPE-S 2026 [24] & \no & \no & \parti & servicio lógico, no carga compartida\\
+\bottomrule
+\end{tabularx}
+
+\vspace{1.2mm}
+\colorbox{softwarm}{\parbox{0.978\linewidth}{\fontsize{8.25}{8.85}\selectfont\sffamily
+\textbf{Brecha defendible.} En el corpus académico revisado no se identificó una arquitectura que integre, en una misma cadena operativa, \textbf{reclutamiento local de una coalición heterogénea de tamaño variable desde una flota mayor + certificación física de la carga compartida + reemplazo online de un miembro durante el transporte}, manteniendo la decisión de coalición y la ejecución sin una autoridad global permanente.}}
+\sourcecap{síntesis adversarial de [7],[11],[14],[18]-[21],[24],[26],[27].}
+
+\newpage
+% ================= PAGE 4 =================
+\sect{Síntesis, tendencias y fuentes académicas}
+\begin{center}
+\includegraphics[width=\linewidth]{academic_trends_dashboard.pdf}
+\end{center}
+\figcap{Figura 4}{Actividad académica y evolución temática del corpus (2004--2026). El panel (a) combina volumen anual, composición temática y proporción de trabajos distribuidos/descentralizados; (b)--(f) resumen transición de cuota, diversidad, emergencia temática y venues recurrentes.}
+\sourcecap{elaboración propia a partir del corpus académico curado (n = 54 en la ventana principal 2004--2026).}
+
+\subh{Referencias principales del mapa y del dashboard}
+\sloppy\fontsize{4.45}{4.80}\selectfont
+\setlength{\columnsep}{5mm}
+\begin{multicols}{2}
+\begin{enumerate}[leftmargin=3.7mm,itemsep=0pt,topsep=0pt,parsep=0pt,partopsep=0pt]
+\item Pereira, G. A. S., Campos, M. F. M., \& Kumar, V. (2004). \textit{Decentralized algorithms for multi-robot manipulation via caging}. IJRR. DOI \nolinkurl{10.1177/0278364904045477}.
+\item Parker, L. E., \& Tang, F. (2006). \textit{Building multirobot coalitions through automated task solution synthesis}. Proceedings of the IEEE. DOI \nolinkurl{10.1109/JPROC.2006.876933}.
+\item Vig, L., \& Adams, J. A. (2006). \textit{Market-based multi-robot coalition formation}. DARS 7. DOI \nolinkurl{10.1007/4-431-35881-1\_23}.
+\item Choi, H.-L., Brunet, L., \& How, J. P. (2009). \textit{Consensus-Based Decentralized Auctions for Robust Task Allocation}. IEEE T-RO. DOI \nolinkurl{10.1109/TRO.2009.2022423}.
+\item Service, T. C., \& Adams, J. A. (2011). \textit{Coalition formation for task allocation: Theory and algorithms}. AAMAS. DOI \nolinkurl{10.1007/s10458-010-9123-8}.
+\item Chen, J., \& Sun, D. (2012). \textit{Coalition-based approach to task allocation of multiple robots with resource constraints}. IEEE T-ASE. DOI \nolinkurl{10.1109/TASE.2012.2201470}.
+\item Alonso-Mora, J., Baker, S., \& Rus, D. (2017). \textit{Multi-robot formation control and object transport in dynamic environments via constrained optimization}. IJRR. DOI \nolinkurl{10.1177/0278364917719333}.
+\item Jang, I., Shin, H.-S., \& Tsourdos, A. (2018). \textit{Anonymous Hedonic Game for Task Allocation in a Large-Scale Multiple Agent System}. IEEE T-RO. DOI \nolinkurl{10.1109/TRO.2018.2858292}.
+\item Machado, T., et al. (2019). \textit{Attractor dynamics approach to joint transportation by autonomous robots}. Autonomous Robots. DOI \nolinkurl{10.1007/s10514-018-9729-2}.
+\item Dutta, A., \& Asaithambi, A. (2019). \textit{One-to-many bipartite matching based coalition formation for multi-robot task allocation}. ICRA. DOI \nolinkurl{10.1109/ICRA.2019.8793855}.
+\item Verma, P., et al. (2019). \textit{Loosely Coupled Payload Transport System with Robot Replacement}. arXiv:1904.03049.
+\item Dutta, A., et al. (2021). \textit{Distributed Hedonic Coalition Formation for Multi-Robot Task Allocation}. IEEE CASE. DOI \nolinkurl{10.1109/CASE49439.2021.9551582}.
+\item Elaamery, B., et al. (2021). \textit{Model Predictive Control for Cooperative Transportation with Feasibility-Aware Policy}. Robotics. DOI \nolinkurl{10.3390/robotics10030084}.
+\item Shibata, K., Jimbo, T., \& Matsubara, T. (2023). \textit{Event-triggered communication and consensus-based control for distributed cooperative transport}. RAS. DOI \nolinkurl{10.1016/j.robot.2022.104307}.
+\item Gong, Z., et al. (2023). \textit{Design and control of a multi-mobile-robot cooperative transport system based on a novel six degree-of-freedom connector}. ISA Transactions. DOI \nolinkurl{10.1016/j.isatra.2023.04.006}.
+\item Shibata, K., Jimbo, T., \& Matsubara, T. (2023). \textit{Learning Locally, Communicating Globally: RL of MRTA for Cooperative Transport}. IFAC-PapersOnLine. DOI \nolinkurl{10.1016/j.ifacol.2023.10.431}.
+\item Dai, W., Bidwai, A., \& Sartoretti, G. (2024). \textit{Dynamic Coalition Formation and Routing for MRTA via Reinforcement Learning}. ICRA. DOI \nolinkurl{10.1109/ICRA57147.2024.10611244}.
+\item Ebel, H., Rosenfelder, M., \& Eberhard, P. (2024). \textit{Cooperative object transportation with differential-drive mobile robots}. RAS. DOI \nolinkurl{10.1016/j.robot.2023.104612}.
+\item Huo, X., et al. (2025). \textit{A Self-Learning Approach to Heterogeneous Multi-Robot Coalition Formation Under Uncertainty}. IEEE T-ASE. DOI \nolinkurl{10.1109/TASE.2024.3395283}.
+\item Bezerra, L. C. D., et al. (2025). \textit{Learning Policies for Dynamic Coalition Formation in MRTA}. IEEE RA-L. DOI \nolinkurl{10.1109/LRA.2025.3592080}.
+\item Verma, A., et al. (2025). \textit{CF-HMRTA: Coalition Formation for Heterogeneous Multi-Robot Task Allocation}. JIRS. DOI \nolinkurl{10.1007/s10846-025-02287-4}.
+\item Fukao, T., et al. (2025). \textit{Cooperative transportation of an object with a nonholonomic constraint by a swarm robot}. ROBOMECH Journal. DOI \nolinkurl{10.1186/s40648-025-00308-3}.
+\item Tian, Y., et al. (2025). \textit{Multi-Robot Cooperative Transportation of Irregular Objects by Multi-Objective Optimization With Distributed Control}. IEEE RA-L. DOI \nolinkurl{10.1109/LRA.2025.3597895}.
+\item Diehl, G., \& Adams, J. A. (2026). \textit{GRAPE-S: near real-time coalition formation for multiple service collectives}. AAMAS. DOI \nolinkurl{10.1007/s10458-026-09758-4}.
+\item Bichler, J., Matoses Gimenez, A., \& Alonso-Mora, J. (2026). \textit{SADCHER}. IEEE MRS. DOI \nolinkurl{10.1109/MRS66243.2025.11357250}.
+\item Muhammed, I., Nada, A. A., \& El-Hussieny, H. (2026). \textit{Real-time decentralized MPC for cooperative multi-robot object transport}. Scientific Reports. DOI \nolinkurl{10.1038/s41598-026-41881-w}.
+\item Sahu, B., \& Kumar, I. (2026). \textit{Cooperative Path Planning for Object Transportation with Fault Management}. Automation. DOI \nolinkurl{10.3390/automation7010001}.
+\item Pandit, B., Shrestha, A. K., \& Fern, A. (2026). \textit{Multi-Quadruped Cooperative Object Transport: Learning Decentralized Pinch-Lift-Move}. ICRA/arXiv. DOI \nolinkurl{10.48550/arXiv.2509.14342}.
+\item Eoh, G., \& Park, S. (2021). \textit{Cooperative Object Transportation Using Curriculum-Based Deep Reinforcement Learning}. Sensors. DOI \nolinkurl{10.3390/s21144780}.
+\item Rizzo, C., Lagrana, A., \& Serrano, D. (2020). \textit{GEOMOVE: Detached AGVs for Cooperative Transportation of Large and Heavy Loads in the Aeronautic Industry}. ICARSC. DOI \nolinkurl{10.1109/ICARSC49921.2020.9096078}.
+\item Loh, C. C., \& Traechtler, A. (2012). \textit{Cooperative Transportation of A Load Using Nonholonomic Mobile Robots}. Procedia Engineering. DOI \nolinkurl{10.1016/j.proeng.2012.07.255}.
+\item Yufka, A., \& Ozkan, M. (2015). \textit{Formation-Based Control Scheme for Cooperative Transportation by Multiple Mobile Robots}. IJARS. DOI \nolinkurl{10.5772/60972}.
+\end{enumerate}
+\end{multicols}
+\end{document}

@@ -1,34 +1,35 @@
 # Stage 1A candidate-corpus QA
 
-Run UTC: 2026-09-12T18:02:44.279317+00:00
+Run UTC: 2026-09-13T22:39:36.103090+00:00
 
-- Mode: `open`
+- Mode: `all`
 - Legacy seeds imported: **32**
 - Canonical candidates carrying legacy seed provenance: **32**
-- Raw records entering reconciliation: **272**
-- Records after normalization/reconciliation: **246**
-- DOI present/missing: **241/5**
-- Exact duplicates merged: **26**
-- Probable duplicates held for review: **9**
-- Unique final candidates: **246**
-- Metadata-verified candidates: **244**
+- Raw records entering reconciliation: **426**
+- Records after normalization/reconciliation: **376**
+- DOI present/missing: **343/33**
+- Exact duplicates merged: **50**
+- Probable duplicates held for review: **11**
+- Unique final candidates: **376**
+- Metadata-verified candidates: **374**
 - Unresolved or insufficiently verified records: **2**
 - API failures: **0**
 - Year coverage: **1994–2026**
-- Authentic WoS raw files present: **0**
+- Authentic WoS raw files present: **7**
 - API events logged: **47**
 - Resume requested: **True**
 
 ## Coverage label
 
-`corpus_coverage=open_discovery_only`  
-`wos_status=pending_external_export`
+`corpus_coverage=wos_partially_reconciled`
+`wos_status=present_partial`
 
 ## Raw records retrieved by source
 
 - `crossref`: 175
 - `legacy_review`: 32
 - `openalex`: 65
+- `wos`: 154
 
 ## Publication years
 
@@ -38,46 +39,46 @@ Run UTC: 2026-09-12T18:02:44.279317+00:00
 - `2002`: 1
 - `2004`: 3
 - `2005`: 2
-- `2006`: 4
-- `2007`: 1
-- `2008`: 2
-- `2009`: 5
-- `2010`: 5
-- `2011`: 6
-- `2012`: 3
-- `2013`: 1
-- `2014`: 2
-- `2015`: 6
-- `2016`: 6
-- `2017`: 8
-- `2018`: 6
-- `2019`: 13
-- `2020`: 9
-- `2021`: 22
-- `2022`: 14
-- `2023`: 24
-- `2024`: 19
-- `2025`: 28
-- `2026`: 16
+- `2006`: 5
+- `2007`: 4
+- `2008`: 5
+- `2009`: 7
+- `2010`: 6
+- `2011`: 12
+- `2012`: 5
+- `2013`: 3
+- `2014`: 6
+- `2015`: 12
+- `2016`: 11
+- `2017`: 12
+- `2018`: 10
+- `2019`: 23
+- `2020`: 18
+- `2021`: 31
+- `2022`: 22
+- `2023`: 29
+- `2024`: 35
+- `2025`: 40
+- `2026`: 34
 
 ## Main venues
 
 - `(missing)`: 41
+- `2020 IEEE/RSJ INTERNATIONAL CONFERENCE ON INTELLIGENT ROBOTS AND SYSTEMS (IROS)`: 2
 - `2021 40th Chinese Control Conference (CCC)`: 2
-- `2023 International Symposium on Multi-Robot and Multi-Agent Systems (MRS)`: 2
-- `2025 IEEE International Symposium on Multi-Robot and Multi-Agent Systems (MRS)`: 2
-- `Annual Reviews in Control`: 2
-- `Autonomous Agents and Multi-Agent Systems`: 2
+- `2021 IEEE INTERNATIONAL CONFERENCE ON ROBOTICS AND AUTOMATION (ICRA 2021)`: 2
 - `Autonomous Robots`: 3
-- `Distributed Autonomous Robotic Systems 6`: 2
-- `Drones`: 2
-- `Electronics`: 2
+- `DISTRIBUTED AUTONOMOUS ROBOTIC SYSTEMS`: 3
 - `IAES International Journal of Robotics and Automation (IJRA)`: 3
+- `IEEE ACCESS`: 4
 - `IEEE Access`: 10
+- `IEEE ROBOTICS AND AUTOMATION LETTERS`: 9
 - `IEEE Robotics and Automation Letters`: 8
-- `IEEE Transactions on Automation Science and Engineering`: 2
+- `IEEE TRANSACTIONS ON AUTOMATION SCIENCE AND ENGINEERING`: 5
 - `IEEE Transactions on Robotics`: 5
+- `JOURNAL OF INTELLIGENT & ROBOTIC SYSTEMS`: 7
 - `Journal of Intelligent &amp; Robotic Systems`: 3
+- `ROBOTICS AND AUTONOMOUS SYSTEMS`: 3
 - `Robotics`: 5
 - `Robotics and Autonomous Systems`: 8
 - `Scaling of Cooperative Mobile Multi-Robot Systems for Handling and Assembly of Large-Scale Components`: 3
@@ -88,6 +89,13 @@ Run UTC: 2026-09-12T18:02:44.279317+00:00
 - `crossref`: 190
 - `legacy_review`: 32
 - `openalex`: 65
+- `wos:F01_primary_wos_plaintext_full_record_cited_references.txt`: 50
+- `wos:F02_primary_wos_plaintext_full_record_cited_references.txt`: 50
+- `wos:F03_primary_wos_plaintext_full_record_cited_references.txt`: 14
+- `wos:F04_primary_wos_plaintext_full_record_cited_references.txt`: 13
+- `wos:F05_primary_wos_plaintext_full_record_cited_references.txt`: 23
+- `wos:F06_primary_wos_plaintext_full_record_cited_references.txt`: 3
+- `wos:F07_primary_wos_plaintext_full_record_cited_references.txt`: 1
 
 ## Queries executed
 
@@ -108,7 +116,7 @@ Run UTC: 2026-09-12T18:02:44.279317+00:00
 
 ## Deviations
 
-- wos_status=pending_external_export.
+- none
 
 ## Stop rule
 

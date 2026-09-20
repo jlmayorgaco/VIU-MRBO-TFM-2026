@@ -9,10 +9,10 @@ and 25 citing works per anchor. It did not perform unrestricted snowballing.
 
 ## Observed counts
 
-- Stage 1A unique candidates: **246**
-- New unique or unresolved records observed through recall: **974**
-- New records classified `include_fulltext` or `maybe_fulltext`: **463**
-- New records classified `exclude`: **511**
+- Stage 1A unique candidates: **376**
+- New unique or unresolved records observed through recall: **957**
+- New records classified `include_fulltext` or `maybe_fulltext`: **447**
+- New records classified `exclude`: **510**
 - Anchors with citation retrieval summaries: **37**
 - API failures: **0**
 

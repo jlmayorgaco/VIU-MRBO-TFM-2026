@@ -32,6 +32,14 @@ Geométricamente, \(\theta_i\) fija la dirección de avance, \(v_i\) gobierna la
 traslación y \(\omega_i\) el giro. Dos robots intercambian mensajes vecinales
 cuando su separación no supera el radio \(R_c\).
 
+La Figura~\ref{fig:robot} conserva la construcción geométrica del uniciclo. El
+punto auxiliar adelantado
+\(\boldsymbol h_i=p_i+\ell(\cos\theta_i,\sin\theta_i)^\top\) hace visible el
+rumbo a una distancia \(\ell>0\); es una salida geométrica y no un estado físico
+adicional ni una ley de control común a todas las campañas.
+
+\input{figures/protected/02-unicycle-geometry}
+
 \iffalse
 \begin{figure}[H]
     \centering
@@ -133,16 +141,16 @@ residual normalizado es menor que la tolerancia:
     W_k^d=-K_Pe_k^L-K_D\dot q_k^L.
     \label{eq:method_cargo_certificate_control}
 \end{equation}
-En SP3, \(W_k^d\) se sustituye por la demanda estática
-\(W_k^{\mathrm{dem}}\); la forma PD corresponde al transporte de SP4.
+En la etapa de certificación de SP1, \(W_k^d\) se sustituye por la demanda estática
+\(W_k^{\mathrm{dem}}\); la forma PD corresponde al transporte de SP2.
 Aquí, \(\rho_k^W\) certifica la realizabilidad del \emph{wrench} y \(W_k^d\)
 genera la referencia de pose. El modelo supone contactos fijos, límites de
 actuación y dinámica planar reducida; bajo esos supuestos, la guardia se valida
-en SP3--SP4. El demostrador integrado admite coaliciones mediante un criterio
+entre SP1 y SP2. El demostrador integrado admite coaliciones mediante un criterio
 agregado de cardinalidad, carga útil y fuerza, seguido por una distribución del
 \emph{wrench}. Su evidencia establece compatibilidad funcional, mientras que el
 certificado de~\eqref{eq:method_cargo_certificate_control} queda circunscrito a
-SP3--SP4.
+la interfaz SP1--SP2.
 
 En caging, la fuerza normal satisface \(f_n\geq0\), por lo que cada robot empuja
 la carga desde un contacto unilateral. Una configuración pertenece a
@@ -240,17 +248,18 @@ la prueba de estabilidad y del certificado de \emph{wrench} de Cargo.
 \subsection{Aporte y validación por subproblema}
 \label{sec:method_sp_validation}
 
-La secuencia SP0--SP8 incorpora, por etapas, asignación, coaliciones, mecánica,
-transporte, seguridad, recuperación, tráfico y red. Cada subproblema emplea el
-modelo y los comparadores vinculados con su pregunta local. Sus garantías se
-restringen a esos supuestos. La misión integrada comprueba que los módulos
-coexisten en un demostrador híbrido; no ejecuta un único juego común a los nueve
-SP.
+La arquitectura contiene tres subproblemas. SP1 incorpora asignación,
+cardinalidad, heterogeneidad y roles/contactos; SP2 integra acoplamiento,
+transporte, seguridad y recuperación; SP3 estudia tráfico, replanteamiento,
+escala y red. Cada etapa emplea el modelo y los comparadores vinculados con su
+pregunta local, y sus garantías se restringen a esos supuestos. La misión Cargo
+comprueba que varios módulos coexisten en un demostrador híbrido; no ejecuta un
+único juego común a SP1--SP3.
 
 \iffalse
 \begin{table}[H]
     \centering
-    \caption{Aporte y evidencia empleada en SP0--SP8.}
+    \caption{Aporte y evidencia empleada en SP1--SP3.}
     \label{tab:method_sp_contribution_validation}
     \footnotesize
     \renewcommand{\arraystretch}{1.08}
@@ -258,31 +267,19 @@ SP.
         \toprule
         \textbf{SP} & \textbf{Aporte} & \textbf{Validación} \\
         \midrule
-        SP0 & Juego de asignación homogénea uno a uno y caso formal mínimo. &
-        Prueba de potencial, enumeración y comparación con Hungarian. \\
-        SP1 & Cuotas variables y cierre de coaliciones completas. &
-        Casos de abundancia y escasez; MILP y ablación sin cierre. \\
-        SP2 & Servicio heterogéneo dependiente del par robot--carga. &
-        Casos donde la cardinalidad no basta; dos oráculos MILP y ablación de la contribución marginal. \\
-        SP3 & Guardia Cargo de fuerza y momento; definición secundaria de caging. &
-        QP de esfuerzos, falsos positivos y cobertura; caging queda pendiente de campaña propia. \\
-        SP4 & Acoplamiento y control de pose del cuerpo compuesto. &
-        Poses objetivo pareadas, límites registrados y comparación de controles; sin campaña de saturación persistente. \\
-        SP5 & Filtrado de seguridad con obstáculos. &
-        Obstáculo aislado, pasillo y cuello de botella; colisión, distancia mínima, bloqueo y ablación del filtro. \\
-        SP6 & Re-reclutamiento tras un fallo simple. &
-        Fallo antes y durante el transporte; oráculo restringido y, en Cargo, comparación entre continuar con reemplazo y detenerse. \\
-        SP7 & Juego de rutas y reserva de recursos entre coaliciones. &
-        Cruces y pasillos; entrega, conflicto, espera, interbloqueo y referencia central restringida. \\
-        SP8 & Coste de escala y degradación de la red. &
-        Barridos en flota, radio, retardo y pérdida; mensajes, CPU, memoria y brecha cuando el oráculo termina. \\
+        SP1 & Formación distribuida: asignación, cuotas, heterogeneidad, espera/cambio y roles/contactos. &
+        Pruebas de potencial, MILP/oráculos acotados, ablaciones y certificado planar de \emph{wrench}. \\
+        SP2 & Ejecución: docking, control de pose, seguridad, recuperación y liberación. &
+        Escenarios pareados de transporte, obstáculos y fallo; QP/control central de referencia y demostrador Cargo. \\
+        SP3 & Planificación y tráfico: rutas, reservas, prioridades, congestión, replanteamiento, escala y red. &
+        Cruces y pasillos, referencia central restringida, barridos de comunicación y piloto cinemático congestionado. \\
         \bottomrule
     \end{tabularx}
     \viuownsource
 \end{table}
 \fi
 
-SP0--SP1 y SP5--SP8 disponen de generadores versionados. En SP2--SP4, las
+Las etapas históricas E0--E1 y E5--E8 disponen de generadores versionados. En E2--E4, las
 observaciones históricas, el postproceso, las tablas y las auditorías permiten
 recalcular las cifras publicadas. La ausencia de parte de los generadores
 originales impide producir mundos nuevos equivalentes; por eso, estas tres etapas
@@ -298,7 +295,7 @@ resultante es una cota inferior del tráfico exigido por una realización carent
 de esa infraestructura. La ablación ``sin guardia física'' retira a la vez el
 criterio agregado, el punto intermedio y el filtro, de modo que estima su efecto
 conjunto. La ablación ``sin reparación'' detiene la misión tras el fallo y mide
-el efecto de continuar con reemplazo frente a detenerse; no compara el juego SP6
+el efecto de continuar con reemplazo frente a detenerse; no compara el juego de reparación de SP2
 con otro reasignador.
 
 \subsection{Escenarios, variables y métricas}
@@ -379,7 +376,7 @@ industrial.
 \iffalse
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.76\textwidth]{../results/coppeliasim_validation/aws_industrial_adversarial_industrial2/aws_industrial_oblique_live.png}
+    \includegraphics[width=0.76\textwidth]{../legacy/results/coppeliasim_validation/aws_industrial_adversarial_industrial2/aws_industrial_oblique_live.png}
     \caption{Montaje del almacén en CoppeliaSim. La vista oblicua muestra las
     estanterías, las zonas de operación, el paso central y la flota de AMR durante
     la ejecución del piloto.}
@@ -393,3 +390,51 @@ La evidencia de CoppeliaSim se limita a la integración geométrica y al
 \emph{replay} cinemático de estas interfaces. El agarre, la fricción
 rueda--suelo, la dinámica de contacto y el comportamiento en hardware requieren
 modelos y ensayos adicionales.
+
+% Trasladado desde el capítulo 6 (enmienda de docs/02_RESEARCH_MATRIX.md,
+% 2026-09-02): las Instrucciones VIU asignan a Metodología el diseño de
+% investigación, las variables, los instrumentos y el análisis de datos, que
+% es exactamente este material. Las etiquetas se conservan intactas para que
+% las referencias cruzadas del capítulo 6 sigan resolviendo.
+\subsection{Formulación general y arquitectura}
+\label{subsec:common-formulation}
+
+Sean \(\Robots\) los robots y \(\Loads\) las cargas. Para cada par \(i,k\), \(\boldsymbol c_i\) y \(\boldsymbol r_k\) representan capacidad y requisito, \(\rho_{ik}\) la preferencia y \(x_{ik}\) la pertenencia. Los costes estratégicos se expresan en escala normalizada; las variables físicas usan unidades SI.
+
+La Tabla~\ref{tab:results-model-map} identifica qué etapa consulta agregados o cierres globales y cuál es su planta. Los códigos E0--E8 corresponden a los nombres históricos de las campañas \texttt{sp0}--\texttt{sp8}; no son subproblemas adicionales. Esas dependencias, combinadas con decisiones locales, definen la arquitectura híbrida evaluada.
+
+\begin{table}[!htbp]
+ \centering
+ \caption{Contrato de distribución e interfaz física en las etapas experimentales de SP1--SP3.}
+ \label{tab:results-model-map}
+ \scriptsize
+ \setlength{\tabcolsep}{2.2pt}
+ \renewcommand{\arraystretch}{1.08}
+ \begin{tabularx}{\textwidth}{@{}p{0.70cm}p{2.35cm}p{2.70cm}p{2.20cm}p{2.45cm}X@{}}
+  \toprule
+  Etapa & Decisión & Agregado o estimación & Cierre & Certificación & Planta \\
+  \midrule
+  E0 & revisión unilateral local & ocupación o precios globales; copias locales en el certificado auxiliar & discreto global & exclusividad & sin planta \\
+  E1 & preferencia poblacional & cuotas globales & QR global & cardinalidad & sin planta \\
+  E2 & ordenamiento secuencial & déficit global salvo la ablación primal--dual & global & umbral de servicio & sin planta \\
+  E3 & pujas locales o vecinales parciales & residual exacto o consenso corto & global & QP de \emph{wrench} central & carga estática planar \\
+  E4 & conflicto vecinal congelado & pose exacta de carga & bilateral/global & HOCBF y reparto de \emph{wrench} & uniciclo y carga planar en estratos separados \\
+  E5 & coalición fija & geometría global filtrada por alcance & no aplica & filtro y reparto central por carga & cuerpo rígido planar \\
+  E6 & marginal local & déficit publicado & local por carga & cobertura aditiva & viaje reducido \\
+  E7 & ruta vecinal & intención local & testigo local & conflicto lógico visible & grafo discreto \\
+  E8 & ruta vecinal & mensajes imperfectos & local & conflicto visible & grafo discreto \\
+  Cargo & líder temporal tras \emph{gossip} de identificadores & atributos resueltos en registro global & líder por carga & criterio agregado, punto intermedio y filtro & uniciclo y carga planar en una misión \\
+  \bottomrule
+ \end{tabularx}
+ \viuownsource
+\end{table}
+
+Una garantía puede pasar a la capa siguiente únicamente si esta conserva el estado, la información y el modelo de la prueba. Por ejemplo, la cobertura nominal de recursos debe someterse todavía al certificado de contacto antes de salir de SP1. En Cargo, los enlaces vecinales descubren identificadores; el ejecutor consulta estado global para elegir líder y resolver atributos. Además, su admisión inicial usa un criterio agregado distinto del QP de la etapa E3. Estas dependencias hacen híbrida la arquitectura.
+
+
+\subsection{Protocolo común y métodos de referencia}
+\label{subsec:common-protocol}
+
+Cada celda experimental reutiliza el mundo y la semilla entre métodos, con idénticos límites de actuación, horizonte y criterio de éxito. Las colisiones, los bloqueos y los agotamientos del horizonte permanecen en el denominador. Las tablas distinguen el oráculo con información global del método, los comparadores y las ablaciones. La clase de complejidad corresponde al problema; el tiempo o la cota informados corresponden al algoritmo ejecutado.
+
+Las etapas E2--E4 son reanálisis de observaciones archivadas, con postproceso, tablas y auditorías disponibles. Parte de sus generadores históricos falta. Cargo sí puede regenerarse desde su configuración y reproduce el demostrador híbrido implementado; esta campaña no ejecuta la composición exacta de los mecanismos parciales de SP1 y SP2.

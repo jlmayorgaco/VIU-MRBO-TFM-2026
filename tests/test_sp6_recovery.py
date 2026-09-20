@@ -12,9 +12,22 @@ from viu_mrob_tfm.sp6.theory import (
     marginal_utility,
     potential,
     pure_nash_profiles,
+    recovery_time_upper_bound,
     sufficient_penalty,
     unbounded_efficiency_example,
 )
+
+
+def test_recovery_bound_counts_terminal_decision_window() -> None:
+    bound = recovery_time_upper_bound(
+        detection_delay_s=0.5,
+        accepted_change_bound=7,
+        max_decision_window_s=0.25,
+        max_travel_distance_m=3.0,
+        min_speed_mps=1.5,
+        settling_time_s=0.75,
+    )
+    assert np.isclose(bound, 0.5 + 8 * 0.25 + 3.0 / 1.5 + 0.75)
 
 
 def test_wonderful_life_utility_is_an_exact_potential() -> None:

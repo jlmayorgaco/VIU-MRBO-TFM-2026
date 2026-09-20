@@ -81,7 +81,13 @@ def main() -> int:
         w.writerows(rows)
 
     env = parse_env(ENV_FILE)
-    wos_files = [p for p in (INPUT_DIR / "wos").glob("*") if p.is_file() and not p.name.lower().startswith("readme")]
+    wos_files = [
+        p for p in (INPUT_DIR / "wos").glob("*")
+        if p.is_file()
+        and not p.name.lower().startswith("readme")
+        and p.name != "wos_export_manifest.json"
+        and p.suffix.lower() in {".txt", ".tsv", ".csv"}
+    ]
     seed = INPUT_DIR / "legacy" / "legacy_seed_references.csv"
     seed_rows = 0
     if seed.exists():

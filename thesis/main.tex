@@ -9,13 +9,28 @@
   sorting=nyt,
   sortcites=true
 ]{biblatex}
+% APA 7 en español, según resources/NormasAPA_VIU_7ed.pdf: la guía de la VIU
+% usa «y», no «&», tanto en la cita en texto («Csikai y Chaitin, 2006, p. 112»)
+% como en la lista de referencias («Light, M. A. y Light, R. H. (2008)»).
+% Sin este mapeo, biblatex-apa emite las cadenas en inglés.
+\DeclareLanguageMapping{spanish}{spanish-apa}
 \DeclareSourcemap{
   \maps[datatype=bibtex]{
     \map{
-      \step[fieldset=langid, fieldvalue=english]
+      \step[fieldset=langid, fieldvalue=spanish]
     }
   }
 }
+% biblatex-apa impone «&» por diseño (apa.bbx §722, apa.cbx §492) y
+% spanish-apa.lbx no lo corrige: apaga «smartand» pero conserva el símbolo.
+% La guía de la VIU escribe «y» en los dos sitios, y sin coma serial delante:
+%   texto        «(Csikai y Chaitin, 2006, p. 112)»
+%   referencias  «Light, M. A. y Light, R. H. (2008)»
+%   tres o más   «Sánchez, Macías, Vega, Montoro y López, 2001»
+\DeclareDelimFormat[bib,biblist]{finalnamedelim}{\addspace y\space}
+\DeclareDelimFormat[textcite]{finalnamedelim}{\addspace y\space}
+\DeclareDelimFormat[parencite]{finalnamedelim}{\addspace y\space}
+\DeclareDelimFormat[fullcite,fullcitebib]{finalnamedelim}{\addspace y\space}
 \addbibresource{references.bib}
 \AtBeginBibliography{\raggedright\sloppy}
 \renewcommand*{\bibrangedash}{\textendash}
@@ -58,20 +73,30 @@
 \clearpage
 \appendix
 \input{sections/appendices/01-reproducibility}
+
+% Los ocho anexos de demostraciones se agrupan por subproblema. Antes eran ocho
+% \section independientes de 1 a 4 páginas: cada \clearpage dejaba una última
+% página a medias. Las etiquetas \label{app:...} se conservan intactas en las
+% subsecciones, de modo que las referencias cruzadas del capítulo 6 resuelven
+% igual. Los enunciados y las demostraciones no se tocan.
 \clearpage
+\section{Demostraciones complementarias de SP1}
+\label{app:sp1-all-proofs}
 \input{sections/appendices/02-sp0-proofs}
-\clearpage
 \input{sections/appendices/03-sp1-proofs}
-\clearpage
 \input{sections/appendices/04-sp2-proofs}
-\clearpage
 \input{sections/appendices/05-sp3-proofs}
+
+\clearpage
+\section{Demostraciones complementarias de SP2}
+\label{app:sp2-all-proofs}
 \input{sections/appendices/06-sp4-proofs}
-\clearpage
 \input{sections/appendices/07-sp6-proofs}
+
 \clearpage
+\section{Demostraciones complementarias de SP3}
+\label{app:sp3-all-proofs}
 \input{sections/appendices/08-sp7-proofs}
-\clearpage
 \input{sections/appendices/09-sp8-proofs}
 
 \end{document}

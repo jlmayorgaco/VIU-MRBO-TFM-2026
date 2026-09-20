@@ -1,0 +1,521 @@
+\documentclass[10.5pt,a4paper]{article}
+\usepackage[top=1.65cm,bottom=1.65cm,left=1.85cm,right=1.85cm,headheight=15pt,headsep=6pt,footskip=17pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{Noto Serif}
+\setsansfont{Noto Sans}
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage{microtype,ragged2e,setspace}
+\usepackage{booktabs,tabularx,array,multirow}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,shapes.geometric,fit,babel,patterns.meta,decorations.pathreplacing}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{amsmath,amssymb}
+\usepackage{multicol}
+\usepackage{fancyhdr,hyperref}
+
+% ---- Exact VIU-oriented palette supplied by user ----
+\definecolor{autumn}{HTML}{E36A2E}
+\definecolor{spicy}{HTML}{C8572A}
+\definecolor{onyx}{HTML}{0C0C0C}
+\definecolor{mustard}{HTML}{FCD757}
+\definecolor{canary}{HTML}{8CB369}
+
+% Semantic mapping used throughout the document
+\colorlet{navy}{spicy}
+\colorlet{orange}{autumn}
+\colorlet{blue}{mustard}
+\colorlet{teal}{onyx}
+\colorlet{green}{canary}
+\colorlet{plum}{spicy!35!white}
+\colorlet{ink}{onyx}
+\colorlet{muted}{onyx!58!white}
+\colorlet{rule}{onyx!18!white}
+\colorlet{soft}{mustard!10!white}
+\colorlet{softblue}{mustard!14!white}
+\colorlet{softgreen}{canary!12!white}
+\colorlet{softwarm}{autumn!9!white}
+\colorlet{softplum}{spicy!9!white}
+\colorlet{charcoal}{onyx}
+\colorlet{sky}{mustard}
+\colorlet{olive}{onyx!52!white}
+
+\hypersetup{colorlinks=true,urlcolor=navy,linkcolor=navy,
+  pdftitle={Estado industrial y patentario de la cooperación multi-AMR},
+  pdfauthor={Jorge Luis Mayorga Taborda}}
+
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\sffamily\fontsize{7.5}{8.2}\selectfont Jorge Luis Mayorga Taborda}
+\fancyhead[R]{\sffamily\fontsize{7.5}{8.2}\selectfont TFM MROB · Cooperación multi-AMR}
+\fancyfoot[C]{\sffamily\fontsize{8.4}{9}\selectfont\thepage}
+\renewcommand{\headrulewidth}{0.25pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2.7pt}
+\setstretch{1.16}
+\color{ink}
+\emergencystretch=1.2em
+
+\newcommand{\sect}[1]{\par\vspace{0pt}{\sffamily\fontsize{14.8}{16.2}\selectfont\bfseries\color{orange}#1\par}\vspace{1.5pt}\textcolor{rule}{\rule{\linewidth}{0.35pt}}\vspace{3.5pt}}
+\newcommand{\subh}[1]{\par\vspace{3.5pt}{\sffamily\fontsize{9.8}{11}\selectfont\bfseries\color{orange}#1\par}\vspace{1pt}}
+\newcommand{\figcap}[2]{\par\vspace{1.5pt}{\setstretch{1}\fontsize{8.15}{9.1}\selectfont\textbf{#1.}~\textit{#2}\par}\vspace{1.5pt}}
+\newcommand{\note}[1]{\par{\setstretch{1}\fontsize{7.15}{8.0}\selectfont\color{muted}#1\par}}
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\newcommand{\casecite}[2]{\textsuperscript{[#1]}}
+% Editable photo placeholders used in Table 1.
+% Replace the body of \photoplaceholder with \includegraphics later if desired;
+% no external image is required for the present document.
+\newcommand{\photoplaceholder}[1]{%
+  \href{#1}{%
+  \begin{tikzpicture}[x=1mm,y=1mm,baseline=-0.7mm]
+    \path[use as bounding box] (0,0) rectangle (17.0,8.7);
+    \fill[onyx!2] (0,0) rectangle (17.0,8.7);
+    \draw[rule!85,line width=.35pt,rounded corners=.7pt] (0,0) rectangle (17.0,8.7);
+    \draw[rule!55,line width=.22pt] (0.8,0.8)--(16.2,7.9);
+    \draw[rule!55,line width=.22pt] (0.8,7.9)--(16.2,0.8);
+    \node[fill=white,inner sep=1.0pt,font=\sffamily\fontsize{4.5}{4.8}\selectfont\bfseries,text=muted] at (8.5,4.35){FOTO};
+  \end{tikzpicture}}%
+}
+\newcommand{\systemcell}[4]{%
+  \parbox[t]{\linewidth}{\vspace{0pt}%
+    \textbf{#1}\par
+    {\fontsize{5.7}{6.0}\selectfont\color{muted}#2 · #3}\par
+    \vspace{0.7pt}\photoplaceholder{#4}%
+  }%
+}
+
+% Compact comparison matrix used in Table 1.
+\newcommand{\photomini}[1]{%
+  \href{#1}{%
+  \begin{tikzpicture}[x=1mm,y=1mm,baseline=-0.7mm]
+    \path[use as bounding box] (0,0) rectangle (12.6,6.5);
+    \fill[onyx!2] (0,0) rectangle (12.6,6.5);
+    \draw[rule!85,line width=.32pt,rounded corners=.6pt] (0,0) rectangle (12.6,6.5);
+    \draw[rule!48,line width=.20pt] (.6,.6)--(12.0,5.9);
+    \draw[rule!48,line width=.20pt] (.6,5.9)--(12.0,.6);
+    \node[fill=white,inner sep=.7pt,font=\sffamily\fontsize{4.0}{4.3}\selectfont\bfseries,text=muted] at (6.3,3.25){FOTO};
+  \end{tikzpicture}}%
+}
+\newcommand{\matrixsystem}[5]{%
+  \begin{minipage}[t]{\linewidth}\vspace{0pt}%
+  \begin{minipage}[c]{11.8mm}\centering\photomini{#5}\end{minipage}%
+  \hspace{0.35mm}%
+  \begin{minipage}[c]{24.5mm}\raggedright
+    {\sffamily\bfseries #1\,#2}\par
+    {\fontsize{5.35}{5.65}\selectfont\color{muted}#3 · #4}
+  \end{minipage}%
+  \end{minipage}%
+}
+\newcommand{\capyes}{\begin{tikzpicture}[x=1mm,y=1mm,baseline=-0.6ex]\path[use as bounding box](-1.6,-1.6)rectangle(1.6,1.6);\fill[canary!85!onyx](0,0)circle(1.25);\end{tikzpicture}}
+\newcommand{\cappart}{\begin{tikzpicture}[x=1mm,y=1mm,baseline=-0.6ex]\path[use as bounding box](-1.6,-1.6)rectangle(1.6,1.6);\begin{scope}\clip(0,0)circle(1.25);\fill[mustard](-1.25,-1.25)rectangle(0,1.25);\end{scope}\draw[onyx!55,line width=.28pt](0,0)circle(1.25);\end{tikzpicture}}
+\newcommand{\capno}{\begin{tikzpicture}[x=1mm,y=1mm,baseline=-0.6ex]\path[use as bounding box](-1.6,-1.6)rectangle(1.6,1.6);\draw[onyx!48,line width=.32pt](0,0)circle(1.25);\end{tikzpicture}}
+\newcommand{\capunk}{{\sffamily\bfseries\color{muted}?}}
+\newcommand{\capna}{{\sffamily\color{muted}--}}
+\newcommand{\capgoal}{\begin{tikzpicture}[x=1mm,y=1mm,baseline=-0.7ex]\path[use as bounding box](-1.9,-1.9)rectangle(1.9,1.9);\fill[spicy] (-1.45,-1.45) rectangle (1.45,1.45);\node[font=\sffamily\bfseries\fontsize{5.2}{5.2}\selectfont,text=white] at (0,0.03) {\checkmark};\end{tikzpicture}}
+\newcommand{\tfmamricon}{\begin{tikzpicture}[x=1mm,y=1mm,baseline=-0.6ex]
+  \path[use as bounding box] (-3.6,-3.0) rectangle (3.6,4.0);
+  % simple robot icon
+  \draw[navy,line width=.55pt,rounded corners=.7pt,fill=white] (-1.8,-0.4) rectangle (1.8,2.2);
+  \draw[navy,line width=.50pt] (0,2.2) -- (0,3.0);
+  \fill[navy] (0,3.35) circle (0.32);
+  \fill[navy] (-0.72,1.1) circle (0.22);
+  \fill[navy] (0.72,1.1) circle (0.22);
+  \draw[navy,line width=.42pt] (-0.85,0.25) -- (0.85,0.25);
+  \draw[navy,line width=.50pt] (-1.2,-0.4) -- (-1.2,-1.3);
+  \draw[navy,line width=.50pt] (1.2,-0.4) -- (1.2,-1.3);
+  \fill[navy] (-1.7,-1.3) circle (0.34);
+  \fill[navy] (-0.7,-1.3) circle (0.34);
+  \fill[navy] (0.7,-1.3) circle (0.34);
+  \fill[navy] (1.7,-1.3) circle (0.34);
+\end{tikzpicture}}
+
+\begin{document}
+
+% =========================================================
+% PAGE 1
+% =========================================================
+\sect{Panorama industrial de la cooperación multi-vehículo}
+
+La revisión industrial empleó un \textbf{muestreo intencional de máxima variación tecnológica}: se incluyeron productos o despliegues documentados por una fuente primaria/oficial y relacionados explícitamente con al menos una dimensión del TFM; se excluyeron prototipos exclusivamente académicos y afirmaciones comerciales sin evidencia técnica suficiente. Se seleccionaron diez casos principales de carga compartida, acoplamiento modular, sincronización de movimiento y coordinación de flotas\casecite{1}{x}--\casecite{10}{x}. La selección \textbf{no constituye una muestra estadística del mercado mundial}. Para evitar subrepresentar la automatización convencional, la Figura 1 añade como contexto cuatro plataformas comerciales de gestión centralizada de flotas: MiR Fleet, OTTO Fleet Manager, Geek+ RMS y Swisslog IntraMove\casecite{37}{x}--\casecite{40}{x}. La auditoría web más reciente incorpora además dos precedentes particularmente próximos al problema focal: Beacon Dual-AMR, con emparejamiento automático, carga compartida, arquitectura líder--seguidor y relevo ante fallo; y GREATOX GTVL, con cooperación síncrona multi-vehículo para carga pesada. Ninguno de los precedentes revisados documenta públicamente la combinación completa de reclutamiento heterogéneo, coordinación estrictamente local y verificación mecánica de factibilidad de la coalición.
+
+La Figura 1 organiza estos precedentes según dos dimensiones \textbf{ordinales}: de izquierda a derecha aumenta la interacción cooperativa entre vehículos ---desde operación independiente y movimiento coordinado hasta carga compartida y acoplamiento---; de abajo arriba aumenta la \textbf{descentralización de la coordinación y el control}. Las categorías no representan distancias métricas ni un nivel continuo de autonomía, y las flechas no deben leerse como una cronología. La lectura relevante es la coexistencia de dos líneas funcionales con precedentes comerciales por separado: cooperación física \textit{heavy-load} y autonomía de flota.
+
+\figcap{Figura 1}{Diez precedentes principales y cuatro referencias contextuales de gestión de flota, clasificados según dos dimensiones ordinales: interacción cooperativa entre vehículos (izquierda $\rightarrow$ derecha) y descentralización de la coordinación y el control (abajo $\rightarrow$ arriba). Los círculos numerados corresponden a la Tabla 1; los rombos A--D son contexto de flota centralizada. La posición dentro de una categoría se desplaza solo para evitar solapes y no tiene interpretación métrica. Fuente: elaboración propia a partir de fuentes oficiales citadas.}
+\begin{center}
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{6.45}{6.95}\selectfont]
+\path[use as bounding box] (0,0) rectangle (174,98);
+
+% plot frame and regions: four clear quadrants
+\fill[gray!8] (30,16) rectangle (98,53);
+\fill[orange!10] (98,16) rectangle (166,53);
+\fill[teal!10] (30,53) rectangle (98,90);
+\fill[navy!8] (98,53) rectangle (166,90);
+\draw[rule,line width=.45pt] (30,16) rectangle (166,90);
+\draw[rule!88,line width=.42pt] (98,16)--(98,90);
+\draw[rule!88,line width=.42pt] (30,53)--(166,53);
+\foreach \x in {64,132}{\draw[rule!75,densely dotted,line width=.24pt] (\x,16)--(\x,90);}
+\foreach \y in {34.5,71.5}{\draw[rule!75,densely dotted,line width=.24pt] (30,\y)--(166,\y);}
+
+% axes
+\node[anchor=north,align=center,text width=30mm] at (47,14.7){Flota\ independiente};
+\node[anchor=north,align=center,text width=30mm] at (81,14.7){Movimiento\\ coordinado};
+\node[anchor=north,align=center,text width=30mm] at (115,14.7){Misma carga\\ sincronizada};
+\node[anchor=north,align=center,text width=30mm] at (149,14.7){Acoplamiento\\ rígido/modular};
+\node[anchor=north,font=\bfseries] at (98,5.2){Interacción cooperativa entre vehículos};
+\node[anchor=north,font=\sffamily\fontsize{5.5}{5.8}\selectfont,text=muted] at (98,9.4){menor $\rightarrow$ mayor};
+
+\node[anchor=east,align=right,text width=26mm] at (27,25){Humano /\\ configurado};
+\node[anchor=east,align=right,text width=26mm] at (27,43.5){Control\\ central};
+\node[anchor=east,align=right,text width=26mm] at (27,62){Líder /\\ master};
+\node[anchor=east,align=right,text width=26mm] at (27,80.5){Entre vehículos /\\ distribuido};
+\node[rotate=90,anchor=south,font=\bfseries] at (4.5,53){Descentralización de la coordinación y el control};
+\node[rotate=90,anchor=south,font=\sffamily\fontsize{5.3}{5.6}\selectfont,text=muted] at (9.6,53){menor $\rightarrow$ mayor};
+
+% label and point styles
+\tikzset{regtitle/.style={anchor=west,font=\bfseries,fill=white,fill opacity=.84,text opacity=1,inner sep=1.1pt,rounded corners=.8pt}, regsub/.style={anchor=west,text=muted,fill=white,fill opacity=.84,text opacity=1,inner sep=.9pt,rounded corners=.8pt}, pt/.style={circle,draw=onyx,line width=.55pt,minimum size=5.2mm,inner sep=0pt,fill=white}, num/.style={font=\sffamily\fontsize{5.8}{6.0}\selectfont\bfseries,text=white}, ctx/.style={diamond,aspect=1.15,draw=onyx!65,line width=.45pt,minimum width=5.0mm,minimum height=4.3mm,inner sep=0pt,fill=onyx!14!white}, ctxnum/.style={font=\sffamily\fontsize{5.1}{5.3}\selectfont\bfseries,text=onyx}}
+
+% region labels
+\node[regtitle,text=teal!90!black] at (34,87.8){flota autónoma};
+\node[regsub] at (34,84.4){coordinación distribuida; sin carga compartida};
+\node[regtitle,text=navy] at (101,87.8){convergencia objetivo};
+\node[regsub] at (101,84.4){carga compartida + mayor autonomía};
+\node[regtitle,text=ink] at (34,20.8){automatización convencional};
+\node[regsub] at (34,17.6){1 carga por robot; control configurado o central};
+\node[regtitle,text=orange!90!black] at (100.5,18.9){heavy-load configurado};
+\node[regsub] at (100.5,15.9){carga compartida/acople; baja autonomía};
+
+% points + labels
+\node[pt,fill=orange] (c1) at (151,25) {}; \node[num] at (c1){1};
+\draw[orange!70,line width=.32pt] (c1)--(141.5,23.3); \node[anchor=east,align=right] at (141.0,23.3){KUKA omniMove / Airbus\\2016};
+
+\node[pt,fill=teal] (c2) at (136.5,79.0) {}; \node[num] at (c2){2};
+\draw[teal!70,line width=.32pt] (c2)--(128.8,75.4); \node[anchor=east,align=right] at (128.3,75.4){Stäubli + R3\\2022};
+
+\node[pt,fill=blue] (c3) at (116,47) {}; \node[num,text=onyx] at (c3){3};
+\draw[blue!70,line width=.32pt] (c3)--(109.5,55.5); \node[anchor=east,align=right] at (109.0,55.5){SIASUN dual-vehicle\\2024};
+
+\node[pt,fill=spicy!68!white] (c4) at (113,63) {}; \node[num] at (c4){4};
+\draw[plum!70,line width=.32pt] (c4)--(103,67); \node[anchor=east,align=right] at (102.5,67){KUKA KMP 3000P\\2025};
+
+\node[pt,fill=orange] (c5) at (136,29.5) {}; \node[num] at (c5){5};
+\draw[orange!70,line width=.32pt] (c5)--(127.5,28.8); \node[anchor=east,align=right] at (127.0,28.8){GREATOX GTVL25\\cat. 2026};
+
+\node[pt,fill=orange] (c6) at (158,32) {}; \node[num] at (c6){6};
+\draw[orange!70,line width=.32pt] (c6)--(165,39.0); \node[anchor=west,align=left] at (165.5,39.0){TII SCHEUERLE SPMT\\2023};
+
+\node[pt,fill=teal] (c7) at (48,83) {}; \node[num] at (c7){7};
+\draw[teal!70,line width=.32pt] (c7)--(56,78.5); \node[anchor=west,align=left] at (56.5,78.5){AGILOX X-SWARM / BMW\\2023};
+
+\node[pt,fill=spicy!68!white] (c8) at (131,64) {}; \node[num] at (c8){8};
+\draw[spicy!70,line width=.32pt] (c8)--(140.0,59.0); \node[anchor=west,align=left] at (140.5,59.0){Beacon Dual-AMR\\2026};
+
+\node[pt,fill=orange] (c9) at (148,38) {}; \node[num] at (c9){9};
+\draw[orange!70,line width=.32pt] (c9)--(137.5,47.0); \node[anchor=east,align=right] at (137.0,47.0){HUBTEX Aviation\\2020};
+
+\node[pt,fill=blue] (c10) at (53,51.5) {}; \node[num,text=onyx] at (c10){10};
+\draw[blue!70,line width=.32pt] (c10)--(60,54); \node[anchor=west,align=left] at (60.5,54){Hyundai HMGICS\\2023};
+
+% contextual central-fleet systems (not expanded in Table 1)
+\node[ctx] (ctxA) at (40.5,42.0) {}; \node[ctxnum] at (ctxA){A};
+\draw[mustard!80!onyx,line width=.28pt] (ctxA)--(35.0,38.5); \node[anchor=east,align=right,font=\sffamily\fontsize{5.7}{6.0}\selectfont] at (34.5,38.5){MiR Fleet};
+
+\node[ctx] (ctxB) at (58.0,39.0) {}; \node[ctxnum] at (ctxB){B};
+\draw[mustard!80!onyx,line width=.28pt] (ctxB)--(61.5,35.0); \node[anchor=west,align=left,font=\sffamily\fontsize{5.7}{6.0}\selectfont] at (62.0,35.0){OTTO Fleet\\Manager};
+
+\node[ctx] (ctxC) at (74.0,46.0) {}; \node[ctxnum] at (ctxC){C};
+\draw[mustard!80!onyx,line width=.28pt] (ctxC)--(77.0,41.8); \node[anchor=north,align=center,font=\sffamily\fontsize{5.7}{6.0}\selectfont] at (77.0,41.4){Geek+ RMS};
+
+\node[ctx] (ctxD) at (89.0,40.5) {}; \node[ctxnum] at (ctxD){D};
+\draw[mustard!80!onyx,line width=.28pt] (ctxD)--(92.0,36.5); \node[anchor=west,align=left,font=\sffamily\fontsize{5.7}{6.0}\selectfont] at (92.5,36.5){Swisslog\\IntraMove};
+
+% convergence vectors and TFM target
+% The target is not placed at the rigid-coupling extreme: the TFM seeks carga compartida
+% multi-contact cooperation with distributed coalition decisions, not necessarily a rigid robot-robot module.
+\node[rounded corners=1.0pt,minimum size=6.4mm,inner sep=0pt,draw=spicy,line width=.55pt,fill=autumn] (tfm) at (147.5,84.0) {};
+\node[anchor=west,font=\bfseries,text=spicy] at (152.2,84.0){TFM objetivo};
+
+
+
+
+% compact legend
+\node[anchor=north west,align=left,text width=162mm,text=muted] at (5,1.5){\fontsize{6.4}{7}\selectfont Forma: círculo = caso principal; rombo gris = contexto de flota; cuadrado naranja = TFM.\\ \textbf{En los círculos}, el color indica: \textcolor{orange}{\textbf{configurado/humano}}, \textcolor{blue}{\textbf{central}}, \textcolor{plum}{\textbf{líder/seguidor}}, \textcolor{teal}{\textbf{entre vehículos/distribuido}}.};
+\end{tikzpicture}
+\end{center}
+
+La figura separa cuatro regiones. Los rombos A--D evidencian la presencia comercial documentada de la gestión centralizada de flotas. Beacon presenta uno de los mayores solapamientos funcionales con la secuencia del TFM dentro del conjunto revisado; Stäubli+R3 destaca por ejecución V2V directa y GREATOX por cooperación multi-vehículo para carga pesada. Ninguno de los precedentes revisados integra públicamente todas las capacidades objetivo del TFM.
+
+\newpage
+
+% =========================================================
+% PAGE 2
+% =========================================================
+
+\sect{Casos industriales representativos}
+
+La Tabla 1 convierte los diez casos de la Figura 1 en una \textbf{matriz de capacidades orientada a la brecha del TFM}. Compara seis propiedades que separan la coordinación de flota de una coalición física: carga compartida, cooperación multi-vehículo, selección de miembros, coordinación/control local, verificación de factibilidad y recuperación/recomposición. El placeholder de fotografía permanece editable y enlaza a la fuente oficial.
+
+\figcap{Tabla 1}{Matriz funcional de precedentes industriales. Fuente: elaboración propia con documentación técnica oficial.  \capyes\ = documentado; \cappart\ = parcial/condicionado; \capno\ = no documentado públicamente; \capunk\ = arquitectura no publicada; \capna\ = no aplica; \capgoal\ = objetivo del TFM. ``No documentado'' no equivale a inexistencia.}
+
+{\setstretch{1}\fontsize{7.35}{8.10}\selectfont
+ \setlength{\tabcolsep}{0.55pt}
+ \renewcommand{\arraystretch}{1.32}
+\begin{tabularx}{\linewidth}{@{}L{3.72cm}C{0.74cm}C{0.78cm}C{0.86cm}C{0.86cm}C{0.82cm}C{0.90cm}Y@{}}
+\toprule
+\textbf{Sistema / evidencia} &
+{\fontsize{5.45}{5.75}\selectfont\shortstack{\textbf{Carga}\\\textbf{comp.}}} &
+{\fontsize{5.45}{5.75}\selectfont\shortstack{\textbf{Multi-veh.}\\\textbf{($>2$)}}} &
+{\fontsize{5.45}{5.75}\selectfont\shortstack{\textbf{Selecc.}\\\textbf{miembros}}} &
+{\fontsize{5.45}{5.75}\selectfont\shortstack{\textbf{Coord./ctrl.}\\\textbf{local}}} &
+{\fontsize{5.45}{5.75}\selectfont\shortstack{\textbf{Cert.}\\\textbf{factib.}}} &
+{\fontsize{5.45}{5.75}\selectfont\shortstack{\textbf{Recup.}\\\textbf{coalición}}} &
+\textbf{Evidencia industrial / límite}\\
+\midrule
+\rowcolor{soft}
+\matrixsystem{1}{KUKA · omniMove\casecite{1}{x}}{Airbus Stade}{2016}{https://www.kuka.com/en-us/industries/solutions-database/2016/07/solution-robotics-airbus}
+& \capyes & \capunk & \capno & \capno & \capno & \capno
+& 100 t; composición dedicada. Sin selección dinámica, certificado online ni recomposición autónoma publicada.\\
+
+\matrixsystem{2}{Stäubli + R3\casecite{2}{x}}{Virtual drawbar}{2022}{https://www.r3.group/en/success-stories/collaborative-agvs-in-the-cleanroom}
+& \capyes & \capno & \capno & \cappart & \capno & \capno
+& 2 AGV, 2$\times$5 t; ejecución V2V directa a 32 ms con PROFINET/PROFIsafe. La fuente no demuestra formación distribuida de la pareja ni ausencia de una autoridad dominante.\\
+
+\rowcolor{soft}
+\matrixsystem{3}{SIASUN\casecite{3}{x}}{Heavy-truck dual vehicle}{2024}{https://en.siasun.com/heavy-truck-assembly-line-mobile-robot.html}
+& \capyes & \capno & \cappart & \capno & \capno & \capno
+& Dual-vehicle linkage + MES. Selección a nivel de planta, no reclutamiento local ni recomposición física.\\
+
+\matrixsystem{4}{KUKA · KMP 3000P\casecite{4}{x}}{Load sharing}{2025}{https://www.kuka.com/en-us/products/amr-autonomous-mobile-robotics/mobile-platforms/kmp-3000p-omnimove}
+& \capyes & \capno & \capno & \cappart & \capno & \capno
+& Dos plataformas, hasta 6 t; líder--seguidor. Carga compartida comercial, pero pareja fija.\\
+
+\rowcolor{soft}
+\matrixsystem{5}{GREATOX · GTVL25\casecite{5}{x}}{Multi-vehicle synchronous}{cat. 2026}{https://en.greatoxagv.com/products_info/id-14.html}
+& \capyes & \cappart & \capno & \capunk & \capno & \capunk
+& 80--220 t y cooperación multi-vehículo. Monitoriza centro de gravedad; no publica certificado online de factibilidad mecánica, selección o recuperación.\\
+
+\matrixsystem{6}{TII SCHEUERLE · SPMT\casecite{6}{x}}{Modular heavy transport}{2023}{https://www.tii-group.com/tii-scheuerle/our-solutions/spmt/scheuerle-spmt}
+& \capyes & \cappart & \capno & \capno & \capno & \capno
+& \textit{Project cargo} modular; configuración de ingeniería, no certificado online ni reclutamiento autónomo.\\
+
+\rowcolor{soft}
+\matrixsystem{7}{AGILOX · X-SWARM\casecite{7}{x}}{BMW Regensburg}{2023}{https://www.agilox.net/en/blog/bmw-agilox-swarm/}
+& \capno & \capna & \capna & \capyes & \capna & \capna
+& 27 AMR; coordinación entre pares sin líder central. Una carga por AMR: no aplica coalición física.\\
+
+\matrixsystem{8}{Beacon Robot · Dual-AMR\casecite{8}{x}}{Collaborative transport}{2026}{https://www.beacon-robot.com/news/beacon-robot-amr-dual-robot-collaboration-officially-released-from-working-alone-to-working-together/}
+& \capyes & \capno & \capyes & \cappart & \capno & \capno
+& Emparejamiento automático y relevo de autoridad ante fallo documentados. 2 robots; despacho central y líder--seguidor. No se documenta sustitución/reclutamiento de un nuevo miembro.\\
+
+\rowcolor{soft}
+\matrixsystem{9}{HUBTEX · SL/HL-AGV\casecite{9}{x}}{Aviation}{2020}{https://www.hubtex.com/sites/default/files/2020-04/HUBTEX_Aircraft\%20Components_ENG.pdf}
+& \capyes & \capunk & \capno & \capno & \capno & \capno
+& Hasta 70 t; plataformas acoplables y operación semi/remota. Sin selección dinámica, certificado online o recomposición.\\
+
+\matrixsystem{10}{Hyundai · HMGICS\casecite{10}{x}}{AGV / AMR}{2023}{https://www.hyundaimotorgroup.com/en/story/CONT0000000000126181}
+& \capno & \capna & \capna & \cappart & \capna & \capna
+& Orquestación de planta y reactividad local; sin coalición física de carga compartida.\\
+\midrule
+\rowcolor{softplum}
+\multicolumn{1}{@{}l}{\parbox[t]{3.95cm}{\textbf{TFM objetivo}\\[-0.3pt]{\fontsize{5.35}{5.65}\selectfont\color{muted}(referencia conceptual)}}}
+& \capgoal & \capgoal & \capgoal & \capgoal & \capgoal & \capgoal
+& Integrar carga compartida, coalición heterogénea de tamaño adaptable, reclutamiento local, coordinación/control distribuido, verificación de factibilidad contacto/torsor y recomposición tras fallo.\\
+\bottomrule
+\end{tabularx}}
+
+\vspace{2.6pt}
+\noindent\colorbox{softwarm}{\parbox{0.972\linewidth}{\setstretch{1}\fontsize{7.35}{8.1}\selectfont
+\textbf{Lectura de la matriz.} La industria demuestra por separado carga compartida, emparejamiento/relevo ante fallo y coordinación distribuida de flota. \textbf{Ninguno de los precedentes revisados documenta simultáneamente una coalición física heterogénea multi-vehículo, selección local de miembros, verificación mecánica de factibilidad y recomposición durante la misión.}}}
+
+\vspace{1.8pt}
+\note{Contexto A--D de la Figura 1: MiR Fleet, OTTO Fleet Manager, Geek+ RMS y Swisslog IntraMove coordinan flotas de carga individual; no se incluyen como filas principales porque no aportan carga compartida. Los símbolos indican evidencia pública revisada, no una puntuación de similitud. En Multi-veh. ($>2$), \cappart\ indica cooperación multi-vehículo documentada sin cardinalidad superior a dos explícita en la fuente.}
+\newpage
+
+% =========================================================
+% PAGE 3
+% =========================================================
+\sect{Corpus patentario: evolución, cobertura y sectores}
+
+El corpus se analiza explícitamente a nivel de \textbf{publicación patentaria}, no de invención/familia. Contiene \textbf{169 publicaciones}; dos publicaciones secundarias de familias confirmadas se excluyen y quedan \textbf{167 registros analíticos}. La consolidación familiar exhaustiva no se presupone. Una búsqueda de recuperación con términos de transporte cooperativo, clases CPC de control multi-vehículo y \textit{snowballing} incorporó seis publicaciones relevantes ausentes de la selección inicial\casecite{25}{x}--\casecite{30}{x}.
+
+La ampliación dirigida por solicitante se conserva como auditoría de \textit{recall} y queda marcada; por ello, la geografía describe la \textbf{composición del corpus curado}, no cuotas mundiales. Las seis etiquetas se agregan en tres macrocapas: decisión de misión, coordinación cinemática e interacción física. En la Figura 2, \textbf{MM3} denota una media móvil de tres años.
+
+
+
+\note{\textbf{Protocolo resumido.} Unidad de análisis: publicación patentaria; corte documental: 11-09-2026. La estrategia reproducible v1 combina búsqueda textual, CPC G05D 1/69, 1/692, 1/695, 1/696 y 1/698--1/6987, expansión por solicitante y \textit{snowballing}. El eje temporal usa \textbf{año de publicación}: el año de prioridad solo está disponible en 6/167 registros. Una sensibilidad conservadora que colapsa cuatro grupos de títulos altamente similares mantiene el cambio de decisión de misión (+20,0 p.p.); ese colapso no determina familia jurídica. Protocolo, codebook y cola de auditoría acompañan al dataset.}
+\figcap{Figura 2}{Evolución y estructura del corpus patentario curado. (a) Actividad anual, media móvil de tres años (MM3) de volumen y peso MM3 de decisión de misión; inset: cambio temático 2020--2022 $\rightarrow$ 2023--2025. (b) Cobertura geográfica de solicitantes identificados, con la ampliación dirigida por solicitante hachurada. (c) Orientación funcional por dominio de aplicación en tres macrocapas. Fuente: elaboración propia a partir del corpus patentario v3. }
+
+{\sffamily\fontsize{8.45}{9.0}\selectfont\bfseries (a) Publicaciones anuales y cambio del foco temático del corpus}\par\vspace{1pt}
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+ name=patents,width=0.95\linewidth,height=6.12cm,
+ ymin=0,ymax=31,ylabel={\sffamily\fontsize{6.8}{7.2}\selectfont Publicaciones del corpus/año},
+ symbolic x coords={2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025},xtick=data,
+ axis x line*=bottom,axis y line*=left,
+ x tick label style={font=\sffamily\fontsize{5.6}{5.95}\selectfont,rotate=45,anchor=east,text=muted},
+ y tick label style={font=\sffamily\fontsize{5.8}{6.1}\selectfont,text=muted},ytick={0,5,10,15,20,25,30},
+ axis line style={draw=rule!95,line width=.35pt},tick style={draw=rule!95},
+ ymajorgrids=true,major grid style={draw=rule!50,line width=.18pt},enlarge x limits=0.025,clip=false,
+ legend style={draw=none,fill=none,font=\sffamily\fontsize{5.25}{5.55}\selectfont,at={(0.52,-0.16)},anchor=north,legend columns=3,/tikz/every even column/.append style={column sep=1.2mm}}]
+% ---- Annual macro-layer counts; edit coordinates here ----
+\addplot+[ybar stacked,bar width=10.0pt,fill=autumn,draw=white,line width=.22pt] coordinates {(2012,0)(2013,0)(2014,3)(2015,0)(2016,0)(2017,5)(2018,3)(2019,4)(2020,8)(2021,6)(2022,11)(2023,11)(2024,12)(2025,17)};
+\addlegendentry{Decisión de misión}
+\addplot+[ybar stacked,bar width=10.0pt,fill=mustard,draw=white,line width=.22pt] coordinates {(2012,1)(2013,0)(2014,0)(2015,0)(2016,1)(2017,1)(2018,0)(2019,3)(2020,1)(2021,8)(2022,11)(2023,5)(2024,4)(2025,3)};
+\addlegendentry{Coordinación cinemática}
+\addplot+[ybar stacked,bar width=10.0pt,fill=onyx!42!white,draw=white,line width=.22pt] coordinates {(2012,1)(2013,0)(2014,0)(2015,2)(2016,1)(2017,1)(2018,3)(2019,4)(2020,10)(2021,7)(2022,4)(2023,7)(2024,7)(2025,2)};
+\addlegendentry{Interacción física}
+% MM3 volume, left axis
+\addplot+[no markers,smooth,onyx,line width=.9pt,dash pattern=on 3pt off 2pt] coordinates {(2014,1.67)(2015,1.67)(2016,2.33)(2017,3.67)(2018,5.00)(2019,8.00)(2020,12.00)(2021,17.00)(2022,22.00)(2023,23.33)(2024,24.00)(2025,22.67)};
+\node[anchor=west,font=\sffamily\fontsize{5.0}{5.3}\selectfont,text=onyx] at (axis description cs:0.70,0.94){MM3 volumen};
+% Total labels
+\addplot+[draw=none,forget plot,nodes near coords,point meta=explicit symbolic,every node near coord/.append style={font=\sffamily\fontsize{5.0}{5.3}\selectfont\bfseries,text=charcoal,yshift=1.2pt}] coordinates {(2012,2)[2](2013,0)[ ](2014,3)[3](2015,2)[2](2016,2)[2](2017,7)[7](2018,6)[6](2019,11)[11](2020,19)[19](2021,21)[21](2022,26)[26](2023,23)[23](2024,23)[23](2025,22)[22]};
+% Inset: six thematic shifts, p.p. (fixed columns: topic | bar | delta)
+\node[anchor=north west,inner sep=0pt] at (axis description cs:-0.085,0.97){%
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily]
+ \path[use as bounding box] (0,1.2) rectangle (61,31);
+ \node[anchor=west,font=\fontsize{5.65}{6}\selectfont\bfseries,text=spicy] at (15.0,29.1){Cambio de cuota temática [p.p.]};
+ \node[anchor=west,font=\fontsize{4.45}{4.75}\selectfont,text=muted] at (15.0,26.2){2020--2022 $\rightarrow$ 2023--2025};
+ \node[anchor=east,font=\fontsize{4.0}{4.3}\selectfont\bfseries,text=muted] at (59.0,24.6){$\Delta$ p.p.};
+ \draw[onyx!32,line width=.28pt] (36,2.0)--(36,24.0);
+ \foreach \y/\lab in {22.4/{Planificación},18.7/{Factibilidad},15.0/{Reclutamiento},11.3/{Acoplamiento},7.6/{Formación},3.9/{Shared-load}}{\node[anchor=east,font=\fontsize{4.4}{4.7}\selectfont,text=ink] at (27.8,\y){\lab};}
+ \fill[autumn] (36,21.65) rectangle ({36+0.55*16.67},23.15); \node[anchor=east,font=\fontsize{4.3}{4.6}\selectfont,text=autumn] at (59.0,22.4){+16,7};
+ \fill[canary] (36,17.95) rectangle ({36+0.55*5.84},19.45); \node[anchor=east,font=\fontsize{4.3}{4.6}\selectfont,text=green!65!onyx] at (59.0,18.7){+5,8};
+ \fill[mustard] (36,14.25) rectangle ({36+0.55*4.24},15.75); \node[anchor=east,font=\fontsize{4.3}{4.6}\selectfont,text=spicy] at (59.0,15.0){+4,2};
+ \fill[onyx!42] ({36-0.55*3.21},10.55) rectangle (36,12.05); \node[anchor=east,font=\fontsize{4.3}{4.6}\selectfont,text=muted] at (59.0,11.3){-3,2};
+ \fill[spicy!65] ({36-0.55*12.73},6.85) rectangle (36,8.35); \node[anchor=east,font=\fontsize{4.3}{4.6}\selectfont,text=spicy] at (59.0,7.6){-12,7};
+ \fill[spicy!42] ({36-0.55*10.91},3.15) rectangle (36,4.65); \node[anchor=east,font=\fontsize{4.3}{4.6}\selectfont,text=spicy!80!black] at (59.0,3.9){-10,9};
+\end{tikzpicture}};
+% Robustness callout
+\node[anchor=north east,rounded corners=1pt,draw=rule,fill=white,inner sep=2pt,align=right,font=\sffamily\fontsize{5.35}{5.7}\selectfont] at (axis description cs:0.985,0.94){$\Delta$ decisión de misión: +20,9 p.p.\\sin balanceo por solicitante: +22,0 p.p.};
+\end{axis}
+% right axis: MM3 mission-decision share
+\begin{axis}[at={(patents.south west)},anchor=south west,width=0.95\linewidth,height=6.12cm,
+ symbolic x coords={2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025},xmin=2012,xmax=2025,
+ ymin=0,ymax=100,axis x line=none,axis y line*=right,ylabel={\sffamily\fontsize{6.1}{6.45}\selectfont MM3 decisión de misión (\%)},
+ y label style={text=spicy,at={(axis description cs:1.075,0.5)},anchor=south},ytick={0,20,40,60,80,100},
+ y tick label style={font=\sffamily\fontsize{5.4}{5.7}\selectfont,text=spicy,xshift=3pt},tick style={draw=spicy!70},axis line style={draw=spicy!70,line width=.35pt},clip=false]
+\addplot+[spicy,line width=1.05pt,mark=o,mark size=1.35pt,mark options={fill=spicy,draw=spicy}] coordinates {(2018,53.3)(2019,50.0)(2020,41.7)(2021,35.3)(2022,37.9)(2023,40.0)(2024,47.2)(2025,58.8)};
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+\vspace{-0.4mm}
+\noindent\begin{minipage}[t]{0.43\linewidth}
+{\sffamily\fontsize{8.05}{8.55}\selectfont\bfseries (b) Cobertura geográfica de solicitantes identificados}\par\vspace{0.4pt}
+{\sffamily\fontsize{5.35}{5.65}\selectfont\color{muted}Titulares identificados: 2018--2022 ($n=74$) y 2023--2025 ($n=49$).}\par\vspace{0.7pt}
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{4.75}{5.05}\selectfont]
+\path[use as bounding box] (0,0) rectangle (73.5,49);
+\def\xzero{22}\def\sc{0.67}
+\foreach \v in {0,20,40,60}{\pgfmathsetmacro{\xx}{\xzero+\sc*\v}\draw[rule!55,line width=.2pt] (\xx,5)--(\xx,46);\node[anchor=north,text=muted,font=\fontsize{6.0}{6.4}\selectfont] at (\xx,4.3){\v};}
+% legend
+\fill[canary!80!onyx] (23,46.5) rectangle +(4,1.4); \node[anchor=west] at (28,47.2){2018--2022};
+\fill[autumn] (44,46.5) rectangle +(4,1.4); \node[anchor=west] at (49,47.2){2023--2025};
+% data macro: y/name/old/oldDirected/new/newDirected
+\foreach \y/\name/\a/\ad/\b/\bd in {43/{China}/60.8/1.4/57.1/2.0,38.5/{EE.UU.}/2.7/2.7/14.3/14.3,34/{Japón}/5.4/1.4/10.2/6.1,29.5/{Suiza}/5.4/5.4/4.1/4.1,25/{Alemania}/4.1/0/6.1/0,20.5/{Francia}/4.1/4.1/4.1/4.1,16/{Canadá}/5.4/5.4/0/0,11.5/{Corea S.}/1.4/0/4.1/0,7/{Otros}/10.8/2.7/0/0}{
+ \node[anchor=east,text=ink] at (16.9,\y){\name};
+ \pgfmathsetmacro{\wa}{\sc*\a}\pgfmathsetmacro{\wad}{\sc*\ad}\pgfmathsetmacro{\wb}{\sc*\b}\pgfmathsetmacro{\wbd}{\sc*\bd}
+ \fill[canary!80!onyx] (\xzero,\y+.25) rectangle ({\xzero+\wa},\y+1.55);
+ \ifdim \ad pt>0pt \fill[pattern={Lines[angle=45,distance=1.35pt,line width=.22pt]},pattern color=onyx!70] ({\xzero+\wa-\wad},\y+.25) rectangle ({\xzero+\wa},\y+1.55);\fi
+ \fill[autumn] (\xzero,\y-1.55) rectangle ({\xzero+\wb},\y-.25);
+ \ifdim \bd pt>0pt \fill[pattern={Lines[angle=45,distance=1.35pt,line width=.22pt]},pattern color=onyx!70] ({\xzero+\wb-\wbd},\y-1.55) rectangle ({\xzero+\wb},\y-.25);\fi
+ \ifdim \a pt>0pt \node[anchor=west,text=muted] at ({\xzero+\wa+.7},\y+.9){\pgfmathprintnumber[fixed,precision=1,use comma]{\a}};\fi
+ \ifdim \b pt>0pt \node[anchor=west,text=spicy] at ({\xzero+\wb+.7},\y-.9){\pgfmathprintnumber[fixed,precision=1,use comma]{\b}};\fi
+}
+\draw[pattern={Lines[angle=45,distance=1.35pt,line width=.22pt]},pattern color=onyx!70,draw=onyx!60] (50.5,2.0) rectangle +(4,1.5);\node[anchor=west,text=muted] at (55.5,2.75){ampliación dirigida};
+\node[anchor=north,text=muted,font=\fontsize{4.6}{4.9}\selectfont] at (41.5,0.8){\% dentro de cada periodo};
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.55\linewidth}
+{\sffamily\fontsize{8.05}{8.55}\selectfont\bfseries (c) Orientación funcional por dominio de aplicación}\par\vspace{0.4pt}
+{\sffamily\fontsize{5.35}{5.65}\selectfont\color{muted}Dominios explícitos ($n=75$): tres macrocapas funcionales.}\par\vspace{0.7pt}
+\begin{tikzpicture}[x=1mm,y=1mm,font=\sffamily\fontsize{4.75}{5.05}\selectfont]
+\path[use as bounding box] (0,0) rectangle (95,49);
+\def\xstart{27}\def\barw{58}
+\foreach \p in {0,25,50,75,100}{\pgfmathsetmacro{\xx}{\xstart+0.58*\p}\draw[rule!50,line width=.2pt] (\xx,5)--(\xx,45);\node[anchor=north,text=muted,font=\fontsize{6.0}{6.4}\selectfont] at (\xx,4.3){\p};}
+\fill[autumn] (22,46.2) rectangle +(5,1.4);\node[anchor=west] at (28,46.9){misión};\fill[mustard] (41,46.2) rectangle +(5,1.4);\node[anchor=west] at (47,46.9){coordinación};\fill[onyx!42] (66,46.2) rectangle +(5,1.4);\node[anchor=west] at (72,46.9){física};
+\foreach \y/\name/\m/\c/\p in {41.5/{Intralogística (39)}/69.2/17.9/12.8,35.5/{Manufactura (16)}/62.5/12.5/25.0,29.5/{Automoción (3)}/33.3/0/66.7,23.5/{Marítimo/obra (3)}/0/33.3/66.7,17.5/{Heavy-load (6)}/16.7/16.7/66.7,11.5/{Aeroespacial (8)}/12.5/0/87.5}{
+ \node[anchor=east,text=ink] at (19.5,\y){\name};
+ \pgfmathsetmacro{\wm}{0.58*\m}\pgfmathsetmacro{\wc}{0.58*\c}\pgfmathsetmacro{\wp}{0.58*\p}
+ \fill[autumn] (\xstart,\y-1.55) rectangle ({\xstart+\wm},\y+1.55);
+ \fill[mustard] ({\xstart+\wm},\y-1.55) rectangle ({\xstart+\wm+\wc},\y+1.55);
+ \fill[onyx!42] ({\xstart+\wm+\wc},\y-1.55) rectangle ({\xstart+58},\y+1.55);
+ \ifdim \m pt>18pt \node[font=\bfseries,text=white] at ({\xstart+0.5*\wm},\y){\pgfmathprintnumber[fixed,precision=0]{\m}};\fi
+ \ifdim \c pt>18pt \node[font=\bfseries,text=onyx] at ({\xstart+\wm+0.5*\wc},\y){\pgfmathprintnumber[fixed,precision=0]{\c}};\fi
+ \ifdim \p pt>18pt \node[font=\bfseries,text=white] at ({\xstart+\wm+\wc+0.5*\wp},\y){\pgfmathprintnumber[fixed,precision=0]{\p}};\fi
+}
+\node[anchor=north,text=muted,font=\fontsize{4.6}{4.9}\selectfont] at (50,1.0){\% del dominio};
+\end{tikzpicture}
+\end{minipage}
+
+\subh{Lectura conjunta}
+Entre 2020--2022 y 2023--2025, la \textbf{decisión de misión} pasa de 37,9\% a 58,8\% ($+20,9$ p.p.); sin la ampliación dirigida, el cambio persiste (32,7\% $\rightarrow$ 54,7\%, $+22,0$ p.p.). Coordinación cinemática baja de 30,3\% a 17,6\% e interacción física de 31,8\% a 23,5\%. China domina la muestra identificada (60,8\% $\rightarrow$ 57,1\%); el 14,3\% reciente de EE.UU. está completamente hachurado y, por tanto, \textbf{no representa una cuota mundial}. Intralogística concentra 69\% en decisión de misión y aeroespacial 88\% en interacción física.
+
+\note{Panel (b): top 8 + ``Otros, con porcentajes normalizados dentro de cada periodo. La comparación 2018--2022 (5 años) frente a 2023--2025 (3 años) es un diagnóstico descriptivo de cobertura, no causal; el hachurado marca la ampliación dirigida. Panel (c): se excluyen 92 registros de uso general/multisector. El análisis principal es a nivel publicación; la auditoría familiar completa se mantiene separada del cómputo descriptivo.}
+\newpage
+
+% =========================================================
+% PAGE 4
+% =========================================================
+\sect{Implicaciones para el planteamiento del TFM}
+
+La evidencia industrial y el corpus patentario muestran dos capacidades con \textbf{presencia comercial documentada por separado}: transporte cooperativo sobre una misma carga y coordinación autónoma de flotas. La revisión ampliada localiza también precedentes que, \textbf{por separado}, abordan operación multi-vehículo, relación líder--seguidor, información limitada o transporte de una carga común\casecite{25}{x}--\casecite{30}{x}. En el conjunto revisado \textbf{no se identificó evidencia pública suficiente de una arquitectura que integre simultáneamente selección dinámica, verificación mecánica de factibilidad de la coalición, ejecución de carga compartida y recuperación local}. No se reclama inexistencia absoluta; se informa ausencia de integración pública en los precedentes revisados.
+
+\figcap{Figura 3}{Secuencia funcional considerada en el TFM y relación cualitativa con la evidencia pública predominante revisada. Fuente: elaboración propia. La banda inferior separa decisión estratégica, factibilidad/ejecución física y continuidad de misión.}
+\begin{center}
+\begin{tikzpicture}[x=0.985mm,y=1mm,font=\sffamily\fontsize{6.65}{7.15}\selectfont]
+\path[use as bounding box] (0,0) rectangle (174,48);
+\tikzset{stage/.style={draw=rule,line width=.45pt,minimum width=25mm,minimum height=13.5mm,align=left,fill=white,inner sep=0pt},arr/.style={-{Latex[length=1.7mm]},line width=.55pt,draw=onyx!45}}
+% each stage is a white box with editable color rail
+\foreach \x/\num/\title/\sub/\col in {14/1/{Reclutamiento}/{local por capacidad}/autumn,43/2/{Factibilidad}/{contacto / torsor}/autumn!82,72/3/{Aproximación}/{y formación}/mustard,101/4/{Transporte}/{carga compartida}/onyx!38,130/5/{Recomposición}/{ante fallo / cambio}/spicy!55,159/6/{Entrega}/{y disolución}/onyx!18}{
+ \node[stage] (s\num) at (\x,31) {};
+ \fill[\col] ({\x-12.5},24.25) rectangle ({\x-8.7},37.75);
+ \node[font=\bfseries\fontsize{8.1}{8.5}\selectfont,text=white] at ({\x-10.6},31){\num};
+ \node[anchor=west,font=\bfseries\fontsize{6.8}{7.2}\selectfont] at ({\x-6.8},32.6){\title};
+ \node[anchor=west,text=muted] at ({\x-6.8},28.8){\sub};
+}
+\foreach \a/\b in {1/2,2/3,3/4,4/5,5/6}{\draw[arr] (s\a.east)--(s\b.west);}
+% coverage labels
+\node[anchor=north,text=muted,font=\fontsize{6.0}{6.4}\selectfont] at (14,22.7){I+D / patentes};
+\node[anchor=north,text=muted,font=\fontsize{6.0}{6.4}\selectfont] at (43,22.7){I+D / patentes};
+\node[anchor=north,text=muted,font=\fontsize{6.0}{6.4}\selectfont] at (72,22.7){literatura técnica};
+\node[anchor=north,text=muted,font=\fontsize{6.0}{6.4}\selectfont] at (101,22.7){precedentes comerciales};
+\node[anchor=north,text=muted,font=\fontsize{6.0}{6.4}\selectfont] at (130,22.7){evidencia parcial};
+\node[anchor=north,text=muted,font=\fontsize{6.0}{6.4}\selectfont] at (159,22.7){operación comercial};
+% three-layer band
+\fill[autumn!24] (1,7.5) rectangle (61,11.5);\fill[mustard!42] (61,7.5) rectangle (113,11.5);\fill[onyx!18] (113,7.5) rectangle (173,11.5);
+\node[anchor=north west,text=muted] at (1,7.1){decisión estratégica};\node[anchor=north west,text=muted] at (61,7.1){factibilidad y ejecución física};\node[anchor=north west,text=muted] at (113,7.1){continuidad de misión};
+\node[anchor=west,text=muted,font=\fontsize{5.8}{6.2}\selectfont] at (1,2.2){Cadena evaluada: composición dinámica $\rightarrow$ verificación física $\rightarrow$ ejecución $\rightarrow$ recuperación.};
+\end{tikzpicture}
+\end{center}
+
+\subh{Delimitación del aporte}
+La heterogeneidad de flota $H_F$ aparece con frecuencia en gestores y plataformas industriales; la heterogeneidad \textit{dentro de una coalición física} $H_C$, donde robots con capacidades y geometrías distintas deben cerrar conjuntamente restricciones de carga, contacto y torsor fuerza--momento (\textit{wrench}), posee menor cobertura pública en el conjunto revisado. La propuesta combina reclutamiento condicionado por capacidad, validación mecánica, transporte cooperativo y recomposición ante pérdida o degradación de un miembro.
+
+\figcap{Tabla 2}{Normas e interfaces relevantes para la integración industrial. Fuente: elaboración propia a partir de los documentos citados.}
+{\setstretch{1}\fontsize{6.95}{7.65}\selectfont\setlength{\tabcolsep}{2.2pt}\renewcommand{\arraystretch}{1.16}
+\begin{tabularx}{\linewidth}{@{}L{3.15cm}Y@{}}
+\toprule
+\textbf{Documento} & \textbf{Relación con el problema}\\
+\midrule
+\rowcolor{soft} VDA 5050 v3.0.0 (2026) & Interfaz de órdenes y estado entre control de flota y robots móviles. La v3.0 incorpora zonas de libre navegación y compartición de rutas (\textit{path sharing}); favorece interoperabilidad operativa, pero no define la constitución ni la verificación mecánica de una coalición de carga compartida\casecite{31}{x}.\\
+ISO 21423 (2026, en publicación) & Protocolos de comunicación para interoperabilidad entre AMR multivendor, gestores de flota y recursos empresariales. Consultado el 11-09-2026: figura en etapa 60.00, ``International Standard under publication'', y excluye requisitos de seguridad\casecite{32}{x}.\\
+\rowcolor{soft} ISO 3691-4:2023 & Requisitos de seguridad y medios de verificación para vehículos industriales sin conductor y sus sistemas; incluye AGV y AMR como ejemplos\casecite{33}{x}.\\
+ANSI/A3 R15.08-3:2026 & Uso seguro de aplicaciones IMR: evaluación de riesgos, gestión de cambios y mantenimiento del riesgo aceptable durante el ciclo de vida\casecite{34}{x}.\\
+\bottomrule
+\end{tabularx}}
+
+\vspace{1.5pt}
+{\setstretch{1.02}\fontsize{7.30}{8.1}\selectfont La convergencia industrial relevante para este TFM no consiste en sustituir una tecnología por otra, sino en conectar tres capas que hoy suelen resolverse por separado: \textbf{decisión de misión, factibilidad física y continuidad operativa}. Esa lectura se traslada al diseño experimental de la tesis.}
+
+\vspace{3pt}
+\noindent\colorbox{softblue}{\parbox{0.972\linewidth}{\setstretch{1}\fontsize{7.25}{8.0}\selectfont
+\textbf{Brecha industrial observada.} Coalición física heterogénea multi-vehículo + reclutamiento local + verificación de factibilidad de contacto/torsor + recomposición local durante la misión. \textit{No se reclama inexistencia absoluta; se informa ausencia de integración pública en los precedentes revisados.}}}
+
+\vspace{4pt}
+\note{Las referencias completas de las citas [1]--[40] se integran en la bibliografía general del TFM conforme a APA 7. Esta versión conserva la numeración interna del capítulo para trazabilidad. Artefactos de reproducibilidad: protocolo de búsqueda v1, codebook, dataset v3, sensibilidad de duplicidad y cola de auditoría familiar.}
+
+\end{document}

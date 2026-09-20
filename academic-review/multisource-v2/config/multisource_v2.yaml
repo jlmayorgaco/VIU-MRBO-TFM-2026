@@ -1,0 +1,147 @@
+campaign_id: MROB-LIT-2026-09-12-V2
+protocol_version: MROB-LIT-MULTISOURCE-2026-09-12-v2
+date_windows:
+  primary:
+    from_year: 2000
+    to_year: 2026
+    rationale: "Modern methods and the administrative TFM period."
+  foundational:
+    from_year: 1940
+    to_year: 1999
+    rationale: "Foundations and pre-2000 methods retained for conceptual history."
+
+# The lattice is deliberately explicit.  Each family is executed independently
+# in every active metadata source; source-specific adapters translate only the
+# syntax, never the scientific meaning of the query.
+concept_lattice:
+  - id: F01
+    label: coalition formation
+    query: 'multi-robot coalition formation'
+    axes: [SP1, coalition]
+    window: primary
+  - id: F02
+    label: heterogeneous task allocation
+    query: 'heterogeneous multi-robot task allocation'
+    axes: [SP1, heterogeneity]
+    window: primary
+  - id: F03
+    label: game-theoretic coordination
+    query: 'game theoretic multi-robot task allocation'
+    axes: [SP1, theory]
+    window: both
+  - id: F04
+    label: auction and consensus allocation
+    query: 'distributed auction consensus multi-robot task allocation'
+    axes: [SP1, distributed]
+    window: primary
+  - id: F05
+    label: cooperative payload transport
+    query: 'multi-robot cooperative payload transport'
+    axes: [SP2, transport]
+    window: both
+  - id: F06
+    label: shared-load transport
+    query: 'multi-robot shared load object transport'
+    axes: [SP2, transport]
+    window: primary
+  - id: F07
+    label: non-prehensile and caging transport
+    query: 'multi-robot non-prehensile transport caging pushing'
+    axes: [SP2, physical]
+    window: both
+  - id: F08
+    label: wrench and contact feasibility
+    query: 'multi-robot wrench contact force feasibility payload'
+    axes: [SP2, physical]
+    window: both
+  - id: F09
+    label: formation and docking
+    query: 'distributed multi-robot formation docking cooperative transport'
+    axes: [SP2, execution]
+    window: both
+  - id: F10
+    label: decentralized leaderless execution
+    query: 'decentralized leaderless multi-robot cooperative transport'
+    axes: [SP2, distributed]
+    window: both
+  - id: F11
+    label: imperfect communication
+    query: 'multi-robot coordination packet loss delay switching topology'
+    axes: [SP1, SP2, network]
+    window: primary
+  - id: F12
+    label: failure and replacement
+    query: 'multi-robot coalition failure recovery robot replacement transport'
+    axes: [SP2, recovery]
+    window: primary
+  - id: F13
+    label: traffic and multi-robot planning
+    query: 'multi-robot traffic planning carried payload warehouse'
+    axes: [SP3, traffic]
+    window: primary
+  - id: F14
+    label: multiple coalitions and congestion
+    query: 'multiple robot coalitions congestion coordination logistics'
+    axes: [SP3, traffic]
+    window: primary
+  - id: F15
+    label: capability-load matching
+    query: 'heterogeneous robot capability heterogeneous load coalition'
+    axes: [SP1, SP2]
+    window: primary
+  - id: F16
+    label: integrated conjunction
+    query: 'heterogeneous distributed coalition cooperative payload failure recovery'
+    axes: [SP1, SP2, SP3]
+    window: primary
+
+sources:
+  crossref:
+    tier: A
+    kind: metadata
+    enabled: true
+  openalex:
+    tier: A
+    kind: metadata
+    enabled: true
+  arxiv:
+    tier: A
+    kind: metadata_and_preprint
+    enabled: true
+  semantic_scholar:
+    tier: A
+    kind: metadata_and_graph
+    enabled: true
+  core:
+    tier: A
+    kind: metadata_and_fulltext_index
+    enabled: true
+    credential: CORE_API_KEY
+  openaire:
+    tier: A
+    kind: metadata_and_repository_graph
+    enabled: true
+  dblp:
+    tier: A
+    kind: metadata
+    enabled: true
+  doaj:
+    tier: A
+    kind: open_access_metadata
+    enabled: true
+  unpaywall:
+    tier: B
+    kind: oa_enrichment
+    enabled: true
+  opencitations:
+    tier: B
+    kind: citation_graph
+    enabled: true
+
+execution:
+  max_results_per_query: 25
+  arxiv_delay_seconds: 3.1
+  max_citation_anchors: 20
+  max_unpaywall_records: 500
+  max_repair_rounds: 1
+  user_agent: MROB-Academic-Review-V2

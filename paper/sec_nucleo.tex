@@ -1,0 +1,234 @@
+\section{Núcleo matemático: modelo, equilibrios, rangos y valores}
+\label{sec:nucleo}
+
+Esta sección reúne, sin prosa intermedia, las ecuaciones del modelo, los
+equilibrios en forma cerrada, las condiciones de estabilidad con sus rangos
+numéricos y los valores de diseño que el resto del documento deriva. Todo lo que
+aparece aquí está verificado numéricamente en el punto donde se enuncia.
+
+\subsection{El modelo en doce ecuaciones}
+
+\begin{align}
+  &\text{AMR $i$ (Pfaff + Lagrange reducido):}\quad
+  \dot q_i=S(q_i)\eta_i,\qquad M_1\dot\eta_i+C_1\eta_i+F_1=B_1\tau_i,
+  \qquad |\lambda_i|\le\mu_{\mathrm{sd}}m_ig \label{eq:N-amr}\\
+  &\text{disco de fricción por rueda:}\quad
+  \lVert j_s\rVert_2\le\mu_sN_s\Delta t,\qquad
+  j^\star=\arg\min_{j\in\Dcal}\tfrac12 j^{\!\top}AM^{-1}A^{\!\top}j+(Av^{*})^{\!\top}j \label{eq:N-disco}\\
+  &\text{punto fuera del eje:}\quad
+  \dot h=M(\psi,a)\begin{pmatrix}u\\ \omega\end{pmatrix},\quad
+  \sigma_{\min}(M)=\min(1,|a|),\quad
+  |\omega|=\frac{|(Se)^{\!\top}\dot h|}{a} \label{eq:N-eje}\\
+  &\text{carga:}\quad
+  M_\ell\dot\zeta_\ell+C_\ell\zeta_\ell+D_\ell\zeta_\ell=\sum_{i\in\Ccal_\ell}G_if_i+w^{\mathrm{ext}}_\ell,
+  \qquad G_if_i=\begin{pmatrix}f_i^{\mathrm{lin}}\\ r_i^{\perp}\!\cdot f_i^{\mathrm{lin}}\end{pmatrix} \label{eq:N-carga}\\
+  &\text{acoplamiento (\textsf{cargo}):}\quad
+  f_i=k_i\epsilon_i-d_iu_i,\qquad
+  f_i^{\!\top}u_i+\tfrac{d}{dt}\bigl(\tfrac12k_i\lVert\epsilon_i\rVert^{2}\bigr)=-d_i\lVert u_i\rVert^{2} \label{eq:N-pad}\\
+  &\text{reparto (métrica $R$):}\quad
+  f=f_w+Z\eta,\quad f_w=R^{-1}G^{\!\top}(GR^{-1}G^{\!\top})^{-1}w,\quad
+  f^{\!\top}Rf=f_w^{\!\top}Rf_w+\eta^{\!\top}Z^{\!\top}RZ\eta \label{eq:N-reparto}\\
+  &\text{precios:}\quad
+  \dot p=\alpha\bigl(w-G\lambda(p)\bigr)-d_pp,\qquad
+  \lambda(p)=Q^{-1}G^{\!\top}p \label{eq:N-precio}\\
+  &\text{frenado del cuerpo:}\quad
+  h_{\mathrm{cuerpo}}=h-d_{\min}-\frac{m_{\mathrm{tot}}\lVert V_\ell\rVert^{2}}{2\,h_{\mathcal W}(-\hat v)}\ \ge0 \label{eq:N-freno}\\
+  &\text{barrera compuesta:}\quad
+  h_\kappa=-\kappa^{-1}\log\textstyle\sum_ie^{-\kappa h_i},\qquad
+  \ddot h_\kappa=\textstyle\sum_iw_i\ddot h_i-\kappa\,\mathrm{Var}_w(\dot h) \label{eq:N-softmin}\\
+  &\text{revisión (logit, temperatura $\beta$):}\quad
+  \pi(\sigma)=e^{-\beta\Psi(\sigma)}/Z,\qquad
+  x_\beta=x^\star+\beta^{-1}\delta+o(\beta^{-1}) \label{eq:N-logit}\\
+  &\text{ocupación absorbente:}\quad
+  \min\{c^{\!\top}m:\ Bm=\nu,\ m\ge0\},\qquad
+  A_V(z,b)=c+PV-V(z)\ \ge0 \label{eq:N-ocup}\\
+  &\text{testigo vigente:}\quad
+  \mathbb E[T_g]\le\frac{W(z_0)}{\ell_0-\varrho},\qquad
+  \mathbb E[J]\le\frac{\ell_0}{\ell_0-\varrho}W(z_0) \label{eq:N-testigo}\\
+  &\text{batería:}\quad
+  \dot E_i=-\Bigl(P^{\mathrm{aux}}_i+P^{\mathrm{loss}}_i+\textstyle\sum_s[\tau_{is}\omega_{w,is}]_+/\eta_{is}\Bigr),
+  \qquad E_i\ge E^{\mathrm{ret}}_i+E^{\mathrm{res}}_i \label{eq:N-bat}
+\end{align}
+
+\subsection{Equilibrios en forma cerrada}
+
+\begin{teorema}[Reposo de la red de precios y error de vaciado]
+\label{th:N-precios}
+Sea $H=GQ^{-1}G^{\!\top}\succeq0$. El reposo de \eqref{eq:N-precio} es
+\[
+  p^\star=\Bigl(H+\frac{d_p}{\alpha}I\Bigr)^{-1}w,
+  \qquad
+  w-G\lambda(p^\star)=\frac{d_p}{\alpha}\,p^\star,
+\]
+es decir, el exceso de demanda residual es exactamente $d_p/\alpha$ veces el
+precio de reposo. El jacobiano es $J=-(\alpha H+d_pI)$, con autovalores
+$\le-d_p<0$ para todo $\alpha>0$, $d_p>0$.
+\end{teorema}
+
+\begin{proof}
+Sustituyendo $\lambda(p)$, $\dot p=\alpha w-(\alpha H+d_pI)p$; el reposo anula el
+lado derecho y el residuo sigue de $w-Hp^\star=(d_p/\alpha)p^\star$. La
+linealización es la propia matriz, simétrica definida negativa.
+\end{proof}
+
+\begin{teorema}[Ventana de paso del ajuste discreto]
+\label{th:N-ventana}
+La iteración $p_{k+1}=p_k+h\bigl(\alpha(w-G\lambda(p_k))-d_pp_k\bigr)$ converge a
+$p^\star$ si y solo si
+\[
+  0<h<\frac{2}{\alpha\,\lambda_{\max}(H)+d_p}.
+\]
+\end{teorema}
+
+\begin{proof}
+La iteración es $e_{k+1}=(I-h(\alpha H+d_pI))e_k$ con $e_k=p_k-p^\star$; sus
+autovalores son $1-h(\alpha\lambda_j+d_p)$, de módulo menor que uno exactamente
+bajo la condición enunciada.
+\end{proof}
+
+Sobre una instancia con $m=6$, $\alpha=2$, $d_p=0{,}3$: la cota da
+$h<0{,}2929$; con $h=0{,}2900$ el error final es $2{,}6\times10^{-15}$, con
+$h=0{,}2988$ diverge a $10^{67}$.
+
+\begin{teorema}[Reposo del logit: primer orden en $1/\beta$]
+\label{th:N-logit}
+Sea $x^\star$ un equilibrio de Nash interior de $F(x)=A-Bx$ sobre el simplex y
+$x_\beta$ el reposo del logit con temperatura inversa $\beta$. Entonces
+$x_\beta=x^\star+\beta^{-1}\delta+o(\beta^{-1})$, donde $(\delta,\mu')$ resuelve
+\[
+  \begin{pmatrix}B&\mathbf 1\\ \mathbf 1^{\!\top}&0\end{pmatrix}
+  \begin{pmatrix}\delta\\ \mu'\end{pmatrix}
+  =\begin{pmatrix}-\log x^\star\\ 0\end{pmatrix}.
+\]
+\end{teorema}
+
+\begin{proof}
+El reposo del logit satisface $A_i-(Bx)_i-\beta^{-1}\log x_i=\mu$ en el soporte
+con $\sum x_i=1$. Derivando respecto de $\varepsilon=\beta^{-1}$ en
+$\varepsilon=0$ se obtiene el sistema lineal enunciado.
+\end{proof}
+
+Con $A=(4;\,3{,}8;\,3{,}6)$ y $B=\operatorname{diag}(2;\,1{,}5;\,1{,}8)$:
+$x^\star=(0{,}3936;\,0{,}3914;\,0{,}2151)$, $\delta=(-0{,}0985;\,-0{,}1277;\,0{,}2263)$,
+$\lVert\delta\rVert=0{,}2779$; el producto $\beta\lVert x_\beta-x^\star\rVert$
+medido crece de $0{,}250$ ($\beta=20$) a $0{,}2771$ ($\beta=800$).
+
+\begin{teorema}[Creencia crítica de la caza del ciervo]
+\label{th:N-ciervo}
+Con $n$ AMR, umbral $r^\star$, pago $B$ si se alcanza, coste $c$ y alternativa
+$w$, la creencia mínima sobre la participación ajena que hace de unirse la mejor
+respuesta es la raíz $p^\star$ de
+\[
+  B\sum_{k=r^\star-1}^{n-1}\binom{n-1}{k}p^{k}(1-p)^{n-1-k}=c+w,
+\]
+y admite la aproximación cerrada
+\[
+  (n-1)p^\star+z\sqrt{(n-1)p^\star(1-p^\star)}=r^\star-\tfrac32,
+  \qquad z=\Phi^{-1}\!\Bigl(1-\frac{c+w}{B}\Bigr).
+\]
+\end{teorema}
+
+Con $n=12$, $B=10$, $c=1$, $w=3$ ($z=0{,}2533$):
+\[
+\begin{array}{c|ccccccccc}
+ r^\star & 2&3&4&5&6&7&8&9&10\\\hline
+ \text{exacto} & 0{,}045&0{,}123&0{,}205&0{,}290&0{,}376&0{,}463&0{,}551&0{,}641&0{,}732\\
+ \text{normal} & 0{,}032&0{,}112&0{,}197&0{,}284&0{,}372&0{,}462&0{,}553&0{,}645&0{,}739
+\end{array}
+\]
+El ajuste lineal $p^\star\approx0{,}947\,(r^\star-1)/(n-1)-0{,}050$ tiene
+$R^2=0{,}9995$.
+
+\begin{teorema}[Núcleo y valor de Shapley del juego de umbral]
+\label{th:N-nucleo}
+Sea $v(S)=B$ si $\sum_{i\in S}\kappa_i\ge\bar\kappa$ y $0$ en otro caso. (i) Con
+capacidades iguales, el núcleo es no vacío si y solo si $r^\star=n$. (ii) El
+valor de Shapley de $i$ es su probabilidad de ser \emph{pivote} —de que su
+llegada cruce el umbral— en un orden uniformemente aleatorio de los $n$ AMR.
+\end{teorema}
+
+\begin{proof}
+(i) Un juego simple tiene núcleo no vacío si y solo si tiene jugador con veto;
+con capacidades iguales solo lo hay cuando hacen falta todos. (ii) Es la
+fórmula de Shapley con contribuciones marginales en $\{0,B\}$.
+\end{proof}
+
+Con $\kappa=(3;\,2;\,1;\,1;\,0{,}5;\,0{,}5)$ y $\bar\kappa=4$: Shapley
+$=(0{,}450;\,0{,}183;\,0{,}133;\,0{,}133;\,0{,}050;\,0{,}050)$; la probabilidad de
+pivote muestreada sobre $3\times10^{5}$ órdenes difiere en menos de
+$6\times10^{-4}$.
+
+\begin{teorema}[Premio de reserva que implementa el óptimo]
+\label{th:N-prima}
+Con $p(s)$ creciente y cóncava, $p(0)=0$, y $\varepsilon(s)=sp'(s)/p(s)\le1$, el
+premio $\widetilde R=B\,\varepsilon(s^{\mathrm{soc}})$ hace coincidir el nivel de
+reserva de equilibrio con el socialmente óptimo; $R=B$ sobreprovee. Con
+$p(s)=1-e^{-3s}$, $N=20$, $\Lambda\lambda_f=0{,}3$, $c=1$, $B=40$:
+$s^{\mathrm{soc}}=0{,}196$, $\varepsilon=0{,}735$, $\widetilde R=29{,}4$; $R=40$
+da $s^\star=0{,}440$ ($+124\%$).
+\end{teorema}
+
+\subsection{Rangos y condiciones}
+
+\begin{center}\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+Magnitud & Condición & Valor de referencia \\
+\midrule
+paso del ajuste de precios & $h<2/(\alpha\lambda_{\max}(H)+d_p)$ & $0{,}2929$ ($\alpha=2$, $d_p=0{,}3$) \\
+error de vaciado & $\lVert w-G\lambda^\star\rVert=(d_p/\alpha)\lVert p^\star\rVert$ & $0{,}15\,\lVert p^\star\rVert$ \\
+saltos para precisión $\varepsilon$ & $h\ge\log(1/(\varepsilon\mu))/\log(1/\rho)-1$, $\rho=\tfrac{\kappa-1}{\kappa+1}$ & $6/34/172$ ($\kappa=2/10/50$, $\varepsilon=10^{-3}$) \\
+offset del pusher & $a\ge v_{\mathrm{lat}}/\omega_{\max}$ & $0{,}133$~m ($0{,}2$~m/s, $1{,}5$~rad/s) \\
+velocidad por frenado (AMR) & $v\le\sqrt{2a^{\max}(h_{\min}-d_{\min})}$ & $0{,}49$ / $1{,}90$~m/s (holgura $0{,}6$ / $2{,}0$~m) \\
+frenado del cuerpo & $v\le\sqrt{2h_{\mathcal W}(-\hat v)(h-d_{\min})/m_{\mathrm{tot}}}$ & $1{,}15$–$1{,}67$~m/s ($400$~kg, $3$~m) \\
+grado del grafo de conflicto & $\Delta\le\lfloor\pi/\arcsin(d_{\min}/2R^{\mathrm{com}})\rfloor$ & $12$–$125$ (razón $0{,}5$–$0{,}05$) \\
+turnos de reserva & $\chi\le\Delta+1$ & $13$–$126$ \\
+duración del turno & $C^\star/L\approx4{,}33/(1-Y)-0{,}57$ & $4{,}7$ / $5{,}9$ / $8{,}3$ / $20{,}7$ ($Y=0{,}2/0{,}32/0{,}5/0{,}8$) \\
+regularización (selección) & $\varepsilon\to0$: norma mínima; empate $\Rightarrow$ pasivo & ventana $\varepsilon\le0{,}5$ en el ensayo \\
+temperatura & desplazamiento $\lVert x_\beta-x^\star\rVert\approx\lVert\delta\rVert/\beta$ & $0{,}278/\beta$ \\
+grafo equilibrado & $\mathbf 1^{\!\top}W=W\mathbf 1$ & sin él: $1{,}4$ frente a $1{,}2444$ \\
+resiliencia & $>2F$ vecinos; media $\to$ filtrado & $50\to6{,}775$ \\
+cota de Bellman & $\varrho<\ell_0$ & $\mathbb E[T]=8{,}75\le12$ \\
+batería & $[\tau\omega]_+$ sin regeneración & $+28{,}7$~Wh de $100$ si se ignora \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Lo que es nuevo en este documento}
+
+Se enuncian como resultados propios, en el sentido de que no aparecen en las
+fuentes consultadas y se derivan y verifican aquí.
+
+\begin{enumerate}[leftmargin=2.0em,topsep=0.2em,itemsep=0.25em]
+  \item \textbf{Error de vaciado como múltiplo del precio}
+  (\cref{th:N-precios}): $w-G\lambda^\star=(d_p/\alpha)p^\star$, que hace del
+  cociente $d_p/\alpha$ el único parámetro que separa robustez de exactitud.
+  \item \textbf{Premio de elasticidad} (\cref{th:N-prima}):
+  $\widetilde R=B\varepsilon(s^{\mathrm{soc}})$; el premio íntegro $B$ sobreprovee.
+  \item \textbf{Cadena reserva $\to$ cobertura $\to$ caudal}: $p(s)$ es la
+  cobertura normalizada de \cref{def:cobertura}, y fija el valor de
+  \cref{pr:caudal}; con la corrección de cadena única de \cref{s:unichain}.
+  \item \textbf{Frenado del cuerpo como función soporte}
+  (\eqref{eq:N-freno}): la capacidad de detenerse y el margen de
+  realizabilidad son la misma función $h_{\mathcal W}$ en direcciones
+  distintas.
+  \item \textbf{Ley $1/a$ del chasis} (\eqref{eq:N-eje}):
+  $\sigma_{\min}(M)=\min(1,a)$, luego el offset del pusher es un parámetro de
+  autoridad con la misma estructura que \cref{th:degradacion}.
+  \item \textbf{Cuatro lecturas del mismo fenómeno}: multiplicidad de la caza
+  del ciervo, déficit de contractividad $\nu^\star>0$, equilibrio de Nash no
+  fuerte y núcleo vacío en el juego de umbral son un solo hecho, y el
+  compromiso conjunto —la guarda de \cref{def:automata}— es su remedio común;
+  con la precisión de que en la capa divisible el reparto dual sí está en el
+  núcleo.
+  \item \textbf{Saltos frente a condicionamiento} (\cref{th:saltos}): la
+  autoridad física y la profundidad de comunicación son sustitutos a razón
+  $\rho=(\kappa-1)/(\kappa+1)$.
+  \item \textbf{Duración de turno frente a saturación}: $C^\star/L$ no es
+  constante; crece como $4{,}33/(1-Y)$.
+  \item \textbf{Primer orden del logit} (\cref{th:N-logit}): $\delta$ en forma
+  cerrada, con $\lVert\delta\rVert$ como constante de desplazamiento.
+  \item \textbf{Criterio prescriptivo/precio} verificado sobre un mismo
+  problema (\cref{obs:recarga}): masa exacta, tope respetado, capacidad
+  excedida un $0{,}5\%$.
+\end{enumerate}

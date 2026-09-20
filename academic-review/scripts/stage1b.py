@@ -84,7 +84,7 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def ensure_stage1a_frozen() -> dict[str, Any]:
+def ensure_stage1a_frozen(*, rebaseline: bool = False) -> dict[str, Any]:
     """Create once, then verify, the immutable Stage 1A hash manifest."""
     manifest_path = MANIFESTS / "stage1a_freeze_manifest.json"
     paths = [STAGE1A_CSV, STAGE1A_JSONL]
@@ -103,17 +103,24 @@ def ensure_stage1a_frozen() -> dict[str, Any]:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         expected = manifest.get("files", {})
         if expected != current:
-            raise RuntimeError(
-                "Stage 1A artifacts changed after freeze; refusing to continue. "
-                f"Expected {expected}, observed {current}."
-            )
-        return manifest
+            if not rebaseline:
+                raise RuntimeError(
+                    "Stage 1A artifacts changed after freeze; refusing to continue. "
+                    f"Expected {expected}, observed {current}."
+                )
+            stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+            archive = manifest_path.with_name(f"{manifest_path.stem}.superseded_{stamp}{manifest_path.suffix}")
+            archived = dict(manifest)
+            archived.update({"status": "superseded", "superseded_at_utc": utc_now(), "superseded_reason": "rebaseline_requested_after_new_source_ingestion"})
+            archive.write_text(json.dumps(archived, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        else:
+            return manifest
 
     manifest = {
         "created_at_utc": utc_now(),
         "status": "immutable_input",
         "files": current,
-        "note": "Stage 1B must never overwrite these files.",
+        "note": "Stage 1B must never overwrite these files. A prior freeze, if any, is archived before an explicit rebaseline.",
     }
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return manifest
@@ -715,9 +722,10 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--resume", action="store_true", help="reuse persistent HTTP cache")
     parser.add_argument("--force", action="store_true", help="refresh HTTP cache; never changes Stage 1A inputs")
+    parser.add_argument("--rebaseline", action="store_true", help="archive a stale Stage 1A freeze and bind this derivative to the current reconciled input")
     args = parser.parse_args()
 
-    freeze = ensure_stage1a_frozen()
+    freeze = ensure_stage1a_frozen(rebaseline=args.rebaseline)
     if not PROTOCOL.exists():
         raise FileNotFoundError(f"Frozen screening protocol missing: {PROTOCOL}")
     protocol_hash = sha256(PROTOCOL)
@@ -817,6 +825,13 @@ def main() -> int:
     legacy_counts = Counter(item["classification"] for item in legacy_log)
     api_failures = [event for event in http.events if event.status in {"failed", "forbidden", "auth_required", "parse_error"}]
     citation_events = [event for event in recall_meta.get("events", []) if not event["direction"].endswith("_item")]
+    wos_coverage = BOOT.wos_coverage_label(BOOT.wos_raw_files())
+    wos_status = "present_partial" if wos_coverage == "wos_partially_reconciled" else ("present_complete" if wos_coverage == "wos_reconciled" else "pending_external_export")
+    wos_note = (
+        "Web of Science is partially reconciled from the declared manual exports; F01 and F02 remain incomplete, so the corpus is not represented as exhaustive."
+        if wos_coverage == "wos_partially_reconciled"
+        else "Web of Science remains pending and the corpus is not represented as exhaustive."
+    )
     recall_status = (
         "descriptive near-saturation signal"
         if len(snowball_relevant) <= 5 and len(snowball_relevant) <= max(1, int(0.2 * max(1, len(snowball_new))))
@@ -882,10 +897,10 @@ Run UTC: {utc_now()}
 
 ## Coverage boundary and deviations
 
-`coverage_status=open_sources_plus_limited_snowballing`  
-`wos_status=pending_external_export`
+`coverage_status=open_sources_plus_limited_snowballing;{wos_coverage}`
+`wos_status={wos_status}`
 
-- Web of Science remains pending and the corpus is not represented as exhaustive.
+- {wos_note}
 - OpenAlex citation neighborhoods were used only for one-hop recall auditing.
 - No PDF corpus was downloaded; no full-text coding, novelty claim or literature review prose was produced.
 

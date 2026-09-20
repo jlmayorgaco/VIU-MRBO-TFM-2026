@@ -1,0 +1,141 @@
+experiment_id: COPPELIA_CARGO_PREFLIGHT_MINIMAL_v1
+protocol_family: coppelia_cargo_v1
+mode: smoke
+output_dir: results/coppelia_cargo_preflight_minimal_v1
+guards:
+- scalar_capacity
+- planar_lsq
+- supported_wrench_wheels
+backend:
+  kind: coppeliasim_mujoco
+  scene_path: coppeliasim/real_scenes/cargo_primary_mujoco_v1.ttt
+  host: 127.0.0.1
+  port: 23000
+  headless: true
+  startup_timeout_s: 120.0
+  payload_alias: /CargoPrimary/payload
+  robots:
+  - robot_id: R1
+    base: /CargoPrimary/R1
+    left_wheel_joint: /CargoPrimary/R1/leftMotor
+    right_wheel_joint: /CargoPrimary/R1/rightMotor
+    force_sensor: /CargoPrimary/R1/supportSensor
+  - robot_id: R2
+    base: /CargoPrimary/R2
+    left_wheel_joint: /CargoPrimary/R2/leftMotor
+    right_wheel_joint: /CargoPrimary/R2/rightMotor
+    force_sensor: /CargoPrimary/R2/supportSensor
+  - robot_id: R3
+    base: /CargoPrimary/R3
+    left_wheel_joint: /CargoPrimary/R3/leftMotor
+    right_wheel_joint: /CargoPrimary/R3/rightMotor
+    force_sensor: /CargoPrimary/R3/supportSensor
+  - robot_id: R4
+    base: /CargoPrimary/R4
+    left_wheel_joint: /CargoPrimary/R4/leftMotor
+    right_wheel_joint: /CargoPrimary/R4/rightMotor
+    force_sensor: /CargoPrimary/R4/supportSensor
+design:
+  payload_mass_kg:
+  - 14.0
+  friction_regime:
+  - nominal
+  friction_coefficients:
+    nominal: 0.65
+  coalition:
+  - minimal
+  longitudinal_acceleration_m_s2:
+  - 0.1
+  coalitions_m:
+    minimal:
+    - - -0.45
+      - -0.3
+    - - -0.45
+      - 0.3
+    - - 0.45
+      - 0.0
+  motion_envelope:
+    peak_lateral_acceleration_m_s2: 0.1
+    peak_yaw_acceleration_rad_s2: 0.2
+    peak_twist_world_m_s_rad_s:
+    - 0.45
+    - 0.15
+    - 0.25
+  perturbations:
+    mass_relative_half_range: 0.03
+    friction_absolute_half_range: 0.025
+    com_jitter_m: 0.03
+    initial_pose_jitter_m: 0.02
+    initial_yaw_jitter_rad: 0.035
+    sensor_noise_std_n: 0.05
+  seeds:
+    start: 260900
+    count: 1
+  primary_dt_s: 0.005
+  sensitivity:
+    dt_values_s:
+    - 0.005
+    cell_indices:
+    - 0
+    seeds_per_cell: 1
+payload:
+  length_m: 1.1
+  width_m: 0.75
+  height_m: 0.25
+  linear_damping_n_s_m: 2.0
+  yaw_damping_n_m_s_rad: 0.5
+  initial_pose_m_rad:
+  - 0.0
+  - 0.0
+  - 0.0
+  target_pose_m_rad:
+  - 0.25
+  - 0.0
+  - 0.0
+robot:
+  count: 4
+  payload_capacity_kg: 9.0
+  wheel_radius_m: 0.0975
+  track_width_m: 0.331
+  max_wheel_speed_rad_s: 12.0
+  max_drive_force_n: 12.0
+  max_normal_force_n: 100.0
+control:
+  controller_id: cargo_pose_wrench_admittance_wheel_v2
+  position_gain_s2: 0.55
+  velocity_gain_s: 1.35
+  yaw_gain_s2: 0.7
+  yaw_rate_gain_s: 1.2
+  heading_gain_s: 2.5
+  allocation_regularization: 1.0e-06
+  contact_force_admittance_m_s_per_n: 0.003
+  wrench_force_admittance_m_s_per_n: 0.002
+  wrench_torque_admittance_rad_s_per_n_m: 0.01
+  admittance_twist_limit_fraction: 0.25
+  horizon_s: 0.25
+  series_stride: 5
+gates:
+  lsq_residual_max: 0.001
+  sensor_static_relative_error_max: 0.02
+  force_transmission_relative_error_max: 0.05
+  wheel_twist_relative_error_max: 0.05
+  contact_duty_min: 0.95
+  max_relative_slip_m: 0.02
+  final_position_error_m: 0.1
+  final_yaw_error_rad: 0.0872664626
+  final_linear_speed_m_s: 0.12
+  final_angular_speed_rad_s: 0.1
+  dwell_time_s: 1.0
+  collision_count_max: 0
+  config_readback_abs_tolerance: 1.0e-06
+  dt_final_position_spread_max_m: 0.05
+  dt_final_yaw_spread_max_rad: 0.05
+  dt_success_disagreement_max: 0
+  paired_repeat_position_spread_max_m: 0.01
+  paired_repeat_yaw_spread_max_rad: 0.01745329252
+  paired_success_disagreement_max: 0
+inference:
+  analysis_seed: 260831
+  confidence_level: 0.95
+  bootstrap_resamples: 1000
+  holm_family: within_cell_and_endpoint

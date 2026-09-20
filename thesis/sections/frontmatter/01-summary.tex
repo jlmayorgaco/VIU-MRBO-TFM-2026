@@ -1,36 +1,35 @@
 \begin{viuabstract}{Resumen}
-Formar una coalición de robots móviles heterogéneos exige decidir qué robots
-pueden transportar juntos una carga y conservar esa decisión durante el
-movimiento. La arquitectura evaluada articula mecanismos interpretables en varias capas.
-La modalidad principal, \emph{Cargo}, representa una carga apoyada sobre
-una coalición rígida y enlaza juegos potenciales con cierre entero, verificación
-mecánica, control de pose, seguridad, reparación y comunicación vecinal. La
-implementación es híbrida, pues agregados, optimizadores por carga y el
-registro del simulador consultan información global.
+El transporte cooperativo de cargas heterogéneas exige formar una coalición adecuada,
+ejecutar la interacción física y coordinar el tráfico con otras misiones. Este TFM
+organiza el problema en tres subproblemas. SP1 decide qué robots atienden cada carga,
+cuántos se necesitan, qué rol o contacto asume cada uno y cuándo esperar, iniciar o
+cambiar de coalición. SP2 aborda la aproximación, el acoplamiento, la estabilización,
+el transporte y la sustitución de miembros. SP3 coordina rutas, reservas y prioridades
+entre robots libres, equipos en reunión y coaliciones en movimiento. \emph{Cargo}
+modela una carga soportada como cuerpo rígido planar.
 
-El análisis avanza desde la asignación uno a uno hasta la coordinación bajo
-redes imperfectas. Se caracterizan los equilibrios de asignación y cuota; se
-establecen condiciones de factibilidad planar de \emph{wrench}; se demuestran
-la estabilidad local con contactos fijos y la terminación de los juegos finitos de
-reparación y rutas. La evaluación compara métodos en mundos pareados mediante
-referencias globales acotadas, ablaciones e intervalos de confianza del
-95\,\%.
+La propuesta combina referencias LP/MILP, dinámica primal--dual central y
+vecinal, cierre entero con reparación y certificados separados para recursos,
+contacto y movimiento. La evaluación usa mundos pareados, semillas explícitas y
+oráculos. La batería separa siete preguntas: caso manual (E0),
+relajación (E1), conectividad (E2), discretización (E3), recuperación entera (E4),
+escala (E5) y llegada uniciclo (E6).
 
-En 600 mundos, la verificación planar de factibilidad mecánica redujo en 0.333 la tasa
-de falsos positivos. El juego de reparación restauró los 360 certificados
-recuperables. El demostrador Cargo completó 359 de 360 misiones sin intersección
-entre la carga y los obstáculos durante el transporte. El contraste temporal no
-respaldó la ventaja prevista del término de coste espacial. En SP8, retransmitir elevó en
-0.054 la tasa libre de conflictos y añadió 261.3 mensajes por agente; esa tasa
-llegó a cero con 128 robots. Un piloto cinemático tridimensional registró
-bloqueos en los tres escenarios congestionados.
+E0 reprodujo el LP regularizado en un caso controlado con errores del orden de
+\(10^{-6}\)--\(10^{-5}\). En E1, Rep-D alcanzó el criterio relativo,
+pero solo una ejecución fue comparable al LP bajo tolerancia primal estricta.
+E2 y E3 siguen no concluyentes. E4 alcanzó factibilidad en los ocho mundos piloto y una brecha mediana
+del \(1{,}21\%\). En E5, Rep-D+repair recuperó factibilidad en el caso \(N=40\),
+aunque la dinámica fraccionaria no convergió dentro del presupuesto; el baseline
+Greedy dejó un caso no factible. E6 obtuvo llegada completa en dos escenarios, sin
+validar transporte físico.
 
-Las garantías formales se aplican bajo los supuestos declarados.
-Cargo aporta evidencia de compatibilidad funcional. La campaña integrada sustituye algunos
-mecanismos de SP2--SP6 y, por ello, no establece una garantía distribuida para
-el sistema completo. Aún requieren validación directa la dinámica
-tridimensional, el contacto rueda--suelo, las redes conmutadas, el hardware y el
-transporte por \emph{caging}.
+El estado de evidencia es C-pilot: los resultados verifican implementación y casos
+controlados, pero no demuestran convergencia global, optimalidad ni seguridad
+distribuida del sistema completo. Las campañas de SP2 y SP3 aportan evidencia
+parcial; permanecen pendientes la validación confirmatoria, la dinámica tridimensional,
+la tracción rueda--suelo, las redes conmutadas, el hardware y el transporte por
+\emph{caging}.
 
 \keywords{Palabras clave}{coordinación multi-robot,
   robots móviles autónomos, formación de coaliciones,

@@ -1,0 +1,61 @@
+{
+ "by_layout": {
+  "cross_aisle": {
+   "n": 120,
+   "gap_2br_median": 41.06940942323882,
+   "gap_br_median": 69.41560960149526,
+   "mean_degree": 6.0,
+   "lambda2": 0.7575623292443695,
+   "dist_mean": 41.81098991829449,
+   "dist_spread": 1.0526595348250465,
+   "demand_ratio": 0.85
+  },
+  "docks_staging": {
+   "n": 120,
+   "gap_2br_median": 13.094635224293256,
+   "gap_br_median": 22.807040151429874,
+   "mean_degree": 6.0,
+   "lambda2": 0.3801000228018837,
+   "dist_mean": 94.78307408191088,
+   "dist_spread": 0.23954951373325284,
+   "demand_ratio": 0.85
+  },
+  "open_bottleneck": {
+   "n": 119,
+   "gap_2br_median": 26.239522408509945,
+   "gap_br_median": 61.83337076659793,
+   "mean_degree": 6.875,
+   "lambda2": 0.8020491952118285,
+   "dist_mean": 56.25180904065461,
+   "dist_spread": 1.0384061787840435,
+   "demand_ratio": 0.85
+  },
+  "parallel_aisles": {
+   "n": 119,
+   "gap_2br_median": 48.14584388682001,
+   "gap_br_median": 76.99474513029928,
+   "mean_degree": 5.75,
+   "lambda2": 0.5934479124075487,
+   "dist_mean": 46.95090250800866,
+   "dist_spread": 1.136176750924686,
+   "demand_ratio": 0.85
+  }
+ },
+ "correlations": {
+  "mean_degree": -0.29581582179817223,
+  "lambda2": -0.15716381268727186,
+  "dist_mean": -0.48720786877435746,
+  "dist_spread": 0.5762016811006896,
+  "demand_ratio": -0.0002285266465758128,
+  "mean_degree_monotone_across_layouts": false,
+  "lambda2_monotone_across_layouts": false,
+  "dist_mean_monotone_across_layouts": false,
+  "dist_spread_monotone_across_layouts": true
+ },
+ "layout_order_by_gap": [
+  "docks_staging",
+  "open_bottleneck",
+  "cross_aisle",
+  "parallel_aisles"
+ ]
+}

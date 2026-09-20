@@ -1,0 +1,12 @@
+schema_version: 1
+family: F5_network_failure
+description: Grafo vecinal disperso, pérdida de paquetes declarada y fallo de un robot.
+parameters:
+  demand_pressure: 0.95
+  heterogeneity: 0.24
+  compatibility_probability: 0.84
+  communication_degree: 2
+  packet_loss_probability: 0.15
+  shapes: [rectangle, superellipse]
+  route_turns: [0.0, 1.5707963267948966]
+  wrench_tolerance: 0.08

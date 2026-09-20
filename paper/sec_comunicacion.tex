@@ -1,0 +1,711 @@
+\section{La capa de comunicación: cuándo hablar y cuándo reiniciar}
+\label{sec:comunicacion}
+
+Todos los consensos de este trabajo —el mapa de \cref{th:mapa}, los precios de
+\eqref{eq:tatonnement}— se han supuesto periódicos, y \cref{le:muestras} tensa
+las barreras con el periodo. Esa elección tiene un coste que conviene mirar de
+frente, y una alternativa con garantías propias.
+
+\subsection{Qué se paga por hablar a intervalos fijos}
+
+\begin{observacion}[Dos objeciones al muestreo periódico]
+\label{obs:objeciones-periodico}
+La difusión periódica es fácil de implementar y de analizar, pero
+\cite{zhao2024hybrid} señala dos inconvenientes. El primero es económico: se
+transmite aunque no ocurra nada, de modo que en régimen estacionario —cuando los
+precios ya han convergido y el mapa no cambia— se gasta ancho de banda y energía
+en repetir información conocida. El segundo es de seguridad, y no aparece en
+ninguna otra parte de este trabajo: la periodicidad hace el sistema
+\emph{predecible}, y un adversario que conozca los instantes de transmisión
+puede concentrar su interferencia exactamente en ellos. Un esquema aperiódico no
+elimina esa amenaza, pero deja de regalar el calendario.
+\end{observacion}
+
+\subsection{Disparo por eventos con tiempo mínimo garantizado}
+
+La alternativa es transmitir solo cuando la información retenida se ha quedado
+obsoleta. La dificultad clásica es que un umbral puro admite comportamiento de
+Zenón, y que las construcciones que lo evitan suelen dejar el tiempo mínimo
+entre eventos sin cuantificar.
+
+\begin{definicion}[Mecanismo de disparo con temporizador]
+\label{def:etm}
+Cada AMR mantiene el último valor difundido $\hat\chi_i$ y un temporizador
+$\tau_i$ con $\dot\tau_i=1$. Difunde, poniendo $\hat\chi_i\leftarrow\chi_i$ y
+$\tau_i\leftarrow0$, cuando
+\[
+  \lVert \chi_i-\hat\chi_i\rVert\ >\ \sigma\bigl(\lVert\chi_i\rVert+\varepsilon_0\bigr)
+  \qquad\textbf{y}\qquad \tau_i\ \ge\ \tau^{\mathrm{MIET}} .
+\]
+\end{definicion}
+
+\begin{proposicion}[Ausencia de Zenón por construcción]
+\label{pr:miet}
+Bajo \cref{def:etm} el intervalo entre dos difusiones consecutivas de un mismo
+AMR es al menos $\tau^{\mathrm{MIET}}>0$. En consecuencia el número de eventos en
+todo intervalo finito es finito, sin invocar términos de decaimiento
+exponencial ni información de los vecinos en la condición de disparo.
+\end{proposicion}
+
+\begin{proof}
+La segunda condición impide el disparo mientras $\tau_i<\tau^{\mathrm{MIET}}$, y
+$\tau_i$ se anula solo al difundir; luego entre dos difusiones transcurre al
+menos $\tau^{\mathrm{MIET}}$.
+\end{proof}
+
+\begin{observacion}[El temporizador ya estaba, cambia su papel]
+\label{obs:temporizador-doble}
+La variable que en el esquema periódico genera el instante de muestreo es la
+misma que aquí impone el mínimo entre eventos \cite{zhao2024hybrid}. No se añade
+maquinaria: se reinterpreta. Y con ello se atiende a la vez la exclusión de
+Zenón y la limitación de \emph{hardware}, que impone un tiempo mínimo real entre
+transmisiones y que un análisis puramente asintótico suele pasar por alto. Es la
+misma lógica de \cref{th:dwell} —un tiempo mínimo de permanencia— aplicada ahora
+a la comunicación en lugar de a la topología.
+\end{observacion}
+
+\begin{observacion}[Cuánto se ahorra y qué se paga]
+\label{obs:etm-ahorro}
+Sobre el consenso de precios en un anillo de ocho AMR durante ocho segundos, la
+difusión periódica a $20$~ms consume $3200$ mensajes y deja una dispersión final
+de $6{,}5\times10^{-3}$. Con $\sigma=0{,}05$ y $\tau^{\mathrm{MIET}}=100$~ms se
+consumen $90$ mensajes —un $97\%$ menos— con dispersión final
+$4{,}8\times10^{-2}$.
+
+El ahorro es grande y el precio también: la dispersión residual empeora en un
+factor siete, y es proporcional a $\sigma$. Conviene por tanto no presentar el
+disparo por eventos como una mejora sin contrapartida. Es un intercambio entre
+ancho de banda y precisión de acuerdo, y el punto de operación se elige sabiendo
+que el error residual no tiende a cero mientras $\sigma>0$.
+\end{observacion}
+
+\begin{observacion}[Lo que el tiempo mínimo \emph{no} acota]
+\label{obs:miet-no-acota-max}
+Aquí hay una trampa que conviene declarar. $\tau^{\mathrm{MIET}}$ acota el
+intervalo \emph{mínimo}, que es lo que exige el \emph{hardware}. La seguridad
+exige lo contrario: \cref{le:muestras} tensa las barreras con el intervalo
+\emph{máximo}, y el disparo por eventos no lo acota. En el experimento anterior
+el intervalo más largo observado fue de $3{,}15$~s, ciento cincuenta veces el
+periodo del esquema periódico.
+
+La consecuencia es de diseño y es obligatoria: la capa de seguridad no puede
+depender de información difundida por eventos sin un \emph{plazo máximo de
+transmisión} añadido —una difusión forzada cuando $\tau_i$ alcanza
+$\tau^{\max}$— y es $\tau^{\max}$, no $\tau^{\mathrm{MIET}}$, el que entra en el
+tensado de \cref{le:muestras}. Con esa salvaguarda el esquema tiene dos
+temporizadores, uno por abajo y otro por arriba, y ambos son necesarios por
+razones distintas.
+\end{observacion}
+
+\subsection{Un solo AMR que informe mal se lleva el consenso entero}
+
+\Cref{obs:objeciones-periodico} señala una vulnerabilidad de calendario. Hay otra
+más elemental: todos los protocolos de
+consenso empleados aquí suponen que cada AMR difunde su valor \emph{verdadero}.
+Un nodo averiado —o comprometido— que difunda un valor arbitrario no está
+contemplado en ninguna hipótesis.
+
+\begin{observacion}[La media no resiste a un solo desviado]
+\label{obs:consenso-resiliente}
+Sobre un anillo de ocho AMR con dos vecinos por lado y valores iniciales en
+$[0,10]$, un único nodo que difunda de forma persistente el valor $50$ arrastra a
+los \emph{siete} restantes exactamente a $50$. No a un valor sesgado: al valor
+que él elija. El promedio ponderado no tiene defensa alguna, porque cada nodo
+leal trata el dato falso como cualquier otro.
+
+Basta sustituir la media por una regla que descarte los $F$ valores extremos por
+cada lado antes de promediar para que los leales converjan a $6{,}775$, dentro
+del rango de sus valores iniciales. La condición para poder aplicarla es tener
+más de $2F$ vecinos, lo que impone una densidad mínima al grafo de comunicación
+\cite{mahmoud2021advanced}.
+\end{observacion}
+
+\begin{observacion}[Qué se pierde al blindarlo, y dónde duele]
+\label{obs:resiliente-precio}
+El blindaje no es gratuito y su coste es preciso: la regla filtrada \emph{ya no
+converge a la media}. Converge a un valor dentro del rango de los leales, que es
+lo que se puede garantizar sin saber quién miente, pero no al promedio que
+\cref{th:mapa} necesita para igualar a la fusión bayesiana. Es decir, blindar la
+cartografía cuesta exactitud en el mismo sentido en que
+\cref{obs:etm-ahorro} la cuesta por ancho de banda.
+
+Y hay una consecuencia sobre el diseño del grafo que tira en contra de
+\cref{obs:esparsificar}: exigir más de $2F$ vecinos impide adelgazar hasta el
+grafo de Gabriel. Robustez ante nodos que mienten y economía de aristas son
+objetivos opuestos y no se optimizan a la vez.
+
+Se declara como limitación, no como resultado: los protocolos de este trabajo
+suponen difusión veraz, y esa hipótesis debe añadirse a las que
+\cref{obs:complejidad-propia} enumera. El remedio existe y es conocido; su
+integración con la dinámica de multiplicadores de \cref{s:equilibrado} —que
+además exige equilibrio de pesos— no es inmediata y no se aborda aquí.
+\end{observacion}
+
+\subsection{Contabilidad: qué cuesta cada tarea}
+
+Los números de \cref{obs:etm-ahorro} son medidas de un experimento. Conviene
+darles el marco formal que existe para ello, porque distingue tres cosas que se
+confunden con facilidad \cite{bullo2009distributed}.
+
+\begin{definicion}[Complejidad temporal y de comunicación]
+\label{def:complejidad}
+Sea $\Tcal$ una tarea de coordinación y $\Ccal\Ccal$ una ley de control y
+comunicación compatible con ella. Se definen:
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em,topsep=0.2em,itemsep=0.15em]
+  \item la complejidad temporal desde una condición inicial,
+  $\mathrm{TC}(\Tcal,\Ccal\Ccal,x_0)=\inf\{\ell\mid
+  \Tcal(x(k))=\text{cierto},\ \forall k\ge\ell\}$: la ronda a partir de la cual
+  la tarea se cumple \emph{y se sigue cumpliendo};
+  \item su peor caso $\mathrm{TC}(\Tcal,\Ccal\Ccal)$, tomando supremo sobre las
+  condiciones iniciales admisibles;
+  \item la complejidad de la \emph{tarea},
+  $\mathrm{TC}(\Tcal)=\inf\{\mathrm{TC}(\Tcal,\Ccal\Ccal)\mid \Ccal\Ccal
+  \text{ compatible}\}$, ínfimo sobre todas las leyes admisibles.
+\end{enumerate}
+Análogamente, la complejidad de comunicación total acumula el número de mensajes
+hasta $\mathrm{TC}$, y la media lo divide por ese horizonte. Para tareas que
+deben \emph{mantenerse}, la magnitud pertinente es la media en horizonte
+infinito, $\lim_{\tau\to\infty}\tau^{-1}\sum_{\ell=0}^{\tau}|M(x(\ell))|$.
+\end{definicion}
+
+\begin{observacion}[El tercer nivel es el que permite afirmar optimalidad]
+\label{obs:complejidad-tarea}
+Los dos primeros niveles miden un algoritmo; el tercero mide el \emph{problema}.
+Solo con él puede decirse que una construcción es esencialmente insuperable, y
+por eso es el que echaba en falta \cref{obs:falta-optimalidad}: la cota que allí
+se declara abierta es, en este vocabulario, una cota inferior sobre
+$\mathrm{TC}(\Tcal)$ y sobre la complejidad de comunicación de la tarea, no sobre
+la de una política concreta.
+\end{observacion}
+
+\begin{observacion}[Qué se puede afirmar hoy y qué no]
+\label{obs:complejidad-propia}
+Aplicado a este trabajo, el balance es desigual y conviene exhibirlo.
+
+Del consenso de mapa y de precios se conoce la complejidad temporal en el
+sentido (ii): la tasa de \cref{th:conmutada} la acota en función del diámetro y
+de la conectividad algebraica, y \cref{th:jerarquia-grafos} dice cómo se degrada
+al adelgazar el grafo. Su complejidad de comunicación en horizonte infinito es
+exactamente lo que mide \cref{obs:etm-ahorro}, y el disparo por eventos la
+reduce en dos órdenes de magnitud a cambio de precisión.
+
+Del reclutamiento se conoce menos. \Cref{co:terminacion} garantiza terminación,
+que es finitud de $\mathrm{TC}$, pero no da cota: el número de revisiones
+depende del catálogo y de las cuencas del potencial, y \cref{obs:gibbs-precio}
+muestra que el tiempo de escape crece exponencialmente con $\beta$. No hay, por
+tanto, una cota de peor caso, y menos aún una cota de tarea.
+
+Declararlo así separa lo medido de lo demostrado. Los números de este trabajo
+son complejidades de comunicación de \emph{instancias} concretas; ninguna es
+todavía una cota sobre el problema.
+\end{observacion}
+
+\subsection{Convergencia en tiempo finito, y por qué no se adopta}
+
+\Cref{obs:complejidad-propia} declara que no hay cota de tiempo para el
+reclutamiento. Existe una técnica que la daría, y conviene examinarla en lugar de
+ignorarla.
+
+\begin{lema}[Cota de tiempo de asentamiento]
+\label{le:tiempo-finito}
+Sea $V$ definida positiva y de clase $C^1$. Si existen $c>0$ y
+$\alpha\in(0,1)$ con $\dot V+cV^{\alpha}\le0$, entonces $V$ alcanza el origen en
+tiempo finito \cite{wang2024adaptive}, acotado por
+\[
+  T\ \le\ \frac{V^{1-\alpha}(x_0)}{c\,(1-\alpha)} .
+\]
+\end{lema}
+
+\begin{observacion}[La cota es ajustada]
+\label{obs:tiempo-finito-num}
+Sobre $\dot x=-cx^{\alpha}$ la cota se alcanza con igualdad: con $c=1$,
+$\alpha=0{,}5$, $x_0=4$ se mide $T=4{,}0000$ frente a una cota de $4{,}0000$; con
+$c=2$, $x_0=9$, se mide $3{,}0000$ frente a $3{,}0000$. No es una estimación
+conservadora sino el tiempo exacto.
+
+Llevado al consenso, sustituir el acoplamiento lineal por la potencia fraccionaria
+$-\sum_j a_{ij}\operatorname{sign}(x_i-x_j)\lvert x_i-x_j\rvert^{\alpha}$ hace que
+la dispersión se anule \emph{exactamente}: con $\alpha=0{,}5$ en $2{,}89$~s y con
+$\alpha=0{,}7$ en $4{,}09$~s, mientras que el protocolo lineal no la alcanza en
+sesenta segundos. Eso es justo lo que falta en \cref{obs:complejidad-propia}.
+\end{observacion}
+
+\begin{observacion}[Por qué, aun así, no se adopta aquí]
+\label{obs:tiempo-finito-precio}
+La potencia fraccionaria no es Lipschitz en el origen, y esa es exactamente la
+propiedad que da el tiempo finito. Bajo muestreo se paga: con paso $h$, la
+dispersión residual medida es $2\times10^{-8}$ para $h=10^{-4}$,
+$2\times10^{-6}$ para $10^{-3}$, $2\times10^{-4}$ para $10^{-2}$ y
+$5\times10^{-3}$ para $5\times10^{-2}$ —crece como $h^{2}$— frente a
+$\sim3\times10^{-9}$ del protocolo lineal, \emph{peor en los cuatro pasos
+ensayados}. Y con $\alpha=0{,}3$ el esquema no converge en absoluto dentro del
+horizonte.
+
+La lectura es la misma que en \cref{obs:ascenso-muestreo} y en
+\cref{le:muestras}: \emph{la garantía es de tiempo continuo y no
+sobrevive a la discretización sin condiciones}. Aquí no se degrada suavemente
+—se convierte en un entorno de castañeteo—, y en un sistema que muestrea a
+$20$~ms el remedio sería peor que la enfermedad. Se declara como técnica
+disponible y descartada, con el motivo, en lugar de adoptarla por la elegancia
+de su enunciado.
+\end{observacion}
+
+\subsection{Reiniciar el ajuste de precios}
+
+El ajuste \eqref{eq:tatonnement} es integral, y un integrador aporta retardo de
+fase. La teoría de control por reinicio muestra que reiniciar el estado del
+controlador en instantes escogidos reduce ese retardo sin alterar la respuesta
+en amplitud, con lo que mejora el transitorio sin renunciar a la estabilidad
+asintótica \cite{zhao2024hybrid}.
+
+\begin{proposicion}[Reinicio del acumulador de precio]
+\label{pr:reset}
+Sea el ajuste con acción integral sobre el exceso de demanda. Si el acumulador
+se pone a cero cuando el exceso cambia de signo, el punto de reposo no se altera
+—porque en él el exceso es nulo y el acumulador no contribuye— mientras que el
+sobreimpulso del transitorio se reduce.
+\end{proposicion}
+
+\begin{observacion}[Medida del efecto]
+\label{obs:reset-num}
+Sobre una planta de precios de segundo orden con controlador proporcional
+integral, el sobreimpulso pasa de $46{,}1\%$ a $24{,}1\%$ al añadir el reinicio,
+una reducción del $48\%$. A los doce segundos el lazo lineal sigue a $1{,}16$
+del valor de referencia mientras el lazo con reinicio está en $1{,}01$. No se
+afirma mejora del tiempo de establecimiento: en este ensayo la métrica del $2\%$
+satura en el horizonte para ambos, y declararla mejorada sería leer el
+experimento con más generosidad de la que permite.
+\end{observacion}
+
+\begin{observacion}[Hay una alternativa continua, y es mejor]
+\label{obs:anticipacion}
+El reinicio no es la única forma de corregir el transitorio, ni la más
+conveniente. La teoría de dinámicas de pago ofrece el modelo con
+\emph{suavizado y anticipación} \cite{martinezPiazuelo2025gne}:
+\[
+  \dot q=\tau\bigl(f(x)-q\bigr),
+  \qquad
+  p=\alpha_0 f(x)+\alpha_1 q+\alpha_2\dot q,
+  \qquad \alpha_0+\alpha_1=1,\ \alpha_2\ge0,
+\]
+donde $q$ es una versión filtrada del pago y el término $\alpha_2\dot q$ anticipa
+hacia dónde se dirige. Satisface por construcción tres de los cuatro requisitos
+de la condición de estabilidad, y el cuarto —la $\delta$-antipasividad— bajo
+condiciones suficientes explícitas.
+
+Medido sobre el mismo lazo de precios de \cref{obs:reset-num}, el sobreimpulso
+pasa de $46{,}1\%$ sin corrección a $35{,}1\%$ con $\alpha_2=0{,}10$,
+$22{,}5\%$ con $0{,}25$ y $9{,}4\%$ con $0{,}50$, alcanzando a los doce segundos
+el valor exacto de referencia. La anticipación bate al reinicio —$9{,}4\%$ frente
+a $24{,}1\%$— y lo hace con un mecanismo continuo, no híbrido, y con garantías
+dentro del mismo marco disipativo que sostiene \cref{th:smallgain}.
+
+Y una advertencia obtenida al probarlo: \emph{combinar} ambos empeora las cosas.
+Con anticipación $0{,}25$ más reinicio, el sobreimpulso baja a $11{,}6\%$ pero el
+lazo termina en $0{,}679$ en lugar de en $1$: las dos correcciones se suman y
+sobrecorrigen. Debe elegirse una.
+\end{observacion}
+
+\begin{observacion}[Dónde reiniciar en esta arquitectura]
+\label{obs:reset-donde}
+El instante natural de reinicio no es solo el cruce por cero del exceso. Cada
+transición del autómata de \cref{def:automata} invalida el acumulado: al formarse
+una coalición cambia el mapa de agarre, y el precio acumulado bajo la
+composición anterior deja de corresponder a la demanda presente. Reiniciar en la
+guarda evita arrastrar un integral obsoleto al nuevo régimen. Es una decisión de
+implementación, no un teorema, y así se declara.
+\end{observacion}
+
+\subsection{Quién conoce la demanda}
+
+Hay una suposición que este trabajo ha venido usando sin nombrarla: que la
+demanda de \emph{wrench} $\Wdem_\ell$, generada por la trayectoria deseada de la
+carga, está disponible para todos los miembros de la coalición. No lo está. La
+referencia se origina en un punto —el AMR que aceptó la tarea, o un enlace con
+el planificador— y los demás no tienen por qué verla.
+
+\begin{definicion}[Observador distribuido de la referencia]
+\label{def:observador-dist}
+Sea la referencia generada por $\dot v_0=S_0v_0$ con $S_0$ conocida. Cada AMR
+mantiene una estimación $v_i$ que evoluciona según
+\[
+  \dot v_i\;=\;S_0v_i\;+\;L_0\sum_{j\in\Ncal_i\cup\{0\}}a_{ij}\,W_0\,(v_j-v_i),
+\]
+es decir, una copia local de la dinámica de la referencia corregida por consenso
+con los vecinos, donde $a_{i0}\neq0$ solo para los AMR con acceso directo
+\cite{cai2022cooperative}.
+\end{definicion}
+
+\begin{proposicion}[Convergencia bajo la conectividad que ya se exige]
+\label{pr:observador-dist}
+El error $\tilde v=\operatorname{col}(v_i-v_0)$ obedece
+$\dot{\tilde v}=(I\otimes S_0-H_\sigma\otimes L_0W_0)\tilde v$, con
+$H_\sigma=L_\sigma+\operatorname{diag}(a_{10},\dots,a_{N0})$. Existe $L_0$ que lo
+hace exponencialmente estable si y solo si $H_\sigma$ tiene todos sus autovalores
+con parte real positiva, lo que equivale a que el grafo contenga un árbol
+generador con raíz en el origen de la referencia.
+\end{proposicion}
+
+\begin{observacion}[No hace falta ninguna hipótesis nueva]
+\label{obs:observador-encaja}
+La condición de \cref{pr:observador-dist} es exactamente la de
+\cref{th:conmutada}, que ya se exige para el consenso de mapa y de precios. Es
+decir: la propagación de la referencia se obtiene gratis sobre la conectividad
+que la arquitectura ya paga.
+
+Comprobación sobre una cadena de cuatro AMR con la referencia oscilante: con una
+sola arista al origen, $\min\operatorname{Re}\lambda(H)=1{,}0$ y el error final es
+$8{,}5\times10^{-4}$; sin ninguna arista, $\min\operatorname{Re}\lambda(H)=0$ y el
+error se estanca en $1{,}46$. El resultado no es que convenga tener el árbol: es
+que sin él la estimación no converge en absoluto, por bien diseñado que esté
+$L_0$.
+\end{observacion}
+
+\begin{observacion}[La fuga del ajuste de precios es un modelo interno ausente]
+\label{obs:fuga-modelo-interno}
+El principio del modelo interno dice que un esquema prealimentado no logra
+seguimiento exacto cuando los parámetros son inciertos, mientras que un
+controlador que contenga una copia de la dinámica de la señal a seguir —y que se
+alimente del \emph{error}— conserva la regulación bajo perturbaciones
+paramétricas \cite{cai2022cooperative}. La comprobación es contundente: sobre
+una planta de primer orden con referencia constante, un error del $40\%$ en el
+parámetro deja al prealimentado con $28{,}6\%$ de error permanente, y del $-40\%$
+con $66{,}7\%$; el modelo interno —un integrador del error— deja
+$10^{-14}$ en los tres casos.
+
+Esto tiene una lectura incómoda y útil sobre el propio ajuste
+\eqref{eq:tatonnement}. Su término de fuga $d_p>0$ hace que el reposo sea
+$p_\ell=\alpha(G\bm\lambda-\Wdem_\ell)/d_p$, de modo que el exceso de demanda
+\emph{no} se anula: queda un residuo proporcional a $d_p$. La fuga es
+precisamente lo que impide que el ajuste sea un modelo interno de una demanda
+constante. Hay, por tanto, un compromiso que conviene declarar: la fuga aporta amortiguamiento y robustez a la red de precios
+—\cref{obs:alcance-poblacional} depende de ella— y cuesta exactitud en el
+vaciado del mercado. Reducir $d_p$ acerca el vaciado exacto y aproxima la red de
+precios a su frontera de estabilidad. Es un parámetro de diseño con dos efectos
+opuestos, y conviene fijarlo sabiéndolo.
+\end{observacion}
+
+\subsection{Regular una salida común no es igualar motores}
+
+\Cref{def:observador-dist} propaga la referencia; falta decir qué hace cada AMR
+con ella. La tentación de la literatura de consenso es igualar estados. Con AMR
+heterogéneos eso es un error: lo que debe coincidir es la \emph{salida} —el
+\emph{twist} de la carga que cada uno imprime—, no los estados ni los pares
+\cite{mayorga2026m1}.
+
+\begin{proposicion}[Error de regulación con referencia local]
+\label{pr:regulacion-local}
+Sea el AMR $i$ con modelo local $\dot x_i=A_ix_i+B_iu_i+E_i\zeta$,
+$e_i=C_ix_i+D_iu_i+F_i\zeta$, y la referencia común $\dot\zeta=S_0\zeta$.
+Supóngase que las ecuaciones reguladoras
+\[
+  \Pi_iS_0=A_i\Pi_i+B_i\Gamma_i+E_i,\qquad C_i\Pi_i+D_i\Gamma_i+F_i=0
+\]
+tienen solución y que $A_i+B_iK_i$ es Hurwitz con
+$\lVert e^{(A_i+B_iK_i)t}\rVert\le M_ie^{-\lambda_it}$. Con la ley
+$u_i=K_i(x_i-\Pi_i\hat\zeta_i)+\Gamma_i\hat\zeta_i$, y llamando
+$\tilde x_i=x_i-\Pi_i\zeta$, $\tilde\zeta_i=\hat\zeta_i-\zeta$,
+\[
+  \dot{\tilde x}_i=(A_i+B_iK_i)\tilde x_i+B_i(\Gamma_i-K_i\Pi_i)\tilde\zeta_i,
+\]
+\[
+  \lVert\tilde x_i(t)\rVert\le M_ie^{-\lambda_it}\lVert\tilde x_i(0)\rVert
+  +M_i\lVert B_i(\Gamma_i-K_i\Pi_i)\rVert\int_0^{t}e^{-\lambda_i(t-s)}\lVert\tilde\zeta_i(s)\rVert\,ds .
+\]
+\end{proposicion}
+
+\begin{observacion}[Comprobado con dos AMR distintos]
+\label{obs:regulacion-num}
+Sobre dos AMR con dinámicas lineales diferentes siguiendo el mismo oscilador de
+referencia, las soluciones reguladoras difieren —$\Gamma_0=(3{,}19;\,1{,}34)$
+frente a $\Gamma_1=(0{,}89;\,0{,}28)$— y aun así ambos llevan el error de salida
+a $2{,}7\times10^{-5}$ con un error de observador que decae. La cota es
+esencialmente ajustada: la razón entre el error medido y la cota alcanza $1{,}00$
+y $1{,}01$ tomando $M_i=1$, lo que indica que en sistemas no normales $M_i$ debe
+tomarse ligeramente mayor que uno.
+
+La lectura para la arquitectura es doble. Primera, el término que excita al
+error es el del \emph{observador}, $\tilde\zeta_i$: la calidad de
+\cref{pr:observador-dist} entra directamente en la regulación, y el
+condicionamiento de \cref{th:saltos} fija cuántos saltos hacen falta para que
+ese término sea pequeño. Segunda, y es la que corrige una lectura fácil de
+\cref{obs:variable-coordinacion}: la variable de coordinación es el precio y la
+referencia, y \emph{nada más}. Estados, pares y referencias internas $\Pi_i\zeta$
+son distintos por diseño entre AMR heterogéneos, y forzar su consenso sería
+imponer una restricción que la regulación no necesita y que la heterogeneidad
+no admite. La generalización distribuida exige observadores, hipótesis de red y
+regulabilidad; no equivale a tratar como independientes cuerpos unidos por
+contacto.
+\end{observacion}
+
+\subsection{Una referencia que también escucha al equipo}
+
+\Cref{def:observador-dist} propaga la referencia hacia los AMR en un solo
+sentido: la referencia avanza y los seguidores la persiguen. Con contacto y
+batería eso es un error de diseño: una referencia que sigue avanzando mientras
+el equipo pierde contacto no es una variable de cooperación sino una orden
+temporal. La corrección es hacer que el reloj de progreso escuche al error
+colectivo, $ds/dt=1/(1+z_f)$ con $z_f\ge0$ creciente con ese error
+\cite{ren2008distributed,mayorga2026m1}.
+
+\begin{proposicion}[Reloj seguro para una familia reducida de errores]
+\label{pr:reloj-seguro}
+Supóngase $\dot e_i=v-k_ie_i$, $k_i>0$, con $0\le e_i\le\epsilon_i$, y progreso
+$\dot s=v$. El mando
+\[
+  v=\min\Bigl\{v_{\mathrm{nom}},\ \min_i\bigl[k_ie_i+\alpha_i(\epsilon_i-e_i)\bigr]\Bigr\},
+  \qquad \alpha_i>0,\ v_{\mathrm{nom}}>0,
+\]
+preserva el intervalo de errores; además
+$v\ge v_{\min}:=\min\{v_{\mathrm{nom}},\min_i\epsilon_i\min(k_i,\alpha_i)\}>0$,
+y una longitud $S$ se completa en no más de $S/v_{\min}$.
+\end{proposicion}
+
+\begin{proof}
+En $e_i=0$, $\dot e_i=v\ge0$; en $e_i=\epsilon_i$ la restricción impone
+$v\le k_i\epsilon_i$, luego $\dot e_i\le0$. Cada término de la cota es afín en
+$e_i$ y su mínimo en el intervalo es $\epsilon_i\min(k_i,\alpha_i)$; integrar
+$\dot s\ge v_{\min}$ da el tiempo.
+\end{proof}
+
+\begin{observacion}[Comprobado, y con su límite físico]
+\label{obs:reloj-num}
+Con $k=(2;\,0{,}5)$, $\alpha=(2;\,2)$, $\epsilon=(0{,}2;\,0{,}2)$ y
+$v_{\mathrm{nom}}=0{,}3$: $v_{\min}=0{,}1$, un metro se recorre en $9{,}93$~s
+frente a la cota de $10$~s, la velocidad observada nunca baja de $0{,}1000$ y el
+error máximo toca exactamente $0{,}2000$ sin cruzarlo. Con reloj fijo
+$v=v_{\mathrm{nom}}$ el metro se recorre en $3{,}33$~s, pero el error alcanza
+$0{,}52$: dos veces y media el límite de seguimiento.
+
+El traslado a la arquitectura es que el progreso a lo largo de la ruta pasa a ser
+una magnitud negociada junto al esfuerzo y a los precios, sujeta a la capacidad
+de seguimiento, en lugar de un reloj externo. Y el límite del resultado es
+preciso: son dos ecuaciones de error de primer orden, no AMR ni cargas; una
+pared o un contacto perdido pueden imponer $v=0$, y entonces desaparece la cota
+de progreso. Trasladarla a la planta exige derivar una envolvente de
+seguimiento válida para ella, que es lo que \cref{def:testigo} llama tubo.
+\end{observacion}
+
+\begin{observacion}[El bloque antisimétrico del primal--dual]
+\label{obs:bloque-antisimetrico}
+Una precisión afín sobre el cálculo de precios. Con coste convexo $\Phi$ y
+balance $Au=b$, el operador de silla
+$F(u,\lambda)=(\nabla\Phi(u)+A^{\!\top}\lambda,\ b-Au)$ contiene el bloque
+antisimétrico $\bigl(\begin{smallmatrix}0&A^{\!\top}\\-A&0\end{smallmatrix}\bigr)$:
+aunque $\Phi$ tenga potencial, iterar $F$ no es descender una función en todas
+sus coordenadas, y el método de Euler diverge ya en $L(x,\lambda)=x\lambda$, cuyo
+operador es una rotación pura. Es la parte \emph{rotacional} del juego, y es la
+razón de fondo por la que el ajuste de precios necesita un paso de predicción y
+otro de corrección, como el extragradiente ya adoptado en
+\cref{sec:informacion2} \cite{mayorga2026m1}. Los resultados extraproximales de
+la literatura se formulan para su clase de juegos y regularizaciones; no se
+trasplantan a todo contacto no convexo.
+\end{observacion}
+
+\subsection{Lo que este marco ofrece y no se usa}
+
+\begin{observacion}[El consenso bipartito no aplica]
+\label{obs:bipartito}
+Buena parte de \cite{zhao2024hybrid} desarrolla el \emph{consenso bipartito}
+sobre grafos con signo, donde algunas relaciones son antagónicas y los agentes
+convergen a la misma magnitud con signos opuestos, bajo la condición de que el
+grafo sea estructuralmente equilibrado. La tentación de aplicarlo aquí es que
+los AMR compiten por las cargas. Debe resistirse: la competencia de este trabajo
+está en la asignación, no en la variable que se consensúa, y las magnitudes
+difundidas —precios, evidencia de ocupación— deben acordarse en valor
+\emph{común}, no en valor opuesto. Un precio con signo contrario no tiene
+lectura. El consenso bipartito no se emplea, y la razón es que la competencia ya
+está internalizada en el potencial de \cref{th:potencial} en lugar de en el
+signo de los enlaces.
+\end{observacion}
+
+\begin{observacion}[Retardos, pérdidas y realimentación de salida]
+\label{obs:hibrido-restante}
+Tres extensiones del mismo marco tocan hipótesis que este trabajo declara.
+La primera, el consenso bajo retardo, cuantifica lo que \cref{pr:implementable}
+supone acotado por $\Delta$. La segunda, el consenso con pérdidas de paquetes,
+sostiene \cref{obs:perdidas} y admite tratamiento como sistema híbrido con
+saltos en los instantes de pérdida. La tercera, la realimentación dinámica de
+salida, es la más pertinente y la menos usada: los AMR no miden el estado
+completo de sus vecinos, sino salidas —distancia, azimut—, y todo el aparato de
+consenso de este trabajo se ha escrito sobre estados. Cerrar esa distancia exige
+un observador por agente, y la elección natural es el filtro de
+\cref{sec:estimacion}. Se declara como la extensión más inmediata de las tres.
+\end{observacion}
+
+\subsection{Lo que la información obsoleta cuesta en decisión}
+
+Los resultados anteriores acotan mensajes y tiempos. Falta el paso que
+convierte edad de información en error de decisión, y para un juego
+fuertemente monótono ese paso es exacto \cite{mayorga2026compendio}.
+
+\begin{teorema}[Robustez de la desigualdad variacional]
+\label{th:vi-robusta}
+Sea $F$ $\mu$-fuertemente monótono sobre el convexo cerrado $K$, y sean
+$x^\star$ y $\hat x$ las soluciones de $\mathrm{VI}(K,F)$ y
+$\mathrm{VI}(K,F+e)$ con $\lVert e(x)\rVert\le\varepsilon$ en $K$. Entonces
+$\lVert\hat x-x^\star\rVert\le\varepsilon/\mu$. En particular, si el error
+procede de un coste físico estimado y de precios obsoletos,
+$e=\Delta c+A^{\!\top}\Delta\lambda$, entonces
+$\lVert\hat x-x^\star\rVert\le(\lVert\Delta c\rVert+\lVert A\rVert_2\lVert\Delta\lambda\rVert)/\mu$.
+\end{teorema}
+
+\begin{proof}
+Las dos desigualdades variacionales evaluadas cruzadamente dan
+$(F(\hat x)-F(x^\star))^{\!\top}(\hat x-x^\star)\le-e(\hat x)^{\!\top}(\hat x-x^\star)$;
+monotonía fuerte a la izquierda y Cauchy--Schwarz a la derecha. En cincuenta
+perturbaciones aleatorias de un juego cuadrático en caja, el cociente
+$\lVert\hat x-x^\star\rVert/(\varepsilon/\mu)$ máximo es $0{,}80$.
+\end{proof}
+
+\begin{proposicion}[Contracción del paso proyectado y número de condición estratégico]
+\label{pr:contraccion-proyectada}
+Si además $\mu I\preceq\nabla F\preceq L_FI$ en $K$, la actualización
+$T(x)=\Pi_K(x-\alpha F(x))$ satisface
+$\lVert T(x)-T(y)\rVert\le q(\alpha)\lVert x-y\rVert$ con
+$q(\alpha)=\max\{|1-\alpha\mu|,|1-\alpha L_F|\}$; es contracción para
+$0<\alpha<2/L_F$, y el paso $\alpha^\star=2/(L_F+\mu)$ da
+$q^\star=(\kappa_F-1)/(\kappa_F+1)$ con $\kappa_F=L_F/\mu$. Para el juego de
+tráfico con coste $J=c^{\!\top}x+\sum_zH_z(a_z^{\!\top}x)+\tfrac\epsilon2\lVert x\rVert^2$
+y $0\le H_z''\le\bar h$, se tiene $\mu=\epsilon$ y $L_F\le\epsilon+\lVert A\rVert_2^2\bar h$.
+\end{proposicion}
+
+\begin{proof}
+$F(x)-F(y)=\bar H(x-y)$ con $\bar H$ media de hessianas de espectro en
+$[\mu,L_F]$, la proyección es no expansiva, y el mínimo de $q$ iguala
+$|1-\alpha\mu|$ y $|1-\alpha L_F|$. La hessiana de $J$ es
+$A^{\!\top}\mathrm{diag}(H_z'')A+\epsilon I$. En trescientos pares aleatorios
+la razón observada es $0{,}930$ frente a la cota $0{,}948$.
+\end{proof}
+
+\begin{observacion}[La geometría entra por $A$, la congestión por $H''$]
+\label{obs:condicion-estrategica}
+$\kappa_F$ grande significa un paisaje rígido en unas direcciones y casi plano
+en otras: a igualdad de integrador, condiciona la velocidad y la sensibilidad
+numérica, y la regularización $\epsilon$ que lo acota es la misma que
+\cref{obs:tikhonov-sesgo} paga en sesgo. Es el mismo compromiso que el
+déficit de contractividad de \cref{sec:alcance}, ahora con constantes
+explícitas.
+\end{observacion}
+
+\begin{proposicion}[Seguimiento por conectividad y error de decisión]
+\label{pr:seguimiento-conectividad}
+Sea $z$ el desacuerdo de un consenso dinámico,
+$\dot z=-k(L_G\otimes I)z+d(t)$ con $z\perp\mathbf 1$ y
+$\lVert d\rVert\le\bar d$. Entonces
+$\limsup_t\lVert z(t)\rVert\le\bar d/(k\lambda_2(L_G))$, y si el error de
+agregado entra linealmente al pago por una matriz $B$,
+\begin{equation}
+  \label{eq:conectividad-decision}
+  \limsup_t\lVert\hat x-x^\star\rVert\le\frac{\lVert B\rVert_2\,\bar d}{\mu\,k\,\lambda_2(L_G)} .
+\end{equation}
+\end{proposicion}
+
+\begin{proof}
+Con $V=\lVert z\rVert^2/2$ y Rayleigh en $\mathbf 1^\perp$,
+$\dot V\le-k\lambda_2\lVert z\rVert^2+\bar d\lVert z\rVert$, negativa fuera de
+la bola; \eqref{eq:conectividad-decision} compone con \cref{th:vi-robusta}.
+Sobre sesenta grafos conectados aleatorios el mayor cociente error/cota fue
+$0{,}774$ \cite{mayorga2026compendio}.
+\end{proof}
+
+\begin{proposicion}[Obsolescencia con disparo por eventos]
+\label{pr:obsolescencia}
+Si el precio $\lambda_z$ se transmite cuando $|\lambda_z-\hat\lambda_z|\ge\varepsilon_z$
+y $|\dot\lambda_z|\le M_z$, entonces entre transmisiones
+$|\lambda_z-\hat\lambda_z|\le\varepsilon_z$, el tiempo entre eventos es al
+menos $\varepsilon_z/M_z$, con retardo acotado $\Delta_z$ la obsolescencia es
+a lo sumo $\varepsilon_z+M_z\Delta_z$, y apilando esas cotas en $\varepsilon$,
+$\lVert\hat x-x^\star\rVert\le\lVert A\rVert_2\lVert\varepsilon\rVert/\mu$.
+\end{proposicion}
+
+\begin{proof}
+Desde una transmisión el error parte de cero y crece a lo sumo a $M_z$; el
+retardo añade $M_z\Delta_z$; la última cota es \cref{th:vi-robusta}.
+\end{proof}
+
+\begin{observacion}[Cierra el bucle de \cref{pr:miet}]
+\label{obs:obsolescencia-cierra}
+\Cref{pr:miet} acota el tiempo mínimo entre eventos; \cref{pr:obsolescencia}
+acota lo que ese ahorro cuesta en decisión. Juntas dan el compromiso mensajes
+frente a error de equilibrio con ambas constantes explícitas, y en el banco la
+cota conserva el orden correcto al relajar el umbral aunque siga siendo
+conservadora \cite{mayorga2026compendio}.
+\end{observacion}
+
+\begin{proposicion}[Seguimiento de un equilibrio móvil]
+\label{pr:equilibrio-movil}
+Si $F_t$ es uniformemente $\mu$-fuertemente monótono con cero interior
+$x^\star(t)$ y $\lVert\dot x^\star(t)\rVert\le v$, entonces bajo
+$\dot x=-F_t(x)$ se cumple $\limsup_t\lVert x(t)-x^\star(t)\rVert\le v/\mu$.
+\end{proposicion}
+
+\begin{proof}
+Con $e=x-x^\star$ y $V=\lVert e\rVert^2/2$,
+$\dot V=-e^{\!\top}(F_t(x)-F_t(x^\star))-e^{\!\top}\dot x^\star\le-\mu\lVert e\rVert^2+v\lVert e\rVert$.
+\end{proof}
+
+\begin{proposicion}[Frontera modal retardo--ganancia]
+\label{pr:frontera-retardo}
+Para el modo lineal de un lazo de precio con amortiguamiento $h$, ganancia
+$\kappa$ y retardo $\tau$, $\ddot x=-h\dot x-\kappa^2x(t-\tau)$, la ecuación
+característica es $s^2+hs+\kappa^2e^{-s\tau}=0$ y el primer cruce del eje
+imaginario ocurre en
+\begin{equation}
+  \label{eq:frontera-retardo}
+  \kappa^2=\omega\sqrt{\omega^2+h^2},\qquad
+  \tau^\star=\frac{1}{\omega}\arctan\frac{h}{\omega}.
+\end{equation}
+\end{proposicion}
+
+\begin{proof}
+Con $s=j\omega$: $-\omega^2+\kappa^2\cos\omega\tau=0$ y
+$h\omega-\kappa^2\sin\omega\tau=0$; dividir da $\tan\omega\tau=h/\omega$ y
+elevar al cuadrado y sumar da $\kappa^4=\omega^4+h^2\omega^2$. Con $h=1$ y
+$\kappa=1{,}5$: $\omega=1{,}3435$, $\tau^\star=0{,}4763$, y la raíz dominante
+tiene parte real $-0{,}040$ en $\tau^\star-0{,}05$ y $+0{,}036$ en
+$\tau^\star+0{,}05$.
+\end{proof}
+
+\begin{observacion}[La ventana de \cref{th:N-ventana}, con retardo]
+\label{obs:retardo-ventana}
+\Cref{th:N-ventana} da el paso admisible sin retardo; \eqref{eq:frontera-retardo}
+dice cuánto retardo tolera cada modo de la red de precios a ganancia fija,
+y cómo comprar margen: más amortiguamiento $h$ o menos ganancia $\kappa$. Es
+la lectura escalar del intervalo de \cref{th:intervalo}.
+\end{observacion}
+
+\subsection{Del proceso microscópico de revisiones a la dinámica poblacional}
+
+\begin{proposicion}[Límite de población para revisiones de Poisson]
+\label{pr:limite-poblacion}
+Sean $N$ agentes con estrategias $1,\dots,m$, distribución empírica $X^N(t)$
+y tasas de revisión $i\to j$ iguales a $\rho_{ij}(x)$, acotadas y Lipschitz
+en el símplex. Con $V(x)=\sum_{i,j}x_i\rho_{ij}(x)(e_j-e_i)$, si
+$X^N(0)\to x_0$ en media cuadrática y $\dot x=V(x)$, $x(0)=x_0$, entonces
+para todo horizonte $T$, $\sup_{t\le T}\lVert X^N(t)-x(t)\rVert\to0$ en
+probabilidad, y con inicialización de error cuadrático $O(1/N)$ existe $C_T$
+con $\mathbb E\sup_{t\le T}\lVert X^N(t)-x(t)\rVert^2\le C_T/N$
+\cite{kurtz1970solutions,sandholm2010population}.
+\end{proposicion}
+
+\begin{proof}
+Es la aproximación de Kurtz para cadenas dependientes de la densidad:
+$X^N(t)=X^N(0)+\int_0^tV(X^N)\,\mathrm ds+M^N(t)$ con saltos de tamaño
+$O(1/N)$ y variación cuadrática $O(T/N)$; restar la EDO, Lipschitz de $V$,
+Doob y Gronwall. En el banco, Smith microscópico con relojes exponenciales
+frente a su EDO dio pendiente log--log de la raíz del error cuadrático medio
+final de $-0{,}503$ \cite{mayorga2026compendio}; una réplica reducida con
+ocho semillas por tamaño reproduce el decaimiento de $0{,}028$ a $0{,}005$
+entre $N=100$ y $N=6400$.
+\end{proof}
+
+\begin{observacion}[La EDO no divide coaliciones]
+\label{obs:edo-macroscopica}
+La ecuación de Smith no debe leerse como si una coalición pudiera dividirse
+físicamente: su justificación es macroscópica, y la varianza entre semillas
+cerca de un equilibrio hiperbólico es de orden $N^{-1/2}$, una propiedad
+física del tamaño de la población y no ruido numérico. Es la respuesta
+cuantitativa a la objeción de \cref{obs:analogia}: el símplex es invariante
+en el límite, y a $N$ finito el error es $O(N^{-1/2})$.
+\end{observacion}

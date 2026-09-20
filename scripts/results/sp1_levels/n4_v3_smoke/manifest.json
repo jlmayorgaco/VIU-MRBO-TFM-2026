@@ -1,0 +1,95 @@
+{
+  "artifacts": {
+    "config_frozen.yaml": {
+      "bytes": 3178,
+      "sha256": "88a737a910f342eae9cd68dd86e95016f4c9e389442c855215c64544b7b8dff4"
+    },
+    "figures/n4_cross_family_pareto.pdf": {
+      "bytes": 22582,
+      "sha256": "f849d6583e4dfc65d0be61e709fdae2f728e1dd4d2f29cf759887fe934b94089"
+    },
+    "figures/n4_cross_family_pareto.png": {
+      "bytes": 185481,
+      "sha256": "d07915ae6c1ad6f6d9f59dcc1da061eab0e77288782dcdf0ed92855ae39c442f"
+    },
+    "figures/n4_fii_continuous_atomic.pdf": {
+      "bytes": 19570,
+      "sha256": "a4358e0a320e3460296c38a092c702a99667596cb8031e5bf308978a1d4680e4"
+    },
+    "figures/n4_fii_continuous_atomic.png": {
+      "bytes": 138199,
+      "sha256": "02098e4f80d91c6bb4d271ea99187dd345cdf831d988b2f3622103c4c696d444"
+    },
+    "figures/n4_fiii_residuals.pdf": {
+      "bytes": 15055,
+      "sha256": "6b95101e56a0cb8a7fb619529410c0d5162a9a4deb01ddb161890c9cea53db2c"
+    },
+    "figures/n4_fiii_residuals.png": {
+      "bytes": 171602,
+      "sha256": "04e2c646708739c1e275a0b1f3139eb79e8bef5caa6f84c372b329aa51ac3d3c"
+    },
+    "figures/n4_fiv_dynamic.pdf": {
+      "bytes": 16539,
+      "sha256": "a91e292d3d3f7e9044e24f0598d8ce0bc0a711eff85a43f667be8d8f73f55359"
+    },
+    "figures/n4_fiv_dynamic.png": {
+      "bytes": 184840,
+      "sha256": "fb49c8c93c90f5ec6f0e1449b039f65d2ba663a8b907f7f68de40e8dda521c2c"
+    },
+    "key_metrics.json": {
+      "bytes": 484,
+      "sha256": "29f4619f2e686d67a69d8ca81d05923581d12f4f30c562aeb1fe667a123f9040"
+    },
+    "processed/cross_family_summary.csv": {
+      "bytes": 2027,
+      "sha256": "ebc8e3bedd858e73972d4659d0239e0658b2506aebf67432ee11d2d73baff061"
+    },
+    "processed/n4_v3_results_macros.tex": {
+      "bytes": 505,
+      "sha256": "d62f5d4159babfc6bcfff77869c22c0c484da6d2938237697c3550fb24ed6875"
+    },
+    "processed/population_ranking_by_world.csv": {
+      "bytes": 758,
+      "sha256": "1c62d7b1bc0e259aba39db3c41065c223fcba33faf62b5fce05e874c30b66fe1"
+    },
+    "processed/primary_contrasts.csv": {
+      "bytes": 655,
+      "sha256": "25a3258cd2864655d32076e5d6121a5d9c823d4f5c17f64ad5dbff8be62ff821"
+    },
+    "raw/e7_cross_family_runs.csv": {
+      "bytes": 67050,
+      "sha256": "7984991aae44e15e46ac817110e8226b8d6310873ef34358ae1cd132845e11d2"
+    },
+    "raw/e7_representative_traces.csv": {
+      "bytes": 5035,
+      "sha256": "460567aa2542fd2c682b0e842209ab39c80cfe74d27eea01f86fc0af71307415"
+    },
+    "raw/e8_dynamic_history.csv": {
+      "bytes": 5957,
+      "sha256": "5cc180edab6b36133318c88bd3277b32bd0a182b936df4f79b97acf72c918d06"
+    },
+    "raw/e8_dynamic_runs.csv": {
+      "bytes": 1273,
+      "sha256": "9d54866c1bcd68cc8b8a25899595d879931a9b510dd000e236685de1ceff79bc"
+    }
+  },
+  "campaign_id": "SP1_N4_CROSS_FAMILY_v3_SMOKE",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:09:58) [MSC v.1929 64 bit (AMD64)]",
+    "workers": 4
+  },
+  "git": {
+    "branch": "VIU_TFM_V2",
+    "commit": "aaf0034483928598f2d81c71624ba12d9548f4f0",
+    "tree_dirty": true
+  },
+  "limitations": [
+    "F-II uses dynamic average consensus on a static connected N3 graph.",
+    "F-III convergence is accepted only when primal, dual, complementarity, stationarity and consensus residuals jointly pass.",
+    "The common atomic closure is a bounded deterministic heuristic, not an exact integer solver.",
+    "F-IV is a repeated potential-game pilot with exogenous events, not a claimed Markov potential game.",
+    "The dynamic oracle is central, finite-horizon and restricted to small state spaces."
+  ],
+  "status": "smoke"
+}

@@ -1,36 +1,36 @@
 # Stage 3 full-text coding QA
 
-Run UTC: 2026-09-12T22:20:03.570210+00:00
+Run UTC: 2026-09-13T22:52:46.659645+00:00
 
 ## Inputs and codebook
 
-- Stage 2 queue records: **1057**
+- Stage 2 queue records: **1150**
 - Codebook SHA-256: `3ac3f7139131ce69ccd2b142065aaf5595aadcad88ea558176dae3b903df649a`
 - Coding mode: **deterministic structural first pass over extracted document text**
 - Full-text policy: detailed fields require `fulltext_verified`; abstracts and metadata are never upgraded.
 
 ## Evidence strength
 
-- `abstract_only`: **30**
-- `fulltext_verified`: **230**
-- `metadata_only`: **776**
+- `abstract_only`: **123**
+- `fulltext_verified`: **244**
+- `metadata_only`: **762**
 - `retrieval_error`: **21**
 
 ## Coding status and role
 
-- `coded_abstract_limited`: **30**
-- `coded_fulltext_structural_pass`: **230**
-- `not_codeable_without_fulltext`: **797**
+- `coded_abstract_limited`: **123**
+- `coded_fulltext_structural_pass`: **244**
+- `not_codeable_without_fulltext`: **783**
 
-- `BASELINE`: **19**
-- `CONTEXT`: **800**
-- `CORE`: **94**
-- `ENABLING`: **123**
-- `SURVEY`: **21**
+- `BASELINE`: **20**
+- `CONTEXT`: **796**
+- `CORE`: **155**
+- `ENABLING`: **155**
+- `SURVEY`: **24**
 
 ## Validation
 
-- Evidence matrix rows: **1057**, with unique candidate IDs: **1057**.
+- Evidence matrix rows: **1150**, with unique candidate IDs: **1150**.
 - Every `fulltext_verified` row was read from its local PDF/HTML/XML path and has a structural coding row.
 - Abstract-only rows retain only abstract-limited observations; metadata-only rows have blank detailed fields.
 - Extraction errors: **0**; these remain visible and are not silently treated as evidence.

@@ -48,6 +48,40 @@ def test_verified_row_without_year_is_rejected() -> None:
         parse_verified_entries(ledger)
 
 
+def test_verified_undated_web_row_requires_auditable_metadata() -> None:
+    ledger = """
+| `web` | VERIFICADA | Example Robotics. (s. f.). *Industrial AMR catalogue*. | [Official site](https://example.org/amr) | Contexto, SP1 | Declared product scope. | Official primary page verified on 2026-09-08. | Commercial scope only. |
+"""
+
+    assert parse_verified_entries(ledger) == (
+        LedgerEntry("web", None, frozenset({1})),
+    )
+
+
+@pytest.mark.parametrize(
+    ("reference", "url_cell", "evidence", "message"),
+    (
+        ("(s. f.). *Title*.", "https://example.org", "Checked.", "no author"),
+        ("Author. (s. f.).", "https://example.org", "Checked.", "no title"),
+        ("Author. (s. f.). *Title*.", "Official site", "Checked.", "no HTTP"),
+        ("Author. (s. f.). *Title*.", "https://example.org", "—", "no verification evidence"),
+    ),
+)
+def test_verified_undated_web_row_rejects_missing_required_metadata(
+    reference: str,
+    url_cell: str,
+    evidence: str,
+    message: str,
+) -> None:
+    ledger = (
+        f"| `web` | VERIFICADA | {reference} | {url_cell} | SP1 | claim | "
+        f"{evidence} | note |"
+    )
+
+    with pytest.raises(ValueError, match=message):
+        parse_verified_entries(ledger)
+
+
 def test_repository_ledger_renders_all_canonical_rows() -> None:
     ledger_path = Path("references/LITERATURE_LEDGER.md")
 
@@ -61,13 +95,19 @@ def test_repository_ledger_renders_all_canonical_rows() -> None:
 
 def test_theoretical_framework_keeps_restored_literature_figures() -> None:
     chapter_source = Path(
-        "thesis/sections/mainmatter/05-theoretical-framework.tex"
+        "pre-thesis/sections/source-snapshot/mainmatter/05-theoretical-framework.tex"
+    ).read_text(encoding="utf-8")
+    intro_contract = Path("pre-thesis/sections/intro-contracts.tex").read_text(
+        encoding="utf-8"
+    )
+    method_comparison = Path(
+        "pre-thesis/sections/method-comparison.tex"
     ).read_text(encoding="utf-8")
 
-    assert r"\label{fig:tf-problem-gap}" in chapter_source
-    assert r"\label{tab:tf-comparison}" in chapter_source
+    assert r"\label{fig:tf-problem-gap}" in intro_contract
+    assert r"\label{tab:tf-comparison}" in method_comparison
     assert r"\label{fig:tf-literature-timeline}" in chapter_source
-    assert r"\input{generated/literature-coverage.tex}" in chapter_source
+    assert r"\input{shared/generated-macros/literature-coverage.tex}" in chapter_source
     assert r"\label{fig:tf-methodological-map}" in chapter_source
     assert chapter_source.count(r"\label{fig:tf-literature-timeline}") == 1
     assert chapter_source.count(r"\label{fig:tf-methodological-map}") == 1

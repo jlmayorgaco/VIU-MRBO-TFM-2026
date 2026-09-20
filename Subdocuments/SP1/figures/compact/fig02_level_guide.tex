@@ -38,7 +38,7 @@
 				
 				\node[sppanel,fill=VIUDark,text=white,minimum width=11.6cm,
 				minimum height=0.78cm,font=\small\bfseries] at (6.75,13.83)
-				{SP1 \textbar\ evolución del reclutamiento: del oráculo global a la decisión vecinal};
+				{Formación de coaliciones en SP1};
 				
 				\node[sppanel,fill=SPBlue!4,minimum width=5.90cm,
 				minimum height=5.65cm] (n1) at (3.14,10.70) {};
@@ -78,13 +78,13 @@
 				% Cada cambio de nivel es un nodo del flujo: las líneas terminan en su borde.
 				\node[guidechange,fill=SPGreen!8,text width=1.12cm]
 				(change12) at (6.75,10.70)
-				{Añade\\capacidad\\individual};
+				{capacidad\\individual};
 				\draw[guidewire] (n1.east) -- (change12.west);
 				\draw[guideflow] (change12.east) -- (n2.west);
 				
 				\node[guidechange,fill=white,text width=1.28cm]
 				(change23) at (6.75,7.65)
-				{Elimina\\coordinador\\global};
+				{información\\vecinal};
 				\draw[guidewire,rounded corners=3pt]
 				(n2.south) -- (10.36,7.65) -- (change23.east);
 				\draw[guideflow,rounded corners=3pt]
@@ -92,7 +92,7 @@
 				
 				\node[guidechange,fill=VIUOrange!9,text width=1.18cm]
 				(change34) at (6.75,4.55)
-				{Aumenta\\el orden\\local};
+				{revisiones\\conjuntas};
 				\draw[guidewire] (n3.east) -- (change34.west);
 				\draw[guideflow] (change34.east) -- (n4.west);
 				
@@ -125,7 +125,7 @@
 				\draw[guideblue] (n1r5) -- (n1s22);
 				\node[guideoutcome,text width=4.05cm,minimum height=0.48cm]
 				at (3.14,8.48)
-				{\textcolor{SPBlue}{\textbf{EXACTO POR SLOTS}}};
+				{\textcolor{SPBlue}{\textbf{asignación por puestos}}};
 				
 				% N2: cada coalición se agrega antes de comprobar la demanda de la carga.
 				\draw[spcoalitiongreen] (7.90,10.34) rectangle (9.55,11.36);
@@ -155,7 +155,7 @@
 				\draw[guidegreen] (n2sum2.east) -- (n2k2.west);
 				\node[guideoutcome,text width=4.05cm,minimum height=0.48cm]
 				at (10.36,8.48)
-				{\textcolor{SPGreen}{\textbf{FACTIBLE; ÓPTIMO SI CERTIFICA}}};
+				{\textcolor{SPGreen}{\textbf{MILP}}};
 				
 				% N3: cada rama dispone de su propia columna y de un carril de entrada.
 				\node[sprobotpurple,minimum size=4.6mm] (n3r1) at (1.04,4.58) {};
@@ -175,17 +175,17 @@
 				\node[sppanel,fill=white,text width=1.05cm,minimum height=0.70cm,
 				inner sep=2.5pt,align=center,
 				font=\fontsize{6.0}{7.0}\selectfont\bfseries] (n31) at (3.45,4.30)
-				{N3.1\\CBBA};
+				{CBBA};
 				\node[sppanel,fill=white,text width=1.05cm,minimum height=0.70cm,
 				inner sep=2.5pt,align=center,
 				font=\fontsize{6.0}{7.0}\selectfont\bfseries] (n32) at (4.85,4.30)
-				{N3.2\\GRAPE};
+				{GRAPE};
 				\draw[guidepurple] (n3split.east) -- (n31.north west);
 				\draw[guidepurple,rounded corners=2pt]
 				(n3split.north) -- (2.62,5.27) -- (4.85,5.27) -- (n32.north);
 				\node[guideoutcome,fill=SPPurple!8,text width=3.52cm,
 				minimum height=0.68cm] (n3out) at (4.12,3.00)
-				{\textcolor{SPPurple}{\textbf{ATÓMICO $\rightarrow$\\VERIFICADO \emph{POST HOC}}}};
+				{\textcolor{SPPurple}{\textbf{coalición entera}}};
 				\draw[guidepurple] (n31.south) -- (n31.south |- n3out.north);
 				\draw[guidepurple] (n32.south) -- (n32.south |- n3out.north);
 				
@@ -217,21 +217,10 @@
 				\draw[guidegreen] (n4phi.east) -- (11.40,4.63);
 				\node[guideoutcome,fill=VIUOrange!12,text width=1.54cm,
 				minimum height=0.48cm,font=\fontsize{6.0}{7.0}\selectfont\bfseries]
-				at (12.10,3.33) {COMMIT\\VERSIONADO};
+				at (12.10,3.33) {confirmación};
 				\node[guideoutcome,text width=4.05cm,minimum height=0.48cm]
 				at (10.36,2.55)
-				{transporte físico $\rightarrow$ SP2};
+				{factibilidad física $\rightarrow$ SP2};
 				
-				% Notación en cuatro módulos alineados, sin una frase corrida de extremo a extremo.
-				\draw[splegendbox,fill=white] (0.42,0.35) rectangle (13.08,1.25);
-				\node[font=\scriptsize\bfseries\sffamily] at (2.15,0.80)
-				{SP1.N3.1 / SP1.N3.2};
-				\draw[draw=SPGrid,line width=0.55pt] (4.22,0.49) -- (4.22,1.11);
-				\node[font=\scriptsize\sffamily] at (5.67,0.80)
-				{\textbf{SP1} = subproblema};
-				\node[font=\scriptsize\sffamily] at (8.43,0.80)
-				{\textbf{N3} = nivel};
-				\node[font=\scriptsize\sffamily] at (11.20,0.80)
-				{\textbf{.1/.2} = rama de método};
 		\end{tikzpicture}}
 		\endgroup

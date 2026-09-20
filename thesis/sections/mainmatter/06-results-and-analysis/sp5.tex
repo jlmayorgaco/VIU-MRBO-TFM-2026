@@ -1,18 +1,18 @@
-\input{../results/processed/sp5/SP5_SAFETY_EVIDENCE_v1/tables/sp5_numbers.tex}
+\input{../legacy/results/processed/sp5/SP5_SAFETY_EVIDENCE_v1/tables/sp5_numbers.tex}
 
-\subsection{SP5: seguridad de la huella rígida frente a obstáculos}
-\label{subsec:sp5}
+\subsubsection{Etapa 2.2: seguridad de la huella rígida frente a obstáculos}
+\label{subsubsec:sp2-safety}
 
-Una trayectoria de pose factible puede atravesar un obstáculo. SP5 evalúa este fallo de seguridad en la rama Cargo. Tras el acoplamiento, la carga y los robots forman una huella rígida, mientras los límites de fuerza intervienen en $G_{C_k}\lambda_k$. El filtro precede al reparto de \emph{wrench}, de modo que la seguridad se mide otra vez después de saturar e integrar. La rama de empuje queda fuera del experimento.
+Una trayectoria de pose factible puede atravesar un obstáculo. E5 evalúa este fallo de seguridad en la rama Cargo. Tras el acoplamiento, la carga y los robots forman una huella rígida, mientras los límites de fuerza intervienen en $G_{C_k}\lambda_k$. El filtro precede al reparto de \emph{wrench}, de modo que la seguridad se mide otra vez después de saturar e integrar. La rama de empuje queda fuera del experimento.
 
-\subsubsection{Huella y obstáculos}
+\paragraph{Huella y obstáculos}
 
 La garantía puede perderse entre la referencia filtrada y el \emph{wrench} aplicado, porque el reparto satura los esfuerzos antes de mover la huella compuesta (Figura~\ref{fig:sp5-scenario}).
 
 \begin{figure}[!htbp]
   \centering
   \begin{spdiagram}
-    \spdrawarena{SP5-C \textbar\ seguridad de la huella compuesta}
+    \spdrawarena{E5-C \textbar\ seguridad de la huella compuesta}
     \draw[spfootprint] (1.90, 2.45) ellipse (1.52 and 1.34);
     \node[spload] (load) at (1.95, 2.45) {$L_k$};
     \node[sprobot] (r1) at (1.05, 3.22) {$R_1$};
@@ -42,12 +42,12 @@ La garantía puede perderse entre la referencia filtrada y el \emph{wrench} apli
     \draw[draw=VIUDark,fill=VIUDark!18,line width=0.7pt] (10.20, 0.34) circle (0.13);
     \node[splegend,anchor=west] at (10.43, 0.34) {obstáculo};
   \end{spdiagram}
-  \caption{Interfaz de SP5-C entre transporte nominal, guardia geométrica y realización acotada del \emph{wrench}.}
+  \caption{Interfaz de E5-C entre transporte nominal, guardia geométrica y realización acotada del \emph{wrench}.}
   \label{fig:sp5-scenario}
   \viuownsource
 \end{figure}
 
-\subsubsection{Problema formal de referencia}
+\paragraph{Problema formal de referencia}
 
 Sea $q_k^L=(p_{x,k}^L,p_{y,k}^L,\theta_k^L)$ la pose de la carga y sea $\dot q_k^L=(v_{x,k}^L,v_{y,k}^L,\omega_k^L)$. Los robots mantienen desplazamientos corporales fijos $r_i^B$ respecto de la carga. El radio conservador
 \begin{equation}
@@ -112,13 +112,13 @@ y solo $W_k^{\mathrm{apl}}=G_{C_k}\boldsymbol\lambda_k$ mueve la planta. Este re
 \end{equation}
 donde $\varepsilon_{\mathrm{act},j,m}$ acota conjuntamente el error numérico de discretización e iteración y el error físico introducido por predicción, saturación y reparto. La barrera se evalúa con pose y velocidad aplicadas, y el margen puede ser positivo.
 
-\subsubsection{Métodos de comparación}
+\paragraph{Métodos de comparación}
 
 El campo potencial proporciona una referencia reactiva en el espacio de control \parencite{khatib1986obstacle}. VO/RVO/ORCA permiten comparar la selección geométrica de velocidades \parencite{fiorini1998velocity,vandenberg2008rvo,vandenberg2011orca}, mientras el CBF fija la referencia de invariancia continua bajo sus supuestos de factibilidad y regularidad \parencite{ames2017cbf}. La Tabla~\ref{tab:sp5-methods} especifica cómo se adapta cada familia.
 
 \begin{table}[!htbp]
   \centering
-  \caption{Métodos de evitación y control comparados en SP5-C.}
+  \caption{Métodos de evitación y control comparados en E5-C.}
   \label{tab:sp5-methods}
   \viutablefont
   \setlength{\tabcolsep}{1.4pt}
@@ -138,7 +138,7 @@ El campo potencial proporciona una referencia reactiva en el espacio de control 
   \viusource{elaboración propia a partir de las referencias citadas}
 \end{table}
 
-\subsubsection{Interfaz de seguridad}
+\paragraph{Interfaz de seguridad}
 
 La guardia filtra el \emph{wrench} antes del reparto y conserva la membresía de la coalición durante toda la ejecución. Los estimandos son la colisión, el éxito seguro, el agotamiento del horizonte y el residual aplicado.
 
@@ -148,9 +148,9 @@ El contrato local observa obstáculos hasta \(6\) m, predice \(0.8\) s y contabi
 La cadena RAW/SAFE/EXEC conserva el \emph{wrench} nominal, la referencia filtrada y la acción realizable. La planta recibe EXEC; si SAFE satisface la barrera y EXEC la viola, el residual identifica la pérdida introducida por el reparto y la integración. Los estados resultantes se registran sin reparación posterior.
 \end{contribucion}
 
-\subsubsection{Dinámica y filtro de seguridad}
+\paragraph{Dinámica y filtro de seguridad}
 
-La coalición, los contactos y la tarea activa permanecen constantes respecto de SP4. La nueva salida regulada es
+La coalición, los contactos y la tarea activa permanecen constantes respecto de E4. La nueva salida regulada es
 \begin{equation}
   z_{5,m}^{S}=
   \left(
@@ -182,13 +182,13 @@ con $M_k$ diagonal, amortiguamiento y contactos fijos. El control es PD o Hamilt
 
 \eqref{eq:sp5-velocity-projection} vale por muestra. Transformación, barridos, saturación y muestreo impiden heredar invariancia continua. Residual y margen son diagnósticos, no ceros supuestos.
 
-\subsubsection{Diseño experimental}
+\paragraph{Diseño experimental}
 
 La campaña contiene \SPFiveWorlds{} mundos pareados y \SPFiveRuns{} ejecuciones de ocho métodos. La unidad independiente es el mundo y el endpoint principal es el éxito seguro; colisiones y agotamientos permanecen en el denominador.
 
 \begin{table}[!htbp]
   \centering
-  \caption{Diseño experimental de SP5-C.}
+  \caption{Diseño experimental de E5-C.}
   \label{tab:sp5-design}
   \viutablefont
   \begin{tabularx}{0.96\textwidth}{>{\raggedright\arraybackslash}p{2.45cm} Y}
@@ -202,19 +202,19 @@ La campaña contiene \SPFiveWorlds{} mundos pareados y \SPFiveRuns{} ejecuciones
     Inferencia & McNemar exacto para colisión y éxito seguro; Wilcoxon pareado para violación aplicada; IC por remuestreo de mundos y Holm para cinco contrastes. \\
     \bottomrule
   \end{tabularx}
-  \viusource{elaboración propia a partir del protocolo experimental de SP5}
+  \viusource{elaboración propia a partir del protocolo experimental de E5}
 \end{table}
 
-\subsubsection{Resultados}
+\paragraph{Resultados}
 
 Cada método se evaluó en \SPFiveRunsPerMethod{} mundos (Tabla~\ref{tab:sp5-results}). La holgura es la media de la distancia mínima por mundo y no sustituye a la proporción de colisiones.
 
 \begin{table}[!htbp]
   \centering
-  \caption{Resultados agregados de SP5-C. Proporciones sobre 108 mundos pareados por método.}
+  \caption{Resultados agregados de E5-C. Proporciones sobre 108 mundos pareados por método.}
   \label{tab:sp5-results}
   \scriptsize
-  \resizebox{\textwidth}{!}{\input{../results/processed/sp5/SP5_SAFETY_EVIDENCE_v1/tables/sp5_results.tex}}
+  \resizebox{\textwidth}{!}{\input{../legacy/results/processed/sp5/SP5_SAFETY_EVIDENCE_v1/tables/sp5_results.tex}}
   \viuownsource
 \end{table}
 
@@ -228,8 +228,8 @@ La referencia central alcanzó éxito \SPFiveCentralSafe{} frente a \SPFiveLocal
 
 La holgura inicial mínima fue \(0.2417\)~m y el residual mecánico máximo, \(1.14\times10^{-13}\); estas comprobaciones descartan una colisión inicial o un cierre numérico inconsistente. El modelo omite fricción, interacción rueda--suelo, percepción y contacto conmutado.
 
-\subsubsection{Síntesis}
+\paragraph{Síntesis}
 
 La guardia redujo las colisiones del Hamiltoniano sin filtro, y el CBF anticipativo hizo lo mismo frente a VO. El límite apareció en el progreso: algunos tratamientos combinaron cero colisiones observadas con $0.833$ de agotamientos, mientras el reparto mantuvo un residual aplicado distinto de cero. La evidencia de seguridad operacional corresponde al cuerpo planar y a los escenarios ensayados.
 
-Los contactos fijos impiden responder a un fallo que retire parte del soporte. SP6 usa precisamente esa perturbación para evaluar la detección y el reclutamiento de un reemplazo.
+Los contactos fijos impiden responder a un fallo que retire parte del soporte. E6 usa precisamente esa perturbación para evaluar la detección y el reclutamiento de un reemplazo.

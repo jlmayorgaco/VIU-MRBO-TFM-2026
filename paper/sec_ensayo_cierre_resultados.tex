@@ -1,0 +1,105 @@
+\subsection{Resultados}
+
+Cada fila es una configuración sobre semillas comunes; el McNemar es pareado frente a la referencia (Smith, vector, arrendamiento, anidada, atómico, creencias exactas).
+
+\begin{center}\small
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+Protocolo de revisión & Éxito & IC$_{95}$ & $T$ [s] & $E$ [Wh] & sep.\ mín.\ [m] & mensajes & revisiones & McNemar \\
+\midrule
+mejor respuesta & $19/30$ & $0{,}46$--$0{,}78$ & $144$ & $11{,}5$ & $-0{,}13$ & $948$k & $6$ & 7/9, $p=0{,}804$ \\
+BNN & $22/30$ & $0{,}56$--$0{,}86$ & $147$ & $10{,}9$ & $-0{,}12$ & $1032$k & $6$ & 8/7, $p=1{,}000$ \\
+logit & $21/30$ & $0{,}52$--$0{,}83$ & $151$ & $10{,}9$ & $-0{,}14$ & $906$k & $6$ & 7/7, $p=1{,}000$ \\
+imitación (replicador) & $0/30$ & $-0{,}00$--$0{,}11$ & $300$ & $10{,}0$ & $0{,}97$ & $900$k & $0$ & 0/21, $p=0{,}000$ \\
+Smith & $21/30$ & $0{,}52$--$0{,}83$ & $153$ & $10{,}8$ & $-0{,}14$ & $887$k & $6$ & — \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}\small
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+Aptitud & Éxito & IC$_{95}$ & $T$ [s] & $E$ [Wh] & sep.\ mín.\ [m] & mensajes & revisiones & McNemar \\
+\midrule
+escalar (suma de capacidades) & $21/30$ & $0{,}52$--$0{,}83$ & $153$ & $10{,}8$ & $-0{,}14$ & $887$k & $6$ & — \\
+vector (margen de \emph{wrench}) & $21/30$ & $0{,}52$--$0{,}83$ & $153$ & $10{,}8$ & $-0{,}14$ & $887$k & $6$ & — \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}\small
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+Planificador de trayectoria & Éxito & IC$_{95}$ & $T$ [s] & $E$ [Wh] & sep.\ mín.\ [m] & mensajes & revisiones & McNemar \\
+\midrule
+juego continuo de trayectorias & $24/30$ & $0{,}63$--$0{,}91$ & $172$ & $11{,}2$ & $-0{,}12$ & $1100$k & $6$ & 7/4, $p=0{,}549$ \\
+seguidor de puntos de espera & $20/30$ & $0{,}49$--$0{,}81$ & $159$ & $10{,}0$ & $-0{,}16$ & $977$k & $6$ & 3/4, $p=1{,}000$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}\small
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+Pasillo & Éxito & IC$_{95}$ & $T$ [s] & $E$ [Wh] & sep.\ mín.\ [m] & mensajes & revisiones & McNemar \\
+\midrule
+arrendamiento exclusivo & $15/20$ & $0{,}53$--$0{,}89$ & $153$ & $10{,}0$ & $-0{,}13$ & $847$k & $6$ & — \\
+precio de congestión & $14/20$ & $0{,}48$--$0{,}85$ & $160$ & $12{,}0$ & $-0{,}14$ & $1036$k & $6$ & 0/1, $p=1{,}000$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Tiempo mediano con dos cargas dentro del hueco: arrendamiento exclusivo $0{,}0$~s; precio de congestión $0{,}0$~s.
+
+\begin{center}\small
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+Seguridad & Éxito & IC$_{95}$ & $T$ [s] & $E$ [Wh] & sep.\ mín.\ [m] & mensajes & revisiones & McNemar \\
+\midrule
+solo coalición & $18/20$ & $0{,}70$--$0{,}97$ & $144$ & $9{,}5$ & $-0{,}16$ & $886$k & $6$ & 5/2, $p=0{,}453$ \\
+anidada & $15/20$ & $0{,}53$--$0{,}89$ & $153$ & $10{,}0$ & $-0{,}13$ & $847$k & $6$ & — \\
+ninguna & $19/20$ & $0{,}76$--$0{,}99$ & $110$ & $7{,}8$ & $-0{,}22$ & $633$k & $6$ & 5/1, $p=0{,}219$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}\small
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+Reclutamiento & Éxito & IC$_{95}$ & $T$ [s] & $E$ [Wh] & sep.\ mín.\ [m] & mensajes & revisiones & McNemar \\
+\midrule
+atómico & $15/20$ & $0{,}53$--$0{,}89$ & $153$ & $10{,}0$ & $-0{,}13$ & $847$k & $6$ & — \\
+GNE primal--dual & $16/20$ & $0{,}58$--$0{,}92$ & $155$ & $11{,}4$ & $-0{,}13$ & $1141$k & $3$ & 4/3, $p=1{,}000$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{center}\small
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+Hiperjuego (margen holgado) & Éxito & IC$_{95}$ & $T$ [s] & $E$ [Wh] & sep.\ mín.\ [m] & mensajes & revisiones & McNemar \\
+\midrule
+error $\pm0\%$, recertifica: no & $15/20$ & $0{,}53$--$0{,}89$ & $153$ & $10{,}0$ & $-0{,}13$ & $847$k & $6$ & — \\
+error $\pm0\%$, recertifica: sí & $15/20$ & $0{,}53$--$0{,}89$ & $153$ & $10{,}0$ & $-0{,}13$ & $847$k & $6$ & — \\
+error $\pm35\%$, recertifica: no & $15/20$ & $0{,}53$--$0{,}89$ & $153$ & $10{,}0$ & $-0{,}13$ & $847$k & $6$ & — \\
+error $\pm35\%$, recertifica: sí & $15/20$ & $0{,}53$--$0{,}89$ & $153$ & $10{,}0$ & $-0{,}13$ & $847$k & $6$ & — \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Certificados falsos (coalición certificada con creencias que no lo estaba con capacidades reales) y rechazos por recertificación, sumados sobre semillas: error $\pm0\%$, recertifica: no: $0$ falsos, $0$ rechazos; error $\pm0\%$, recertifica: sí: $0$ falsos, $0$ rechazos; error $\pm35\%$, recertifica: no: $0$ falsos, $0$ rechazos; error $\pm35\%$, recertifica: sí: $0$ falsos, $0$ rechazos.
+
+\begin{center}\small
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+Hiperjuego (margen vinculante) & Éxito & IC$_{95}$ & $T$ [s] & $E$ [Wh] & sep.\ mín.\ [m] & mensajes & revisiones & McNemar \\
+\midrule
+error $\pm0\%$, recertifica: no & $15/20$ & $0{,}53$--$0{,}89$ & $105$ & $6{,}4$ & $-0{,}16$ & $740$k & $6$ & 1/1, $p=1{,}000$ \\
+error $\pm0\%$, recertifica: sí & $15/20$ & $0{,}53$--$0{,}89$ & $105$ & $6{,}4$ & $-0{,}16$ & $740$k & $6$ & 1/1, $p=1{,}000$ \\
+error $\pm35\%$, recertifica: no & $14/20$ & $0{,}48$--$0{,}85$ & $114$ & $6{,}4$ & $-0{,}17$ & $742$k & $6$ & 0/1, $p=1{,}000$ \\
+error $\pm35\%$, recertifica: sí & $15/20$ & $0{,}53$--$0{,}89$ & $114$ & $6{,}4$ & $-0{,}14$ & $742$k & $6$ & — \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Certificados falsos (coalición certificada con creencias que no lo estaba con capacidades reales) y rechazos por recertificación, sumados sobre semillas: error $\pm0\%$, recertifica: no: $0$ falsos, $0$ rechazos; error $\pm0\%$, recertifica: sí: $0$ falsos, $0$ rechazos; error $\pm35\%$, recertifica: no: $3$ falsos, $0$ rechazos; error $\pm35\%$, recertifica: sí: $25$ falsos, $25$ rechazos.
